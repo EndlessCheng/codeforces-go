@@ -631,25 +631,35 @@ func searchCollection() {
 
 	// 写法一
 	// https://atcoder.jp/contests/abc390/tasks/abc390_d
-	partitionSet := func(a []int) {
-		groups := []int{}
+	partitionSet := func(a []int) (ans int) {
+		groupRes := []int{}
 		var dfs func(int)
 		dfs = func(i int) {
 			if i == len(a) {
-				// ...
+				tot := 0
+				for _, res := range groupRes {
+					tot += res * res
+				}
+				ans = max(ans, tot)
 				return
 			}
+
+			// v 单独一个集合
 			v := a[i]
-			groups = append(groups, v)
+			groupRes = append(groupRes, v)
 			dfs(i + 1)
-			groups = groups[:len(groups)-1]
-			for j := range groups {
-				groups[j] += v
+			groupRes = groupRes[:len(groupRes)-1]
+
+			// v 加到已有集合
+			for j := range groupRes {
+				old := groupRes[j]
+				groupRes[j] += v
 				dfs(i + 1)
-				groups[j] -= v
+				groupRes[j] = old
 			}
 		}
 		dfs(0)
+		return
 	}
 
 	// 写法二
