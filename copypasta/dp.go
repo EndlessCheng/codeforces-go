@@ -3281,7 +3281,6 @@ func _(abs func(int) int) {
 	// 见 monotone_queue.go
 
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
-	//
 	// 状态转移方程形如 f[i] = min_{j=0}^{i-1} k[i]*f[j]+a[i]*b[j]，包含 i 和 j 的乘积项
 	//
 	// 理解方法一：点积的几何意义（向量投影长度）
@@ -3289,7 +3288,53 @@ func _(abs func(int) int) {
 	// 讲解 https://leetcode.cn/problems/minimum-cost-to-divide-array-into-subarrays/solutions/3633352/hua-fen-xing-dp-shi-zi-bian-xing-pythonj-cwi9/
 	// - 注：原题是经典例题 https://www.luogu.com.cn/problem/P2365
 	//
-	// 理解方法二：斜率、截距
+	// https://oi-wiki.org/dp/opt/slope/#%E4%B9%A0%E9%A2%98 习题
+	// 怎么找题 https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2Cgeometry
+	// https://atcoder.jp/contests/dp/tasks/dp_z 入门题
+	// - https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
+	// https://www.luogu.com.cn/problem/P5017
+	// https://www.luogu.com.cn/problem/P2365 IOI02 http://poj.org/problem?id=1180 https://www.luogu.com.cn/problem/P5785
+	// https://www.luogu.com.cn/problem/P2900 https://www.luogu.com.cn/problem/SP15086 单调栈
+	// https://codeforces.com/problemset/problem/319/C 2100
+	// https://codeforces.com/problemset/problem/311/B 2400
+	// https://codeforces.com/problemset/problem/1715/E 2400
+	// https://codeforces.com/problemset/problem/631/E 2600
+	// https://codeforces.com/problemset/problem/1175/G 3000 李超线段树
+	// http://poj.org/problem?id=3709
+	convexHullTrick := func(a, b, k []int, C int) int {
+		// 用点积来理解，用 Andrew 算法计算凸包
+		// f[i] = min_{j=0}^{i-1} a[i]*b[j] + k[i]*f[j] + C
+		// ！需要保证 b[j] 是递增的（或者 f[j] 是递增的），否则需要用平衡树维护凸包
+		// ！如果 b[j] 是递减的，可以把 a[i]*b[j] 改成 (-a[i])*(-b[j])，这样 -b[j] 是递增的
+		// 设 v[j] = (b[j], f[j])
+		// 设 p = (a[i], k[i])
+		// 问题变成求点积 p.dot(v[j]) 的最小值 + C
+		// 这可以在下凸包中二分找点积的谷底，即第一个上坡
+
+		f := make([]int, len(a))
+		q := []vec{{b[0], f[0]}}      // j=0 单独算
+		for i := 1; i < len(a); i++ { // a 一般是个前缀和数组，长为 n+1
+			pi := vec{a[i], k[i]}
+			// ！如果是转移方程是求 max，把 < 改成 >，即第一个下坡
+			j := sort.Search(len(q)-1, func(j int) bool { return pi.dot(q[j]) < pi.dot(q[j+1]) })
+			// 如果 a[i] 是递减的，二分可以改成双指针（否则只能二分）
+			// for len(q) > 1 && pi.dot(q[0]) >= pi.dot(q[1]) { q = q[1:] }; f[i] = pi.dot(q[0]) + C
+			f[i] = pi.dot(q[j]) + C
+
+			vj := vec{b[i], f[i]}
+			// ！如果转移方程是求 max，把 <= 改成 >=，也就是计算上凸包
+			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(vj.sub(q[len(q)-1])) <= 0 {
+				q = q[:len(q)-1]
+			}
+			q = append(q, vj)
+		}
+		return f[len(f)-1] // q[len(q)-1].y
+	}
+
+	// 平衡树维护凸包
+	// 见 geometry.go 中的 dynamicConvexHull
+
+	// 理解方法二：斜率、截距（不推荐）
 	// 若将 (b[j],f[j]) 看作二维平面上的点，则 f[i] 就是所有斜率为 a[i] 且过其中一点的直线中，与 y 轴的最小截距
 	// 我们可以用一个单调队列来维护 (b[j],f[j]) 的相邻点所构成的下凸包
 	// 对于斜率 a[i]，我们需要在队列中寻找一个位置 k，其左侧斜率小于 a[i]，右侧斜率大于 a[i]，此时经过点 (b[k],f[k]) 能取到最小截距
@@ -3305,57 +3350,11 @@ func _(abs func(int) int) {
 	// https://www.bilibili.com/video/BV178411W7Aj/
 	// https://www.luogu.com.cn/blog/ChenXingLing/post-xue-xi-bi-ji-dong-tai-gui-hua-xie-shuai-you-hua-dp-chao-yang-x
 	// https://www.luogu.com.cn/blog/ningago-lsh/xie-lv-you-hua-dp
-	// https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
+	// https://blog.csdn.net/weixin_43914593/article/details/105560357
 	// https://zhuanlan.zhihu.com/p/558522044
 	// https://zhuanlan.zhihu.com/p/363772434
 	// https://codeforces.com/blog/entry/63823
-	//
-	// https://atcoder.jp/contests/dp/tasks/dp_z
-	// https://codeforces.com/problemset/problem/319/C 2100
-	// https://www.luogu.com.cn/problem/P5017
-	// https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
-	// todo https://www.luogu.com.cn/problem/P2900
-	//  https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
-	//  http://poj.org/problem?id=3709
-	//  https://codeforces.com/problemset/problem/311/B 2400
-	//  https://codeforces.com/problemset/problem/1715/E 2400
-	//  https://codeforces.com/problemset/problem/631/E 2600
-	//  结合李超线段树 https://codeforces.com/contest/1175/problem/G 3000
-	cht := func(a, b, k []int, C int) int {
-		// 用点积来理解，用 Andrew 算法计算凸包
-		// f[i] = min_{j=0}^{i-1} a[i]*b[j] + k[i]*f[j] + C
-		// 保证 b 是单调递增的
-		// 设 v[j] = (b[j], f[j])
-		// 设 p = (a[i], k[i])
-		// 问题变成求 p.dot(v[j]) 的最小值 + C
-		// 这可以在下凸包中二分找谷底
-
-		f := make([]int, len(a))
-		// f[0] = ...
-		q := []vec{{b[0], k[0] * f[0]}} // 0 单独算
-		for i := 1; i < len(a); i++ {   // a 一般是个前缀和数组，长为 n+1
-			p := vec{a[i], k[i]}
-			// 用 Andrew 算法计算下凸包
-			// p.dot(q[i]) 是个（下）单峰函数，二分找最小值，即第一个上坡
-			// ！如果是转移方程是求 max，把 < 改成 >，即第一个下坡
-			j := sort.Search(len(q)-1, func(j int) bool { return p.dot(q[j]) < p.dot(q[j+1]) })
-			// 如果 a[i] 有单调性，二分可以改成双指针（求 max 改成 <=）
-			// for len(q) > 1 && p.dot(q[0]) >= p.dot(q[1]) { q = q[1:] }; f[i] = p.dot(q[0]) + C
-			f[i] = p.dot(q[j]) + C
-
-			vi := vec{b[i], f[i]}
-			// ！如果转移方程是求 max，下面的 <= 改成 >=，也就是计算上凸包
-			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(vi.sub(q[len(q)-1])) <= 0 {
-				q = q[:len(q)-1]
-			}
-			q = append(q, vi)
-		}
-		return f[len(f)-1] // q[len(q)-1].y
-	}
-
-	// 平衡树维护凸包见 70D.go https://codeforces.com/problemset/problem/70/D
-
-	cht2 := func(a, b []int) int {
+	convexHullTrick2 := func(a, b []int) int {
 		n := len(a)
 		f := make([]int, n)
 		// 计算两点间的斜率，若分子分母均在 32 位整数范围内，可以去掉浮点，改用乘法（或者用 lessPair）
@@ -3392,7 +3391,7 @@ func _(abs func(int) int) {
 		return f[n-1]
 	}
 
-	// WQS 二分 / 凸优化 DP / 带权二分 / Alien Trick / Alien DP / Monge グラフ上のd-辺最短路長を計算するアルゴリズム 
+	// WQS 二分 / 凸完全单调性优化 DP / 凸优化 DP / 带权二分 / Alien Trick / Alien DP / Monge グラフ上のd-辺最短路長を計算するアルゴリズム 
 	// 原文：《浅析一类二分方法》
 	// 把最多选 k 个物品的问题（时间复杂度高）转换成选任意个物品的问题（更容易解决，时间复杂度低）
 	// 要求满足性质：k 越大，额外产生的收益是单调递减的
@@ -4299,7 +4298,7 @@ func _(abs func(int) int) {
 
 		// 数据结构优化 DP
 
-		cht, cht2,
+		convexHullTrick, convexHullTrick2,
 		wqs,
 
 		diameter, countDiameter, maxDisOfDiffColor, countPath, countVerticesOnDiameter, maxPathSum,
