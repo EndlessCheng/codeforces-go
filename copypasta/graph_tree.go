@@ -190,6 +190,53 @@ func (*tree) move1(g [][]int) [][]int {
 	return move1
 }
 
+// 返回每个点 v 往上到 fa 再到其他点的最远距离
+// 需要维护每个点的最大深度和次大深度
+// https://oj.niumacode.com/problem/P1499
+func (*tree) upDis(root int, g [][]struct{ to, wt int }) []int {
+	type tuple struct{ fi, se, w int }
+	downDis := make([]tuple, len(g))
+	var build func(int, int)
+	build = func(v, fa int) {
+		fi, se, fw := 0, 0, -2
+		for _, e := range g[v] {
+			w := e.to
+			if w == fa {
+				continue
+			}
+			build(w, v)
+			d := downDis[w].fi + e.wt
+			if d > fi {
+				se = fi
+				fi, fw = d, w
+			} else if d > se {
+				se = d
+			}
+		}
+		downDis[v] = tuple{fi, se, fw} // 往下最长链、次长链、最长链要经过 v 的儿子 w
+	}
+	build(root, -1)
+
+	upDis := make([]int, len(g))
+	var dfs func(int, int, int)
+	dfs = func(v, fa, maxD int) {
+		upDis[v] = maxD
+		for _, e := range g[v] {
+			w := e.to
+			if w == fa {
+				continue
+			}
+			if w != downDis[v].w {
+				dfs(w, v, max(maxD, downDis[v].fi)+e.wt)
+			} else {
+				dfs(w, v, max(maxD, downDis[v].se)+e.wt)
+			}
+		}
+	}
+	dfs(root, -1, 0)
+	return upDis
+}
+
 // 两个基本信息：节点深度和子树大小
 // 节点深度：
 // - 深度与祖先：v 是 w 的祖先，当且仅当 dep[v]+dist(v,w)=dep[w]
@@ -203,10 +250,10 @@ func (*tree) move1(g [][]int) [][]int {
 //
 // 离线好题 https://codeforces.com/problemset/problem/570/D
 // 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一棵子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
-func (*tree) depthSize(n, root int, g [][]int, v int) {
-	dep := make([]int, n)
-	size := make([]int, n)
-	maxDep := make([]int, n) // EXTRA: 子树最大深度
+func (*tree) depthSize(root int, g [][]int, v int) {
+	dep := make([]int, len(g))
+	size := make([]int, len(g))
+	maxDep := make([]int, len(g)) // EXTRA: 子树最大深度
 	var build func(int, int, int) int
 	build = func(v, fa, d int) int {
 		dep[v] = d
@@ -1086,6 +1133,7 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // https://codeforces.com/problemset/problem/372/D 2600
 // - 先把这题做了 https://www.luogu.com.cn/problem/P3320
 // https://ac.nowcoder.com/acm/contest/6913/C 路径点权乘积 
+// https://oj.niumacode.com/problem/P1499 包含两个点 x y 的最长路径
 //
 // 维护元素和 LC2836 https://leetcode.cn/problems/maximize-value-of-function-in-a-ball-passing-game/
 // 维护边权出现次数 LC2846 https://leetcode.cn/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/
@@ -1112,11 +1160,12 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	buildPa = func(v, p int) {
 		pa[v][0] = p
 		for _, w := range g[v] {
-			if w != p {
-				dep[w] = dep[v] + 1
-				//dis[w] = dis[v] + e.wt
-				buildPa(w, v)
+			if w == p {
+				continue
 			}
+			dep[w] = dep[v] + 1
+			//dis[w] = dis[v] + e.wt
+			buildPa(w, v)
 		}
 	}
 	buildPa(root, -1) // pa[root][0] = -1
@@ -1222,6 +1271,30 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		}
 	}
 
+	// EXTRA: 计算包含 v 和 w 的最长路径长度
+	// https://oj.niumacode.com/problem/P1499
+	var dis []int
+	var downDis []struct{ fi, se, w int } // 见 tree.upDis
+	var upDis []int                       // 见 tree.upDis
+	includeDis := func(v, w int) int {
+		if v == w {
+			return upDis[v] + downDis[v].fi
+		}
+		if dep[v] > dep[w] { // 提前交换
+			v, w = w, v
+		}
+		var getLCA func(int, int) (int, bool) // 如果没有祖先关系，返回 true
+		lca, ok := getLCA(v, w)
+		d := dis[v] + dis[w] - dis[lca]*2 + downDis[w].fi
+		if ok { // 只有一种情况，v 往下
+			return d + downDis[v].fi
+		}
+		if uptoDep(w, dep[v]+1) != downDis[v].w {
+			return d + max(upDis[v], downDis[v].fi) // v 往上或者走往下的最大链
+		}
+		return d + max(upDis[v], downDis[v].se) // v 往上或者走往下的次大链
+	}
+
 	{
 		// 加权树上二分
 		var dep []int // 加权深度，dfs 预处理略
@@ -1318,7 +1391,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		_ = getLCA
 	}
 
-	_ = []interface{}{getDis, uptoKthPa, down1, move1, midPath}
+	_ = []interface{}{getDis, uptoKthPa, down1, move1, midPath, includeDis}
 }
 
 // 最近公共祖先 · 其二 · 基于 RMQ
@@ -1685,6 +1758,7 @@ func (*tree) virtualTree(g [][]int) {
 //
 // 模板题（点权）https://www.luogu.com.cn/problem/P2590
 //             https://www.luogu.com.cn/problem/P3384
+//             https://www.luogu.com.cn/problem/P3178
 //             https://codeforces.com/problemset/problem/343/D 2100
 // 模板题（边权）https://atcoder.jp/contests/abc294/tasks/abc294_g
 // - 也可以转换成子树所有点的 dis 都增加了 delta，用欧拉序+差分树状数组维护
@@ -1702,6 +1776,8 @@ func (*tree) virtualTree(g [][]int) {
 // todo NOI21 轻重边 https://www.luogu.com.cn/problem/P7735
 //  https://www.luogu.com.cn/problem/P4211
 // 结合广义圆方树 https://codeforces.com/problemset/problem/487/E
+//
+// todo 把重儿子换到 g[v][0]，也是一种写法
 func (*tree) heavyLightDecomposition(root int, g [][]int, vals []int) { // vals 为点权
 	// 深度，子树大小，重儿子，父节点，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 0 开始）
 	type node struct{ depth, size, hson, fa, top, dfn int }
