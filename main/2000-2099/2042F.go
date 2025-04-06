@@ -8,29 +8,29 @@ import (
 )
 
 // https://github.com/EndlessCheng
-const inf int = 1e18
+const inf42 int = 1e18
 
-type mat [5][5]int
+type mat42 [5][5]int
 
-type seg []struct {
+type seg42 []struct {
 	l, r int
-	val  mat
+	val  mat42
 }
 
-func newVal(a, b int) mat {
-	return mat{
-		{0, a + b, a + b*2, -inf, -inf},
-		{-inf, a, a + b, -inf, -inf},
-		{-inf, -inf, 0, a + b, a + b*2},
-		{-inf, -inf, -inf, a, a + b},
-		{-inf, -inf, -inf, -inf, 0},
+func newVal42(a, b int) mat42 {
+	return mat42{
+		{0, a + b, a + b*2, -inf42, -inf42},
+		{-inf42, a, a + b, -inf42, -inf42},
+		{-inf42, -inf42, 0, a + b, a + b*2},
+		{-inf42, -inf42, -inf42, a, a + b},
+		{-inf42, -inf42, -inf42, -inf42, 0},
 	}
 }
 
-func mergeInfo(a, b mat) (c mat) {
+func (seg42) mergeInfo(a, b mat42) (c mat42) {
 	for i := range 5 {
 		for j := range 5 {
-			c[i][j] = -inf
+			c[i][j] = -inf42
 		}
 	}
 	for i := range 5 {
@@ -43,10 +43,10 @@ func mergeInfo(a, b mat) (c mat) {
 	return
 }
 
-func (t seg) build(a [][2]int, o, l, r int) {
+func (t seg42) build(a [][2]int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		t[o].val = newVal(a[l][0], a[l][1])
+		t[o].val = newVal42(a[l][0], a[l][1])
 		return
 	}
 	m := (l + r) >> 1
@@ -55,9 +55,9 @@ func (t seg) build(a [][2]int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg) update(o, i, a, b int) {
+func (t seg42) update(o, i, a, b int) {
 	if t[o].l == t[o].r {
-		t[o].val = newVal(a, b)
+		t[o].val = newVal42(a, b)
 		return
 	}
 	m := (t[o].l + t[o].r) >> 1
@@ -69,11 +69,11 @@ func (t seg) update(o, i, a, b int) {
 	t.maintain(o)
 }
 
-func (t seg) maintain(o int) {
-	t[o].val = mergeInfo(t[o<<1].val, t[o<<1|1].val)
+func (t seg42) maintain(o int) {
+	t[o].val = t.mergeInfo(t[o<<1].val, t[o<<1|1].val)
 }
 
-func (t seg) query(o, l, r int) mat {
+func (t seg42) query(o, l, r int) mat42 {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
 	}
@@ -84,7 +84,7 @@ func (t seg) query(o, l, r int) mat {
 	if m < l {
 		return t.query(o<<1|1, l, r)
 	}
-	return mergeInfo(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
+	return t.mergeInfo(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
 }
 
 func cf2042F(in io.Reader, _w io.Writer) {
@@ -100,7 +100,7 @@ func cf2042F(in io.Reader, _w io.Writer) {
 		Fscan(in, &a[i][1])
 	}
 
-	t := make(seg, 2<<bits.Len(uint(n-1)))
+	t := make(seg42, 2<<bits.Len(uint(n-1)))
 	t.build(a, 1, 0, n-1)
 	for Fscan(in, &q); q > 0; q-- {
 		Fscan(in, &op, &p, &x)
