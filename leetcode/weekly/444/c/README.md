@@ -2,7 +2,7 @@
 
 错误思路：DP，把子序列乘积的**最大值**作为 $\textit{dfs}$ 的返回值。
 
-错误原因：类似背包问题，最大乘积并不一定能充分利用 $\textit{limit}$，可能较小的乘积与其他数相乘，能够更接近 $\textit{limit}$。
+错误原因：类似背包问题，最大乘积不一定最优，可能较小的乘积与其他数相乘，能够更接近 $\textit{limit}$。
 
 ## 分析
 
@@ -15,7 +15,7 @@
 
 可以看出，**在乘积不为 $0$ 的情况下，交错和的绝对值其实远远小于** $|k|\le 10^5$！
 
-此外，打表（代码见文末）可以发现，$150$ 个 $[1,12]$ 中的数相乘，只有 $394$ 个 $\le 5000$ 的不同乘积。
+此外，$150$ 个 $[1,12]$ 中的数相乘，只有 $394$ 个 $\le 5000$ 的不同乘积。（计算代码见文末）
 
 > 为什么这么少？因为大于 $12$ 的质数（及其倍数）是无法得到的。想一想，你能得到 $13$ 吗？能得到 $26$ 吗？
 
@@ -36,13 +36,9 @@
 分类讨论：
 
 - 不选 $x$，递归到 $\textit{dfs}(i+1,s,m,\textit{odd},\textit{empty})$。
-- 选 $x$，递归到 $\textit{dfs}(i+1,s',m\cdot x,\texttt{not}\textit{odd},\texttt{false})$。其中 $s'$ 是 $s+x$ 或者 $s-x$，如果 $\textit{odd}=\texttt{false}$ 则加，否则减。
+- 选 $x$，递归到 $\textit{dfs}(i+1,s',\min(m\cdot x,\textit{limit}+1),\texttt{not}\textit{odd},\texttt{false})$。其中 $s'$ 是 $s+x$ 或者 $s-x$，如果 $\textit{odd}=\texttt{false}$ 则加，否则减。这里超过 $\textit{limit}$ 的乘积一律视作 $\textit{limit}+1$，减少状态个数。
 
-此外，如果发现 $m > \textit{limit}$，那么把 $m$ 置为 $-1$。除非后面与 $0$ 相乘，否则 $m$ 一直是负数。我们可以用负数，或者说 $-1$，表示子序列不合法。
-
-如果 $m<0$，则把 $m$ 置为 $-1$，表示需要乘 $0$ 才行，否则子序列不合法。
-
-**递归终点**：如果 $i=n$，并且 $\textit{empty}=\texttt{false}$ 且 $s=k$，那么用 $m$ 更新答案的最大值。（注意 $m=-1$ 的情况不会更新答案的最大值）
+**递归终点**：如果 $i=n$，并且 $\textit{empty}=\texttt{false}$ 且 $s=k$ 且 $m\le \textit{limit}$，那么用 $m$ 更新答案的最大值。
 
 **递归入口**：$\textit{dfs}(0, 0, 1, \texttt{false}, \texttt{true})$。加法单位元是 $0$，乘法单位元是 $1$。
 
@@ -53,24 +49,20 @@
 ```py [sol-Python3]
 class Solution:
     def maxProduct(self, nums: List[int], k: int, limit: int) -> int:
+        if sum(nums) < abs(k):  # |k| 太大
+            return -1
+
         n = len(nums)
-        mx = max(nums)
-        if k >= 0:
-            if k > (n + 1) // 2 * mx:  # k 太大
-                return -1
-        else:
-            if -k > n // 2 * mx:  # k 太小（绝对值太大）
-                return -1
         ans = -1
 
         @cache  # 当 vis 哈希表用
         def dfs(i: int, s: int, m: int, odd: bool, empty: bool) -> None:
-            if m > limit or m < 0:
-                m = -1  # 标记：子序列不合法
+            nonlocal ans
+            if ans == limit:  # 已经达到最大值
+                return
 
             if i == n:
-                if not empty and s == k:
-                    nonlocal ans
+                if not empty and s == k and m <= limit:
                     ans = max(ans, m)
                 return
 
@@ -79,7 +71,7 @@ class Solution:
 
             # 选 x
             x = nums[i]
-            dfs(i + 1, s + (-x if odd else x), m * x, not odd, False)
+            dfs(i + 1, s + (-x if odd else x), min(m * x, limit + 1), not odd, False)
 
         dfs(0, 0, 1, False, True)
         return ans
@@ -90,36 +82,29 @@ class Solution {
     private int ans = -1;
 
     public int maxProduct(int[] nums, int k, int limit) {
-        int n = nums.length;
-        int mx = Arrays.stream(nums).max().getAsInt();
-        if (k >= 0) {
-            if (k > (n + 1) / 2 * mx) { // k 太大
-                return -1;
-            }
-        } else {
-            if (-k > n / 2 * mx) { // k 太小（绝对值太大）
-                return -1;
-            }
+        int sum = Arrays.stream(nums).sum();
+        if (sum < Math.abs(k)) { // |k| 太大
+            return -1;
         }
 
         Set<Long> vis = new HashSet<>();
-        dfs(0, 0, 1, false, true, nums, k, limit, n / 2 * mx, vis);
+        dfs(0, 0, 1, false, true, nums, k, limit, sum, vis);
         return ans;
     }
 
     private void dfs(int i, int s, int m, boolean odd, boolean empty, int[] nums, int k, int limit, int bias, Set<Long> vis) {
-        if (m > limit || m < 0) {
-            m = -1; // 标记：子序列不合法
+        if (ans == limit) { // 已经达到最大值
+            return;
         }
-
+    
         if (i == nums.length) {
-            if (!empty && s == k) {
+            if (!empty && s == k && m <= limit) {
                 ans = Math.max(ans, m);
             }
             return;
         }
 
-        long mask = (long) i << 32 | (s + bias) << 14 | (m < 0 ? limit + 1 : m) << 2 | (odd ? 1 : 0) << 1 | (empty ? 1 : 0);
+        long mask = (long) i << 32 | (s + bias) << 14 | m << 2 | (odd ? 1 : 0) << 1 | (empty ? 1 : 0);
         if (!vis.add(mask)) {
             return;
         }
@@ -129,7 +114,7 @@ class Solution {
 
         // 选 x
         int x = nums[i];
-        dfs(i + 1, s + (odd ? -x : x), m * x, !odd, false, nums, k, limit, bias, vis);
+        dfs(i + 1, s + (odd ? -x : x), Math.min(m * x, limit + 1), !odd, false, nums, k, limit, bias, vis);
     }
 }
 ```
@@ -138,33 +123,26 @@ class Solution {
 class Solution {
 public:
     int maxProduct(vector<int>& nums, int k, int limit) {
-        int n = nums.size();
-        int mx = ranges::max(nums);
-        if (k >= 0) {
-            if (k > (n + 1) / 2 * mx) { // k 太大
-                return -1;
-            }
-        } else {
-            if (-k > n / 2 * mx) { // k 太小（绝对值太大）
-                return -1;
-            }
+        int total = reduce(nums.begin(), nums.end());
+        if (total < abs(k)) { // |k| 太大
+            return -1;
         }
 
-        int ans = -1;
+        int n = nums.size(), ans = -1;
         unordered_set<long long> vis;
         auto dfs = [&](this auto&& dfs, int i, int s, int m, bool odd, bool empty) -> void {
-            if (m > limit || m < 0) {
-                m = -1; // 标记：子序列不合法
+            if (ans == limit) { // 已经达到最大值
+                return;
             }
-
+        
             if (i == n) {
-                if (!empty && s == k) {
+                if (!empty && s == k && m <= limit) {
                     ans = max(ans, m);
                 }
                 return;
             }
 
-            long long mask = (long long) i << 32 | (s + n / 2 * mx) << 14 | (m < 0 ? limit + 1 : m) << 2 | odd << 1 | empty;
+            long long mask = (long long) i << 32 | (s + total) << 14 | m << 2 | odd << 1 | empty;
             if (!vis.insert(mask).second) {
                 return;
             }
@@ -174,7 +152,7 @@ public:
 
             // 选 x
             int x = nums[i];
-            dfs(i + 1, s + (odd ? -x : x), m * x, !odd, false);
+            dfs(i + 1, s + (odd ? -x : x), min(m * x, limit + 1), !odd, false);
         };
         dfs(0, 0, 1, false, true);
         return ans;
@@ -184,16 +162,12 @@ public:
 
 ```go [sol-Go]
 func maxProduct(nums []int, k, limit int) int {
-	n := len(nums)
-	mx := slices.Max(nums)
-	if k >= 0 {
-		if k > (n+1)/2*mx { // k 太大
-			return -1
-		}
-	} else {
-		if -k > n/2*mx { // k 太小（绝对值太大）
-			return -1
-		}
+	total := 0
+	for _, x := range nums {
+		total += x
+	}
+	if total < abs(k) { // |k| 太大
+		return -1
 	}
 
 	ans := -1
@@ -204,12 +178,12 @@ func maxProduct(nums []int, k, limit int) int {
 	vis := map[args]bool{}
 	var dfs func(int, int, int, bool, bool)
 	dfs = func(i, s, m int, odd, empty bool) {
-		if m > limit || m < 0 {
-			m = -1 // 标记：子序列不合法
+		if ans == limit { // 已经达到最大值
+			return
 		}
 
-		if i == n {
-			if !empty && s == k {
+		if i == len(nums) {
+			if !empty && s == k && m <= limit {
 				ans = max(ans, m)
 			}
 			return
@@ -231,11 +205,13 @@ func maxProduct(nums []int, k, limit int) int {
 		} else {
 			s += x
 		}
-		dfs(i+1, s, m*x, !odd, false)
+		dfs(i+1, s, min(m*x, limit+1), !odd, false)
 	}
 	dfs(0, 0, 1, false, true)
 	return ans
 }
+
+func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
 #### 复杂度分析

@@ -1,19 +1,13 @@
 package main
 
-import "slices"
-
 // https://space.bilibili.com/206214
 func maxProduct(nums []int, k, limit int) int {
-	n := len(nums)
-	mx := slices.Max(nums)
-	if k >= 0 {
-		if k > (n+1)/2*mx { // k 太大
-			return -1
-		}
-	} else {
-		if -k > n/2*mx { // k 太小（绝对值太大）
-			return -1
-		}
+	total := 0
+	for _, x := range nums {
+		total += x
+	}
+	if total < abs(k) { // |k| 太大
+		return -1
 	}
 
 	ans := -1
@@ -24,12 +18,12 @@ func maxProduct(nums []int, k, limit int) int {
 	vis := map[args]bool{}
 	var dfs func(int, int, int, bool, bool)
 	dfs = func(i, s, m int, odd, empty bool) {
-		if m > limit || m < 0 {
-			m = -1
+		if ans == limit {
+			return
 		}
 
-		if i == n {
-			if !empty && s == k {
+		if i == len(nums) {
+			if !empty && s == k && m <= limit {
 				ans = max(ans, m)
 			}
 			return
@@ -41,18 +35,20 @@ func maxProduct(nums []int, k, limit int) int {
 		}
 		vis[t] = true
 
-		// 不选
+		// 不选 x
 		dfs(i+1, s, m, odd, empty)
 
-		// 选
+		// 选 x
 		x := nums[i]
 		if odd {
 			s -= x
 		} else {
 			s += x
 		}
-		dfs(i+1, s, m*x, !odd, false)
+		dfs(i+1, s, min(m*x, limit+1), !odd, false)
 	}
 	dfs(0, 0, 1, false, true)
 	return ans
 }
+
+func abs(x int) int { if x < 0 { return -x }; return x }
