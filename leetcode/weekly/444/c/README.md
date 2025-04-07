@@ -30,8 +30,8 @@
 写一个爆搜 $\textit{dfs}(i,s,m,\textit{odd},\textit{empty})$，各个参数分别表示：
 
 - 当前要考虑 $x=\textit{nums}[i]$ 选或不选。
-- 子序列交错和为 $s$。
-- 子序列乘积为 $m$。
+- 子序列的交错和为 $s$。
+- 子序列的元素积为 $m$。
 - 如果选 $x$，是加 $x$ 还是减 $x$。
 - 子序列是否为空。
 
@@ -47,6 +47,8 @@
 递归过程中，用 $\textit{vis}$ 哈希表记录访问过的状态，避免重复访问。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ezRvYiE27/?t=16m16s)，欢迎点赞关注~
+
+> 注：`sum(nums) < abs(k)` 可以优化成 `sum(sorted(nums)[-((n + 1) // 2):]) < abs(k)`。
 
 ```py [sol-Python3]
 class Solution:
@@ -64,8 +66,8 @@ class Solution:
                 return
 
             if i == n:
-                if not empty and s == k and m <= limit:
-                    ans = max(ans, m)
+                if not empty and s == k and m <= limit:  # 合法子序列
+                    ans = max(ans, m)  # 用合法子序列的元素积更新答案的最大值
                 return
 
             # 不选 x
@@ -100,8 +102,8 @@ class Solution {
         }
     
         if (i == nums.length) {
-            if (!empty && s == k && m <= limit) {
-                ans = Math.max(ans, m);
+            if (!empty && s == k && m <= limit) { // 合法子序列
+                ans = Math.max(ans, m); // 用合法子序列的元素积更新答案的最大值
             }
             return;
         }
@@ -138,8 +140,8 @@ public:
             }
         
             if (i == n) {
-                if (!empty && s == k && m <= limit) {
-                    ans = max(ans, m);
+                if (!empty && s == k && m <= limit) { // 合法子序列
+                    ans = max(ans, m); // 用合法子序列的元素积更新答案的最大值
                 }
                 return;
             }
@@ -185,8 +187,8 @@ func maxProduct(nums []int, k, limit int) int {
 		}
 
 		if i == len(nums) {
-			if !empty && s == k && m <= limit {
-				ans = max(ans, m)
+			if !empty && s == k && m <= limit { // 合法子序列
+				ans = max(ans, m) // 用合法子序列的元素积更新答案的最大值
 			}
 			return
 		}
