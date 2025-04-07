@@ -6,17 +6,15 @@
 
 不断模拟操作，直到 $\textit{dec} = 0$。
 
-题目说「用它们的和替换这对元素」，设操作的这对元素的下标为 $i$ 和 $\textit{nxt}$，操作相当于把 $\textit{nums}[i]$ 增加 $\textit{nums}[\textit{nxt}]$，然后删除下标 $\textit{nxt}$。
+题目说「用它们的和替换这对元素」，设操作的这对元素的下标为 $i$ 和 $\textit{nxt}$，操作相当于把 $\textit{nums}[i]$ 增加 $\textit{nums}[\textit{nxt}]$，然后删除 $\textit{nums}[\textit{nxt}]$。
 
 在这个过程中，$\textit{dec}$ 如何变化？
 
 设操作的这对元素的下标为 $i$ 和 $\textit{nxt}$，$i$ 左侧最近剩余下标为 $\textit{pre}$，$\textit{nxt}$ 右侧最近剩余下标为 $\textit{nxt}_2$。
 
-也就是说，下标的顺序为 $\textit{pre},i,\textit{nxt},\textit{nxt}_2$。
+操作会影响 $\textit{nums}[i]$ 和 $\textit{nums}[\textit{nxt}]$，也会影响周边相邻元素的大小关系。所以**每次操作，我们需要重新考察 $4$ 个元素值的大小关系**，下标从左到右为 $\textit{pre},i,\textit{nxt},\textit{nxt}_2$。
 
-一个一个来看：
-
-1. 删除 $\textit{nxt}$。如果删除之前 $\textit{nums}[i] > \textit{nums}[\textit{nxt}]$，把 $\textit{dec}$ 减一。
+1. 删除 $\textit{nums}[\textit{nxt}]$。如果删除前 $\textit{nums}[i] > \textit{nums}[\textit{nxt}]$，把 $\textit{dec}$ 减一。
 2. 如果删除前 $\textit{nums}[\textit{pre}] > \textit{nums}[i]$，把 $\textit{dec}$ 减一。如果删除后 $\textit{nums}[\textit{pre}] > s$，把 $\textit{dec}$ 加一。这里 $s$ 表示操作的这对元素之和，也就是新的 $\textit{nums}[i]$ 的值。
 3. 如果删除前 $\textit{nums}[\textit{nxt}] > \textit{nums}[\textit{nxt}_2]$，把 $\textit{dec}$ 减一。删除后 $i$ 和 $\textit{nxt}_2$ 相邻，如果删除后 $s > \textit{nums}[\textit{nxt}_2]$，把 $\textit{dec}$ 加一。
 
