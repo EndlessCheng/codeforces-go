@@ -4,14 +4,14 @@ import "container/heap"
 
 func minimumPairRemoval(nums []int) (ans int) {
 	n := len(nums)
-	h := hp{}
+	h := make(hp, n-1)
 	dec := 0 // 递减的相邻对的个数
 	for i := range n - 1 {
 		x, y := nums[i], nums[i+1]
 		if x > y {
 			dec++
 		}
-		h = append(h, pair{x + y, i})
+		h[i] = pair{x + y, i}
 	}
 	heap.Init(&h)
 
