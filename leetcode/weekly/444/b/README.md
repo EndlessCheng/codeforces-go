@@ -10,11 +10,11 @@
 2. $\textit{packetSet}$：存储所有未转发的数据包，方便判重。
 3. $\textit{destToTimestamps}$：哈希表套队列，key 是 $\textit{destination}$，value 是对应的由 $\textit{timestamp}$ 组成的队列。
 
-> 注：可以只把 $\textit{destination}$ 保存到 $\textit{packetQ}$ 中，$\textit{destToTimestamps}$ 中额外保存 $\textit{source}$。但考虑到二分是本题的瓶颈，所以 $\textit{destToTimestamps}$ 只保存 $\textit{timestamp}$ 更好。
+> 注：$\textit{packetSet}$ 可以不保存 $\textit{timestamp}$，因为这个值保存在 $\textit{packetSet}$ 中，可以通过 $\textit{destination}$ 获取到。
 
-其他就是模拟了，具体见代码。
+$\texttt{addPacket}$ 和 $\textit{forwardPacket}$ 按题目要求实现，具体见代码。
 
-$\texttt{getCount}$ 可以用 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/) 的做法，二分查找。
+$\texttt{getCount}$ 可以用二分查找，类似 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)。
 
 为了方便二分，可以用列表模拟队列。
 
@@ -154,10 +154,29 @@ class Router {
 ```
 
 ```cpp [sol-C++]
+// 更通用的写法见另一份代码【C++ 模板元编程】
+struct TupleHash {
+    template<typename T>
+    static void hash_combine(size_t& seed, const T& v) {
+        // 参考 boost::hash_combine
+        seed ^= hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    }
+
+    size_t operator()(const tuple<int, int, int>& t) const {
+        auto& [a, b, c] = t;
+        size_t seed = 0;
+        hash_combine(seed, a);
+        hash_combine(seed, b);
+        hash_combine(seed, c);
+        return seed;
+    }
+};
+
 class Router {
     int memory_limit;
     queue<tuple<int, int, int>> packet_q; // packet 队列
-    set<tuple<int, int, int>> packet_set; // 本来要用 unordered_set，但 tuple 需要手写哈希，为了方便直接用 set
+    // 注：如果不想手写 TupleHash，可以用 set
+    unordered_set<tuple<int, int, int>, TupleHash> packet_set; // packet 集合
     unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> [[timestamp], head]
 
 public:
@@ -173,7 +192,77 @@ public:
         if (packet_q.size() == memory_limit) {  // 太多了
             forwardPacket();
         }
-        packet_q.emplace(packet); // 入队
+        packet_q.push(packet); // 入队
+        dest_to_timestamps[destination].first.push_back(timestamp);
+        return true;
+    }
+
+    vector<int> forwardPacket() {
+        if (packet_q.empty()) {
+            return {};
+        }
+        auto packet = packet_q.front(); // 出队
+        packet_q.pop();
+        packet_set.erase(packet);
+        auto [source, destination, timestamp] = packet;
+        dest_to_timestamps[destination].second++; // 队首下标加一，模拟出队
+        return {source, destination, timestamp};
+    }
+
+    int getCount(int destination, int startTime, int endTime) {
+        auto& [timestamps, head] = dest_to_timestamps[destination];
+        auto left = ranges::lower_bound(timestamps.begin() + head, timestamps.end(), startTime);
+        auto right = ranges::upper_bound(timestamps.begin() + head, timestamps.end(), endTime);
+        return right - left;
+    }
+};
+```
+
+```cpp [sol-C++ 模板元编程]
+struct TupleHash {
+    template<typename T>
+    static void hash_combine(size_t& seed, const T& v) {
+        // 参考 boost::hash_combine
+        seed ^= hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    }
+
+    template<typename Tuple, size_t Index = 0>
+    static void hash_tuple(size_t& seed, const Tuple& t) {
+        if constexpr (Index < tuple_size_v<Tuple>) {
+            hash_combine(seed, get<Index>(t));
+            hash_tuple<Tuple, Index + 1>(seed, t);
+        }
+    }
+
+    template<typename... Ts>
+    size_t operator()(const tuple<Ts...>& t) const {
+        size_t seed = 0;
+        hash_tuple(seed, t);
+        return seed;
+    }
+};
+
+class Router {
+    int memory_limit;
+    queue<tuple<int, int, int>> packet_q; // packet 队列
+    // 注：如果不想手写 TupleHash，可以用 set
+    unordered_set<tuple<int, int, int>, TupleHash> packet_set; // packet 集合
+    unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> [[timestamp], head]
+
+public:
+    Router(int memoryLimit) {
+        memory_limit = memoryLimit;
+    }
+
+    bool addPacket(int source, int destination, int timestamp) {
+        auto packet = make_tuple(source, destination, timestamp);
+        if (!packet_set.insert(packet).second) {
+            return false;
+        }
+        if (packet_q.size() == memory_limit) {  // 太多了
+            forwardPacket();
+        }
+        packet_q.push(packet); // 入队
         dest_to_timestamps[destination].first.push_back(timestamp);
         return true;
     }
