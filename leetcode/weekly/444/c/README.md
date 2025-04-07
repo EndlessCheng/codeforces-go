@@ -10,18 +10,20 @@
 
 在本题的数据范围下，$L\le 12$。
 
-- 如果大于 $1$ 的数都是 $2$，交错和的绝对值 $\le 2L + (n-L) = n+L\le 162$。
-- 如果大于 $1$ 的数都是 $3$，那么 $L\le 7$，交错和的绝对值 $\le 3L + (n-L) = n+2L\le 164$。
+在两个大于 $1$ 的数之间的连续的 $1$，其交错和 $1-1+1-1+\cdots$ 的绝对值 $\le 1$。所以子序列中的所有 $1$ 的交错和的绝对值 $\le L+1$。
 
-可以看出，**在乘积不为 $0$ 的情况下，交错和的绝对值其实远远小于** $|k|\le 10^5$！
+- 如果大于 $1$ 的数都是 $2$，交错和的绝对值 $\le 2L + (L+1) = 3L+1\le 37$。
+- 如果大于 $1$ 的数都是 $3$，那么 $L\le 7$，交错和的绝对值 $\le 3L + (L+1) = 4L+1\le 29$。
+
+可以看出，**在乘积不为 $0$ 且不超过 $\textit{limit}$ 的情况下，交错和的绝对值其实远远小于** $\textit{nums}$ 的元素和！
 
 此外，$150$ 个 $[1,12]$ 中的数相乘，只有 $394$ 个 $\le 5000$ 的不同乘积。（计算代码见文末）
 
 > 为什么这么少？因为大于 $12$ 的质数（及其倍数）是无法得到的。想一想，你能得到 $13$ 吗？能得到 $26$ 吗？
 
-如果乘积为 $0$ 呢？继续向后（递归），乘积仍然为 $0$，**此时只需关注交错和**，上界 $150\cdot 12 = 1800$ 也很小。
+如果乘积为 $0$ 呢？继续向后（递归），乘积仍然为 $0$，**此时只需关注交错和**，不同交错和的个数 $\le 150\cdot 12 = 1800$ 也很小。
 
-所以，状态个数比预期的少，直接暴力搜索即可（不是 DP）。
+所以，状态个数比预期的少，直接暴力搜索即可（不用写 DP）。
 
 ## 思路
 
@@ -218,8 +220,144 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 请注意，$150$ 个 $[1,12]$ 中的数相乘，只有 $M=394$ 个 $\le 5000$ 的不同乘积。
 
-- 时间复杂度：$\mathcal{O}(n(nU + (n+\log \textit{limit})M))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})\le 12$。其中 $nU$ 对应 $m\le 0$ 的情况，$(n+\log \textit{limit})M$ 对应 $m>0$ 的情况。
-- 空间复杂度：$\mathcal{O}(n(nU + (n+\log \textit{limit})M))$。
+- 时间复杂度：$\mathcal{O}(n(nU + M\log \textit{limit}))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})\le 12$。其中 $nU$ 对应 $m=0$ 或者 $m=\textit{limit}+1$ 的情况，$M\log \textit{limit}$ 对应 $1\le m\le \textit{limit}$ 的情况。
+- 空间复杂度：$\mathcal{O}(n(nU + M\log \textit{limit}))$。
+
+## 附：递推写法
+
+```py [sol-Python3]
+class Solution:
+    def maxProduct(self, nums: List[int], k: int, limit: int) -> int:
+        if sum(nums) < abs(k):  # |k| 太大
+            return -1
+
+        odd_s = defaultdict(set)  # s -> {m}
+        even_s = defaultdict(set)  # s -> {m}
+
+        for x in nums:
+            # 长为偶数的子序列的计算结果 new_even_s
+            new_even_s = defaultdict(set)
+            for s, st in odd_s.items():
+                new_even_s[s - x] = {m * x for m in st if m * x <= limit}
+
+            # 长为奇数的子序列的计算结果 odd_s
+            for s, st in even_s.items():
+                odd_s[s + x] |= {m * x for m in st if m * x <= limit}
+                if x == 0:
+                    odd_s[s].add(0)
+
+            # 用 new_even_s 更新 even_s
+            for s in new_even_s:
+                even_s[s] |= new_even_s[s]
+                if x == 0:
+                    even_s[s].add(0)
+
+            # 子序列只有一个数的情况
+            if x <= limit:
+                odd_s[x].add(x)  
+
+            if k in odd_s and limit in odd_s[k] or k in even_s and limit in even_s[k]:
+                return limit  # 提前返回
+
+        return max(max(odd_s[k], default=-1), max(even_s[k], default=-1))
+```
+
+```go [sol-Go]
+func maxProduct(nums []int, k, limit int) int {
+	total := 0
+	for _, x := range nums {
+		total += x
+	}
+	if total < abs(k) { // |k| 太大
+		return -1
+	}
+
+	// s -> {m}
+	oddS := map[int]map[int]struct{}{}
+	evenS := map[int]map[int]struct{}{}
+	add := func(m map[int]map[int]struct{}, key, val int) {
+		if _, ok := m[key]; !ok {
+			m[key] = map[int]struct{}{}
+		}
+		m[key][val] = struct{}{}
+	}
+
+	for _, x := range nums {
+		// 长为偶数的子序列的计算结果 newEvenS
+		newEvenS := map[int]map[int]struct{}{}
+		for s, set := range oddS {
+			newEvenS[s-x] = map[int]struct{}{}
+			for m := range set {
+				if m*x <= limit {
+					newEvenS[s-x][m*x] = struct{}{}
+				}
+			}
+		}
+
+		// 长为奇数的子序列的计算结果 oddS
+		for s, set := range evenS {
+			if _, ok := oddS[s+x]; !ok {
+				oddS[s+x] = map[int]struct{}{}
+			}
+			for m := range set {
+				if m*x <= limit {
+					oddS[s+x][m*x] = struct{}{}
+				}
+			}
+			if x == 0 {
+				add(oddS, s, 0)
+			}
+		}
+
+		// 用 newEvenS 更新 evenS
+		for s, set := range newEvenS {
+			if eSet, ok := evenS[s]; ok {
+				for m := range set {
+					eSet[m] = struct{}{}
+				}
+			} else {
+				evenS[s] = set
+			}
+			if x == 0 {
+				add(evenS, s, 0)
+			}
+		}
+
+		// 子序列只有一个数的情况
+		if x <= limit {
+			add(oddS, x, x)
+		}
+
+		if set, ok := oddS[k]; ok {
+			if _, ok := set[limit]; ok {
+				return limit // 提前返回
+			}
+		}
+		if set, ok := evenS[k]; ok {
+			if _, ok := set[limit]; ok {
+				return limit // 提前返回
+			}
+		}
+	}
+
+	calcMax := func(m map[int]struct{}) int {
+		maxVal := -1
+		if m != nil {
+			for v := range m {
+				maxVal = max(maxVal, v)
+			}
+		}
+		return maxVal
+	}
+	return max(calcMax(oddS[k]), calcMax(evenS[k]))
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+#### 复杂度分析
+
+同上。
 
 ## 附：如何计算不同乘积个数
 
