@@ -1,8 +1,8 @@
 为了快速模拟题目的操作，我们需要维护三种信息：
 
-1. 把相邻元素和 $s$，以及这对相邻元素中的左边那个数的下标 $i$，组成一个 pair $(s,i)$。需要支持维护和查询这些 pair 的最小值。这可以用**有序集合**，或者**懒删除堆**。
-2. 维护剩余下标，需要支持查询每个下标 $i$ 左侧最近剩余下标，以及右侧最近剩余下标。这可以用**有序集合**，或者**两个并查集**。
-3. 在相邻元素中，左边大于右边的个数，记作 $\textit{dec}$。
+1. 把相邻元素和 $s$，以及相邻元素中的左边元素的下标 $i$，组成一个 pair $(s,i)$。我们需要添加 pair、删除 pair 以及查询这些 pair 的最小值（双关键字比较），这可以用**有序集合**，或者**懒删除堆**。
+2. 维护剩余下标。我们需要查询每个下标 $i$ 左侧最近剩余下标，以及右侧最近剩余下标。这可以用**有序集合**，或者**两个并查集**，或者**两个数组**。
+3. 在相邻元素中，满足「左边元素大于右边元素」的个数，记作 $\textit{dec}$。
 
 不断模拟操作，直到 $\textit{dec} = 0$。
 
@@ -24,12 +24,13 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ezRvYiE27/?t=41m12s)，欢迎点赞关注~
 
+## 方法一：两个有序集合
+
 ```py [sol-Python3]
 class Solution:
     def minimumPairRemoval(self, nums: List[int]) -> int:
-        n = len(nums)
         sl = SortedList()  # (相邻元素和，左边那个数的下标)
-        idx = SortedList(range(n))  # 剩余下标
+        idx = SortedList(range(len(nums)))  # 剩余下标
         dec = 0  # 递减的相邻对的个数
 
         for i, (x, y) in enumerate(pairwise(nums)):
@@ -38,7 +39,7 @@ class Solution:
             sl.add((x + y, i))
 
         ans = 0
-        while dec:
+        while dec > 0:
             ans += 1
 
             s, i = sl.pop(0)  # 删除相邻元素和最小的一对
@@ -50,7 +51,7 @@ class Solution:
                 dec -= 1
 
             # (前一个数，当前元素)
-            if k:
+            if k > 0:
                 pre = idx[k - 1]
                 if nums[pre] > nums[i]:  # 旧数据
                     dec -= 1
@@ -69,8 +70,8 @@ class Solution:
                 sl.remove((nums[nxt] + nums[nxt2], nxt))
                 sl.add((s + nums[nxt2], i))
 
-            nums[i] = s
-            idx.remove(nxt)
+            nums[i] = s  # 把 nums[nxt] 加到 nums[i] 中
+            idx.remove(nxt)  # 删除 nxt
 
         return ans
 ```
@@ -82,10 +83,9 @@ class Solution {
 
     public int minimumPairRemoval(int[] nums) {
         int n = nums.length;
-        TreeSet<Pair> pairs = new TreeSet<>((a, b) -> a.s != b.s ? Long.compare(a.s, b.s) : a.i - b.i); // (相邻元素和，左边那个数的下标)
-        TreeSet<Integer> idx = new TreeSet<>(); // 剩余下标
+        // (相邻元素和，左边那个数的下标)
+        TreeSet<Pair> pairs = new TreeSet<>((a, b) -> a.s != b.s ? Long.compare(a.s, b.s) : a.i - b.i);
         int dec = 0; // 递减的相邻对的个数
-
         for (int i = 0; i < n - 1; i++) {
             int x = nums[i];
             int y = nums[i + 1];
@@ -94,6 +94,9 @@ class Solution {
             }
             pairs.add(new Pair(x + y, i));
         }
+
+        // 剩余下标
+        TreeSet<Integer> idx = new TreeSet<>();
         for (int i = 0; i < n; i++) {
             idx.add(i);
         }
@@ -111,12 +114,14 @@ class Solution {
             long s = p.s;
             int i = p.i;
 
-            int nxt = idx.higher(i); // 当前元素的下一个数
+            // (当前元素，下一个数)
+            int nxt = idx.higher(i);
             if (a[i] > a[nxt]) { // 旧数据
                 dec--;
             }
 
-            Integer pre = idx.lower(i); // 当前元素的前一个数
+            // (前一个数，当前元素)
+            Integer pre = idx.lower(i);
             if (pre != null) {
                 if (a[pre] > a[i]) { // 旧数据
                     dec--;
@@ -128,7 +133,8 @@ class Solution {
                 pairs.add(new Pair(a[pre] + s, pre));
             }
 
-            Integer nxt2 = idx.higher(nxt); // 下下一个数
+            // (下一个数，下下一个数)
+            Integer nxt2 = idx.higher(nxt);
             if (nxt2 != null) {
                 if (a[nxt] > a[nxt2]) { // 旧数据
                     dec--;
@@ -140,8 +146,8 @@ class Solution {
                 pairs.add(new Pair(s + a[nxt2], i));
             }
 
-            a[i] = s;
-            idx.remove(nxt);
+            a[i] = s; // 把 a[nxt] 加到 a[i] 中
+            idx.remove(nxt); // 删除 nxt
         }
         return ans;
     }
@@ -154,9 +160,7 @@ public:
     int minimumPairRemoval(vector<int>& nums) {
         int n = nums.size();
         set<pair<long long, int>> pairs; // (相邻元素和，左边那个数的下标)
-        set<int> idx; // 剩余下标
         int dec = 0; // 递减的相邻对的个数
-
         for (int i = 0; i < n - 1; i++) {
             int x = nums[i], y = nums[i + 1];
             if (x > y) {
@@ -164,13 +168,15 @@ public:
             }
             pairs.emplace(x + y, i);
         }
+
+        set<int> idx; // 剩余下标
         for (int i = 0; i < n; i++) {
             idx.insert(i);
         }
 
         vector<long long> a(nums.begin(), nums.end());
         int ans = 0;
-        while (dec) {
+        while (dec > 0) {
             ans++;
 
             // 删除相邻元素和最小的一对
@@ -178,10 +184,10 @@ public:
             pairs.erase(pairs.begin());
 
             auto it = idx.lower_bound(i);
-            auto nxt_it = next(it);
-            int nxt = *nxt_it;
 
             // (当前元素，下一个数)
+            auto nxt_it = next(it);
+            int nxt = *nxt_it;
             dec -= a[i] > a[nxt]; // 旧数据
 
             // (前一个数，当前元素)
@@ -203,8 +209,8 @@ public:
                 pairs.emplace(s + a[nxt2], i);
             }
 
-            a[i] = s;
-            idx.erase(nxt);
+            a[i] = s; // 把 a[nxt] 加到 a[i] 中
+            idx.erase(nxt); // 删除 nxt
         }
         return ans;
     }
@@ -218,11 +224,7 @@ func minimumPairRemoval(nums []int) (ans int) {
 	type pair struct{ s, i int }
 	// (相邻元素和，左边那个数的下标)
 	pairs := redblacktree.NewWith[pair, struct{}](func(a, b pair) int { return cmp.Or(a.s-b.s, a.i-b.i) })
-	// 剩余下标
-	idx := redblacktree.New[int, struct{}]()
-	// 递减的相邻对的个数
-	dec := 0
-
+	dec := 0 // 递减的相邻对的个数
 	for i := range n - 1 {
 		x, y := nums[i], nums[i+1]
 		if x > y {
@@ -230,6 +232,9 @@ func minimumPairRemoval(nums []int) (ans int) {
 		}
 		pairs.Put(pair{x + y, i}, struct{}{})
 	}
+
+	// 剩余下标
+	idx := redblacktree.New[int, struct{}]()
 	for i := range n {
 		idx.Put(i, struct{}{})
 	}
@@ -242,11 +247,9 @@ func minimumPairRemoval(nums []int) (ans int) {
 		i := it.Key.i
 		pairs.Remove(it.Key) // 删除相邻元素和最小的一对
 
-		// 找到 i 的位置
+		// (当前元素，下一个数)
 		node, _ := idx.Ceiling(i + 1)
 		nxt := node.Key
-
-		// (当前元素，下一个数)
 		if nums[i] > nums[nxt] { // 旧数据
 			dec--
 		}
@@ -279,8 +282,8 @@ func minimumPairRemoval(nums []int) (ans int) {
 			pairs.Put(pair{s + nums[nxt2], i}, struct{}{})
 		}
 
-		nums[i] = s
-		idx.Remove(nxt)
+		nums[i] = s // 把 nums[nxt] 加到 nums[i] 中
+		idx.Remove(nxt) // 删除 nxt
 	}
 	return
 }
@@ -291,7 +294,158 @@ func minimumPairRemoval(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-其他做法稍后补充。
+## 方法二：懒删除堆 + 两个数组模拟双向链表
+
+```py [sol-Python3]
+class Solution:
+    def minimumPairRemoval(self, nums: List[int]) -> int:
+        n = len(nums)
+        h = []  # (相邻元素和，左边那个数的下标)
+        dec = 0  # 递减的相邻对的个数
+        for i, (x, y) in enumerate(pairwise(nums)):
+            if x > y:
+                dec += 1
+            h.append((x + y, i))
+        heapify(h)
+        lazy = defaultdict(int)
+
+        # 每个下标的左右最近的未删除下标
+        left = list(range(-1, n))  # 加一个哨兵，防止下标越界
+        right = list(range(1, n + 1))
+
+        ans = 0
+        while dec:
+            ans += 1
+
+            while lazy[h[0]]:
+                lazy[heappop(h)] -= 1
+            s, i = heappop(h)  # 删除相邻元素和最小的一对
+
+            # (当前元素，下一个数)
+            nxt = right[i]
+            if nums[i] > nums[nxt]:  # 旧数据
+                dec -= 1
+
+            # (前一个数，当前元素)
+            pre = left[i]
+            if pre >= 0:
+                if nums[pre] > nums[i]:  # 旧数据
+                    dec -= 1
+                if nums[pre] > s:  # 新数据
+                    dec += 1
+                lazy[(nums[pre] + nums[i], pre)] += 1  # 懒删除
+                heappush(h, (nums[pre] + s, pre))
+
+            # (下一个数，下下一个数)
+            nxt2 = right[nxt]
+            if nxt2 < n:
+                if nums[nxt] > nums[nxt2]:  # 旧数据
+                    dec -= 1
+                if s > nums[nxt2]:  # 新数据（当前元素，下下一个数）
+                    dec += 1
+                lazy[(nums[nxt] + nums[nxt2], nxt)] += 1  # 懒删除
+                heappush(h, (s + nums[nxt2], i))
+
+            nums[i] = s
+            # 删除 nxt
+            l, r = left[nxt], right[nxt]
+            right[l] = r  # 模拟双向链表的删除操作
+            left[r] = l
+
+        return ans
+```
+
+```go [sol-Go]
+func minimumPairRemoval(nums []int) (ans int) {
+	n := len(nums)
+	h := hp{}
+	dec := 0 // 递减的相邻对的个数
+	for i := range n - 1 {
+		x, y := nums[i], nums[i+1]
+		if x > y {
+			dec++
+		}
+		h = append(h, pair{x + y, i})
+	}
+	heap.Init(&h)
+	lazy := map[pair]int{}
+
+	// 每个下标的左右最近的未删除下标
+	left := make([]int, n+1) // 加一个哨兵，防止下标越界
+	right := make([]int, n)
+	for i := range n {
+		left[i] = i - 1
+		right[i] = i + 1
+	}
+	remove := func(i int) {
+		l, r := left[i], right[i]
+		right[l] = r
+		left[r] = l
+	}
+
+	for dec > 0 {
+		ans++
+
+		for lazy[h[0]] > 0 {
+			lazy[h[0]]--
+			heap.Pop(&h)
+		}
+		p := heap.Pop(&h).(pair) // 删除相邻元素和最小的一对
+		s := p.s
+		i := p.i
+
+		// (当前元素，下一个数)
+		nxt := right[i]
+		if nums[i] > nums[nxt] { // 旧数据
+			dec--
+		}
+
+		// (前一个数，当前元素)
+		pre := left[i]
+		if pre >= 0 {
+			if nums[pre] > nums[i] { // 旧数据
+				dec--
+			}
+			if nums[pre] > s { // 新数据
+				dec++
+			}
+			lazy[pair{nums[pre] + nums[i], pre}]++ // 懒删除
+			heap.Push(&h, pair{nums[pre] + s, pre})
+		}
+
+		// (下一个数，下下一个数)
+		nxt2 := right[nxt]
+		if nxt2 < n {
+			if nums[nxt] > nums[nxt2] { // 旧数据
+				dec--
+			}
+			if s > nums[nxt2] { // 新数据（当前元素，下下一个数）
+				dec++
+			}
+			lazy[pair{nums[nxt] + nums[nxt2], nxt}]++ // 懒删除
+			heap.Push(&h, pair{s + nums[nxt2], i})
+		}
+
+		nums[i] = s
+		remove(nxt)
+	}
+	return
+}
+
+type pair struct{ s, i int } // (相邻元素和，左边那个数的下标)
+type hp []pair
+
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { a, b := h[i], h[j]; return a.s < b.s || a.s == b.s && a.i < b.i }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
+func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 
