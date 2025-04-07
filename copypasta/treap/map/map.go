@@ -189,14 +189,14 @@ func (t *treap[K, V]) find(key K) *node[K, V] {
 
 func newTreap[K cmp.Ordered, V any]() *treap[K, V] {
 	return &treap[K, V]{
-		rd:         uint(time.Now().UnixNano())/2 + 1,
+		rd:         uint(time.Now().UnixNano()),
 		comparator: cmp.Compare[K],
 	}
 }
 
 func newTreapWith[K comparable, V any](comp func(a, b K) int) *treap[K, V] {
 	return &treap[K, V]{
-		rd:         uint(time.Now().UnixNano())/2 + 1,
+		rd:         uint(time.Now().UnixNano()),
 		comparator: comp,
 	}
 }

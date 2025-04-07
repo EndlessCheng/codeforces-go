@@ -227,7 +227,7 @@ func (t *treap[K]) sumGreaterEqual(x K) int { return t.root.getSum() - t.preSum(
 
 func newTreap() *treap[int] {
 	return &treap[int]{
-		rd:         uint(time.Now().UnixNano())/2 + 1,
+		rd:         uint(time.Now().UnixNano()),
 		comparator: cmp.Compare[int],
 		keyToInt:   func(key int) int { return key },
 	}
@@ -235,7 +235,7 @@ func newTreap() *treap[int] {
 
 func newTreapWith[K comparable](comparator func(a, b K) int, keyToInt func(key K) int) *treap[K] {
 	return &treap[K]{
-		rd:         uint(time.Now().UnixNano())/2 + 1,
+		rd:         uint(time.Now().UnixNano()),
 		comparator: comparator,
 		keyToInt:   keyToInt,
 	}
