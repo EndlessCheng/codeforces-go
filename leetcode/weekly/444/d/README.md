@@ -103,6 +103,7 @@ class Solution {
         for (int i = 0; i < n; i++) {
             a[i] = nums[i];
         }
+
         int ans = 0;
         while (dec > 0) {
             ans++;
@@ -159,7 +160,7 @@ public:
         int n = nums.size();
         set<pair<long long, int>> pairs; // (相邻元素和，左边那个数的下标)
         int dec = 0; // 递减的相邻对的个数
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i + 1 < n; i++) {
             int x = nums[i], y = nums[i + 1];
             if (x > y) {
                 dec++;
@@ -294,6 +295,12 @@ func minimumPairRemoval(nums []int) (ans int) {
 
 ## 方法二：懒删除堆 + 两个数组模拟双向链表
 
+用最小堆（懒删除堆）代替维护 pair 的有序集合。
+
+用双向链表代替维护下标的有序集合。进一步地，可以用两个数组模拟双向链表的 $\textit{prev}$ 指针和 $\textit{next}$ 指针。
+
+如果堆顶下标 $i$ 被删除，或者 $i$ 右边下标 $\textit{nxt}$ 被删除，或者堆顶元素和不等于 $\textit{nums}[i]+\textit{nums}[\textit{nxt}]$，则弹出堆顶。
+
 ```py [sol-Python3]
 class Solution:
     def minimumPairRemoval(self, nums: List[int]) -> int:
@@ -353,6 +360,218 @@ class Solution:
         return ans
 ```
 
+```py [sol-Python3 不用 lazy]
+class Solution:
+    def minimumPairRemoval(self, nums: List[int]) -> int:
+        n = len(nums)
+        h = []  # (相邻元素和，左边那个数的下标)
+        dec = 0  # 递减的相邻对的个数
+        for i, (x, y) in enumerate(pairwise(nums)):
+            if x > y:
+                dec += 1
+            h.append((x + y, i))
+        heapify(h)
+
+        # 每个下标的左右最近的未删除下标
+        left = list(range(-1, n))  # 加一个哨兵，防止下标越界
+        right = list(range(1, n + 1))  # 注意最下面的代码，删除 nxt 的时候额外把 right[nxt] 置为 n
+
+        ans = 0
+        while dec:
+            ans += 1
+
+            # 如果堆顶数据与实际数据不符，说明堆顶数据是之前本应删除，但没有删除的数据（懒删除）
+            while right[h[0][1]] >= n or h[0][0] != nums[h[0][1]] + nums[right[h[0][1]]]:
+                heappop(h)
+            s, i = heappop(h)  # 删除相邻元素和最小的一对
+
+            # (当前元素，下一个数)
+            nxt = right[i]
+            if nums[i] > nums[nxt]:  # 旧数据
+                dec -= 1
+
+            # (前一个数，当前元素)
+            pre = left[i]
+            if pre >= 0:
+                if nums[pre] > nums[i]:  # 旧数据
+                    dec -= 1
+                if nums[pre] > s:  # 新数据
+                    dec += 1
+                heappush(h, (nums[pre] + s, pre))
+
+            # (下一个数，下下一个数)
+            nxt2 = right[nxt]
+            if nxt2 < n:
+                if nums[nxt] > nums[nxt2]:  # 旧数据
+                    dec -= 1
+                if s > nums[nxt2]:  # 新数据（当前元素，下下一个数）
+                    dec += 1
+                heappush(h, (s + nums[nxt2], i))
+
+            nums[i] = s
+            # 删除 nxt
+            l, r = left[nxt], right[nxt]
+            right[l] = r  # 模拟双向链表的删除操作
+            left[r] = l
+            right[nxt] = n  # 表示删除 nxt
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private record Pair(long s, int i) {
+    }
+
+    public int minimumPairRemoval(int[] nums) {
+        int n = nums.length;
+        // (相邻元素和，左边那个数的下标)
+        PriorityQueue<Pair> h = new PriorityQueue<>((a, b) -> a.s != b.s ? Long.compare(a.s, b.s) : a.i - b.i);
+        int dec = 0; // 递减的相邻对的个数
+        for (int i = 0; i < n - 1; i++) {
+            int x = nums[i];
+            int y = nums[i + 1];
+            if (x > y) {
+                dec++;
+            }
+            h.offer(new Pair(x + y, i));
+        }
+
+        // 每个下标的左右最近的未删除下标
+        int[] left = new int[n + 1];
+        int[] right = new int[n + 1];
+        for (int i = 0; i <= n; i++) {
+            left[i] = i - 1;
+            right[i] = i + 1;
+        }
+
+        long[] a = new long[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = nums[i];
+        }
+
+        int ans = 0;
+        while (dec > 0) {
+            ans++;
+
+            // 如果堆顶数据与实际数据不符，说明堆顶数据是之前本应删除，但没有删除的数据（懒删除）
+            while (right[h.peek().i] >= n || h.peek().s != a[h.peek().i] + a[right[h.peek().i]]) {
+                h.poll();
+            }
+
+            // 删除相邻元素和最小的一对
+            Pair p = h.poll();
+            long s = p.s;
+            int i = p.i;
+
+            // (当前元素，下一个数)
+            int nxt = right[i];
+            if (a[i] > a[nxt]) { // 旧数据
+                dec--;
+            }
+
+            // (前一个数，当前元素)
+            int pre = left[i];
+            if (pre >= 0) {
+                if (a[pre] > a[i]) { // 旧数据
+                    dec--;
+                }
+                if (a[pre] > s) { // 新数据
+                    dec++;
+                }
+                h.offer(new Pair(a[pre] + s, pre));
+            }
+
+            // (下一个数，下下一个数)
+            int nxt2 = right[nxt];
+            if (nxt2 < n) {
+                if (a[nxt] > a[nxt2]) { // 旧数据
+                    dec--;
+                }
+                if (s > a[nxt2]) { // 新数据（当前元素，下下一个数）
+                    dec++;
+                }
+                h.add(new Pair(s + a[nxt2], i));
+            }
+
+            a[i] = s; // 把 a[nxt] 加到 a[i] 中
+            // 删除 nxt
+            int l = left[nxt];
+            int r = right[nxt];
+            right[l] = r; // 模拟双向链表的删除操作
+            left[r] = l;
+            right[nxt] = n; // 表示删除 nxt
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumPairRemoval(vector<int>& nums) {
+        int n = nums.size();
+        priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq; // (相邻元素和，左边那个数的下标)
+        int dec = 0; // 递减的相邻对的个数
+        for (int i = 0; i + 1 < n; i++) {
+            int x = nums[i], y = nums[i + 1];
+            if (x > y) {
+                dec++;
+            }
+            pq.emplace(x + y, i);
+        }
+
+        // 每个下标的左右最近的未删除下标
+        vector<int> left(n + 1), right(n);
+        ranges::iota(left, -1);
+        ranges::iota(right, 1);
+
+        vector<long long> a(nums.begin(), nums.end());
+        int ans = 0;
+        while (dec) {
+            ans++;
+
+            // 如果堆顶数据与实际数据不符，说明堆顶数据是之前本应删除，但没有删除的数据（懒删除）
+            while (right[pq.top().second] >= n || pq.top().first != a[pq.top().second] + a[right[pq.top().second]]) {
+                pq.pop();
+            }
+            auto [s, i] = pq.top();
+            pq.pop(); // 删除相邻元素和最小的一对
+
+            // (当前元素，下一个数)
+            int nxt = right[i];
+            dec -= a[i] > a[nxt]; // 旧数据
+
+            // (前一个数，当前元素)
+            int pre = left[i];
+            if (pre >= 0) {
+                dec -= a[pre] > a[i]; // 旧数据
+                dec += a[pre] > s; // 新数据
+                pq.emplace(a[pre] + s, pre);
+            }
+
+            // (下一个数，下下一个数)
+            int nxt2 = right[nxt];
+            if (nxt2 < n) {
+                dec -= a[nxt] > a[nxt2]; // 旧数据
+                dec += s > a[nxt2]; // 新数据（当前元素，下下一个数）
+                pq.emplace(s + a[nxt2], i);
+            }
+
+            a[i] = s;
+            // 删除 nxt
+            int l = left[nxt], r = right[nxt];
+            right[l] = r; // 模拟双向链表的删除操作
+            left[r] = l;
+            right[nxt] = n; // 表示删除 nxt
+        }
+
+        return ans;
+    }
+};
+```
+
 ```go [sol-Go]
 func minimumPairRemoval(nums []int) (ans int) {
 	n := len(nums)
@@ -377,7 +596,7 @@ func minimumPairRemoval(nums []int) (ans int) {
 	}
 	remove := func(i int) {
 		l, r := left[i], right[i]
-		right[l] = r
+		right[l] = r // 模拟双向链表的删除操作
 		left[r] = l
 	}
 
@@ -421,6 +640,90 @@ func minimumPairRemoval(nums []int) (ans int) {
 				dec++
 			}
 			lazy[pair{nums[nxt] + nums[nxt2], nxt}]++ // 懒删除
+			heap.Push(&h, pair{s + nums[nxt2], i})
+		}
+
+		nums[i] = s
+		remove(nxt)
+	}
+	return
+}
+
+type pair struct{ s, i int } // (相邻元素和，左边那个数的下标)
+type hp []pair
+
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { a, b := h[i], h[j]; return a.s < b.s || a.s == b.s && a.i < b.i }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
+func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+```
+
+```go [sol-Go 不用 lazy]
+func minimumPairRemoval(nums []int) (ans int) {
+	n := len(nums)
+	h := hp{}
+	dec := 0 // 递减的相邻对的个数
+	for i := range n - 1 {
+		x, y := nums[i], nums[i+1]
+		if x > y {
+			dec++
+		}
+		h = append(h, pair{x + y, i})
+	}
+	heap.Init(&h)
+
+	// 每个下标的左右最近的未删除下标
+	left := make([]int, n+1) // 加一个哨兵，防止下标越界
+	right := make([]int, n)
+	for i := range n {
+		left[i] = i - 1
+		right[i] = i + 1
+	}
+	remove := func(i int) {
+		l, r := left[i], right[i]
+		right[l] = r // 模拟双向链表的删除操作
+		left[r] = l
+		right[i] = n // 表示 i 已被删除
+	}
+
+	for dec > 0 {
+		ans++
+
+		for right[h[0].i] >= n || nums[h[0].i]+nums[right[h[0].i]] != h[0].s {
+			heap.Pop(&h)
+		}
+		p := heap.Pop(&h).(pair) // 删除相邻元素和最小的一对
+		s := p.s
+		i := p.i
+
+		// (当前元素，下一个数)
+		nxt := right[i]
+		if nums[i] > nums[nxt] { // 旧数据
+			dec--
+		}
+
+		// (前一个数，当前元素)
+		pre := left[i]
+		if pre >= 0 {
+			if nums[pre] > nums[i] { // 旧数据
+				dec--
+			}
+			if nums[pre] > s { // 新数据
+				dec++
+			}
+			heap.Push(&h, pair{nums[pre] + s, pre})
+		}
+
+		// (下一个数，下下一个数)
+		nxt2 := right[nxt]
+		if nxt2 < n {
+			if nums[nxt] > nums[nxt2] { // 旧数据
+				dec--
+			}
+			if s > nums[nxt2] { // 新数据（当前元素，下下一个数）
+				dec++
+			}
 			heap.Push(&h, pair{s + nums[nxt2], i})
 		}
 

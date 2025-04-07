@@ -14,7 +14,6 @@ func minimumPairRemoval(nums []int) (ans int) {
 		h = append(h, pair{x + y, i})
 	}
 	heap.Init(&h)
-	lazy := map[pair]int{}
 
 	// 每个下标的左右最近的未删除下标
 	left := make([]int, n+1) // 加一个哨兵，防止下标越界
@@ -27,13 +26,13 @@ func minimumPairRemoval(nums []int) (ans int) {
 		l, r := left[i], right[i]
 		right[l] = r
 		left[r] = l
+		right[i] = n // 表示 i 已被删除
 	}
 
 	for dec > 0 {
 		ans++
 
-		for lazy[h[0]] > 0 {
-			lazy[h[0]]--
+		for right[h[0].i] >= n || nums[h[0].i]+nums[right[h[0].i]] != h[0].s {
 			heap.Pop(&h)
 		}
 		p := heap.Pop(&h).(pair) // 删除相邻元素和最小的一对
@@ -55,7 +54,6 @@ func minimumPairRemoval(nums []int) (ans int) {
 			if nums[pre] > s { // 新数据
 				dec++
 			}
-			lazy[pair{nums[pre] + nums[i], pre}]++ // 懒删除
 			heap.Push(&h, pair{nums[pre] + s, pre})
 		}
 
@@ -68,7 +66,6 @@ func minimumPairRemoval(nums []int) (ans int) {
 			if s > nums[nxt2] { // 新数据（当前元素，下下一个数）
 				dec++
 			}
-			lazy[pair{nums[nxt] + nums[nxt2], nxt}]++ // 懒删除
 			heap.Push(&h, pair{s + nums[nxt2], i})
 		}
 
