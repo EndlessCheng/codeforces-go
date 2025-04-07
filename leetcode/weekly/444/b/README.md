@@ -93,13 +93,13 @@ class Router {
     private record Packet(int source, int destination, int timestamp) {
     }
 
-    private record Queue(List<Integer> timestamps, int head) {
+    private record Pair(List<Integer> timestamps, int head) {
     }
 
     private final int memoryLimit;
-    private final Deque<Packet> packetQ = new ArrayDeque<>(); // Packet 队列
+    private final Queue<Packet> packetQ = new ArrayDeque<>(); // Packet 队列
     private final Set<Packet> packetSet = new HashSet<>(); // Packet 集合
-    private final Map<Integer, Queue> destToTimestamps = new HashMap<>(); // destination -> [[timestamp], head]
+    private final Map<Integer, Pair> destToTimestamps = new HashMap<>(); // destination -> [[timestamp], head]
 
     public Router(int memoryLimit) {
         this.memoryLimit = memoryLimit;
@@ -113,8 +113,8 @@ class Router {
         if (packetQ.size() == memoryLimit) { // 太多了
             forwardPacket();
         }
-        packetQ.offer(packet); // 入队
-        destToTimestamps.computeIfAbsent(destination, k -> new Queue(new ArrayList<>(), 0)).timestamps.add(timestamp);
+        packetQ.add(packet); // 入队
+        destToTimestamps.computeIfAbsent(destination, k -> new Pair(new ArrayList<>(), 0)).timestamps.add(timestamp);
         return true;
     }
 
@@ -124,17 +124,17 @@ class Router {
         }
         Packet packet = packetQ.poll(); // 出队
         packetSet.remove(packet);
-        destToTimestamps.compute(packet.destination, (k, q) -> new Queue(q.timestamps, q.head + 1)); // 队首下标加一，模拟出队
+        destToTimestamps.compute(packet.destination, (k, p) -> new Pair(p.timestamps, p.head + 1)); // 队首下标加一，模拟出队
         return new int[]{packet.source, packet.destination, packet.timestamp};
     }
 
     public int getCount(int destination, int startTime, int endTime) {
-        Queue q = destToTimestamps.get(destination);
-        if (q == null) {
+        Pair p = destToTimestamps.get(destination);
+        if (p == null) {
             return 0;
         }
-        int left = lowerBound(q.timestamps, startTime, q.head - 1);
-        int right = lowerBound(q.timestamps, endTime + 1, q.head - 1);
+        int left = lowerBound(p.timestamps, startTime, p.head - 1);
+        int right = lowerBound(p.timestamps, endTime + 1, p.head - 1);
         return right - left;
     }
 
@@ -159,7 +159,7 @@ struct TupleHash {
     template<typename T>
     static void hash_combine(size_t& seed, const T& v) {
         // 参考 boost::hash_combine
-        seed ^= hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        seed ^= hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
 
     size_t operator()(const tuple<int, int, int>& t) const {
@@ -223,7 +223,7 @@ struct TupleHash {
     template<typename T>
     static void hash_combine(size_t& seed, const T& v) {
         // 参考 boost::hash_combine
-        seed ^= hash<T>()(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        seed ^= hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
     }
 
     template<typename Tuple, size_t Index = 0>
