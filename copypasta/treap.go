@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"cmp"
 	. "fmt"
 	"strings"
 	"time"
@@ -18,7 +19,7 @@ https://en.wikipedia.org/wiki/Treap
 额外维护子树和的写法见 https://codeforces.com/contest/1398/submission/119651187
 todo Merging treaps https://codeforces.com/blog/entry/108601
 
-模板题 https://www.luogu.com.cn/problem/P3369 
+模板题 https://www.luogu.com.cn/problem/P3369
       https://www.luogu.com.cn/problem/P6136
 https://atcoder.jp/contests/abc241/tasks/abc241_d
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
@@ -93,7 +94,7 @@ type treap struct {
 
 // 也可以直接设 rd 为 1
 func newTreap() *treap {
-	return &treap{rd: uint(time.Now().UnixNano())/2 + 1}
+	return &treap{rd: uint(time.Now().UnixNano())}
 }
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
@@ -250,4 +251,54 @@ func (t *treap) String() string {
 	treeSB.WriteString("Root\n")
 	t.root.draw(treeSB, &strings.Builder{}, true)
 	return treeSB.String()
+}
+
+// 占位用，实际代码见 treap 文件夹
+
+type nodeM[K comparable, V any] struct {
+	son      [2]*nodeM[K, V]
+	priority uint
+	key      K
+	value    V
+	subSize  int
+}
+
+func (o *nodeM[K, V]) size() int {
+	if o != nil {
+		return o.subSize
+	}
+	return 0
+}
+
+type treapM[K comparable, V any] struct {
+	rd         uint
+	root       *nodeM[K, V]
+	comparator func(a, b K) int
+}
+
+func (t *treapM[K, V]) size() int                       { return t.root.size() }
+func (t *treapM[K, V]) empty() bool                     { return t.size() == 0 }
+func (t *treapM[K, V]) put(key K, value V)              {}
+func (t *treapM[K, V]) delete(key K)                    {}
+func (t *treapM[K, V]) min() *nodeM[K, V]               { return t.kth(0) }
+func (t *treapM[K, V]) max() *nodeM[K, V]               { return t.kth(t.size() - 1) }
+func (t *treapM[K, V]) lowerBoundIndex(key K) (kth int) { return }
+func (t *treapM[K, V]) upperBoundIndex(key K) (kth int) { return }
+func (t *treapM[K, V]) kth(k int) (o *nodeM[K, V])      { return }
+func (t *treapM[K, V]) prev(key K) *nodeM[K, V]         { return t.kth(t.lowerBoundIndex(key) - 1) }
+func (t *treapM[K, V]) next(key K) *nodeM[K, V]         { return t.kth(t.upperBoundIndex(key)) }
+func (t *treapM[K, V]) find(key K) (o *nodeM[K, V])     { return }
+
+func newMap[K cmp.Ordered, V any]() *treapM[K, V] {
+	return &treapM[K, V]{
+		rd:         uint(time.Now().UnixNano()),
+		comparator: cmp.Compare[K],
+	}
+}
+
+func newMapWith[K comparable, V any](comp func(a, b K) int) *treapM[K, V] {
+	return &treapM[K, V]{
+		rd:         uint(time.Now().UnixNano()),
+		comparator: comp,
+	}
 }
