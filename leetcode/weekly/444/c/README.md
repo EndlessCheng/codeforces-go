@@ -8,7 +8,7 @@
 
 注意到，如果乘积不为 $0$，那么在乘积不超过 $\textit{limit}$ 的前提下，子序列至多包含 $L = \left\lfloor\log_2 \textit{limit}\right\rfloor$ 个大于 $1$ 的数，以及零个或多个 $1$。
 
-在本题的数据范围下，$L\le 12$。
+在本题的数据范围下，$L\le 12$。因为 $12$ 个 $2$ 相乘等于 $2^{12}=4096 < 5000$，再乘个 $2$ 就超了。
 
 在两个大于 $1$ 的数之间的连续的 $1$，其交错和 $1-1+1-1+\cdots$ 的绝对值 $\le 1$。所以子序列中的所有 $1$ 的交错和的绝对值 $\le L+1$。
 
@@ -50,7 +50,7 @@
 
 1. 如果 $\textit{nums}$ 的元素和小于 $|k|$，说明 $|k|$ 太大，一定无法满足要求，直接返回 $-1$。
 2. 在递归过程中，如果发现 $\textit{ans}=\textit{limit}$，说明我们已经达到最大值，答案就是 $\textit{limit}$，不再递归。
-3. 在递归过程中，如果发现 $m > \textit{limit}$，那么我们只能把乘积 $m$ 变成 $0$。如果 $\textit{ans}\ge 0$，说明我们能把乘积变成 $0$，不再递归。
+3. 在递归过程中，如果发现 $m > \textit{limit}$，那么我们只能把乘积 $m$ 变成 $0$。如果此时 $\textit{ans}\ge 0$，说明我们能把乘积变成 $0$，不再递归。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ezRvYiE27/?t=16m16s)，欢迎点赞关注~
 
@@ -106,7 +106,7 @@ class Solution {
         if (ans == limit || m > limit && ans >= 0) { // 无法让 ans 变得更大
             return;
         }
-    
+
         if (i == nums.length) {
             if (!empty && s == k && m <= limit) { // 合法子序列
                 ans = Math.max(ans, m); // 用合法子序列的元素积更新答案的最大值
@@ -144,7 +144,7 @@ public:
             if (ans == limit || m > limit && ans >= 0) { // 无法让 ans 变得更大
                 return;
             }
-        
+
             if (i == n) {
                 if (!empty && s == k && m <= limit) { // 合法子序列
                     ans = max(ans, m); // 用合法子序列的元素积更新答案的最大值
@@ -228,8 +228,8 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 请注意，$150$ 个 $[1,12]$ 中的数相乘，只有 $M=394$ 个 $\le 5000$ 的不同乘积。
 
-- 时间复杂度：$\mathcal{O}(n(nU + M\log \textit{limit}))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})\le 12$。其中 $nU$ 对应 $m=0$ 或者 $m=\textit{limit}+1$ 的情况，$M\log \textit{limit}$ 对应 $1\le m\le \textit{limit}$ 的情况。
-- 空间复杂度：$\mathcal{O}(n(nU + M\log \textit{limit}))$。
+- 时间复杂度：$\mathcal{O}(n(nU + M\log \textit{limit}))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})\le 12$。其中 $nU$ 对应 $m=0$ 或者 $m=\textit{limit}+1$ 的情况，状态个数为交错和的个数；$M\log \textit{limit}$ 对应 $1\le m\le \textit{limit}$ 的情况，状态个数为「乘积个数」与「交错和的个数」的乘积。
+- 空间复杂度：$\mathcal{O}(n(nU + M\log \textit{limit}))$。有多少个状态，哈希表就有多大。
 
 ## 附：递推写法
 
