@@ -27,15 +27,15 @@ $|x|=|y|$ 时，答案为所有 $f[i][j]$ 的最大值（即全局最长匹配�
 
 枚举 $s$ 的回文中心，贪心地，这个回文子串越长越好，因为 $x$ 去掉的回文后缀越长，越容易找到一个与之匹配的 $y$。
 
-假设 $x$ 的回文后缀是 $[l,r]$，再加上以 $s[l-1]$ 结尾的子串（倒序）与以 $t[j]$ 开头的子串的最长匹配长度（乘以 $2$），可以得到一个长为
+假设回文子串是 $s[l+1]$ 到 $s[r-1]$，再加上以 $s[l]$ 结尾的子串（倒序）与以 $t[j]$ 开头的子串的最长匹配长度（乘以 $2$），可以得到一个长为
 
 $$
-r-l+1 + 2\cdot \max_{j=0}^{|t|-1} f[l][j]
+r-l-1 + 2\cdot \max_{j=0}^{|t|-1} f[l+1][j]
 $$
 
 的回文串，更新答案的最大值。
 
-代码实现时，用一个数组 $\textit{mx}[i]$ 记录 $\max\limits_{j=0}^{|t|-1} f[i][j]$。
+代码实现时，可以用一个数组 $\textit{mx}[i]$ 记录 $\max\limits_{j=0}^{|t|-1} f[i][j]$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV17yZzYbEP8/?t=4m28s)，欢迎点赞关注~
 
@@ -67,6 +67,12 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
+    public int longestPalindrome(String s, String t) {
+        String revS = new StringBuilder(s).reverse().toString();
+        String revT = new StringBuilder(t).reverse().toString();
+        return Math.max(calc(s, t), calc(revT, revS));
+    }
+
     private int calc(String S, String T) {
         int ans = 0;
         char[] s = S.toCharArray();
@@ -98,12 +104,6 @@ class Solution {
             }
         }
         return ans;
-    }
-
-    public int longestPalindrome(String s, String t) {
-        String revS = new StringBuilder(s).reverse().toString();
-        String revT = new StringBuilder(t).reverse().toString();
-        return Math.max(calc(s, t), calc(revT, revS));
     }
 }
 ```
