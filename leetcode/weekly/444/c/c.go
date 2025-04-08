@@ -18,7 +18,7 @@ func maxProduct(nums []int, k, limit int) int {
 	vis := map[args]bool{}
 	var dfs func(int, int, int, bool, bool)
 	dfs = func(i, s, m int, odd, empty bool) {
-		if ans == limit {
+		if ans == limit || m > limit && ans >= 0 { // 无法让 ans 变得更大
 			return
 		}
 
@@ -141,4 +141,9 @@ func maxProduct2(nums []int, k, limit int) int {
 	return max(calcMax(oddS[k]), calcMax(evenS[k]))
 }
 
-func abs(x int) int { if x < 0 { return -x }; return x }
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}

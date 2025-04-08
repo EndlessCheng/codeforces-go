@@ -15,7 +15,7 @@
 - 如果大于 $1$ 的数都是 $2$，交错和的绝对值 $\le 2L + (L+1) = 3L+1\le 37$。
 - 如果大于 $1$ 的数都是 $3$，那么 $L\le 7$，交错和的绝对值 $\le 3L + (L+1) = 4L+1\le 29$。
 
-可以看出，**在乘积不为 $0$ 且不超过 $\textit{limit}$ 的情况下，交错和的绝对值其实远远小于** $\textit{nums}$ 的元素和！
+可以看出，**在乘积不为 $0$ 且不超过 $\textit{limit}$ 的情况下，交错和的绝对值其实远小于** $\textit{nums}$ 的元素和！
 
 此外，$150$ 个 $[1,12]$ 中的数相乘，只有 $394$ 个 $\le 5000$ 的不同乘积。（计算代码见文末）
 
@@ -23,7 +23,7 @@
 
 如果乘积为 $0$ 呢？继续向后（递归），乘积仍然为 $0$，**此时只需关注交错和**，不同交错和的个数 $\le 150\cdot 12 = 1800$ 也很小。
 
-所以，状态个数比预期的少，直接暴力搜索即可（不用写 DP）。
+所以，状态个数并不多，直接暴力搜索即可，不用写 DP。
 
 ## 思路
 
@@ -46,6 +46,12 @@
 
 递归过程中，用 $\textit{vis}$ 哈希表记录访问过的状态，避免重复访问。
 
+此外，我们还有三个优化：
+
+1. 如果 $\textit{nums}$ 的元素和小于 $|k|$，说明 $|k|$ 太大，一定无法满足要求，直接返回 $-1$。
+2. 在递归过程中，如果发现 $\textit{ans}=\textit{limit}$，说明我们已经达到最大值，答案就是 $\textit{limit}$，不再递归。
+3. 在递归过程中，如果发现 $m > \textit{limit}$，那么我们只能把乘积 $m$ 变成 $0$。如果 $\textit{ans}\ge 0$，说明我们能把乘积变成 $0$，不再递归。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ezRvYiE27/?t=16m16s)，欢迎点赞关注~
 
 > 注：`sum(nums) < abs(k)` 可以优化成 `sum(sorted(nums)[-((n + 1) // 2):]) < abs(k)`。
@@ -62,7 +68,7 @@ class Solution:
         @cache  # 当 vis 哈希表用
         def dfs(i: int, s: int, m: int, odd: bool, empty: bool) -> None:
             nonlocal ans
-            if ans == limit:  # 已经达到最大值
+            if ans == limit or m > limit and ans >= 0:  # 无法让 ans 变得更大
                 return
 
             if i == n:
@@ -97,7 +103,7 @@ class Solution {
     }
 
     private void dfs(int i, int s, int m, boolean odd, boolean empty, int[] nums, int k, int limit, int bias, Set<Long> vis) {
-        if (ans == limit) { // 已经达到最大值
+        if (ans == limit || m > limit && ans >= 0) { // 无法让 ans 变得更大
             return;
         }
     
@@ -109,7 +115,7 @@ class Solution {
         }
 
         long mask = (long) i << 32 | (s + bias) << 14 | m << 2 | (odd ? 1 : 0) << 1 | (empty ? 1 : 0);
-        if (!vis.add(mask)) {
+        if (!vis.add(mask)) { // mask 在 vis 中
             return;
         }
 
@@ -135,7 +141,7 @@ public:
         int n = nums.size(), ans = -1;
         unordered_set<long long> vis;
         auto dfs = [&](this auto&& dfs, int i, int s, int m, bool odd, bool empty) -> void {
-            if (ans == limit) { // 已经达到最大值
+            if (ans == limit || m > limit && ans >= 0) { // 无法让 ans 变得更大
                 return;
             }
         
@@ -147,7 +153,7 @@ public:
             }
 
             long long mask = (long long) i << 32 | (s + total) << 14 | m << 2 | odd << 1 | empty;
-            if (!vis.insert(mask).second) {
+            if (!vis.insert(mask).second) { // mask 在 vis 中
                 return;
             }
 
@@ -182,7 +188,7 @@ func maxProduct(nums []int, k, limit int) int {
 	vis := map[args]bool{}
 	var dfs func(int, int, int, bool, bool)
 	dfs = func(i, s, m int, odd, empty bool) {
-		if ans == limit { // 已经达到最大值
+		if ans == limit || m > limit && ans >= 0 { // 无法让 ans 变得更大
 			return
 		}
 
@@ -244,7 +250,7 @@ class Solution:
 
             # 长为奇数的子序列的计算结果 odd_s
             for s, st in even_s.items():
-                odd_s[s + x] |= {m * x for m in st if m * x <= limit}
+                odd_s[s + x].update(m * x for m in st if m * x <= limit)
                 if x == 0:
                     odd_s[s].add(0)
 
