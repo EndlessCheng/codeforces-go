@@ -1,12 +1,15 @@
 package main
 
+import "math"
+
 // https://space.bilibili.com/206214
 func minimumCost(source, target string, original, changed []byte, cost []int) (ans int64) {
+	const inf = math.MaxInt / 2
 	dis := [26][26]int{}
 	for i := range dis {
 		for j := range dis[i] {
 			if j != i {
-				dis[i][j] = 1e13
+				dis[i][j] = inf
 			}
 		}
 	}
@@ -17,6 +20,9 @@ func minimumCost(source, target string, original, changed []byte, cost []int) (a
 	}
 	for k := range dis {
 		for i := range dis {
+			if dis[i][k] == inf {
+				continue // 巨大优化！
+			}
 			for j := range dis {
 				dis[i][j] = min(dis[i][j], dis[i][k]+dis[k][j])
 			}
@@ -24,10 +30,11 @@ func minimumCost(source, target string, original, changed []byte, cost []int) (a
 	}
 
 	for i, b := range source {
-		ans += int64(dis[b-'a'][target[i]-'a'])
-	}
-	if ans >= 1e13 {
-		return -1
+		d := dis[b-'a'][target[i]-'a']
+		if d == inf {
+			return -1
+		}
+		ans += int64(d)
 	}
 	return
 }
