@@ -17,7 +17,7 @@ func cf631E(in io.Reader, out io.Writer) {
 	var n, tot, mx, s int
 	Fscan(in, &n)
 	a := make([]int, n)
-	q := []vec31{}
+	q := []vec31{{-1, 0}}
 	for i := range a {
 		Fscan(in, &a[i])
 		tot += a[i] * (i + 1)
@@ -31,9 +31,9 @@ func cf631E(in io.Reader, out io.Writer) {
 
 	s = 0
 	for i, x := range a {
-		s += x
 		p := vec31{x, 1}
 		j := sort.Search(len(q)-1, func(j int) bool { return p.dot(q[j]) > p.dot(q[j+1]) })
+		s += x
 		mx = max(mx, p.dot(q[j])-x*i+s)
 	}
 	Fprint(out, tot+mx)
