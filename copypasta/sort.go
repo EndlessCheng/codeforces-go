@@ -70,6 +70,7 @@ https://codeforces.com/problemset/problem/1840/D 1400
 https://codeforces.com/problemset/problem/883/I 1900 DP
 https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
+https://www.luogu.com.cn/problem/P2680
 
 ### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 https://codeforces.com/problemset/problem/1623/C 1600
