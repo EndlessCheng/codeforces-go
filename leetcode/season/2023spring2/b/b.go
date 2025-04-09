@@ -1,20 +1,23 @@
 package main
 
-import "sort"
+import (
+	"math"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
-func rampartDefensiveLine(rampart [][]int) (ans int) {
+func rampartDefensiveLine(rampart [][]int) int {
 	n := len(rampart)
-	leftSpace := rampart[n-1][0] - rampart[0][1]
+	s := rampart[n-1][0] - rampart[0][1]
 	for _, p := range rampart[1 : n-1] {
-		leftSpace -= p[1] - p[0]
+		s -= p[1] - p[0]
 	}
-	return sort.Search(leftSpace/(n-2), func(mx int) bool {
-		mx++
-		preR := rampart[0][1]
-		for i := 1; i < n-1; i++ {
-			r := rampart[i][1]
-			space := mx - (rampart[i][0] - preR)
+	return sort.Search(s/(n-2), func(m int) bool {
+		m++
+		preR := math.MinInt / 2
+		for i, p := range rampart[:n-1] {
+			r := p[1]
+			space := m - (p[0] - preR) // 向左膨胀后的剩余长度
 			if space > 0 {
 				r += space // 向右膨胀
 				if r > rampart[i+1][0] { // 无法膨胀
