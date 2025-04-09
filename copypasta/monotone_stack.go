@@ -270,6 +270,7 @@ func next2Greater(a []int) ([]int, []int) {
 // https://codeforces.com/contest/1156/problem/E
 // https://atcoder.jp/contests/abc140/tasks/abc140_e
 func permLR(perm []int) ([]int, []int) {
+	// 注：无脑的写法是用有序集合维护「剩余未被删除的下标」
 	n := len(perm)
 	pos := make([]int, n+1)
 	left := make([]int, n+2)
