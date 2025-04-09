@@ -1,21 +1,12 @@
 package main
 
-// 还原差分数组
-
 // github.com/EndlessCheng/codeforces-go
 func numberOfArrays(differences []int, lower, upper int) int {
-	num, min, max := 0, 0, 0
+	var s, minS, maxS int // s[0] = 0
 	for _, d := range differences {
-		num += d // 根据差分数组还原原始数组的元素值 num
-		if num < min {
-			min = num
-		} else if num > max {
-			max = num
-		}
+		s += d
+		minS = min(minS, s)
+		maxS = max(maxS, s)
 	}
-	ans := upper - lower + 1 - (max - min)
-	if ans > 0 {
-		return ans
-	}
-	return 0
+	return max(upper-lower-maxS+minS+1, 0)
 }
