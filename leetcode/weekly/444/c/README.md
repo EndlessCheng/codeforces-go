@@ -114,7 +114,7 @@ class Solution {
             return;
         }
 
-        long mask = (long) i << 32 | (s + bias) << 14 | m << 2 | (odd ? 1 : 0) << 1 | (empty ? 1 : 0);
+        long mask = (long) i << 32 | (s + bias) << 15 | m << 2 | (odd ? 1 : 0) << 1 | (empty ? 1 : 0);
         if (!vis.add(mask)) { // mask 在 vis 中
             return;
         }
@@ -152,7 +152,7 @@ public:
                 return;
             }
 
-            long long mask = (long long) i << 32 | (s + total) << 14 | m << 2 | odd << 1 | empty;
+            long long mask = (long long) i << 32 | (s + total) << 15 | m << 2 | odd << 1 | empty;
             if (!vis.insert(mask).second) { // mask 在 vis 中
                 return;
             }
