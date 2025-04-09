@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// dc
 func TestGenCodeforcesProblemTemplates(t *testing.T) {
 	raw, err := os.ReadFile("data-codeforces.txt")
 	if err != nil {
