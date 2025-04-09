@@ -32,13 +32,15 @@ https://zhuanlan.zhihu.com/p/553192435
 // 另见 graph.go 中的 MST
 //
 // https://www.luogu.com.cn/problem/P1111
-// https://www.luogu.com.cn/problem/P1967 经典题
 // https://www.luogu.com.cn/problem/P3367
+// https://www.luogu.com.cn/problem/P1967 启发式合并
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
 // https://codeforces.com/problemset/problem/755/C 1300
 // https://codeforces.com/problemset/problem/1167/C 1400
 // https://codeforces.com/problemset/problem/2060/E 1500
+// https://codeforces.com/problemset/problem/1209/D 1700
 // https://codeforces.com/problemset/problem/1411/C 1700
+// https://codeforces.com/problemset/problem/371/D 1800
 // https://codeforces.com/problemset/problem/87/D 2300
 // https://atcoder.jp/contests/abc304/tasks/abc304_e 转换
 // https://atcoder.jp/contests/abc238/tasks/abc238_e 转换
@@ -62,6 +64,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 数组标记/区间合并相关
 // - 经典模型是一维区间覆盖染色，通过倒序+并查集解决
 // - 顺带补充下二维的情况（非并查集）：LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
+// https://codeforces.com/problemset/problem/1791/F 1500
 // https://codeforces.com/problemset/problem/1041/C 1600
 // https://codeforces.com/problemset/problem/827/A 1700
 // https://codeforces.com/problemset/problem/1157/E 1700
@@ -94,9 +97,6 @@ https://zhuanlan.zhihu.com/p/553192435
 // 转换 https://codeforces.com/problemset/problem/1253/D
 // 离散 + 四方向 Kick Start 2019 Round C Wiggle Walk https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac#analysis
 // 能力守恒+离线 https://codeforces.com/contest/1851/problem/G
-// 技巧：去掉无用数据
-// - https://codeforces.com/problemset/problem/1157/E
-// - https://codeforces.com/problemset/problem/1791/F
 // todo https://codeforces.com/contest/884/problem/E
 // https://codeforces.com/problemset/problem/1416/D 2600 DSU 重构树
 
