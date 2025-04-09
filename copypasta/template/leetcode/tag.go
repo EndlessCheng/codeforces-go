@@ -6,7 +6,7 @@ import (
 )
 
 // id > 0，指定具体的一场周赛
-// id = 0，指定下一场或当前正在进行的周赛
+// id = 0，指定下一场或当前正在比的周赛
 // id < 0，指定上 |id| 场周赛（例如 id = -1 表示最近的一场结束的周赛）
 
 func GetWeeklyContestID(contestID int) int {
