@@ -28,7 +28,7 @@ func p1725(in io.Reader, out io.Writer) {
 			q = append(q, j)
 			j++
 		}
-		for q[0] < i-r {
+		if q[0] < i-r {
 			q = q[1:]
 		}
 		f[i] = f[q[0]] + a[i]
