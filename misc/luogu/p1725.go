@@ -18,16 +18,12 @@ func p1725(in io.Reader, out io.Writer) {
 	for i := 1; i < l; i++ {
 		f[i] = -1e18
 	}
-	q := []int{0}
-	j := 1
+	q := []int{}
 	for i := l; i <= n; i++ {
-		for j <= i-l {
-			for len(q) > 0 && f[j] >= f[q[len(q)-1]] {
-				q = q[:len(q)-1]
-			}
-			q = append(q, j)
-			j++
+		for len(q) > 0 && f[i-l] >= f[q[len(q)-1]] {
+			q = q[:len(q)-1]
 		}
+		q = append(q, i-l)
 		if q[0] < i-r {
 			q = q[1:]
 		}
