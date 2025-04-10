@@ -20,7 +20,7 @@ $$
 
 的数对个数，即为答案。
 
-计算满足 $\textit{nums}[i]-i = \textit{nums}[j]-j$ 的数对个数，做法同 1512 题。
+设 $a[i] = \textit{nums}[i]-i$，就和 1512 题完全一样了。
 
 为什么要先更新 $\textit{ans}$，再更新 $\textit{cnt}$？理由见 1512 题 [我的题解](https://leetcode.cn/problems/number-of-good-pairs/solutions/2974653/mei-ju-you-wei-hu-zuo-pythonjavaccgojsru-7u5v/)。
 
@@ -46,6 +46,20 @@ class Solution {
             int c = cnt.getOrDefault(x, 0);
             ans -= c;
             cnt.put(x, c + 1);
+        }
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    public long countBadPairs(int[] nums) {
+        int n = nums.length;
+        long ans = (long) n * (n - 1) / 2;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            ans -= cnt.merge(nums[i] - i, 1, Integer::sum) - 1;
         }
         return ans;
     }
