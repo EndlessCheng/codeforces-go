@@ -12,7 +12,8 @@ https://leetcode.cn/circle/discuss/mOr1u6/
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
-【疑问】对于所有 1~n 的排列，heapify 后是有序数组的排列，有多少个？
+基础
+https://atcoder.jp/contests/abc212/tasks/abc212_d
 
 动态维护最大的 k 个数用最小堆，动态维护最小的 k 个数用最大堆
 https://codeforces.com/problemset/problem/1969/D 1900
@@ -104,6 +105,9 @@ https://codeforces.com/problemset/problem/555/B
 区间最大交集 https://codeforces.com/problemset/problem/754/D
 https://codeforces.com/problemset/problem/1701/D
 区间放球 https://atcoder.jp/contests/abc214/tasks/abc214_e
+
+【疑问】对于所有 1~n 的排列，heapify 后是有序数组的排列，有多少个？
+
 */
 
 // 下面这些都是最小堆
