@@ -24,7 +24,7 @@
 
 **问**：记忆化三个状态有点麻烦，能不能只记忆化 $i$ 这个状态？
 
-**答**：是可以的。比如 $\textit{finish}=234$，第一位填 $2$，第二位填 $3$，后面无论怎么递归，都不会再次递归到第一位填 $2$，第二位填 $3$ 的情况，所以不需要记录。对于 $\textit{start}$ 也同理。
+**答**：是可以的。比如 $\textit{finish}=234$，第一位填 $2$，第二位填 $3$，后面无论怎么递归，都不会再次递归到第一位填 $2$，第二位填 $3$ 的情况，所以不需要记录。（注：想象我们在写一个三重循环，枚举每一位填什么数字。第一位填 $2$，第二位填 $3$ 已经是快要结束循环的情况了，不可能再次枚举到。）对于 $\textit{start}$ 也同理。
 
 根据这个例子，我们可以只记录不受到 $\textit{limitLow}$ 或 $\textit{limitHigh}$ 约束时的状态 $i$。相当于记忆化的是 $(i,\texttt{false},\texttt{false})$ 这个状态，因为其它状态只会递归访问一次。
 
@@ -52,7 +52,7 @@ class Solution:
                     res += dfs(i + 1, limit_low and d == lo, limit_high and d == hi)
             else:  # 这个数位只能填 s[i-diff]
                 x = int(s[i - diff])
-                if lo <= x <= min(hi, limit):
+                if lo <= x <= hi:  # 题目保证 x <= limit，无需判断
                     res = dfs(i + 1, limit_low and x == lo, limit_high and x == hi)
             return res
 
@@ -92,7 +92,7 @@ class Solution {
             }
         } else { // 这个数位只能填 s[i-diff]
             int x = s[i - (high.length - s.length)] - '0';
-            if (lo <= x && x <= Math.min(hi, limit)) {
+            if (lo <= x && x <= hi) { // 题目保证 x <= limit，无需判断
                 res = dfs(i + 1, limitLow && x == lo, limitHigh && x == hi, low, high, limit, s, memo);
             }
         }
@@ -137,7 +137,7 @@ public:
                 }
             } else { // 这个数位只能填 s[i-diff]
                 int x = s[i - diff] - '0';
-                if (lo <= x && x <= min(hi, limit)) {
+                if (lo <= x && x <= hi) { // 题目保证 x <= limit，无需判断
                     res = dfs(i + 1, limit_low && x == lo, limit_high && x == hi);
                 }
             }
@@ -195,7 +195,7 @@ func numberOfPowerfulInt(start, finish int64, limit int, s string) int64 {
 			}
 		} else { // 这个数位只能填 s[i-diff]
 			x := int(s[i-diff] - '0')
-			if lo <= x && x <= min(hi, limit) {
+			if lo <= x && x <= hi { // 题目保证 x <= limit，无需判断
 				res += dfs(i+1, limitLow && x == lo, limitHigh && x == hi)
 			}
 		}
