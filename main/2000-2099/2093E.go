@@ -18,17 +18,17 @@ func cf2093E(in io.Reader, out io.Writer) {
 		ans := sort.Search(n, func(low int) bool {
 			low++
 			k := k
-			for i := 0; i < n && k > 0; i++ {
-				has := map[int]bool{}
-				for mex := 0; i < n; i++ {
-					has[a[i]] = true
-					for has[mex] {
-						mex++
-					}
-					if mex >= low {
-						k--
-						break
-					}
+			has := map[int]bool{}
+			mex := 0
+			for _, v := range a {
+				has[v] = true
+				for has[mex] {
+					mex++
+				}
+				if mex >= low {
+					k--
+					has = map[int]bool{}
+					mex = 0
 				}
 			}
 			return k > 0
