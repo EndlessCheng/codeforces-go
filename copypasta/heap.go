@@ -14,6 +14,7 @@ https://leetcode.cn/circle/discuss/mOr1u6/
 
 基础
 https://atcoder.jp/contests/abc212/tasks/abc212_d
+https://atcoder.jp/contests/abc379/tasks/abc379_d
 
 动态维护最大的 k 个数用最小堆，动态维护最小的 k 个数用最大堆
 https://codeforces.com/problemset/problem/1969/D 1900
@@ -30,7 +31,7 @@ https://codeforces.com/problemset/problem/1196/F 2200
 
 模拟
 LC2532 https://leetcode.cn/problems/time-to-cross-a-bridge/
-https://codeforces.com/problemset/problem/1985/F
+https://codeforces.com/problemset/problem/1985/F 1500
 https://codeforces.com/problemset/problem/1945/G 2500
 
 思维·转换
