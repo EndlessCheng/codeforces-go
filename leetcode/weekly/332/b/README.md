@@ -1,22 +1,22 @@
-## 方法一：排序 + 二分
+## 方法一：排序 + 二分查找
 
-由于排序不影响答案，可以先排序。
+由于排序不影响答案，可以先（从小到大）排序，这样可以二分查找。
 
 > $\textit{nums}$ 是 $[1,2,3]$ 还是 $[3,2,1]$，算出来的答案都是一样的，本质上就是从 $\textit{nums}$ 中选两个数。
 
-然后枚举 $\textit{nums}[j]$，那么 $\textit{nums}[i]$ 需要满足
+排序后，枚举 $\textit{nums}[j]$，那么 $\textit{nums}[i]$ 需要满足 $0\le i < j$ 以及
 
 $$
 \textit{lower} - \textit{nums}[j] \le \textit{nums}[i] \le \textit{upper} - \textit{nums}[j]
 $$
 
-并且 $0\le i < j$。
+计算 $\le \textit{upper} - \textit{nums}[j]$ 的元素个数，减去 $< \textit{lower} - \textit{nums}[j]$ 的元素个数，即为满足上式的元素个数。（联想一下前缀和）
 
-我们可以计算出 $\le \textit{upper} - \textit{nums}[j]$ 的元素个数，减去 $< \textit{lower} - \textit{nums}[j]$ 的元素个数，加入答案。
+由于 $\textit{nums}$ 是有序的，我们可以在 $[0,j-1]$ 中**二分查找**，原理见[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)：
 
-这都可以用二分查找求出，原理请看视频[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
-
-附：[本题视频讲解](https://www.bilibili.com/video/BV1GY411i7RP/)
+- 找到 $> \textit{upper} - \textit{nums}[j]$ 的第一个数，设其下标为 $r$，那么下标在 $[0,r-1]$ 中的数都是 $\le \textit{upper} - \textit{nums}[j]$ 的，这有 $r$ 个。如果 $[0,j-1]$ 中没有找到这样的数，那么二分结果为 $j$。这意味着 $[0,j-1]$ 中的数都是 $\le \textit{upper} - \textit{nums}[j]$ 的，这有 $j$ 个。
+- 找到 $\ge \textit{lower} - \textit{nums}[j]$ 的第一个数，设其下标为 $l$，那么下标在 $[0,l-1]$ 中的数都是 $< \textit{lower} - \textit{nums}[j]$ 的，这有 $l$ 个。如果 $[0,j-1]$ 中没有找到这样的数，那么二分结果为 $j$。这意味着 $[0,j-1]$ 中的数都是 $< \textit{lower} - \textit{nums}[j]$ 的，这有 $j$ 个。
+- 满足 $\textit{lower} - \textit{nums}[j] \le \textit{nums}[i] \le \textit{upper} - \textit{nums}[j]$ 的 $\textit{nums}[i]$ 的个数为 $r-l$，加入答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -25,9 +25,9 @@ class Solution:
         ans = 0
         for j, x in enumerate(nums):
             # 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
-            r = bisect_right(nums, upper - x, 0, j)  # <= upper-nums[j] 的 nums[i] 的个数
-            l = bisect_left(nums, lower - x, 0, j)  # < lower-nums[j] 的 nums[i] 的个数
-            ans += r - l
+            r = bisect_right(nums, upper - x, 0, j)
+            l = bisect_left(nums, lower - x, 0, j)
+            ans += r - l  
         return ans
 ```
 
@@ -38,25 +38,22 @@ class Solution {
         long ans = 0;
         for (int j = 0; j < nums.length; j++) {
             // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
-            int r = lowerBound(nums, j, upper - nums[j] + 1); // <= upper-nums[j] 的 nums[i] 的个数
-            int l = lowerBound(nums, j, lower - nums[j]); // < lower-nums[j] 的 nums[i] 的个数
+            int r = lowerBound(nums, j, upper - nums[j] + 1);
+            int l = lowerBound(nums, j, lower - nums[j]);
             ans += r - l;
         }
         return ans;
     }
 
-    // https://www.bilibili.com/video/BV1AP41137w7/
+    // 原理请看 https://www.bilibili.com/video/BV1AP41137w7/
     private int lowerBound(int[] nums, int right, int target) {
-        int left = -1; // 开区间 (left, right)
-        while (left + 1 < right) { // 区间不为空
-            // 循环不变量：
-            // nums[left] < target
-            // nums[right] >= target
+        int left = -1;
+        while (left + 1 < right) {
             int mid = (left + right) >>> 1;
-            if (nums[mid] < target) {
-                left = mid; // 范围缩小到 (mid, right)
+            if (nums[mid] >= target) {
+                right = mid;
             } else {
-                right = mid; // 范围缩小到 (left, mid)
+                left = mid;
             }
         }
         return right;
@@ -67,13 +64,13 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long countFairPairs(vector<int> &nums, int lower, int upper) {
+    long long countFairPairs(vector<int>& nums, int lower, int upper) {
         ranges::sort(nums);
         long long ans = 0;
         for (int j = 0; j < nums.size(); j++) {
             // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
-            auto r = upper_bound(nums.begin(), nums.begin() + j, upper - nums[j]); // <= upper-nums[j] 的 nums[i] 的个数
-            auto l = lower_bound(nums.begin(), nums.begin() + j, lower - nums[j]); // < lower-nums[j] 的 nums[i] 的个数
+            auto r = upper_bound(nums.begin(), nums.begin() + j, upper - nums[j]);
+            auto l = lower_bound(nums.begin(), nums.begin() + j, lower - nums[j]);
             ans += r - l;
         }
         return ans;
@@ -81,40 +78,122 @@ public:
 };
 ```
 
+```c [sol-C]
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+// 原理请看 https://www.bilibili.com/video/BV1AP41137w7/
+int lowerBound(int* nums, int right, int target) {
+    int left = -1;
+    while (left + 1 < right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] >= target) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    return right;
+}
+
+long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
+    qsort(nums, numsSize, sizeof(int), cmp);
+    long long ans = 0;
+    for (int j = 0; j < numsSize; j++) {
+        // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+        int r = lowerBound(nums, j, upper - nums[j] + 1);
+        int l = lowerBound(nums, j, lower - nums[j]);
+        ans += r - l;
+    }
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func countFairPairs(nums []int, lower, upper int) (ans int64) {
     slices.Sort(nums)
     for j, x := range nums {
         // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
-        r := sort.SearchInts(nums[:j], upper-x+1) // <= upper-nums[j] 的 nums[i] 的个数
-        l := sort.SearchInts(nums[:j], lower-x) // < lower-nums[j] 的 nums[i] 的个数
+        r := sort.SearchInts(nums[:j], upper-x+1)
+        l := sort.SearchInts(nums[:j], lower-x)
         ans += int64(r - l)
     }
     return
 }
 ```
 
+```js [sol-JavaScript]
+var countFairPairs = function(nums, lower, upper) {
+    nums.sort((a, b) => a - b);
+    let ans = 0;
+    for (let j = 0; j < nums.length; j++) {
+        // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+        const r = lowerBound(nums, j, upper - nums[j] + 1);
+        const l = lowerBound(nums, j, lower - nums[j]);
+        ans += r - l;
+    }
+    return ans;
+};
+
+// 原理请看 https://www.bilibili.com/video/BV1AP41137w7/
+var lowerBound = function(nums, right, target) {
+    let left = -1;
+    while (left + 1 < right) {
+        const mid = Math.floor((left + right) / 2);
+        if (nums[mid] >= target) {
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    return right;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_fair_pairs(mut nums: Vec<i32>, lower: i32, upper: i32) -> i64 {
+        nums.sort_unstable();
+        let mut ans = 0;
+        for j in 0..nums.len() {
+            // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+            let l = nums[..j].partition_point(|&x| x < lower - nums[j]);
+            let r = nums[..j].partition_point(|&x| x <= upper - nums[j]);
+            ans += r - l;
+        }
+        ans as _
+    }
+}
+```
+
 ### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销，仅用到若干额外变量。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
-## 方法二：三指针
+## 方法二：排序 + 相向三指针
 
-由于随着 $\textit{nums}[j]$ 的变大，$\textit{upper}-\textit{nums}[j]$ 和 $\textit{lower} - \textit{nums}[j]$ 都在变小，有单调性，可以用三指针实现。
+由于随着 $\textit{nums}[j]$ 的变大，$\textit{upper}-\textit{nums}[j]$ 和 $\textit{lower} - \textit{nums}[j]$ 都在变小，有单调性，可以用**相向三指针** $j,l,r$ 代替方法一中的二分查找：
+
+1. 初始化 $l=r=n$。
+2. 从左到右遍历（排序后的）$\textit{nums}$。
+3. 找 $> \textit{upper} - \textit{nums}[j]$ 的第一个数：如果 $\textit{nums}[r-1] > \textit{upper}-\textit{nums}[j]$，说明 $r$ 太大了，可以继续减小。循环结束后的 $r$，与 $j$ 取最小值后，就是方法一的二分查找计算出的 $r$。
+4. 找 $\ge \textit{lower} - \textit{nums}[j]$ 的第一个数：如果 $\textit{nums}[l-1] \ge \textit{lower}-\textit{nums}[j]$，说明 $l$ 太大了，可以继续减小。循环结束后的 $l$，与 $j$ 取最小值后，就是方法一的二分查找计算出的 $l$。
 
 ```py [sol-Python3]
 class Solution:
     def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
         nums.sort()
         ans = 0
-        left = right = len(nums)
+        l = r = len(nums)
         for j, x in enumerate(nums):
-            while right and nums[right - 1] > upper - x:
-                right -= 1
-            while left and nums[left - 1] >= lower - x:
-                left -= 1
-            ans += min(right, j) - min(left, j)
+            while r and nums[r - 1] > upper - x:
+                r -= 1
+            while l and nums[l - 1] >= lower - x:
+                l -= 1
+            # 在方法一中，二分的结果必须 <= j，方法二同理
+            ans += min(r, j) - min(l, j)
         return ans
 ```
 
@@ -123,16 +202,16 @@ class Solution {
     public long countFairPairs(int[] nums, int lower, int upper) {
         Arrays.sort(nums);
         long ans = 0;
-        int left = nums.length;
-        int right = nums.length;
+        int l = nums.length;
+        int r = nums.length;
         for (int j = 0; j < nums.length; j++) {
-            while (right > 0 && nums[right - 1] > upper - nums[j]) {
-                right--;
+            while (r > 0 && nums[r - 1] > upper - nums[j]) {
+                r--;
             }
-            while (left > 0 && nums[left - 1] >= lower - nums[j]) {
-                left--;
+            while (l > 0 && nums[l - 1] >= lower - nums[j]) {
+                l--;
             }
-            ans += Math.min(right, j) - Math.min(left, j);
+            ans += Math.min(r, j) - Math.min(l, j);
         }
         return ans;
     }
@@ -145,42 +224,86 @@ public:
     long long countFairPairs(vector<int>& nums, int lower, int upper) {
         ranges::sort(nums);
         long long ans = 0;
-        int left = nums.size(), right = left;
+        int l = nums.size(), r = l;
         for (int j = 0; j < nums.size(); j++) {
-            while (right && nums[right - 1] > upper - nums[j]) {
-                right--;
+            while (r && nums[r - 1] > upper - nums[j]) {
+                r--;
             }
-            while (left && nums[left - 1] >= lower - nums[j]) {
-                left--;
+            while (l && nums[l - 1] >= lower - nums[j]) {
+                l--;
             }
-            ans += min(right, j) - min(left, j);
+            ans += min(r, j) - min(l, j);
         }
         return ans;
     }
 };
 ```
 
+```c [sol-C]
+
+```
+
 ```go [sol-Go]
 func countFairPairs(nums []int, lower, upper int) (ans int64) {
     slices.Sort(nums)
-    left, right := len(nums), len(nums)
+    l, r := len(nums), len(nums)
     for j, x := range nums {
-        for right > 0 && nums[right-1] > upper-x {
-            right--
+        for r > 0 && nums[r-1] > upper-x {
+            r--
         }
-        for left > 0 && nums[left-1] >= lower-x {
-            left--
+        for l > 0 && nums[l-1] >= lower-x {
+            l--
         }
-        ans += int64(min(right, j)-min(left, j))
+        ans += int64(min(r, j)-min(l, j))
     }
     return
+}
+```
+
+```js [sol-JavaScript]
+var countFairPairs = function(nums, lower, upper) {
+    nums.sort((a, b) => a - b);
+    let ans = 0, l = nums.length, r = nums.length;
+    for (let j = 0; j < nums.length; j++) {
+        while (r && nums[r - 1] > upper - nums[j]) {
+            r--;
+        }
+        while (l && nums[l - 1] >= lower - nums[j]) {
+            l--;
+        }
+        // 在方法一中，二分的结果必须 <= j，方法二同理
+        ans += Math.min(r, j) - Math.min(l, j);
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_fair_pairs(mut nums: Vec<i32>, lower: i32, upper: i32) -> i64 {
+        nums.sort_unstable();
+        let mut ans = 0;
+        let mut l = nums.len();
+        let mut r = nums.len();
+        for (j, &x) in nums.iter().enumerate() {
+            while r > 0 && nums[r - 1] > upper - x {
+                r -= 1;
+            }
+            while l > 0 && nums[l - 1] >= lower - x {
+                l -= 1;
+            }
+            // 在方法一中，二分的结果必须 <= j，方法二同理
+            ans += r.min(j) - l.min(j);
+        }
+        ans as _
+    }
 }
 ```
 
 ### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销，仅用到若干额外变量。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
 ## 分类题单
 
