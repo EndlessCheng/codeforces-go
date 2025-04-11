@@ -24,7 +24,7 @@ class Solution:
         nums.sort()
         ans = 0
         for j, x in enumerate(nums):
-            # 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+            # 注意要在 [0, j-1] 中二分，因为题目要求两个下标 i < j
             r = bisect_right(nums, upper - x, 0, j)
             l = bisect_left(nums, lower - x, 0, j)
             ans += r - l  
@@ -37,7 +37,7 @@ class Solution {
         Arrays.sort(nums);
         long ans = 0;
         for (int j = 0; j < nums.length; j++) {
-            // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+            // 注意要在 [0, j-1] 中二分，因为题目要求两个下标 i < j
             int r = lowerBound(nums, j, upper - nums[j] + 1);
             int l = lowerBound(nums, j, lower - nums[j]);
             ans += r - l;
@@ -68,7 +68,7 @@ public:
         ranges::sort(nums);
         long long ans = 0;
         for (int j = 0; j < nums.size(); j++) {
-            // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+            // 注意要在 [0, j-1] 中二分，因为题目要求两个下标 i < j
             auto r = upper_bound(nums.begin(), nums.begin() + j, upper - nums[j]);
             auto l = lower_bound(nums.begin(), nums.begin() + j, lower - nums[j]);
             ans += r - l;
@@ -101,7 +101,7 @@ long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
     qsort(nums, numsSize, sizeof(int), cmp);
     long long ans = 0;
     for (int j = 0; j < numsSize; j++) {
-        // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+        // 注意要在 [0, j-1] 中二分，因为题目要求两个下标 i < j
         int r = lowerBound(nums, j, upper - nums[j] + 1);
         int l = lowerBound(nums, j, lower - nums[j]);
         ans += r - l;
@@ -114,7 +114,7 @@ long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
 func countFairPairs(nums []int, lower, upper int) (ans int64) {
     slices.Sort(nums)
     for j, x := range nums {
-        // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+        // 注意要在 [0, j-1] 中二分，因为题目要求两个下标 i < j
         r := sort.SearchInts(nums[:j], upper-x+1)
         l := sort.SearchInts(nums[:j], lower-x)
         ans += int64(r - l)
@@ -128,7 +128,7 @@ var countFairPairs = function(nums, lower, upper) {
     nums.sort((a, b) => a - b);
     let ans = 0;
     for (let j = 0; j < nums.length; j++) {
-        // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+        // 注意要在 [0, j-1] 中二分，因为题目要求两个下标 i < j
         const r = lowerBound(nums, j, upper - nums[j] + 1);
         const l = lowerBound(nums, j, lower - nums[j]);
         ans += r - l;
@@ -157,7 +157,7 @@ impl Solution {
         nums.sort_unstable();
         let mut ans = 0;
         for j in 0..nums.len() {
-            // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+            // 注意要在 [0, j-1] 中二分，因为题目要求两个下标 i < j
             let l = nums[..j].partition_point(|&x| x < lower - nums[j]);
             let r = nums[..j].partition_point(|&x| x <= upper - nums[j]);
             ans += r - l;
