@@ -163,7 +163,8 @@ class Solution {
         m = n / 2;
         diffLh = n - lowS.length;
 
-        memo = new int[n][diffLh + 1][m * 18 + 1]; // 注意 start <= diffLh
+        // dfs 中的 start <= diffLh，-9m <= diff <= 9m
+        memo = new int[n][diffLh + 1][m * 18 + 1];
         for (int[][] mat : memo) {
             for (int[] row : mat) {
                 Arrays.fill(row, -1);
@@ -219,7 +220,8 @@ public:
         int n = high_s.size(), m = n / 2;
         int diff_lh = n - low_s.size();
 
-        vector memo(n, vector(diff_lh + 1, vector<int>(m * 18 + 1, -1))); // 注意 start <= diff_lh
+        // dfs 中的 start <= diff_lh，-9m <= diff <= 9m
+        vector memo(n, vector(diff_lh + 1, vector<int>(m * 18 + 1, -1)));
         auto dfs = [&](this auto&& dfs, int i, int start, int diff, bool limit_low, bool limit_high) -> int {
             if (i == n) {
                 return diff == m * 9;
@@ -273,7 +275,7 @@ func countSymmetricIntegers(low, high int) int {
     for i := range memo {
         memo[i] = make([][]int, diffLH+1) // start <= diffLH
         for j := range memo[i] {
-            memo[i][j] = make([]int, m*18+1)
+            memo[i][j] = make([]int, m*18+1) // -9m <= diff <= 9m
             for k := range memo[i][j] {
                 memo[i][j][k] = -1
             }
