@@ -698,7 +698,8 @@ func searchCollection() {
 	// - https://www.luogu.com.cn/record/88785388
 	// https://www.luogu.com.cn/problem/P5194
 	// https://www.luogu.com.cn/problem/P4799
-	// https://codeforces.com/problemset/problem/327/E
+	// https://codeforces.com/problemset/problem/327/E 2300
+	// https://codeforces.com/problemset/problem/912/E 2400
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
 	// NEERC 2003 https://codeforces.com/gym/101388 J
 

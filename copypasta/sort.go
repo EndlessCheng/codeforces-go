@@ -93,6 +93,7 @@ https://codeforces.com/contest/1993/problem/D 2200
 https://atcoder.jp/contests/abc155/tasks/abc155_d 1845 综合
 https://atcoder.jp/contests/abc149/tasks/abc149_e 1905
 https://atcoder.jp/contests/arc173/tasks/arc173_a 也可以用九进制
+https://codeforces.com/problemset/problem/912/E 2400
 
 ### 0-1 分数规划
 题目见下面的「search01」
