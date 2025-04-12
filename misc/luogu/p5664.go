@@ -29,7 +29,7 @@ func p5664(in io.Reader, out io.Writer) {
 		for i, r := range a {
 			v := r[j]
 			nf := make([]int, n*2+3)
-			for d := 0; d <= n*2; d++ {
+			for d := n - i - 1; d <= n+i+1; d++ {
 				nf[d+1] = (f[d+1] + f[d]*v + f[d+2]*(s[i]-v)) % mod
 			}
 			f = nf
