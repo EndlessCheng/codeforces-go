@@ -187,7 +187,7 @@ func countGoodIntegers(n, k int) (ans int64) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(10^m\cdot n\log n)$，其中 $m = \left\lfloor\dfrac{n-1}{2}\right\rfloor$。
-- 空间复杂度：$\mathcal{O}(10^m\cdot n)$。
+- 空间复杂度：粗略估计是 $\mathcal{O}(10^m\cdot n)$。紧一点的估计是 $\mathcal{O}\left(\binom {m+D} m \cdot n\right)$，其中 $D=9$。本质上计算的是一个长为 $m$ 的非递减数组的个数，其中数组元素范围是 $[0,D]$，这有 $\binom {m+D} m$ 个。但考虑到回文数还需要被 $k$ 整除，实际比这少。可以转化成网格图路径证明，详见 [题解方法二](https://leetcode.cn/problems/find-the-count-of-monotonic-pairs-ii/solutions/2876190/qian-zhui-he-you-hua-dppythonjavacgo-by-3biek/)。
 
 ## 分类题单
 
