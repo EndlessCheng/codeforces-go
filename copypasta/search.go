@@ -34,6 +34,7 @@ https://atcoder.jp/contests/abc233/tasks/abc233_c
 https://atcoder.jp/contests/abc319/tasks/abc319_c
 https://atcoder.jp/contests/abc197/tasks/abc197_c
 https://atcoder.jp/contests/abc396/tasks/abc396_d 图
+https://www.luogu.com.cn/problem/P2567 优化搜索顺序：从大的数开始，可以提前退出；如果从小的数开始，后面会做大量无用功
 
 https://oeis.org/A038206 Can express a(n) with the digits of a(n)^2 in order, only adding plus signs
 - LC2698 https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/
