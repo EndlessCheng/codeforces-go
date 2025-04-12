@@ -14,6 +14,9 @@ https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
 https://en.wikipedia.org/wiki/Binomial_theorem
 
+大量组合恒等式
+https://zhuanlan.zhihu.com/p/533488241
+
 鸽巢原理（抽屉原理） pigeonhole principle
 https://en.wikipedia.org/wiki/Pigeonhole_principle
 https://codeforces.com/problemset/problem/618/F
@@ -37,7 +40,8 @@ LC2954 https://leetcode.cn/problems/count-the-number-of-infection-sequences/ 264
 LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会员题）
 - [LCP 25. 古董键盘](https://leetcode.cn/problems/Uh984O/)
 另见下面的「放球问题」
-入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
+https://atcoder.jp/contests/abc202/tasks/abc202_d 入门
+https://atcoder.jp/contests/abc178/tasks/abc178_d
 https://codeforces.com/problemset/problem/1879/C 1300
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
@@ -67,6 +71,7 @@ https://codeforces.com/problemset/problem/1342/E 2300
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
 https://codeforces.com/problemset/problem/1608/D 2400
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
+https://codeforces.com/problemset/problem/348/D 2500 不相交路径
 加强版 https://codeforces.com/contest/1838/problem/E 2500
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
@@ -74,6 +79,9 @@ https://codeforces.com/problemset/problem/140/E 2600 推荐
 https://atcoder.jp/contests/abc290/tasks/abc290_f
 https://atcoder.jp/contests/abc160/tasks/abc160_f 2048
 todo https://www.luogu.com.cn/problem/P6017
+
+期望
+https://atcoder.jp/contests/abc194/tasks/abc194_d
 
 差分、前缀和与组合数
 https://codeforces.com/contest/1832/problem/E
@@ -133,7 +141,12 @@ a(n) = 长度为 n 的字符串的所有子串长度之和
 todo 可重集排列组合 https://oi-wiki.org/math/combination/
 todo https://codeforces.com/problemset/problem/451/E
 不相邻的排列 https://oi-wiki.org/math/combination/#_10
-错排 https://oeis.org/A000166 subfactorial numbers  a[0]=1, a[1]=0, a[n]=(n-1)*(a[n-1]+a[n-2])
+错排 https://oeis.org/A000166 subfactorial numbers  D[0]=1, D[1]=0, D[n]=(n-1)*(D[n-1]+D[n-2])
+证明一
+- an 有 n-1 种取值，不失一般性，设 an=1
+- 分类讨论，如果 a1=n，那么去掉 a1 和 an，问题变成 D(n-2)
+- 如果 a1≠n，那么交换 a1 和 an，并去掉 a1，问题变成 D(n-1)（注意交换前后是一一对应的）
+证明二（旧）
 - 理解：对于每个数，必须有 n-1 个其余可选位置
 - 当有 n-1 个数的时候，对于每个数，必须有 n-2 个其余可选位置
 - 所以分类讨论的时候，如果 n 去 k，k 没有去 n，那么 k 有 n-2 个其余可选位置，符合定义，这时才能说转换成了 D(n-1)
