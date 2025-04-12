@@ -23,16 +23,19 @@ func p5664(in io.Reader, out io.Writer) {
 		ans = ans * (s[i] + 1) % mod
 	}
 	ans--
+	f := make([]int, n*2+3)
 	for j := 0; j < m; j++ {
-		f := make([]int, n*2+3)
+		clear(f)
 		f[n+1] = 1
 		for i, r := range a {
 			v := r[j]
-			nf := make([]int, n*2+3)
+			w := s[i] - v
+			old := 0
 			for d := n - i - 1; d <= n+i+1; d++ {
-				nf[d+1] = (f[d+1] + f[d]*v + f[d+2]*(s[i]-v)) % mod
+				t := f[d+1]
+				f[d+1] = (f[d+1] + old*v + f[d+2]*w) % mod
+				old = t
 			}
-			f = nf
 		}
 		for _, v := range f[n+2:] {
 			ans -= v
