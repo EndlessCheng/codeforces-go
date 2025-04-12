@@ -109,7 +109,10 @@ func countSymmetricIntegers(low, high int) (ans int) {
 - 如果前面没有填数字，且剩余数位个数是奇数，那么当前数位不能填数字（因为对称整数的长度必须是偶数），往后递归。在这种情况下，如果 $\textit{lo}>0$，那么必须填数字，但这不合法，直接返回 $0$。
 - 否则，枚举第 $i$ 位填数字 $d=\textit{lo},\textit{lo}+1,\ldots,\textit{hi}$。如果之前没有填过数字，且当前填的数字大于 $0$，那么记录 $\textit{start}=i$。如果 $i< \dfrac{\textit{start}+n}{2}$，说明我们在左半，把 $\textit{diff}$ 增加 $d$，否则把 $\textit{diff}$ 减少 $d$。
 
-**递归终点**：$i=n$ 时，如果 $\textit{diff}=0$，说明我们成功构造出一个对称整数，返回 $1$，否则返回 $0$。
+**递归终点**：
+
+- 如果 $\textit{diff}<0$，说明我们当前在右半，且右半元素和已经大于左半元素和了，一定不合法，返回 $0$。
+- $i=n$ 时，如果 $\textit{diff}=0$，说明我们成功构造出一个对称整数，返回 $1$，否则返回 $0$。
 
 **递归入口**：$\textit{dfs}(0, -1, 0, \texttt{true}, \texttt{true})$，表示：
 
@@ -126,6 +129,8 @@ class Solution:
 
         @cache
         def dfs(i: int, start: int, diff: int, limit_low: bool, limit_high: bool) -> int:
+            if diff < 0:
+                return 0
             if i == n:
                 return 1 if diff == 0 else 0
 
@@ -160,24 +165,24 @@ class Solution {
         lowS = String.valueOf(low).toCharArray();
         highS = String.valueOf(high).toCharArray();
         n = highS.length;
-        m = n / 2;
         diffLh = n - lowS.length;
 
-        // dfs 中的 start <= diffLh，-9m <= diff <= 9m
-        memo = new int[n][diffLh + 1][m * 18 + 1];
+        // dfs 中的 start <= diffLh，左半元素和 <= floor(n/2) * 9
+        memo = new int[n][diffLh + 1][n / 2 * 9 + 1];
         for (int[][] mat : memo) {
             for (int[] row : mat) {
                 Arrays.fill(row, -1);
             }
         }
-
-        // 初始化 diff = m * 9，避免出现负数导致 memo 下标越界
-        return dfs(0, -1, m * 9, true, true);
+        return dfs(0, -1, 0, true, true);
     }
 
     private int dfs(int i, int start, int diff, boolean limitLow, boolean limitHigh) {
+        if (diff < 0) {
+            return 0;
+        }
         if (i == n) {
-            return diff == m * 9 ? 1 : 0;
+            return diff == 0 ? 1 : 0;
         }
 
         // start 当 isNum 用
@@ -217,14 +222,17 @@ class Solution {
 public:
     int countSymmetricIntegers(int low, int high) {
         string low_s = to_string(low), high_s = to_string(high);
-        int n = high_s.size(), m = n / 2;
+        int n = high_s.size();
         int diff_lh = n - low_s.size();
 
-        // dfs 中的 start <= diff_lh，-9m <= diff <= 9m
-        vector memo(n, vector(diff_lh + 1, vector<int>(m * 18 + 1, -1)));
+        // dfs 中的 start <= diff_lh，左半元素和 <= floor(n/2) * 9
+        vector memo(n, vector(diff_lh + 1, vector<int>(n / 2 * 9 + 1, -1)));
         auto dfs = [&](this auto&& dfs, int i, int start, int diff, bool limit_low, bool limit_high) -> int {
+            if (diff < 0) {
+                return 0;
+            }
             if (i == n) {
-                return diff == m * 9;
+                return diff == 0;
             }
 
             // start 当 is_num 用
@@ -256,9 +264,7 @@ public:
             }
             return res;
         };
-
-        // 初始化 diff = m * 9，避免出现负数导致 memo 下标越界
-        return dfs(0, -1, m * 9, true, true);
+        return dfs(0, -1, 0, true, true);
     }
 };
 ```
@@ -268,14 +274,13 @@ func countSymmetricIntegers(low, high int) int {
     lowS := strconv.Itoa(low)
     highS := strconv.Itoa(high)
     n := len(highS)
-    m := n / 2
     diffLH := n - len(lowS)
 
     memo := make([][][]int, n)
     for i := range memo {
         memo[i] = make([][]int, diffLH+1) // start <= diffLH
         for j := range memo[i] {
-            memo[i][j] = make([]int, m*18+1) // -9m <= diff <= 9m
+            memo[i][j] = make([]int, n/2*9+1) // 左半元素和 <= floor(n/2) * 9
             for k := range memo[i][j] {
                 memo[i][j][k] = -1
             }
@@ -283,16 +288,19 @@ func countSymmetricIntegers(low, high int) int {
     }
     var dfs func(int, int, int, bool, bool) int
     dfs = func(i, start, diff int, limitLow, limitHigh bool) (res int) {
+        if diff < 0 {
+            return
+        }
         if i == n {
-            if diff != 0 {
-                return 0
+            if diff == 0 {
+                return 1
             }
-            return 1
+            return
         }
 
         // start 当 isNum 用
         if start != -1 && !limitLow && !limitHigh {
-            p := &memo[i][start][diff+m*9]
+            p := &memo[i][start][diff]
             if *p != -1 {
                 return *p
             }
