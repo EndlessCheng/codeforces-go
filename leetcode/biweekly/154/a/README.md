@@ -8,7 +8,7 @@
 
 至少要操作 $s\bmod k$ 次，才能把 $s$ 变成 $k$ 的倍数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+[视频讲解](https://www.bilibili.com/video/BV1dSdBYEEW6/)
 
 ```py [sol-Python3]
 class Solution:

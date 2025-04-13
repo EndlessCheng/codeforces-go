@@ -1,15 +1,17 @@
 虽然题目要求 $i\le j\le k$，但因为异或运算满足交换律 $a\oplus b = b\oplus a$，实际上我们可以随意选。所以本质上，这题就是从 $\textit{nums}$ 中（可重复地）选三个数。
 
-首先，算出任意两数异或的所有可能值，在本题的数据范围下，这不会超过 $2^{11}-1=2047$。
+暴力做法是三重循环，太慢了，如何优化？
 
-然后遍历两数异或的所有可能值，再与 $\textit{nums}$ 中的数计算异或，就得到了三数异或的所有可能值。
+注意到，任意两数异或的所有可能值，在本题的数据范围下 $\le 2^{11}-1=2047$，远远小于 $n^2$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+所以，可以先用一个二重循环，算出任意两数异或的所有可能值。然后，再用一个二重循环，遍历两数异或的所有可能值，以及 $\textit{nums}$，这样计算的就是三数异或了。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1dSdBYEEW6/?t=11m44s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def uniqueXorTriplets(self, nums: List[int]) -> int:
-        nums = list(set(nums))  # 优化：去重可以减少循环次数
+        nums = list(set(nums))  # 优化：去重，减少循环次数
         st = {x ^ y for x, y in combinations(nums, 2)} | {0}
         return len({xy ^ z for xy in st for z in nums})
 ```

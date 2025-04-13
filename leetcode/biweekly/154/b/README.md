@@ -20,7 +20,7 @@
 
 综上所述，如果 $n\le 2$，返回 $n$，否则返回 $2^L$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1dSdBYEEW6/?t=57s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
