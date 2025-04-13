@@ -240,7 +240,27 @@ public:
 ```
 
 ```c [sol-C]
+#define MIN(a, b) ((b) < (a) ? (b) : (a))
 
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
+    qsort(nums, numsSize, sizeof(int), cmp);
+    long long ans = 0;
+    int l = numsSize, r = numsSize;
+    for (int j = 0; j < numsSize; j++) {
+        while (r && nums[r - 1] > upper - nums[j]) {
+            r--;
+        }
+        while (l && nums[l - 1] >= lower - nums[j]) {
+            l--;
+        }
+        ans += MIN(r, j) - MIN(l, j);
+    }
+    return ans;
+}
 ```
 
 ```go [sol-Go]
