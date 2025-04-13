@@ -120,7 +120,7 @@ class Solution {
             for (char c : s) {
                 rem = rem * 10 + c;
                 int q = rem / b; // 商
-                if (q || !nxt_s.empty()) {
+                if (q || !nxt_s.empty()) { // 忽略前导零
                     nxt_s.push_back(q);
                 }
                 rem = rem % b;
@@ -221,8 +221,8 @@ func countNumbers(l, r string, b int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(bn^2)$，其中 $n$ 是 $r$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n^2)$，单个状态的计算时间为 $\mathcal{O}(b)$，所以总的时间复杂度为 $\mathcal{O}(bn^2)$。
-- 空间复杂度：$\mathcal{O}(n^2)$。保存多少状态，就需要多少空间。
+- 时间复杂度：$\mathcal{O}(n^2 + nb^2)$，其中 $n$ 是 $r$ 的长度。进制转换的时间复杂度为 $\mathcal{O}(n^2)$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nb)$，单个状态的计算时间为 $\mathcal{O}(b)$，所以动态规划的时间复杂度为 $\mathcal{O}(nb^2)$。
+- 空间复杂度：$\mathcal{O}(nb)$。保存多少状态，就需要多少空间。
 
 更多相似题目，见下面动态规划题单中的「**十、数位 DP**」。
 
