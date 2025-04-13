@@ -115,6 +115,12 @@ n 为奇数时：m=n/2, m*(m+1)*(4*m+5)/6 https://oeis.org/A016061
 综合：m*(m+1)*(m*4+n%2*6-1)/6
 - https://atcoder.jp/contests/abc290/tasks/abc290_e
 
+光滑数 Smooth number
+设 u = log_p M，那么有 O(M * ρ(u)) 个 <= M 的 p-光滑数，其中密度 ρ(u)=u^O(-u) 为 Dickman 函数，是一个在 (0,1] 中的数
+https://en.wikipedia.org/wiki/Smooth_number
+https://en.wikipedia.org/wiki/Dickman_function
+LC3509 https://leetcode.cn/problems/maximum-product-of-subsequences-with-an-alternating-sum-equal-to-k/
+
 处理绝对值·曼哈顿距离转切比雪夫距离
 见 geometry.go
 
@@ -1294,6 +1300,8 @@ func _(abs func(int) int) {
 		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221 https://www.luogu.com.cn/problem/U103401
 	             加强版 https://ac.nowcoder.com/acm/contest/82/A
 
+		证明 https://math.stackexchange.com/questions/4526920/an-upper-bound-for-the-number-of-divisors
+		https://math.stackexchange.com/a/1053070
 		max(d(i)), i=1..10^n https://oeis.org/A066150
 			方便估计复杂度 - 近似为开立方
 			4, 12, 32,
@@ -3015,12 +3023,14 @@ func _(abs func(int) int) {
 		_ = []interface{}{C, P, H, Catalan, Motzkin}
 	}
 
+	// 考虑递推式 C(n,i) = C(n,i-1) * (n+1-i) / i，由于 C(n,i) 是整数，所以除法一定能整除
 	// https://leetcode.cn/problems/unique-paths/solutions/3062432/liang-chong-fang-fa-dong-tai-gui-hua-zu-o5k32/
 	comb := func(n, k int) int {
 		k = min(k, n-k)
 		res := 1
 		for i := 1; i <= k; i++ {
 			res = res * (n + 1 - i) / i
+			//if res > upperLimit { return upperLimit + 1 }
 		}
 		return res
 	}
@@ -3040,6 +3050,65 @@ func _(abs func(int) int) {
 			b = b * i % mod
 		}
 		return a * pow(b, mod-2) % mod
+	}
+
+	// 可重排列，带上界约束
+	// https://leetcode.cn/problems/smallest-palindromic-rearrangement-ii/
+	permRepeat := func(n int, cnt []int, upperLimit int) int {
+		res := 1
+		for _, c := range cnt {
+			if c == 0 {
+				continue
+			}
+			// 先从 n 个里面选 c 个位置填当前字母
+			combRes := comb(n, c)
+			if res > upperLimit/combRes {
+				return upperLimit + 1 // 太大了
+			}
+			res *= combRes
+			// 从剩余位置中选位置填下一个字母
+			n -= c
+		}
+		return res
+	}
+
+	// 生成数组 a 的第 k 小的可重排列
+	// 这里假定 a[i] 的范围从 0 到 max(a)
+	// k 从 1 开始
+	// 如果没有第 k 小的，返回 nil
+	// https://leetcode.cn/problems/smallest-palindromic-rearrangement-ii/
+	kthPermRepeat := func(a []int, k int) []int {
+		n := len(a)
+		cnt := make([]int, slices.Max(a)+1) // 26
+		for _, v := range a {
+			cnt[v]++
+		}
+
+		// k 太大
+		if permRepeat(n, cnt, k) < k {
+			return nil
+		}
+
+		ans := make([]int, n)
+		for i := range ans {
+			// 试填 j，看是否有足够的排列
+			for j := range cnt {
+				if cnt[j] == 0 {
+					continue
+				}
+				cnt[j]--
+				// 剩余位置的排列个数
+				p := permRepeat(n-i-1, cnt, k)
+				// 有足够的排列
+				if p >= k {
+					ans[i] = j
+					break
+				}
+				k -= p // k 太大，要填更大的数（去掉填 j 时的排列个数）
+				cnt[j]++
+			}
+		}
+		return ans
 	}
 
 	// 另类组合数求法
@@ -3083,6 +3152,7 @@ func _(abs func(int) int) {
 	//    将 n 个元素拆分为 k 个非空集的方法数
 	//    用容斥计算单个项 S2(n,k) = (1/k!) * ∑{i=0..k} (-1)^(k-i)*C(k, i)*i^n
 	//         https://codeforces.com/problemset/problem/1342/E
+	//         https://www.luogu.com.cn/problem/P1287
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
 	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
 	//    LC1692 https://leetcode.cn/problems/count-ways-to-distribute-candies/
@@ -3102,7 +3172,8 @@ func _(abs func(int) int) {
 		s[0][0] = 1
 		for i := 1; i <= n; i++ {
 			for j := 1; j <= i; j++ { // j <= K
-				s[i][j] = (s[i-1][j-1] + (i-1)*s[i-1][j]) % mod
+				// 注意 s 和下面的 s2 的区别
+				s[i][j] = (s[i-1][j-1] + s[i-1][j]*(i-1)) % mod
 			}
 		}
 		return s[n][k]
@@ -3116,7 +3187,7 @@ func _(abs func(int) int) {
 		s2[0][0] = 1
 		for i := 1; i <= n; i++ {
 			for j := 1; j <= i; j++ {
-				s2[i][j] = (s2[i-1][j-1] + j*s2[i-1][j]) % mod
+				s2[i][j] = (s2[i-1][j-1] + s2[i-1][j]*j) % mod
 			}
 		}
 		return s2[n][k]
@@ -3682,9 +3753,9 @@ func _(abs func(int) int) {
 		babyStepGiantStep, exBSGS,
 		modSqrt, isQuadraticResidue,
 
-		// 阶乘，组合
+		// 阶乘，组合，排列（可重排列）
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf,
-		initComb, comb, combMod,
+		initComb, comb, combMod, permRepeat, kthPermRepeat,
 		stirling1, stirling2, stirling2RowPoly,
 		bellTriangle, bellPoly, setPartition,
 
