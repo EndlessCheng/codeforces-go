@@ -6,9 +6,9 @@
 
 要求字典序最小，那么把左半部分排序即可。右半部分通过反转左半部分得到。
 
-> 注：也可以用计数排序。
-
 [视频讲解](https://www.bilibili.com/video/BV1e3dBYLEDz/?t=1m21s)
+
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -78,8 +78,103 @@ func smallestPalindrome(s string) string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $s$ 的长度。用计数排序可以做到线性。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 写法二：计数排序
+
+```py [sol-Python3]
+class Solution:
+    def smallestPalindrome(self, s: str) -> str:
+        n = len(s)
+        cnt = Counter(s[:n // 2])
+
+        ans = []
+        for c in ascii_lowercase:
+            ans.append(c * cnt[c])
+        ans = ''.join(ans)
+
+        t = ans
+        if n % 2:
+            ans += s[n // 2]
+        return ans + t[::-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public String smallestPalindrome(String s) {
+        int n = s.length();
+        int[] cnt = new int[26];
+        for (int i = 0; i < n / 2; i++) {
+            cnt[s.charAt(i) - 'a']++;
+        }
+
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < 26; i++) {
+            ans.repeat('a' + i, cnt[i]);
+        }
+
+        StringBuilder t = new StringBuilder(ans);
+        if (n % 2 > 0) {
+            ans.append(s.charAt(n / 2));
+        }
+        ans.append(t.reverse());
+        return ans.toString();
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string smallestPalindrome(string s) {
+        int n = s.size();
+        int cnt[26]{};
+        for (int i = 0; i < n / 2; i++) {
+            cnt[s[i] - 'a']++;
+        }
+
+        string ans;
+        for (int i = 0; i < 26; i++) {
+            ans += string(cnt[i], 'a' + i);
+        }
+
+        string t = ans;
+        if (n % 2) {
+            ans += s[n / 2];
+        }
+        ranges::reverse(t);
+        return ans + t;
+    }
+};
+```
+
+```go [sol-Go]
+func smallestPalindrome(s string) string {
+	n := len(s)
+	cnt := [26]int{}
+	for _, b := range s[:n/2] {
+		cnt[b-'a']++
+	}
+
+	ans := make([]byte, 0, n)
+	for i, c := range cnt {
+		ans = append(ans, bytes.Repeat([]byte{'a' + byte(i)}, c)...)
+	}
+
+	t := slices.Clone(ans)
+	if n%2 > 0 {
+		ans = append(ans, s[n/2])
+	}
+	slices.Reverse(t)
+	return string(append(ans, t...))
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(n + |\Sigma|)$ 或 $\mathcal{O}(n)$，取决于实现。
 
 ## 分类题单
 
