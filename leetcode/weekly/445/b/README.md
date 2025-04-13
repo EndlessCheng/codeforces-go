@@ -30,7 +30,7 @@ class Solution {
         char[] t = s.substring(0, m).toCharArray();
         Arrays.sort(t);
 
-        StringBuilder ans = new StringBuilder();
+        StringBuilder ans = new StringBuilder(n); // 预分配空间
         ans.append(t);
         if (n % 2 > 0) {
             ans.append(s.charAt(m));
@@ -109,7 +109,7 @@ class Solution {
             cnt[s.charAt(i) - 'a']++;
         }
 
-        StringBuilder ans = new StringBuilder();
+        StringBuilder ans = new StringBuilder(n); // 预分配空间
         for (int i = 0; i < 26; i++) {
             ans.repeat('a' + i, cnt[i]);
         }
@@ -157,7 +157,7 @@ func smallestPalindrome(s string) string {
 		cnt[b-'a']++
 	}
 
-	ans := make([]byte, 0, n)
+	ans := make([]byte, 0, n) // 预分配空间
 	for i, c := range cnt {
 		ans = append(ans, bytes.Repeat([]byte{'a' + byte(i)}, c)...)
 	}

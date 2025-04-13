@@ -13,7 +13,7 @@ func smallestPalindrome(s string) string {
 		cnt[b-'a']++
 	}
 
-	ans := make([]byte, 0, n)
+	ans := make([]byte, 0, n) // 预分配空间
 	for i, c := range cnt {
 		ans = append(ans, bytes.Repeat([]byte{'a' + byte(i)}, c)...)
 	}
