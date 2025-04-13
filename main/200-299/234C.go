@@ -30,4 +30,4 @@ func cf234C(in io.Reader, out io.Writer) {
 	Fprint(out, ans)
 }
 
-//func main() { cf234C(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { r, _ := os.Open("input.txt"); w, _ := os.Create("output.txt"); cf234C(bufio.NewReader(r), w) }
