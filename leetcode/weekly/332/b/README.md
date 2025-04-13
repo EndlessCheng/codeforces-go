@@ -211,6 +211,7 @@ class Solution {
             while (l > 0 && nums[l - 1] >= lower - nums[j]) {
                 l--;
             }
+            // 在方法一中，二分的结果必须 <= j，方法二同理
             ans += Math.min(r, j) - Math.min(l, j);
         }
         return ans;
@@ -232,6 +233,7 @@ public:
             while (l && nums[l - 1] >= lower - nums[j]) {
                 l--;
             }
+            // 在方法一中，二分的结果必须 <= j，方法二同理
             ans += min(r, j) - min(l, j);
         }
         return ans;
@@ -257,6 +259,7 @@ long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
         while (l && nums[l - 1] >= lower - nums[j]) {
             l--;
         }
+        // 在方法一中，二分的结果必须 <= j，方法二同理
         ans += MIN(r, j) - MIN(l, j);
     }
     return ans;
@@ -274,6 +277,7 @@ func countFairPairs(nums []int, lower, upper int) (ans int64) {
         for l > 0 && nums[l-1] >= lower-x {
             l--
         }
+        // 在方法一中，二分的结果必须 <= j，方法二同理
         ans += int64(min(r, j)-min(l, j))
     }
     return
