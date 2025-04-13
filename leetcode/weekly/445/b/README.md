@@ -90,8 +90,8 @@ class Solution:
         cnt = Counter(s[:n // 2])
 
         ans = []
-        for c in ascii_lowercase:
-            ans.append(c * cnt[c])
+        for ch in ascii_lowercase:
+            ans.append(ch * cnt[ch])
         ans = ''.join(ans)
 
         t = ans
