@@ -34,7 +34,7 @@ func (a Int) divs(b Int) Int { a.Quo(a.Int, b.Int); return a }
 func (a Int) mods(b Int) Int { a.Rem(a.Int, b.Int); return a }
 func (a Int) negs() Int      { a.Neg(a.Int); return a }
 
-func (a Int) set(b Int) Int { a.Set(b.Int); return a }
+func (a Int) set(b Int) Int { a.Set(b.Int); return a } // 复制
 func (a Int) cmp(b Int) int { return a.Cmp(b.Int) }
 func (a Int) add(b Int) Int { return Int{new(big.Int).Add(a.Int, b.Int)} }
 func (a Int) sub(b Int) Int { return Int{new(big.Int).Sub(a.Int, b.Int)} }
