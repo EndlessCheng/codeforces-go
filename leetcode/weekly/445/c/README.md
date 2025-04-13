@@ -93,7 +93,7 @@ class Solution:
                 if p >= k:  # 有足够的排列
                     left_s[i] = ascii_lowercase[j]
                     break
-                k -= p  # k 太大，要填更大的字母
+                k -= p  # k 太大，要填更大的字母（类似搜索树剪掉了一个大小为 p 的子树）
                 cnt[j] += 1
 
         ans = ''.join(left_s)
@@ -128,7 +128,7 @@ class Solution {
                     leftS[i] = (char) ('a' + j);
                     break;
                 }
-                k -= p; // k 太大，要填更大的字母
+                k -= p; // k 太大，要填更大的字母（类似搜索树剪掉了一个大小为 p 的子树）
                 cnt[j]++;
             }
         }
@@ -235,7 +235,7 @@ public:
                     left_s[i] = 'a' + j;
                     break;
                 }
-                k -= p; // k 太大，要填更大的字母
+                k -= p; // k 太大，要填更大的字母（类似搜索树剪掉了一个大小为 p 的子树）
                 cnt[j]++;
             }
         }
@@ -308,7 +308,7 @@ func smallestPalindrome(s string, k int) string {
 				leftS[i] = 'a' + byte(j)
 				break
 			}
-			k -= p // k 太大，要填更大的字母
+			k -= p // k 太大，要填更大的字母（类似搜索树剪掉了一个大小为 p 的子树）
 			cnt[j]++
 		}
 	}
