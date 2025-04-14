@@ -225,6 +225,28 @@ func (t *treap[K]) sumGreater(x K) int { return t.root.getSum() - t.preSum(t.upp
 // >= x 的元素和
 func (t *treap[K]) sumGreaterEqual(x K) int { return t.root.getSum() - t.preSum(t.lowerBoundIndex(x)) }
 
+// 返回首个 >= lowS 的前缀和的下标，以及对应的前缀和是多少（如果要算后缀和，需要反向 comparator）
+// 注意前缀和的下标比数组的下标多 1，如果需要映射到数组的下标，需要把 cnt 减一
+// https://leetcode.cn/problems/smallest-palindromic-rearrangement-ii/submissions/622150575/
+func (t *treap[K]) lowerBoundPreSum(lowS int) (cnt, sum int) {
+	for o := t.root; o != nil; {
+		if sum+o.son[0].getSum() >= lowS {
+			o = o.son[0]
+		} else {
+			cnt += o.son[0].size() + o.keyCnt
+			sum += o.son[0].getSum() + o.keySum
+			if sum >= lowS {
+				return
+			}
+			o = o.son[1]
+		}
+	}
+	if sum < lowS {
+		return -1, -1
+	}
+	return // need = 0 的情况
+}
+
 func newTreap() *treap[int] {
 	return &treap[int]{
 		rd:         uint(time.Now().UnixNano()),
