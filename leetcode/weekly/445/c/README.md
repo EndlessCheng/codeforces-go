@@ -17,7 +17,7 @@
 
 如何计算字符串的排列个数？
 
-#### 方法一（不适用）
+#### 方法一（不适用？）
 
 设剩余长度为 $\textit{sz}$，如果随便排，有 $\textit{sz}!$ 种方案。
 
@@ -45,11 +45,14 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1e3dBYLEDz/?t=6m56s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def smallestPalindrome(self, s: str, k: int) -> str:
         n = len(s)
         m = n // 2
+
         cnt = [0] * 26
         for b in s[:m]:
             cnt[ord(b) - ord('a')] += 1
@@ -107,6 +110,7 @@ class Solution {
     public String smallestPalindrome(String s, int k) {
         int n = s.length();
         int m = n / 2;
+
         int[] cnt = new int[26];
         for (int i = 0; i < m; i++) {
             cnt[s.charAt(i) - 'a']++;
@@ -133,7 +137,7 @@ class Solution {
             }
         }
 
-        StringBuilder ans = new StringBuilder(n);
+        StringBuilder ans = new StringBuilder(n); // 预分配空间
         ans.append(leftS);
         if (n % 2 > 0) {
             ans.append(s.charAt(n / 2));
@@ -181,6 +185,7 @@ public:
     string smallestPalindrome(string s, int k) {
         int n = s.size();
         int m = n / 2;
+
         int cnt[26]{};
         for (int i = 0; i < m; i++) {
             cnt[s[i] - 'a']++;
@@ -254,6 +259,7 @@ public:
 func smallestPalindrome(s string, k int) string {
 	n := len(s)
 	m := n / 2
+
 	cnt := make([]int, 26)
 	for _, b := range s[:m] {
 		cnt[b-'a']++
@@ -296,8 +302,8 @@ func smallestPalindrome(s string, k int) string {
 	}
 
 	// 构造回文串的左半部分
-	leftS := make([]byte, m)
-	for i := range leftS {
+	ans := make([]byte, m, n) // 预分配空间
+	for i := range m {
 		for j := range cnt {
 			if cnt[j] == 0 {
 				continue
@@ -305,7 +311,7 @@ func smallestPalindrome(s string, k int) string {
 			cnt[j]-- // 假设填字母 j，看是否有足够的排列
 			p := perm(m - i - 1) // 剩余位置的排列个数
 			if p >= k { // 有足够的排列
-				leftS[i] = 'a' + byte(j)
+				ans[i] = 'a' + byte(j)
 				break
 			}
 			k -= p // k 太大，要填更大的字母（类似搜索树剪掉了一个大小为 p 的子树）
@@ -313,19 +319,282 @@ func smallestPalindrome(s string, k int) string {
 		}
 	}
 
-	ans := string(leftS)
+	rev := slices.Clone(ans)
 	if n%2 > 0 {
-		ans += string(s[n/2])
+		ans = append(ans, s[n/2])
 	}
-	slices.Reverse(leftS)
-	return ans + string(leftS)
+	slices.Reverse(rev)
+	ans = append(ans, rev...)
+	return string(ans)
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|(|\Sigma|+\log k))$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。计算 $\texttt{perm}$ 需要 $\mathcal{O}(|\Sigma| + \log k)$ 的时间。注意是加法不是乘法，因为内层循环的 $\textit{res}$ 至多乘以 $\mathcal{O}(\log k)$ 个大于 $1$ 的数。
+- 时间复杂度：$\mathcal{O}(n|\Sigma|(|\Sigma|+\log k))$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。计算 $\texttt{perm}$ 需要 $\mathcal{O}(|\Sigma| + \log k)$ 的时间。注意是加法不是乘法，因为内层循环的 $\textit{res}$ 至多乘以 $\mathcal{O}(\log k)$ 个大于 $1$ 的数。
 - 空间复杂度：$\mathcal{O}(n + |\Sigma|)$。
+
+## 优化
+
+其实如下公式是可以用的
+
+$$
+\dfrac{\textit{sz}!}{\prod\limits_{i=\texttt{a}}^{\texttt{z}}\textit{cnt}_i!}
+$$
+
+我们可以从 $i=m-1$ 以及字母 $\texttt{z}$ 开始倒着填，同时用上述公式计算已经填入的字母的排列个数。一旦计算结果 $\ge k$，就退出循环。
+
+退出循环后，我们已经有足够的排列数了，所以 $[0,i]$ 可以直接填剩余字母，按照从小到大的顺序填。
+
+至于 $[i+1,m-1]$，和上面一样，按照试填法计算。
+
+```py [sol-Python3]
+class Solution:
+    def smallestPalindrome(self, s: str, k: int) -> str:
+        n = len(s)
+        m = n // 2
+
+        total = [0] * 26
+        for b in s[:m]:
+            total[ord(b) - ord('a')] += 1
+
+        cnt = [0] * 26
+        perm = 1
+        i, j = m - 1, 25
+        # 倒着计算排列数
+        while i >= 0 and perm < k:
+            while cnt[j] == total[j]:
+                j -= 1
+            cnt[j] += 1
+            perm = perm * (m - i) // cnt[j]
+            i -= 1
+
+        if perm < k:
+            return ""
+
+        left_s = []
+        # 已经有足够的排列数了，<= i 的位置直接填字典序最小的排列
+        for ch, c in enumerate(cnt[:j + 1]):
+            left_s.append(ascii_lowercase[ch] * (total[ch] - c))
+
+        # 试填法
+        for i in range(i + 1, m):
+            for j in range(26):
+                if cnt[j] == 0:
+                    continue
+                # 假设填字母 j，根据 perm = p * (m - i) / cnt[j] 倒推 p
+                p = perm * cnt[j] // (m - i)
+                if p >= k:
+                    left_s.append(ascii_lowercase[j])
+                    cnt[j] -= 1
+                    perm = p
+                    break
+                k -= p
+
+        ans = left_s = ''.join(left_s)
+        if n % 2:
+            ans += s[n // 2]
+        return ans + left_s[::-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public String smallestPalindrome(String s, int k) {
+        int n = s.length();
+        int m = n / 2;
+
+        int[] total = new int[26];
+        for (int i = 0; i < m; i++) {
+            total[s.charAt(i) - 'a']++;
+        }
+
+        int[] cnt = new int[26];
+        long perm = 1;
+        int i = m - 1;
+        int j = 25;
+
+        // 倒着计算排列数
+        for (; i >= 0 && perm < k; i--) {
+            while (cnt[j] == total[j]) {
+                j--;
+            }
+            cnt[j]++;
+            perm = perm * (m - i) / cnt[j];
+        }
+
+        if (perm < k) {
+            return "";
+        }
+
+        StringBuilder ans = new StringBuilder(n); // 预分配空间
+        // 已经有足够的排列数了，<= i 的位置直接填字典序最小的排列
+        for (int ch = 0; ch <= j; ch++) {
+            ans.repeat('a' + ch, total[ch] - cnt[ch]);
+        }
+
+        // 试填法
+        for (i++; i < m; i++) {
+            for (int ch = 0; ch < 26; ch++) {
+                if (cnt[ch] == 0) {
+                    continue;
+                }
+                // 假设填字母 ch，根据 perm = p * (m - i) / cnt[ch] 倒推 p
+                long p = perm * cnt[ch] / (m - i);
+                if (p >= k) {
+                    ans.append((char) ('a' + ch));
+                    cnt[ch]--;
+                    perm = p;
+                    break;
+                }
+                k -= p;
+            }
+        }
+
+        StringBuilder rev = new StringBuilder(ans).reverse();
+        if (n % 2 > 0) {
+            ans.append(s.charAt(n / 2));
+        }
+        ans.append(rev);
+        return ans.toString();
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string smallestPalindrome(string s, int k) {
+        int n = s.size();
+        int m = n / 2;
+
+        int total[26]{};
+        for (int i = 0; i < m; i++) {
+            total[s[i] - 'a']++;
+        }
+
+        int cnt[26]{};
+        long long perm = 1;
+        int i = m - 1, j = 25;
+        for (; i >= 0 && perm < k; i--) {
+            while (cnt[j] == total[j]) {
+                j--;
+            }
+            cnt[j]++;
+            perm = perm * (m - i) / cnt[j];
+        }
+
+        if (perm < k) {
+            return "";
+        }
+
+        string left_s;
+        // 已经有足够的排列数了，<= i 的位置直接填字典序最小的排列
+        for (int ch = 0; ch <= j; ch++) {
+            left_s += string(total[ch] - cnt[ch], 'a' + ch);
+        }
+
+        // 试填法
+        for (i++; i < m; i++) {
+            for (int j = 0; j < 26; j++) {
+                if (cnt[j] == 0) {
+                    continue;
+                }
+                // 假设填字母 j，根据 perm = p * (m - i) / cnt[j] 倒推 p
+                long long p = perm * cnt[j] / (m - i);
+                if (p >= k) {
+                    left_s += 'a' + j;
+                    cnt[j]--;
+                    perm = p;
+                    break;
+                }
+                k -= p;
+            }
+        }
+
+        string ans = left_s;
+        if (n % 2) {
+            ans += s[n / 2];
+        }
+        ranges::reverse(left_s);
+        return ans + left_s;
+    }
+};
+```
+
+```go [sol-Go]
+func smallestPalindrome(s string, k int) string {
+	n := len(s)
+	m := n / 2
+
+	total := [26]int{}
+	for _, b := range s[:m] {
+		total[b-'a']++
+	}
+
+	cnt := make([]int, 26)
+	perm := 1
+	i, j := m-1, 25
+	// 倒着计算排列数
+	for ; i >= 0 && perm < k; i-- {
+		for cnt[j] == total[j] {
+			j--
+		}
+		cnt[j]++
+		perm = perm * (m - i) / cnt[j]
+	}
+
+	if perm < k {
+		return ""
+	}
+
+	ans := make([]byte, 0, n) // 预分配空间
+	// 已经有足够的排列数了，<= i 的位置直接填字典序最小的排列
+	for ch, c := range cnt[:j+1] {
+		ans = append(ans, bytes.Repeat([]byte{'a' + byte(ch)}, total[ch]-c)...)
+	}
+
+	// 试填法
+	for i++; i < m; i++ {
+		for j := range cnt {
+			if cnt[j] == 0 {
+				continue
+			}
+			// 假设填字母 j，根据 perm = p * (m - i) / cnt[j] 倒推 p
+			p := perm * cnt[j] / (m - i)
+			if p >= k {
+				ans = append(ans, 'a'+byte(j))
+				cnt[j]--
+				perm = p
+				break
+			}
+			k -= p
+		}
+	}
+
+	rev := slices.Clone(ans)
+	if n%2 > 0 {
+		ans = append(ans, s[n/2])
+	}
+	slices.Reverse(rev)
+	ans = append(ans, rev...)
+	return string(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
+
+**注**：还可以用树状数组二分，进一步优化至 $\mathcal{O}(n\log |\Sigma|)$。见评论。
+
+## 进阶问题
+
+计算给定序列的下 $k$ 个排列。
+
+[1850. 邻位交换的最小次数](https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/)（请使用非暴力做法）
+
+更多相似题目，见下面位运算题单的「**五、试填法**」。
 
 ## 分类题单
 
