@@ -4,6 +4,8 @@
 
 相同知识点的题目，按照 [难度分](https://huxulm.github.io/lc-rating/zen) 排序。
 
+❗注意这不是题单，完整题单在 [如何科学刷题](https://leetcode.cn/circle/discuss/RvFUtj/) 中。
+
 |知识点|题目|题解|难度|
 |---|---|---|---|
 |哈希表|[1. 两数之和](https://leetcode.cn/problems/two-sum/)|[【动画】从两数之和中，我们可以学到什么？](https://leetcode.cn/problems/two-sum/solution/dong-hua-cong-liang-shu-zhi-he-zhong-wo-0yvmj/)|简单|
