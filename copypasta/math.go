@@ -2766,7 +2766,12 @@ func _(abs func(int) int) {
 	// https://oeis.org/A061375 n! 开 n 次方根下取整 Integer part of geometric mean of first n positive integers
 	// https://oeis.org/A214046 n! 开 n 次方根上取整 Least m>0 such that n! <= m^n
 	// 也可以用 math.Gamma(float64(k+1)) 计算 k!
-	factorial := []int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
+	factorial := []int{
+		1, 1, 2, 6, 24, 120, /*5!*/
+		720, 5040, 40320, 362880, 3628800, /*10!*/
+		39916800, 479001600, 6227020800, 87178291200, 1307674368000, /*15!*/
+		20922789888000, 355687428096000, 6402373705728000, 121645100408832000, 2432902008176640000, /*20!*/
+	}
 
 	// 【模板】快速阶乘算法 https://www.luogu.com.cn/problem/P5282
 
@@ -2887,7 +2892,7 @@ func _(abs func(int) int) {
 	initComb := func() {
 		const mx = 60
 		C := [mx + 1][mx + 1]int{}
-		for i := 0; i <= mx; i++ {
+		for i := 0; i < len(C); i++ {
 			C[i][0], C[i][i] = 1, 1
 			for j := 1; j < i; j++ {
 				C[i][j] = C[i-1][j-1] + C[i-1][j]
@@ -3076,38 +3081,82 @@ func _(abs func(int) int) {
 	// 这里假定 a[i] 的范围从 0 到 max(a)
 	// k 从 1 开始
 	// 如果没有第 k 小的，返回 nil
+	// 时间复杂度 O(nU)
+	// 如果值域很大，可以用 treap 维护 cnt 的前缀和，二分找要填哪个数，做到 O(nlogn) 时间
 	// https://leetcode.cn/problems/smallest-palindromic-rearrangement-ii/
 	kthPermRepeat := func(a []int, k int) []int {
 		n := len(a)
-		cnt := make([]int, slices.Max(a)+1) // 26
+		mx := slices.Max(a) // 25
+
+		total := make([]int, mx+1)
 		for _, v := range a {
-			cnt[v]++
+			total[v]++
 		}
 
-		// k 太大
-		if permRepeat(n, cnt, k) < k {
+		cnt := make([]int, mx+1)
+		perm := 1
+		i, j := n-1, mx
+		// 倒着计算排列数
+		for ; i >= 0 && perm < k; i-- {
+			for cnt[j] == total[j] {
+				j--
+			}
+			cnt[j]++
+			perm = perm * (n - i) / cnt[j]
+		}
+
+		if perm < k {
 			return nil
 		}
 
-		ans := make([]int, n)
-		for i := range ans {
-			// 试填 j，看是否有足够的排列
-			for j := range cnt {
+		ans := make([]int, 0, n)
+		// 已经有足够的排列数了，<= i 的位置直接填字典序最小的排列
+		for v, c := range cnt[:j+1] {
+			for range total[v] - c {
+				ans = append(ans, v)
+			}
+		}
+
+		// 试填法
+		j0 := j
+		for i++; i < n; i++ {
+			for j := j0; j < 26; j++ {
 				if cnt[j] == 0 {
 					continue
 				}
-				cnt[j]--
-				// 剩余位置的排列个数
-				p := permRepeat(n-i-1, cnt, k)
-				// 有足够的排列
+				// 假设填 j，根据 perm = p * (n-i) / cnt[j] 倒推 p
+				p := perm * cnt[j] / (n - i)
 				if p >= k {
-					ans[i] = j
+					ans = append(ans, j)
+					cnt[j]--
+					perm = p
 					break
 				}
-				k -= p // k 太大，要填更大的数（去掉填 j 时的排列个数）
-				cnt[j]++
+				k -= p
 			}
 		}
+
+		// 如果值域很大，可以根据 perm * preS / (n-i) >= k，
+		// 在 treap（或者树状数组）上二分找最小的 preS >= (k * (n-i) + perm-1) / perm，这个前缀和的下标（减一）就是我们要填的数
+		// https://leetcode.cn/problems/smallest-palindromic-rearrangement-ii/submissions/622148771/
+		type pair struct{ v, c int }
+		t := newTreapWith[pair](func(a, b pair) int { return a.v - b.v }, func(p pair) int { return p.c })
+		for v, c := range cnt {
+			t.put(pair{v, c}, 1)
+		}
+		for i++; i < n; i++ {
+			j, sum := t.lowerBoundPreSum((k*(n-i) + perm - 1) / perm)
+			j--
+
+			k -= perm * (sum - cnt[j]) / (n - i)
+			perm = perm * cnt[j] / (n - i)
+
+			ans = append(ans, j)
+			t.put(pair{j, cnt[j]}, -1)
+			cnt[j]--
+			t.put(pair{j, cnt[j]}, 1)
+		}
+
 		return ans
 	}
 
