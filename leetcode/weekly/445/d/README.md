@@ -273,6 +273,37 @@ $$
 在本题数据范围下，组合数在 64 位整数范围内，无需中途取模，只需在返回前取模。
 
 ```py [sol-Python3]
+# 关于预处理组合数的写法，见【Python3 预处理】
+class Solution:
+    def countNumbers(self, l: str, r: str, b: int) -> int:
+        # 把 s 转成 b 进制
+        def trans(s: str, inc: int) -> List[int]:
+            x = int(s) + inc
+            digits = []
+            while x:
+                x, r = divmod(x, b)
+                digits.append(r)
+            digits.reverse()
+            return digits
+
+        def calc(s: str, inc: int) -> int:
+            s = trans(s, inc)
+            # 计算小于 s 的合法数字个数
+            # 为什么是小于？注意下面的代码，我们没有统计每个数位都填 s[i] 的情况
+            res = pre = 0
+            for i, hi in enumerate(s):
+                if hi < pre:
+                    break
+                m = len(s) - 1 - i
+                res += comb(m + b - pre, b - 1 - pre) - comb(m + b - hi, b - 1 - hi)  # 不受约束的方案数
+                pre = hi  # 这一位填 hi，继续计算剩余数位的方案数
+            return res
+
+        # 小于 r+1 的合法数字个数 - 小于 l 的合法数字个数
+        return (calc(r, 1) - calc(l, 0)) % 1_000_000_007
+```
+
+```py [sol-Python3 预处理]
 MAX_N = 333  # 进制转换后的最大长度
 MAX_B = 10
 
