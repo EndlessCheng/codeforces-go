@@ -1,3 +1,5 @@
+## 方法一：数位 DP
+
 **前置知识**：
 
 [数位 DP v1.0 视频讲解](https://www.bilibili.com/video/BV1rS4y1s721/)
@@ -22,7 +24,9 @@
 - 假设第一个数字的前面是 $0$，这样第一个数字不会受到 $\textit{pre}$ 的约束。
 - 一开始要受到 $\textit{low}$ 和 $\textit{high}$ 的约束（否则就可以随意填了，这肯定不行）。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1e3dBYLEDz/?t=29m32s)，欢迎点赞关注~
+> 注：本题答案较小，可以只在返回前取模。（理由见方法二的公式）
+
+[本题视频讲解](https://www.bilibili.com/video/BV1e3dBYLEDz/?t=29m32s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -53,9 +57,9 @@ class Solution:
             res = 0
             for d in range(max(lo, pre), hi + 1):
                 res += dfs(i + 1, d, limit_low and d == lo, limit_high and d == hi)
-            return res % 1_000_000_007
+            return res
 
-        return dfs(0, 0, True, True)
+        return dfs(0, 0, True, True) % 1_000_000_007
 ```
 
 ```java [sol-Java]
@@ -169,13 +173,12 @@ public:
 
 ```go [sol-Go]
 func trans(s string, b int) string {
-	x := big.Int{}
-	fmt.Fscan(strings.NewReader(s), &x)
+	x := &big.Int{}
+	fmt.Fscan(strings.NewReader(s), x)
 	return x.Text(b) // 转成 b 进制
 }
 
 func countNumbers(l, r string, b int) int {
-	const mod = 1_000_000_007
 	lowS := trans(l, b)
 	highS := trans(r, b)
 	n := len(highS)
@@ -213,18 +216,286 @@ func countNumbers(l, r string, b int) int {
 		for d := max(lo, pre); d <= hi; d++ {
 			res += dfs(i+1, d, limitLow && d == lo, limitHigh && d == hi)
 		}
-		return res % mod
+		return
 	}
-	return dfs(0, 0, true, true)
+	return dfs(0, 0, true, true) % 1_000_000_007
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2 + nb^2)$，其中 $n$ 是 $r$ 的长度。进制转换的时间复杂度为 $\mathcal{O}(n^2)$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nb)$，单个状态的计算时间为 $\mathcal{O}(b)$，所以动态规划的时间复杂度为 $\mathcal{O}(nb^2)$。
+- 时间复杂度：$\mathcal{O}(n^2 + nb^2)$，其中 $n\approx m\log_b 10$，表示进制转换后的长度，$m$ 是 $r$ 的长度。进制转换的时间复杂度为 $\mathcal{O}(n^2)$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nb)$，单个状态的计算时间为 $\mathcal{O}(b)$，所以动态规划的时间复杂度为 $\mathcal{O}(nb^2)$。
 - 空间复杂度：$\mathcal{O}(nb)$。保存多少状态，就需要多少空间。
 
-更多相似题目，见下面动态规划题单中的「**十、数位 DP**」。
+## 方法二：组合数学
+
+假设第 $i$ 位填了数字 $j$，并且剩余的 $m=n-1-i$ 个位置不受约束，那么问题变成：
+
+- 构造长为 $m$ 的非递减序列，元素范围 $[j,b-1]$，能构造多少个不同的序列？
+
+根据 [3251. 单调数组对的数目 II 我的题解](https://leetcode.cn/problems/find-the-count-of-monotonic-pairs-ii/solutions/2876190/qian-zhui-he-you-hua-dppythonjavacgo-by-3biek/) 的方法二，方案数为
+
+$$
+\binom {m+b-1-j} m
+$$
+
+为方便计算，考虑用小于 $r+1$ 的合法数字个数减去小于 $l$ 的合法数字个数。
+
+设 $r+1$ 进制转换后的字符串为 $s$。
+
+设上一个数位填的是 $\textit{pre} = \texttt{int}(s[i-1])$，枚举当前位置填数字 $j=\textit{pre},\textit{pre}+1,\ldots, \textit{hi}-1$，其中 $\textit{hi}=\texttt{int}(s[i])$。
+
+那么剩余数位不受到 $s$ 的约束，方案数之和为
+
+$$
+\sum_{j=b-\textit{hi}}^{b-1-\textit{pre}} \binom {m+j} m
+$$
+
+根据上项求和恒等式
+
+$$
+\binom {m} m + \binom {m+1} m + \cdots + \binom {m+k} m = \binom {m+k+1} {m+1}
+$$
+
+方案数之和化简为
+
+$$
+\begin{aligned}
+    & \sum_{j=b-\textit{hi}}^{b-1-\textit{pre}} \binom {m+j} m      \\
+={} & \sum_{j=0}^{b-1-\textit{pre}} \binom {m+j} m - \sum_{j=0}^{b-1-\textit{hi}} \binom {m+j} m       \\
+={} & \binom {m+b-\textit{pre}} {m+1} - \binom {m+b-\textit{hi}} {m+1}      \\
+={} & \binom {m+b-\textit{pre}} {b-1-\textit{pre}} - \binom {m+b-\textit{hi}} {b-1-\textit{hi}}      \\
+\end{aligned}
+$$
+
+由于 $b-1 < 10$ 很小，可以用 [递推式](https://leetcode.cn/problems/pascals-triangle-ii/solutions/3041965/yu-chu-li-pythonjavaccgojsrust-by-endles-9wtq/) 预处理组合数，无需求阶乘及其逆元。
+
+在本题数据范围下，组合数在 64 位整数范围内，无需中途取模，只需在返回前取模。
+
+```py [sol-Python3]
+MAX_N = 333  # 进制转换后的最大长度
+MAX_B = 10
+
+# 预处理组合数
+C = [[0] * MAX_B for _ in range(MAX_N + MAX_B)]
+for i in range(len(C)):
+    C[i][0] = 1
+    for j in range(1, min(i + 1, MAX_B)):
+        # 注意本题组合数较小，无需取模
+        C[i][j] = C[i - 1][j - 1] + C[i - 1][j]
+
+class Solution:
+    def countNumbers(self, l: str, r: str, b: int) -> int:
+        # 把 s 转成 b 进制
+        def trans(s: str, inc: int) -> List[int]:
+            x = int(s) + inc
+            digits = []
+            while x:
+                x, r = divmod(x, b)
+                digits.append(r)
+            digits.reverse()
+            return digits
+
+        def calc(s: str, inc: int) -> int:
+            s = trans(s, inc)
+            # 计算小于 s 的合法数字个数
+            # 为什么是小于？注意下面的代码，我们没有统计每个数位都填 s[i] 的情况
+            res = pre = 0
+            for i, hi in enumerate(s):
+                if hi < pre:
+                    break
+                m = len(s) - 1 - i
+                res += C[m + b - pre][b - 1 - pre] - C[m + b - hi][b - 1 - hi]  # 不受约束的方案数
+                pre = hi  # 这一位填 hi，继续计算剩余数位的方案数
+            return res
+
+        # 小于 r+1 的合法数字个数 - 小于 l 的合法数字个数
+        return (calc(r, 1) - calc(l, 0)) % 1_000_000_007
+```
+
+```java [sol-Java]
+import java.math.BigInteger;
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int MAX_N = 333; // 进制转换后的最大长度
+    private static final int MAX_B = 10;
+    private static final long[][] comb = new long[MAX_N + MAX_B][MAX_B];
+
+    static {
+        // 预处理组合数
+        for (int i = 0; i < MAX_N + MAX_B; i++) {
+            comb[i][0] = 1;
+            for (int j = 1; j < Math.min(i + 1, MAX_B); j++) {
+                // 注意本题组合数较小，无需取模
+                comb[i][j] = comb[i - 1][j - 1] + comb[i - 1][j];
+            }
+        }
+    }
+
+    public int countNumbers(String l, String r, int b) {
+        // 小于 r+1 的合法数字个数 - 小于 l 的合法数字个数
+        return (int) ((calc(r, b, true) - calc(l, b, false)) % MOD);
+    }
+
+    // 把十进制字符串 s 转成 b 进制字符数组
+    private char[] trans(String s, int b, boolean inc) {
+        BigInteger x = new BigInteger(s);
+        if (inc) {
+            x = x.add(BigInteger.ONE);
+        }
+        return x.toString(b).toCharArray();
+    }
+
+    private long calc(String S, int b, boolean inc) {
+        char[] s = trans(S, b, inc);
+        // 计算小于 s 的合法数字个数
+        // 为什么是小于？注意下面的代码，我们没有统计每个数位都填 s[i] 的情况
+        long res = 0;
+        int pre = 0;
+        for (int i = 0; i < s.length && s[i] - '0' >= pre; i++) {
+            int hi = s[i] - '0';
+            int m = s.length - 1 - i;
+            res += comb[m + b - pre][b - 1 - pre] - comb[m + b - hi][b - 1 - hi]; // 不受约束的方案数
+            pre = hi; // 这一位填 hi，继续计算剩余数位的方案数
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MAX_N = 333; // 进制转换后的最大长度
+const int MAX_B = 10;
+long long comb[MAX_N + MAX_B][MAX_B];
+
+int init = [] {
+    // 预处理组合数
+    for (int i = 0; i < MAX_N + MAX_B; i++) {
+        comb[i][0] = 1;
+        for (int j = 1; j < min(i + 1, MAX_B); j++) {
+            // 注意本题组合数较小，无需取模
+            comb[i][j] = comb[i - 1][j - 1] + comb[i - 1][j];
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+    // 把十进制字符串 s 转成 b 进制
+    // 用小学学过的【竖式除法】计算，读者可以先用竖式除法算算 1234÷10，再对照下面的代码
+    vector<int> trans(string& s, int b) {
+        for (char& c : s) {
+            c -= '0';
+        }
+        vector<int> digits;
+        while (!s.empty()) {
+            string nxt_s; // 用竖式除法计算 s / b 得到的商（十进制）
+            int rem = 0; // s % b
+            for (char c : s) {
+                rem = rem * 10 + c;
+                int q = rem / b; // 商
+                if (q || !nxt_s.empty()) { // 忽略前导零
+                    nxt_s.push_back(q);
+                }
+                rem = rem % b;
+            }
+            digits.push_back(rem);
+            s = move(nxt_s);
+        }
+        ranges::reverse(digits);
+        return digits;
+    }
+
+    long long calc(string& s, int b, bool check_s) {
+        vector<int> digits = trans(s, b);
+        // 计算小于 s 的合法数字个数
+	    // 为什么是小于？注意下面的代码，我们没有统计每个数位都填 digits[i] 的情况
+        long long res = 0;
+        int pre = 0;
+        for (int i = 0; i < digits.size() && digits[i] >= pre; i++) {
+            int hi = digits[i];
+            int m = digits.size() - 1 - i;
+            res += comb[m + b - pre][b - 1 - pre] - comb[m + b - hi][b - 1 - hi]; // 不受约束的方案数
+            pre = hi; // 这一位填 hi，继续计算剩余数位的方案数
+        }
+        return res + (check_s && is_non_dec(digits)); // 单独判断 digits 是否合法
+    }
+
+    bool is_non_dec(vector<int>& digits) {
+        for (int i = 1; i < digits.size(); i++) {
+            if (digits[i - 1] > digits[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+public:
+    int countNumbers(string l, string r, int b) {
+        // 小于 r+1 的合法数字个数 - 小于 l 的合法数字个数
+        return (calc(r, b, true) - calc(l, b, false)) % 1'000'000'007;
+    }
+};
+```
+
+```go [sol-Go]
+const maxN = 333 // 进制转换后的最大长度
+const maxB = 10
+
+var comb [maxN + maxB][maxB]int
+
+func init() {
+	// 预处理组合数
+	for i := 0; i < len(comb); i++ {
+		comb[i][0] = 1
+		for j := 1; j < min(i+1, maxB); j++ {
+			// 注意本题组合数较小，无需取模
+			comb[i][j] = comb[i-1][j-1] + comb[i-1][j]
+		}
+	}
+}
+
+func trans(s string, b int, inc bool) string {
+	x := &big.Int{}
+	fmt.Fscan(strings.NewReader(s), x)
+	if inc {
+		x.Add(x, big.NewInt(1))
+	}
+	return x.Text(b) // 转成 b 进制
+}
+
+func calc(s string, b int, inc bool) (res int) {
+	s = trans(s, b, inc)
+	// 计算小于 s 的合法数字个数
+	// 为什么是小于？注意下面的代码，我们没有统计每个数位都填 s[i] 的情况
+	pre := 0
+	for i, d := range s {
+		hi := int(d - '0')
+		if hi < pre {
+			break
+		}
+		m := len(s) - 1 - i
+		res += comb[m+b-pre][b-1-pre] - comb[m+b-hi][b-1-hi] // 不受约束的方案数
+		pre = hi // 这一位填 hi，继续计算剩余数位的方案数
+	}
+	return
+}
+
+func countNumbers(l, r string, b int) int {
+	// 小于 r+1 的合法数字个数 - 小于 l 的合法数字个数
+	return (calc(r, b, true) - calc(l, b, false)) % 1_000_000_007
+}
+```
+
+#### 复杂度分析
+
+预处理的时间和空间忽略不计。
+
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n\approx m\log_b 10$，表示进制转换后的长度，$m$ 是 $r$ 的长度。瓶颈在进制转换上。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+更多相似题目，见下面动态规划题单的「**十、数位 DP**」和数学题单的「**§2.2 组合计数**」。
 
 ## 分类题单
 

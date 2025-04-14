@@ -7,52 +7,50 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func trans(s string, b int) string {
-	x := big.Int{}
-	fmt.Fscan(strings.NewReader(s), &x)
+const mod = 1_000_000_007
+const maxN = 333 // 进制转换后的最大长度
+const maxB = 10
+
+var comb [maxN + maxB][maxB]int
+
+func init() {
+	// 预处理组合数
+	for i := 0; i < len(comb); i++ {
+		comb[i][0] = 1
+		for j := 1; j < min(i+1, maxB); j++ {
+			// 注意本题组合数较小，无需取模
+			comb[i][j] = comb[i-1][j-1] + comb[i-1][j]
+		}
+	}
+}
+
+func trans(s string, b int, inc bool) string {
+	x := &big.Int{}
+	fmt.Fscan(strings.NewReader(s), x)
+	if inc {
+		x.Add(x, big.NewInt(1))
+	}
 	return x.Text(b) // 转成 b 进制
 }
 
+func calc(s string, b int, inc bool) (res int) {
+	s = trans(s, b, inc)
+	// 计算小于 s 的合法数字个数
+	// 为什么是小于？注意下面的代码，我们没有统计每个数位都填 s[i] 的情况
+	pre := 0
+	for i, d := range s {
+		hi := int(d - '0')
+		if hi < pre {
+			break
+		}
+		m := len(s) - 1 - i
+		res += comb[m+b-pre][b-1-pre] - comb[m+b-hi][b-1-hi]
+		pre = hi
+	}
+	return
+}
+
 func countNumbers(l, r string, b int) int {
-	const mod = 1_000_000_007
-	lowS := trans(l, b)
-	highS := trans(r, b)
-	n := len(highS)
-	diffLH := n - len(lowS)
-	memo := make([][]int, n)
-	for i := range memo {
-		memo[i] = make([]int, b)
-		for j := range memo[i] {
-			memo[i][j] = -1
-		}
-	}
-
-	var dfs func(int, int, bool, bool) int
-	dfs = func(i, pre int, limitLow, limitHigh bool) (res int) {
-		if i == n {
-			return 1
-		}
-		if !limitLow && !limitHigh {
-			p := &memo[i][pre]
-			if *p >= 0 {
-				return *p
-			}
-			defer func() { *p = res }()
-		}
-
-		lo := 0
-		if limitLow && i >= diffLH {
-			lo = int(lowS[i-diffLH] - '0')
-		}
-		hi := b - 1
-		if limitHigh {
-			hi = int(highS[i] - '0')
-		}
-
-		for d := max(lo, pre); d <= hi; d++ {
-			res += dfs(i+1, d, limitLow && d == lo, limitHigh && d == hi)
-		}
-		return res % mod
-	}
-	return dfs(0, 0, true, true)
+	// 小于 r+1 的合法数字个数 - 小于 l 的合法数字个数
+	return (calc(r, b, true) - calc(l, b, false)) % mod
 }
