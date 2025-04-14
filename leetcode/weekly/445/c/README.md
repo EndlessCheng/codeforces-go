@@ -378,8 +378,9 @@ class Solution:
             left_s.append(ascii_lowercase[ch] * (total[ch] - c))
 
         # 试填法
+        j0 = j
         for i in range(i + 1, m):
-            for j in range(26):
+            for j in range(j0, 26):
                 if cnt[j] == 0:
                     continue
                 # 假设填字母 j，根据 perm = p * (m - i) / cnt[j] 倒推 p
@@ -433,16 +434,17 @@ class Solution {
         }
 
         // 试填法
+        int j0 = j;
         for (i++; i < m; i++) {
-            for (int ch = 0; ch < 26; ch++) {
-                if (cnt[ch] == 0) {
+            for (j = j0; j < 26; j++) {
+                if (cnt[j] == 0) {
                     continue;
                 }
-                // 假设填字母 ch，根据 perm = p * (m - i) / cnt[ch] 倒推 p
-                long p = perm * cnt[ch] / (m - i);
+                // 假设填字母 j，根据 perm = p * (m - i) / cnt[j] 倒推 p
+                long p = perm * cnt[j] / (m - i);
                 if (p >= k) {
-                    ans.append((char) ('a' + ch));
-                    cnt[ch]--;
+                    ans.append((char) ('a' + j));
+                    cnt[j]--;
                     perm = p;
                     break;
                 }
@@ -494,8 +496,9 @@ public:
         }
 
         // 试填法
+        int j0 = j;
         for (i++; i < m; i++) {
-            for (int j = 0; j < 26; j++) {
+            for (int j = j0; j < 26; j++) {
                 if (cnt[j] == 0) {
                     continue;
                 }
@@ -554,8 +557,9 @@ func smallestPalindrome(s string, k int) string {
 	}
 
 	// 试填法
+	j0 := j
 	for i++; i < m; i++ {
-		for j := range cnt {
+		for j := j0; j < 26; j++ {
 			if cnt[j] == 0 {
 				continue
 			}

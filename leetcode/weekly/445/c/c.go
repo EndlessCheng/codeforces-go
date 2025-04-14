@@ -38,8 +38,9 @@ func smallestPalindrome(s string, k int) string {
 	}
 
 	// 试填法
+	j0 := j
 	for i++; i < m; i++ {
-		for j := range cnt {
+		for j := j0; j < 26; j++ {
 			if cnt[j] == 0 {
 				continue
 			}
@@ -115,9 +116,9 @@ func smallestPalindrome1(s string, k int) string {
 			if cnt[j] == 0 {
 				continue
 			}
-			cnt[j]-- // 假设填字母 j，看是否有足够的排列
+			cnt[j]--             // 假设填字母 j，看是否有足够的排列
 			p := perm(m - i - 1) // 剩余位置的排列个数
-			if p >= k { // 有足够的排列
+			if p >= k {          // 有足够的排列
 				ans[i] = 'a' + byte(j)
 				break
 			}
