@@ -8,7 +8,10 @@ import (
 /*
 基于 multiset
 把 treap 当作一个有序数组
-额外维护这个数组的前缀和
+额外维护这个有序数组的前缀和
+
+可以 O(log n) 查询 >= x 的第一个 key 的下标
+可以 O(log n) 查询 >= s 的第一个 key 的前缀和的下标，以及这个前缀和的值
 
 LC3013 https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
 LC3321 https://leetcode.cn/problems/find-x-sum-of-all-k-long-subarrays-ii/
