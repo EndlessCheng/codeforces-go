@@ -11,7 +11,9 @@ import (
 额外维护这个有序数组的前缀和
 
 可以 O(log n) 查询 >= x 的第一个 key 的下标
-可以 O(log n) 查询 >= s 的第一个 key 的前缀和的下标，以及这个前缀和的值
+可以 O(log n) 查询 >= s 的第一个前缀和的下标，以及这个前缀和的值（注：前缀和指的是 key 的前缀和）
+
+如果想把 key-value 加到 treap 中，可以把 key 的类型设置为 pair { key, value }
 
 LC3013 https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
 LC3321 https://leetcode.cn/problems/find-x-sum-of-all-k-long-subarrays-ii/
