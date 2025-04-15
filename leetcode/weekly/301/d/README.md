@@ -1,125 +1,210 @@
-本题 [视频讲解](https://www.bilibili.com/video/BV1aU4y1q7BA?t=7m29s) 已出炉，欢迎点赞三连~
+## 分析
 
----
+下文把 $\textit{arr}$ 简记为 $a$。
 
-#### 提示 1
+题目说，每个 $a_i$ 都可以被 $a_{i-1}$ 整除，即 $\dfrac{a_i}{a_{i-1}}$ 是整数。
 
-考虑以 $x$ 结尾的理想数组的个数。
+比如 $a=[1,1,2,4,4,8,8,8]$ 是符合题目要求的。看上去，$a$ 中有很多重复元素，或者说，不同元素个数并不会很多。
 
-#### 提示 2-1
+想一想，如果 $n=10^4$，$\textit{maxValue}=8$，那么 $a$ 中至多有多少个**不同**的元素？
 
-理想数组在哪些位置上发生了**变化**（$\textit{arr}[i-1]<\textit{arr}[i]$）？这些位置多吗？
+如果 $a_{i-1}\ne a_i$，那么 $a_i$ 至少是 $2\cdot a_{i-1}$。假设 $a_0=1$，至多乘三次 $2$，得到 $8$，就不能再变大了，所以 $a$ 中至多有 $4$ 个不同的元素，即 $1,2,4,8$。
 
-#### 提示 2-2
+这个例子说明，即使 $n$ 很大，$a$ 中也至多有 $\left\lfloor\log_2 \textit{maxValue}\right\rfloor + 1$ 个不同的元素。
 
-这些位置不多，假设每次都扩大一倍，那么至多可以扩大 $O(\log x$) 次。
+这启发我们重点考虑 $a_{i-1}\ne a_i$ 的情况，也就是 $\dfrac{a_i}{a_{i-1}} > 1$ 的情况。
 
-#### 提示 3-1
+## 商分
 
-每次扩大的倍率 $\dfrac{\textit{arr}[i]}{\textit{arr}[i-1]}$，乘起来等于什么？
+类似 [差分](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)，我们来计算 $a$ 的「商分」，即相邻两数的商。
 
-#### 提示 3-2
+定义 $q_0 = a_0$，$q_i = \dfrac{a_i}{a_{i-1}}\ (i\ge 1)$。
 
-恰好等于 $x$。
+例如：
 
-#### 提示 3-3
+- $a=[2,2,4,8,8]$ 的商分数组为 $q=[2,1,2,2,1]$。
+- $a=[1,4,4,8,8]$ 的商分数组为 $q=[1,4,1,2,1]$。
 
-反过来，这些倍率是 $x$ 的因子。
+不同的 $a$，唯一对应着不同的 $q$。计算理想数组 $a$ 的个数，可以转化成计算商分数组 $q$ 的个数。
 
-我们可以先对 $x$ 分解质因数，在质因数的基础上寻找答案。
+根据 $q$ 的定义，所有 $q_i$ 的乘积等于
 
-#### 提示 4-1
+$$
+\prod_{i=0}^{n-1}q_i = a_0\cdot \dfrac{a_1}{a_0} \cdot \dfrac{a_2}{a_1} \cdots \dfrac{a_{n-1}}{a_{n-2}} = a_{n-1}
+$$
 
-把这些质因数（倍率）分配到数组的 $n$ 个位置中的某些位置上，这样就可以直接确定整个理想数组（因为其余位置都和上一个元素相同）。
+现在假设 $a_{n-1}=8$，也就是所有 $q_i$ 的乘积等于 $8$，有多少个不同的 $q$？
 
-以 $x=8$ 为例：
+## 放球问题
 
-- $[2,2,4,4,4,8]$ 对应着 $[\times 2,\rule{0.45cm}{0.15mm},\times 2,\rule{0.45cm}{0.15mm},\rule{0.45cm}{0.15mm},\times 2]$；
-- $[1,1,4,4,8,8]$ 对应着 $[\rule{0.45cm}{0.15mm},\rule{0.45cm}{0.15mm},\times 4,\rule{0.45cm}{0.15mm},\times 2,\rule{0.45cm}{0.15mm}]$。
+这个问题等价于，有 $n$ 个位置，把 $3$ 个 $2$ 分配到 $n$ 个位置的方案数。注：分配到同一个位置就乘起来，比如 $2$ 个 $2$ 分配到同一个位置就是 $4$。没分配 $2$ 的位置是 $1$。
 
-#### 提示 4-2
+这等价于如下放球问题：
 
-对于 $x=8$ 来说，分解出 $k=3$ 个**相同**的 $2$，那么以 $8$ 结尾的理想数组的个数，等价于一个经典的组合问题：
+- 把 $k=3$ 个无区别的小球放到 $n$ 个有区别的盒子中，允许盒子为空，一个盒子也可以放多个小球，有多少种不同的放法？
 
-> 把 $k$ 个无区别的小球放到 $n$ 个有区别的盒子中，允许盒子为空，一个盒子也可以放多个小球，有多少种不同的放法？
+![lc2338-c.png](https://pic.leetcode.cn/1744685351-GGrXfu-lc2338-c.png)
 
-此问题可以采用**隔板法**来解决：把 $n$ 个盒子当做 $n-1$ 个隔板，隔板加上球总共有 $n-1+k$ 个位置，从中选择 $n-1$ 个位置放隔板，$k$ 个位置放球，两个隔板之间的球（球可以有零个，一个，或者多个）放入对应盒子中（最两侧的隔板同理）。
+## 思路
 
-因此方案数为 $C(n+k-1,n-1)=C(n+k-1,k)$。
+枚举 $a_{n-1}=1,2,3,\ldots,\textit{maxValue}$，根据上图最后的公式，计算方案数，加到答案中。
 
-#### 提示 4-3
+## 如何分解质因子
 
-对于多个**不同**的质因数，互相之间无影响，可以采用**乘法原理**计算。
+#### 方法一：枚举（适用于本题）
 
-枚举所有 $[1,\textit{maxValue}]$ 的 $x$，计算对应的组合数，累加即为答案。
+计算 $x$ 每个质因子的个数。从 $i=2$ 开始枚举，如果 $x$ 能被 $i$ 整除，就不断地除 $i$，直到 $x$ 不能被 $i$ 整除为止，统计除 $i$ 的次数，即为 $x$ 中的质因子 $i$ 的出现次数。
 
-代码实现时，分解出的质因数（只需要每个质因数的个数）和组合数都可以预处理出来。
+什么时候停止枚举呢？如果 $i^2 > x$，继续向后枚举是不会出现 $x$ 被 $i$ 整除的情况的。这可以用**反证法**证明：假设存在 $i$，满足 $i^2>x$ 且 $x$ 能被 $i$ 整除，那么 $x$ 也能被 $\dfrac{x}{i}$ 整除，注意到 $\dfrac{x}{i}<i$，但我们已经处理完小于 $i$ 的质因子了，不会出现 $x$ 仍可以被一个小于 $i$ 的质因子整除的情况，矛盾。所以当 $i^2 > x$ 时可以停止枚举。
 
-#### 复杂度分析
+循环结束后，如果 $x>1$，说明还有一个质因子为 $x$。
 
-预处理之后，`idealArrays` 的时间复杂度：$O(m\log\log m)$（$m$ 表示 $\textit{maxValue}$）。见 [Prime omega function](https://en.wikipedia.org/wiki/Prime_omega_function)。
+#### 方法二：预处理 LPF（适用于更大的数据范围）
 
-```py [sol1-Python3]
-MOD, MX = 10 ** 9 + 7, 10 ** 4 + 1
+利用埃氏筛或者欧拉筛，用质数 $p$ 标记 $p$ 的倍数（跳过已经标记的数），我们可以预处理每个数 $x$ 的最小质因子 $\text{LPF}[x]$。不断地更新 $x$ 为 $\dfrac{x}{\text{LPF}[x]}$，直到 $x=1$，在这个过程中统计每个质因子的出现次数。
 
-ks = [[] for _ in range(MX)]  # ks[x] 为 x 分解质因数后，每个质因数的个数列表
-for i in range(2, MX):
-    p, x = 2, i
-    while p * p <= x:
-        if x % p == 0:
-            k = 1
-            x //= p
-            while x % p == 0:
-                k += 1
-                x //= p
-            ks[i].append(k)
-        p += 1
-    if x > 1: ks[i].append(1)
+## 如何计算组合数
+
+#### 方法一：递推（适用于本题）
+
+对于从 $n$ 个物品中选择 $k$ 个物品的方案数 $C(n,k)$，可以用「选或不选」来思考，对于第 $n$ 个物品：
+
+- 不选：问题变成从 $n-1$ 个物品中选择 $k$ 个物品的方案数 $C(n-1,k)$。
+- 选：问题变成从 $n-1$ 个物品中选择 $k-1$ 个物品的方案数 $C(n-1,k-1)$。
+
+所以 $C(n,k) = C(n-1,k) + C(n-1,k-1)$。
+
+初始值：$C(n,0) = 1$。
+
+对于本题，由于 $2^{13} < 10^4 < 2^{14}$，我们可以预处理 $n\le 10^4 + 13-1$ 和 $k \le 13$ 的组合数。
+
+#### 方法二：预处理阶乘及其逆元（适用于更大的数据范围）
+
+见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+
+```py [sol-Python3]
+MOD = 1_000_000_007
+MAX_N = 10_000
+MAX_E = 13
+
+# EXP[x] 为 x 分解质因数后，每个质因数的指数
+EXP = [[] for _ in range(MAX_N + 1)]
+for x in range(2, len(EXP)):
+    t = x
+    i = 2
+    while i * i <= t:
+        e = 0
+        while t % i == 0:
+            e += 1
+            t //= i
+        if e:
+            EXP[x].append(e)
+        i += 1
+    if t > 1:
+        EXP[x].append(1)
+
+# 预处理组合数
+C = [[0] * (MAX_E + 1) for _ in range(MAX_N + MAX_E)]
+for i in range(len(C)):
+    C[i][0] = 1
+    for j in range(1, min(i, MAX_E) + 1):
+        C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % MOD
 
 class Solution:
     def idealArrays(self, n: int, maxValue: int) -> int:
         ans = 0
         for x in range(1, maxValue + 1):
-            mul = 1
-            for k in ks[x]:
-                mul = mul * comb(n + k - 1, k) % MOD
-            ans += mul
+            res = 1
+            for e in EXP[x]:
+                res = res * C[n + e - 1][e] % MOD
+            ans += res
         return ans % MOD
 ```
 
-```java [sol1-Java]
-class Solution {
-    static final int MOD = (int) 1e9 + 7, MX = (int) 1e4 + 1, MX_K = 13; // 至多 13 个质因数
-    static List[] ks = new List[MX]; // ks[x] 为 x 分解质因数后，每个质因数的个数列表
-    static int[][] c = new int[MX + MX_K][MX_K + 1]; // 组合数
+```py [sol-Python3 库函数]
+MOD = 1_000_000_007
+MAX_N = 10_000
 
-    static {
-        for (var i = 1; i < MX; i++) {
-            ks[i] = new ArrayList<Integer>();
-            var x = i;
-            for (var p = 2; p * p <= x; ++p) {
-                if (x % p == 0) {
-                    var k = 1;
-                    for (x /= p; x % p == 0; x /= p) ++k;
-                    ks[i].add(k);
+# EXP[x] 为 x 分解质因数后，每个质因数的指数
+EXP = [[] for _ in range(MAX_N + 1)]
+for x in range(2, len(EXP)):
+    t = x
+    i = 2
+    while i * i <= t:
+        e = 0
+        while t % i == 0:
+            e += 1
+            t //= i
+        if e:
+            EXP[x].append(e)
+        i += 1
+    if t > 1:
+        EXP[x].append(1)
+
+class Solution:
+    def idealArrays(self, n: int, maxValue: int) -> int:
+        ans = 0
+        for x in range(1, maxValue + 1):
+            res = 1
+            for e in EXP[x]:
+                res = res * comb(n + e - 1, e) % MOD
+            ans += res
+        return ans % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int MAX_N = 10_000;
+    private static final int MAX_E = 13;
+
+    private static final List<Integer>[] EXP = new ArrayList[MAX_N + 1];
+    private static final int[][] C = new int[MAX_N + MAX_E][MAX_E + 1];
+
+    private static boolean done = false;
+
+    private void init() {
+        // 这样写比 static block 更快
+        if (done) {
+            return;
+        }
+        done = true;
+
+        // EXP[x] 为 x 分解质因数后，每个质因数的指数
+        for (int x = 1; x < EXP.length; x++) {
+            EXP[x] = new ArrayList<>();
+            int t = x;
+            for (int i = 2; i * i <= t; i++) {
+                int e = 0;
+                for (; t % i == 0; t /= i) {
+                    e++;
+                }
+                if (e > 0) {
+                    EXP[x].add(e);
                 }
             }
-            if (x > 1) ks[i].add(1);
+            if (t > 1) {
+                EXP[x].add(1);
+            }
         }
 
-        c[0][0] = 1;
-        for (var i = 1; i < MX + MX_K; ++i) {
-            c[i][0] = 1;
-            for (var j = 1; j <= Math.min(i, MX_K); ++j)
-                c[i][j] = (c[i - 1][j] + c[i - 1][j - 1]) % MOD;
+        // 预处理组合数
+        for (int i = 0; i < MAX_N + MAX_E; i++) {
+            C[i][0] = 1;
+            for (int j = 1; j <= Math.min(i, MAX_E); j++) {
+                C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % MOD;
+            }
         }
     }
 
     public int idealArrays(int n, int maxValue) {
-        var ans = 0L;
-        for (var x = 1; x <= maxValue; ++x) {
-            var mul = 1L;
-            for (var k : ks[x]) mul = mul * c[n + (int) k - 1][(int) k] % MOD;
+        init();
+        long ans = 0;
+        for (int x = 1; x <= maxValue; x++) {
+            long mul = 1;
+            for (int e : EXP[x]) {
+                mul = mul * C[n + e - 1][e] % MOD;
+            }
             ans += mul;
         }
         return (int) (ans % MOD);
@@ -127,29 +212,38 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
-const int MOD = 1e9 + 7, MX = 1e4 + 1, MX_K = 13; // 至多 13 个质因数
-vector<int> ks[MX]; // ks[x] 为 x 分解质因数后，每个质因数的个数列表
-int c[MX + MX_K][MX_K + 1]; // 组合数
+```cpp [sol-C++]
+const int MOD = 1'000'000'007;
+const int MAX_N = 10'000;
+const int MAX_E = 13;
+
+vector<int> EXP[MAX_N + 1]; 
+int C[MAX_N + MAX_E][MAX_E + 1];
 
 int init = []() {
-    for (int i = 2; i < MX; ++i) {
-        int x = i;
-        for (int p = 2; p * p <= x; ++p) {
-            if (x % p == 0) {
-                int k = 1;
-                for (x /= p; x % p == 0; x /= p) ++k;
-                ks[i].push_back(k);
+    // EXP[x] 为 x 分解质因数后，每个质因数的指数
+    for (int x = 2; x <= MAX_N; x++) {
+        int t = x;
+        for (int i = 2; i * i <= t; i++) {
+            int e = 0;
+            for (; t % i == 0; t /= i) {
+                e++;
+            }
+            if (e) {
+                EXP[x].push_back(e);
             }
         }
-        if (x > 1) ks[i].push_back(1);
+        if (t > 1) {
+            EXP[x].push_back(1);
+        }
     }
 
-    c[0][0] = 1;
-    for (int i = 1; i < MX + MX_K; ++i) {
-        c[i][0] = 1;
-        for (int j = 1; j <= min(i, MX_K); ++j)
-            c[i][j] = (c[i - 1][j] + c[i - 1][j - 1]) % MOD;
+    // 预处理组合数
+    for (int i = 0; i < MAX_N + MAX_E; i++) {
+        C[i][0] = 1;
+        for (int j = 1; j <= min(i, MAX_E); j++) {
+            C[i][j] = (C[i - 1][j] + C[i - 1][j - 1]) % MOD;
+        }
     }
     return 0;
 }();
@@ -157,58 +251,96 @@ int init = []() {
 class Solution {
 public:
     int idealArrays(int n, int maxValue) {
-        long ans = 0L;
-        for (int x = 1; x <= maxValue; ++x) {
-            long mul = 1L;
-            for (int k: ks[x]) mul = mul * c[n + k - 1][k] % MOD;
-            ans += mul;
+        long long ans = 0;
+        for (int x = 1; x <= maxValue; x++) {
+            long long res = 1;
+            for (int e : EXP[x]) {
+                res = res * C[n + e - 1][e] % MOD;
+            }
+            ans += res;
         }
         return ans % MOD;
     }
 };
 ```
 
-```go [sol1-Go]
-const mod, mx, mxK int = 1e9 + 7, 1e4 + 1, 13 // 至多 13 个质因数
+```go [sol-Go]
+const mod = 1_000_000_007
+const maxN = 10_000
+const maxE = 13
 
-var ks [mx][]int
-var c [mx + mxK][mxK + 1]int
+var exp [maxN + 1][]int
+var c [maxN + maxE][maxE + 1]int
 
 func init() {
-	for i := 2; i < mx; i++ {
-		x := i
-		for p := 2; p*p <= x; p++ {
-			if x%p == 0 {
-				k := 1
-				for x /= p; x%p == 0; x /= p {
-					k++
-				}
-				ks[i] = append(ks[i], k)
+	// exp[x] 为 x 分解质因数后，每个质因数的指数
+	for x := 2; x <= maxN; x++ {
+		t := x
+		for i := 2; i*i <= t; i++ {
+			e := 0
+			for ; t%i == 0; t /= i {
+				e++
+			}
+			if e > 0 {
+				exp[x] = append(exp[x], e)
 			}
 		}
-		if x > 1 {
-			ks[i] = append(ks[i], 1)
+		if t > 1 {
+			exp[x] = append(exp[x], 1)
 		}
 	}
 
-	c[0][0] = 1
-	for i := 1; i < len(c); i++ {
+	// 预处理组合数
+	for i := range c {
 		c[i][0] = 1
-		for j := 1; j <= mxK && j <= i; j++ {
+		for j := 1; j <= min(i, maxE); j++ {
 			c[i][j] = (c[i-1][j] + c[i-1][j-1]) % mod
 		}
 	}
 }
 
 func idealArrays(n, maxValue int) (ans int) {
-	for _, ks := range ks[1 : maxValue+1] {
-		mul := 1
-		for _, k := range ks {
-			mul = mul * c[n+k-1][k] % mod
+	for x := 1; x <= maxValue; x++ {
+		res := 1
+		for _, e := range exp[x] {
+			res = res * c[n+e-1][e] % mod
 		}
-		ans = (ans + mul) % mod
+		ans += res
 	}
-	return ans
+	return ans % mod
 }
 ```
 
+#### 复杂度分析
+
+忽略预处理的时间和空间。
+
+- 时间复杂度：$\mathcal{O}(m\log\log m)$，其中 $m$ 表示 $\textit{maxValue}$。循环次数等同于 $[1,m]$ 中的每个数的不同质因子个数之和。由于每个质数 $p$ 的贡献不超过 $\dfrac{m}{p}$，累加得 $m\displaystyle\sum\limits_{p\le m}\dfrac{1}{p} = \mathcal{O}(m\log\log m)$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 相似题目
+
+[1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/)
+
+更多相似题目，见下面数学题单的「**§2.3 放球问题**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
