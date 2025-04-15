@@ -1,10 +1,4 @@
-统计
-
-$$
-(\textit{nums}[i - 2] + \textit{nums}[i]) \cdot 2 = \textit{nums}[i - 1]
-$$
-
-的 $i$ 的个数，其中 $2\le i < n$。
+遍历 $\textit{nums}$，统计满足 $2\le i < n$ 且 $(\textit{nums}[i - 2] + \textit{nums}[i]) \cdot 2 = \textit{nums}[i - 1]$ 的 $i$ 的个数，即为答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -42,6 +36,18 @@ public:
 };
 ```
 
+```c [sol-C]
+int countSubarrays(int* nums, int numsSize) {
+    int ans = 0;
+    for (int i = 2; i < numsSize; i++) {
+        if ((nums[i - 2] + nums[i]) * 2 == nums[i - 1]) {
+            ans++;
+        }
+    }
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func countSubarrays(nums []int) (ans int) {
 	for i := 2; i < len(nums); i++ {
@@ -50,6 +56,28 @@ func countSubarrays(nums []int) (ans int) {
 		}
 	}
 	return
+}
+```
+
+```js [sol-JavaScript]
+var countSubarrays = function(nums) {
+    let ans = 0;
+    for (let i = 2; i < nums.length; i++) {
+        if ((nums[i - 2] + nums[i]) * 2 === nums[i - 1]) {
+            ans++;
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_subarrays(nums: Vec<i32>) -> i32 {
+        (2..nums.len())
+            .filter(|&i| (nums[i - 2] + nums[i]) * 2 == nums[i - 1])
+            .count() as _
+    }
 }
 ```
 
@@ -76,3 +104,5 @@ func countSubarrays(nums []int) (ans int) {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
