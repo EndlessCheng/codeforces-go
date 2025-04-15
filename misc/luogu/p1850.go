@@ -53,7 +53,7 @@ func p1850(in io.Reader, out io.Writer) {
 
 	f := make([][2]float64, m+1)
 	for i := 1; i <= n; i++ {
-		// 倒着走
+		// 从 n 出发倒着走
 		cur1 := a[i].v[0]
 		cur2 := a[i].v[1]
 		pre1 := a[i-1].v[0]
