@@ -19,25 +19,27 @@ func cf632D(in io.Reader, _w io.Writer) {
 			ps[v] = append(ps[v], i)
 		}
 	}
-	sz, mxL := make([]int, m+1), 1
+	lcmSize := make([]int, m+1)
+	tar := 1
 	for i := 1; i <= m; i++ {
 		for j := i; j <= m; j += i {
-			if sz[j] += len(ps[i]); sz[j] > sz[mxL] {
-				mxL = j
+			lcmSize[j] += len(ps[i])
+			if lcmSize[j] > lcmSize[tar] {
+				tar = j
 			}
 		}
 	}
 	ids := []int{}
-	for d := 1; d*d <= mxL; d++ {
-		if mxL%d == 0 {
+	for d := 1; d*d <= tar; d++ {
+		if tar%d == 0 {
 			ids = append(ids, ps[d]...)
-			if d*d < mxL {
-				ids = append(ids, ps[mxL/d]...)
+			if d*d < tar {
+				ids = append(ids, ps[tar/d]...)
 			}
 		}
 	}
 	slices.Sort(ids)
-	Fprintln(out, mxL, len(ids))
+	Fprintln(out, tar, len(ids))
 	for _, v := range ids {
 		Fprint(out, v, " ")
 	}
