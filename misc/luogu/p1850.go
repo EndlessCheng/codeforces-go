@@ -1,28 +1,27 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://space.bilibili.com/206214
 func p1850(in io.Reader, out io.Writer) {
 	var n, m, V, E int
 	Fscan(in, &n, &m, &V, &E)
+	m = min(m, n)
 	type pair struct {
 		v [2]int
 		p float64
 	}
 	a := make([]pair, n+1)
-	for i := 1; i <= n; i++ {
+	for i := 0; i < n; i++ {
 		Fscan(in, &a[i].v[0])
 	}
-	for i := 1; i <= n; i++ {
+	for i := 0; i < n; i++ {
 		Fscan(in, &a[i].v[1])
 	}
-	for i := 1; i <= n; i++ {
+	for i := 0; i < n; i++ {
 		Fscan(in, &a[i].p)
 	}
 
@@ -52,45 +51,28 @@ func p1850(in io.Reader, out io.Writer) {
 		}
 	}
 
-	dp := make([][][2]float64, n)
-	for i := range dp {
-		dp[i] = make([][2]float64, m+1)
-		for j := range dp[i] {
-			dp[i][j] = [2]float64{-1, -1}
-		}
-	}
-	var f func(int, int, int) float64
-	f = func(i, j, k int) (res float64) {
-		if i == n {
-			return 0
-		}
-		p := &dp[i][j][k]
-		if *p != -1 {
-			return *p
-		}
+	f := make([][2]float64, m+1)
+	for i := 1; i <= n; i++ {
+		// 倒着走
+		cur1 := a[i].v[0]
+		cur2 := a[i].v[1]
+		pre1 := a[i-1].v[0]
+		pre2 := a[i-1].v[1]
 		curP := a[i].p
-		nxtP := a[i+1].p
-		nxt1 := a[i+1].v[0]
-		nxt2 := a[i+1].v[1]
-		if k == 0 {
-			cur := a[i].v[0]
-			res = f(i+1, j, 0) + float64(g[cur][nxt1])
+		preP := a[i-1].p
+		for j := m; j >= max(m-(n-i), 0); j-- {
+			f[j][1] = f[j][0] + float64(g[cur1][pre1])*(1-curP) + float64(g[cur2][pre1])*curP
 			if j > 0 {
-				res = min(res, f(i+1, j-1, 1)+float64(g[cur][nxt1])*(1-nxtP)+float64(g[cur][nxt2])*nxtP)
+				f[j][1] = min(f[j][1], f[j-1][1]+float64(g[cur1][pre1])*(1-curP)*(1-preP)+float64(g[cur1][pre2])*(1-curP)*preP+
+					float64(g[cur2][pre1])*curP*(1-preP)+float64(g[cur2][pre2])*curP*preP)
 			}
-		} else {
-			cur1 := a[i].v[0]
-			cur2 := a[i].v[1]
-			res = f(i+1, j, 0) + float64(g[cur1][nxt1])*(1-curP) + float64(g[cur2][nxt1])*curP
+			f[j][0] += float64(g[cur1][pre1])
 			if j > 0 {
-				res = min(res, f(i+1, j-1, 1)+float64(g[cur1][nxt1])*(1-curP)*(1-nxtP)+float64(g[cur1][nxt2])*(1-curP)*nxtP+
-					float64(g[cur2][nxt1])*curP*(1-nxtP)+float64(g[cur2][nxt2])*curP*nxtP)
+				f[j][0] = min(f[j][0], f[j-1][1]+float64(g[cur1][pre1])*(1-preP)+float64(g[cur1][pre2])*preP)
 			}
 		}
-		*p = res
-		return
 	}
-	Fprintf(out, "%.2f", f(0, m, 0))
+	Fprintf(out, "%.2f", f[m][0])
 }
 
-func main() { p1850(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { p1850(bufio.NewReader(os.Stdin), os.Stdout) }
