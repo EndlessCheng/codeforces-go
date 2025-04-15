@@ -11,7 +11,7 @@
 
 **内层循环**：如果发现 $\textit{pairs}\ge k$，说明子数组符合要求，右移左端点 $\textit{left}$，先把 $\textit{cnt}[\textit{nums}[\textit{left}]]$ 减少一，然后把 $\textit{pairs}$ 减少 $\textit{cnt}[\textit{nums}[\textit{left}]]$。
 
-内层循环结束时，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子数组都是合法的，这一共有 $\textit{left}$ 个，加入答案。
+内层循环结束后，$[\textit{left},\textit{right}]$ 这个子数组是不满足题目要求的，但在退出循环之前的最后一轮循环，$[\textit{left}-1,\textit{right}]$ 是满足题目要求的。由于子数组越长，越能满足题目要求，所以除了 $[\textit{left}-1,\textit{right}]$，还有 $[\textit{left}-2,\textit{right}],[\textit{left}-3,\textit{right}],\ldots,[0,\textit{right}]$ 都是满足要求的。也就是说，当右端点**固定**在 $\textit{right}$ 时，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子数组都是满足要求的，这一共有 $\textit{left}$ 个。
 
 ```py [sol-Python3]
 class Solution:
@@ -144,17 +144,17 @@ impl Solution {
         let mut left = 0;
         for &x in &nums {
             let e = cnt.entry(x).or_insert(0);
-            pairs += *e as i64;
+            pairs += *e;
             *e += 1;
-            while pairs >= k as i64 {
+            while pairs >= k {
                 let e = cnt.get_mut(&nums[left]).unwrap();
                 *e -= 1;
-                pairs -= *e as i64;
+                pairs -= *e;
                 left += 1;
             }
-            ans += left as i64;
+            ans += left;
         }
-        ans
+        ans as _
     }
 }
 ```
