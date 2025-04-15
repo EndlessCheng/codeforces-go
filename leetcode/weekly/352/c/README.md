@@ -1,3 +1,5 @@
+## 方法一：滑动窗口+有序集合/哈希表
+
 **前置知识**：[滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
 在遍历数组的同时，维护窗口内的元素及其出现次数。
@@ -125,8 +127,148 @@ func continuousSubarrays(nums []int) (ans int64) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。注意至多维护 $3$ 个数，仅用到常量额外空间。
+- 时间复杂度：$\mathcal{O}(n\log D)$ 或 $\mathcal{O}(nD)$，其中 $n$ 为 $\textit{nums}$ 的长度，$D=2$ 表示最大值与最小值之差的上限。
+- 空间复杂度：$\mathcal{O}(D)$。
+
+## 方法二：滑动窗口+单调队列
+
+可以做到和 $D$ 无关，且时间复杂度为 $\mathcal{O}(n)$。
+
+**前置知识**：[单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)
+
+本质是计算滑动窗口的最小值和最大值，可以用两个单调队列 $\textit{minQ}$ 和 $\textit{maxQ}$ 分别维护窗口中的最小值（的下标）和最大值（的下标）。
+
+如果最大值减去最小值大于 $2$，那么把 $\textit{left}$ 加一。然后检查队首是否在窗口外，如果在窗口外，就移出队首。
+
+```py [sol-Python3]
+class Solution:
+    def continuousSubarrays(self, nums: List[int]) -> int:
+        min_q = deque()
+        max_q = deque()
+        ans = left = 0
+        for right, x in enumerate(nums):
+            while min_q and x <= nums[min_q[-1]]:
+                min_q.pop()
+            min_q.append(right)
+
+            while max_q and x >= nums[max_q[-1]]:
+                max_q.pop()
+            max_q.append(right)
+
+            while nums[max_q[0]] - nums[min_q[0]] > 2:
+                left += 1
+                if min_q[0] < left:
+                    min_q.popleft()
+                if max_q[0] < left:
+                    max_q.popleft()
+            ans += right - left + 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long continuousSubarrays(int[] nums) {
+        Deque<Integer> minQ = new ArrayDeque<>();
+        Deque<Integer> maxQ = new ArrayDeque<>();
+        long ans = 0;
+        int left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            int x = nums[right];
+            while (!minQ.isEmpty() && x <= nums[minQ.peekLast()]) {
+                minQ.pollLast();
+            }
+            minQ.addLast(right);
+
+            while (!maxQ.isEmpty() && x >= nums[maxQ.peekLast()]) {
+                maxQ.pollLast();
+            }
+            maxQ.addLast(right);
+
+            while (nums[maxQ.peekFirst()] - nums[minQ.peekFirst()] > 2) {
+                left++;
+                if (minQ.peekFirst() < left) {
+                    minQ.pollFirst();
+                }
+                if (maxQ.peekFirst() < left) {
+                    maxQ.pollFirst();
+                }
+            }
+            ans += right - left + 1;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long continuousSubarrays(vector<int>& nums) {
+        deque<int> min_q, max_q;
+        long long ans = 0;
+        int left = 0;
+        for (int right = 0; right < nums.size(); right++) {
+            int x = nums[right];
+            while (!min_q.empty() && x <= nums[min_q.back()]) {
+                min_q.pop_back();
+            }
+            min_q.push_back(right);
+
+            while (!max_q.empty() && x >= nums[max_q.back()]) {
+                max_q.pop_back();
+            }
+            max_q.push_back(right);
+
+            while (nums[max_q.front()] - nums[min_q.front()] > 2) {
+                left++;
+                if (min_q.front() < left) {
+                    min_q.pop_front();
+                }
+                if (max_q.front() < left) {
+                    max_q.pop_front();
+                }
+            }
+            ans += right - left + 1;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func continuousSubarrays(nums []int) (ans int64) {
+	var minQ, maxQ []int
+	left := 0
+	for right, x := range nums {
+		for len(minQ) > 0 && x <= nums[minQ[len(minQ)-1]] {
+			minQ = minQ[:len(minQ)-1]
+		}
+		minQ = append(minQ, right)
+		
+		for len(maxQ) > 0 && x >= nums[maxQ[len(maxQ)-1]] {
+			maxQ = maxQ[:len(maxQ)-1]
+		}
+		maxQ = append(maxQ, right)
+
+		for nums[maxQ[0]]-nums[minQ[0]] > 2 {
+			left++
+			if minQ[0] < left {
+				minQ = minQ[1:]
+			}
+			if maxQ[0] < left {
+				maxQ = maxQ[1:]
+			}
+		}
+		ans += int64(right - left + 1)
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 相似题目
 
