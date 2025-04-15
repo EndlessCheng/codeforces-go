@@ -1,18 +1,14 @@
 **前置知识**：[滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
-在遍历数组的同时，维护窗口内的数字。
+在遍历数组的同时，维护窗口内的元素及其出现次数。
 
-由于绝对差至多为 $2$，所以用平衡树或者哈希表维护都行，反正至多维护 $3$ 个数，添加删除可以视作是 $\mathcal{O}(1)$ 的。（如果用哈希表，还需记录数字的出现次数。）
+由于绝对差至多为 $2$，所以用有序集合或者哈希表维护都行。
+
+由于至多维护 $3$ 个数，无论用有序集合还是哈希表，添加、删除和查询最值都是 $\mathcal{O}(1)$ 的。
 
 如果窗口内的最大值与最小值的差大于 $2$，就不断移动左端点 $\textit{left}$，减少窗口内的数字。
 
-最后
-
-$$
-[\textit{left},\textit{right}],[\textit{left}+1,\textit{right}],\cdots,[\textit{right},\textit{right}]
-$$
-
-这一共 $\textit{right}-\textit{left}+1$ 个子数组都是合法的，加入答案。
+内层循环结束后，$[\textit{left},\textit{right}]$ 这个子数组是满足题目要求的。由于子数组越短，越能满足题目要求，所以除了 $[\textit{left},\textit{right}]$，还有 $[\textit{left}+1,\textit{right}],[\textit{left}+2,\textit{right}],\ldots,[\textit{right},\textit{right}]$ 都是满足要求的。也就是说，当右端点**固定**在 $\textit{right}$ 时，左端点在 $\textit{left},\textit{left}+1,\textit{left}+2,\ldots,\textit{right}$ 的所有子数组都是满足要求的，这一共有 $\textit{right}-\textit{left}+1$ 个，加入答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -35,14 +31,19 @@ class Solution:
 class Solution {
     public long continuousSubarrays(int[] nums) {
         long ans = 0;
-        var t = new TreeMap<Integer, Integer>();
+        TreeMap<Integer, Integer> t = new TreeMap<>();
         int left = 0;
         for (int right = 0; right < nums.length; right++) {
-            t.merge(nums[right], 1, Integer::sum);
+            t.merge(nums[right], 1, Integer::sum); // t[nums[right]]++
             while (t.lastKey() - t.firstKey() > 2) {
-                int y = nums[left++];
-                if (t.get(y) == 1) t.remove(y);
-                else t.merge(y, -1, Integer::sum);
+                int out = nums[left];
+                int c = t.get(out);
+                if (c == 1) {
+                    t.remove(out);
+                } else {
+                    t.put(out, c - 1);
+                }
+                left++;
             }
             ans += right - left + 1;
         }
@@ -57,14 +58,15 @@ public:
     long long continuousSubarrays(vector<int>& nums) {
         long long ans = 0;
         map<int, int> cnt;
-        int left = 0, n = nums.size();
-        for (int right = 0; right < n; right++) {
+        int left = 0;
+        for (int right = 0; right < nums.size(); right++) {
             cnt[nums[right]]++;
             while (cnt.rbegin()->first - cnt.begin()->first > 2) {
-                int y = nums[left++];
+                int y = nums[left];
                 if (--cnt[y] == 0) {
                     cnt.erase(y);
                 }
+                left++;
             }
             ans += right - left + 1;
         }
@@ -83,7 +85,8 @@ public:
         for (int right = 0; right < n; right++) {
             s.insert(nums[right]);
             while (*s.rbegin() - *s.begin() > 2) {
-                s.erase(s.find(nums[left++]));
+                s.erase(s.find(nums[left])); // 删除一个 nums[left]
+                left++;
             }
             ans += right - left + 1;
         }
@@ -93,10 +96,10 @@ public:
 ```
 
 ```go [sol-Go]
-func continuousSubarrays(a []int) (ans int64) {
+func continuousSubarrays(nums []int) (ans int64) {
 	cnt := map[int]int{}
 	left := 0
-	for right, x := range a {
+	for right, x := range nums {
 		cnt[x]++
 		for {
 			mx, mn := x, x
@@ -107,9 +110,10 @@ func continuousSubarrays(a []int) (ans int64) {
 			if mx-mn <= 2 {
 				break
 			}
-			y := a[left]
-			if cnt[y]--; cnt[y] == 0 {
-				delete(cnt, y)
+			out := nums[left]
+			cnt[out]--
+			if cnt[out] == 0 {
+				delete(cnt, out)
 			}
 			left++
 		}
