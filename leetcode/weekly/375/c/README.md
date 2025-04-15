@@ -1,10 +1,11 @@
-请先看 [没有思路？一个视频讲透滑动窗口！【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)
+**前置知识**：[滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
-本题算法如下：
+由于子数组越长，包含的元素越多，越能满足题目要求；反之，子数组越短，包含的元素越少，越不能满足题目要求。有这种性质的题目，可以用滑动窗口解决。
 
 1. 设 $\textit{mx} = \max(\textit{nums})$。
-2. 右端点 $\textit{right}$ 从左到右遍历 $\textit{nums}$。遍历到元素 $x=\textit{nums}[\textit{right}]$ 时，如果 $x=\textit{mx}$，就把计数器 $\textit{cntMx}$ 加一。
-3. 如果此时 $\textit{cntMx}=k$，则不断右移左指针 $\textit{left}$，直到窗口内的 $\textit{mx}$ 的出现次数**小于** $k$ 为止。此时，对于右端点为 $\textit{right}$ 且左端点小于 $\textit{left}$ 的子数组，$\textit{mx}$ 的出现次数都至少为 $k$，把答案增加 $\textit{left}$。
+2. 从左到右遍历 $\textit{nums}$。遍历到元素 $x=\textit{nums}[\textit{right}]$ 时，如果 $x=\textit{mx}$，就把计数器 $\textit{cntMx}$ 加一。
+3. 如果此时 $\textit{cntMx}=k$，则不断右移左指针 $\textit{left}$，直到窗口内的 $\textit{mx}$ 的出现次数**小于** $k$ 为止。
+4. 内层循环结束后，$[\textit{left},\textit{right}]$ 这个子数组是不满足题目要求的，但在退出循环之前的最后一轮循环，$[\textit{left}-1,\textit{right}]$ 是满足题目要求的。由于子数组越长，越能满足题目要求，所以除了 $[\textit{left}-1,\textit{right}]$，还有 $[\textit{left}-2,\textit{right}],[\textit{left}-3,\textit{right}],\ldots,[0,\textit{right}]$ 都是满足要求的。也就是说，当右端点**固定**在 $\textit{right}$ 时，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子数组都是满足要求的，这一共有 $\textit{left}$ 个，加到答案中。
 
 例如示例 1，当右端点移到第二个 $3$ 时，左端点移到 $2$，此时 $[1,3,2,3]$ 和 $[3,2,3]$ 是满足要求的。当右端点移到第三个 $3$ 时，左端点也移到第三个 $3$，此时 $[1,3,2,3,3], [3,2,3,3], [2,3,3], [3,3]$ 都是满足要求的。所以答案为 $2+4=6$。
 
@@ -39,9 +40,10 @@ class Solution {
                 cntMx++;
             }
             while (cntMx == k) {
-                if (nums[left++] == mx) {
+                if (nums[left] == mx) {
                     cntMx--;
                 }
+                left++;
             }
             ans += left;
         }
@@ -60,7 +62,8 @@ public:
         for (int x : nums) {
             cnt_mx += x == mx;
             while (cnt_mx == k) {
-                cnt_mx -= nums[left++] == mx;
+                cnt_mx -= nums[left] == mx;
+                left++;
             }
             ans += left;
         }
@@ -104,7 +107,7 @@ func countSubarrays(nums []int, k int) (ans int64) {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -113,8 +116,9 @@ func countSubarrays(nums []int, k int) (ans int64) {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
