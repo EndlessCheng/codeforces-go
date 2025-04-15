@@ -145,11 +145,11 @@ func solveDP(k int) (ans int) {
 		f0[i][0] = 1
 	}
 
-	// 递推式中的 f[i][j] += f[i-1][k] * 2，提取系数得 m[j][k] = 2
+	// 例如，递推式中的 f[i][j] += f[i-1][k] * 2，提取系数得 m[j][k] = 2
 	m := newMatrix(size, size)
-	for i := range m {
-		m[i][(i+1)%size] = 1 // 举例 f[i][j] = f[i][j+1] + f[i][j+2]
-		m[i][(i+2)%size] = 1
+	for j := range m {
+		m[j][(j+1)%size] = 3 // 如果 f[i][j] += f[i-1][j+1] * 3
+		m[j][(j+2)%size] = 5 // 如果 f[i][j] += f[i-1][j+2] * 5
 	}
 
 	// fk 和 f0 一样，都是长为 size 的列向量
@@ -166,6 +166,34 @@ func solveDP(k int) (ans int) {
 }
 
 // -----------------------------------------------------------------------------
+
+// 广义斐波那契数列
+// a(n) = p*a(n-1) + q*a(n-2)
+// ！数列下标从 1 开始，n 从 1 开始
+func calcFibonacci(p, q, a1, a2, n int) int {
+	if n == 1 {
+		return a1 % mod
+	}
+	if n == 2 {
+		return a2 % mod
+	}
+	// 用打家劫舍的状态机写法理解，其中 f[i][0] 表示 i 可选可不选，f[i][1] 表示 i 一定不能选
+	// f[i][0] += p*f[i-1][0] 不选 i
+	// f[i][0] += q*f[i-1][1] 选 i，那么 i-1 一定不能选
+	// f[i][1] = f[i-1][0]
+	// 提取系数得 m[0][0] = p，m[0][1] = q，m[1][0] = 1
+	m := matrix{
+		{p, q},
+		{1, 0},
+	}
+	// f0 怎么写可以代入 n=3 算一算
+	f0 := matrix{
+		{a2},
+		{a1},
+	}
+	// 结果是个列向量 [f[n-2][0] f[n-2][1]]，取 f[n-2][0]
+	return m.powMul(n-2, f0)[0][0]
+}
 
 func newIdentityMatrix(n int) matrix {
 	a := make(matrix, n)
@@ -197,27 +225,6 @@ func (a matrix) solve(n, sx, sy, tx, ty, k int) int {
 	b[0][sx*n+sy] = 1
 	res := b.mul(a.pow(k))
 	return res[0][tx*n+ty]
-}
-
-// a(n) = p*a(n-1) + q*a(n-2)
-// a(n-1) = a(n-1)
-// 转成矩阵乘法
-// 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
-func calcFibonacci(p, q, a0, a1, n int) int {
-	const mod = 1_000_000_007 // 998244353
-	//n--
-	if n == 0 {
-		return (a0%mod + mod) % mod
-	}
-	if n == 1 {
-		return (a1%mod + mod) % mod
-	}
-	m := matrix{
-		{p, q},
-		{1, 0},
-	}.pow(n - 1)
-	return ((m[0][0]*a1+m[0][1]*a0)%mod + mod) % mod
-	//return m[0][0]
 }
 
 func (a matrix) add(b matrix) matrix {
