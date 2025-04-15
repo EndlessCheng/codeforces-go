@@ -4,7 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"sort"
+	"slices"
 )
 
 // https://github.com/EndlessCheng
@@ -36,7 +36,7 @@ func cf632D(in io.Reader, _w io.Writer) {
 			}
 		}
 	}
-	sort.Ints(ids)
+	slices.Sort(ids)
 	Fprintln(out, mxL, len(ids))
 	for _, v := range ids {
 		Fprint(out, v, " ")
