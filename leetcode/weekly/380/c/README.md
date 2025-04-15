@@ -332,7 +332,7 @@ func findMaximumNumber(k int64, x int) int64 {
 
 ## 方法三：试填法（逐位构造）
 
-为方便计算，考察 $1$ 到 $\textit{num}-1$ 的价值和。
+为方便计算，计算小于 $\textit{num}$ 的价值和，最后返回的时候把 $\textit{num}$ 减一，就是小于等于 $\textit{num}$ 的价值和。
 
 从高到低构建 $\textit{num}$ 的每个比特位。设当前枚举到 $\textit{num}$ 的从低到高的第 $i$ 个比特位（$i$ 从 $0$ 开始），设 $i$ 左边有 $\textit{pre}_1$ 个编号是 $x$ 的倍数且填了 $1$ 的比特位。
 
