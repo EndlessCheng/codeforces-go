@@ -29,7 +29,7 @@ $$
 
 在置换之后，$(P(4),P(0),P(3))=(0,1,3)$ 也是两个新的排列的公共子序列。
 
-置换之前的公共子序列，能一一对应置换之后的公共子序列。所以**置换不会改变公共子序列的个数**。
+⚠**注意**：置换不是排序，是**映射**（可以理解成**重命名**），原来的公共子序列在映射后，子序列元素的**位置没变**，只是数值变了，仍然是公共子序列。所以置换不会改变公共子序列的个数。
 
 ## 思路
 
@@ -43,7 +43,7 @@ $$
 
 - 在 $B$ 中，元素 $y$ 的左侧有多少个比 $y$ 小的数 $x$？右侧有多少个比 $y$ 大的数 $z$？
 
-枚举 $y=B[i]$，设 $i$ 左侧有 $\textit{less}_y$ 个元素比 $y$ 小，那么 $i$ 左侧有 $i-\textit{less}_y$ 个元素比 $y$ 大。在整个排列 $B$ 中，比 $y$ 大的数有 $n-1-y$ 个，减去 $i-\textit{less}_y$，得到 $i$ 右侧有 $n-1-y-(i-\textit{less}_y)$ 个数比 $y$ 大。所以中间元素是 $y$ 的长为 $3$ 的严格递增子序列的个数为
+枚举 $y=B[i]$，设 $i$ 左侧有 $\textit{less}_y$ 个元素比 $y$ 小，那么 $i$ 左侧有 $i-\textit{less}_y$ 个元素比 $y$ 大。在整个排列 $B$ 中，比 $y$ 大的数有 $n-1-y$ 个，减去 $i-\textit{less}_y$，得到 $i$ 右侧有 $n-1-y-(i-\textit{less}_y)$ 个数比 $y$ 大。所以（根据乘法原理）中间元素是 $y$ 的长为 $3$ 的严格递增子序列的个数为
 
 $$
 \textit{less}_y\cdot(n-1-y-(i-\textit{less}_y))
@@ -51,7 +51,7 @@ $$
 
 枚举 $y=B[i]$，计算上式，加入答案。
 
-如何计算 $\textit{less}_y$？这可以用**值域树状数组**（或者有序集合）实现。关于树状数组的原理，请看 [带你发明树状数组！附数学证明](https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/)。
+如何计算 $\textit{less}_y$？这可以用**值域树状数组**（或者有序集合）。关于树状数组的原理，请看 [带你发明树状数组！附数学证明](https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/)。
 
 值域树状数组的意思是，把元素值视作下标。添加一个值为 $3$ 的数，就是调用树状数组的 $\texttt{update}(3,1)$。查询小于 $3$ 的元素个数，即小于等于 $2$ 的元素个数，就是调用树状数组的 $\texttt{pre}(2)$。完整的树状数组模板，见 [数据结构题单](https://leetcode.cn/circle/discuss/mOr1u6/)。
 
