@@ -24,14 +24,12 @@ $$
 
 例如 $\textit{nums}=[1,4,3,4,2,2,3,3]$，如下图所示。
 
-![lc2444-c.png](https://pic.leetcode.cn/1744761446-ngTDfA-lc2444-c.png){:width=550}
+![lc2444-c.png](https://pic.leetcode.cn/1744761446-ngTDfA-lc2444-c.png){:width=700}
 
 代码实现时：
 
-- 为方便计算，可以初始化 $\textit{minI},\ \textit{maxI},\ i_0$ 均为 $-1$，兼容没有找到相应元素的情况。
+- 可以初始化 $\textit{minI}=\textit{maxI}=i_0=-1$，兼容没有找到相应元素的情况。
 - 如果 $\min(\textit{minI},\textit{maxI})-i_0 < 0$，则表示在 $i_0$ 右侧 $\textit{minK}$ 和 $\textit{maxK}$ 没有同时出现，此时以 $i$ 为右端点的合法子数组的个数为 $0$。所以加到答案中的是 $\max(\min(\textit{minI},\textit{maxI})-i_0, 0)$。
-
-[视频讲解](https://www.bilibili.com/video/BV1Ae4y1i7PM) 第四题。
 
 ```py [sol-Python3]
 class Solution:
