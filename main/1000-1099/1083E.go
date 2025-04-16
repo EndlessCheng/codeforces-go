@@ -19,15 +19,38 @@ func (a vec83) det(b vec83) int {
 }
 
 func cf1083E(in io.Reader, out io.Writer) {
-	var n, ans int
-	Fscan(in, &n)
+	buf := make([]byte, 4096)
+	_i, _n := 0, 0
+	rc := func() byte {
+		if _i == _n {
+			_n, _ = in.Read(buf)
+			if _n == 0 {
+				return 0
+			}
+			_i = 0
+		}
+		b := buf[_i]
+		_i++
+		return b
+	}
+	rd := func() (x int) {
+		b := rc()
+		for ; '0' > b; b = rc() {
+		}
+		for ; '0' <= b; b = rc() {
+			x = x*10 + int(b&15)
+		}
+		return
+	}
+
 	type tuple struct{ x, y, a int }
-	a := make([]tuple, n)
+	a := make([]tuple, rd())
 	for i := range a {
-		Fscan(in, &a[i].x, &a[i].y, &a[i].a)
+		a[i] = tuple{rd(), rd(), rd()}
 	}
 	slices.SortFunc(a, func(a, b tuple) int { return a.x - b.x })
 
+	ans := 0
 	q := []vec83{{}}
 	for _, t := range a {
 		pi := vec83{-t.y, 1}
