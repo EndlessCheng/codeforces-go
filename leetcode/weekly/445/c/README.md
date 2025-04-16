@@ -99,10 +99,10 @@ class Solution:
                 k -= p  # k 太大，要填更大的字母（类似搜索树剪掉了一个大小为 p 的子树）
                 cnt[j] += 1
 
-        ans = ''.join(left_s)
+        ans = left_s = ''.join(left_s)
         if n % 2:
             ans += s[n // 2]
-        return ans + ''.join(reversed(left_s))
+        return ans + left_s[::-1]
 ```
 
 ```java [sol-Java]
