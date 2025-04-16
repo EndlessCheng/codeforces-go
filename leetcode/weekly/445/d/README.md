@@ -350,8 +350,14 @@ class Solution {
     private static final int MAX_N = 333; // 进制转换后的最大长度
     private static final int MAX_B = 10;
     private static final long[][] comb = new long[MAX_N + MAX_B][MAX_B];
+    private static boolean done = false;
 
-    static {
+    // 这样写比 static block 更快
+    private void init() {
+        if (done) {
+            return;
+        }
+        done = true;
         // 预处理组合数
         for (int i = 0; i < MAX_N + MAX_B; i++) {
             comb[i][0] = 1;
@@ -363,6 +369,7 @@ class Solution {
     }
 
     public int countNumbers(String l, String r, int b) {
+        init();
         // 小于 r+1 的合法数字个数 - 小于 l 的合法数字个数
         return (int) ((calc(r, b, true) - calc(l, b, false)) % MOD);
     }
