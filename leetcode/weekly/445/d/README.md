@@ -243,15 +243,13 @@ $$
 
 设 $r+1$ 进制转换后的字符串为 $s$。
 
-设上一个数位填的是 $\textit{pre} = \texttt{int}(s[i-1])$，枚举当前位置填数字 $j=\textit{pre},\textit{pre}+1,\ldots, \textit{hi}-1$，其中 $\textit{hi}=\texttt{int}(s[i])$。
-
-那么剩余数位不受到 $s$ 的约束，方案数之和为
+设上一个数位填的是 $\textit{pre} = \texttt{int}(s[i-1])$，枚举当前位置填数字 $j=\textit{pre},\textit{pre}+1,\ldots, \textit{hi}-1$，其中 $\textit{hi}=\texttt{int}(s[i])$。剩余数位不受到 $s$ 的约束，方案数之和为
 
 $$
 \sum_{j=b-\textit{hi}}^{b-1-\textit{pre}} \binom {m+j} m
 $$
 
-根据上项求和恒等式
+根据上指标求和恒等式
 
 $$
 \binom {m} m + \binom {m+1} m + \cdots + \binom {m+k} m = \binom {m+k+1} {m+1}
