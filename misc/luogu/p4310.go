@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 	"math/bits"
@@ -9,8 +8,7 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func p4310(_r io.Reader, out io.Writer) {
-	in := bufio.NewReader(_r)
+func p4310(in io.Reader, out io.Writer) {
 	var n, v uint
 	f := [30]int{}
 	for Fscan(in, &n); n > 0; n-- {
@@ -26,4 +24,4 @@ func p4310(_r io.Reader, out io.Writer) {
 	Fprintln(out, slices.Max(f[:]))
 }
 
-//func main() { p4310(os.Stdin, os.Stdout) }
+//func main() { p4310(bufio.NewReader(os.Stdin), os.Stdout) }
