@@ -1,10 +1,12 @@
+⚠**注意**：题目说的最大元素指整个 $\textit{nums}$ 数组的最大值，不是子数组的最大值。
+
 **前置知识**：[滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
 由于子数组越长，包含的元素越多，越能满足题目要求；反之，子数组越短，包含的元素越少，越不能满足题目要求。有这种性质的题目，可以用滑动窗口解决。
 
 1. 设 $\textit{mx} = \max(\textit{nums})$。
-2. 从左到右遍历 $\textit{nums}$。遍历到元素 $x=\textit{nums}[\textit{right}]$ 时，如果 $x=\textit{mx}$，就把计数器 $\textit{cntMx}$ 加一。
-3. 如果此时 $\textit{cntMx}=k$，则不断右移左指针 $\textit{left}$，直到窗口内的 $\textit{mx}$ 的出现次数**小于** $k$ 为止。
+2. 元素 $x=\textit{nums}[\textit{right}]$ 进入窗口时，如果 $x=\textit{mx}$，把计数器 $\textit{cntMx}$ 加一。
+3. 如果 $\textit{cntMx}=k$，则不断右移左指针 $\textit{left}$，直到窗口中的 $\textit{mx}$ 的出现次数**小于** $k$ 为止。
 4. 内层循环结束后，$[\textit{left},\textit{right}]$ 这个子数组是不满足题目要求的，但在退出循环之前的最后一轮循环，$[\textit{left}-1,\textit{right}]$ 是满足题目要求的。由于子数组越长，越能满足题目要求，所以除了 $[\textit{left}-1,\textit{right}]$，还有 $[\textit{left}-2,\textit{right}],[\textit{left}-3,\textit{right}],\ldots,[0,\textit{right}]$ 都是满足要求的。也就是说，当右端点**固定**在 $\textit{right}$ 时，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子数组都是满足要求的，这一共有 $\textit{left}$ 个，加到答案中。
 
 例如示例 1，当右端点移到第二个 $3$ 时，左端点移到 $2$，此时 $[1,3,2,3]$ 和 $[3,2,3]$ 是满足要求的。当右端点移到第三个 $3$ 时，左端点也移到第三个 $3$，此时 $[1,3,2,3,3], [3,2,3,3], [2,3,3], [3,3]$ 都是满足要求的。所以答案为 $2+4=6$。
@@ -72,6 +74,29 @@ public:
 };
 ```
 
+```c [sol-C]
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
+
+long long countSubarrays(int* nums, int numsSize, int k) {
+    int mx = nums[0];
+    for (int i = 1; i < numsSize; i++) {
+        mx = MAX(mx, nums[i]);
+    }
+
+    long long ans = 0;
+    int cnt_mx = 0, left = 0;
+    for (int i = 0; i < numsSize; i++) {
+        cnt_mx += nums[i] == mx;
+        while (cnt_mx == k) {
+            cnt_mx -= nums[left] == mx;
+            left++;
+        }
+        ans += left;
+    }
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func countSubarrays(nums []int, k int) (ans int64) {
 	mx := slices.Max(nums)
@@ -92,6 +117,50 @@ func countSubarrays(nums []int, k int) (ans int64) {
 }
 ```
 
+```js [sol-JavaScript]
+var countSubarrays = function(nums, k) {
+    const mx = Math.max(...nums);
+    let ans = 0, cntMx = 0, left = 0;
+    for (const x of nums) {
+        if (x === mx) {
+            cntMx++;
+        }
+        while (cntMx === k) {
+            if (nums[left] === mx) {
+                cntMx--;
+            }
+            left++;
+        }
+        ans += left;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_subarrays(nums: Vec<i32>, k: i32) -> i64 {
+        let mx = *nums.iter().max().unwrap();
+        let mut ans = 0;
+        let mut cnt_mx = 0;
+        let mut left = 0;
+        for &x in &nums {
+            if x == mx {
+                cnt_mx += 1;
+            }
+            while cnt_mx == k {
+                if nums[left] == mx {
+                    cnt_mx -= 1;
+                }
+                left += 1;
+            }
+            ans += left;
+        }
+        ans as _
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
@@ -99,9 +168,11 @@ func countSubarrays(nums []int, k int) (ans int64) {
 
 ## 思考题
 
-把问题改成：子数组的最大值在子数组中至少出现 $k$ 次，要怎么做？（原题是整个数组的最大值，这里是子数组的最大值）
+改成子数组的最大值**在子数组中**至少出现 $k$ 次，要怎么做？（原题是整个数组的最大值，这里是子数组的最大值）
 
-用**单调栈**做，思路可以参考 [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)
+欢迎在评论区分享你的思路/代码。
+
+提示：[907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)
 
 ## 分类题单
 
