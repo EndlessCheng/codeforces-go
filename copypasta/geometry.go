@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"math/big"
 	"math/rand"
 	"sort"
 )
@@ -246,6 +247,11 @@ type vec struct{ x, y int }
 func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
 func (a vec) dot(b vec) int { return a.x*b.x + a.y*b.y } // 点积，用来判断两向量同向/异向
 func (a vec) det(b vec) int { return a.x*b.y - a.y*b.x } // 叉积的 z 分量的值，用来判断两向量的左右关系   cross
+func (a vec) detCmp(b vec) int {
+	v := new(big.Int).Mul(big.NewInt(int64(a.x)), big.NewInt(int64(b.y)))
+	w := new(big.Int).Mul(big.NewInt(int64(a.y)), big.NewInt(int64(b.x)))
+	return v.Cmp(w)
+}
 
 func (a vec) add(b vec) vec       { return vec{a.x + b.x, a.y + b.y} }
 func (a vec) mul(k int) vec       { return vec{a.x * k, a.y * k} }
@@ -1047,7 +1053,8 @@ func _(abs func(int) int) {
 	// 动态凸包
 	// 用平衡树加点
 	// https://en.wikipedia.org/wiki/Dynamic_convex_hull
-	// 模板题 https://codeforces.com/problemset/problem/70/D
+	// 模板题 https://codeforces.com/problemset/problem/70/D 2700
+	// https://codeforces.com/problemset/problem/932/F 2700 启发式合并
 	// https://www.luogu.com.cn/problem/P2521
 	// https://www.luogu.com.cn/problem/P4027
 	dynamicConvexHull := func(ps []vec) {
