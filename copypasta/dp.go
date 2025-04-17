@@ -288,6 +288,7 @@ https://codeforces.com/problemset/problem/1767/C 2100 带约束的计数 DP
 https://codeforces.com/problemset/problem/2060/F 2200
 https://codeforces.com/problemset/problem/626/F 2400 转换
 https://codeforces.com/problemset/problem/1237/F 2600
+https://www.luogu.com.cn/problem/P5664 状态设计
 todo https://atcoder.jp/contests/abc234/tasks/abc234_f
 
 多重组合
@@ -360,7 +361,7 @@ todo 3.4 节
 3411 https://www.luogu.com.cn/problem/SP3953
 3420
 3735
-3171 https://www.luogu.com.cn/problem/P4644 见 graph.shortestPathDijkstra
+3171 https://www.luogu.com.cn/problem/P4644 见 graph.dijkstraShortestPath
 CSES DP section editorial https://codeforces.com/blog/entry/70018
 力扣上的 DP 问题
     分类汇总 https://zhuanlan.zhihu.com/p/126546914
@@ -594,9 +595,12 @@ func _(abs func(int) int) {
 		return
 	}
 
-	// 修改序列为非降或非增的最小修改次数
-	// - 单次修改可以把某个数 +1 或 -1
+	// 修改序列为非降或非增的最小修改次数，单次修改可以把某个数 +1 或 -1（L1 error）
 	// https://writings.sh/post/slope-trick-mono-sequence
+	//
+	// 注：如果是差值的平方（L2 error），那么是 isotonic regression / monotonic regression
+	// https://en.wikipedia.org/wiki/Isotonic_regression
+	// O(n) PAVA 算法 https://zhuanlan.zhihu.com/p/30747186
 	//
 	// 通过一个例子来解释这个基于堆的算法：1 5 10 4 2 2 2 2
 	// 假设当前维护的是非降序列，前三个数直接插入，不需要任何修改
@@ -613,6 +617,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/713/C 2300 严格单调递增 https://codeforces.com/blog/entry/47094?#comment-315161
 	//     这道题做了一个 a[i]-=i 的操作（i 从 1 开始），把严格单调递增变成了非降的情况，从而可以应用该算法
 	//     这一技巧的原理是，对于整数来说，单调递增的最小情况是 y=x+C，减去这一函数，就得到了非降序列的最小情况 y=C
+	// https://codeforces.com/problemset/problem/1787/H
 	// https://www.luogu.com.cn/problem/P4597
 	// https://www.luogu.com.cn/problem/P2893
 	// http://poj.org/problem?id=3666
@@ -704,7 +709,7 @@ func _(abs func(int) int) {
 	// - f[c][mask]，其中 mask 记录字母 c 在每个字符串中的出现位置，0 表示左边那个，1 表示右边那个
 	// https://atcoder.jp/contests/abc185/tasks/abc185_e 权值 
 	// https://atcoder.jp/contests/abc130/tasks/abc130_e 相同子序列个数
-	// https://atcoder.jp/contests/abc391/tasks/abc391_g DP 套 DP
+	// https://atcoder.jp/contests/abc391/tasks/abc391_g DDP / DP of DP
 	// - https://www.luogu.com.cn/problem/P10614
 	// - https://www.luogu.com.cn/problem/P4590
 	// 2020 多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
@@ -899,6 +904,7 @@ func _(abs func(int) int) {
 	// - 看成三段，每一段的贡献就是前面拆分出的二进制数（这里只是举了个例子，每一段的 gap 可以调大一些以满足构造要求）
 	// bitset 优化 https://codeforces.com/contest/1826/problem/E
 	// 思想 https://codeforces.com/problemset/problem/1582/F1
+	// https://codeforces.com/problemset/problem/249/D 2700
 	// https://atcoder.jp/contests/arc159/tasks/arc159_d 区间 LIS（思路类似珂朵莉树）
 	// https://atcoder.jp/contests/arc149/tasks/arc149_b
 	// https://atcoder.jp/contests/abc393/tasks/abc393_f
@@ -1513,6 +1519,8 @@ func _(abs func(int) int) {
 	// https://github.com/hqztrue/shared_materials/blob/master/codeforces/101064%20L.%20The%20Knapsack%20problem%20156ms_short.cpp
 	// https://www.luogu.com.cn/problem/P1616
 	// https://www.luogu.com.cn/problem/P2918 至少
+	// https://www.luogu.com.cn/problem/P1450 容斥
+	// https://codeforces.com/problemset/problem/632/E 2400
 	// LC322 https://leetcode.cn/problems/coin-change/ 恰好装满 
 	// LC1449 https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/ 恰好装满+打印方案 
 	// 【脑洞】求极限：lim_{maxW->∞} f[maxW]/maxW
@@ -1764,6 +1772,7 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P3177
 	// NOIP06·提高 金明的预算方案 https://www.luogu.com.cn/problem/P1064
 	// https://atcoder.jp/contests/abc207/tasks/abc207_f
+	// https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
 	treeKnapsack := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
 		var dfs func(int, int) []int
 		dfs = func(v, fa int) []int {
@@ -1988,6 +1997,7 @@ func _(abs func(int) int) {
 
 	/* 状态机 DP
 	可以用网格图 DP 形象地理解，一般状态机都是 0->1->2 这种，类似只能向右/右下的网格图 DP
+	https://atcoder.jp/contests/abc346/tasks/abc346_d
 	https://codeforces.com/problemset/problem/327/A 1200
 	https://codeforces.com/problemset/problem/1178/B 1300
 	https://codeforces.com/problemset/problem/698/A 1400
@@ -2038,6 +2048,10 @@ func _(abs func(int) int) {
 	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
 	todo 生成函数与期望 http://www.matrix67.com/blog/archives/4534
 
+	Secretary problem 秘书问题、37% 法则、麦穗理论、相亲问题、止步问题、见好就收问题、苏丹的嫁妆问题、挑剔的求婚者问题
+	https://en.wikipedia.org/wiki/Secretary_problem
+	https://en.wikipedia.org/wiki/Optimal_stopping 最佳停止问题
+
 	期望的可加性
 	https://zhidao.baidu.com/question/259203053.html
 
@@ -2065,14 +2079,17 @@ func _(abs func(int) int) {
 	LC1230 https://leetcode.cn/problems/toss-strange-coins/
 	LC1467 https://leetcode.cn/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
 	剑指 Offer 60 https://leetcode.cn/problems/nge-tou-zi-de-dian-shu-lcof/
+	https://www.luogu.com.cn/problem/P2719 用组合数学做
 
 	期望 DP
 	入门题 https://atcoder.jp/contests/abc280/tasks/abc280_e
 	https://atcoder.jp/contests/abc350/tasks/abc350_e
 	- 如果状态转移左右两边都包含 f[i]，则需要移项化简
 	https://atcoder.jp/contests/dp/tasks/dp_j
-	DAG https://www.luogu.com.cn/problem/P4316
-	后缀和优化 https://atcoder.jp/contests/abc326/tasks/abc326_e
+	https://www.luogu.com.cn/problem/P1365 有关连续相同字符长度的期望
+	https://www.luogu.com.cn/problem/P4316
+	https://www.luogu.com.cn/problem/P1850 好题，注意这句话：所有的申请只能在学期开始前一次性提交。我们不能在计算的过程中，根据当前位置，决策是否申请换课
+	https://atcoder.jp/contests/abc326/tasks/abc326_e 后缀和优化
 	todo https://codeforces.com/contest/1842/problem/G https://codeforces.com/blog/entry/117640
 	https://codeforces.com/problemset/problem/235/B 2000
 	https://codeforces.com/problemset/problem/1753/C 2000
@@ -2172,6 +2189,7 @@ func _(abs func(int) int) {
 	https://www.luogu.com.cn/problem/P1879
 	https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压 DP（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
 	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
+	    - 对于二进制来说，那个 3^m 中的 3 就是空集的子集个数 1 + 一个元素的子集个数 2
 	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
 	https://codeforces.com/problemset/problem/16/E 1900 与概率 DP 结合
 	https://codeforces.com/problemset/problem/401/D 2000
@@ -2190,6 +2208,13 @@ func _(abs func(int) int) {
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
 	https://en.wikipedia.org/wiki/Hamiltonian_path_problem
+
+	DDP / DP of DP
+	f 差分后如果只有 0 和 1，可以考虑状压差分数组
+	https://atcoder.jp/contests/abc391/tasks/abc391_g LCS
+	- https://www.luogu.com.cn/problem/P10614
+	- https://www.luogu.com.cn/problem/P4590
+	https://www.luogu.com.cn/problem/P4484 LIS
 
 	求最大团/最大独立集的记忆化写法见 graph.go
 	*/
@@ -2766,6 +2791,7 @@ func _(abs func(int) int) {
 	- [1742. 盒子中小球的最大数量](https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/) *非暴力做法 枚举数位和+DP
 	- [2843. 统计对称整数的数目](https://leetcode.cn/problems/count-symmetric-integers/) *非暴力做法
 	https://codeforces.com/contest/1710/problem/C
+	数位和 https://leetcode.cn/problems/count-largest-group/
 	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127
 	- https://atcoder.jp/contests/abc336/tasks/abc336_e
 	- https://ac.nowcoder.com/acm/contest/28262/E
@@ -2801,7 +2827,7 @@ func _(abs func(int) int) {
 	// 举例 https://atcoder.jp/contests/abc387/tasks/abc387_c
 	// 代码 https://atcoder.jp/contests/abc387/submissions/61401082
 	digitDP := func(low, high int, sumUpper int) int {
-		lowS := strconv.Itoa(low) // 不加前导零
+		lowS := strconv.Itoa(low)
 		highS := strconv.Itoa(high)
 		n := len(highS)
 		diffLH := n - len(lowS)
@@ -3249,11 +3275,13 @@ func _(abs func(int) int) {
 	LC2327 https://leetcode.cn/problems/number-of-people-aware-of-a-secret/
 	LC2463 https://leetcode.cn/problems/minimum-total-distance-traveled/
 	LC2478 https://leetcode.cn/problems/number-of-beautiful-partitions/
+	https://www.luogu.com.cn/problem/P2513
 	https://codeforces.com/problemset/problem/46/E 1900 前缀最大值/后缀最大值
 	https://codeforces.com/problemset/problem/479/E 1900
 	- https://atcoder.jp/contests/abc253/tasks/abc253_e
 	https://atcoder.jp/contests/abc248/tasks/abc248_c
-	终极 BOSS https://atcoder.jp/contests/diverta2019/tasks/diverta2019_e
+	https://atcoder.jp/contests/diverta2019/tasks/diverta2019_e
+	https://codeforces.com/problemset/problem/708/E 3100
 
 	其他
 	https://codeforces.com/problemset/problem/1863/F 2600
@@ -3281,25 +3309,36 @@ func _(abs func(int) int) {
 	// 见 monotone_queue.go
 
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
-	// 状态转移方程形如 f[i] = min_{j=0}^{i-1} k[i]*f[j]+a[i]*b[j]，包含 i 和 j 的乘积项
+	// 状态转移方程形如 f[i] = min_{j=0}^{i-1} a[i]*b[j] + k[i]*f[j] + C，包含 i 和 j 的乘积项
 	//
 	// 理解方法一：点积的几何意义（向量投影长度）
 	// 推荐，比斜率、截距好想很多
 	// 讲解 https://leetcode.cn/problems/minimum-cost-to-divide-array-into-subarrays/solutions/3633352/hua-fen-xing-dp-shi-zi-bian-xing-pythonj-cwi9/
 	// - 注：原题是经典例题 https://www.luogu.com.cn/problem/P2365
 	//
-	// https://oi-wiki.org/dp/opt/slope/#%E4%B9%A0%E9%A2%98 习题
-	// 怎么找题 https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2Cgeometry
-	// https://atcoder.jp/contests/dp/tasks/dp_z 入门题
+	// https://atcoder.jp/contests/dp/tasks/dp_z 入门题 min
 	// - https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
+	// https://www.luogu.com.cn/problem/P3628 max
 	// https://www.luogu.com.cn/problem/P5017
 	// https://www.luogu.com.cn/problem/P2365 IOI02 http://poj.org/problem?id=1180 https://www.luogu.com.cn/problem/P5785
 	// https://www.luogu.com.cn/problem/P2900 https://www.luogu.com.cn/problem/SP15086 单调栈
-	// https://codeforces.com/problemset/problem/319/C 2100
-	// https://codeforces.com/problemset/problem/311/B 2400
-	// https://codeforces.com/problemset/problem/1715/E 2400
-	// https://codeforces.com/problemset/problem/631/E 2600
-	// https://codeforces.com/problemset/problem/1175/G 3000 李超线段树
+	// https://codeforces.com/problemset/problem/319/C 2100 注意 det 会爆 int64
+	// https://codeforces.com/problemset/problem/311/B 2400 划分型 DP
+	// https://codeforces.com/problemset/problem/1083/E 2400 入门题
+	// https://codeforces.com/problemset/problem/1715/E 2400 Dijkstra
+	// https://codeforces.com/problemset/problem/1866/K 2500 凸包次大值：把从单调栈中淘汰的数据再建一个（更内部的）凸包
+	// https://codeforces.com/problemset/problem/631/E 2600 往左还是往右可以变形成同一个式子
+	// https://codeforces.com/problemset/problem/932/F 2700 平衡树+启发式合并
+	// https://codeforces.com/problemset/problem/1366/F 2700 图 DP
+	// todo
+	//  https://www.luogu.com.cn/problem/P2120
+	//  https://www.luogu.com.cn/problem/P4072
+	//  https://www.luogu.com.cn/problem/P4027
+	//  https://www.luogu.com.cn/problem/P5504
+	//  https://www.luogu.com.cn/problem/P5468 https://www.luogu.com.cn/problem/P6302 https://loj.ac/p/6520
+	//  https://www.luogu.com.cn/problem/P1721
+	//  https://www.luogu.com.cn/problem/P2305 
+	//  https://codeforces.com/problemset/problem/1175/G 3000 李超线段树
 	// http://poj.org/problem?id=3709
 	convexHullTrick := func(a, b, k []int, C int) int {
 		// 用点积来理解，用 Andrew 算法计算凸包
@@ -3318,11 +3357,13 @@ func _(abs func(int) int) {
 			// ！如果是转移方程是求 max，把 < 改成 >，即第一个下坡
 			j := sort.Search(len(q)-1, func(j int) bool { return pi.dot(q[j]) < pi.dot(q[j+1]) })
 			// 如果 a[i] 是递减的，二分可以改成双指针（否则只能二分）
+			// 对于求 max 的题目，如果 a[i] 是递增的，二分可以改成双指针（否则只能二分）  >= 改成 <=
 			// for len(q) > 1 && pi.dot(q[0]) >= pi.dot(q[1]) { q = q[1:] }; f[i] = pi.dot(q[0]) + C
 			f[i] = pi.dot(q[j]) + C
 
 			vj := vec{b[i], f[i]}
 			// ！如果转移方程是求 max，把 <= 改成 >=，也就是计算上凸包
+			// ！如果 x*y 超出 int64，用 big.Int 计算（拒绝浮点数！）
 			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(vj.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
 			}
@@ -4007,6 +4048,7 @@ func _(abs func(int) int) {
 	// 换根 DP · 其二（维护最大次大）
 	// LC3241 https://leetcode.cn/problems/time-taken-to-mark-all-nodes/
 	// https://codeforces.com/problemset/problem/1822/F 1700
+	// https://codeforces.com/problemset/problem/1866/K 2500 凸包
 	// https://codeforces.com/problemset/problem/633/F 2600 计算最大次大第三大（也可以直接树形 DP，无需换根）
 	reroot2 := func(g [][]struct{ to, wt int }) []int {
 		nodes := make([]struct{ fi, se, fiW int }, len(g))
@@ -4033,19 +4075,19 @@ func _(abs func(int) int) {
 
 		ans := make([]int, len(g))
 		var reroot func(int, int, int)
-		reroot = func(v, fa, fromUp int) {
+		reroot = func(v, fa, up int) {
 			p := nodes[v]
-			ans[v] = max(fromUp, p.fi) // 从 v 出发的最大链和
+			ans[v] = max(up, p.fi) // 从 v 出发的最大链和
 			for _, e := range g[v] {
 				w := e.to
 				if w == fa {
 					continue
 				}
-				exceptW := p.fi
+				down := p.fi
 				if w == p.fiW {
-					exceptW = p.se // 对于 w 来说，上面要选次大的
+					down = p.se // 对于 w 来说，上面要选次大的
 				}
-				reroot(w, v, max(fromUp, exceptW)+e.wt)
+				reroot(w, v, max(up, down)+e.wt)
 			}
 		}
 		reroot(0, -1, 0)
@@ -4289,10 +4331,12 @@ func _(abs func(int) int) {
 
 		// 期望 DP
 
-		permDP, permDP2, tsp, longestSimplePath, countCycle, // 状压 DP
+		// 状压 DP
+		permDP, permDP2, tsp, longestSimplePath, countCycle, 
 		subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
-		digitDP, digitDP2, calcSum, digitDP2D, kth666, // 数位 DP
+		// 数位 DP
+		digitDP, digitDP2, calcSum, digitDP2D, kth666,
 
 		binaryLifting,
 
