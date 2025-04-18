@@ -77,15 +77,13 @@ func cf1366F(in io.Reader, out io.Writer) {
 	i := 1
 	for len(q) > 1 {
 		nxt := (q[0].y-q[1].y)/(q[1].x-q[0].x) + 1
-		if nxt <= i {
-			q = q[1:]
-			continue
-		}
 		if nxt > k {
 			break
 		}
-		ans = (ans + (i+nxt-1)*(nxt-i)/2%mod*q[0].x + (nxt-i)*q[0].y) % mod
-		i = nxt
+		if nxt > i {
+			ans = (ans + (i+nxt-1)*(nxt-i)/2%mod*q[0].x + (nxt-i)*q[0].y) % mod
+			i = nxt
+		}
 		q = q[1:]
 	}
 	ans = (ans + (i+k)*(k-i+1)/2%mod*q[0].x + (k-i+1)*q[0].y) % mod
