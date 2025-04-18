@@ -203,18 +203,19 @@ $\textit{limitLow}$ 的用法类似 $\textit{limitHigh}$，如果为 $\textit{li
 ```py [sol-Python3]
 class Solution:
     def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
-        n = len(num2)
-        num1 = num1.zfill(n)  # 补前导零，和 num2 对齐
+        high = list(map(int, num2))  # 避免在 dfs 中频繁调用 int()
+        n = len(high)
+        low = list(map(int, num1.zfill(n)))  # 补前导零（本题前导零不影响答案，可以补前导零，简化代码逻辑）
 
         @cache
         def dfs(i: int, s: int, limit_low: bool, limit_high: bool) -> int:
             if s > max_sum:  # 非法
                 return 0
             if i == n:
-                return s >= min_sum
+                return 1 if s >= min_sum else 0
 
-            lo = int(num1[i]) if limit_low else 0
-            hi = int(num2[i]) if limit_high else 9
+            lo = low[i] if limit_low else 0
+            hi = high[i] if limit_high else 9
 
             res = 0
             for d in range(lo, hi + 1):  # 枚举当前数位填 d
@@ -228,7 +229,7 @@ class Solution:
 class Solution {
     public int count(String num1, String num2, int minSum, int maxSum) {
         int n = num2.length();
-        num1 = "0".repeat(n - num1.length()) + num1; // 补前导零，和 num2 对齐
+        num1 = "0".repeat(n - num1.length()) + num1; // 补前导零（本题前导零不影响答案，可以补前导零，简化代码逻辑）
 
         int[][] memo = new int[n][Math.min(9 * n, maxSum) + 1];
         for (int[] row : memo) {
@@ -270,11 +271,11 @@ class Solution {
 class Solution {
 public:
     int count(string num1, string num2, int min_sum, int max_sum) {
-        int n = num2.length();
-        num1 = string(n - num1.length(), '0') + num1; // 补前导零，和 num2 对齐
+        int n = num2.size();
+        num1 = string(n - num1.size(), '0') + num1; // 补前导零（本题前导零不影响答案，可以补前导零，简化代码逻辑）
 
-        vector<vector<int>> memo(n, vector<int>(min(9 * n, max_sum) + 1, -1));
-        function<int(int, int, bool, bool)> dfs = [&](int i, int sum, bool limit_low, bool limit_high) -> int {
+        vector memo(n, vector<int>(min(9 * n, max_sum) + 1, -1));
+        auto dfs = [&](this auto&& dfs, int i, int sum, bool limit_low, bool limit_high) -> int {
             if (sum > max_sum) { // 非法
                 return 0;
             }
@@ -308,7 +309,7 @@ public:
 func count(num1, num2 string, minSum, maxSum int) int {
 	const mod = 1_000_000_007
 	n := len(num2)
-	num1 = strings.Repeat("0", n-len(num1)) + num1 // 补前导零，和 num2 对齐
+	num1 = strings.Repeat("0", n-len(num1)) + num1 // 补前导零（本题前导零不影响答案，可以补前导零，简化代码逻辑）
 
 	memo := make([][]int, n)
 	for i := range memo {
@@ -360,20 +361,23 @@ func count(num1, num2 string, minSum, maxSum int) int {
 - 时间复杂度：$\mathcal{O}(nmD)$，其中 $n$ 为 $\textit{nums}_2$ 的长度，$m=\min(9n, \textit{maxSum})$，$D=10$。动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题中状态个数等于 $\mathcal{O}(nm)$，单个状态的计算时间为 $\mathcal{O}(D)$，因此时间复杂度为 $\mathcal{O}(nmD)$。
 - 空间复杂度：$\mathcal{O}(nm)$。
 
-## 数位 DP 题单（右边数字为难度分）
+## 分类题单
 
-- [788. 旋转数字](https://leetcode.cn/problems/rotated-digits/)（[题解](https://leetcode.cn/problems/rotated-digits/solution/by-endlesscheng-9b96/)）
-- [902. 最大为 N 的数字组合](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/)（[题解](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/solution/shu-wei-dp-tong-yong-mo-ban-xiang-xi-zhu-e5dg/)）1990
-- [233. 数字 1 的个数](https://leetcode.cn/problems/number-of-digit-one/)（[题解](https://leetcode.cn/problems/number-of-digit-one/solution/by-endlesscheng-h9ua/)）
-- [面试题 17.06. 2 出现的次数](https://leetcode.cn/problems/number-of-2s-in-range-lcci/)（[题解](https://leetcode.cn/problems/number-of-2s-in-range-lcci/solution/by-endlesscheng-x4mf/)）
-- [600. 不含连续 1 的非负整数](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/)（[题解](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/solution/by-endlesscheng-1egu/)）
-- [2376. 统计特殊整数](https://leetcode.cn/problems/count-special-integers/)（[题解](https://leetcode.cn/problems/count-special-integers/solution/shu-wei-dp-mo-ban-by-endlesscheng-xtgx/)）2120
-- [1012. 至少有 1 位重复的数字](https://leetcode.cn/problems/numbers-with-repeated-digits/)（[题解](https://leetcode.cn/problems/numbers-with-repeated-digits/solution/by-endlesscheng-c5vg/)）2230
-- [357. 统计各位数字都不同的数字个数](https://leetcode.cn/problems/count-numbers-with-unique-digits/)
-- [2999. 统计强大整数的数目](https://leetcode.cn/problems/count-the-number-of-powerful-integers/)
-- [2827. 范围中美丽整数的数目](https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/) 2324
-- [2801. 统计范围内的步进数字数目](https://leetcode.cn/problems/count-stepping-numbers-in-range/) 2367
-- [1397. 找到所有好字符串](https://leetcode.cn/problems/find-all-good-strings/) 2667
-- [1215. 步进数](https://leetcode.cn/problems/stepping-numbers/)（会员题）1675
-- [1067. 范围内的数字计数](https://leetcode.cn/problems/digit-count-in-range/)（会员题）2025
-- [1742. 盒子中小球的最大数量](https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/) *请使用非暴力做法解决
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
