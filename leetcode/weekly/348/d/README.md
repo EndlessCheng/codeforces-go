@@ -19,14 +19,15 @@
 class Solution:
     def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
         def calc(high: str) -> int:
+            high = list(map(int, high))  # 避免在 dfs 中频繁调用 int()
             @cache
             def dfs(i: int, s: int, is_limit: bool) -> int:
                 if s > max_sum:  # 非法
                     return 0
                 if i == len(high):
-                    return s >= min_sum
+                    return 1 if s >= min_sum else 0
                 res = 0
-                up = int(high[i]) if is_limit else 9
+                up = high[i] if is_limit else 9
                 for d in range(up + 1):  # 枚举当前数位填 d
                     res += dfs(i + 1, s + d, is_limit and d == up)
                 return res
