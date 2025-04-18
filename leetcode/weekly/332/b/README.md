@@ -197,6 +197,22 @@ class Solution:
         return ans
 ```
 
+```py [sol-Python3 手写 min]
+class Solution:
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        nums.sort()
+        ans = 0
+        l = r = len(nums)
+        for j, x in enumerate(nums):
+            while r and nums[r - 1] > upper - x:
+                r -= 1
+            while l and nums[l - 1] >= lower - x:
+                l -= 1
+            if l < j:
+                ans += (r if r < j else j) - l
+        return ans
+```
+
 ```java [sol-Java]
 class Solution {
     public long countFairPairs(int[] nums, int lower, int upper) {
