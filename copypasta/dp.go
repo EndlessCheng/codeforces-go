@@ -1771,6 +1771,7 @@ func _(abs func(int) int) {
 	// 加强版 https://www.luogu.com.cn/problem/U53878
 	// https://www.luogu.com.cn/problem/P3177
 	// NOIP06·提高 金明的预算方案 https://www.luogu.com.cn/problem/P1064
+	// https://codeforces.com/problemset/problem/815/C 2400
 	// https://atcoder.jp/contests/abc207/tasks/abc207_f
 	// https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
 	treeKnapsack := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
@@ -2821,105 +2822,78 @@ func _(abs func(int) int) {
 	https://leetcode.cn/problems/confusing-number-ii/ 2077
 	*/
 
-	// 上下界数位 DP
+	// 上下界数位 DP（v2.1 模板）
+	// 比如统计恰好包含 target 个 0 的数字个数，需要区分【前导零】和【数字中的零】，前导零不能计入，而数字中的零需要计入
+	// 由于 limitLow && i < diffLH 等价于 !isNum，所以 isNum 是多余的
+	//
 	// TIPS：如果题目要求计算 < high 的方案数（high 是个字符串），
 	//       可以在递归到 i=n 时，判断 limitHigh 是否为 true，如果是 true 则表示填入的数字等于 high，返回 0
 	// 举例 https://atcoder.jp/contests/abc387/tasks/abc387_c
 	// 代码 https://atcoder.jp/contests/abc387/submissions/61401082
-	digitDP := func(low, high int, sumUpper int) int {
+	digitDP := func(low, high int, target int) int {
+		// 如果没有下界，可以初始化 lowS = "0" 或者 "1"
 		lowS := strconv.Itoa(low)
 		highS := strconv.Itoa(high)
 		n := len(highS)
 		diffLH := n - len(lowS)
 		memo := make([][]int, n)
 		for i := range memo {
-			memo[i] = make([]int, sumUpper+1)
+			memo[i] = make([]int, target+1)
 			for j := range memo[i] {
 				memo[i][j] = -1
 			}
 		}
 
-		// 第一种写法（前导零不影响答案）
-		var f func(int, int, bool, bool) int
-		f = func(i, sum int, limitLow, limitHigh bool) (res int) {
+		var dfs func(int, int, bool, bool) int
+		dfs = func(i, cnt0 int, limitLow, limitHigh bool) (res int) {
+			// 不合法
+			if cnt0 > target {
+				return 0
+			}
 			if i == n {
 				// 不合法
-				if sum > sumUpper {
+				if cnt0 < target {
 					return 0
 				}
 				// 合法
 				return 1
 			}
 			if !limitLow && !limitHigh {
-				dv := &memo[i][sum]
+				dv := &memo[i][cnt0]
 				if *dv >= 0 {
 					return *dv
 				}
 				defer func() { *dv = res }()
 			}
 
-			// 注：不要修改这里！如果对数位有其它限制，应当写在下面 for 循环中
 			lo := 0
 			if limitLow && i >= diffLH {
 				lo = int(lowS[i-diffLH] - '0')
 			}
-			hi := 9
-			if limitHigh {
-				hi = int(highS[i] - '0')
-			}
-
-			for d := lo; d <= hi; d++ {
-				res += f(i+1, sum+d, limitLow && d == lo, limitHigh && d == hi)
-				res %= mod
-			}
-			return
-		}
-		//ans := f(0, 0, true, true)
-
-		// 第二种写法（前导零影响答案）
-		// 注意，仍然无需使用 isNum
-		// 下面是计算每个数位乘积的代码，这种情况下就要区分【前导零】和【数字中的零】了，
-		// 前导零不能相乘，而数字中的零可以相乘
-		var dfs func(int, int, bool, bool) int
-		dfs = func(i, mul int, limitLow, limitHigh bool) (res int) {
-			if i == n {
-				if mul%0x3f > 0 {
-					return 0
-				}
-				return 1
-			}
-			if !limitLow && !limitHigh {
-				dv := &memo[i][mul]
-				if *dv >= 0 {
-					return *dv
-				}
-				defer func() { *dv = res }()
-			}
-
-			// 注：不要修改这里！如果对数位有其它限制，应当写在下面 for 循环中
-			lo := 0
-			if limitLow && i >= diffLH {
-				lo = int(lowS[i-diffLH] - '0')
-			}
-			hi := 9
+			hi := 9 // 十进制
 			if limitHigh {
 				hi = int(highS[i] - '0')
 			}
 
 			d := lo
-			// 这样就可以表示当前是否处于前导零状态了，无需 isNum 参数
+			// 如果前导零不影响答案，可以去掉这个 if block
 			if limitLow && i < diffLH {
-				// 什么也不填，参数不变
-				res = dfs(i+1, mul, true, false)
+				// 不填数字，参数不变
+				res = dfs(i+1, cnt0, true, false)
 				d = 1
 			}
 			for ; d <= hi; d++ {
-				res += dfs(i+1, mul*d, limitLow && d == lo, limitHigh && d == hi)
+				c0 := cnt0
+				if d == 0 {
+					c0++
+				}
+				res += dfs(i+1, c0,
+					limitLow && d == lo, limitHigh && d == hi)
 				res %= mod
 			}
 			return
 		}
-		ans := dfs(0, 1, true, true) // 乘法单位元是 1
+		ans := dfs(0, 0, true, true)
 		return ans
 	}
 
@@ -3332,6 +3306,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1366/F 2700 图 DP
 	// todo
 	//  https://www.luogu.com.cn/problem/P2120
+	//  https://www.luogu.com.cn/problem/P3648
 	//  https://www.luogu.com.cn/problem/P4072
 	//  https://www.luogu.com.cn/problem/P4027
 	//  https://www.luogu.com.cn/problem/P5504
@@ -3536,7 +3511,7 @@ func _(abs func(int) int) {
 		return
 	}
 
-	// 四边形不等式优化 Knuth's Optimization / Knuth-Yao speedup
+	// 四边形不等式优化 Knuth's Optimization / Knuth-Yao Speedup
 	// 满足该性质的 DAG 叫做 Monge 图
 	// https://oi-wiki.org/dp/opt/quadrangle/
 	// https://jeffreyxiao.me/blog/knuths-optimization
@@ -3574,6 +3549,8 @@ func _(abs func(int) int) {
 	题单 https://ac.nowcoder.com/acm/problem/collection/807
 	题单 https://ac.nowcoder.com/acm/problem/collection/809
 
+	另见树上背包 treeKnapsack
+
 	https://codeforces.com/problemset/problem/1900/C 1300 入门 二叉树
 	https://codeforces.com/problemset/problem/982/C 1500
 	https://codeforces.com/problemset/problem/369/C 1600
@@ -3595,10 +3572,11 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1249/F 2200 好题
 	https://codeforces.com/problemset/problem/1292/C 2300
 	https://codeforces.com/problemset/problem/1453/E 2300 好题
-	https://codeforces.com/problemset/problem/238/C ~2400 做到 O(n)
+	https://codeforces.com/problemset/problem/238/C 做到 O(n) ~2400
 	https://codeforces.com/problemset/problem/1059/E 2400 取往上冲的最高的点（子树）
 	https://atcoder.jp/contests/abc259/tasks/abc259_f
 	https://atcoder.jp/contests/abc239/tasks/abc239_e
+	https://www.luogu.com.cn/problem/P12136 [蓝桥杯 2025 省 B] 生产车间
 	https://ac.nowcoder.com/acm/contest/63585/d
 	*/
 
@@ -4332,7 +4310,7 @@ func _(abs func(int) int) {
 		// 期望 DP
 
 		// 状压 DP
-		permDP, permDP2, tsp, longestSimplePath, countCycle, 
+		permDP, permDP2, tsp, longestSimplePath, countCycle,
 		subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
 		// 数位 DP
