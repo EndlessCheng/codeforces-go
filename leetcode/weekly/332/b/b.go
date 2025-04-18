@@ -6,7 +6,25 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func countFairPairs(nums []int, lower, upper int) (ans int64) {
+func countFairPairs(nums []int, lower, upper int) int64 {
+	slices.Sort(nums)
+	count := func(upper int) (res int64) {
+		j := len(nums) - 1
+		for i, x := range nums {
+			for j > i && nums[j] > upper-x {
+				j--
+			}
+			if j == i {
+				break
+			}
+			res += int64(j - i)
+		}
+		return res
+	}
+	return count(upper) - count(lower-1)
+}
+
+func countFairPairs2(nums []int, lower, upper int) (ans int64) {
 	slices.Sort(nums)
 	left, right := len(nums), len(nums)
 	for j, x := range nums {
@@ -16,12 +34,12 @@ func countFairPairs(nums []int, lower, upper int) (ans int64) {
 		for left > 0 && nums[left-1] >= lower-x {
 			left--
 		}
-		ans += int64(min(right, j)-min(left, j))
+		ans += int64(min(right, j) - min(left, j))
 	}
 	return
 }
 
-func countFairPairs2(nums []int, lower, upper int) (ans int64) {
+func countFairPairs1(nums []int, lower, upper int) (ans int64) {
 	slices.Sort(nums)
 	for j, x := range nums {
 		r := sort.SearchInts(nums[:j], upper-x+1)
