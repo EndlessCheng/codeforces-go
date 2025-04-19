@@ -99,7 +99,8 @@ https://www.luogu.com.cn/problem/P2258
 预处理
 LC2638 https://leetcode.cn/problems/count-the-number-of-k-free-subsets/
 
-todo 题单 https://www.luogu.com.cn/training/83815#problems
+题单 https://www.luogu.com.cn/training/83815#problems
+
 https://atcoder.jp/contests/abc289/tasks/abc289_d 跳台阶+禁入点
 https://atcoder.jp/contests/abc248/tasks/abc248_c 入门计数 DP
 https://atcoder.jp/contests/abc281/tasks/abc281_d
@@ -119,6 +120,7 @@ https://codeforces.com/problemset/problem/1163/D 与 KMP 结合
 https://codeforces.com/problemset/problem/1168/C
 https://codeforces.com/problemset/problem/1542/D
 https://codeforces.com/problemset/problem/1845/E
+https://www.luogu.com.cn/problem/T576294?contestId=224129
 
 不相交区间 DP
 https://codeforces.com/problemset/problem/1801/C
@@ -1752,46 +1754,114 @@ func _(abs func(int) int) {
 		return f // f[j] 表示从每组恰好选一个，能否凑成重量 j
 	}
 
-	// 树上背包/树形背包/依赖背包
-	// 时间复杂度 O(n^2)，因为一对点只在 LCA 处被合并一次
-	// 树上背包的上下界优化 https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
-	// 子树合并背包的复杂度证明 https://blog.csdn.net/lyd_7_29/article/details/79854245
-	// 复杂度 https://codeforces.com/blog/entry/100910
-	// 复杂度 https://leetcode.cn/circle/discuss/t7l62c/
+	// 树上背包/树形背包/依赖背包 · 其一
+	// 要求：对于每个选择的节点，其父节点一定要选
+	// 等价表述：选一个包含根节点的连通块
+	// 返回一个长为 n+1 的数组 f，其中 f[i] 表示在树上选 i 个节点的最大价值和
+	//
+	// 要求：子树 DP 数组长度 = O(子树大小)
+	// 时间复杂度 O(n^2)，为什么？可以用「枚举右维护左」思考，每个点对，只会（在 LCA 处）计算一次
+	//
+	// https://leetcode.cn/circle/discuss/t7l62c/ by heltion
+	// https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
+	// https://blog.csdn.net/lyd_7_29/article/details/79854245
+	// https://codeforces.com/blog/entry/100910
 	// https://www.cnblogs.com/shaojia/p/15520224.html
 	// https://snuke.hatenablog.com/entry/2019/01/15/211812
-	// 复杂度优化 https://loj.ac/d/3144
 	// https://zhuanlan.zhihu.com/p/103813542
 	//
-	// https://loj.ac/p/160
-	// https://www.luogu.com.cn/problem/P2014 https://www.acwing.com/problem/content/10/ https://www.acwing.com/problem/content/288/
-	// 加强版 https://www.luogu.com.cn/problem/U53204
-	// https://www.luogu.com.cn/problem/P1272
-	// https://www.luogu.com.cn/problem/P1273
-	// 加强版 https://www.luogu.com.cn/problem/U53878
-	// https://www.luogu.com.cn/problem/P3177
-	// NOIP06·提高 金明的预算方案 https://www.luogu.com.cn/problem/P1064
+	// https://www.luogu.com.cn/problem/P2014 [CTSC1997] 选课
+	// - https://www.luogu.com.cn/problem/U53204 数据加强版
+	// - 题解 https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
+	// - 题解 https://www.luogu.com/article/u0hf3jll
 	// https://codeforces.com/problemset/problem/815/C 2400
-	// https://atcoder.jp/contests/abc207/tasks/abc207_f
+	treeKnapsack := func(g [][]int, a []int) []int {
+		var dfs func(int, int) ([]int, int)
+		dfs = func(v, fa int) ([]int, int) {
+			f := make([]int, len(g)+1)
+			f[1] = a[v]
+			size := 1
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				fw, sz := dfs(w, v)
+				for i := size; i > 0; i-- { // 枚举之前的子树（以及节点 v）选了 i 个点。由于根节点 v 必选，所以写 i > 0 而不是 i >= 0
+					for j, fwj := range fw { // 枚举 w 子树选了 j 个点
+						f[i+j] = max(f[i+j], f[i]+fwj)
+					}
+				}
+				size += sz
+			}
+			return f[:size+1], size
+		}
+		f, _ := dfs(0, -1)
+		return f
+	}
+
+	treeKnapsack = func(g [][]int, a []int) []int {
+		var dfs func(int, int) ([]int, int)
+		dfs = func(v, fa int) ([]int, int) {
+			f := make([]int, len(g)+1)
+			// 先处理 v 的所有子树
+			size := 0
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				fw, sz := dfs(w, v)
+				for i := size; i >= 0; i-- { // 枚举之前的子树选了 i 个点
+					for j, fwj := range fw { // 枚举 w 子树选了 j 个点
+						// +1，留位置给一定要选的节点 v
+						f[i+j+1] = max(f[i+j+1], f[i+1]+fwj)
+					}
+				}
+				size += sz
+			}
+			// 后处理节点 v
+			// 这种写法适用于更复杂度的题目
+			// 比如把题目变形为，子树选了 k 个点，最终收益为一个复杂的式子，比如 f[k+1] = a[v] XOR (cost[v][k] + f[k] * f[k])，只需改下面的循环
+			// 下面的式子是 f[k+1] = a[v] + f[k]
+			// 由于上面平移了 1，所以实际是 f[k+1] = a[v] + f[k+1]
+			size++
+			for i := 1; i <= size; i++ {
+				f[i] += a[v] // 节点 v 一定要选
+			}
+			return f[:size+1], size
+		}
+		f, _ := dfs(0, -1)
+		return f
+	}
+
+	// 树上背包 · 其二
+	// 类似其一，但物品有体积和价值，返回的数组和背包容量有关
+	// 时间复杂度 O(nW)
+	// https://loj.ac/d/3144
+	//
+	// https://loj.ac/p/160
+	// https://www.luogu.com.cn/problem/P1272
+	// - https://www.luogu.com.cn/problem/U53878 数据加强版
+	// https://www.luogu.com.cn/problem/P1273
+	// https://www.luogu.com.cn/problem/P1064 NOIP06·提高 金明的预算方案
 	// https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
-	treeKnapsack := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
+	treeKnapsack2 := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
 		var dfs func(int, int) []int
 		dfs = func(v, fa int) []int {
 			it := items[v]
-			f := make([]int, maxW+1)
+			f := make([]int, maxW+1) // 至多
 			for i := it.weight; i <= maxW; i++ {
 				f[i] = it.value // 根节点必须选
 			}
-			for _, to := range g[v] {
-				if to == fa {
+			for _, w := range g[v] {
+				if w == fa {
 					continue
 				}
-				ft := dfs(to, v)
-				for j := maxW; j >= it.weight; j-- {
-					// 类似分组背包，枚举分给子树 to 的容量 w，对应的子树的最大价值为 dt[w]
-					// w 不可超过 j-it.w，否则无法选择根节点
-					for w := 0; w <= j-it.weight; w++ {
-						f[j] = max(f[j], f[j-w]+ft[w])
+				fw := dfs(w, v)
+				for i := maxW; i >= it.weight; i-- {
+					// 类似分组背包，枚举分给子树 w 的容量 j，对应的子树的最大价值为 fw[j]
+					// j 不能超过 i-it.weight，否则无法选择根节点
+					for j, fwj := range fw[:i-it.weight+1] {
+						f[i] = max(f[i], f[i-j]+fwj)
 					}
 				}
 			}
@@ -1821,6 +1891,7 @@ func _(abs func(int) int) {
 
 	/* 划分型 DP ②
 	时间复杂度（空间优化后）是 O((n-k*sz)k)
+	部分题目可以用 WQS 二分（或者四边形不等式）优化
 	https://leetcode.cn/problems/sum-of-k-subarrays-with-length-at-least-m/ 式子变形
 	https://leetcode.cn/problems/minimum-operations-to-make-elements-within-k-subarrays-equal/
 	*/
@@ -3294,7 +3365,8 @@ func _(abs func(int) int) {
 	// - https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
 	// https://www.luogu.com.cn/problem/P3628 max
 	// https://www.luogu.com.cn/problem/P5017
-	// https://www.luogu.com.cn/problem/P2365 IOI02 http://poj.org/problem?id=1180 https://www.luogu.com.cn/problem/P5785
+	// https://www.luogu.com.cn/problem/P5785 任务安排
+	// - https://www.luogu.com.cn/problem/P2365 IOI02 http://poj.org/problem?id=1180
 	// https://www.luogu.com.cn/problem/P2900 https://www.luogu.com.cn/problem/SP15086 单调栈
 	// https://codeforces.com/problemset/problem/319/C 2100 注意 det 会爆 int64
 	// https://codeforces.com/problemset/problem/311/B 2400 划分型 DP
@@ -3576,6 +3648,8 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1059/E 2400 取往上冲的最高的点（子树）
 	https://atcoder.jp/contests/abc259/tasks/abc259_f
 	https://atcoder.jp/contests/abc239/tasks/abc239_e
+	https://atcoder.jp/contests/abc207/tasks/abc207_f
+	https://www.luogu.com.cn/problem/P3177 [HAOI2015] 树上染色
 	https://www.luogu.com.cn/problem/P12136 [蓝桥杯 2025 省 B] 生产车间
 	https://ac.nowcoder.com/acm/contest/63585/d
 	*/
@@ -4301,7 +4375,7 @@ func _(abs func(int) int) {
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary, boundedKnapsackMonotoneQueue, boundedKnapsackWays, boundedKnapsackWays2,
 		groupKnapsack, groupKnapsackFill,
-		treeKnapsack,
+		treeKnapsack, treeKnapsack2,
 
 		splitDP, splitDPWithLimit,
 
