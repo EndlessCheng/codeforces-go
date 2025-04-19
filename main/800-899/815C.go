@@ -29,13 +29,13 @@ func cf815C(in io.Reader, out io.Writer) {
 		size := 1
 		for _, w := range g[v] {
 			fw, sz := dfs(w)
-			size += sz
-			for j := size; j >= sz; j-- {
+			for j := size; j >= 0; j-- {
 				for k, p := range fw {
-					f[j].nc = min(f[j].nc, f[j-k].nc+p.nc)
-					f[j].c = min(f[j].c, f[j-k].c+min(p.nc, p.c))
+					f[j+k].nc = min(f[j+k].nc, f[j].nc+p.nc)
+					f[j+k].c = min(f[j+k].c, f[j].c+min(p.nc, p.c))
 				}
 			}
+			size += sz
 		}
 		return f[:size+1], size
 	}

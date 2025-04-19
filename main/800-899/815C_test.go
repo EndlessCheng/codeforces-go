@@ -29,6 +29,23 @@ func Test_cf815C(t *testing.T) {
 3 1 4`,
 			`5`,
 		},
+		{
+			`13 30
+6 4
+25 5 1
+7 1 2
+9 4 2
+10 2 1
+12 3 1
+5 2 3
+10 9 6
+2 1 1
+5 3 9
+10 2 10
+10 9 6
+3 2 11`,
+			`9`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf815C)
 }
