@@ -1,10 +1,10 @@
-## 方法一：排序 + 二分查找
+## 方法一：二分查找
 
 由于排序不影响答案，可以先（从小到大）排序，这样可以二分查找。
 
-> $\textit{nums}$ 是 $[1,2,3]$ 还是 $[3,2,1]$，算出来的答案都是一样的，本质上就是从 $\textit{nums}$ 中选两个数。
+> $\textit{nums}$ 是 $[1,2]$ 还是 $[2,1]$，算出来的答案都是一样的，因为本质上就是从 $\textit{nums}$ 中选两个数。
 
-排序后，枚举 $\textit{nums}[j]$，那么 $\textit{nums}[i]$ 需要满足 $0\le i < j$ 以及
+排序后，枚举右边的 $\textit{nums}[j]$，那么左边的 $\textit{nums}[i]$ 需要满足 $0\le i < j$ 以及
 
 $$
 \textit{lower} - \textit{nums}[j] \le \textit{nums}[i] \le \textit{upper} - \textit{nums}[j]
@@ -172,7 +172,7 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
-## 方法二：排序 + 相向三指针
+## 方法二：相向三指针
 
 由于随着 $\textit{nums}[j]$ 的变大，$\textit{upper}-\textit{nums}[j]$ 和 $\textit{lower} - \textit{nums}[j]$ 都在变小，有单调性，可以用**相向三指针** $j,l,r$ 代替方法一中的二分查找：
 
@@ -347,7 +347,9 @@ impl Solution {
 
 ## 方法三：两次相向双指针
 
-也可以枚举 $i$，统计有多少个合法的 $j$。
+### 写法一
+
+我们也可以枚举左边的 $i$，统计右边有多少个合法的 $j$。
 
 枚举 $i$，计算满足 $j>i$ 且 $\textit{nums}[j] \le \textit{upper} - \textit{nums}[i]$ 的 $j$ 的个数，记作 $\text{count}(\textit{upper})$。
 
@@ -361,7 +363,7 @@ impl Solution {
 
 如果 $j=i$，那么继续循环也无法满足 $j>i$ 的要求，**直接退出循环**。
 
-否则 $[i+1,j]$ 范围内的下标都可以是 $j$，这有 $j-i$ 个，加入答案。
+由于数组是有序的，如果 $\textit{nums}[i]+\textit{nums}[j]\le \textit{upper}$，那么对于更小的 $j$，也同样满足这个不等式。所以 $[i+1,j]$ 范围内的下标都可以是 $j$，这有 $j-i$ 个，加入答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -459,21 +461,21 @@ long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
 
 ```go [sol-Go]
 func countFairPairs(nums []int, lower, upper int) int64 {
-	slices.Sort(nums)
-	count := func(upper int) (res int64) {
-		j := len(nums) - 1
-		for i, x := range nums {
-			for j > i && nums[j] > upper-x {
-				j--
-			}
-			if j == i {
-				break
-			}
-			res += int64(j - i)
-		}
-		return res
-	}
-	return count(upper) - count(lower-1)
+    slices.Sort(nums)
+    count := func(upper int) (res int64) {
+        j := len(nums) - 1
+        for i, x := range nums {
+            for j > i && nums[j] > upper-x {
+                j--
+            }
+            if j == i {
+                break
+            }
+            res += int64(j - i)
+        }
+        return res
+    }
+    return count(upper) - count(lower-1)
 }
 ```
 
@@ -527,6 +529,181 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+
+### 写法二
+
+初始化 $i=0$，$j=n-1$。
+
+如果 $\textit{nums}[i]+\textit{nums}[j]\le \textit{upper}$，那么对于更小的 $j$，也同样满足这个不等式。所以 $[i+1,j]$ 范围内的下标都可以是 $j$，这有 $j-i$ 个，加入答案。
+
+如果 $\textit{nums}[i]+\textit{nums}[j] > \textit{upper}$，那么对于更大的 $i$，也同样不满足题目要求。所以 $[i,j-1]$ 范围内的下标 $i$ 都不满足题目要求，直接把 $i$ 加一。
+
+视频讲解：[【基础算法精讲 01】](https://www.bilibili.com/video/BV1bP411c7oJ/)。
+
+```py [sol-Python3]
+class Solution:
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        nums.sort()
+        def count(upper: int) -> int:
+            res = 0
+            i, j = 0, len(nums) - 1
+            while i < j:
+                if nums[i] + nums[j] <= upper:
+                    res += j - i
+                    i += 1
+                else:
+                    j -= 1
+            return res
+        return count(upper) - count(lower - 1)
+```
+
+```java [sol-Java]
+class Solution {
+    public long countFairPairs(int[] nums, int lower, int upper) {
+        Arrays.sort(nums);
+        return count(nums, upper) - count(nums, lower - 1);
+    }
+
+    private long count(int[] nums, int upper) {
+        long res = 0;
+        int i = 0;
+        int j = nums.length - 1;
+        while (i < j) {
+            if (nums[i] + nums[j] <= upper) {
+                res += j - i;
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countFairPairs(vector<int>& nums, int lower, int upper) {
+        ranges::sort(nums);
+
+        auto count = [&](int upper) {
+            long long res = 0;
+            int i = 0, j = nums.size() - 1;
+            while (i < j) {
+                if (nums[i] + nums[j] <= upper) {
+                    res += j - i;
+                    i++;
+                } else {
+                    j--;
+                }
+            }
+            return res;
+        };
+
+        return count(upper) - count(lower - 1);
+    }
+};
+```
+
+```c [sol-C]
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
+    qsort(nums, numsSize, sizeof(int), cmp);
+
+    long long count(int upper) {
+        long long res = 0;
+        int i = 0, j = numsSize - 1;
+        while (i < j) {
+            if (nums[i] + nums[j] <= upper) {
+                res += j - i;
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return res;
+    }
+
+    return count(upper) - count(lower - 1);
+}
+```
+
+```go [sol-Go]
+func countFairPairs(nums []int, lower, upper int) int64 {
+    slices.Sort(nums)
+    count := func(upper int) (res int64) {
+        i, j := 0, len(nums)-1
+        for i < j {
+            if nums[i]+nums[j] <= upper {
+                res += int64(j - i)
+                i++
+            } else {
+                j--
+            }
+        }
+        return res
+    }
+    return count(upper) - count(lower-1)
+}
+```
+
+```js [sol-JavaScript]
+var countFairPairs = function(nums, lower, upper) {
+    nums.sort((a, b) => a - b);
+
+    var count = function(upper) {
+        let res = 0;
+        let i = 0, j = nums.length - 1;
+        while (i < j) {
+            if (nums[i] + nums[j] <= upper) {
+                res += j - i;
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return res;
+    };
+
+    return count(upper) - count(lower - 1);
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_fair_pairs(mut nums: Vec<i32>, lower: i32, upper: i32) -> i64 {
+        nums.sort_unstable();
+        let count = |upper: i32| -> i64 {
+            let mut res = 0;
+            let mut i = 0;
+            let mut j = nums.len() - 1;
+            while i < j {
+                if nums[i] + nums[j] <= upper {
+                    res += j - i;
+                    i += 1;
+                } else {
+                    j -= 1;
+                }
+            }
+            res as _
+        };
+        count(upper) - count(lower - 1)
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+
+## 相似题目
+
+[2824. 统计和小于目标的下标对数目](https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/)
 
 ## 分类题单
 

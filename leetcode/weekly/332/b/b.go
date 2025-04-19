@@ -9,15 +9,14 @@ import (
 func countFairPairs(nums []int, lower, upper int) int64 {
 	slices.Sort(nums)
 	count := func(upper int) (res int64) {
-		j := len(nums) - 1
-		for i, x := range nums {
-			for j > i && nums[j] > upper-x {
+		i, j := 0, len(nums)-1
+		for i < j {
+			if nums[i]+nums[j] <= upper {
+				res += int64(j - i)
+				i++
+			} else {
 				j--
 			}
-			if j == i {
-				break
-			}
-			res += int64(j - i)
 		}
 		return res
 	}
