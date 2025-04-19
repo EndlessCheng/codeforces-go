@@ -2,7 +2,7 @@
 
 由于排序不影响答案，可以先（从小到大）排序，这样可以二分查找。
 
-> $\textit{nums}$ 是 $[1,2]$ 还是 $[2,1]$，算出来的答案都是一样的，因为本质上就是从 $\textit{nums}$ 中选两个数。
+> $\textit{nums}$ 是 $[1,2]$ 还是 $[2,1]$，算出来的答案都是一样的，因为加法满足交换律 $a+b=b+a$。
 
 排序后，枚举右边的 $\textit{nums}[j]$，那么左边的 $\textit{nums}[i]$ 需要满足 $0\le i < j$ 以及
 
@@ -534,9 +534,9 @@ impl Solution {
 
 初始化 $i=0$，$j=n-1$。
 
-如果 $\textit{nums}[i]+\textit{nums}[j]\le \textit{upper}$，那么对于更小的 $j$，也同样满足这个不等式。所以 $[i+1,j]$ 范围内的下标都可以是 $j$，这有 $j-i$ 个，加入答案。
+如果 $\textit{nums}[i]+\textit{nums}[j]\le \textit{upper}$，那么对于更小的 $j$，也同样满足这个不等式。所以 $[i+1,j]$ 范围内的下标 $j$ 都可以和 $i$ 配对，这有 $j-i$ 个，加入答案，然后把 $i$ 加一。
 
-如果 $\textit{nums}[i]+\textit{nums}[j] > \textit{upper}$，那么对于更大的 $i$，也同样不满足题目要求。所以 $[i,j-1]$ 范围内的下标 $i$ 都不满足题目要求，直接把 $i$ 加一。
+如果 $\textit{nums}[i]+\textit{nums}[j] > \textit{upper}$，那么对于更大的 $i$，也同样不满足题目要求。所以 $[i,j-1]$ 范围内的下标 $i$ 都无法与 $j$ 配对，直接把 $j$ 减一。
 
 视频讲解：[【基础算法精讲 01】](https://www.bilibili.com/video/BV1bP411c7oJ/)。
 
