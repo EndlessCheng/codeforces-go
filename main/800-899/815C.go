@@ -32,7 +32,9 @@ func cf815C(in io.Reader, out io.Writer) {
 			for j := size; j >= 0; j-- {
 				for k, p := range fw {
 					f[j+k].nc = min(f[j+k].nc, f[j].nc+p.nc)
-					f[j+k].c = min(f[j+k].c, f[j].c+min(p.nc, p.c))
+					if j > 0 { // 根节点必选
+						f[j+k].c = min(f[j+k].c, f[j].c+min(p.nc, p.c))
+					}
 				}
 			}
 			size += sz
