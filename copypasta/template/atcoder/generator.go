@@ -276,6 +276,20 @@ func run(in io.Reader, _w io.Writer) {
 
 func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
 `
+
+	multiOutput := false
+	for _, out := range outs {
+		if strings.Contains(out, " ") || strings.Contains(out, "\n") {
+			multiOutput = true
+			break
+		}
+	}
+	if !multiOutput {
+		mainFileContent = strings.ReplaceAll(mainFileContent, "\tout := bufio.NewWriter(_w)\n\tdefer out.Flush()\n\n", "")
+		mainFileContent = strings.ReplaceAll(mainFileContent, "_w", "out")
+	}
+	
+	
 	if !isContest || taskID == "a" {
 		// 比赛时，在 IDE 中打开 A 题
 		defer open.Run(absPath(mainFilePath))
