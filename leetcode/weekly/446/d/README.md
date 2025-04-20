@@ -1,28 +1,29 @@
 请先完成上一题 [3524. 求出数组的 X 值 I](https://leetcode.cn/problems/find-x-value-of-array-i/)。
 
-⚠**注意**：本题只能移除后缀，所以（每个询问的）子数组的左端点是**固定**的，即 $\textit{start}$。
+注意本题的子数组和上一题不一样，本题只能移除后缀，所以（每个询问的）子数组的左端点是**固定**的，即 $\textit{start}$。
 
-考虑用**分治**解决。
+本题有修改操作，如何处理？
 
-> 如果一个问题可以用分治解决，那么也能用线段树解决。
+**套路**：如果一个问题可以用分治解决，那么其带修版本可以用线段树解决。
 
-对于一个子数组 $[l,r]$，我们将其一分为二，左半下标范围为 $[l,m]$，右半下标范围为 $[m+1,r]$。其中 $m=\left\lfloor\dfrac{l+r}{2}\right\rfloor$。
+考虑用分治解决如下问题：
 
-现在来计算：左端点固定为 $l$、右端点为 $l,l+1,l+2,\ldots,r$ 的子数组，元素积模 $k$ 等于 $x$ 的有多少个。
+- 在左端点为 $l$，右端点为 $l,l+1,l+2,\ldots,r$ 的子数组中，元素积模 $k$ 等于 $x$ 的子数组有多少个？
 
-**分治**：
+**思路**：
 
-- 递归左半，计算左端点为 $l$、右端点为 $l,l+1,l+2,\ldots,m$ 的、元素积模 $k$ 等于 $x$ 的子数组有多少个。
-- 递归右半，计算左端点为 $m+1$、右端点为 $m+1,m+2,\ldots,r$ 的、元素积模 $k$ 等于 $x$ 的子数组有多少个。
-- 设整个左半的元素积模 $k$ 为 $\textit{leftMul}$。把右半子数组的元素积乘以 $\textit{leftMul}$，就得到了左端点为 $l$、右端点为 $m+1,m+2,\ldots,r$ 的子数组的元素积，从而统计个数。假设右半有 $c=\textit{cnt}[\textit{rx}]$ 个乘积模 $k$ 等于 $\textit{rx}$ 的子数组，那么左端点为 $l$、右端点为 $m+1,m+2,\ldots,r$ 的、元素积模 $k$ 等于 $\textit{leftMul}\cdot \textit{rx}\bmod k$ 的子数组，增加了 $c$ 个。
+- 把子数组 $[l,r]$ 一分为二，左半下标范围为 $[l,m]$，右半下标范围为 $[m+1,r]$。其中 $m=\left\lfloor\dfrac{l+r}{2}\right\rfloor$。
+- 递归左半，计算在左端点为 $l$，右端点为 $l,l+1,l+2,\ldots,m$ 的子数组中，元素积模 $k$ 等于 $x$ 的子数组有多少个。
+- 递归右半，计算在左端点为 $m+1$，右端点为 $m+1,m+2,\ldots,r$ 的子数组中，元素积模 $k$ 等于 $x$ 的子数组有多少个。
+- 设整个左半的元素积模 $k$ 为 $\textit{leftMul}$。把右半子数组的元素积乘以 $\textit{leftMul}$，就得到了左端点为 $l$，右端点为 $m+1,m+2,\ldots,r$ 的子数组的元素积，从而统计个数。假设右半有 $c=\textit{cnt}[\textit{rx}]$ 个乘积模 $k$ 等于 $\textit{rx}$ 的子数组，那么在左端点为 $l$，右端点为 $m+1,m+2,\ldots,r$ 的子数组中，有 $c$ 个元素积模 $k$ 等于 $\textit{leftMul}\cdot \textit{rx}\bmod k$ 的子数组。
 - 二者相加，就得到了左端点为 $l$、右端点为 $l,l+1,l+2,\ldots,r$ 的、元素积模 $k$ 等于 $x$ 的子数组的个数。
 
 据此，用线段树维护，节点 $[l,r]$ 维护：
 
 - $\textit{mul}$：整个区间 $[l,r]$ 的元素积模 $k$ 的结果。这可以用左右子树的 $\textit{mul}$ 相乘模 $k$ 得到。
-- $\textit{cnt}$ 数组：其中 $\textit{cnt}[x]$ 表示左端点为 $l$、右端点为 $l,l+1,l+2,\ldots,r$ 的、元素积模 $k$ 等于 $x$ 的子数组的个数。计算规则就是上文的分治。
+- $\textit{cnt}$ 数组：其中 $\textit{cnt}[x]$ 表示在左端点为 $l$，右端点为 $l,l+1,l+2,\ldots,r$ 的子数组中，元素积模 $k$ 等于 $x$ 的子数组的个数。计算规则就是上文的分治。
 
-**初始值**：对于区间 $[i,i]$，其元素积 $\textit{mul}=\textit{nums}[i]\bmod k$，元素积模 $k$ 的出现次数 $\textit{cnt}[\textit{mul}]=1$，其余 $\textit{cnt}[x]=0$。
+初始值：对于区间 $[i,i]$，其元素积 $\textit{mul}=\textit{nums}[i]\bmod k$，元素积模 $k$ 的出现次数 $\textit{cnt}[\textit{mul}]=1$，其余 $\textit{cnt}[x]=0$。
 
 完整的线段树模板，请看我的 [数据结构题单](https://leetcode.cn/discuss/post/3583665/fen-xiang-gun-ti-dan-chang-yong-shu-ju-j-bvmv/)。
 
