@@ -95,6 +95,12 @@ func countHousePlacements(n int) int {
 - 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 思考题
+
+添加一个约束：同一列不能都盖房子，要怎么做？
+
+欢迎在评论区分享你的思路/代码。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
