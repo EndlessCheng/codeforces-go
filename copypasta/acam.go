@@ -81,6 +81,7 @@ todo 最长前缀查询 https://www.luogu.com.cn/problem/P5231
  https://codeforces.com/problemset/problem/1739/F 2600
  https://codeforces.com/problemset/problem/1207/G 2700
  https://codeforces.com/problemset/problem/163/E 2800
+ https://codeforces.com/problemset/problem/1400/F 2800
  https://codeforces.com/problemset/problem/1801/G 3400
  https://codeforces.com/gym/102511/problem/G ICPC Final 2019 G
  LC30 串联所有单词的子串 https://leetcode.cn/problems/substring-with-concatenation-of-all-words/
