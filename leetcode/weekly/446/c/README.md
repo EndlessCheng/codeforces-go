@@ -62,10 +62,10 @@ class Solution {
         long[] ans = new long[k];
         int[][] f = new int[n + 1][k];
         for (int i = 0; i < n; i++) {
-            int v = nums[i];
-            f[i + 1][v % k] = 1;
+            int v = nums[i] % k;
+            f[i + 1][v] = 1;
             for (int y = 0; y < k; y++) {
-                f[i + 1][(int) ((long) y * v % k)] += f[i][y]; // 刷表法
+                f[i + 1][y * v % k] += f[i][y]; // 刷表法
             }
             for (int x = 0; x < k; x++) {
                 ans[x] += f[i + 1][x];
@@ -84,10 +84,10 @@ public:
         vector<long long> ans(k);
         vector f(n + 1, vector<int>(k));
         for (int i = 0; i < n; i++) {
-            int v = nums[i];
-            f[i + 1][v % k] = 1;
+            int v = nums[i] % k;
+            f[i + 1][v] = 1;
             for (int y = 0; y < k; y++) {
-                f[i + 1][1LL * y * v % k] += f[i][y]; // 刷表法
+                f[i + 1][y * v % k] += f[i][y]; // 刷表法
             }
             for (int x = 0; x < k; x++) {
                 ans[x] += f[i + 1][x];
@@ -147,10 +147,11 @@ class Solution {
         long[] ans = new long[k];
         int[] f = new int[k];
         for (int v : nums) {
+            v %= k;
             int[] nf = new int[k];
-            nf[v % k] = 1;
+            nf[v] = 1;
             for (int y = 0; y < k; y++) {
-                nf[(int) ((long) y * v % k)] += f[y];
+                nf[y * v % k] += f[y];
             }
             f = nf;
             for (int x = 0; x < k; x++) {
@@ -167,12 +168,36 @@ class Solution {
 public:
     vector<long long> resultArray(vector<int>& nums, int k) {
         vector<long long> ans(k);
-        vector<int> f(k);
+        vector<int> f(k); // 更快的写法见【C++ array】
         for (int v : nums) {
+            v %= k;
             vector<int> nf(k);
-            nf[v % k] = 1;
+            nf[v] = 1;
             for (int y = 0; y < k; y++) {
-                nf[1LL * y * v % k] += f[y];
+                nf[y * v % k] += f[y];
+            }
+            f = move(nf);
+            for (int x = 0; x < k; x++) {
+                ans[x] += f[x];
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```cpp [sol-C++ array]
+class Solution {
+public:
+    vector<long long> resultArray(vector<int>& nums, int k) {
+        vector<long long> ans(k);
+        array<int, 5> f{};
+        for (int v : nums) {
+            v %= k;
+            array<int, 5> nf{};
+            nf[v] = 1;
+            for (int y = 0; y < k; y++) {
+                nf[y * v % k] += f[y];
             }
             f = move(nf);
             for (int x = 0; x < k; x++) {
