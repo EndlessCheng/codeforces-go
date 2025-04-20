@@ -18,12 +18,15 @@
 - 设整个左半的元素积模 $k$ 为 $\textit{leftMul}$。把右半子数组的元素积乘以 $\textit{leftMul}$，就得到了左端点为 $l$，右端点为 $m+1,m+2,\ldots,r$ 的子数组的元素积，从而统计个数。假设右半有 $c=\textit{cnt}[\textit{rx}]$ 个乘积模 $k$ 等于 $\textit{rx}$ 的子数组，那么在左端点为 $l$，右端点为 $m+1,m+2,\ldots,r$ 的子数组中，有 $c$ 个元素积模 $k$ 等于 $\textit{leftMul}\cdot \textit{rx}\bmod k$ 的子数组。
 - 二者相加，就得到了左端点为 $l$、右端点为 $l,l+1,l+2,\ldots,r$ 的、元素积模 $k$ 等于 $x$ 的子数组的个数。
 
-据此，用线段树维护，节点 $[l,r]$ 维护：
+这样就可以用线段树了。线段树的每个节点维护一段子数组（区间），其中维护区间 $[l,r]$ 的节点保存：
 
 - $\textit{mul}$：整个区间 $[l,r]$ 的元素积模 $k$ 的结果。这可以用左右子树的 $\textit{mul}$ 相乘模 $k$ 得到。
 - $\textit{cnt}$ 数组：其中 $\textit{cnt}[x]$ 表示在左端点为 $l$，右端点为 $l,l+1,l+2,\ldots,r$ 的子数组中，元素积模 $k$ 等于 $x$ 的子数组的个数。计算规则就是上文的分治。
 
-初始值：对于区间 $[i,i]$，其元素积 $\textit{mul}=\textit{nums}[i]\bmod k$，元素积模 $k$ 的出现次数 $\textit{cnt}[\textit{mul}]=1$，其余 $\textit{cnt}[x]=0$。
+对于线段树的叶子（递归边界），维护区间 $[i,i]$ 的节点保存：
+
+- $\textit{mul}=\textit{nums}[i]\bmod k$。
+- $\textit{cnt}[\textit{mul}]=1$，其余 $\textit{cnt}[x]=0$。
 
 完整的线段树模板，请看我的 [数据结构题单](https://leetcode.cn/discuss/post/3583665/fen-xiang-gun-ti-dan-chang-yong-shu-ju-j-bvmv/)。
 
