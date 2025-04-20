@@ -2,7 +2,6 @@ package main
 
 import (
 	"math/bits"
-	"slices"
 )
 
 // https://space.bilibili.com/206214
@@ -10,13 +9,13 @@ var k int
 
 type data struct {
 	mul int
-	cnt []int
+	cnt [5]int
 }
 
 type seg []data
 
 func mergeData(a, b data) data {
-	cnt := slices.Clone(a.cnt)
+	cnt := a.cnt
 	for rx, c := range b.cnt {
 		cnt[a.mul*rx%k] += c
 	}
@@ -25,7 +24,7 @@ func mergeData(a, b data) data {
 
 func newData(val int) data {
 	mul := val % k
-	cnt := make([]int, k)
+	cnt := [5]int{}
 	cnt[mul] = 1
 	return data{mul, cnt}
 }
