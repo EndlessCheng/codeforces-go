@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func resultArray2(nums []int, k int) []int64 {
+func resultArray(nums []int, k int) []int64 {
 	ans := make([]int64, k)
 	f := make([]int, k)
 	for _, v := range nums {
@@ -18,7 +18,7 @@ func resultArray2(nums []int, k int) []int64 {
 	return ans
 }
 
-func resultArray(nums []int, k int) []int64 {
+func resultArray1(nums []int, k int) []int64 {
 	ans := make([]int64, k)
 	f := make([][]int, len(nums)+1)
 	for i := range f {
