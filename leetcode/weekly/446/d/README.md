@@ -83,7 +83,7 @@ class SegmentTree:
             self._update(node * 2 + 1, m + 1, r, i, val)
         self._maintain(node)
 
-    def _query(self, node: int, l: int, r: int, ql: int, qr: int) -> int:
+    def _query(self, node: int, l: int, r: int, ql: int, qr: int) -> Tuple[int, List[int]]:
         if ql <= l and r <= qr:  # 当前子树完全在 [ql, qr] 内
             return self._tree[node]
         m = (l + r) // 2
@@ -102,7 +102,7 @@ class SegmentTree:
 
     # 返回用 _merge_data 合并所有 a[i] 的计算结果，其中 i 在闭区间 [ql, qr] 中
     # 时间复杂度 O(log n)
-    def query(self, ql: int, qr: int) -> int:
+    def query(self, ql: int, qr: int) -> Tuple[int, List[int]]:
         return self._query(1, 0, self._n - 1, ql, qr)
 
 class Solution:
