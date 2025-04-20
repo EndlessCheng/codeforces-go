@@ -8,4 +8,4 @@
 - Q3 https://leetcode.cn/problems/find-x-value-of-array-i/solution/zi-shu-zu-dp-shua-biao-fa-pythonjavacgo-8lonk/
 - Q4 https://leetcode.cn/problems/find-x-value-of-array-ii/solution/dan-dian-xiu-gai-xian-duan-shu-by-endles-i3jy/
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1NALczNERr/?t=2m30s)，欢迎点赞关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1NALczNERr/)，欢迎点赞关注~
