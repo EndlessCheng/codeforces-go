@@ -14,7 +14,7 @@
 
 - 递归左半，计算左端点为 $l$、右端点为 $l,l+1,l+2,\ldots,m$ 的、元素积模 $k$ 等于 $x$ 的子数组有多少个。
 - 递归右半，计算左端点为 $m+1$、右端点为 $m+1,m+2,\ldots,r$ 的、元素积模 $k$ 等于 $x$ 的子数组有多少个。
-- 设整个左半的元素积模 $k$ 为 $\textit{leftMul}$。右半子数组的元素积乘以 $\textit{leftMul}$，就得到了左端点为 $l$、右端点为 $m+1,m+2,\ldots,r$ 的子数组。假设右半有 $c=\textit{cnt}[\textit{rx}]$ 个乘积模 $k$ 等于 $\textit{rx}$ 的子数组，那么左端点为 $l$、右端点为 $m+1,m+2,\ldots,r$ 的、元素积模 $k$ 等于 $\textit{leftMul}\cdot \textit{rx}\bmod k$ 的子数组，增加了 $c$ 个。
+- 设整个左半的元素积模 $k$ 为 $\textit{leftMul}$。把右半子数组的元素积乘以 $\textit{leftMul}$，就得到了左端点为 $l$、右端点为 $m+1,m+2,\ldots,r$ 的子数组的元素积，从而统计个数。假设右半有 $c=\textit{cnt}[\textit{rx}]$ 个乘积模 $k$ 等于 $\textit{rx}$ 的子数组，那么左端点为 $l$、右端点为 $m+1,m+2,\ldots,r$ 的、元素积模 $k$ 等于 $\textit{leftMul}\cdot \textit{rx}\bmod k$ 的子数组，增加了 $c$ 个。
 - 二者相加，就得到了左端点为 $l$、右端点为 $l,l+1,l+2,\ldots,r$ 的、元素积模 $k$ 等于 $x$ 的子数组的个数。
 
 据此，用线段树维护，节点 $[l,r]$ 维护：
