@@ -3,6 +3,7 @@ package main
 import (
 	. "fmt"
 	"io"
+	"slices"
 )
 
 // https://space.bilibili.com/206214
@@ -23,26 +24,24 @@ func p160(in io.Reader, out io.Writer) {
 		Fscan(in, &a[i].v)
 	}
 
-	f := make([][]int, 1, n+1)
-	f[0] = make([]int, W+1)
-	var dfs func(int) int
-	dfs = func(v int) int {
+	var dfs func(int, []int) ([]int, int)
+	dfs = func(v int, pre []int) ([]int, int) {
 		size := 1
+		t := pre
 		for _, w := range g[v] {
-			size += dfs(w)
+			f, sz := dfs(w, t)
+			t = f
+			size += sz
 		}
-		t := f[len(f)-size]
-		cur := append(t[:0:0], t...)
+		f := slices.Clone(pre)
 		p := a[v]
-		t = f[len(f)-1]
 		for j := W; j >= p.w; j-- {
-			cur[j] = max(cur[j], t[j-p.w]+p.v)
+			f[j] = max(f[j], t[j-p.w]+p.v)
 		}
-		f = append(f, cur)
-		return size
+		return f, size
 	}
-	dfs(0)
-	Fprint(out, f[n][W])
+	f, _ := dfs(0, make([]int, W+1))
+	Fprint(out, f[W])
 }
 
 //func main() { p160(bufio.NewReader(os.Stdin), os.Stdout) }
