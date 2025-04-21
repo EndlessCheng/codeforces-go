@@ -1755,6 +1755,9 @@ func _(abs func(int) int) {
 	// - https://www.luogu.com.cn/problem/U53204 数据加强版
 	// - 题解 https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
 	// - 题解 https://www.luogu.com/article/u0hf3jll
+	// https://www.luogu.com.cn/problem/P1273 有线电视网
+	// https://www.luogu.com.cn/problem/P1272 重建道路
+	// - https://www.luogu.com.cn/problem/U53878 数据加强版
 	// https://codeforces.com/problemset/problem/815/C 2400
 	treeKnapsack := func(g [][]int, a []int) []int {
 		var dfs func(int, int) ([]int, int)
@@ -1767,9 +1770,9 @@ func _(abs func(int) int) {
 					continue
 				}
 				fw, sz := dfs(w, v)
-				for i := size; i > 0; i-- { // 枚举之前的子树（以及节点 v）选了 i 个点。由于根节点 v 必选，所以写 i > 0 而不是 i >= 0
-					for j, fwj := range fw { // 枚举 w 子树选了 j 个点
-						f[i+j] = max(f[i+j], f[i]+fwj)
+				for i := size; i > 0; i-- { // 枚举在之前的子树（以及节点 v）中选了 i 个点。由于根节点 v 必选，所以写 i > 0 而不是 i >= 0
+					for j, wCj := range fw { // 枚举在 w 子树中选了 j 个点
+						f[i+j] = max(f[i+j], f[i]+wCj)
 					}
 				}
 				size += sz
@@ -1791,8 +1794,8 @@ func _(abs func(int) int) {
 					continue
 				}
 				fw, sz := dfs(w, v)
-				for i := size; i >= 0; i-- { // 枚举之前的子树选了 i 个点
-					for j, fwj := range fw { // 枚举 w 子树选了 j 个点
+				for i := size; i >= 0; i-- { // 枚举在之前的子树中选了 i 个点
+					for j, fwj := range fw { // 枚举在 w 子树中选了 j 个点
 						// +1，留位置给一定要选的节点 v
 						f[i+j+1] = max(f[i+j+1], f[i+1]+fwj)
 					}
@@ -1815,20 +1818,44 @@ func _(abs func(int) int) {
 	}
 
 	// 树上背包 · 其二
-	// 类似其一，但物品有体积和价值，返回的数组和背包容量有关
+	// 类似其一，但物品有体积与价值，返回的数组与背包容量有关
 	// 时间复杂度 O(nW)
-	// 图解 https://loj.ac/d/3144
+	// 图解 https://www.luogu.com.cn/article/kq00ov2b https://loj.ac/d/3144
 	//
 	// 模板题 https://loj.ac/p/160
-	// https://www.luogu.com.cn/problem/P1272
-	// - https://www.luogu.com.cn/problem/U53878 数据加强版
-	// https://www.luogu.com.cn/problem/P1273
-	// https://www.luogu.com.cn/problem/P1064 NOIP06·提高 金明的预算方案
-	// https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
+	// 模板题 https://www.luogu.com.cn/problem/P1064 NOIP06·提高 金明的预算方案
+	// EXTRA: https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
 	treeKnapsackWeighted := func(g [][]int, items []struct{ value, weight int }, root, maxW int) []int {
-		// 至多
-		f := make([][]int, 1, len(g)) // n+1
-		f[0] = make([]int, maxW+1)
+		// 我自创的一种实现。对于随机树（或者高度小的树），消耗的内存更少，跑得也更快
+		var dfs func(int, int, []int) ([]int, int)
+		dfs = func(v, fa int, pre []int) ([]int, int) {
+			size := 1
+			lastF := pre
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				f, sz := dfs(w, v, lastF)
+				lastF = f
+				size += sz
+			}
+			// 循环结束后，lastF 就是「选 v」
+			f := slices.Clone(pre) // 不选 v
+			p := items[v]
+			for j := maxW; j >= p.weight; j-- {
+				f[j] = max(f[j], lastF[j-p.weight]+p.value) // 不选 vs 选
+			}
+			return f, size
+		}
+		f0 := make([]int, maxW+1) // 至多
+		f, _ := dfs(root, -1, f0)
+		return f
+	}
+
+	// 其他写法
+	treeKnapsackWeighted = func(g [][]int, items []struct{ value, weight int }, root, maxW int) []int {
+		f := make([][]int, 1, len(g))
+		f[0] = make([]int, maxW+1) // 至多
 		var dfs func(int, int) int
 		dfs = func(v, fa int) int {
 			size := 1
