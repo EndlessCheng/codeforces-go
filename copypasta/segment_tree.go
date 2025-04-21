@@ -390,6 +390,7 @@ func newSegmentTree(a []int) seg {
 // = + max https://www.luogu.com.cn/problem/P1253 代码 https://www.luogu.com.cn/record/207200750
 // * + ∑ https://www.luogu.com.cn/problem/P3373 代码 https://www.luogu.com.cn/record/207204766
 //       LC1622 https://leetcode.cn/problems/fancy-sequence/
+//       https://atcoder.jp/contests/abc332/tasks/abc332_f 1786=CF2062 期望
 // = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 // * + ∑ai^k(k≤10) https://www.zhihu.com/question/564007656 B
 // 线段树维护区间加、乘、赋值、平方和、立方和 http://acm.hdu.edu.cn/showproblem.php?pid=4578
@@ -543,6 +544,7 @@ func newLazySegmentTree(a []int) lazySeg {
 }
 
 // EXTRA: 适用于需要提取所有元素值的场景
+// https://atcoder.jp/contests/abc332/tasks/abc332_f
 func (t lazySeg) spreadAll(o int) {
 	if t[o].l == t[o].r {
 		return
@@ -1017,11 +1019,12 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 //
 
 // 李超线段树
-// 用来维护在平面直角坐标系上的线段关系
+// 用来维护在平面直角坐标系上的线段关系，常用于斜率优化的题目
 // todo https://oi-wiki.org/ds/li-chao-tree/
 //  https://zhuanlan.zhihu.com/p/64946571
 //  https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
 //  模板题 https://www.luogu.com.cn/problem/P4097
+//  https://codeforces.com/problemset/problem/1175/G
 //  https://codeforces.com/contest/1303/problem/G
 
 //
