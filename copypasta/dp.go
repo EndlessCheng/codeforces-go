@@ -1835,9 +1835,9 @@ func _(abs func(int) int) {
 			for _, w := range g[v] {
 				size += dfs(w)
 			}
-			fv := slices.Clone(f[len(f)-size])
+			fv := slices.Clone(f[len(f)-size]) // 不选 v
 			p := items[v]
-			lastF := f[len(f)-1]
+			lastF := f[len(f)-1] // 选 v
 			for j := maxW; j >= p.weight; j-- {
 				fv[j] = max(fv[j], lastF[j-p.weight]+p.value)
 			}
