@@ -1829,11 +1829,13 @@ func _(abs func(int) int) {
 		// 至多
 		f := make([][]int, 1, len(g)) // n+1
 		f[0] = make([]int, maxW+1)
-		var dfs func(int) int
-		dfs = func(v int) int {
+		var dfs func(int, int) int
+		dfs = func(v, fa int) int {
 			size := 1
 			for _, w := range g[v] {
-				size += dfs(w)
+				if w != fa {
+					size += dfs(w, v)
+				}
 			}
 			fv := slices.Clone(f[len(f)-size]) // 不选 v
 			p := items[v]
@@ -1844,8 +1846,8 @@ func _(abs func(int) int) {
 			f = append(f, fv)
 			return size
 		}
-		dfs(0)
-		return f[len(f)-1]
+		dfs(root, -1)
+		return f[len(f)-1] // 根节点的 DP 是最后算出来的
 	}
 
 	/* 划分型 DP ① 最优分割
