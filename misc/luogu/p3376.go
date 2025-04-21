@@ -40,7 +40,7 @@ func p3376(in io.Reader, out io.Writer) {
 		}
 		return d[end] > 0
 	}
-	// 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
+	// 当前弧，在其之前的边已经没有用了，避免多次检查没有用的边
 	iter := make([]int, n)
 	// 寻找增广路（多路增广）
 	var dfs func(int, int) int
