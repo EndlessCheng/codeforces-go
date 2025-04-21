@@ -289,16 +289,15 @@ func (t *treapM[K, V]) prev(key K) *nodeM[K, V]         { return t.kth(t.lowerBo
 func (t *treapM[K, V]) next(key K) *nodeM[K, V]         { return t.kth(t.upperBoundIndex(key)) }
 func (t *treapM[K, V]) find(key K) (o *nodeM[K, V])     { return }
 
-func newMap[K cmp.Ordered, V any]() *treapM[K, V] {
-	return &treapM[K, V]{
-		rd:         uint(time.Now().UnixNano()),
-		comparator: cmp.Compare[K],
-	}
-}
+func newMap[K cmp.Ordered, V any]() *treapM[K, V]                         { return nil }
+func newMapWith[K comparable, V any](comp func(a, b K) int) *treapM[K, V] { return nil }
 
-func newMapWith[K comparable, V any](comp func(a, b K) int) *treapM[K, V] {
-	return &treapM[K, V]{
-		rd:         uint(time.Now().UnixNano()),
-		comparator: comp,
-	}
+//
+
+type treapS[K comparable] struct{}
+
+func (t *treapS[K]) lowerBoundPreSum(lowS int) (cnt, sum int) { return }
+func (t *treapS[K]) put(key K, num int)                       {}
+func newTreapWith[K comparable](comp func(a, b K) int, keyToInt func(key K) int) *treapS[K] {
+	return nil
 }
