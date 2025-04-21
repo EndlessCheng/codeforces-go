@@ -2,14 +2,6 @@ package main
 
 import "container/heap"
 
-/* 暴搜+剪枝
-
-根据题目的数据范围，至多只能走 $10$ 条边，这意味着爆搜的层数至多为 $10$；同时，题目保证每个节点至多有四条边与之相连，因此每次搜索时至多会递归 $4$ 次。因此计算量至多为 $4^{10}$，可以在时限内跑完。
-
-本题的一个剪枝技巧是，先预处理起点 $0$ 到其余节点的最短路，在搜索时提前判断下一个节点在走最短路的前提下能否在 $\textit{maxTime}$ 时间内回到起点 $0$，若不能则不进行递归。
-
- */
-
 // github.com/EndlessCheng/codeforces-go
 func maximalPathQuality(values []int, edges [][]int, maxTime int) (ans int) {
 	n := len(values)
