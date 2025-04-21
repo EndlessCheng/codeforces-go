@@ -1,12 +1,16 @@
-![](https://pic.leetcode.cn/1696131371-UYYmoV-w365c-c.png)
+![lc2875-c.png](https://pic.leetcode.cn/1745215015-YlWiNO-lc2875-c.png)
 
-关于滑动窗口的原理，请看视频：[滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)
+关于滑动窗口的原理，请看视频 [滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
 ## 答疑
 
-**问**：剩余元素的个数会不会大于等于 $n$？
+**问**：去掉中间 $k$ 个 $\textit{nums}$ 后，剩余元素的个数是否会 $\ge n$？
 
-**答**：不会，如果大于等于 $n$，那么数组中的每个数至少出现一次，这意味着剩余元素之和至少为 $\textit{total}$，这与 $\textit{target}\bmod \textit{total} < \textit{total}$ 相矛盾。这也解释了为什么只需要在 $\textit{nums}+\textit{nums}$ 中滑窗，而不需要在 $\textit{nums}+\textit{nums}+\textit{nums}$ 这样更长的数组中滑窗。
+**答**：不会。如果 $\ge n$，说明剩余元素包含了 $\textit{nums}$ 中的每个数，所以剩余元素之和 $\textit{rem}\ge \textit{total}$，这与 $\textit{rem}=\textit{target}\bmod \textit{total} < \textit{total}$ 相矛盾。这也解释了为什么只需要在 $\textit{nums}+\textit{nums}$ 中滑窗，而不需要在 $\textit{nums}+\textit{nums}+\textit{nums}$ 这样更长的数组中滑窗。
+
+**问**：是否需要特判 $\textit{rem} = 0$ 这种情况？
+
+**答**：无需特判。如果 $\textit{rem} = 0$，那么和为 $0$ 的最短子数组，就是空数组，长度为 $0$。此时答案为 $\left\lfloor\dfrac{target}{total}\right\rfloor\cdot n$。
 
 ```py [sol-Python3]
 class Solution:
@@ -15,12 +19,13 @@ class Solution:
         n = len(nums)
         ans = inf
         left = s = 0
+        rem = target % total
         for right in range(n * 2):
             s += nums[right % n]
-            while s > target % total:
+            while s > rem:
                 s -= nums[left % n]
                 left += 1
-            if s == target % total:
+            if s == rem:
                 ans = min(ans, right - left + 1)
         return ans + target // total * n if ans < inf else -1
 ```
@@ -29,20 +34,25 @@ class Solution:
 class Solution {
     public int minSizeSubarray(int[] nums, int target) {
         long total = 0;
-        for (int x : nums) total += x;
+        for (int x : nums) {
+            total += x;
+        }
+
         int n = nums.length;
         int ans = Integer.MAX_VALUE;
-        int left = 0;
         long sum = 0;
+        int left = 0;
         for (int right = 0; right < n * 2; right++) {
             sum += nums[right % n];
             while (sum > target % total) {
-                sum -= nums[left++ % n];
+                sum -= nums[left % n];
+                left++;
             }
             if (sum == target % total) {
                 ans = Math.min(ans, right - left + 1);
             }
         }
+
         return ans == Integer.MAX_VALUE ? -1 : ans + (int) (target / total) * n;
     }
 }
@@ -55,12 +65,13 @@ public:
         long long total = reduce(nums.begin(), nums.end(), 0LL);
         int n = nums.size();
         int ans = INT_MAX;
-        int left = 0;
         long long sum = 0;
+        int left = 0;
         for (int right = 0; right < n * 2; right++) {
             sum += nums[right % n];
             while (sum > target % total) {
-                sum -= nums[left++ % n];
+                sum -= nums[left % n];
+                left++;
             }
             if (sum == target % total) {
                 ans = min(ans, right - left + 1);
@@ -69,6 +80,34 @@ public:
         return ans == INT_MAX ? -1 : ans + target / total * n;
     }
 };
+```
+
+```c [sol-C]
+#define MIN(a, b) ((b) < (a) ? (b) : (a))
+
+int minSizeSubarray(int* nums, int numsSize, int target) {
+    long long total = 0;
+    for (int i = 0; i < numsSize; i++) {
+        total += nums[i];
+    }
+
+    int n = numsSize;
+    int ans = INT_MAX;
+    long long sum = 0;
+    int left = 0;
+    for (int right = 0; right < n * 2; right++) {
+        sum += nums[right % n];
+        while (sum > target % total) {
+            sum -= nums[left % n];
+            left++;
+        }
+        if (sum == target % total) {
+            ans = MIN(ans, right - left + 1);
+        }
+    }
+
+    return ans == INT_MAX ? -1 : ans + target / total * n;
+}
 ```
 
 ```go [sol-Go]
@@ -106,7 +145,8 @@ var minSizeSubarray = function (nums, target) {
     for (let right = 0; right < n * 2; right++) {
         sum += nums[right % n];
         while (sum > target % total) {
-            sum -= nums[left++ % n];
+            sum -= nums[left % n];
+            left++;
         }
         if (sum === target % total) {
             ans = Math.min(ans, right - left + 1);
@@ -120,11 +160,11 @@ var minSizeSubarray = function (nums, target) {
 impl Solution {
     pub fn min_size_subarray(nums: Vec<i32>, target: i32) -> i32 {
         let target = target as i64;
-        let total: i64 = nums.iter().map(|&x| x as i64).sum();
+        let total = nums.iter().map(|&x| x as i64).sum::<i64>();
         let n = nums.len();
         let mut ans = usize::MAX;
-        let mut left = 0;
         let mut sum = 0;
+        let mut left = 0;
         for right in 0..n * 2 {
             sum += nums[right % n];
             while sum > (target % total) as i32 {
@@ -147,7 +187,7 @@ impl Solution {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
 
