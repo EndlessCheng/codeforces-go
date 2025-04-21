@@ -86,13 +86,13 @@ func TestCompare_cf1778F(_t *testing.T) {
 		}
 		
 		solve := func(Case int) {
-			Fscan(in, &n, &k)
-			a = make([]int, n)
+			Fscan(in, &n78, &k)
+			a = make([]int, n78)
 			for i := range a {
 				Fscan(in, &a[i])
 			}
 			adj = [N][]int{}
-			for i := 1; i < n; i++ {
+			for i := 1; i < n78; i++ {
 				var u, v int
 				Fscan(in, &u, &v)
 				u--
@@ -133,7 +133,7 @@ func TestCompare_cf1778F(_t *testing.T) {
 
 const N = 200
 
-var n, k int
+var n78, k int
 var a []int
 var adj [N][]int
 var g, b, spf [N]int
@@ -159,7 +159,7 @@ func dfs2(v int, par int, target int) int {
 	if g[v]%target == 0 {
 		return 0
 	} else if a[v]%target != 0 {
-		return n + 1
+		return n78 + 1
 	}
 	c := 0
 	for _, ch := range adj[v] {
