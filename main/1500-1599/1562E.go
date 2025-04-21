@@ -1,61 +1,40 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"sort"
+	"slices"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF1562E(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
-
-	// 假了，这方法会 T
-
-	var T, n int16
-	var s []byte
+// https://github.com/EndlessCheng
+func cf1562E(in io.Reader, out io.Writer) {
+	var T, n int
+	var s string
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &s)
-		lcp := make([][]int16, n+1)
+		lcp := make([][]int, n+1)
 		for i := range lcp {
-			lcp[i] = make([]int16, n+1)
+			lcp[i] = make([]int, n+1)
 		}
 		for i := n - 1; i >= 0; i-- {
-			for j := n - 1; j >= 0; j-- {
+			for j := i - 1; j >= 0; j-- {
 				if s[i] == s[j] {
 					lcp[i][j] = lcp[i+1][j+1] + 1
 				}
 			}
 		}
-		lessEq := func(l1, r1, l2, r2 int16) bool {
-			len1, len2 := r1-l1, r2-l2
-			l := lcp[l1][l2]
-			if len1 == len2 && l >= len1 {
-				return true
-			}
-			if l >= len1 || l >= len2 {
-				return len1 < len2
-			}
-			return s[l1+l] < s[l2+l]
-		}
 
-		type pair struct{ l, r int16 }
-		dp := []pair{}
-		for i := int16(0); i < n; i++ {
-			for j := i + 1; j <= n; j++ {
-				p := sort.Search(len(dp), func(p int) bool { return lessEq(i, j, dp[p].l, dp[p].r) })
-				if p < len(dp) {
-					dp[p] = pair{i, j}
-				} else {
-					dp = append(dp, pair{i, j})
+		f := make([]int, n)
+		for i, row := range lcp[:n] {
+			f[i] = n - i
+			for j, l := range row[:i] {
+				if l < n-i && s[j+l] < s[i+l] {
+					f[i] = max(f[i], f[j]+n-i-lcp[i][j])
 				}
 			}
 		}
-		Fprintln(out, len(dp))
+		Fprintln(out, slices.Max(f))
 	}
 }
 
-//func main() { CF1562E(os.Stdin, os.Stdout) }
+//func main() { cf1562E(bufio.NewReader(os.Stdin), os.Stdout) }
