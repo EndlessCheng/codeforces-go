@@ -1795,9 +1795,9 @@ func _(abs func(int) int) {
 				}
 				fw, sz := dfs(w, v)
 				for i := size; i >= 0; i-- { // 枚举在之前的子树中选了 i 个点
-					for j, fwj := range fw { // 枚举在 w 子树中选了 j 个点
+					for j, wCj := range fw { // 枚举在 w 子树中选了 j 个点
 						// +1，留位置给一定要选的节点 v
-						f[i+j+1] = max(f[i+j+1], f[i+1]+fwj)
+						f[i+j+1] = max(f[i+j+1], f[i+1]+wCj)
 					}
 				}
 				size += sz
