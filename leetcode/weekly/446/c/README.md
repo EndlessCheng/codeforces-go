@@ -233,6 +233,12 @@ func resultArray(nums []int, k int) []int64 {
 - 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(k)$。
 
+## 思考题
+
+本题去掉的是数组前缀和后缀，如果改成去掉中间的子数组呢？
+
+欢迎在评论区分享你的思路/代码。
+
 ## 相似题目（刷表法）
 
 - [2140. 解决智力问题](https://leetcode.cn/problems/solving-questions-with-brainpower/) 1709
