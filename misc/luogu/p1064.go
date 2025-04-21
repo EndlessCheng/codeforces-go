@@ -8,8 +8,8 @@ import (
 
 // https://space.bilibili.com/206214
 func p1064(in io.Reader, out io.Writer) {
-	var maxW, n, v int
-	Fscan(in, &maxW, &n)
+	var W, n, v int
+	Fscan(in, &W, &n)
 	a := make([]struct{ w, v int }, n+1)
 	g := make([][]int, n+1)
 	for w := 1; w <= n; w++ {
@@ -18,25 +18,24 @@ func p1064(in io.Reader, out io.Writer) {
 		g[v] = append(g[v], w)
 	}
 
-	f := make([][]int, 1, n+1)
-	f[0] = make([]int, maxW+1)
-	var dfs func(int) int
-	dfs = func(v int) int {
+	var dfs func(int, []int) ([]int, int)
+	dfs = func(v int, pre []int) ([]int, int) {
 		size := 1
+		t := pre
 		for _, w := range g[v] {
-			size += dfs(w)
+			f, sz := dfs(w, t)
+			t = f
+			size += sz
 		}
-		fv := slices.Clone(f[len(f)-size])
+		f := slices.Clone(pre)
 		p := a[v]
-		lastF := f[len(f)-1]
-		for j := maxW; j >= p.w; j-- {
-			fv[j] = max(fv[j], lastF[j-p.w]+p.v)
+		for j := W; j >= p.w; j-- {
+			f[j] = max(f[j], t[j-p.w]+p.v)
 		}
-		f = append(f, fv)
-		return size
+		return f, size
 	}
-	dfs(0)
-	Fprint(out, f[n][maxW])
+	f, _ := dfs(0, make([]int, W+1))
+	Fprint(out, f[W])
 }
 
 //func main() { p1064(bufio.NewReader(os.Stdin), os.Stdout) }
