@@ -31,7 +31,7 @@ func (o *node) maintain() {
 	o.sz = 1 + o.ch[0].size() + o.ch[1].size()
 }
 
-// 构建一棵中序遍历为 [l,r] 的 splay 树
+// 构建一棵中序遍历为 s 的 splay 树
 // 比如，给你一个序列和一些修改操作，每次取出一段子区间，cut 掉然后 append 到末尾，输出完成所有操作后的最终序列：
 //     我们可以 buildSplay(1,n)，每次操作调用两次 split 来 cut 区间，得到三棵子树 a b c
 //     append 之后应该是 a c b，那么我们可以 a.merge(c.merge(b)) 来完成这一操作
