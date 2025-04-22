@@ -13,8 +13,9 @@ https://www.cnblogs.com/cjyyb/p/7499020.html
 复杂度分析 https://www.bilibili.com/video/BV1q7421K7yu/
 
 普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
-文艺平衡树 https://www.luogu.com.cn/problem/P3391
 LC2296 https://leetcode.cn/problems/design-a-text-editor
+反转区间 https://www.luogu.com.cn/problem/P3391 文艺平衡树
+- LC3526 https://leetcode.cn/problems/range-xor-queries-with-subarray-reversals/
 https://atcoder.jp/contests/abc392/tasks/abc392_f
 LC1825 https://leetcode.cn/problems/finding-mk-average/ https://leetcode.cn/problems/finding-mk-average/solutions/2067232/by-jessechan-19j2/
 todo https://codeforces.com/problemset/problem/702/F
@@ -89,7 +90,7 @@ func (o *spNode) rotate(d int) *spNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
-	// x.sz = o.sz; o.maintain()
+	// 下面两行更快的写法是 x.sz = o.sz（其他维护信息也复制过来）; o.maintain()
 	o.maintain()
 	x.maintain()
 	return x
