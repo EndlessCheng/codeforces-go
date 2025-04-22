@@ -34,6 +34,8 @@ type spNode struct {
 	sz  int
 	key spKeyType
 	val spValueType
+
+	flipTodo bool
 }
 
 // 设置如下返回值是为了方便使用 spNode 中的 lr 数组
@@ -60,9 +62,20 @@ func (o *spNode) maintain() {
 	o.sz = 1 + o.lr[0].size() + o.lr[1].size()
 }
 
-func (o *spNode) pushDown() {
-	// custom ...
+func (o *spNode) apply() {
+	if o != nil {
+		o.flipTodo = !o.flipTodo // 举例
+	}
+}
 
+func (o *spNode) pushDown() {
+	if !o.flipTodo { // 举例
+		return
+	}
+	o.lr[0].apply()
+	o.lr[1].apply()
+	o.lr[0], o.lr[1] = o.lr[1], o.lr[0]
+	o.flipTodo = false
 }
 
 // 构建一棵中序遍历为 [l,r] 的 splay 树
