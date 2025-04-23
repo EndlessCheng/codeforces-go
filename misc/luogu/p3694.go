@@ -10,19 +10,19 @@ import (
 func p3694(in io.Reader, out io.Writer) {
 	var n, m, v int
 	Fscan(in, &n, &m)
-	pre := make([][20]int, n+1)
+	sum := make([][20]int, n+1)
 	for i := 1; i <= n; i++ {
 		Fscan(in, &v)
-		pre[i] = pre[i-1]
-		pre[i][v-1]++
+		sum[i] = sum[i-1]
+		sum[i][v-1]++
 	}
 
 	u := 1 << m
-	subSum := make([]int, u)
-	for i, v := range pre[n][:m] {
+	sz := make([]int, u)
+	for i, v := range sum[n][:m] {
 		highBit := 1 << i
-		for mask, s := range subSum[:highBit] {
-			subSum[highBit|mask] = s + v
+		for mask, s := range sz[:highBit] {
+			sz[highBit|mask] = s + v
 		}
 	}
 
@@ -32,7 +32,7 @@ func p3694(in io.Reader, out io.Writer) {
 			lb = cus & -cus
 			ns := s | lb
 			p := bits.TrailingZeros(uint(lb))
-			f[ns] = max(f[ns], fs+pre[subSum[ns]][p]-pre[subSum[s]][p])
+			f[ns] = max(f[ns], fs+sum[sz[ns]][p]-sum[sz[s]][p])
 		}
 	}
 	Fprint(out, n-f[u-1])
