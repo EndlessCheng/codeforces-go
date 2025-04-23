@@ -289,7 +289,7 @@ func _() {
 	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长匹配长度    pi[0] = 0
 	// 定义 s[:i+1] 的最大真 border 为 s[:pi[i]]    完整定义见 https://www.luogu.com.cn/problem/P5829
 	// 注：「真」表示不等于整个字符串
-	calcPi := func(s string) []int {
+	kmpCalcPi := func(s string) []int {
 		pi := make([]int, len(s))
 		match := 0
 		for i := 1; i < len(pi); i++ {
@@ -307,7 +307,7 @@ func _() {
 
 	// 在文本串 text 中查找模式串 pattern，返回所有成功匹配的位置（pattern[0] 在 text 中的下标）
 	kmpSearch := func(text, pattern string) (pos []int) {
-		pi := calcPi(pattern)
+		pi := kmpCalcPi(pattern)
 		match := 0
 		for i := range text {
 			v := text[i]
@@ -331,11 +331,12 @@ func _() {
 	// https://codeforces.com/problemset/problem/182/D 1400
 	// https://codeforces.com/problemset/problem/1690/F 1700
 	// https://codeforces.com/problemset/problem/526/D 2200
+	// https://codeforces.com/problemset/problem/825/F 2400
 	// http://poj.org/problem?id=2406 https://www.luogu.com.cn/problem/UVA455
 	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
 	calcMinPeriod := func(s string) (string, int) {
 		n := len(s)
-		pi := calcPi(s)
+		pi := kmpCalcPi(s)
 		if m := pi[n-1]; m > 0 && n%(n-m) == 0 {
 			return s[:n-m], n / (n - m)
 		}
@@ -352,7 +353,7 @@ func _() {
 	// https://ac.nowcoder.com/study/live/738/3/1
 	// https://www.luogu.com.cn/problem/P5829
 	failTree := func(s string) {
-		pi := calcPi(s)
+		pi := kmpCalcPi(s)
 		g := make([][]int, len(s)+1)
 		for i, p := range pi {
 			g[p] = append(g[p], i+1)
@@ -557,11 +558,39 @@ func _() {
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
 	// https://atcoder.jp/contests/abc138/tasks/abc138_e
 	// https://codeforces.com/contest/1845/problem/C
+	// https://codeforces.com/problemset/problem/1789/F 2700
 	// - 相关 LC2350 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
-
-	// 写法一
-	// nxt[i][j] 表示下标 > i 的最近字符 j 的下标
 	subsequenceAutomaton := func(s string) {
+		const base = 'a'
+		n := len(s)
+		// nxt[i][j] 表示下标 >= i 的最近字符 j 的下标
+		nxt := make([][26]int, n+1)
+		for j := range nxt[n] {
+			nxt[n][j] = n
+		}
+		for i := n - 1; i >= 0; i-- {
+			nxt[i] = nxt[i+1]
+			nxt[i][s[i]-base] = i
+		}
+
+		// 返回是 s 的子序列的最长的 t 的前缀的长度
+		match := func(t string) int {
+			i := -1
+			for j, b := range t {
+				i = nxt[i+1][b-base]
+				if i == n { // 找不到 t[j]
+					return j
+				}
+			}
+			// 此时 s[i] 匹配 t[-1]
+			return len(t)
+		}
+		_ = match
+	}
+
+	// 旧写法
+	// nxt[i][j] 表示下标 > i 的最近字符 j 的下标
+	subsequenceAutomaton = func(s string) {
 		const base = 'a'
 		// build nxt
 		pos := [26]int{}
@@ -590,35 +619,6 @@ func _() {
 				}
 			}
 			return j
-		}
-		_ = match
-	}
-
-	// 写法二
-	// nxt[i][j] 表示下标 >= i 的最近字符 j 的下标
-	subsequenceAutomaton2 := func(s string) {
-		const base = 'a'
-		n := len(s)
-		nxt := make([][26]int, n+1)
-		for j := range nxt[n] {
-			nxt[n][j] = n
-		}
-		for i := n - 1; i >= 0; i-- {
-			nxt[i] = nxt[i+1]
-			nxt[i][s[i]-base] = i
-		}
-
-		// 返回是 s 的子序列的最长的 t 的前缀的长度
-		match := func(t string) int {
-			i := -1
-			for j, b := range t {
-				i = nxt[i+1][b-base]
-				if i == n { // 找不到 t[j]
-					return j
-				}
-			}
-			// 此时 s[i] 匹配 t[-1]
-			return len(t)
 		}
 		_ = match
 	}
@@ -774,7 +774,7 @@ func _() {
 			}
 		}
 
-		// 以 s[i] 为尾字母的最短回文子串的长度
+		// 以 s[i] 为右端点的最短回文子串的左端点
 		// 结合单调栈
 		// 回文中心越来越大
 		// https://codeforces.com/contest/1827/problem/C
@@ -1264,6 +1264,7 @@ func _() {
 	// 见字符串题单 https://leetcode.cn/circle/discuss/SJFwQI/
 	// https://codeforces.com/problemset/problem/1948/D 1700 也有更简单的做法
 	// https://codeforces.com/problemset/problem/2045/H 2200
+	// https://codeforces.com/problemset/problem/1562/E 2500 LIS
 	lcpArray := func(s string) {
 		n := len(s)
 		lcp := make([][]int, n+1)
@@ -1271,15 +1272,15 @@ func _() {
 			lcp[i] = make([]int, n+1)
 		}
 		for i := n - 1; i >= 0; i-- {
-			for j := n - 1; j >= 0; j-- { // 或者 j >= i，j > i
+			for j := n - 1; j >= 0; j-- { // 或者 j >= i，或者 j > i
 				if s[i] == s[j] {
 					lcp[i][j] = lcp[i+1][j+1] + 1
 				}
 			}
 		}
 
-		// 返回 strings.Compare(s[l1:r1], s[l2:r2])
-		// 如果上面写 j >= 0，那么这两个子串没有左右位置要求
+		// O(1) 计算 strings.Compare(s[l1:r1], s[l2:r2])
+		// 如果上面内层循环写的是 j >= 0，那么这两个子串没有左右位置要求
 		compare := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp[l1][l2]
@@ -1321,10 +1322,10 @@ func _() {
 		unsafeToBytes, unsafeToString,
 		indexAll,
 		stringHashSingleMod, stringHashDoubleMod,
-		calcPi, kmpSearch, calcMinPeriod, failTree, // KMP
+		kmpCalcPi, kmpSearch, calcMinPeriod, failTree,
 		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
-		isSubseq, subsequenceAutomaton, subsequenceAutomaton2,
+		isSubseq, subsequenceAutomaton,
 		manacher, manacherOdd, manacherEven,
 		suffixArray, suffixArrayInt, suffixArrayInt2, // 后缀数组
 		lcpArray,
