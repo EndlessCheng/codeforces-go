@@ -123,7 +123,6 @@ import (
 func cf%[1]s(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-
 	var n int
 	Fscan(in, &n)
 	
@@ -133,7 +132,7 @@ func main() { cf%[1]s(bufio.NewReader(os.Stdin), os.Stdout) }
 `, problemID)
 
 	if !multiOutput {
-		mainStr = strings.ReplaceAll(mainStr, "\tout := bufio.NewWriter(_w)\n\tdefer out.Flush()\n\n", "")
+		mainStr = strings.ReplaceAll(mainStr, "\tout := bufio.NewWriter(_w)\n\tdefer out.Flush()\n", "")
 		mainStr = strings.ReplaceAll(mainStr, "_w", "out")
 	}
 
