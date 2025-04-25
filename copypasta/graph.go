@@ -97,42 +97,15 @@ https://onlinejudge.u-aizu.ac.jp/problems/2200 todo
 https://onlinejudge.u-aizu.ac.jp/problems/2224 为了让原图无环，需要去除不在最大生成树上的边
 2395 https://www.luogu.com.cn/problem/P1547 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度
 3.5 节 - 二分图
-3041
-3057
-1274
-2112
-1486
-1466
-3692
-2724
-2226
+3041 3057 1274 2112 1486 1466 3692 2724 2226
 AOJ 2251
 3.5节 - 网络流
 最大流
-3281
-3469
-3713
-2987
-2914
-3155
+3281 3469 3713 2987 2914 3155
 最小费用流
-2135
-2175
-3686
-3680
-3068
-2195
-3422
-AOJ 2266
-AOJ 2230
+2135 2175 3686 3680 3068 2195 3422 AOJ 2266 AOJ 2230
 4.3 节 - SCC & 2SAT
-2186
-3683
-3180
-1236
-3678
-2723
-2749
+2186 3683 3180 1236 3678 2723 2749
 */
 
 // namespace
@@ -157,11 +130,11 @@ func (*graph) readGraph(in io.Reader, n, m int) {
 // 节点 v 的邻居形成一条链表（用数组下标代替指针）
 // 添加 v 的一个邻居 w 时，用链表的【头插法】把 w 插入到链表的头节点之前
 func (*graph) readGraphList(in io.Reader, n, m int) {
-	type node struct{ to, next int }
 	head := make([]int, n) // head[i] 表示 i 的邻居链表的头节点
 	for i := range head {
 		head[i] = -1 // -1 表示 nil
 	}
+	type node struct{ to, next int }
 	nodes := make([]node, m) // 无向图是 m*2
 	for i := 0; i < m; i++ {
 		var v, w int
@@ -184,7 +157,7 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 // XOR Linked Tree 
 // https://codeforces.com/blog/entry/135239
 
-/* 图上的 DFS
+/* DFS
 https://atcoder.jp/contests/abc126/tasks/abc126_e
 https://atcoder.jp/contests/agc012/tasks/agc012_b 思维扩展
 https://codeforces.com/problemset/problem/744/A 1500
@@ -412,7 +385,7 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 	return
 }
 
-/* 图上的 BFS
+/* BFS
 https://codeforces.com/problemset/problem/689/B 1600 最短路模板题
 https://codeforces.com/problemset/problem/601/A 1600 脑筋急转弯
 https://codeforces.com/problemset/problem/1721/D 1800 带撤销的 BFS
@@ -420,6 +393,7 @@ https://codeforces.com/problemset/problem/1851/F 1800 带撤销的 BFS
 https://codeforces.com/problemset/problem/1272/E 1900 建模
 https://codeforces.com/problemset/problem/1790/G 2300 锻炼分类讨论能力
 https://codeforces.com/problemset/problem/1874/B 2400
+https://codeforces.com/problemset/problem/79/D 2800
 https://atcoder.jp/contests/abc160/tasks/abc160_d
 https://atcoder.jp/contests/abc394/tasks/abc394_e
 https://atcoder.jp/contests/abc132/tasks/abc132_e 分层图
@@ -1496,6 +1470,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // Universal Optimality https://mp.weixin.qq.com/s/V0MlmsoZdcRIZcxsRgAzuA
 //
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
+//       https://atcoder.jp/contests/abc340/tasks/abc340_d
 //       https://codeforces.com/problemset/problem/20/C 1900
 // 最短路个数 https://www.luogu.com.cn/problem/P1144
 //           https://www.luogu.com.cn/problem/P1608
@@ -1518,6 +1493,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // https://codeforces.com/problemset/problem/567/E 2200 * 关键边、伪关键边（与割边结合）
 // https://codeforces.com/problemset/problem/715/B 2300 https://leetcode.cn/problems/modify-graph-edge-weights/
 // https://codeforces.com/problemset/problem/1693/C 2300 转换
+// https://codeforces.com/problemset/problem/1715/E 2400 斜率优化
 // https://codeforces.com/problemset/problem/1753/D 2400 建模+转换+多源最短路 
 // https://atcoder.jp/contests/abc245/tasks/abc245_g 2270=CF2428
 // https://codeforces.com/problemset/problem/1528/D 2500 建模【好题】
@@ -1542,7 +1518,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
 // 最短路树上跑拓扑排序 LC1786 https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/ 2079
 // 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D 1800
-func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
+func (*graph) dijkstraShortestPath(n, st int, edges [][]int) (dis []int) {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
 	for _, e := range edges {
@@ -1755,7 +1731,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
 // 适用于稠密图 O(n^2)
 // LC2662 https://leetcode.cn/problems/minimum-cost-of-a-path-with-special-roads/ 2154
 // 建模 https://codeforces.com/contest/1528/problem/D
-func (*graph) shortestPathDijkstra2(g [][]int, st int) []int {
+func (*graph) dijkstraShortestPath2(g [][]int, st int) []int {
 	n := len(g)
 	const inf int = 1e18
 	dis := make([]int, n+1) // dis[n] 当作哨兵
@@ -2149,7 +2125,7 @@ func (G *graph) shortestPathJohnson(n int, edges [][]int) [][]int {
 	// 以每个点为源点跑一遍 Dijkstra（省略建图，注意点数为 n+1）
 	dist := make([][]int, n+1)
 	for st := 1; st <= n; st++ {
-		dist[st] = G.shortestPathDijkstra(n+1, st, edges)
+		dist[st] = G.dijkstraShortestPath(n+1, st, edges)
 		for end, d := range dist[st] {
 			if d < inf {
 				dist[st][end] -= h[st] - h[end]
@@ -3910,6 +3886,7 @@ func (G *graph) twoSAT(n int) []bool {
 // https://codeforces.com/problemset/problem/1335/F 2200
 // https://codeforces.com/problemset/problem/1907/G 2200
 // https://codeforces.com/problemset/problem/1200/F 2300 拆点
+// https://codeforces.com/problemset/problem/835/F 2500
 // https://codeforces.com/problemset/problem/1270/G 2700 构造 建图
 // https://atcoder.jp/contests/abc266/tasks/abc266_f
 // - 如果不是基环树，可以边双缩点，用大小 > 1 的点分割树，把不同的连通块标记不同的 ID
