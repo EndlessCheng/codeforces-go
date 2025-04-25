@@ -21,9 +21,9 @@
 
 - 计算有多少个下标对 $(l,r)$，满足 $0\le l<r\le n$ 且 $(s[r]-s[l])\bmod \textit{modulo} = k$。
 
-这是 [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 的取模加强版。
+对于初次接触模运算的同学，可以先从简单的情况开始思考：想一想，如果 $k=0$，要怎么做？这是 [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 的取模加强版。
 
-题目保证 $0\le k < \textit{modulo}$，所以上式等价于
+本题保证 $0\le k < \textit{modulo}$，所以 $(s[r]-s[l])\bmod \textit{modulo} = k$ 等价于
 
 $$
 (s[r]-s[l])\bmod \textit{modulo} = k \bmod \textit{modulo}
