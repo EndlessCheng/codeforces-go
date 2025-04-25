@@ -192,6 +192,7 @@ func (*tree) move1(g [][]int) [][]int {
 
 // 返回每个点 v 往上到 fa 再到其他点的最远距离
 // 需要维护每个点的最大深度和次大深度
+// 另见 dp.go 中的「换根 DP · 其二」
 // https://oj.niumacode.com/problem/P1499
 func (*tree) upDis(root int, g [][]struct{ to, wt int }) []int {
 	type tuple struct{ fi, se, w int }
@@ -514,6 +515,7 @@ func (*tree) minPathCover(g [][]int) int {
 // https://codeforces.com/problemset/problem/1819/C 2400
 // https://codeforces.com/problemset/problem/1617/E 2700 转换成求部分直径 
 // - https://oeis.org/A072339
+// https://codeforces.com/problemset/problem/516/D 2800
 // https://www.luogu.com.cn/problem/P3304 必须边 
 // https://www.luogu.com.cn/problem/T238762?contestId=65460 求树中任意一个与 x 距离为 k 的点 
 // https://www.lanqiao.cn/problems/5890/learning/?contest_id=145
@@ -1210,7 +1212,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 
 	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
 	// 如果 to 不是 v 的子孙，返回 -1
-	// https://codeforces.com/problemset/problem/1702/G2 2000
+	// https://codeforces.com/problemset/problem/1702/G2 2000 判断节点列表能否连成线（在某条路径上）
 	// https://codeforces.com/problemset/problem/916/E 2400
 	down1 := func(v, to int) int {
 		if dep[to] <= dep[v] {
@@ -1760,11 +1762,11 @@ func (*tree) virtualTree(g [][]int) {
 //             https://www.luogu.com.cn/problem/P3384
 //             https://www.luogu.com.cn/problem/P3178
 //             https://codeforces.com/problemset/problem/343/D 2100
-// 模板题（边权）https://atcoder.jp/contests/abc294/tasks/abc294_g
+// 模板题（边权）https://atcoder.jp/contests/abc294/tasks/abc294_g 边权记录在每条边的下面那个点中（边权转点权）
 // - 也可以转换成子树所有点的 dis 都增加了 delta，用欧拉序+差分树状数组维护
 // https://codeforces.com/problemset/problem/609/E 2100 与最小生成树结合（边权）
-// https://codeforces.com/problemset/problem/587/C 2200 归并树 
-// https://codeforces.com/problemset/problem/1174/F 2400 好题 
+// https://codeforces.com/problemset/problem/587/C 2200 归并树
+// https://codeforces.com/problemset/problem/1174/F 2400 好题
 // https://codeforces.com/problemset/problem/504/E 3000
 // https://atcoder.jp/contests/abc133/tasks/abc133_f
 // todo 题单 https://www.luogu.com.cn/training/1654
@@ -2025,25 +2027,26 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // 讲解+套题 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.com/blog/entry/44351 补充 https://codeforces.com/blog/entry/67696
 // todo 套题 https://blog.csdn.net/m0_49959202/article/details/114925708
-// 模板题 https://www.luogu.com.cn/problem/U41492
-//       https://codeforces.com/problemset/problem/600/E https://www.acwing.com/problem/content/3191/
-// todo HNOI09 梦幻布丁 https://www.luogu.com.cn/problem/P3201 https://www.acwing.com/problem/content/2156/
-// LC2003 所有子树 mex https://leetcode.cn/problems/smallest-missing-genetic-value-in-each-subtree/
-// 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
-//            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
-// https://ac.nowcoder.com/acm/contest/4010/E
-// https://atcoder.jp/contests/abc183/tasks/abc183_f
-// https://codeforces.com/contest/1455/problem/G
-// https://codeforces.com/contest/570/problem/D
-// https://codeforces.com/contest/246/problem/E
-// https://codeforces.com/contest/208/problem/E
-// https://codeforces.com/contest/1009/problem/F
-// https://codeforces.com/contest/375/problem/D
-// https://codeforces.com/contest/741/problem/D
-// https://codeforces.com/problemset/problem/1805/E
-// https://codeforces.com/contest/1824/problem/C
+// https://codeforces.com/problemset/problem/161/D 1800 距离等于 k 的点对数
+// - 变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
+// https://codeforces.com/problemset/problem/208/E 2100
+// https://codeforces.com/problemset/problem/570/D 2200
+// https://codeforces.com/problemset/problem/600/E 2300
+// https://codeforces.com/problemset/problem/1009/F 2300
+// https://codeforces.com/problemset/problem/1805/E 2300
+// https://codeforces.com/problemset/problem/246/E 2400
+// https://codeforces.com/problemset/problem/375/D 2400
+// https://codeforces.com/problemset/problem/1824/C 2500
+// https://codeforces.com/problemset/problem/715/C 2700
+// https://codeforces.com/problemset/problem/741/D 2900
+// https://codeforces.com/problemset/problem/1455/G 2900
 // https://codeforces.com/gym/104270/problem/B 点双
 // - https://www.luogu.com.cn/problem/P9886
+// https://atcoder.jp/contests/abc183/tasks/abc183_f
+// https://www.luogu.com.cn/problem/U41492
+// todo https://www.luogu.com.cn/problem/P3201 HNOI09 梦幻布丁
+// LC2003 https://leetcode.cn/problems/smallest-missing-genetic-value-in-each-subtree/ 所有子树 mex
+// https://ac.nowcoder.com/acm/contest/4010/E
 
 // 写法一：按 map 的大小合并
 // 路径点权异或 https://codeforces.com/problemset/problem/1709/E
