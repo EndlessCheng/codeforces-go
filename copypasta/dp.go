@@ -22,19 +22,16 @@ https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-
 
 前缀/后缀之间的转移，例如从 f[i-1] 转移到 f[i]，或者从 f[j] 转移到 f[i]
 LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
-- LC509 https://leetcode.cn/problems/fibonacci-number/
-- LC1137 https://leetcode.cn/problems/n-th-tribonacci-number/ 1143
-- 变形：有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
 - 变形：有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
-- LC2466 https://leetcode.cn/problems/count-ways-to-build-good-strings/ 1694
-- LC2533 https://leetcode.cn/problems/number-of-good-binary-strings/
-- LC377 https://leetcode.cn/problems/combination-sum-iv/ 每次可以往上爬 nums[i] 步
+- https://atcoder.jp/contests/dp/tasks/dp_a
+- https://atcoder.jp/contests/dp/tasks/dp_b
+- 变形：有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
 LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
-- LC740 https://leetcode.cn/problems/delete-and-earn/
+- 变形：值域打家劫舍 LC740 https://leetcode.cn/problems/delete-and-earn/
 - 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
 - 变形：矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
-LC213 环形打家劫舍 https://leetcode.cn/problems/house-robber-ii/
-- 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
+- 环形 LC213 https://leetcode.cn/problems/house-robber-ii/
+- 环形 https://atcoder.jp/contests/abc251/tasks/abc251_e
 LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/ 1780
 - 变形：改成环形数组要怎么做
 - 相似题目 https://codeforces.com/problemset/problem/1624/E 2000
@@ -43,6 +40,7 @@ https://codeforces.com/problemset/problem/1881/E 1500
 https://codeforces.com/problemset/problem/1875/D 1600
 https://codeforces.com/problemset/problem/30/C 1800
 https://codeforces.com/problemset/problem/1627/E 2200 刷表法 双指针
+https://codeforces.com/problemset/problem/1739/E 2400
 另见「最长递增子序列」
 
 双序列问题，一般定义 f[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
@@ -671,6 +669,7 @@ func _(abs func(int) int) {
 	// 更快的做法（位运算）见 SPOJ LCS0 https://www.luogu.com.cn/problem/SP12076
 	//
 	// 模板题 LC1143 https://leetcode.cn/problems/longest-common-subsequence/
+	// - 输出具体方案 https://atcoder.jp/contests/dp/tasks/dp_f
 	// 编辑距离 LC72 https://leetcode.cn/problems/edit-distance/    
 	// - 热身 LC161 https://leetcode.cn/problems/one-edit-distance/
 	// - 输出具体方案 https://codeforces.com/problemset/problem/56/D 2100
@@ -688,7 +687,9 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1701/E 2500 状态机 DP / 前后缀分解
 	// https://codeforces.com/problemset/problem/1584/F 2600 多串 + 每种字母至多出现两次 
 	// - f[c][mask]，其中 mask 记录字母 c 在每个字符串中的出现位置，0 表示左边那个，1 表示右边那个
-	// https://atcoder.jp/contests/abc185/tasks/abc185_e 权值 
+	// https://codeforces.com/problemset/problem/1366/G 2700 结合括号匹配，挖掘性质
+	// https://codeforces.com/problemset/problem/1789/F 2700 分类讨论 多串
+	// https://atcoder.jp/contests/abc185/tasks/abc185_e 权值
 	// https://atcoder.jp/contests/abc130/tasks/abc130_e 相同子序列个数
 	// https://atcoder.jp/contests/abc391/tasks/abc391_g DDP / DP of DP
 	// - https://www.luogu.com.cn/problem/P10614
@@ -711,62 +712,22 @@ func _(abs func(int) int) {
 			}
 		}
 
-		{
-			// EXTRA: 某些 dp 非单调性的题目需要计算全局最值
-			allMax := 0
-			for _, row := range f {
-				for _, v := range row {
-					allMax = max(allMax, v)
-				}
-			}
-		}
-
-		return f[n][m]
-	}
-
-	lcsPath := func(s, t []byte) []byte {
-		n, m := len(s), len(t)
-		f := make([][]int, n+1)
-		for i := range f {
-			f[i] = make([]int, m+1)
-		}
-		fa := make([][]int8, n+1)
-		for i := range fa {
-			fa[i] = make([]int8, m+1)
-		}
-		for i, v := range s {
-			for j, w := range t {
-				if v == w {
-					f[i+1][j+1] = f[i][j] + 1
-					fa[i+1][j+1] = 1
-				} else {
-					if f[i][j+1] > f[i+1][j] {
-						f[i+1][j+1] = f[i][j+1]
-						fa[i+1][j+1] = 2
-					} else {
-						f[i+1][j+1] = f[i+1][j]
-						fa[i+1][j+1] = 3
-					}
-				}
-			}
-		}
+		// 输出具体方案
 		lcs := make([]byte, 0, f[n][m])
-		var makeLCS func(i, j int)
-		makeLCS = func(i, j int) {
-			if i == 0 || j == 0 {
-				return
-			}
-			if fa[i][j] == 1 {
-				makeLCS(i-1, j-1)
-				lcs = append(lcs, s[i-1])
-			} else if fa[i][j] == 2 {
-				makeLCS(i-1, j)
+		for i, j := n-1, m-1; i >= 0 && j >= 0; {
+			if s[i] == t[j] {
+				lcs = append(lcs, s[i])
+				i--
+				j--
+			} else if f[i+1][j+1] == f[i][j+1] {
+				i--
 			} else {
-				makeLCS(i, j-1)
+				j--
 			}
 		}
-		makeLCS(n, m)
-		return lcs
+		slices.Reverse(lcs)
+
+		return f[n][m] // string(lcs)
 	}
 
 	// LCS 个数
@@ -1756,6 +1717,7 @@ func _(abs func(int) int) {
 	// - 题解 https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
 	// - 题解 https://www.luogu.com/article/u0hf3jll
 	// https://www.luogu.com.cn/problem/P1273 有线电视网
+	// https://www.luogu.com.cn/problem/P2015 二叉苹果树
 	// https://www.luogu.com.cn/problem/P1272 重建道路
 	// - https://www.luogu.com.cn/problem/U53878 数据加强版
 	// https://codeforces.com/problemset/problem/815/C 2400
@@ -1783,6 +1745,7 @@ func _(abs func(int) int) {
 		return f
 	}
 
+	// 另一种写法
 	treeKnapsack = func(g [][]int, a []int) []int {
 		var dfs func(int, int) ([]int, int)
 		dfs = func(v, fa int) ([]int, int) {
@@ -1820,7 +1783,7 @@ func _(abs func(int) int) {
 	// 树上背包 · 其二
 	// 类似其一，但物品有体积与价值，返回的数组与背包容量有关
 	// 时间复杂度 O(nW)
-	// 图解 https://www.luogu.com.cn/article/kq00ov2b https://loj.ac/d/3144
+	// 图解 https://loj.ac/d/3144 https://www.luogu.com.cn/article/kq00ov2b
 	//
 	// 模板题 https://loj.ac/p/160
 	// 模板题 https://www.luogu.com.cn/problem/P1064 NOIP06·提高 金明的预算方案
@@ -1839,7 +1802,7 @@ func _(abs func(int) int) {
 				lastF = f
 				size += sz
 			}
-			// 循环结束后，lastF 就是「选 v」
+			// 循环结束后，lastF 再加上 p.value 就是「选 v」
 			f := slices.Clone(pre) // 不选 v
 			p := items[v]
 			for j := maxW; j >= p.weight; j-- {
@@ -2091,6 +2054,7 @@ func _(abs func(int) int) {
 
 	/* 状态机 DP
 	可以用网格图 DP 形象地理解，一般状态机都是 0->1->2 这种，类似只能向右/右下的网格图 DP
+	https://atcoder.jp/contests/dp/tasks/dp_c 入门题
 	https://atcoder.jp/contests/abc346/tasks/abc346_d
 	https://codeforces.com/problemset/problem/327/A 1200
 	https://codeforces.com/problemset/problem/1178/B 1300
@@ -2195,6 +2159,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1623/D 2300
 	https://codeforces.com/problemset/problem/1824/B2 2300
 	https://codeforces.com/problemset/problem/24/D 2400
+	https://codeforces.com/problemset/problem/698/C 2400
 	https://codeforces.com/problemset/problem/494/C 2600
 	https://codeforces.com/problemset/problem/1172/C2 2600
 	Kick Start 2020 Round F Yeetzhee https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff48/00000000003f4dea
@@ -2295,11 +2260,15 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/903/F 2200 轮廓线
 	https://codeforces.com/problemset/problem/1316/E 2300 与排序贪心结合
 	https://codeforces.com/problemset/problem/1955/H 2300
+	https://codeforces.com/problemset/problem/698/C 2400 概率
+	https://codeforces.com/problemset/problem/543/C 2500 状态转移
 	https://codeforces.com/problemset/problem/1209/E2 2500 循环移位
 	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压 DP
+	https://codeforces.com/problemset/problem/662/C 2600 状态设计 也可以 FWT
+	- https://atcoder.jp/contests/abc396/tasks/abc396_g
 	https://codeforces.com/problemset/problem/1430/G 2600
+	https://codeforces.com/problemset/problem/79/D 2800 BFS
 	https://atcoder.jp/contests/abc359/tasks/abc359_d
-	https://atcoder.jp/contests/abc396/tasks/abc396_g 状态设计
 	https://www.luogu.com.cn/problem/P5369 状态设计
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
@@ -2318,9 +2287,10 @@ func _(abs func(int) int) {
 
 	// 注：下面的任意排列 DP，也适用于非全排列（子集排列）的情况，因为在计算过程中，我们也计算出了子集排列的 DP
 
-	// 任意排列 DP - 相邻无关 （刷表法）
+	// 任意排列 DP - 相邻无关（刷表法）
 	// 适用于不需要知道上一个数的场景
-	// 时间复杂度通常是 O(n*2^n) 下面的写法常数是 1/2
+	// 时间复杂度通常是 O(n*2^n)
+	// 下面的写法常数是 1/2
 	// LC526 https://leetcode.cn/problems/beautiful-arrangement/
 	//    - https://oeis.org/A320843 Number of permutations sigma of {1,2,...,n} such that sigma(i) divides i or i divides sigma(i) for 1 <= i <= n
 	// https://atcoder.jp/contests/dp/tasks/dp_o
@@ -2331,8 +2301,10 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1215/E 2200
 	// https://codeforces.com/problemset/problem/1238/E 2200 式子变形
 	// https://codeforces.com/problemset/problem/327/E 2300 卡常优化 另一种做法是折半枚举
-	// todo 状态设计 https://codeforces.com/problemset/problem/744/C 2400
+	// todo https://codeforces.com/problemset/problem/744/C 2400 状态设计
+	// https://codeforces.com/problemset/problem/1598/F 2400 合法括号字符串
 	// https://codeforces.com/problemset/problem/1550/E 2500 状态设计
+	// https://www.luogu.com.cn/problem/P3694 前缀和
 	permDP := func(a []int, check func(int, int) bool) int {
 		n := len(a)
 		f := make([]int, 1<<n)
@@ -2344,13 +2316,11 @@ func _(abs func(int) int) {
 			if fs == 0 { // 剪枝：用在计数题目上
 				continue
 			}
-			// 考虑第 i 个位置怎么填
 			i := bits.OnesCount(uint(s))
-			// g[i]&^s
 			for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
 				lb = cus & -cus
 				ns := s | lb
-				// 枚举（第 i 个位置）填第 p 个 ...
+				// 枚举第 i 个位置填 a[p]
 				p := bits.TrailingZeros(uint(lb))
 				v := a[p]
 				if check(i, v) {
@@ -2361,12 +2331,10 @@ func _(abs func(int) int) {
 		return f[len(f)-1]
 	}
 
-	// 任意排列 DP - 相邻相关
+	// 任意排列 DP - 相邻相关（刷表法）
 	// 适用于需要知道上一个数的场景
-	// 时间复杂度通常是 O(n^2*2^n) 下面的写法常数约为 1/4 https://oeis.org/A001815
-	// LC996 最后答案需要除相同元素个数的阶乘 https://leetcode.cn/problems/number-of-squareful-arrays/ 1932
-	// LC2741 https://leetcode.cn/problems/special-permutations/ 2021
-	// LC1681 https://leetcode.cn/problems/minimum-incompatibility/ 2390
+	// 时间复杂度通常是 O(n^2*2^n)
+	// 下面的写法常数约为 1/4 https://oeis.org/A001815
 	// https://codeforces.com/problemset/problem/1950/G 1900
 	// https://codeforces.com/problemset/problem/1185/G1 2100
 	// https://codeforces.com/problemset/problem/2051/G 2100
@@ -2388,7 +2356,6 @@ func _(abs func(int) int) {
 					continue
 				}
 				pre := a[i] // 枚举上一个选的数
-				// g[i]&^s
 				for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
 					lb = cus & -cus
 					ns := s | lb
@@ -2401,8 +2368,8 @@ func _(abs func(int) int) {
 			}
 		}
 		ans := 0
-		for _, dv := range f[len(f)-1] {
-			ans = (ans + dv) % mod
+		for _, fv := range f[len(f)-1] {
+			ans = (ans + fv) % mod
 		}
 		return ans
 	}
@@ -4391,7 +4358,7 @@ func _(abs func(int) int) {
 		slopeTrick,
 		minimumArea,
 
-		lcs, lcsPath, lcsCount,
+		lcs, lcsCount,
 		lisSlow, lis, lisAll, lisModify, lisRollback, cntLis, lcis, lcisPath, countLIS,
 		distinctSubsequence,
 		palindromeO1Space, isPalindrome, minPalindromeCut,
