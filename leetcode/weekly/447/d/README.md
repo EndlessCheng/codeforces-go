@@ -18,7 +18,7 @@ $$
 
 都是可以从 $\textit{idx}[i]$ 直达的，即距离为 $1$。
 
-**关键思路**：如果我们能向左跳到 $\textit{idx}[\textit{left}]$，那么也能少跳点，跳到 $> \textit{idx}[\textit{left}]$ 的节点。所以每一步都尽量远地向左跳就行。
+**关键思路**：如果我们能向左跳到 $\textit{idx}[\textit{left}]$，那么也能少跳点，所以每一步都尽量远地向左跳就行。
 
 设 $\textit{rank}[i]$ 表示节点 $i$ 在 $\textit{idx}$ 中的下标。
 
