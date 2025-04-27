@@ -2,12 +2,12 @@
 
 **关键思路**：把拓扑序理解为先修课关系，在学习课程 $j$ 之前，$j$ 的所有先修课（直接前驱）必须全部学完。
 
-定义 $\textit{dfs}(S)$ 表示在已学课程集合为 $S$ 的情况下，**剩余未学课程**可以获得的最大利润。
+定义 $\textit{dfs}(S)$ 表示在已学课程集合为 $S$ 的情况下，学完**剩余未学课程**可以获得的最大利润。
 
 考虑下一门课程学哪个：
 
 - 枚举下一门要学习的课程为 $j=0,1,2,\ldots,n-1$，要求满足 $j\notin S$ 且 $\textit{pre}[j] \subseteq S$。其中 $\textit{pre}[j]$ 表示 $j$ 的先修课集合。
-- 要解决的问题变成：在已学课程集合为 $S \cup \{j\}$ 的情况下，剩余未学课程可以获得的最大利润，即 $\textit{dfs}(S \cup \{j\})$。
+- 要解决的问题变成：在已学课程集合为 $S \cup \{j\}$ 的情况下，学完剩余未学课程可以获得的最大利润，即 $\textit{dfs}(S \cup \{j\})$。
 
 取最大值，得
 
@@ -23,13 +23,11 @@ $$
 
 **代码实现时，用二进制表示集合，用位运算实现集合操作，具体请看** [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
-**优化**：如果 $\textit{edges}$ 是空的（没有边），那么根据 [排序不等式](https://baike.baidu.com/item/%E6%8E%92%E5%BA%8F%E4%B8%8D%E7%AD%89%E5%BC%8F/7775728)，把 $\textit{score}$ 从小到大排序，然后累加 $\textit{score}[i]\cdot(i+1)$，即为答案。
+**优化**：如果 $\textit{edges}$ 是空的（没有边），那么根据 [排序不等式](https://baike.baidu.com/item/%E6%8E%92%E5%BA%8F%E4%B8%8D%E7%AD%89%E5%BC%8F/7775728)，按照 $\textit{score}$ 从小到大选课是最优的。所以把 $\textit{score}$ 从小到大排序后，累加 $\textit{score}[i]\cdot(i+1)$，即为答案。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1J2jAziENo/?t=15m46s)，欢迎点赞关注~
 
 ## 写法一：记忆化搜索
-
-关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
 
 ```py [sol-Python3]
 class Solution:
@@ -182,7 +180,7 @@ func maxProfit(n int, edges [][]int, score []int) int {
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
-具体来说，$f[S]$ 的定义和 $\textit{dfs}(S)$ 的定义是完全一样的，都表示在已学课程集合为 $S$ 的情况下，**剩余未学课程**可以获得的最大利润。
+具体来说，$f[S]$ 的定义和 $\textit{dfs}(S)$ 的定义是完全一样的，都表示在已学课程集合为 $S$ 的情况下，学完**剩余未学课程**可以获得的最大利润。
 
 相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 

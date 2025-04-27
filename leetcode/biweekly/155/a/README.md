@@ -2,9 +2,17 @@
 
 统计的过程中，维护最大出现次数 $\textit{maxCnt}$ 以及字典序最小的答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1J2jAziENo/)，欢迎点赞关注~
 
 ```py [sol-Python3]
+class Solution:
+    def findCommonResponse(self, responses: List[List[str]]) -> str:
+        cnt = Counter(s for resp in responses for s in set(resp))
+        max_cnt = max(cnt.values())
+        return min(s for s, c in cnt.items() if c == max_cnt)
+```
+
+```py [sol-Python3 写法二]
 class Solution:
     def findCommonResponse(self, responses: List[List[str]]) -> str:
         ans, max_cnt = "", 0

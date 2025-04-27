@@ -11,21 +11,37 @@
 
 对于垂直子串，计算方法同理。可以把相关逻辑封装成一个函数，方便垂直子串**复用**。
 
-## 细节
+## 转化公式
+
+把一维数组的下标，转化到一个 $n$ 列矩阵的二维坐标（行列下标），转化关系是
+
+$$
+i\to (\left\lfloor i/n \right\rfloor, i\bmod n)
+$$
+
+如何理解？想一想，每 $n$ 个数一行，能排多少行？最后一行剩余多少个数？
+
+把 $n$ 列矩阵中的一个单元格的坐标（行列下标），转化到一维数组的下标，转化关系是
+
+$$
+(r,c) \to r\cdot n+c
+$$
+
+## 应用公式
 
 对于水平子串，我们计算差分数组的前缀和，得到一个长为 $mn$ 的数组 $\textit{inPatternH}$。
 
 对于垂直子串，我们计算差分数组的前缀和，得到一个长为 $mn$ 的数组 $\textit{inPatternV}$。
 
-如果 $\textit{inPatternH}[i]>0$，则表示单元格 $\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 在 $\textit{pattern}$ 中。
+如果 $\textit{inPatternH}[i]>0$，则表示单元格 $(\left\lfloor i/n \right\rfloor, i\bmod n)$ 在 $\textit{pattern}$ 中。
 
-单元格 $\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 在 $\textit{inPatternV}$ 中的哪个位置？由于垂直子串是竖着扫描的，基于一个 $n$ 行 $m$ 列的矩阵，$\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 在这个矩阵的 $i\bmod n$ 行 $\left\lfloor i/n \right\rfloor$ 列，所以对应到 $\textit{inPatternV}$ 中的下标为
+单元格 $(\left\lfloor i/n \right\rfloor, i\bmod n)$ 在 $\textit{inPatternV}$ 中的哪个位置？由于垂直子串是竖着扫描的，基于一个 $m$ 列的矩阵，$(\left\lfloor i/n \right\rfloor, i\bmod n)$ 在这个矩阵的二维坐标是 $(i\bmod n, \left\lfloor i/n \right\rfloor)$，所以对应到 $\textit{inPatternV}$ 中的下标为
 
 $$
 (i\bmod n)\cdot m + \left\lfloor i/n \right\rfloor
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1J2jAziENo/?t=7m4s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

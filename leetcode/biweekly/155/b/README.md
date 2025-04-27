@@ -1,4 +1,6 @@
-输入的是 $n$ 个点 $n-1$ 条边的连通图，是一棵树。
+注意题目的这句话：保证单位 $0$ 可以通过唯一的转换路径（不需要反向转换）转换为**任何**其他单位。
+
+这意味着输入的是 $n$ 个点和 $n-1$ 条边的**连通图**，说明输入的是一棵**树**。
 
 建树。然后从 $0$ 开始 DFS 这棵树，同时把从 $0$ 到 $i$ 的边权乘起来，即为 $\textit{ans}[i]$。
 
@@ -6,7 +8,7 @@
 
 注意取模。关于模运算的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1J2jAziENo/?t=2m21s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -100,7 +102,7 @@ func baseUnitConversions(conversions [][]int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{conversions}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{conversions}$ 的长度。树中每个节点恰好访问一次。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面一般树题单的「**§3.2 自顶向下 DFS**」。
