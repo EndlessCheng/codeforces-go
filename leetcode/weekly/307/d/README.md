@@ -14,7 +14,7 @@ $\textit{sum}$ 减去的数越小，$\textit{nums}$ 的子序列和就越大。
 
 - 把每个 $\textit{nums}[i]$ **取绝对值**后，$\textit{nums}$ 的第 $k$ 小的子序列和是多少？
 
-## 方法一：二分答案 + 爆搜
+## 方法一：二分答案 + 暴搜
 
 #### 前置知识
 
@@ -27,7 +27,7 @@ $\textit{sum}$ 减去的数越小，$\textit{nums}$ 的子序列和就越大。
 
 > 注：一道题能否二分答案，得看它有没有单调性。对于本题，$\textit{sumLimit}$ 越大，这样的子序列越多，有单调性，可以二分答案。
 
-爆搜，从小到大考虑每个 $\textit{nums}[i]$ **选或不选**。在递归中，如果发现 $\textit{cnt}=k$ 或者 $s+\textit{nums}[i]>\textit{sumLimit}$，就不再继续递归，因为前者说明我们已经找到 $k$ 个和不超过 $\textit{sumLimit}$ 的子序列，后者说明子序列的和太大。由于每个 $\textit{nums}[i]$ 都取了绝对值，没有负数，$s$ 不会减小，所以可以**剪枝**。
+暴搜，从小到大考虑每个 $\textit{nums}[i]$ **选或不选**。在递归中，如果发现 $\textit{cnt}=k$ 或者 $s+\textit{nums}[i]>\textit{sumLimit}$，就不再继续递归，因为前者说明我们已经找到 $k$ 个和不超过 $\textit{sumLimit}$ 的子序列，后者说明子序列的和太大。由于每个 $\textit{nums}[i]$ 都取了绝对值，没有负数，$s$ 不会减小，所以可以**剪枝**。
 
 二分下界：$0$。
 
@@ -477,30 +477,23 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n\log n + k\log k)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-## 题单：第 K 小/大
-
-- [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
-- [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
-- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
-- [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
-- [1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/) 2039
-- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
-- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
-- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
-- [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）
-
 ## 分类题单
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-
-更多题单，点我个人主页 - 讨论发布。
-
-欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
