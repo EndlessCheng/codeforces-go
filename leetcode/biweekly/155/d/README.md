@@ -2,12 +2,12 @@
 
 **关键思路**：把拓扑序理解为先修课关系，在学习课程 $j$ 之前，$j$ 的所有先修课（直接前驱）必须全部学完。
 
-定义 $\textit{dfs}(S)$ 表示在已学课程集合为 $S$ 的情况下，**剩余课程**可以获得的最大利润。
+定义 $\textit{dfs}(S)$ 表示在已学课程集合为 $S$ 的情况下，**剩余未学课程**可以获得的最大利润。
 
 考虑下一门课程学哪个：
 
-- 枚举学习 $j=0,1,2,\ldots,n-1$，要求满足 $j\notin S$ 且 $\textit{pre}[j] \subseteq S$。其中 $\textit{pre}[j]$ 表示 $j$ 的先修课集合。
-- 要解决的问题变成：在已学课程集合为 $S \cup \{j\}$ 的情况下，剩余课程可以获得的最大利润，即 $\textit{dfs}(S \cup \{j\})$。
+- 枚举下一门要学习的课程为 $j=0,1,2,\ldots,n-1$，要求满足 $j\notin S$ 且 $\textit{pre}[j] \subseteq S$。其中 $\textit{pre}[j]$ 表示 $j$ 的先修课集合。
+- 要解决的问题变成：在已学课程集合为 $S \cup \{j\}$ 的情况下，剩余未学课程可以获得的最大利润，即 $\textit{dfs}(S \cup \{j\})$。
 
 取最大值，得
 
@@ -17,11 +17,13 @@ $$
 
 其中 $j\notin S$ 且 $\textit{pre}[j] \subseteq S$，$|S|$ 表示集合 $S$ 的大小。
 
-递归边界：$\textit{dfs}(U)=0$，其中全集 $U=\{0,1,2,\ldots,n-1\}$。递归到 $S=U$ 的状态，表示所有课程全部学完，剩余课程可以获得的最大利润为 $0$。
+递归边界：$\textit{dfs}(U)=0$，其中全集 $U=\{0,1,2,\ldots,n-1\}$。递归到 $S=U$ 的状态，表示所有课程全部学完，没有剩余未学课程，可以获得的最大利润为 $0$。
 
 递归入口：$\textit{dfs}(\varnothing)$，也就是答案。其中 $\varnothing$ 表示空集，因为一开始什么课程也没有学。
 
 **代码实现时，用二进制表示集合，用位运算实现集合操作，具体请看** [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
+
+**优化**：如果 $\textit{edges}$ 是空的（没有边），那么根据 [排序不等式](https://baike.baidu.com/item/%E6%8E%92%E5%BA%8F%E4%B8%8D%E7%AD%89%E5%BC%8F/7775728)，把 $\textit{score}$ 从小到大排序，然后累加 $\textit{score}[i]\cdot(i+1)$，即为答案。
 
 ## 写法一：记忆化搜索
 
@@ -32,6 +34,10 @@ $$
 ```py [sol-Python3]
 class Solution:
     def maxProfit(self, n: int, edges: List[List[int]], score: List[int]) -> int:
+        if not edges:
+            score.sort()
+            return sum(s * i for i, s in enumerate(score, 1))
+
         # 记录每个节点的先修课（直接前驱）
         pre = [0] * n
         for x, y in edges:
@@ -55,6 +61,15 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxProfit(int n, int[][] edges, int[] score) {
+        if (edges.length == 0) {
+            Arrays.sort(score);
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += score[i] * (i + 1);
+            }
+            return ans;
+        }
+
         // 记录每个节点的先修课（直接前驱）
         int[] pre = new int[n];
         for (int[] e : edges) {
@@ -86,6 +101,15 @@ class Solution {
 class Solution {
 public:
     int maxProfit(int n, vector<vector<int>>& edges, vector<int>& score) {
+        if (edges.empty()) {
+            ranges::sort(score);
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += score[i] * (i + 1);
+            }
+            return ans;
+        }
+
         // 记录每个节点的先修课（直接前驱）
         vector<int> pre(n);
         for (auto& e : edges) {
@@ -114,6 +138,14 @@ public:
 
 ```go [sol-Go]
 func maxProfit(n int, edges [][]int, score []int) int {
+	if len(edges) == 0 {
+		slices.Sort(score)
+		for i, s := range score {
+			ans += s * (i + 1)
+		}
+		return
+	}
+
 	// 记录每个节点的先修课（直接前驱）
 	pre := make([]int, n)
 	for _, e := range edges {
@@ -150,7 +182,7 @@ func maxProfit(n int, edges [][]int, score []int) int {
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
-具体来说，$f[S]$ 的定义和 $\textit{dfs}(S)$ 的定义是完全一样的，都表示在已学课程集合为 $S$ 的情况下，**剩余课程**可以获得的最大利润。
+具体来说，$f[S]$ 的定义和 $\textit{dfs}(S)$ 的定义是完全一样的，都表示在已学课程集合为 $S$ 的情况下，**剩余未学课程**可以获得的最大利润。
 
 相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 
@@ -162,12 +194,16 @@ $$
 
 答案为 $f[\varnothing]$，翻译自递归入口 $\textit{dfs}(\varnothing)$。
 
-⚠**注意**：下面的写法超时，请看写法三。
+⚠**注意**：下面的写法可能会超时，请看后面的写法三。
 
 ```py [sol-Python3]
 # 超时了！请看写法三！
 class Solution:
     def maxProfit(self, n: int, edges: List[List[int]], score: List[int]) -> int:
+        if not edges:
+            score.sort()
+            return sum(s * i for i, s in enumerate(score, 1))
+
         # 记录每个节点的先修课（直接前驱）
         pre = [0] * n
         for x, y in edges:
@@ -188,9 +224,17 @@ class Solution:
 ```
 
 ```java [sol-Java]
-// 超时了！请看写法三！
 class Solution {
     public int maxProfit(int n, int[][] edges, int[] score) {
+        if (edges.length == 0) {
+            Arrays.sort(score);
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += score[i] * (i + 1);
+            }
+            return ans;
+        }
+
         // 记录每个节点的先修课（直接前驱）
         int[] pre = new int[n];
         for (int[] e : edges) {
@@ -219,6 +263,15 @@ class Solution {
 class Solution {
 public:
     int maxProfit(int n, vector<vector<int>>& edges, vector<int>& score) {
+        if (edges.empty()) {
+            ranges::sort(score);
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += score[i] * (i + 1);
+            }
+            return ans;
+        }
+
         // 记录每个节点的先修课（直接前驱）
         vector<int> pre(n);
         for (auto& e : edges) {
@@ -244,7 +297,15 @@ public:
 
 ```go [sol-Go]
 // 超时了！请看写法三！
-func maxProfit(n int, edges [][]int, score []int) int {
+func maxProfit(n int, edges [][]int, score []int) (ans int) {
+	if len(edges) == 0 {
+		slices.Sort(score)
+		for i, s := range score {
+			ans += s * (i + 1)
+		}
+		return
+	}
+
 	// 记录每个节点的先修课（直接前驱）
 	pre := make([]int, n)
 	for _, e := range edges {
@@ -281,6 +342,10 @@ func maxProfit(n int, edges [][]int, score []int) int {
 ```py [sol-Python3]
 class Solution:
     def maxProfit(self, n: int, edges: List[List[int]], score: List[int]) -> int:
+        if not edges:
+            score.sort()
+            return sum(s * i for i, s in enumerate(score, 1))
+
         # 记录每个节点的先修课（直接前驱）
         pre = [0] * n
         for x, y in edges:
@@ -305,6 +370,15 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxProfit(int n, int[][] edges, int[] score) {
+        if (edges.length == 0) {
+            Arrays.sort(score);
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += score[i] * (i + 1);
+            }
+            return ans;
+        }
+
         // 记录每个节点的先修课（直接前驱）
         int[] pre = new int[n];
         for (int[] e : edges) {
@@ -338,6 +412,15 @@ class Solution {
 class Solution {
 public:
     int maxProfit(int n, vector<vector<int>>& edges, vector<int>& score) {
+        if (edges.empty()) {
+            ranges::sort(score);
+            int ans = 0;
+            for (int i = 0; i < n; i++) {
+                ans += score[i] * (i + 1);
+            }
+            return ans;
+        }
+
         // 记录每个节点的先修课（直接前驱）
         vector<int> pre(n);
         for (auto& e : edges) {
@@ -367,7 +450,15 @@ public:
 ```
 
 ```go [sol-Go]
-func maxProfit(n int, edges [][]int, score []int) int {
+func maxProfit(n int, edges [][]int, score []int) (ans int) {
+	if len(edges) == 0 {
+		slices.Sort(score)
+		for i, s := range score {
+			ans += s * (i + 1)
+		}
+		return
+	}
+
 	// 记录每个节点的先修课（直接前驱）
 	pre := make([]int, n)
 	for _, e := range edges {
@@ -397,8 +488,16 @@ func maxProfit(n int, edges [][]int, score []int) int {
 }
 ```
 
-```go [sol-Go 更快写法]
-func maxProfit(n int, edges [][]int, score []int) int {
+```go [sol-Go 写法二]
+func maxProfit(n int, edges [][]int, score []int) (ans int) {
+	if len(edges) == 0 {
+		slices.Sort(score)
+		for i, s := range score {
+			ans += s * (i + 1)
+		}
+		return
+	}
+
 	// 记录每个节点的先修课（直接前驱）
 	pre := make([]int, n)
 	for _, e := range edges {
