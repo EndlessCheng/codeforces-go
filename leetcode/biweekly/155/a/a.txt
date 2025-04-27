@@ -1,0 +1,8 @@
+[["good","ok","good","ok"],["ok","bad","good","ok","ok"],["good"],["bad"]]
+"good"
+
+[["good","ok","good"],["ok","bad"],["bad","notsure"],["great","good"]]
+"bad"
+
+
+
