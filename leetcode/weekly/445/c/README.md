@@ -35,7 +35,7 @@ $$
 
 假设字母 $\texttt{a}$ 有 $2$ 个，字母 $\texttt{b}$ 有 $3$ 个，其余字母个数略。
 
-我们可以先从 $\textit{sz}$ 个位置中，选 $2$ 个位置填字母 $\texttt{a}$，方案数为 $\binom {\textit{sz}} 2$。然后再从剩余 $\textit{sz}-2$ 个位置中，选 $3$ 个位置填字母 $\texttt{b}$，方案数为 $\binom {\textit{sz}-2} 3$。以此类推。
+我们可以先从 $\textit{sz}$ 个位置中，选 $2$ 个位置填字母 $\texttt{a}$，方案数为 $\binom {\textit{sz}} 2$。然后再从剩余 $\textit{sz}-2$ 个位置中，选 $3$ 个位置填字母 $\texttt{b}$，方案数为 $\binom {\textit{sz}-2} 3$。依此类推。
 
 根据乘法原理，排列数为这 $26$ 个组合数的乘积。
 
