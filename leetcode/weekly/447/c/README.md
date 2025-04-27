@@ -1,6 +1,6 @@
 首先读清楚题目，要计算的是字典序最小的**数组**，不是拼接后的数。
 
-为了让字典序最小，我们要从小到大枚举。把 $\textit{nums}$ 从小到大排序，然后写一个类似 [46. 全排列](https://leetcode.cn/problems/permutations/) 的爆搜：
+为了让字典序最小，我们要从小到大枚举。把 $\textit{nums}$ 从小到大排序，然后写一个类似 [46. 全排列](https://leetcode.cn/problems/permutations/) 的暴搜：
 
 - 枚举答案的第一个位置填 $\textit{nums}[0],\textit{nums}[1],\ldots,\textit{nums}[n-1]$。
 - 枚举答案的第二个位置填 $\textit{nums}[0],\textit{nums}[1],\ldots,\textit{nums}[n-1]$。但不能填之前填过的数字。
@@ -9,6 +9,8 @@
 在枚举的过程中，维护拼接的数字模 $k$ 的结果。为什么可以在中途取模，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 一旦我们找到了答案（拼接的 $n$ 个数模 $k$ 等于 $0$），就立刻返回 $\texttt{true}$，不再继续递归搜索。
+
+注意有重复的状态，比如 $k=2$，先填 $2$ 再填 $4$，$24\bmod k = 0$；先填 $4$ 再填 $2$，$42\bmod k = 0$，都会递归到「选了 $2$ 和 $4$，且当前拼接的数字模 $k$ 为 $0$」的状态。
 
 为了避免重复访问同样的状态，用一个 $\textit{vis}$ 数组记录访问过的状态。由于我们找到了答案就立刻返回 $\texttt{true}$，如果重复访问同样的状态，那么继续递归一定无法找到答案，应该返回 $\texttt{false}$。
 
@@ -27,7 +29,7 @@
 
 **代码实现时，用二进制表示集合，用位运算实现集合操作，具体请看** [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1BgjAzcE7k/?t=10m43s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

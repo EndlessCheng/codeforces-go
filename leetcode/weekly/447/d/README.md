@@ -1,12 +1,14 @@
 ## 核心思路
 
-如果 $\textit{nums}[u]$ 和 $\textit{nums}[v]$ 相差特别大，那就从 $\textit{nums}[v]$ 跳到一个与之相差 $\le \textit{maxDiff}$ 且相差尽量大的数（贪心），从而尽量缩小 $\textit{nums}[u]$ 和 $\textit{nums}[v]$ 的差值。
+如果 $\textit{nums}[u]$ 与 $\textit{nums}[v]$ 的绝对差（距离）超过 $\textit{maxDiff}$，无法一步到达，我们可以从 $\textit{nums}[v]$ 开始，向 $\textit{nums}[u]$ 的方向跳，但每一步的跳跃距离不能超过 $\textit{maxDiff}$，且必须跳到点上，也就是跳到 $\textit{nums}$ 中的数上。
 
 一步可以跳多远？可以排序后用 [双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 计算。
 
 最少跳多少步？用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 计算。
 
 ## 思路
+
+本题 $\textit{nums}$ 不是有序的，我们需要做一个**下标映射**，把询问的下标变成一个有序数组的下标，这样就方便处理了。可以理解成，我们把 $\textit{nums}$ 当作 $n$ 个点，画在一维数轴上，然后从左到右重新编号。
 
 创建一个下标数组 $\textit{idx}=[0,1,2,\ldots,n-1]$，按照 $\textit{nums}[\textit{idx}[i]]$ 从小到大排序。
 
@@ -30,7 +32,7 @@ $$
 
 暴力跳是 $\mathcal{O}(n)$ 的，会超时，可以用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 优化到 $\mathcal{O}(\log n)$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1BgjAzcE7k/?t=33m45s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

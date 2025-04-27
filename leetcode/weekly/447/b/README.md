@@ -1,12 +1,14 @@
+## 方法一：间断点 + 二分查找
+
 由于 $\textit{nums}$ 是有序的，如果 $\textit{nums}[i+1]-\textit{nums}[i] > \textit{maxDiff}$，那么编号 $\le i$ 的节点无法跳到编号 $\ge i+1$ 的节点。我把这样的 $i$ 叫做「间断点」。
 
 遍历 $\textit{nums}$，把所有间断点记录在 $\textit{idx}$ 中。
 
 对于询问 $[u,v]$，我们在 $\textit{idx}$ 中**二分查找** $\ge u$ 的第一个间断点，以及 $\ge v$ 的第一个间断点。如果这两个间断点相同，则可以从 $u$ 到达 $v$，否则不能。
 
-关于二分查找的原理，请看视频讲解：[二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
+关于二分查找的原理，见 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+[本题视频讲解](https://www.bilibili.com/video/BV1BgjAzcE7k/?t=3m12s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -82,6 +84,105 @@ func pathExistenceQueries(n int, nums []int, maxDiff int, queries [][]int) []boo
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n + q\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
+
+## 方法二：记录连通块的编号
+
+遍历 $\textit{nums}$，计算每个节点所在连通块的编号，从 $0$ 开始。
+
+如果 $\textit{nums}[i]-\textit{nums}[i-1] > \textit{maxDiff}$，那么 $i$ 在一个新的连通块中，编号加一。否则编号不变。
+
+设 $i$ 所在连通块的编号为 $\textit{id}[i]$，我们有
+
+$$
+\textit{id}[i] =
+\begin{cases}
+0, & i = 0 \\ 
+\textit{id}[i-1], & \textit{nums}[i]-\textit{nums}[i-1] \le \textit{maxDiff}     \\
+\textit{id}[i-1] + 1, & \textit{nums}[i]-\textit{nums}[i-1] > \textit{maxDiff}     \\
+\end{cases}
+$$
+
+```py [sol-Python3]
+class Solution:
+    def pathExistenceQueries(self, n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[bool]:
+        id = [0] * n  # 每个节点所在连通块的编号
+        for i in range(1, n):
+            id[i] = id[i - 1]
+            if nums[i] - nums[i - 1] > maxDiff:
+                id[i] += 1  # 找到了一个新的连通块
+
+        return [id[u] == id[v] for u, v in queries]
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def pathExistenceQueries(self, n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[bool]:
+        id = list(accumulate((y - x > maxDiff for x, y in pairwise(nums)), initial=0))
+        return [id[u] == id[v] for u, v in queries]
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
+        int[] id = new int[n]; // 每个节点所在连通块的编号
+        for (int i = 1; i < n; i++) {
+            id[i] = id[i - 1];
+            if (nums[i] - nums[i - 1] > maxDiff) {
+                id[i]++; // 找到了一个新的连通块
+            }
+        }
+
+        boolean[] ans = new boolean[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            int[] q = queries[i];
+            ans[i] = id[q[0]] == id[q[1]];
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<bool> pathExistenceQueries(int n, vector<int>& nums, int maxDiff, vector<vector<int>>& queries) {
+        vector<int> id(n); // 每个节点所在连通块的编号
+        for (int i = 1; i < n; i++) {
+            id[i] = id[i - 1] + (nums[i] - nums[i - 1] > maxDiff); // 如果 >，那么找到了一个新的连通块
+        }
+
+        vector<bool> ans(queries.size());
+        for (int i = 0; i < queries.size(); i++) {
+            auto& q = queries[i];
+            ans[i] = id[q[0]] == id[q[1]];
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func pathExistenceQueries(n int, nums []int, maxDiff int, queries [][]int) []bool {
+	id := make([]int, n) // 每个节点所在连通块的编号
+	for i := 1; i < n; i++ {
+		id[i] = id[i-1]
+		if nums[i]-nums[i-1] > maxDiff {
+			id[i]++ // 找到了一个新的连通块
+		}
+	}
+
+	ans := make([]bool, len(queries))
+	for i, q := range queries {
+		ans[i] = id[q[0]] == id[q[1]]
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + q)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
 
 ## 分类题单

@@ -4,6 +4,23 @@ import "sort"
 
 // https://space.bilibili.com/206214
 func pathExistenceQueries(n int, nums []int, maxDiff int, queries [][]int) []bool {
+	// 每个节点所在连通块的编号
+	id := make([]int, n)
+	for i := 1; i < n; i++ {
+		id[i] = id[i-1]
+		if nums[i]-nums[i-1] > maxDiff {
+			id[i]++ // 创建一个新的连通块
+		}
+	}
+
+	ans := make([]bool, len(queries))
+	for i, q := range queries {
+		ans[i] = id[q[0]] == id[q[1]]
+	}
+	return ans
+}
+
+func pathExistenceQueries1(n int, nums []int, maxDiff int, queries [][]int) []bool {
 	idx := []int{}
 	for i := range n - 1 {
 		if nums[i+1]-nums[i] > maxDiff {
@@ -52,7 +69,7 @@ func (u *uf) merge(from, to int) (isNewMerge bool) {
 
 func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }
 
-func pathExistenceQueries1(n int, nums []int, maxDiff int, queries [][]int) (ans []bool) {
+func pathExistenceQueries0(n int, nums []int, maxDiff int, queries [][]int) (ans []bool) {
 	u := newUnionFind(n)
 	for i := 1; i < len(nums); i++ {
 		v, w := nums[i-1], nums[i]

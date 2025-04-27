@@ -1,33 +1,37 @@
-用哈希表记录每一行和每一列的点。
+## 分析
 
-把所有行和列都排序。
+如果一个点在同一行的最左边，那么它左边没有点；如果一个点在同一行的最右边，那么它右边没有点。
 
-对于每个建筑，在所在行和列二分，如果左右上下都有建筑，答案加一。
+如果一个点在同一列的最上边，那么它上边没有点；如果一个点在同一列的最下边，那么它下边没有点。
 
-**注**：由于我们是用哈希表实现的，所以这个做法的时空复杂度和 $n$ 无关。
+反之，如果一个点不在同一行的最左边也不在最右边，那么这个点左右都有点；如果一个点不在同一列的最上边也不在最下边，那么这个点上下都有点。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+## 算法
+
+记录同一行的最小横坐标和最大横坐标，同一列的最小纵坐标和最大纵坐标。
+
+对于每个建筑 $(x,y)$，如果 $x$ 在这一行的最小值和最大值之间（不能相等），$y$ 在这一列的最小值和最大值之间（不能相等），那么答案加一。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1BgjAzcE7k/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def countCoveredBuildings(self, n: int, buildings: List[List[int]]) -> int:
-        row = defaultdict(list)
-        col = defaultdict(list)
+        row_min = [n + 1] * (n + 1)
+        row_max = [0] * (n + 1)
+        col_min = [n + 1] * (n + 1)
+        col_max = [0] * (n + 1)
+
         for x, y in buildings:
-            row[x].append(y)
-            col[y].append(x)
-
-        for a in row.values():
-            a.sort()
-        for a in col.values():
-            a.sort()
-
-        def is_inner(a: List[int], x: int) -> bool:
-            return 0 < bisect_left(a, x) < len(a) - 1  # 左右都有建筑
+            # 手写 min max 更快
+            if x < row_min[y]: row_min[y] = x
+            if x > row_max[y]: row_max[y] = x
+            if y < col_min[x]: col_min[x] = y
+            if y > col_max[x]: col_max[x] = y
 
         ans = 0
         for x, y in buildings:
-            if is_inner(row[x], y) and is_inner(col[y], x):
+            if row_min[y] < x < row_max[y] and col_min[x] < y < col_max[x]:
                 ans += 1
         return ans
 ```
@@ -35,47 +39,29 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int countCoveredBuildings(int n, int[][] buildings) {
-        Map<Integer, List<Integer>> row = new HashMap<>();
-        Map<Integer, List<Integer>> col = new HashMap<>();
+        int[] rowMin = new int[n + 1];
+        int[] rowMax = new int[n + 1];
+        int[] colMin = new int[n + 1];
+        int[] colMax = new int[n + 1];
+        Arrays.fill(rowMin, n + 1);
+        Arrays.fill(colMin, n + 1);
+
         for (int[] p : buildings) {
             int x = p[0], y = p[1];
-            row.computeIfAbsent(x, k -> new ArrayList<>()).add(y);
-            col.computeIfAbsent(y, k -> new ArrayList<>()).add(x);
-        }
-
-        for (List<Integer> a : row.values()) {
-            Collections.sort(a);
-        }
-        for (List<Integer> a : col.values()) {
-            Collections.sort(a);
+            rowMin[y] = Math.min(rowMin[y], x);
+            rowMax[y] = Math.max(rowMax[y], x);
+            colMin[x] = Math.min(colMin[x], y);
+            colMax[x] = Math.max(colMax[x], y);
         }
 
         int ans = 0;
         for (int[] p : buildings) {
             int x = p[0], y = p[1];
-            if (isInner(row.get(x), y) && isInner(col.get(y), x)) {
+            if (rowMin[y] < x && x < rowMax[y] && colMin[x] < y && y < colMax[x]) {
                 ans++;
             }
         }
         return ans;
-    }
-
-    private boolean isInner(List<Integer> a, int x) {
-        int i = lowerBound(a, x);
-        return 0 < i && i < a.size() - 1; // 左右都有建筑
-    }
-
-    private int lowerBound(List<Integer> a, int x) {
-        int left = -1, right = a.size();
-        while (left + 1 < right) {
-            int mid = (left + right) >>> 1;
-            if (a.get(mid) >= x) {
-                right = mid;
-            } else {
-                left = mid;
-            }
-        }
-        return right;
     }
 }
 ```
@@ -83,30 +69,21 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    bool is_inner(vector<int>& a, int x) {
-        int i = ranges::lower_bound(a, x) - a.begin();
-        return 0 < i && i + 1 < a.size(); // 左右都有建筑
-    }
-
-    int countCoveredBuildings(int _, vector<vector<int>>& buildings) {
-        unordered_map<int, vector<int>> row, col;
+    int countCoveredBuildings(int n, vector<vector<int>>& buildings) {
+        vector<int> row_min(n + 1, INT_MAX), row_max(n + 1);
+        vector<int> col_min(n + 1, INT_MAX), col_max(n + 1);
         for (auto& p : buildings) {
             int x = p[0], y = p[1];
-            row[x].push_back(y);
-            col[y].push_back(x);
-        }
-
-        for (auto& [_, a] : row) {
-            ranges::sort(a);
-        }
-        for (auto& [_, a] : col) {
-            ranges::sort(a);
+            row_min[y] = min(row_min[y], x);
+            row_max[y] = max(row_max[y], x);
+            col_min[x] = min(col_min[x], y);
+            col_max[x] = max(col_max[x], y);
         }
 
         int ans = 0;
         for (auto& p : buildings) {
             int x = p[0], y = p[1];
-            if (is_inner(row[x], y) && is_inner(col[y], x)) {
+            if (row_min[y] < x && x < row_max[y] && col_min[x] < y && y < col_max[x]) {
                 ans++;
             }
         }
@@ -116,30 +93,32 @@ public:
 ```
 
 ```go [sol-Go]
-func isInner(a []int, x int) bool {
-	i := sort.SearchInts(a, x)
-	return 0 < i && i < len(a)-1 // 左右都有建筑
-}
-
-func countCoveredBuildings(_ int, buildings [][]int) (ans int) {
-	row := map[int][]int{}
-	col := map[int][]int{}
-	for _, p := range buildings {
-		x, y := p[0], p[1]
-		row[x] = append(row[x], y)
-		col[y] = append(col[y], x)
+func countCoveredBuildings(n int, buildings [][]int) (ans int) {
+	type pair struct{ min, max int }
+	row := make([]pair, n+1)
+	col := make([]pair, n+1)
+	for i := 1; i <= n; i++ {
+		row[i].min = math.MaxInt
+		col[i].min = math.MaxInt
 	}
 
-	for _, a := range row {
-		slices.Sort(a)
+	add := func(m []pair, x, y int) {
+		m[y].min = min(m[y].min, x)
+		m[y].max = max(m[y].max, x)
 	}
-	for _, a := range col {
-		slices.Sort(a)
+	isInner := func(m []pair, x, y int) bool {
+		return m[y].min < x && x < m[y].max
 	}
 
 	for _, p := range buildings {
 		x, y := p[0], p[1]
-		if isInner(row[x], y) && isInner(col[y], x) {
+		add(row, x, y) // x 加到 row[y] 中
+		add(col, y, x) // y 加到 col[x] 中
+	}
+
+	for _, p := range buildings {
+		x, y := p[0], p[1]
+		if isInner(row, x, y) && isInner(col, y, x) {
 			ans++
 		}
 	}
@@ -149,8 +128,8 @@ func countCoveredBuildings(_ int, buildings [][]int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(m\log m)$，其中 $m$ 是 $\textit{buildings}$ 的长度。
-- 空间复杂度：$\mathcal{O}(m)$。
+- 时间复杂度：$\mathcal{O}(n+m)$，其中 $m$ 是 $\textit{buildings}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 
