@@ -1,10 +1,10 @@
 ## 核心思路
 
-如果 $\textit{nums}[u]$ 和 $\textit{nums}[v]$ 相差特别大，就需要从 $\textit{nums}[v]$ 跳到一个与之相差 $\le \textit{maxDiff}$ 且相差尽量大的数，从而尽量缩小 $\textit{nums}[u]$ 和 $\textit{nums}[v]$ 的差值。
+如果 $\textit{nums}[u]$ 和 $\textit{nums}[v]$ 相差特别大，那就从 $\textit{nums}[v]$ 跳到一个与之相差 $\le \textit{maxDiff}$ 且相差尽量大的数（贪心），从而尽量缩小 $\textit{nums}[u]$ 和 $\textit{nums}[v]$ 的差值。
 
-一步可以跳多远，可以排序后用 [双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 计算。
+一步可以跳多远？可以排序后用 [双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 计算。
 
-最少跳多少步，用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 计算。
+最少跳多少步？用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 计算。
 
 ## 思路
 
@@ -13,17 +13,19 @@
 排序后，如果 $\textit{nums}[\textit{idx}[i]] - \textit{nums}[\textit{idx}[\textit{left}]]\le \textit{maxDiff}$，那么这些节点
 
 $$
-\textit{idx}[\textit{left}],\textit{idx}[\textit{left}+1],\ldots, \textit{idx}[i]
+\textit{idx}[\textit{left}],\textit{idx}[\textit{left}+1],\ldots, \textit{idx}[i-1]
 $$
 
 都是可以从 $\textit{idx}[i]$ 直达的，即距离为 $1$。
+
+**关键思路**：如果我们能向左跳到 $\textit{idx}[\textit{left}]$，那么也能少跳点，跳到 $> \textit{idx}[\textit{left}]$ 的节点。所以每一步都尽量远地向左跳就行。
 
 设 $\textit{rank}[i]$ 表示节点 $i$ 在 $\textit{idx}$ 中的下标。
 
 设 $l = \textit{rank}[u]$，$r = \textit{rank}[v]$。不失一般性，假设 $l\le r$。
 
 - 如果 $l=r$，不用跳，答案是 $0$。
-- 否则，从 $r$ 开始跳，每一步都向左跳尽量远，即从 $r$ 向左跳到最远能跳到的位置 $p$，然后更新 $r=p$，直到 $r\le l$ 为止。最短路即为跳跃的步数。
+- 否则，从 $r$ 开始向左跳，每一步都跳尽量远，即从 $r$ 向左跳到最远能跳到的位置 $p$，然后更新 $r=p$，直到 $r\le l$ 为止。最短路即为跳跃的步数。
 - 如果无法跳到 $l$，答案是 $-1$。
 
 暴力跳是 $\mathcal{O}(n)$ 的，会超时，可以用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 优化到 $\mathcal{O}(\log n)$。
@@ -69,7 +71,7 @@ class Solution:
                 if pa[r][k] > l:
                     res |= 1 << k
                     r = pa[r][k]
-            ans.append(-1 if pa[r][0] > l else res + 1)
+            ans.append(-1 if pa[r][0] > l else res + 1)  # 再跳一步就能到 l
         return ans
 ```
 
@@ -127,7 +129,7 @@ class Solution {
                     r = pa[r][k];
                 }
             }
-            ans[qi] = pa[r][0] > l ? -1 : res + 1;
+            ans[qi] = pa[r][0] > l ? -1 : res + 1; // 再跳一步就能到 l
         }
         return ans;
     }
@@ -150,7 +152,7 @@ public:
 
         // 双指针，从第 i 小的数开始，向左一步，最远能跳到第 left 小的数
         int mx = bit_width((uint32_t) n);
-        vector pa(n, vector<int>(mx));
+        vector pa(n, vector<int>(mx)); // 更快的写法见另一份代码【C++ array】
         int left = 0;
         for (int i = 0; i < n; i++) {
             while (nums[idx[i]] - nums[idx[left]] > maxDiff) {
@@ -186,7 +188,66 @@ public:
                     r = pa[r][k];
                 }
             }
-            ans[qi] = pa[r][0] > l ? -1 : res + 1;
+            ans[qi] = pa[r][0] > l ? -1 : res + 1; // 再跳一步就能到 l
+        }
+        return ans;
+    }
+};
+```
+
+```cpp [sol-C++ array]
+class Solution {
+public:
+    vector<int> pathExistenceQueries(int n, vector<int>& nums, int maxDiff, vector<vector<int>>& queries) {
+        vector<int> idx(n);
+        ranges::iota(idx, 0);
+        ranges::sort(idx, {}, [&](int i) { return nums[i]; });
+
+        // rank[i] 表示 nums[i] 是 nums 中的第几小，或者说节点 i 在 idx 中的下标
+        vector<int> rank(n);
+        for (int i = 0; i < n; i++) {
+            rank[idx[i]] = i;
+        }
+
+        // 双指针，从第 i 小的数开始，向左一步，最远能跳到第 left 小的数
+        const int mx = 17;
+        vector<array<int, mx>> pa(n);
+        int left = 0;
+        for (int i = 0; i < n; i++) {
+            while (nums[idx[i]] - nums[idx[left]] > maxDiff) {
+                left++;
+            }
+            pa[i][0] = left;
+        }
+
+        // 倍增
+        for (int i = 0; i < mx - 1; i++) {
+            for (int x = 0; x < n; x++) {
+                int p = pa[x][i];
+                pa[x][i + 1] = pa[p][i];
+            }
+        }
+
+        vector<int> ans(queries.size());
+        for (int qi = 0; qi < queries.size(); qi++) {
+            int l = queries[qi][0], r = queries[qi][1];
+            if (l == r) { // 不用跳
+                continue;
+            }
+            l = rank[l];
+            r = rank[r];
+            if (l > r) { // 保证 l 在 r 左边
+                swap(l, r);
+            }
+            // 从 r 开始，向左跳到 l
+            int res = 0;
+            for (int k = mx - 1; k >= 0; k--) {
+                if (pa[r][k] > l) {
+                    res |= 1 << k;
+                    r = pa[r][k];
+                }
+            }
+            ans[qi] = pa[r][0] > l ? -1 : res + 1; // 再跳一步就能到 l
         }
         return ans;
     }
@@ -248,7 +309,7 @@ func pathExistenceQueries(n int, nums []int, maxDiff int, queries [][]int) []int
 		if pa[r][0] > l { // 无法跳到 l
 			ans[qi] = -1
 		} else {
-			ans[qi] = res + 1 // 再跳一步
+			ans[qi] = res + 1 // 再跳一步就能到 l
 		}
 	}
 	return ans

@@ -60,7 +60,7 @@ func pathExistenceQueries(n int, nums []int, maxDiff int, queries [][]int) []int
 		if pa[r][0] > l { // 无法跳到 l
 			ans[qi] = -1
 		} else {
-			ans[qi] = res + 1 // 再跳一步
+			ans[qi] = res + 1 // 再跳一步就能到 l
 		}
 	}
 	return ans
