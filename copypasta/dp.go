@@ -28,7 +28,8 @@ LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
 - 有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
 LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
 - 值域打家劫舍 LC740 https://leetcode.cn/problems/delete-and-earn/
-- 分组+值域打家劫舍 https://atcoder.jp/contests/abc403/tasks/abc403_d
+   - 分组+值域打家劫舍 https://atcoder.jp/contests/abc403/tasks/abc403_d
+   - 类似思路的题目 https://leetcode.cn/problems/the-number-of-beautiful-subsets/
 - 恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
 - 矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
 - 环形 LC213 https://leetcode.cn/problems/house-robber-ii/
@@ -3244,13 +3245,13 @@ func _(abs func(int) int) {
 	https://www.luogu.com.cn/problem/P1613
 	https://www.acwing.com/problem/content/296/ 计算重复
 	*/
-	binaryLifting := func(left []int, qs []struct{ l, r int }) []int {
+	binaryLifting := func(left []int) {
 		// 以 https://atcoder.jp/contests/arc060/tasks/arc060_c + https://leetcode.cn/problems/path-existence-queries-in-a-graph-ii/ 为例
 		n := len(left)
 		const mx = 17 // bits.Len(uint(n))
 		pa := make([][mx]int, n)
 		for i, l := range left {
-			pa[i][0] = l
+			pa[i][0] = l // 从 i 往左，最远可以跳到 l
 		}
 		for i := range mx - 1 {
 			for x := range pa {
@@ -3259,33 +3260,38 @@ func _(abs func(int) int) {
 			}
 		}
 
-		ans := make([]int, len(qs))
-		for qi, q := range qs {
-			l, r := q.l, q.r
+		// 从 r 跳到 <= l 的位置，最少要跳多少步
+		minJumps := func(l, r int) (res int) {
 			if l == r {
-				// ans[qi] = 0
-				continue
+				return
 			}
 			if l > r {
 				l, r = r, l
 			}
-			res := 0
 			for k := mx - 1; k >= 0; k-- {
 				p := pa[r][k]
 				if p > l {
-					res |= 1 << k
 					r = p
+					res |= 1 << k
 				}
 			}
-			res++
 			r = pa[r][0]
-			if r <= l {
-				ans[qi] = res
-			} else {
-				ans[qi] = -1
+			res++
+			if r > l {
+				return -1
 			}
+			return
 		}
-		return ans
+
+		// 从 i 开始，往左跳 k 步的位置
+		jumpK := func(i, k int) int {
+			for ; k > 0; k &= k - 1 {
+				i = pa[i][bits.TrailingZeros(uint(k))]
+			}
+			return i
+		}
+
+		_ = []any{minJumps, jumpK}
 	}
 
 	/* 数据结构优化 DP
