@@ -1,7 +1,5 @@
 package main
 
-// Go 爆搜
-
 // github.com/EndlessCheng/codeforces-go
 func maxProduct(s string) (ans int) {
 	var a, b []byte
