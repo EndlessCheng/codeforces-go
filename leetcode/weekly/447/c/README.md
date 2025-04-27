@@ -178,6 +178,11 @@ func concatenatedDivisibility(nums []int, k int) []int {
 - 时间复杂度：$\mathcal{O}(nk2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。有 $\mathcal{O}(k2^n)$ 个状态，每个状态至多访问一次，每个状态需要花费 $\mathcal{O}(n)$ 的时间枚举下标 $i$。
 - 空间复杂度：$\mathcal{O}(k2^n)$。
 
+## 相似题目（字典序+暴搜）
+
+- [3260. 找出最大的 N 位 K 回文数](https://leetcode.cn/problems/find-the-largest-palindrome-divisible-by-k/) 2370
+- [3348. 最小可整除数位乘积 II](https://leetcode.cn/problems/smallest-divisible-digit-product-ii/) 3101
+
 更多相似题目，见下面动态规划题单的「**§9.1 排列型 ① 相邻无关**」。虽然本题不是 DP，但思路是类似的。
 
 ## 分类题单
