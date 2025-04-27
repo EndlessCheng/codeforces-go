@@ -101,7 +101,7 @@ func minimizeArrayValue(nums []int) int {
 - 如果数组中只有 $\textit{nums}[0]$，那么最大值为 $\textit{nums}[0]$。
 - 再考虑 $\textit{nums}[1]$，如果 $\textit{nums}[1]\le\textit{nums}[0]$，最大值还是 $\textit{nums}[0]$；否则可以平均这两个数，平均后的最大值为平均值的上取整，即 $\left\lceil\dfrac{\textit{nums}[0]+\textit{nums}[1]}{2}\right\rceil$。
 - 再考虑 $\textit{nums}[2]$，如果 $\textit{nums}[2]\le$ 前面算出的最大值，或者这三个数的平均值不超过前面算出的最大值，那么最大值不变；否则可以平均这三个数，做法同上。
-- 以此类推直到最后一个数。
+- 依此类推，直到最后一个数。
 - 过程中的最大值为答案。
 
 关于上取整的计算，我们有
