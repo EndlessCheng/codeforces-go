@@ -1,33 +1,31 @@
 ## 核心思路
 
+把 $\textit{nums}$ 当作 $n$ 个点，画在一维数轴上。
+
 如果 $\textit{nums}[u]$ 与 $\textit{nums}[v]$ 的绝对差（距离）超过 $\textit{maxDiff}$，无法一步到达，我们可以从 $\textit{nums}[v]$ 开始，向 $\textit{nums}[u]$ 的方向跳，但每一步的跳跃距离不能超过 $\textit{maxDiff}$，且必须跳到点上，也就是跳到 $\textit{nums}$ 中的数上。
 
-一步可以跳多远？可以排序后用 [双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 计算。
+只跳一步，最多可以跳多远？可以排序后用 [双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 计算。
 
-最少跳多少步？用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 计算。
+最少要跳多少步？可以用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 计算。
 
 ## 思路
 
-本题 $\textit{nums}$ 不是有序的，我们需要做一个**下标映射**，把询问的节点编号映射到一个有序数组的下标，这样就方便处理了。可以理解成，我们把 $\textit{nums}$ 当作 $n$ 个点，画在一维数轴上，然后从左到右重新编号。
+本题 $\textit{nums}$ 不是有序的，我们需要做一个**映射**，把询问的节点编号映射成一个有序数组的下标，这样就方便处理了。可以理解成，我们把 $\textit{nums}$ 当作 $n$ 个点，画在一维数轴上，然后从左到右**重新编号**，比如 $\textit{nums}[0]$ 是从左到右的第三个点，那么把节点 $0$ 映射为编号 $2$（编号从 $0$ 开始）。
 
-创建一个下标数组 $\textit{idx}=[0,1,2,\ldots,n-1]$，按照 $\textit{nums}[\textit{idx}[i]]$ 从小到大排序。
+创建一个下标数组 $\textit{idx}=[0,1,2,\ldots,n-1]$，然后按照 $\textit{nums}[\textit{idx}[i]]$ 从小到大排序。
 
-排序后，如果 $\textit{nums}[\textit{idx}[i]] - \textit{nums}[\textit{idx}[\textit{left}]]\le \textit{maxDiff}$，那么这些节点
+定义 $\textit{rank}[i]$ 表示节点 $i$ 在 $\textit{idx}$ 中的下标，即节点 $i$ 映射为编号 $\textit{rank}[i]$。
 
-$$
-\textit{idx}[\textit{left}],\textit{idx}[\textit{left}+1],\ldots, \textit{idx}[i-1]
-$$
+下文的「编号」均指映射后的编号。
 
-都是可以从 $\textit{idx}[i]$ 直达的，即距离为 $1$。
+排序后，用**双指针**计算每个编号一步可以向左跳到哪里。如果 $\textit{nums}[\textit{idx}[i]] - \textit{nums}[\textit{idx}[\textit{left}]]\le \textit{maxDiff}$，那么从编号 $i$ 可以一步跳到编号 $\textit{left},\textit{left}+1,\ldots, i-1$。
 
-**关键思路**：如果我们能向左跳到 $\textit{idx}[\textit{left}]$，那么也能少跳点，所以每一步都尽量远地向左跳就行。
+**关键思路**：如果我们能向左跳到编号 $\textit{left}$，那么也能少跳点，所以**每一步都尽量远地向左跳就行**。
 
-设 $\textit{rank}[i]$ 表示节点 $i$ 在 $\textit{idx}$ 中的下标，用于下标映射。
-
-设 $l = \textit{rank}[u]$，$r = \textit{rank}[v]$。不失一般性，假设 $l\le r$。
+设编号 $l = \textit{rank}[u]$，$r = \textit{rank}[v]$。不失一般性，假设 $l\le r$。
 
 - 如果 $l=r$，不用跳，答案是 $0$。
-- 否则，从 $r$ 开始向左跳，每一步都跳尽量远，即从 $r$ 向左跳到最远能跳到的位置 $p$，然后更新 $r=p$，直到 $r\le l$ 为止。最短路即为跳跃的步数。
+- 否则，从 $r$ 开始向左跳，每一步都跳尽量远。设从 $r$ 向左跳到最远能跳到的编号为 $p$，我们更新 $r=p$。重复这个过程，直到 $r\le l$ 为止。最短路即为跳跃的步数。
 - 如果无法跳到 $l$，答案是 $-1$。
 
 暴力跳是 $\mathcal{O}(n)$ 的，会超时，可以用 [倍增](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/) 优化到 $\mathcal{O}(\log n)$。
