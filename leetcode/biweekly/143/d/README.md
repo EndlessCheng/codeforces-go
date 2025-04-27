@@ -1,10 +1,10 @@
-## 方法一：从左到右爆搜
+## 方法一：从左到右暴搜
 
 首先，由于数位乘积中的质因子只有 $2,3,5,7$，如果 $t$ 包含其他质因子，那么直接返回 $-1$。如果 $t$ 只包含质因子 $2,3,5,7$，那么答案一定存在。
 
 下文把 $\textit{num}$ 简记为 $s$。其长度为 $n$。
 
-例如 $s=123$，并假设答案的长度也为 $3$。仿照 [数位 DP](https://www.bilibili.com/video/BV1rS4y1s721/?t=20m05s) 的思路，写一个爆搜：
+例如 $s=123$，并假设答案的长度也为 $3$。仿照 [数位 DP](https://www.bilibili.com/video/BV1rS4y1s721/?t=20m05s) 的思路，写一个暴搜：
 
 - 最高位如果填 $1$，那么第二位不能填 $1$（不然小于 $s$ 了），至少要填 $2$。
 - 最高位如果填的数大于 $1$，那么第二位，以及第三位，填的数字不受到 $s$ 的约束，可以填 $[1,9]$ 中的任意数字。
@@ -21,7 +21,7 @@
 
 一般地，如果填的数字是 $d$，那么余下的数位，需要满足乘积是 $\dfrac{t}{\text{GCD}(t,d)}$ 的倍数。
 
-综上所述，写一个带 $\textit{vis}$ 的爆搜，参数有：
+综上所述，写一个带 $\textit{vis}$ 的暴搜，参数有：
 
 - $i$：表示当前填到 $s$ 的第 $i$ 个数位了。
 - $t$：表示 $[i,n-1]$ 所填数位，需要满足乘积是 $t$ 的倍数。
@@ -373,7 +373,7 @@ class Solution:
                 i0 = i
                 break
             left_t[i + 1] = left_t[i] // gcd(left_t[i], int(c))
-        if left_t[n] == 1:  # s 的数位之积是 t 的倍数
+        if left_t[n] == 1:  # s 的数位之积已经是 t 的倍数
             return s
 
         # 假设答案和 s 一样长
@@ -424,7 +424,7 @@ class Solution {
             }
             leftT[i + 1] = leftT[i] / gcd(leftT[i], s[i] - '0');
         }
-        if (leftT[n] == 1) { // num 的数位之积是 t 的倍数
+        if (leftT[n] == 1) { // num 的数位之积已经是 t 的倍数
             return num;
         }
 
@@ -496,7 +496,7 @@ public:
             }
             left_t[i + 1] = left_t[i] / gcd(left_t[i], s[i] - '0');
         }
-        if (left_t[n] == 1) { // s 的数位之积是 t 的倍数
+        if (left_t[n] == 1) { // s 的数位之积已经是 t 的倍数
             return s;
         }
 
@@ -556,7 +556,7 @@ func smallestNumber(num string, t int64) string {
 		}
 		leftT[i+1] = leftT[i] / gcd(leftT[i], int(c-'0'))
 	}
-	if leftT[n] == 1 { // num 的数位之积是 t 的倍数
+	if leftT[n] == 1 { // num 的数位之积已经是 t 的倍数
 		return num
 	}
 
@@ -620,8 +620,8 @@ func gcd(a, b int) int {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)

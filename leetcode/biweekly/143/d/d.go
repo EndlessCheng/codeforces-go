@@ -29,7 +29,7 @@ func smallestNumber(num string, t int64) string {
 		}
 		leftT[i+1] = leftT[i] / gcd(leftT[i], int(c-'0'))
 	}
-	if leftT[n] == 1 { // num 的数位之积是 t 的倍数
+	if leftT[n] == 1 { // num 的数位之积已经是 t 的倍数
 		return num
 	}
 
