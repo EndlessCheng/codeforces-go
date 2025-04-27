@@ -5,23 +5,21 @@
 
 ## 思路
 
-对于水平子串，把 $\textit{grid}$ 每一行首尾相接，得到一个文本串 $\textit{text}$，我们需要在文本串 $\textit{text}$ 中找到所有模式串 $\textit{pattern}$ 的出现位置，这正是 **KMP 算法**的标准应用。
+对于水平子串，把 $\textit{grid}$ 每一行首尾相接，得到一个长为 $mn$ 的文本串 $\textit{text}$，我们需要在文本串 $\textit{text}$ 中找到所有模式串 $\textit{pattern}$ 的出现位置，这正是 **KMP 算法**的标准应用。
 
-标记所有在 $\textit{pattern}$ 中的单元格。假设我们在 $\textit{text}[i]$ 处匹配完成，那么用**差分数组**，把下标区间 $[i-k+1,i]$ 加一，其中 $k$ 是 $\textit{pattern}$ 的长度。计算差分数组的前缀和，值大于 $0$ 的下标就对应在 $\textit{pattern}$ 中的单元格。
+标记所有在 $\textit{pattern}$ 中的单元格。假设我们在 $\textit{text}[i]$ 处匹配完成，那么用**差分数组**把下标区间 $[i-k+1,i]$ 加一，其中 $k$ 是 $\textit{pattern}$ 的长度。计算差分数组的前缀和，值大于 $0$ 的下标就对应着在 $\textit{pattern}$ 中的单元格。
 
-对于垂直子串，计算方法同理。可以把相关逻辑封装成一个函数，方便垂直子串复用。
+对于垂直子串，计算方法同理。可以把相关逻辑封装成一个函数，方便垂直子串**复用**。
 
 ## 细节
-
-设 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
 
 对于水平子串，我们计算差分数组的前缀和，得到一个长为 $mn$ 的数组 $\textit{inPatternH}$。
 
 对于垂直子串，我们计算差分数组的前缀和，得到一个长为 $mn$ 的数组 $\textit{inPatternV}$。
 
-如果 $\textit{inPatternH}[i]>0$，则表示单元格 $\textit{grid}[i/n][i\bmod n]$ 在 $\textit{pattern}$ 中。
+如果 $\textit{inPatternH}[i]>0$，则表示单元格 $\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 在 $\textit{pattern}$ 中。
 
-单元格 $\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 在 $\textit{inPatternV}$ 中的哪个位置？由于垂直子串是竖着扫描的，基于一个 $n$ 行 $m$ 列的矩阵，所以 $\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 对应到 $\textit{inPatternV}$ 的下标为
+单元格 $\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 在 $\textit{inPatternV}$ 中的哪个位置？由于垂直子串是竖着扫描的，基于一个 $n$ 行 $m$ 列的矩阵，$\textit{grid}[\left\lfloor i/n \right\rfloor][i\bmod n]$ 在这个矩阵的 $i\bmod n$ 行 $\left\lfloor i/n \right\rfloor$ 列，所以对应到 $\textit{inPatternV}$ 中的下标为
 
 $$
 (i\bmod n)\cdot m + \left\lfloor i/n \right\rfloor
@@ -68,8 +66,8 @@ class Solution:
 
         m, n = len(grid), len(grid[0])
         ans = 0
-        for i, x in enumerate(in_pattern_h):
-            if x > 0 and in_pattern_v[i % n * m + i // n] > 0:
+        for i, in_h in enumerate(in_pattern_h):
+            if in_h and in_pattern_v[i % n * m + i // n]:
                 ans += 1
         return ans
 ```
@@ -79,14 +77,18 @@ class Solution {
     public int countCells(char[][] grid, String pattern) {
         int m = grid.length;
         int n = grid[0].length;
+
         char[] hText = new char[m * n];
-        for (int i = 0, idx = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                hText[idx++] = grid[i][j];
+        int idx = 0;
+        for (char[] row : grid) {
+            for (char c : row) {
+                hText[idx++] = c;
             }
         }
+
         char[] vText = new char[m * n];
-        for (int j = 0, idx = 0; j < n; j++) {
+        idx = 0;
+        for (int j = 0; j < n; j++) {
             for (char[] row : grid) {
                 vText[idx++] = row[j];
             }
@@ -208,7 +210,7 @@ public:
 
         int ans = 0;
         for (int i = 0; i < m * n; i++) {
-            if (in_pattern_h[i] > 0 && in_pattern_v[i % n * m + i / n] > 0) {
+            if (in_pattern_h[i] && in_pattern_v[i % n * m + i / n]) {
                 ans++;
             }
         }
