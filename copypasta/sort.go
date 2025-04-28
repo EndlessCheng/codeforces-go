@@ -582,7 +582,7 @@ func sortCollections() {
 
 	//
 
-	// 0-1 分数规划
+	// 分数规划
 	// 求 min{∑ai/∑bi}：在 check(k) 中判断是否有 min∑(ai-k*bi) > 0 成立，若成立说明 k 取小了，否则 k 取大了
 	// 求 max{∑ai/∑bi}：在 check(k) 中判断是否有 max∑(ai-k*bi) > 0 成立，若成立说明 k 取小了，否则 k 取大了
 	// https://oi-wiki.org/misc/frac-programming/
@@ -598,23 +598,34 @@ func sortCollections() {
 	//     - LC644 https://leetcode.cn/problems/maximum-average-subarray-ii/（会员题）
 	//     - O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》（或紫书 p.243 例题 8-9，UVa 1451 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=447&page=show_problem&problem=4197）
 	//     https://www.acwing.com/problem/content/104/
+	//
 	// 与 0-1 背包结合，即最优比率背包 
-	// - https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
+	// https://www.luogu.com.cn/problem/P4377
+	// https://ac.nowcoder.com/acm/contest/2271/F
+	//
 	// 与生成树结合，即最优比率生成树 
-	// - https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
-	// - https://atcoder.jp/contests/arc026/tasks/arc026_4
+	// https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
+	// https://atcoder.jp/contests/arc026/tasks/arc026_4
+	//
 	// 与负环判定结合，即最优比率环 
-	// - https://www.luogu.com.cn/problem/P1768 https://www.luogu.com.cn/problem/P2868 https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621
-	// - O(nm) https://www.luogu.com.cn/blog/rqy/solution-p3199
+	// https://www.luogu.com.cn/problem/P1768 
+	// https://www.luogu.com.cn/problem/P2868 
+	// https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621
+	// O(nm) https://www.luogu.com.cn/blog/rqy/solution-p3199
+	//
 	// 与网络流结合，即最大密度子图
-	// - https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
+	// https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
+	//
 	// 与费用流结合，即最优比率流
-	// - https://www.luogu.com.cn/problem/P3705
+	// https://www.luogu.com.cn/problem/P3705
+	//
 	// 最优比率路径 
-	// - https://atcoder.jp/contests/abc324/tasks/abc324_f
-	// - https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/B
+	// https://atcoder.jp/contests/abc324/tasks/abc324_f
+	// https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/B
+	//
 	// 其他题目
-	// - 与 DP 结合 https://codeforces.com/problemset/problem/489/E
+	// https://www.luogu.com.cn/problem/P4322
+	// https://codeforces.com/problemset/problem/489/E 与 DP 结合
 	search01 := func(ps [][2]int, k int) float64 {
 		// 必须/至少选 k 对，最大化 ∑ai/∑bi
 		// 如果是算术平均值的话，bi=1
