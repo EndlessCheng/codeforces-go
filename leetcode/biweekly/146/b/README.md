@@ -12,7 +12,7 @@ $$
 y\oplus \textit{grid}[i][j] = x
 $$
 
-即
+异或运算和加减法是一样的，可以移项，得
 
 $$
 y = x \oplus \textit{grid}[i][j]
