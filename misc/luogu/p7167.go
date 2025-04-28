@@ -19,7 +19,7 @@ func p7167(in io.Reader, _w io.Writer) {
 	}
 
 	const mx = 17
-	type pair struct{ to, s int }
+	type pair struct{ to, sum int }
 	pa := make([][mx]pair, n+1)
 	pa[n][0].to = n
 	st := []int{n}
@@ -35,7 +35,7 @@ func p7167(in io.Reader, _w io.Writer) {
 		for x := range pa {
 			p := pa[x][i]
 			q := pa[p.to][i]
-			pa[x][i+1] = pair{q.to, p.s + q.s}
+			pa[x][i+1] = pair{q.to, p.sum + q.sum}
 		}
 	}
 
@@ -44,13 +44,13 @@ func p7167(in io.Reader, _w io.Writer) {
 		cur--
 		for k := mx - 1; k >= 0; k-- {
 			p := pa[cur][k]
-			if left > p.s {
-				left -= p.s
+			if left > p.sum {
+				left -= p.sum
 				cur = p.to
 			}
 		}
 		p := pa[cur][0]
-		if left > p.s {
+		if left > p.sum {
 			cur = p.to
 		}
 		if cur == n {
