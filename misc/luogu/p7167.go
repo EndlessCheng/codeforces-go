@@ -10,7 +10,7 @@ import (
 func p7167(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	var n, q, cur, v int
+	var n, q, cur, left int
 	Fscan(in, &n, &q)
 	type ft struct{ d, c int }
 	a := make([]ft, n)
@@ -40,17 +40,17 @@ func p7167(in io.Reader, _w io.Writer) {
 	}
 
 	for ; q > 0; q-- {
-		Fscan(in, &cur, &v)
+		Fscan(in, &cur, &left)
 		cur--
 		for k := mx - 1; k >= 0; k-- {
 			p := pa[cur][k]
-			if v > p.s {
-				v -= p.s
+			if left > p.s {
+				left -= p.s
 				cur = p.to
 			}
 		}
 		p := pa[cur][0]
-		if v > p.s {
+		if left > p.s {
 			cur = p.to
 		}
 		if cur == n {
