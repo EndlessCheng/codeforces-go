@@ -175,8 +175,14 @@ func concatenatedDivisibility(nums []int, k int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nk2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。有 $\mathcal{O}(k2^n)$ 个状态，每个状态至多访问一次，每个状态需要花费 $\mathcal{O}(n)$ 的时间枚举下标 $i$。
+- 时间复杂度：$\mathcal{O}(nk2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。$s$ 有 $\mathcal{O}(2^n)$ 个，$x$ 有 $\mathcal{O}(k)$ 个，所以总共有 $\mathcal{O}(k2^n)$ 个状态。每个状态至多访问一次。每个状态需要花费 $\mathcal{O}(n)$ 的时间枚举下标 $i$。
 - 空间复杂度：$\mathcal{O}(k2^n)$。
+
+## 思考题
+
+如果要计算的是「拼接数字」的最小字典序呢？
+
+欢迎在评论区分享你的思路/代码。
 
 ## 相似题目（字典序+暴搜）
 
