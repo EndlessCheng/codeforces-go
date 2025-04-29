@@ -32,7 +32,7 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 2. 计算转移（直接从队首转移）
 3. 把 f[i] 插入队尾前，去掉队尾无用数据
 
-- [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 $\mathcal{O}(n^2)$
+- [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 O(n^2)
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
 - [2945. 找到最大非递减数组的长度](https://leetcode.cn/problems/find-maximum-non-decreasing-array-length/) 2943
       https://www.luogu.com.cn/problem/P4954 https://www.luogu.com.cn/problem/P2300
@@ -57,6 +57,8 @@ http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
 老鼠进洞 https://codeforces.com/problemset/problem/797/F
 
 单调队列求最值等
+https://www.luogu.com.cn/problem/P1714
+https://www.luogu.com.cn/problem/P3522
 https://codeforces.com/problemset/problem/6/E 1900
 
 单调双端队列
@@ -103,8 +105,8 @@ func (mq MonotoneQueue) Top() int {
 }
 
 // 滑动窗口最值（固定区间大小的区间最值）
-// LC239 https://leetcode.cn/problems/sliding-window-maximum/
-// https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
+// 模板题 LC239 https://leetcode.cn/problems/sliding-window-maximum/
+// 模板题 https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
 // https://codeforces.com/problemset/problem/940/E
 // https://codeforces.com/problemset/problem/372/C（另一种做法是用堆）
 // 贡献+差分数组 https://codeforces.com/problemset/problem/1208/E
