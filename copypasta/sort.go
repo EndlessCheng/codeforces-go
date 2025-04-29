@@ -61,6 +61,7 @@ https://atcoder.jp/contests/abc227/tasks/abc227_d 1643=CF1954
 https://atcoder.jp/contests/abc229/tasks/abc229_g
 
 ### 二分间接值
+为了保证任意情况都能更新答案，需要把上界加一
 https://codeforces.com/problemset/problem/2038/B 2100
 https://atcoder.jp/contests/abc389/tasks/abc389_e
 https://www.luogu.com.cn/problem/P1314
