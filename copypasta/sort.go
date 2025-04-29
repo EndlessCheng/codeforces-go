@@ -63,6 +63,7 @@ https://atcoder.jp/contests/abc229/tasks/abc229_g
 ### 二分间接值
 https://codeforces.com/problemset/problem/2038/B 2100
 https://atcoder.jp/contests/abc389/tasks/abc389_e
+https://www.luogu.com.cn/problem/P1314
 
 ### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
