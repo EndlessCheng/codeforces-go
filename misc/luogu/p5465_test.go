@@ -72,6 +72,13 @@ func TestCompare_p5465(_t *testing.T) {
 	}
 
 	runBF := func(in io.Reader, out io.Writer) {
+		gcd := func(a, b int) int {
+			for a != 0 {
+				a, b = b%a, a
+			}
+			return b
+		}
+		
 		var n, q, l, r, x int
 		Fscan(in, &n)
 		g := make([][]int, n+1)
