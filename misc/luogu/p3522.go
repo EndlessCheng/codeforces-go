@@ -5,6 +5,9 @@ import (
 	"io"
 )
 
+// 题解
+// 滑动窗口，前面的 max(l) 必须 <= 当前的 r，否则移动左端点
+
 // https://space.bilibili.com/206214
 func p3522(in io.Reader, out io.Writer) {
 	var n, l, r, left, ans int
