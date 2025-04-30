@@ -30,7 +30,7 @@
 ||[2594. 修车的最少时间](https://leetcode.cn/problems/minimum-time-to-repair-cars/)|[二分答案+优化（附题单！）](https://leetcode.cn/problems/minimum-time-to-repair-cars/solution/er-fen-da-an-pythonjavacgo-by-endlessche-keqf/)|1915|
 ||[2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)|[【套路】二分答案！附题单！](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/solution/er-fen-da-an-by-endlesscheng-r418/)|2021|
 ||[4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/)|[【图解】循序渐进：从双指针到二分](https://leetcode.cn/problems/median-of-two-sorted-arrays/solution/tu-jie-xun-xu-jian-jin-cong-shuang-zhi-z-p2gd/)|困难|
-||[2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)|[两种方法：二分答案+爆搜/最小堆](https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/)|2648|
+||[2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)|[两种方法：二分答案+暴搜/最小堆](https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/)|2648|
 |技巧性枚举|[1638. 统计只差一个字符的子串数目](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/)|[【图解】非暴力 O(nm) 算法](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/solution/tu-jie-fei-bao-li-onm-suan-fa-pythonjava-k5og/)|1745|
 |前后缀分解|[1653. 使字符串平衡的最少删除次数](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/)|[【图解】前后缀分解，消除分支的技巧！（附动态规划）](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/solution/qian-hou-zhui-fen-jie-yi-zhang-tu-miao-d-dor2/)|1794|
 |前缀和|[303. 区域和检索 - 数组不可变](https://leetcode.cn/problems/range-sum-query-immutable/)|[前缀和及其扩展，附题单！](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)|简单|
@@ -54,7 +54,7 @@
 ||[373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)|[讲清楚为什么一开始要把 (i,0) 都入堆！](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/solution/jiang-qing-chu-wei-shi-yao-yi-kai-shi-ya-i0dj/)|中等|
 ||[1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)|[三种算法：暴力/二分答案/堆](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/)|2133|
 ||[857. 雇佣 K 名工人的最低成本](https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/)|[一步步提示如何思考此题](https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/solution/yi-bu-bu-ti-shi-ru-he-si-kao-ci-ti-by-en-1p00/)|2260|
-||[2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)|[两种方法：二分答案+爆搜/最小堆](https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/)|2648|
+||[2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)|[两种方法：二分答案+暴搜/最小堆](https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/)|2648|
 ||[LCP 24. 数字游戏](https://leetcode.cn/problems/5TxKeK/)|[转换+中位数贪心+对顶堆](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)|困难|
 |位运算|[771. 宝石与石头](https://leetcode.cn/problems/jewels-and-stones/)|[本题最优解！线性时间+常数空间](https://leetcode.cn/problems/jewels-and-stones/solution/ben-ti-zui-you-jie-xian-xing-shi-jian-ch-ddw3/)|1165|
 ||[1457. 二叉树中的伪回文路径](https://leetcode.cn/problems/pseudo-palindromic-paths-in-a-binary-tree/)|[一步步优化：从数组到位运算](https://leetcode.cn/problems/pseudo-palindromic-paths-in-a-binary-tree/solution/yi-bu-bu-you-hua-cong-shu-zu-dao-wei-yun-hu0b/)|1405|
@@ -166,7 +166,7 @@
 
 **更多题目请看**[【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
 
-### 分类题单
+### 算法题单
 
 🔥[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
