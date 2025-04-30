@@ -324,7 +324,7 @@
 - [快速输入输出模板 io.go](/copypasta/io.go)
 - [交互题单 interactive.go](/copypasta/interactive.go)
 
-## 分类题单
+## 算法题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
