@@ -6,6 +6,8 @@ import (
 )
 
 /* 根号算法 Sqrt Decomposition
+分块数据结构见后
+
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
 常用于图论或者某些数组统计类题目
 参考 Competitive Programmer’s Handbook Ch.27
@@ -40,7 +42,6 @@ https://codeforces.com/problemset/problem/506/D 2400
 https://codeforces.com/problemset/problem/786/C 2400 见下面的 floorDivide
 https://codeforces.com/problemset/problem/1619/H 2400 大步+小步，有点分段打表的味道
 https://codeforces.com/problemset/problem/348/C 2500
-https://codeforces.com/problemset/problem/551/E 2500
 https://codeforces.com/problemset/problem/1270/F 2600
 https://codeforces.com/problemset/problem/1039/D 2800
 https://codeforces.com/problemset/problem/1039/E 3400
@@ -88,9 +89,10 @@ https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 https://cp-algorithms.com/sequences/rmq.html
 https://www.luogu.com.cn/problem/P3396
-https://codeforces.com/problemset/problem/1207/F
-https://codeforces.com/contest/455/problem/D
+https://codeforces.com/problemset/problem/1207/F 2100
+https://codeforces.com/problemset/problem/551/E 2500
 https://codeforces.com/problemset/problem/13/E 2700
+https://codeforces.com/problemset/problem/455/D 2700
 https://www.luogu.com.cn/problem/P3203 [HN10] 弹飞绵羊
 https://www.nowcoder.com/discuss/353159150542725120 K 题 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=50861318
 */
