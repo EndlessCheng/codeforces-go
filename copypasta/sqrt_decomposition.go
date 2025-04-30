@@ -5,7 +5,7 @@ import (
 	"slices"
 )
 
-/* 根号算法 根号分治 Sqrt Decomposition
+/* 根号算法 Sqrt Decomposition
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
 常用于图论或者某些数组统计类题目
 参考 Competitive Programmer’s Handbook Ch.27
@@ -40,6 +40,7 @@ https://codeforces.com/problemset/problem/506/D 2400
 https://codeforces.com/problemset/problem/786/C 2400 见下面的 floorDivide
 https://codeforces.com/problemset/problem/1619/H 2400 大步+小步，有点分段打表的味道
 https://codeforces.com/problemset/problem/348/C 2500
+https://codeforces.com/problemset/problem/551/E 2500
 https://codeforces.com/problemset/problem/1270/F 2600
 https://codeforces.com/problemset/problem/1039/D 2800
 https://codeforces.com/problemset/problem/1039/E 3400
