@@ -35,6 +35,9 @@ https://codeforces.com/problemset/problem/34/D 1600
 巧妙 DFS
 https://atcoder.jp/contests/abc163/tasks/abc163_f 2470=CF2579 树上路径计数
 
+黑白染色
+https://codeforces.com/problemset/problem/1375/G 2800
+
 BFS
 https://atcoder.jp/contests/abc070/tasks/abc070_d
 https://codeforces.com/problemset/problem/2018/C 1700
@@ -1127,7 +1130,6 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // https://codeforces.com/problemset/problem/1304/E 2000
 // https://codeforces.com/problemset/problem/1702/G2 2000 分类讨论
 // - https://codeforces.com/problemset/problem/1527/D 2400 分类讨论（思路同 CF1702G2，但不需要倍增）
-// https://atcoder.jp/contests/arc060/tasks/arc060_c 2154 倍增思想
 // https://codeforces.com/problemset/problem/519/E 2100 到两点距离相同的点的数量
 // https://codeforces.com/problemset/problem/1535/E 2200
 // https://codeforces.com/problemset/problem/379/F 2400
@@ -1154,6 +1156,8 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
 func (*tree) lcaBinaryLifting(root int, g [][]int) {
+	// 另见 dp.go 中的 binaryLifting
+	
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, len(g))
 	dep := make([]int, len(g)) // 根节点的深度为 0
@@ -1768,6 +1772,7 @@ func (*tree) virtualTree(g [][]int) {
 // https://codeforces.com/problemset/problem/587/C 2200 归并树
 // https://codeforces.com/problemset/problem/1174/F 2400 好题
 // https://codeforces.com/problemset/problem/504/E 3000
+// https://codeforces.com/problemset/problem/704/E 3300
 // https://atcoder.jp/contests/abc133/tasks/abc133_f
 // todo 题单 https://www.luogu.com.cn/training/1654
 // todo https://www.luogu.com.cn/problem/P5127
