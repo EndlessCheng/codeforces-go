@@ -168,7 +168,7 @@
 
 其他尚未更新的 topic 请看 [题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
-### 分类题单
+### 算法题单
 
 🔥[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
