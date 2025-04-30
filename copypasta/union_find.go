@@ -479,13 +479,13 @@ func _(n int) {
 // 模板题 https://codeforces.com/problemset/problem/1850/H 1700
 //       https://codeforces.com/problemset/problem/1074/D 2400? 1700!
 //       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
-// 种类并查集：狼人和平民 https://codeforces.com/problemset/problem/1594/D 1700
-// 种类并查集：同义词反义词 https://codeforces.com/problemset/problem/766/D 2000
-// 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
-// 种类并查集：不能构成二分图的第一条边 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J
-// 种类并查集 + 维护集合大小 https://codeforces.com/problemset/problem/1290/C 2400
-// todo https://codeforces.com/contest/1615/problem/D
-//      https://codeforces.com/contest/1713/problem/E
+// https://www.luogu.com.cn/problem/P2024 食物链
+// https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J 种类并查集：不能构成二分图的第一条边 
+// https://codeforces.com/problemset/problem/1594/D 1700 种类并查集
+// https://codeforces.com/problemset/problem/766/D 2000 种类并查集
+// https://codeforces.com/problemset/problem/1615/D 2200
+// https://codeforces.com/problemset/problem/1290/C 2400 种类并查集 + 维护集合大小 
+// https://codeforces.com/problemset/problem/1713/E 2400 转化
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode.cn/problems/evaluate-division/
 //      LC2307 https://leetcode.cn/problems/check-for-contradictions-in-equations/ 也可以 DFS
