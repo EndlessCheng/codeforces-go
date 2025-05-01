@@ -4,6 +4,8 @@
 
 遍历 $\textit{words}$ 的同时，用一个哈希表 $\textit{cnt}$ 维护 $\textit{words}[i]$ 对应的 $\textit{mask}$ 的出现次数。和 1512 题一样，先把 $\textit{cnt}[\textit{mask}]$ 加到答案中，然后把 $\textit{cnt}[\textit{mask}]$ 加一。这个顺序可以保证我们只会统计 $i<j$ 的下标对，不会把 $i=j$ 的情况也统计进去。
 
+> 注：也可以把字符串排序去重，作为哈希表的 key。
+
 ```py [sol-Python3]
 class Solution:
     def similarPairs(self, words: List[str]) -> int:
@@ -15,6 +17,18 @@ class Solution:
                 mask |= 1 << (ord(c) - ord('a'))  # 把 c 加到集合中
             ans += cnt[mask]
             cnt[mask] += 1
+        return ans
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def similarPairs(self, words: List[str]) -> int:
+        ans = 0
+        cnt = defaultdict(int)
+        for s in words:
+            s = ''.join(sorted(set(s)))
+            ans += cnt[s]
+            cnt[s] += 1
         return ans
 ```
 
