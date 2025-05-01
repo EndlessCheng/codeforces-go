@@ -114,7 +114,7 @@ import "math/bits"
 // LC2286 https://leetcode.cn/problems/booking-concert-tickets-in-groups/
 // LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
 
-// EXTRA: 权值线段树
+// EXTRA: 权值线段树 值域线段树
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
 // 浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
 // 谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
@@ -362,6 +362,8 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/1797/E  2300 phi*
 // https://codeforces.com/problemset/problem/145/E   2400
 // https://codeforces.com/problemset/problem/1114/F  2400
+// https://codeforces.com/problemset/problem/618/E   2500 旋转
+// - http://poj.org/problem?id=2991
 // https://codeforces.com/problemset/problem/240/F   2600
 // https://codeforces.com/problemset/problem/1439/C  2600 =max 求和的 O(log^2) 性质 
 // https://codeforces.com/problemset/problem/1614/E  2600
