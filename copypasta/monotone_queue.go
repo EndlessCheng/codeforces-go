@@ -30,7 +30,7 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 0. 前提：区间右端点变大时，左端点也在变大（同滑动窗口）
 1. 转移前，去掉队首无用数据
 2. 计算转移（直接从队首转移）
-3. 把 f[i] 插入队尾前，去掉队尾无用数据
+3. 把 f[i] 插入队尾前，去掉队尾无用数据，然后插入 f[i]
 
 - [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 O(n^2)
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
@@ -51,6 +51,8 @@ https://www.luogu.com.cn/problem/P2627 划分型 DP
 https://www.luogu.com.cn/problem/P1725
 - https://www.luogu.com.cn/problem/P3957 + 二分
 https://www.luogu.com.cn/problem/P3572
+- 在有多个相同转移来源 f[j] 的情况下，保证 a[j] 最大的在队首
+- 如此处理后，可以保证队首是最优转移来源，其余转移来源不会算出比队首更小的 f[j] + (a[j] <= a[i])
 https://www.luogu.com.cn/problem/P3594
 https://www.luogu.com.cn/problem/P1419
 http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
@@ -105,8 +107,9 @@ func (mq MonotoneQueue) Top() int {
 }
 
 // 滑动窗口最值（固定区间大小的区间最值）
-// 模板题 LC239 https://leetcode.cn/problems/sliding-window-maximum/
-// 模板题 https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
+// 模板题 LC239 https://leetcode.cn/problems/sliding-window-maximum/ http://poj.org/problem?id=2823
+//       https://www.luogu.com.cn/problem/P1886
+//       https://www.luogu.com.cn/problem/P1440
 // https://codeforces.com/problemset/problem/940/E
 // https://codeforces.com/problemset/problem/372/C（另一种做法是用堆）
 // 贡献+差分数组 https://codeforces.com/problemset/problem/1208/E
