@@ -25,7 +25,7 @@ func p3572(in io.Reader, out io.Writer) {
 			if a[i] >= a[q[0].i] {
 				f++
 			}
-			for len(q) > 0 && f <= q[len(q)-1].f {
+			for len(q) > 0 && f < q[len(q)-1].f || f == q[len(q)-1].f && a[i] >= a[q[len(q)-1].i] {
 				q = q[:len(q)-1]
 			}
 			q = append(q, pair{f, i})
