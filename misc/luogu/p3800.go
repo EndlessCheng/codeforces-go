@@ -28,7 +28,7 @@ func p3800(in io.Reader, out io.Writer) {
 			}
 			q = append(q, j)
 		}
-		for j := range f {
+		for j := range nf {
 			if j+t < m {
 				for len(q) > 0 && f[j+t] >= f[q[len(q)-1]] {
 					q = q[:len(q)-1]
