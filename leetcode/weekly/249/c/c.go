@@ -1,55 +1,58 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-const mod int = 1e9 + 7
-
-func colorTheGrid(m, n int) (ans int) {
-	m *= 2
-	// 预处理所有合法状态：用四进制表示颜色
-	valid := []int{}
-outer:
-	for mask := 0; mask < 1<<m; mask++ {
-		pre := 0
-		for j := 0; j < m; j += 2 {
-			color := mask >> j & 3
-			if color == 0 || color == pre { // 未涂色或相邻颜色相同
-				continue outer
-			}
-			pre = color
-		}
-		valid = append(valid, mask)
+func colorTheGrid(m, n int) int {
+	const mod = 1_000_000_007
+	pow3 := make([]int, m)
+	pow3[0] = 1
+	for i := 1; i < m; i++ {
+		pow3[i] = pow3[i-1] * 3
 	}
 
-	// 预处理所有合法状态能转移到哪些合法状态（记录合法状态的下标）
-	to := make([][]int, len(valid))
-	for i, v := range valid {
-	o:
-		for j, w := range valid {
-			for k := 0; k < m; k += 2 {
-				if v>>k&3 == w>>k&3 { // 相邻颜色相同
-					continue o
+	valid := []int{}
+next:
+	for color := range pow3[m-1] * 3 {
+		for i := range m - 1 {
+			if color/pow3[i+1]%3 == color/pow3[i]%3 { // 相邻颜色相同
+				continue next
+			}
+		}
+		valid = append(valid, color)
+	}
+
+	nv := len(valid)
+	nxt := make([][]int, nv)
+	for i, color1 := range valid {
+	next2:
+		for j, color2 := range valid {
+			for _, p3 := range pow3 {
+				if color1/p3%3 == color2/p3%3 { // 相邻颜色相同
+					continue next2
 				}
 			}
-			to[i] = append(to[i], j)
+			nxt[i] = append(nxt[i], j)
 		}
 	}
 
-	// 滚动数组，用当前行更新下一行不同状态的方案数
-	dp := make([]int, len(valid))
-	for i := range dp {
-		dp[i] = 1
+	f := make([][]int, n)
+	for i := range f {
+		f[i] = make([]int, nv)
+	}
+	for j := range f[0] {
+		f[0][j] = 1
 	}
 	for i := 1; i < n; i++ {
-		tmp := dp
-		dp = make([]int, len(valid))
-		for j, dv := range tmp {
-			for _, t := range to[j] {
-				dp[t] = (dp[t] + dv) % mod
+		for j := range f[i] {
+			for _, k := range nxt[j] {
+				f[i][j] += f[i-1][k]
 			}
+			f[i][j] %= mod
 		}
 	}
-	for _, dv := range dp {
-		ans += dv
+
+	ans := 0
+	for _, fv := range f[n-1] {
+		ans += fv
 	}
 	return ans % mod
 }
