@@ -8,7 +8,7 @@ $$
 
 的二进制中恰好有 $k$ 个 $1$。
 
-定义 
+定义
 
 $$
 f(I) = \prod_{j=0}^{m-1} \textit{nums}[I_j]
@@ -196,8 +196,10 @@ class Solution {
             return memo[i][leftM][x][leftK];
         }
         long res = 0;
-        for (int j = 0; j <= leftM; j++) {
-            int bit = (x + j) & 1;
+        for (int j = 0; j <= leftM; j++) { // 枚举 I 中有 j 个下标 i
+            // 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
+            // 由于 x = S >> i，转化成对 x 的贡献是 j
+            int bit = (x + j) & 1; // 取最低位，提前从 leftK 中减去，其余进位到 x 中
             if (bit <= leftK) {
                 long r = dfs(i + 1, leftM - j, (x + j) >> 1, leftK - bit, powV, memo);
                 res = (res + r * powV[i][j] % MOD * INV_F[j]) % MOD;
