@@ -38,7 +38,7 @@ $$
 \dfrac{7!}{3!4!}\cdot \textit{nums}[0]^3\cdot \textit{nums}[1]^4
 $$
 
-可以把 $7!$ 提出来，转化成
+把 $7!$ 提出来，变形得
 
 $$
 7!\cdot \left(\dfrac{\textit{nums}[0]^3}{3!} \right)\cdot \left(\dfrac{\textit{nums}[1]^4}{4!} \right)
@@ -50,7 +50,7 @@ $$
 
 ## 关键思路
 
-从小到大枚举下标 $i=0,1,2,\ldots,n-1$，在计算 $S=\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}}$ 的过程中，比如现在枚举的下标 $i=6$，那么后续加到 $S$ 中的数字一定 $\ge 2^6$，一定不会影响小于 $i$ 的比特位，我们可以**提前统计这些比特位中的 $1$**！
+从小到大枚举下标 $i=0,1,2,\ldots,n-1$，在计算 $S=\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}}$ 的过程中，比如现在枚举的下标 $i=6$，那么后续加到 $S$ 中的数一定 $\ge 2^6$，一定不会影响小于 $i$ 的比特位，我们可以**提前统计这些比特位中的 $1$**！
 
 换句话说，在递归过程中只需保存 $S$ 右移 $i$ 位的结果，而不是原始的 $S$，从而大幅减少状态个数！
 
@@ -60,7 +60,7 @@ $$
 
 - 当前枚举的下标 $i$。
 - 还剩下 $\textit{leftM}$ 个下标需要选。
-- 当前累加的 $S$，其右移 $i$ 位的结果是 $x$。
+- 当前累加的 $S$，其右移 $i$ 位的结果是 $x$。即 $\left\lfloor\dfrac{S}{2^i}\right\rfloor = x$。
 - 去掉右移掉的 $1$ 后，$S$ 还需包含恰好 $\textit{leftK}$ 个 $1$。
 
 定义 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 表示在上述情况下，剩余元素的贡献。
@@ -69,13 +69,13 @@ $$
 
 - 当前枚举的下标是 $i+1$。
 - 还剩下 $\textit{leftM}-j$ 个下标需要选。
-- 当前累加的 $S$，其右移 $i+1$ 位的结果是 $\left\lfloor\dfrac{x+j}{2}\right\rfloor$。
+- 当前累加的 $S' = S + j\cdot 2^i$，其右移 $i+1$ 位的结果是 $\left\lfloor\dfrac{S'}{2^{i+1}}\right\rfloor =  \left\lfloor\dfrac{x+j}{2}\right\rfloor$。
 - 去掉右移掉的 $1$ 后，$S$ 还需包含恰好 $\textit{leftK}-\textit{bit}$ 个 $1$，其中 $\textit{bit}=(x+j)\bmod 2$。
 
-如果 $\textit{bit}\le \textit{leftK}$，那么可以递归到 $r=\textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\frac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})$。把 $r$ 乘以 $\dfrac{\textit{nums}[i]^j}{j!}$，累加到 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 中，得
+如果 $\textit{bit}\le \textit{leftK}$，那么可以递归到 $r=\textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\tfrac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})$。把 $r$ 乘以 $\dfrac{\textit{nums}[i]^j}{j!}$，累加到 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 中，得
 
 $$
-\textit{dfs}(i,\textit{leftM},x,\textit{leftK}) = \sum_{j=0}^{\textit{leftM}} \textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\frac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})\cdot \dfrac{\textit{nums}[i]^j}{j!}
+\textit{dfs}(i,\textit{leftM},x,\textit{leftK}) = \sum_{j=0}^{\textit{leftM}} \textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\tfrac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})\cdot \dfrac{\textit{nums}[i]^j}{j!}
 $$
 
 其中枚举的 $j$ 还需要满足 $\textit{bit}\le \textit{leftK}$。
