@@ -39,7 +39,7 @@ $$
 ```py [sol-Python3]
 class Solution:
     def minTravelTime(self, l: int, n: int, k: int, position: List[int], time: List[int]) -> int:
-        s = list(accumulate(time, initial=0))
+        s = list(accumulate(time, initial=0))  # 计算前缀和
         @cache
         def dfs(left_k: int, i: int, pre: int) -> int:
             if i == n - 1:
@@ -55,7 +55,7 @@ class Solution {
     public int minTravelTime(int l, int n, int k, int[] position, int[] time) {
         int[] s = new int[n];
         for (int i = 0; i < n - 1; i++) { // time[n-1] 用不到
-            s[i + 1] = s[i] + time[i];
+            s[i + 1] = s[i] + time[i]; // 计算前缀和
         }
 
         int[][][] memo = new int[k + 1][n - 1][n - 1];
@@ -85,7 +85,7 @@ class Solution {
 class Solution {
 public:
     int minTravelTime(int l, int n, int k, vector<int>& position, vector<int>& time) {
-        vector<int> s(n);
+        vector<int> s(n); // 前缀和数组
         partial_sum(time.begin(), time.end() - 1, s.begin() + 1); // time[n-1] 用不到
 
         vector memo(k + 1, vector(n - 1, vector<int>(n - 1)));
@@ -100,7 +100,8 @@ public:
             res = INT_MAX;
             int t = s[i + 1] - s[pre]; // 合并到 time[i] 的时间
             for (int nxt = i + 1; nxt < min(n, i + 2 + left_k); nxt++) {
-                res = min(res, dfs(left_k - (nxt - i - 1), nxt, i + 1) + (position[nxt] - position[i]) * t);
+                int r = dfs(left_k - (nxt - i - 1), nxt, i + 1) + (position[nxt] - position[i]) * t;
+                res = min(res, r);
             }
             return res;
         };
@@ -110,10 +111,10 @@ public:
 ```
 
 ```go [sol-Go]
-func minTravelTime(l, n, k int, position, time []int) int {
+func minTravelTime(_, n, k int, position, time []int) int {
 	s := make([]int, n)
 	for i, t := range time[:n-1] { // time[n-1] 用不到
-		s[i+1] = s[i] + t
+		s[i+1] = s[i] + t // 计算前缀和
 	}
 
 	memo := make([][][]int, k+1)
@@ -138,7 +139,8 @@ func minTravelTime(l, n, k int, position, time []int) int {
 		res := math.MaxInt
 		t := s[i+1] - s[pre] // 合并到 time[i] 的时间
 		for nxt := i + 1; nxt < min(n, i+2+leftK); nxt++ {
-			res = min(res, dfs(leftK-(nxt-i-1), nxt, i+1)+(position[nxt]-position[i])*t)
+            r := dfs(leftK-(nxt-i-1), nxt, i+1) + (position[nxt]-position[i])*t
+			res = min(res, r)
 		}
 		*p = res
 		return res
@@ -215,7 +217,8 @@ public:
                     int res = INT_MAX;
                     int t = s[i + 1] - s[pre];
                     for (int nxt = i + 1; nxt < min(n, i + 2 + left_k); nxt++) {
-                        res = min(res, f[left_k - (nxt - i - 1)][nxt][i + 1] + (position[nxt] - position[i]) * t);
+                        int r = f[left_k - (nxt - i - 1)][nxt][i + 1] + (position[nxt] - position[i]) * t;
+                        res = min(res, r);
                     }
                     f[left_k][i][pre] = res;
                 }
@@ -227,7 +230,7 @@ public:
 ```
 
 ```go [sol-Go]
-func minTravelTime(l, n, k int, position, time []int) int {
+func minTravelTime(_, n, k int, position, time []int) int {
 	s := make([]int, n)
 	for i, t := range time[:n-1] {
 		s[i+1] = s[i] + t
@@ -264,8 +267,8 @@ func minTravelTime(l, n, k int, position, time []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(kn^3)$。
-- 空间复杂度：$\mathcal{O}(kn^2)$。
+- 时间复杂度：$\mathcal{O}(n^2k^2)$。注意最内层的循环是 $\mathcal{O}(k)$。
+- 空间复杂度：$\mathcal{O}(n^2k)$。
 
 更多相似题目，见下面动态规划题单的「**§5.3 约束划分个数**」。
 
