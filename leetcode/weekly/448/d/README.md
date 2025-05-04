@@ -50,31 +50,29 @@ $$
 
 ## 关键思路
 
-在计算 $S=\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}}$ 的过程中，比如现在枚举的下标 $i=6$，那么后续加到 $S$ 中的数字一定 $\ge 2^6$，一定不会影响小于 $i$ 的比特位，我们可以**提前统计这些比特位中的 $1$**！
+从小到大枚举下标 $i=0,1,2,\ldots,n-1$，在计算 $S=\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}}$ 的过程中，比如现在枚举的下标 $i=6$，那么后续加到 $S$ 中的数字一定 $\ge 2^6$，一定不会影响小于 $i$ 的比特位，我们可以**提前统计这些比特位中的 $1$**！
 
 换句话说，在递归过程中只需保存 $S$ 右移 $i$ 位的结果，而不是原始的 $S$，从而大幅减少状态个数！
 
 ## 思路
 
-由于二进制有进位，所以必须从低到高计算，也就是 $i$ 从小到大枚举。
-
 我们需要知道如下信息：
 
-- 当前在二进制的从低到高第 $i$ 位。换句话说，我们需要选的下标就是 $i$。
+- 当前枚举的下标 $i$。
 - 还剩下 $\textit{leftM}$ 个下标需要选。
-- $S$ 右移 $i$ 位的结果是 $x$。
+- 当前累加的 $S$，其右移 $i$ 位的结果是 $x$。
 - $S$ 还需包含恰好 $\textit{leftK}$ 个 $1$。
 
 定义 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 表示在上述情况下，剩余元素的贡献。
 
-枚举选 $j=0,1,2,\ldots, \textit{leftM}$ 个下标 $i$，那么下一个问题是
+枚举选 $j=0,1,2,\ldots,\textit{leftM}$ 个下标 $i$，接下来要解决的问题是：
 
-- 当前在二进制的从低到高第 $i+1$ 位。换句话说，我们需要选的下标就是 $i+1$。
+- 当前枚举的下标是 $i+1$。
 - 还剩下 $\textit{leftM}-j$ 个下标需要选。
-- 二进制数右移 $i$ 位的结果是 $\left\lfloor\dfrac{x+j}{2}\right\rfloor$。
-- 二进制数还需要恰好有 $\textit{leftK}-\textit{bit}$ 个 $1$。其中 $\textit{bit}=(x+j)\bmod 2$。
+- 当前累加的 $S$，其右移 $i+1$ 位的结果是 $\left\lfloor\dfrac{x+j}{2}\right\rfloor$。
+- $S$ 还需包含恰好 $\textit{leftK}-\textit{bit}$ 个 $1$，其中 $\textit{bit}=(x+j)\bmod 2$。
 
-如果 $\textit{bit}\le \textit{leftK}$，那么递归到 $r=\textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\frac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})$。把 $r$ 乘以 $\dfrac{\textit{nums}[i]^j}{j!}$，累加到 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 中，得
+如果 $\textit{bit}\le \textit{leftK}$，那么可以递归到 $r=\textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\frac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})$。把 $r$ 乘以 $\dfrac{\textit{nums}[i]^j}{j!}$，累加到 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 中，得
 
 $$
 \textit{dfs}(i,\textit{leftM},x,\textit{leftK}) = \sum_{j=0}^{\textit{leftM}} \textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\frac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})\cdot \dfrac{\textit{nums}[i]^j}{j!}
@@ -85,6 +83,10 @@ $$
 递归边界：$i=n$ 时，如果 $\textit{leftM}=0$ 且 $x$ 的二进制中恰好有 $\textit{leftK}$ 个 $1$，那么找到了一个合法序列，返回 $1$，否则返回 $0$。
 
 递归入口：$\textit{dfs}(0,m,0,k)\cdot m!$，即答案。
+
+代码实现时，预处理 $\textit{powV}[i][j] = \textit{nums}[i]^j$，从而加速计算过程。
+
+代码实现时，预处理阶乘及其逆元，从而加速计算过程，原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1avVwz5EbY/?t=32m38s)，欢迎点赞关注~
 
