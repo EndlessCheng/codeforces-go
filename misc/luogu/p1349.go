@@ -52,19 +52,15 @@ func p1349(in io.Reader, out io.Writer) {
 		Fprint(out, a1%mod1349)
 		return
 	}
-	if n == 2 {
-		Fprint(out, a2%mod1349)
-		return
-	}
 	m := matrix1349{
 		{p, q},
 		{1, 0},
 	}
-	f0 := matrix1349{
+	f2 := matrix1349{
 		{a2},
 		{a1},
 	}
-	Fprint(out, m.powMul(n-2, f0)[0][0])
+	Fprint(out, m.powMul(n-2, f2)[0][0])
 }
 
 //func main() { p1349(bufio.NewReader(os.Stdin), os.Stdout) }
