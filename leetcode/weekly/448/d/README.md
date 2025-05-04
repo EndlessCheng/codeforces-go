@@ -652,6 +652,10 @@ func magicalSum(m, k int, nums []int) int {
 - 时间复杂度：$\mathcal{O}(nm^3k)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(nm^2k)$。**注**：使用滚动数组可以优化至 $\mathcal{O}(nm + m^2k)$。其中 $\mathcal{O}(nm)$ 是 $\textit{powV}$ 的空间。
 
+## 相似题目
+
+[3343. 统计平衡排列的数目](https://leetcode.cn/problems/count-number-of-balanced-permutations/)
+
 更多相似题目，见下面动态规划题单的「**§7.6 多维 DP**」和数学题单的「**§2.2 组合计数**」。
 
 ## 分类题单
