@@ -59,8 +59,12 @@ func magicalSum(m, k int, nums []int) int {
 	}
 	var dfs func(int, int, int, int) int
 	dfs = func(i, leftM, x, leftK int) (res int) {
+		c1 := bits.OnesCount(uint(x))
+		if c1+leftM < leftK { // 可行性剪枝
+			return
+		}
 		if i == n {
-			if leftM == 0 && bits.OnesCount(uint(x)) == leftK {
+			if leftM == 0 && c1 == leftK {
 				return 1
 			}
 			return

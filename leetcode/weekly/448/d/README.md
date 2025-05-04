@@ -94,6 +94,8 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1avVwz5EbY/?t=32m38s)，欢迎点赞关注~
 
+**可行性剪枝**：设 $x$ 的二进制中有 $c_1$ 个 $1$，无论后面怎么选下标，在 $x$ 的基础上，至多增加 $\textit{leftM}$ 个 $1$。如果此时 $c_1+\textit{leftM} < \textit{leftK}$，那么这种状态一定无法得到合法序列，直接返回 $0$。
+
 ```py [sol-Python3]
 MOD = 1_000_000_007
 MX = 31
@@ -118,8 +120,11 @@ class Solution:
 
         @cache
         def dfs(i: int, left_m: int, x: int, left_k: int) -> int:
+            c1 = x.bit_count()
+            if c1 + left_m < left_k:  # 可行性剪枝
+                return 0
             if i == n:
-                return 1 if left_m == 0 and x.bit_count() == left_k else 0
+                return 1 if left_m == 0 and c1 == left_k else 0
             res = 0
             for j in range(left_m + 1):  # 枚举 I 中有 j 个下标 i
                 # 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
@@ -186,8 +191,12 @@ class Solution {
     }
 
     private long dfs(int i, int leftM, int x, int leftK, int[][] powV, int[][][][] memo) {
+        int c1 = Integer.bitCount(x);
+        if (c1 + leftM < leftK) { // 可行性剪枝
+            return 0;
+        }
         if (i == powV.length) {
-            if (leftM == 0 && Integer.bitCount(x) == leftK) {
+            if (leftM == 0 && c1 == leftK) {
                 return 1;
             }
             return 0;
@@ -255,8 +264,12 @@ public:
 
         vector memo(n, vector(m + 1, vector(m / 2 + 1, vector<int>(k + 1, -1))));
         auto dfs = [&](this auto&& dfs, int i, int left_m, int x, int left_k) -> int {
+            int c1 = popcount((uint32_t) x);
+            if (c1 + left_m < left_k) { // 可行性剪枝
+                return 0;
+            }
             if (i == n) {
-                return left_m == 0 && popcount((uint32_t) x) == left_k;
+                return left_m == 0 && c1 == left_k;
             }
             int& res = memo[i][left_m][x][left_k]; // 注意这里是引用
             if (res != -1) {
@@ -335,8 +348,12 @@ func magicalSum(m, k int, nums []int) int {
 	}
 	var dfs func(int, int, int, int) int
 	dfs = func(i, leftM, x, leftK int) (res int) {
+		c1 := bits.OnesCount(uint(x))
+		if c1+leftM < leftK { // 可行性剪枝
+			return
+		}
 		if i == n {
-			if leftM == 0 && bits.OnesCount(uint(x)) == leftK {
+			if leftM == 0 && c1 == leftK {
 				return 1
 			}
 			return
@@ -634,7 +651,7 @@ func magicalSum(m, k int, nums []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(nm^3k)$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(nm^2k)$。
+- 空间复杂度：$\mathcal{O}(nm^2k)$。**注**：使用滚动数组可以优化至 $\mathcal{O}(nm + m^2k)$。其中 $\mathcal{O}(nm)$ 是 $\textit{powV}$ 的空间。
 
 更多相似题目，见下面动态规划题单的「**§7.6 多维 DP**」和数学题单的「**§2.2 组合计数**」。
 
