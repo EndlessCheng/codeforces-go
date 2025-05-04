@@ -51,9 +51,11 @@ https://codeforces.com/problemset/problem/1634/D 2000
 https://codeforces.com/problemset/problem/1023/E 2100 网格图
 https://codeforces.com/problemset/problem/1617/D2 2400
 LC1538 找出隐藏数组中出现次数最多的元素 https://leetcode.cn/problems/guess-the-majority-in-a-hidden-array/
+https://www.luogu.com.cn/problem/P12399 最大子段和
 
 ## 随机
 
+https://codeforces.com/problemset/problem/2074/E 1600
 https://codeforces.com/problemset/problem/843/B 2000 数组 链表
 https://codeforces.com/problemset/problem/1114/E 2200 数论
 https://codeforces.com/problemset/problem/1840/G2 2500
