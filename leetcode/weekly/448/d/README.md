@@ -1,7 +1,3 @@
-状态设计 + 可重集组合数（Python/Java/C++/Go）
-
----
-
 ## 题意
 
 从 $[0,n-1]$ 中选 $m$ 个下标 $I_0,I_1,\ldots,I_{m-1}$，要求
@@ -90,24 +86,21 @@ $$
 
 递归入口：$\textit{dfs}(0,m,0,k)\cdot m!$，即答案。
 
-## 写法一：记忆化搜索
-
-原理见视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
-
 [本题视频讲解](https://www.bilibili.com/video/BV1avVwz5EbY/?t=32m38s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
 MX = 31
 
-fac = [1] * MX  # fac[i] = i!
+fac = [0] * MX  # fac[i] = i!
+fac[0] = 1
 for i in range(1, MX):
     fac[i] = fac[i - 1] * i % MOD
 
-inv_f = [1] * MX  # inv_f[i] = i!^-1
-inv_f[-1] = pow(fac[-1], MOD - 2, MOD)
-for i in range(MX - 2, -1, -1):
-    inv_f[i] = inv_f[i + 1] * (i + 1) % MOD
+inv_f = [0] * MX  # inv_f[i] = i!^-1
+inv_f[-1] = pow(fac[-1], -1, MOD)
+for i in range(MX - 1, 0, -1):
+    inv_f[i - 1] = inv_f[i] * i % MOD
 
 class Solution:
     def magicalSum(self, m: int, k: int, nums: List[int]) -> int:
@@ -117,31 +110,165 @@ class Solution:
             for j in range(1, m + 1):
                 pow_v[i][j] = pow_v[i][j - 1] * nums[i] % MOD
 
-        # 进位是从低到高的，所以 i 必须从小到大枚举
-        # x 是原始二进制数右移 i 位后的结果
         @cache
         def dfs(i: int, left_m: int, x: int, left_k: int) -> int:
             if i == n:
                 return 1 if left_m == 0 and x.bit_count() == left_k else 0
             res = 0
             for j in range(left_m + 1):  # 枚举 I 中有 j 个下标 i
-                # 这 j 个下标 i 对二进制数 x 的贡献是 j * 2^i
-                # 但由于 x 是右移 i 位后的结果，所以转化成对 x 的贡献是 j
-                bit = (x + j) & 1
+                # 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
+                # 由于 x = S >> i，转化成对 x 的贡献是 j
+                bit = (x + j) & 1  # 取最低位，提前从 left_k 中减去，其余进位到 x 中
                 if bit <= left_k:
                     r = dfs(i + 1, left_m - j, (x + j) >> 1, left_k - bit)
-                    res = (res + r * pow_v[i][j] % MOD * inv_f[j]) % MOD
-            return res
+                    res += r * pow_v[i][j] * inv_f[j]
+            return res % MOD
 
         return dfs(0, m, 0, k) * fac[m] % MOD
 ```
 
 ```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int MX = 31;
 
+    private static final long[] F = new long[MX]; // F[i] = i!
+    private static final long[] INV_F = new long[MX]; // INV_F[i] = i!^-1
+
+    static {
+        F[0] = 1;
+        for (int i = 1; i < MX; i++) {
+            F[i] = F[i - 1] * i % MOD;
+        }
+
+        INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+        for (int i = MX - 1; i > 0; i--) {
+            INV_F[i - 1] = INV_F[i] * i % MOD;
+        }
+    }
+
+    private static long pow(long x, int n) {
+        long res = 1;
+        for (; n > 0; n /= 2) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+
+    public int magicalSum(int m, int k, int[] nums) {
+        int n = nums.length;
+        int[][] powV = new int[n][m + 1];
+        for (int i = 0; i < n; i++) {
+            powV[i][0] = 1;
+            for (int j = 1; j <= m; j++) {
+                powV[i][j] = (int) ((long) powV[i][j - 1] * nums[i] % MOD);
+            }
+        }
+
+        int[][][][] memo = new int[n][m + 1][m / 2 + 1][k + 1];
+        for (int[][][] a : memo) {
+            for (int[][] b : a) {
+                for (int[] c : b) {
+                    Arrays.fill(c, -1);
+                }
+            }
+        }
+        return (int) (dfs(0, m, 0, k, powV, memo) * F[m] % MOD);
+    }
+
+    private long dfs(int i, int leftM, int x, int leftK, int[][] powV, int[][][][] memo) {
+        if (i == powV.length) {
+            if (leftM == 0 && Integer.bitCount(x) == leftK) {
+                return 1;
+            }
+            return 0;
+        }
+        if (memo[i][leftM][x][leftK] != -1) {
+            return memo[i][leftM][x][leftK];
+        }
+        long res = 0;
+        for (int j = 0; j <= leftM; j++) {
+            int bit = (x + j) & 1;
+            if (bit <= leftK) {
+                long r = dfs(i + 1, leftM - j, (x + j) >> 1, leftK - bit, powV, memo);
+                res = (res + r * powV[i][j] % MOD * INV_F[j]) % MOD;
+            }
+        }
+        return memo[i][leftM][x][leftK] = (int) res;
+    }
+}
 ```
 
 ```cpp [sol-C++]
+const int MOD = 1'000'000'007;
+const int MX = 31;
 
+long long F[MX]; // F[i] = i!
+long long INV_F[MX]; // INV_F[i] = i!^-1
+
+long long pow(long long x, int n) {
+    long long res = 1;
+    for (; n; n /= 2) {
+        if (n % 2) {
+            res = res * x % MOD;
+        }
+        x = x * x % MOD;
+    }
+    return res;
+}
+
+auto init = [] {
+    F[0] = 1;
+    for (int i = 1; i < MX; i++) {
+        F[i] = F[i - 1] * i % MOD;
+    }
+
+    INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+    for (int i = MX - 1; i; i--) {
+        INV_F[i - 1] = INV_F[i] * i % MOD;
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    int magicalSum(int m, int k, vector<int>& nums) {
+        int n = nums.size();
+        vector pow_v(n, vector<int>(m + 1));
+        for (int i = 0; i < n; i++) {
+            pow_v[i][0] = 1;
+            for (int j = 1; j <= m; j++) {
+                pow_v[i][j] = 1LL * pow_v[i][j - 1] * nums[i] % MOD;
+            }
+        }
+
+        vector memo(n, vector(m + 1, vector(m / 2 + 1, vector<int>(k + 1, -1))));
+        auto dfs = [&](this auto&& dfs, int i, int left_m, int x, int left_k) -> int {
+            if (i == n) {
+                return left_m == 0 && popcount((uint32_t) x) == left_k;
+            }
+            int& res = memo[i][left_m][x][left_k]; // 注意这里是引用
+            if (res != -1) {
+                return res;
+            }
+            res = 0;
+            for (int j = 0; j <= left_m; j++) { // 枚举 I 中有 j 个下标 i
+                // 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
+                // 由于 x = S >> i，转化成对 x 的贡献是 j
+                int bit = (x + j) & 1; // 取最低位，提前从 leftK 中减去，其余进位到 x 中
+                if (bit <= left_k) {
+                    int r = dfs(i + 1, left_m - j, (x + j) >> 1, left_k - bit);
+                    res = (res + 1LL * r * pow_v[i][j] % MOD * INV_F[j]) % MOD;
+                }
+            }
+            return res;
+        };
+        return 1LL * dfs(0, m, 0, k) * F[m] % MOD;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -156,6 +283,7 @@ func init() {
 	for i := 1; i < mx; i++ {
 		fac[i] = fac[i-1] * i % mod
 	}
+
 	invF[mx-1] = pow(fac[mx-1], mod-2)
 	for i := mx - 1; i > 0; i-- {
 		invF[i-1] = invF[i] * i % mod
@@ -197,8 +325,6 @@ func magicalSum(m, k int, nums []int) int {
 			}
 		}
 	}
-	// 进位是从低到高的，所以 i 必须从小到大枚举
-	// x 是原始二进制数右移 i 位后的结果
 	var dfs func(int, int, int, int) int
 	dfs = func(i, leftM, x, leftK int) (res int) {
 		if i == n {
@@ -212,9 +338,9 @@ func magicalSum(m, k int, nums []int) int {
 			return *p
 		}
 		for j := range leftM + 1 { // 枚举 I 中有 j 个下标 i
-			// 这 j 个下标 i 对二进制数 x 的贡献是 j * 2^i
-			// 但由于 x 是右移 i 位后的结果，所以转化成对二进制数 x 的贡献是 j
-			bit := (x + j) & 1
+			// 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
+			// 由于 x = S >> i，转化成对 x 的贡献是 j
+			bit := (x + j) & 1 // 取最低位，提前从 leftK 中减去，其余进位到 x 中
 			if bit <= leftK {
 				r := dfs(i+1, leftM-j, (x+j)>>1, leftK-bit)
 				res = (res + r*powV[i][j]%mod*invF[j]) % mod
@@ -225,24 +351,6 @@ func magicalSum(m, k int, nums []int) int {
 	}
 	return dfs(0, m, 0, k) * fac[m] % mod
 }
-```
-
-## 写法二：递推
-
-```py [sol-Python3]
-
-```
-
-```java [sol-Java]
-
-```
-
-```cpp [sol-C++]
-
-```
-
-```go [sol-Go]
-
 ```
 
 #### 复杂度分析
