@@ -44,6 +44,54 @@ func magicalSum(m, k int, nums []int) int {
 		}
 	}
 
+	f := make([][][][]int, n+1)
+	for i := range f {
+		f[i] = make([][][]int, m+1)
+		for j := range f[i] {
+			f[i][j] = make([][]int, m/2+1)
+			for x := range f[i][j] {
+				f[i][j][x] = make([]int, k+1)
+			}
+		}
+	}
+	for x := range m/2 + 1 {
+		c1 := bits.OnesCount(uint(x))
+		if c1 <= k {
+			f[n][0][x][c1] = 1
+		}
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		for leftM := range m + 1 {
+			for x := range m/2 + 1 {
+				for leftK := range k + 1 {
+					res := 0
+					for j := range min(leftM, m-x) + 1 {
+						bit := (x + j) & 1
+						if bit <= leftK {
+							r := f[i+1][leftM-j][(x+j)>>1][leftK-bit]
+							res = (res + r*powV[i][j]%mod*invF[j]) % mod
+						}
+					}
+					f[i][leftM][x][leftK] = res
+				}
+			}
+		}
+	}
+	return f[0][m][0][k] * fac[m] % mod
+}
+
+func magicalSum1(m, k int, nums []int) int {
+	n := len(nums)
+	powV := make([][]int, n)
+	for i, v := range nums {
+		powV[i] = make([]int, m+1)
+		powV[i][0] = 1
+		for j := 1; j <= m; j++ {
+			powV[i][j] = powV[i][j-1] * v % mod
+		}
+	}
+
 	memo := make([][][][]int, n)
 	for i := range memo {
 		memo[i] = make([][][]int, m+1)

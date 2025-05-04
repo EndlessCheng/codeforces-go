@@ -88,6 +88,10 @@ $$
 
 代码实现时，预处理阶乘及其逆元，从而加速计算过程，原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
+## 写法一：记忆化搜索
+
+原理见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
+
 [本题视频讲解](https://www.bilibili.com/video/BV1avVwz5EbY/?t=32m38s)，欢迎点赞关注~
 
 ```py [sol-Python3]
@@ -352,6 +356,276 @@ func magicalSum(m, k int, nums []int) int {
 		return
 	}
 	return dfs(0, m, 0, k) * fac[m] % mod
+}
+```
+
+## 写法二：递推
+
+把记忆化搜索 1:1 翻译成递推。
+
+DP 数组的初始值怎么写？就是记忆化搜索的递归边界。
+
+```py [sol-Python3]
+MOD = 1_000_000_007
+MX = 31
+
+fac = [0] * MX  # fac[i] = i!
+fac[0] = 1
+for i in range(1, MX):
+    fac[i] = fac[i - 1] * i % MOD
+
+inv_f = [0] * MX  # inv_f[i] = i!^-1
+inv_f[-1] = pow(fac[-1], -1, MOD)
+for i in range(MX - 1, 0, -1):
+    inv_f[i - 1] = inv_f[i] * i % MOD
+
+class Solution:
+    def magicalSum(self, m: int, k: int, nums: List[int]) -> int:
+        n = len(nums)
+        pow_v = [[1] * (m + 1) for _ in range(n)]
+        for i in range(n):
+            for j in range(1, m + 1):
+                pow_v[i][j] = pow_v[i][j - 1] * nums[i] % MOD
+
+        f = [[[[0] * (k + 1) for _ in range(m // 2 + 1)] for _ in range(m + 1)] for _ in range(n + 1)]
+        for x in range(m // 2 + 1):
+            c1 = x.bit_count()
+            if c1 <= k:
+                f[n][0][x][c1] = 1
+
+        for i in range(n - 1, -1, -1):
+            for left_m in range(m + 1):
+                for x in range(m // 2 + 1):
+                    for left_k in range(k + 1):
+                        res = 0
+                        for j in range(min(left_m, m - x) + 1):
+                            bit = (x + j) & 1
+                            if bit <= left_k:
+                                r = f[i + 1][left_m - j][(x + j) >> 1][left_k - bit]
+                                res += r * pow_v[i][j] * inv_f[j]
+                        f[i][left_m][x][left_k] = res % MOD
+        return f[0][m][0][k] * fac[m] % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int MX = 31;
+
+    private static final long[] F = new long[MX]; // F[i] = i!
+    private static final long[] INV_F = new long[MX]; // INV_F[i] = i!^-1
+
+    static {
+        F[0] = 1;
+        for (int i = 1; i < MX; i++) {
+            F[i] = F[i - 1] * i % MOD;
+        }
+
+        INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+        for (int i = MX - 1; i > 0; i--) {
+            INV_F[i - 1] = INV_F[i] * i % MOD;
+        }
+    }
+
+    private static long pow(long x, int n) {
+        long res = 1;
+        for (; n > 0; n /= 2) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+
+    public int magicalSum(int m, int k, int[] nums) {
+        int n = nums.length;
+        int[][] powV = new int[n][m + 1];
+        for (int i = 0; i < n; i++) {
+            powV[i][0] = 1;
+            for (int j = 1; j <= m; j++) {
+                powV[i][j] = (int) ((long) powV[i][j - 1] * nums[i] % MOD);
+            }
+        }
+
+        int[][][][] f = new int[n + 1][m + 1][m / 2 + 1][k + 1];
+        for (int x = 0; x <= m / 2; x++) {
+            int c1 = Integer.bitCount(x);
+            if (c1 <= k) {
+                f[n][0][x][c1] = 1;
+            }
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int leftM = 0; leftM <= m; leftM++) {
+                for (int x = 0; x <= m / 2; x++) {
+                    for (int leftK = 0; leftK <= k; leftK++) {
+                        long res = 0;
+                        for (int j = 0; j <= Math.min(leftM, m - x); j++) {
+                            int bit = (x + j) & 1;
+                            if (bit <= leftK) {
+                                long r = f[i + 1][leftM - j][(x + j) >> 1][leftK - bit];
+                                res = (res + r * powV[i][j] % MOD * INV_F[j]) % MOD;
+                            }
+                        }
+                        f[i][leftM][x][leftK] = (int) res;
+                    }
+                }
+            }
+        }
+        return (int) ((long) f[0][m][0][k] * F[m] % MOD);
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MOD = 1'000'000'007;
+const int MX = 31;
+
+long long F[MX]; // F[i] = i!
+long long INV_F[MX]; // INV_F[i] = i!^-1
+
+long long pow(long long x, int n) {
+    long long res = 1;
+    for (; n; n /= 2) {
+        if (n % 2) {
+            res = res * x % MOD;
+        }
+        x = x * x % MOD;
+    }
+    return res;
+}
+
+auto init = [] {
+    F[0] = 1;
+    for (int i = 1; i < MX; i++) {
+        F[i] = F[i - 1] * i % MOD;
+    }
+
+    INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+    for (int i = MX - 1; i; i--) {
+        INV_F[i - 1] = INV_F[i] * i % MOD;
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    int magicalSum(int m, int k, vector<int>& nums) {
+        int n = nums.size();
+        vector pow_v(n, vector<int>(m + 1));
+        for (int i = 0; i < n; i++) {
+            pow_v[i][0] = 1;
+            for (int j = 1; j <= m; j++) {
+                pow_v[i][j] = 1LL * pow_v[i][j - 1] * nums[i] % MOD;
+            }
+        }
+
+        vector f(n + 1, vector(m + 1, vector(m / 2 + 1, vector<int>(k + 1))));
+        for (uint32_t x = 0; x <= m / 2; x++) {
+            int c1 = popcount(x);
+            if (c1 <= k) {
+                f[n][0][x][c1] = 1;
+            }
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int left_m = 0; left_m <= m; left_m++) {
+                for (int x = 0; x <= m / 2; x++) {
+                    for (int left_k = 0; left_k <= k; left_k++) {
+                        long long res = 0;
+                        for (int j = 0; j <= min(left_m, m - x); j++) {
+                            int bit = (x + j) & 1;
+                            if (bit <= left_k) {
+                                int r = f[i + 1][left_m - j][(x + j) >> 1][left_k - bit];
+                                res = (res + 1LL * r * pow_v[i][j] % MOD * INV_F[j]) % MOD;
+                            }
+                        }
+                        f[i][left_m][x][left_k] = res;
+                    }
+                }
+            }
+        }
+        return 1LL * f[0][m][0][k] * F[m] % MOD;
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 1_000_000_007
+const mx = 31
+
+var fac [mx]int  // fac[i] = i!
+var invF [mx]int // invF[i] = i!^-1
+
+func init() {
+	fac[0] = 1
+	for i := 1; i < mx; i++ {
+		fac[i] = fac[i-1] * i % mod
+	}
+	invF[mx-1] = pow(fac[mx-1], mod-2)
+	for i := mx - 1; i > 0; i-- {
+		invF[i-1] = invF[i] * i % mod
+	}
+}
+
+func pow(x, n int) int {
+	res := 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
+		}
+		x = x * x % mod
+	}
+	return res
+}
+
+func magicalSum(m, k int, nums []int) int {
+	n := len(nums)
+	powV := make([][]int, n)
+	for i, v := range nums {
+		powV[i] = make([]int, m+1)
+		powV[i][0] = 1
+		for j := 1; j <= m; j++ {
+			powV[i][j] = powV[i][j-1] * v % mod
+		}
+	}
+
+	f := make([][][][]int, n+1)
+	for i := range f {
+		f[i] = make([][][]int, m+1)
+		for j := range f[i] {
+			f[i][j] = make([][]int, m/2+1)
+			for x := range f[i][j] {
+				f[i][j][x] = make([]int, k+1)
+			}
+		}
+	}
+	for x := range m/2 + 1 {
+		c1 := bits.OnesCount(uint(x))
+		if c1 <= k {
+			f[n][0][x][c1] = 1
+		}
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		for leftM := range m + 1 {
+			for x := range m/2 + 1 {
+				for leftK := range k + 1 {
+					res := 0
+					for j := range min(leftM, m-x) + 1 {
+						bit := (x + j) & 1
+						if bit <= leftK {
+							r := f[i+1][leftM-j][(x+j)>>1][leftK-bit]
+							res = (res + r*powV[i][j]%mod*invF[j]) % mod
+						}
+					}
+					f[i][leftM][x][leftK] = res
+				}
+			}
+		}
+	}
+	return f[0][m][0][k] * fac[m] % mod
 }
 ```
 
