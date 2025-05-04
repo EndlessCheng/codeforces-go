@@ -177,10 +177,8 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 	if n == 1 {
 		return a1 % mod
 	}
-	if n == 2 {
-		return a2 % mod
-	}
-	// 用打家劫舍的状态机写法理解，其中 f[i][0] 表示 i 可选可不选，f[i][1] 表示 i 一定不能选
+	// 变形得到 [f[n], f[n-1]] = [[p, q], [1, 0]] = [f[n-1], f[n-2]]
+	// 也可以用打家劫舍的状态机写法理解，其中 f[i][0] 表示 i 可选可不选，f[i][1] 表示 i 一定不能选
 	// f[i][0] += p*f[i-1][0] 不选 i
 	// f[i][0] += q*f[i-1][1] 选 i，那么 i-1 一定不能选
 	// f[i][1] = f[i-1][0]
@@ -189,13 +187,13 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 		{p, q},
 		{1, 0},
 	}
-	// f0 怎么写可以代入 n=3 算一算
-	f0 := matrix{
+	f2 := matrix{
 		{a2},
 		{a1},
 	}
-	// 结果是个列向量 [f[n-2][0] f[n-2][1]]，取 f[n-2][0]
-	return m.powMul(n-2, f0)[0][0]
+	// 结果是列向量 [f[n], f[n-1]]，取第一项
+	fn := m.powMul(n-2, f2)
+	return fn[0][0]
 }
 
 func newIdentityMatrix(n int) matrix {
