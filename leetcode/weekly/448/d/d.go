@@ -16,6 +16,7 @@ func init() {
 	for i := 1; i < mx; i++ {
 		fac[i] = fac[i-1] * i % mod
 	}
+
 	invF[mx-1] = pow(fac[mx-1], mod-2)
 	for i := mx - 1; i > 0; i-- {
 		invF[i-1] = invF[i] * i % mod
