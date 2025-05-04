@@ -61,7 +61,7 @@ $$
 - 当前枚举的下标 $i$。
 - 还剩下 $\textit{leftM}$ 个下标需要选。
 - 当前累加的 $S$，其右移 $i$ 位的结果是 $x$。
-- $S$ 还需包含恰好 $\textit{leftK}$ 个 $1$。
+- 去掉右移掉的 $1$ 后，$S$ 还需包含恰好 $\textit{leftK}$ 个 $1$。
 
 定义 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 表示在上述情况下，剩余元素的贡献。
 
@@ -70,7 +70,7 @@ $$
 - 当前枚举的下标是 $i+1$。
 - 还剩下 $\textit{leftM}-j$ 个下标需要选。
 - 当前累加的 $S$，其右移 $i+1$ 位的结果是 $\left\lfloor\dfrac{x+j}{2}\right\rfloor$。
-- $S$ 还需包含恰好 $\textit{leftK}-\textit{bit}$ 个 $1$，其中 $\textit{bit}=(x+j)\bmod 2$。
+- 去掉右移掉的 $1$ 后，$S$ 还需包含恰好 $\textit{leftK}-\textit{bit}$ 个 $1$，其中 $\textit{bit}=(x+j)\bmod 2$。
 
 如果 $\textit{bit}\le \textit{leftK}$，那么可以递归到 $r=\textit{dfs}(i+1, \textit{leftM}-j,\left\lfloor\frac{x+j}{2}\right\rfloor,\textit{leftK}-\textit{bit})$。把 $r$ 乘以 $\dfrac{\textit{nums}[i]^j}{j!}$，累加到 $\textit{dfs}(i,\textit{leftM},x,\textit{leftK})$ 中，得
 
@@ -81,6 +81,8 @@ $$
 其中枚举的 $j$ 还需要满足 $\textit{bit}\le \textit{leftK}$。
 
 递归边界：$i=n$ 时，如果 $\textit{leftM}=0$ 且 $x$ 的二进制中恰好有 $\textit{leftK}$ 个 $1$，那么找到了一个合法序列，返回 $1$，否则返回 $0$。
+
+> **注**：也可以在 $\textit{leftM}=0$ 时提前返回，但由于后续枚举的 $j$ 只能为 $0$，循环次数都是 $1$，这个优化不显著。
 
 递归入口：$\textit{dfs}(0,m,0,k)\cdot m!$，即答案。
 
@@ -196,10 +198,7 @@ class Solution {
             return 0;
         }
         if (i == powV.length) {
-            if (leftM == 0 && c1 == leftK) {
-                return 1;
-            }
-            return 0;
+            return leftM == 0 && c1 == leftK ? 1 : 0;
         }
         if (memo[i][leftM][x][leftK] != -1) {
             return memo[i][leftM][x][leftK];
