@@ -1,17 +1,19 @@
 初始化 $2^n\times 2^n$ 的答案矩阵 $a$，初始化 $\textit{val}=0$。
 
-定义 $\textit{dfs}(u,d,l,r)$ 表示填充行号在 $[u,d)$，列号在 $[l,r)$ 中的数字。
+定义 $\textit{dfs}(u,d,l,r)$ 表示填充行号在 $[u,d)$，列号在 $[l,r)$ 中的子矩阵。
 
-设 $m = \dfrac{d-u}{2}$。按照从小到大的顺序，依次递归填充四个象限：
+设 $m = \dfrac{d-u}{2}$。按照从小到大的顺序，依次递归填充四个象限（四等分矩阵）：
 
 - 填充右上角象限 $\textit{dfs}(u,u+m,l+m,r)$。
 - 填充右下角象限 $\textit{dfs}(u+m,d,l+m,r)$。
 - 填充左下角象限 $\textit{dfs}(u+m,d,l,l+m)$。
 - 填充左上角象限 $\textit{dfs}(u,u+m,l,l+m)$。
 
-递归边界：如果 $d-u=1$，填充 $a[u][l]=\textit{val}$，然后把 $\textit{val}$ 加一。
+递归边界：如果 $d-u=1$，只有一个格子，填充 $a[u][l]=\textit{val}$，然后把 $\textit{val}$ 加一。
 
 递归入口：$\textit{dfs}(0,2^n,0,2^n)$。
+
+**注**：由于矩阵的长宽都是 $2$ 的幂，所以每一步四等分，矩阵的长宽都可以被 $2$ 整除，不会出现无法四等分的情况。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1avVwz5EbY/?t=3m13s)，欢迎点赞关注~
 
@@ -112,7 +114,7 @@ func specialGrid(n int) [][]int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(4^n)$。
+- 时间复杂度：$\mathcal{O}(4^n)$。每个格子恰好访问一次。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。递归需要 $\mathcal{O}(n)$ 的栈空间。
 
 ## 分类题单

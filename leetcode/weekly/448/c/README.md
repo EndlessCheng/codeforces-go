@@ -1,24 +1,24 @@
-**关键思路**：一段连续的合并操作执行完后，合并的时间是 $\textit{time}$ 的一个连续**子数组**，我们需要知道子数组的左端点，方便计算合并后的时间。
+**关键思路**：一段连续的合并操作执行完后，合并到 $\textit{time}[i]$ 的时间是 $\textit{time}$ 的一个连续**子数组**，我们需要知道子数组的左端点是多少（右端点是 $i$），从而知道合并后的时间（每公里所需时间）是多少。
 
 从左到右模拟旅行的过程。我们需要知道如下信息：
 
-- 还剩下 $\textit{leftK}$ 次合并操作可以用。
+- 还需要执行 $\textit{leftK}$ 次合并操作。
 - 当前在 $\textit{position}[i]$。
 - 合并到 $\textit{time}[i]$ 的这段时间的左端点为 $\textit{pre}$。
 
-定义 $\textit{dfs}(\textit{leftK},i,\textit{pre})$ 表示在上述情况下，完成剩余旅程需要的最小时间。
+定义 $\textit{dfs}(\textit{leftK},i,\textit{pre})$ 表示在上述情况下，完成剩余旅程需要的最小耗时。
 
 ⚠**注意**：每段路程的耗时是两部分的乘积：合并到 $\textit{time}[i]$ 的时间，当前位置到下一个位置的距离。**这两个数据相对 $i$ 是一左一右的关系，并不是都在 $i$ 的右边**！
 
-枚举合并后，下一个位置的下标 $\textit{nxt}=i+1,i+2,\ldots, \min(n-1, i+1+\textit{leftK})$，问题变成：
+枚举下一个位置的下标 $\textit{nxt}=i+1,i+2,\ldots, \min(n-1, i+1+\textit{leftK})$，这意味着我们执行了 $\textit{nxt}-i-1$ 次合并操作，问题变成：
 
-- 还剩下 $\textit{leftK} - (\textit{nxt}-i-1)$ 次合并操作可以用。
+- 还需要执行 $\textit{leftK} - (\textit{nxt}-i-1)$ 次合并操作。
 - 当前在 $\textit{position}[\textit{nxt}]$。
-- 合并到 $\textit{time}[\textit{nxt}]$ 的这段时间的左端点为 $i+1$。注意我们删除的时间下标范围是 $[i+1, \textit{nxt}-1]$，这段时间合并到 $\textit{time}[\textit{nxt}]$ 中。所以合并后的下标范围为 $[i+1, \textit{nxt}]$。
+- 合并到 $\textit{time}[\textit{nxt}]$ 的这段时间的左端点为 $i+1$。注意删除掉的下标范围是 $[i+1, \textit{nxt}-1]$，这段时间合并到 $\textit{time}[\textit{nxt}]$ 中。所以（对于下一趟路程来说）合并后的时间的下标范围为 $[i+1, \textit{nxt}]$。
 
-子问题为 $\textit{dfs}(\textit{leftK} - (\textit{nxt}-i-1), \textit{nxt}, i+1)$。
+子问题为在上述情况下，完成剩余旅程需要的最小耗时，即 $\textit{dfs}(\textit{leftK} - (\textit{nxt}-i-1), \textit{nxt}, i+1)$。
 
-设 $s$ 为 $\textit{time}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)，对于当前的 $\textit{time}[i]$ 来说，$[\textit{pre},i]$ 合并之后，$\textit{time}[i]$ 变成 $s[i+1] - s[\textit{pre}]$。从 $i$ 到 $\textit{nxt}$，花费的时间为 $(\textit{position}[\textit{nxt}] - \textit{position}[i])\cdot (s[i+1] - s[\textit{pre}])$。
+设 $s$ 为 $\textit{time}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)，对于当前的 $\textit{time}[i]$ 来说，$[\textit{pre},i]$ 合并之后，$\textit{time}[i]$ 变成 $s[i+1] - s[\textit{pre}]$。从 $i$ 到 $\textit{nxt}$，耗时为 $(\textit{position}[\textit{nxt}] - \textit{position}[i])\cdot (s[i+1] - s[\textit{pre}])$。
 
 取最小值，得
 
@@ -28,7 +28,7 @@ $$
 
 递归边界：$\textit{dfs}(0,n-1,\textit{pre})=0$，其余 $\textit{dfs}(\textit{leftK},n-1,\textit{pre})=\infty$。
 
-递归入口：$\textit{dfs}(k,0,0)$，即答案。
+递归入口：$\textit{dfs}(k,0,0)$，即答案。这里 $\textit{pre}$ 设为 $0$ 是因为第一趟路程的每公里所需时间一定是 $\textit{time}[0]$。
 
 ## 写法一：记忆化搜索
 
@@ -44,7 +44,7 @@ class Solution:
         def dfs(left_k: int, i: int, pre: int) -> int:
             if i == n - 1:
                 return inf if left_k else 0
-            t = s[i + 1] - s[pre]
+            t = s[i + 1] - s[pre]  # 合并到 time[i] 的时间
             return min(dfs(left_k - (nxt - i - 1), nxt, i + 1) + (position[nxt] - position[i]) * t
                        for nxt in range(i + 1, min(n, i + 2 + left_k)))
         return dfs(k, 0, 0)
@@ -54,7 +54,7 @@ class Solution:
 class Solution {
     public int minTravelTime(int l, int n, int k, int[] position, int[] time) {
         int[] s = new int[n];
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n - 1; i++) { // time[n-1] 用不到
             s[i + 1] = s[i] + time[i];
         }
 
@@ -65,13 +65,13 @@ class Solution {
     private int dfs(int leftK, int i, int pre, int[] position, int[] s, int[][][] memo) {
         int n = position.length;
         if (i == n - 1) {
-            return leftK > 0 ? Integer.MAX_VALUE / 2 : 0;
+            return leftK > 0 ? Integer.MAX_VALUE / 2 : 0; // 除以 2，避免下面计算 r 的地方加法溢出
         }
         if (memo[leftK][i][pre] > 0) {
             return memo[leftK][i][pre];
         }
         int res = Integer.MAX_VALUE;
-        int t = s[i + 1] - s[pre];
+        int t = s[i + 1] - s[pre]; // 合并到 time[i] 的时间
         for (int nxt = i + 1; nxt < Math.min(n, i + 2 + leftK); nxt++) {
             int r = dfs(leftK - (nxt - i - 1), nxt, i + 1, position, s, memo) + (position[nxt] - position[i]) * t;
             res = Math.min(res, r);
@@ -86,7 +86,7 @@ class Solution {
 public:
     int minTravelTime(int l, int n, int k, vector<int>& position, vector<int>& time) {
         vector<int> s(n);
-        partial_sum(time.begin(), time.end() - 1, s.begin() + 1);
+        partial_sum(time.begin(), time.end() - 1, s.begin() + 1); // time[n-1] 用不到
 
         vector memo(k + 1, vector(n - 1, vector<int>(n - 1)));
         auto dfs = [&](this auto&& dfs, int left_k, int i, int pre) -> int {
@@ -98,7 +98,7 @@ public:
                 return res;
             }
             res = INT_MAX;
-            int t = s[i + 1] - s[pre];
+            int t = s[i + 1] - s[pre]; // 合并到 time[i] 的时间
             for (int nxt = i + 1; nxt < min(n, i + 2 + left_k); nxt++) {
                 res = min(res, dfs(left_k - (nxt - i - 1), nxt, i + 1) + (position[nxt] - position[i]) * t);
             }
@@ -112,7 +112,7 @@ public:
 ```go [sol-Go]
 func minTravelTime(l, n, k int, position, time []int) int {
 	s := make([]int, n)
-	for i, t := range time[:n-1] {
+	for i, t := range time[:n-1] { // time[n-1] 用不到
 		s[i+1] = s[i] + t
 	}
 
@@ -136,7 +136,7 @@ func minTravelTime(l, n, k int, position, time []int) int {
 			return *p
 		}
 		res := math.MaxInt
-		t := s[i+1] - s[pre]
+		t := s[i+1] - s[pre] // 合并到 time[i] 的时间
 		for nxt := i + 1; nxt < min(n, i+2+leftK); nxt++ {
 			res = min(res, dfs(leftK-(nxt-i-1), nxt, i+1)+(position[nxt]-position[i])*t)
 		}
@@ -148,6 +148,10 @@ func minTravelTime(l, n, k int, position, time []int) int {
 ```
 
 ## 写法二：递推
+
+把记忆化搜索 1:1 翻译成递推。
+
+DP 数组的初始值怎么写？就是记忆化搜索的递归边界。
 
 ```py [sol-Python3]
 class Solution:
