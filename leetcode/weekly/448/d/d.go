@@ -57,8 +57,6 @@ func magicalSum(m, k int, nums []int) int {
 			}
 		}
 	}
-	// 进位是从低到高的，所以 i 必须从小到大枚举
-	// x 是原始二进制数右移 i 位后的结果
 	var dfs func(int, int, int, int) int
 	dfs = func(i, leftM, x, leftK int) (res int) {
 		if i == n {
@@ -72,9 +70,9 @@ func magicalSum(m, k int, nums []int) int {
 			return *p
 		}
 		for j := range leftM + 1 { // 枚举 I 中有 j 个下标 i
-			// 这 j 个下标 i 对二进制数 x 的贡献是 j * 2^i
-			// 但由于 x 是右移 i 位后的结果，所以转化成对二进制数 x 的贡献是 j
-			bit := (x + j) & 1
+			// 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
+			// 由于 x = S >> i，转化成对 x 的贡献是 j
+			bit := (x + j) & 1 // 取最低位，提前从 leftK 中减去，其余进位到 x 中
 			if bit <= leftK {
 				r := dfs(i+1, leftM-j, (x+j)>>1, leftK-bit)
 				res = (res + r*powV[i][j]%mod*invF[j]) % mod
