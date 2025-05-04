@@ -68,6 +68,7 @@ https://codeforces.com/problemset/problem/1763/D 2200 推荐 分类讨论
 https://codeforces.com/problemset/problem/1946/E 2200 排列
 https://codeforces.com/problemset/problem/1204/E 2300 推荐
 https://codeforces.com/problemset/problem/1342/E 2300
+https://codeforces.com/problemset/problem/2077/C 2300
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
 https://codeforces.com/problemset/problem/1608/D 2400
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
@@ -105,9 +106,10 @@ todo 十二重计数法 https://www.luogu.com.cn/problem/P5824
 todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-iv-zu-ge-ji-shuo
 一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736 https://zhuanlan.zhihu.com/p/82241906
-递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
-上项求和 C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
-上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m)
+递推式 C(n, k) = C(n-1, k-1) + C(n-1, k)
+把递推式中的 C(n-1, k-1) 展开成 C(n-2, k-2) + C(n-2, k-1)，不断展开，可以得到如下两个恒等式
+平行求和法 C(n, 0) + C(n+1, 1) + ... + C(n+k, k) = C(n+k+1, k)
+上指标求和 C(n, n) + C(n+1, n) + ... + C(n+k, n) = C(n+k+1, k)
    https://atcoder.jp/contests/abc154/tasks/abc154_f
    https://codeforces.com/contest/1696/problem/E
    https://codeforces.com/contest/1967/problem/C
@@ -416,8 +418,11 @@ func (c *comb) p(n, k int) int {
 // https://codeforces.com/problemset/problem/449/D 2400 与 SOS DP 结合 
 // https://codeforces.com/problemset/problem/1007/B 2400 不重不漏 
 // https://codeforces.com/problemset/problem/1591/F 2400 辅助思考 DP 
+// https://codeforces.com/problemset/problem/1043/F 2500 DP
 // https://codeforces.com/problemset/problem/1400/G 2600
 // https://atcoder.jp/contests/arc115/tasks/arc115_e 辅助思考 DP 
+// https://www.luogu.com.cn/problem/P2567 暴搜+优化搜索顺序
+// https://www.luogu.com.cn/problem/P5505
 // todo https://www.luogu.com.cn/problem/P1450
 func solveInclusionExclusion(a []int) int {
 	ans := 0 // 无限制时的答案，根据题目修改

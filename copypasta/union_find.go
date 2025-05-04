@@ -120,52 +120,52 @@ func _(n int) {
 	_ = find
 }
 
-type UnionFind struct {
-	Fa     []int
-	Groups int // 连通分量个数
+type unionFind struct {
+	fa     []int
+	groups int // 连通分量个数
 }
 
-func NewUnionFind(n int) UnionFind {
+func newUnionFind(n int) unionFind {
 	fa := make([]int, n) // n+1
 	for i := range fa {
 		fa[i] = i
 	}
-	return UnionFind{fa, n}
+	return unionFind{fa, n}
 }
 
 // 非递归版本
-func (u UnionFind) Find(x int) int {
+func (u unionFind) find(x int) int {
 	root := x
-	for u.Fa[root] != root {
-		root = u.Fa[root]
+	for u.fa[root] != root {
+		root = u.fa[root]
 	}
-	for u.Fa[x] != root {
-		u.Fa[x], x = root, u.Fa[x]
+	for u.fa[x] != root {
+		u.fa[x], x = root, u.fa[x]
 	}
 	return root
 }
 
 // 递归版本
-func (u UnionFind) FindR(x int) int {
-	if u.Fa[x] != x {
-		u.Fa[x] = u.FindR(u.Fa[x])
+func (u unionFind) findR(x int) int {
+	if u.fa[x] != x {
+		u.fa[x] = u.findR(u.fa[x])
 	}
-	return u.Fa[x]
+	return u.fa[x]
 }
 
 // newRoot = -1 表示未发生合并
-func (u *UnionFind) Merge(from, to int) (newRoot int) {
-	x, y := u.Find(from), u.Find(to)
+func (u *unionFind) merge(from, to int) (newRoot int) {
+	x, y := u.find(from), u.find(to)
 	if x == y {
 		return -1
 	}
-	u.Fa[x] = y
-	u.Groups--
+	u.fa[x] = y
+	u.groups--
 	return y
 }
 
-func (u UnionFind) Same(x, y int) bool {
-	return u.Find(x) == u.Find(y)
+func (u unionFind) same(x, y int) bool {
+	return u.find(x) == u.find(y)
 }
 
 // 以下代码可用于比赛时复制
@@ -196,10 +196,11 @@ func _(n int) {
 	}
 
 	{
-		// 哈希表版本离散化版本
+		// 哈希表并查集
+		// https://www.luogu.com.cn/problem/P1955
 		// LC947 https://leetcode.cn/problems/most-stones-removed-with-same-row-or-column/
 		// https://codeforces.com/problemset/problem/506/D 2400
-		// class 版本见 https://codeforces.com/problemset/submission/506/247878263
+		// 类写法见 https://codeforces.com/problemset/submission/506/247878263
 		fa := map[int]int{}
 		groups := 0
 		var find func(int) int
@@ -479,7 +480,9 @@ func _(n int) {
 // 模板题 https://codeforces.com/problemset/problem/1850/H 1700
 //       https://codeforces.com/problemset/problem/1074/D 2400? 1700!
 //       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
-// https://www.luogu.com.cn/problem/P2024 食物链
+// https://www.luogu.com.cn/problem/P2024 [NOI2001] 食物链
+// https://www.luogu.com.cn/problem/P1955 [NOI2015] 程序自动分析
+// https://www.luogu.com.cn/problem/P5937
 // https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J 种类并查集：不能构成二分图的第一条边 
 // https://codeforces.com/problemset/problem/1594/D 1700 种类并查集
 // https://codeforces.com/problemset/problem/766/D 2000 种类并查集

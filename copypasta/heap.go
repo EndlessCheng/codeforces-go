@@ -84,8 +84,10 @@ https://atcoder.jp/contests/abc249/tasks/abc249_f 1786=CF2062
 https://codeforces.com/problemset/problem/1428/E 2200 用堆来不断修正最优决策
 https://atcoder.jp/contests/aising2020/tasks/aising2020_e 2133=CF2324 洛谷 P2949 的加强版
 https://codeforces.com/problemset/problem/865/D 2400 股票买卖
+https://codeforces.com/problemset/problem/1852/C 2400 差分思想
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
 https://www.cnblogs.com/nth-element/p/11768155.html
+另见 dp.go 中的 slopeTrick
 
 模拟费用流
 https://www.luogu.com/article/wn7c3auk 模拟费用流小记 by command_block

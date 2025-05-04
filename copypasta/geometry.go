@@ -104,6 +104,7 @@ TIPS: 旋转坐标
 LC3102 https://leetcode.cn/problems/minimize-manhattan-distances/ 2216
 https://codeforces.com/problemset/problem/1689/D 1900
 https://codeforces.com/problemset/problem/1979/E 2400
+https://codeforces.com/problemset/problem/314/D 2500
 https://www.luogu.com.cn/problem/P5098
 todo LC1956 https://leetcode.cn/problems/minimum-time-for-k-virus-variants-to-spread/
 点到点集的最大曼哈顿距离 https://codeforces.com/problemset/problem/491/B
@@ -289,6 +290,7 @@ func (a vec) rotateCCW90() vec { return vec{-a.y, a.x} } // 逆时针旋转 90°
 func (a vec) rotateCW90() vec  { return vec{a.y, -a.x} } // 顺时针旋转 90°
 
 // 逆时针旋转，传入旋转的弧度
+// https://codeforces.com/problemset/problem/618/E
 func (a vec) rotateCCW(rad float64) vecF {
 	sin, cos := math.Sincos(rad)
 	return vecF{

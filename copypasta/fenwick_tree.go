@@ -78,6 +78,7 @@ https://codeforces.com/problemset/problem/12/D 2400 三维偏序
 https://codeforces.com/problemset/problem/246/E 2400
 https://codeforces.com/problemset/problem/1334/F 2500
 https://codeforces.com/problemset/problem/1635/F 2800
+https://atcoder.jp/contests/dp/tasks/dp_q 值域树状数组优化 DP
 https://atcoder.jp/contests/abc392/tasks/abc392_f 也可以用 Splay 树
 https://atcoder.jp/contests/abc256/tasks/abc256_f 多重前缀和
 https://atcoder.jp/contests/abc221/tasks/abc221_e
@@ -516,9 +517,10 @@ func _(n int) {
 	// 如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
 	// 归并做法见 misc.go 中的 mergeCount
 	// LCR 170. 交易逆序对的总数 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
-	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
+	// https://www.luogu.com.cn/problem/P1966 置换
+	// https://www.luogu.com.cn/problem/P2995 环形最小逆序对
 	// https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
-	// 逆序对的奇偶性 https://www.luogu.com.cn/blog/203623/sol-p3760-tjoi2017-yi-huo-hu
+	// https://www.luogu.com.cn/blog/203623/sol-p3760-tjoi2017-yi-huo-hu 逆序对的奇偶性
 	// - https://ac.nowcoder.com/acm/contest/308/D
 	// https://codeforces.com/problemset/problem/911/D 1800
 	// https://codeforces.com/problemset/problem/986/B 1800
@@ -621,7 +623,7 @@ func rangeMex(a []int, qs []struct{ l, r, i int }) []int {
 		}
 	}
 	// 根据上面的定义，对于第一个满足 if 条件的 next，有 min{pos[1], ..., pos[next]} >= l，即 mex >= next（这里的 1~next 是偏移 +1 后的）
-	// 后面满足 if 的以此类推
+	// 后面满足 if 的依此类推
 	query := func(l int) (res int) {
 		const log = 17 // bits.Len(uint(mx))
 		for b := 1 << (log - 1); b > 0; b >>= 1 {

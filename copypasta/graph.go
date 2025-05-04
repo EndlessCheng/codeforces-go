@@ -2797,10 +2797,10 @@ func (*graph) manhattanMST(points []struct{ x, y, i int }, abs func(int) int) (m
 
 	sort.Slice(edges, func(i, j int) bool { return edges[i].dis < edges[j].dis })
 
-	uf := NewUnionFind(n)
+	uf := newUnionFind(n)
 	left := n - 1
 	for _, e := range edges {
-		if uf.Merge(e.v, e.w) >= 0 {
+		if uf.merge(e.v, e.w) >= 0 {
 			mst += e.dis
 			left--
 			if left == 0 {
@@ -3473,7 +3473,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, 
 //
 // 模板题 https://www.luogu.com.cn/problem/B3644
 // 树上拓扑+记录变成叶子的时间 LC2603 https://leetcode.cn/problems/collect-coins-in-a-tree/
-// DAG DP LC2050 https://leetcode.cn/problems/parallel-courses-iii/
+// DAG DP https://atcoder.jp/contests/dp/tasks/dp_g 模板题：最长路径长度
+//        LC2050 https://leetcode.cn/problems/parallel-courses-iii/
 //        LC1857 https://leetcode.cn/problems/largest-color-value-in-a-directed-graph/
 //        https://ac.nowcoder.com/acm/contest/6384/C
 //        https://www.luogu.com.cn/problem/P3387
@@ -3888,6 +3889,7 @@ func (G *graph) twoSAT(n int) []bool {
 // https://codeforces.com/problemset/problem/1200/F 2300 拆点
 // https://codeforces.com/problemset/problem/835/F 2500
 // https://codeforces.com/problemset/problem/1270/G 2700 构造 建图
+// https://atcoder.jp/contests/abc357/tasks/abc357_e 内向基环树简单路径个数
 // https://atcoder.jp/contests/abc266/tasks/abc266_f
 // - 如果不是基环树，可以边双缩点，用大小 > 1 的点分割树，把不同的连通块标记不同的 ID
 // https://atcoder.jp/contests/agc004/tasks/agc004_d

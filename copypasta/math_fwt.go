@@ -24,9 +24,10 @@ https://www.luogu.com.cn/blog/command-block/wei-yun-suan-juan-ji-yu-ji-kuo-zhan
 模板题 https://www.luogu.com.cn/problem/P4717
 LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
 与仙人掌结合 https://codeforces.com/problemset/problem/1218/D
-todo https://codeforces.com/problemset/problem/662/C
- https://codeforces.com/problemset/problem/914/G 2600
-todo https://atcoder.jp/contests/abc212/tasks/abc212_h
+https://codeforces.com/problemset/problem/662/C 2600
+ - https://atcoder.jp/contests/abc396/tasks/abc396_g
+https://codeforces.com/problemset/problem/914/G 2600
+https://atcoder.jp/contests/abc212/tasks/abc212_h
 
 EXTRA: 子集卷积
 todo https://www.cnblogs.com/yijan/p/12387352.html

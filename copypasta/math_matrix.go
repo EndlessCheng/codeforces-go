@@ -32,7 +32,7 @@ https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
 模板题 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
 https://codeforces.com/problemset/problem/1182/E
 https://atcoder.jp/contests/abc232/tasks/abc232_e
-有向图中长度为 k 的路径数 https://atcoder.jp/contests/dp/tasks/dp_r
+https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 挑战 P202 一维方块染色 http://poj.org/problem?id=3734
 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步 https://codeforces.com/problemset/problem/954/F
@@ -90,6 +90,7 @@ https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://www.luogu.com.cn/problem/P10310
 https://ac.nowcoder.com/acm/contest/9247/A
 https://codeforces.com/problemset/problem/1117/D a(n) = a(n-1) + a(n-m)
+https://www.luogu.com.cn/problem/P3216 12345678910111213...n % m
 
 https://www.luogu.com.cn/problem/P9777
 已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n
@@ -170,6 +171,8 @@ func solveDP(k int) (ans int) {
 // 广义斐波那契数列
 // a(n) = p*a(n-1) + q*a(n-2)
 // ！数列下标从 1 开始，n 从 1 开始
+// https://www.luogu.com.cn/problem/P1349
+// https://www.luogu.com.cn/problem/P1939
 func calcFibonacci(p, q, a1, a2, n int) int {
 	if n == 1 {
 		return a1 % mod
@@ -390,6 +393,7 @@ func gaussJordanElimination(A matrix, B []int) (sol []float64, infSol bool) {
 // EXTRA: 求行列式（对结果模 mod）
 // https://en.wikipedia.org/wiki/Determinant
 // 参考 https://www.luogu.com.cn/blog/Stormy-Rey/calculate-det
+// https://www.luogu.com.cn/problem/P7112
 func (a matrix) determinant(mod int) int {
 	n := len(a)
 	res, sign := 1, 1

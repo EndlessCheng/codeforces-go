@@ -108,6 +108,7 @@ https://atcoder.jp/contests/abc267/tasks/abc267_h
 入门题 https://atcoder.jp/contests/abc248/tasks/abc248_c
 - 容斥做法 https://atcoder.jp/contests/abc248/editorial/3818
 https://atcoder.jp/contests/abc276/tasks/abc276_g https://atcoder.jp/contests/abc276/editorial/5185
+常系数齐次线性递推 https://www.luogu.com.cn/problem/P4723
 题单 https://zhuanlan.zhihu.com/p/575825170
 题单 https://ac.nowcoder.com/acm/contest/24710#question
 https://codeforces.com/problemset/problem/958/F3
@@ -527,3 +528,6 @@ func (a poly) atan() poly {
 // 多项式复合逆
 // todo https://blog.csdn.net/weixin_43973966/article/details/88998646
 //  模板题 https://www.luogu.com.cn/problem/P5809
+
+// todo k 阶差分
+// https://chatgpt.com/c/67afdb47-d464-8011-adc1-0f8639d3a546

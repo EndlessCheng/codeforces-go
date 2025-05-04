@@ -138,7 +138,8 @@ func polyConvFFT(a, b []int) []int {
 // 也就是求 c[i] = ∑a[i+j]*b[j], j=0~m-1
 // 做法：把 b 反转后求卷积
 // EXTRA：滑动窗口 0-1 异或，利用恒等式 a^b = a+b - (a&b)*2 转成加法（前缀和）与乘法（卷积）
-// https://atcoder.jp/contests/abc196/tasks/abc196_f 2274=CF2431
+// https://atcoder.jp/contests/abc196/tasks/abc196_f 2274=CF2431 字符串部分匹配
+// https://codeforces.com/problemset/problem/528/D
 func slidingWindowDotProduct(a, b []int) []int {
 	b = slices.Clone(b) // 避免修改原数组
 	slices.Reverse(b)

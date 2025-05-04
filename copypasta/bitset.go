@@ -20,6 +20,8 @@ https://atcoder.jp/contests/abc258/tasks/abc258_g
 https://atcoder.jp/contests/arc087/tasks/arc087_b
 https://atcoder.jp/contests/abc348/tasks/abc348_f
 
+LC1942. 最小未被占据椅子的编号 https://leetcode.cn/problems/the-number-of-the-smallest-unoccupied-chair/
+
 */
 const _w = bits.UintSize
 

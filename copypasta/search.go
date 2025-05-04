@@ -26,7 +26,7 @@ https://atcoder.jp/contests/arc105/tasks/arc105_c
 https://codeforces.com/problemset/problem/954/I 2200
 https://atcoder.jp/contests/abc390/tasks/abc390_d
 
-爆搜
+暴搜
 可行性剪枝 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C

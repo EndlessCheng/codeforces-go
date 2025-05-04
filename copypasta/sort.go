@@ -59,6 +59,8 @@ https://codeforces.com/problemset/problem/1996/F 1900 二分间接值
 https://atcoder.jp/contests/abc227/tasks/abc227_d 1643=CF1954
 - https://leetcode.cn/problems/maximum-running-time-of-n-computers/
 https://atcoder.jp/contests/abc229/tasks/abc229_g
+https://www.luogu.com.cn/problem/P1083 [NOIP 2012 提高组] 借教室
+https://www.luogu.com.cn/problem/P5937
 
 ### 二分间接值
 为了保证任意情况都能更新答案，需要把上界加一
@@ -72,6 +74,7 @@ https://codeforces.com/problemset/problem/1840/D 1400
 https://codeforces.com/problemset/problem/883/I 1900 DP
 https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
+https://codeforces.com/problemset/problem/314/D 2500
 https://www.luogu.com.cn/problem/P2680
 
 ### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
@@ -81,6 +84,7 @@ https://atcoder.jp/contests/abc374/tasks/abc374_e 1504=CF1849
 https://codeforces.com/problemset/problem/2046/C 2100
 https://atcoder.jp/contests/abc215/tasks/abc215_f 1853=CF2113
 https://codeforces.com/problemset/problem/1550/E 2500
+https://www.luogu.com.cn/problem/P3017
 
 ### 最小化中位数
 https://codeforces.com/contest/2008/problem/H 2100
