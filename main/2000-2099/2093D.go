@@ -24,6 +24,18 @@ func cf2093D(in io.Reader, _w io.Writer) {
 				for i := range n {
 					ans |= (y>>i&1*3 ^ x>>i&1<<1) << (i * 2)
 				}
+
+				// 通用写法
+				//for b := 1; b < 1<<n; b <<= 1 {
+				//	if x&b > 0 && y&b > 0 {
+				//		ans += b * b
+				//	} else if x&b > 0 {
+				//		ans += b * b * 2
+				//	} else if y&b > 0 {
+				//		ans += b * b * 3
+				//	}
+				//}
+
 				Fprintln(out, ans+1)
 			} else {
 				r, c := 0, 0
