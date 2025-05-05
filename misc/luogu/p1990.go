@@ -6,18 +6,18 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type matrix [][]int
+type matrix1990 [][]int
 
-func newMatrix(n, m int) matrix {
-	a := make(matrix, n)
+func newMatrix1990(n, m int) matrix1990 {
+	a := make(matrix1990, n)
 	for i := range a {
 		a[i] = make([]int, m)
 	}
 	return a
 }
 
-func (a matrix) mul(b matrix) matrix {
-	c := newMatrix(len(a), len(b[0]))
+func (a matrix1990) mul(b matrix1990) matrix1990 {
+	c := newMatrix1990(len(a), len(b[0]))
 	for i, row := range a {
 		for k, x := range row {
 			if x == 0 {
@@ -31,7 +31,7 @@ func (a matrix) mul(b matrix) matrix {
 	return c
 }
 
-func (a matrix) powMul(n int, f matrix) matrix {
+func (a matrix1990) powMul(n int, f matrix1990) matrix1990 {
 	res := f
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
@@ -49,8 +49,8 @@ func p1990(in io.Reader, out io.Writer) {
 		Fprint(out, 1)
 		return
 	}
-	f2 := matrix{{2}, {1}, {1}}
-	m := matrix{
+	f2 := matrix1990{{2}, {1}, {1}}
+	m := matrix1990{
 		{2, 0, 1},
 		{1, 0, 0},
 		{0, 1, 0},
