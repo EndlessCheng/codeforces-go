@@ -56,11 +56,11 @@ $$
 \sum_{I}f(I) =  \sum_{I}\prod_{i=0}^{n-1} \textit{nums}[i]^{c_i} = m! \sum_{c_0+\cdots+c_{n-1} = m} \prod_{i=0}^{n-1} \dfrac{\textit{nums}[i]^{c_i}}{c_i!}
 $$
 
-现在还剩下一个难点，如何判断 $\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}}$ 的二进制中恰好有 $k$ 个 $1$？
+现在还剩下一个难点，如何判断 $\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}} = \displaystyle\sum\limits_{i=0}^{n-1} c_i 2^i$ 的二进制中恰好有 $k$ 个 $1$？
 
 ## 关键思路
 
-从小到大枚举下标 $i=0,1,2,\ldots,n-1$，在计算 $S=\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}}$ 的过程中，比如现在枚举的下标 $i=6$，那么后续加到 $S$ 中的数一定 $\ge 2^6$，一定不会影响小于 $i$ 的比特位，我们可以**提前统计这些比特位中的 $1$**！
+从小到大枚举下标 $i=0,1,2,\ldots,n-1$，在计算 $S=\displaystyle\sum\limits_{i=0}^{n-1} c_i 2^i$ 的过程中，比如现在枚举的下标 $i=6$，那么后续加到 $S$ 中的数一定 $\ge 2^6$，一定不会影响 $S$ 的小于 $i$ 的比特位，我们可以**提前统计这些比特位中的 $1$**！
 
 换句话说，在递归过程中只需保存 $S$ 右移 $i$ 位的结果，而不是原始的 $S$，从而大幅减少状态个数！
 
