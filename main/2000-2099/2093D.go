@@ -4,10 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
-
-// 注：也可以用二进制做
 
 // https://github.com/EndlessCheng
 func cf2093D(in io.Reader, _w io.Writer) {
@@ -24,44 +21,31 @@ func cf2093D(in io.Reader, _w io.Writer) {
 				Fscan(in, &y)
 				y--
 				ans := 1
-				u, d, l, r := 0, 1<<n, 0, 1<<n
-				for s := 1 << (n*2 - 2); s > 0; s >>= 2 {
-					xm, ym := (u+d)/2, (l+r)/2
-					if x < xm && y < ym {
-						d, r = xm, ym
-					} else if x >= xm && y >= ym {
-						ans += s
-						u, l = xm, ym
-					} else if x >= xm && y < ym {
-						ans += s * 2
-						u, r = xm, ym
-					} else {
-						ans += s * 3
-						d, l = xm, ym
+				for b := 1; b < 1<<n; b <<= 1 {
+					if x&b > 0 && y&b > 0 {
+						ans += b * b
+					} else if x&b > 0 {
+						ans += b * b * 2
+					} else if y&b > 0 {
+						ans += b * b * 3
 					}
 				}
 				Fprintln(out, ans)
 			} else {
-				u, d, l, r := 0, 1<<n, 0, 1<<n
-				for s := 1 << (n*2 - 2); s > 0; s >>= 2 {
-					xm, ym := (u+d)/2, (l+r)/2
-					if x < s {
-						d, r = xm, ym
-					} else if x < s*2 {
-						x -= s
-						u, l = xm, ym
-					} else if x < s*3 {
-						x -= s * 2
-						u, r = xm, ym
-					} else {
-						x -= s * 3
-						d, l = xm, ym
+				r, c := 0, 0
+				for i := range n {
+					if x%4 == 1 || x%4 == 2 {
+						r |= 1 << i
 					}
+					if x%2 > 0 {
+						c |= 1 << i
+					}
+					x /= 4
 				}
-				Fprintln(out, u+1, l+1)
+				Fprintln(out, r+1, c+1)
 			}
 		}
 	}
 }
 
-func main() { cf2093D(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf2093D(bufio.NewReader(os.Stdin), os.Stdout) }
