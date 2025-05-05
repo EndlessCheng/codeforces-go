@@ -1,34 +1,44 @@
-**关键思路**：一段连续的合并操作执行完后，合并到 $\textit{time}[i]$ 的时间是 $\textit{time}$ 的一个连续**子数组**，我们需要知道子数组的左端点是多少（右端点是 $i$），从而知道合并后的时间（每公里所需时间）是多少。
+## 转化
+
+题意相当于把 $\textit{time}$ 数组切 $n-k-1$ 刀，划分成恰好 $n-k$ 个连续子数组。特别地，在 $0$ 和 $1$ 之间一定要切一刀，把 $\textit{time}[0]$ 单独作为一个子数组。（注意合并操作的 $i$ 必须大于 $0$）
+
+示例 1 把 $\textit{time}=[5,8,3,6]$ 划分成 $[5],[8,3],[6]$ 三个子数组。
+
+用区间 $[i,j]$ 表示子数组的左右端点（下标）。对于两个相邻的子数组 $A=[i,j]$ 和 $B=[j+1,k]$，我们需要从 $\textit{position}[j]$ 移动到 $\textit{position}[k]$，每公里所需时间为 $A$ 的元素和。
+
+设 $\textit{time}$ 的前缀和数组为 $s$。这对子数组 $(A,B)$ 对总旅行时间的贡献为
+
+$$
+(\textit{position}[k] - \textit{position}[j])\cdot (s[j+1] - s[i])
+$$
+
+## DP 模型：相邻相关划分型 DP
+
+回想一下 [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/) 的做法：设当前下标为 $i$，枚举下一个下标 $j$，判断 $\textit{nums}[i]< \textit{nums}[j]$ 是否成立。这是标准的相邻相关子序列 DP 问题。本题也类似，设当前子数组为 $[i,j]$，枚举下一个子数组为 $[j+1,k]$。
 
 从左到右模拟旅行的过程。我们需要知道如下信息：
 
-- 还需要执行 $\textit{leftK}$ 次合并操作。
-- 当前在 $\textit{position}[i]$。
-- 合并到 $\textit{time}[i]$ 的这段时间的左端点为 $\textit{pre}$。
+- 当前子数组为 $[i,j]$。
+- 还需执行恰好 $\textit{leftK}$ 次合并操作。
 
-定义 $\textit{dfs}(\textit{leftK},i,\textit{pre})$ 表示在上述情况下，完成剩余旅程需要的最小耗时。
+定义 $\textit{dfs}(i,j,\textit{leftK})$ 表示在上述情况下，完成剩余旅程需要的最小旅行时间。
 
-⚠**注意**：每段路程的耗时是两部分的乘积：合并到 $\textit{time}[i]$ 的时间，当前位置到下一个位置的距离。**这两个数据相对 $i$ 是一左一右的关系，并不是都在 $i$ 的右边**！
+枚举下一个子数组的右端点 $k=j+1,j+2,\ldots, \min(n-1, j+1+\textit{leftK})$，这意味着我们执行了 $k-j-1$ 次合并操作，接下来要解决的问题变成：
 
-枚举下一个位置的下标 $\textit{nxt}=i+1,i+2,\ldots, \min(n-1, i+1+\textit{leftK})$，这意味着我们执行了 $\textit{nxt}-i-1$ 次合并操作，问题变成：
+- 当前子数组为 $[j+1,k]$。
+- 还需执行恰好 $\textit{leftK}-(k-j-1)$ 次合并操作。
 
-- 还需要执行 $\textit{leftK} - (\textit{nxt}-i-1)$ 次合并操作。
-- 当前在 $\textit{position}[\textit{nxt}]$。
-- 合并到 $\textit{time}[\textit{nxt}]$ 的这段时间的左端点为 $i+1$。注意删除掉的下标范围是 $[i+1, \textit{nxt}-1]$，这段时间合并到 $\textit{time}[\textit{nxt}]$ 中。所以（对于下一趟路程来说）合并后的时间的下标范围为 $[i+1, \textit{nxt}]$。
-
-子问题为在上述情况下，完成剩余旅程需要的最小耗时，即 $\textit{dfs}(\textit{leftK} - (\textit{nxt}-i-1), \textit{nxt}, i+1)$。
-
-设 $s$ 为 $\textit{time}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)，对于当前的 $\textit{time}[i]$ 来说，$[\textit{pre},i]$ 合并之后，$\textit{time}[i]$ 变成 $s[i+1] - s[\textit{pre}]$。从 $i$ 到 $\textit{nxt}$，耗时为 $(\textit{position}[\textit{nxt}] - \textit{position}[i])\cdot (s[i+1] - s[\textit{pre}])$。
+在上述情况下，完成剩余旅程需要的最小旅行时间，即 $\textit{dfs}(j+1,k,\textit{leftK} - (k-j-1))$。这两个子数组 $[i,j]$ 和 $[j+1,k]$ 对总旅行时间的贡献为 $(\textit{position}[k] - \textit{position}[j])\cdot (s[j+1] - s[i])$。
 
 取最小值，得
 
 $$
-\textit{dfs}(\textit{leftK},i,\textit{pre}) = \min_{\textit{nxt}=i+1}^{\min(n-1, i+1+\textit{leftK})} \textit{dfs}(\textit{leftK} - (\textit{nxt}-i-1), \textit{nxt}, i+1) + (\textit{position}[\textit{nxt}] - \textit{position}[i])\cdot (s[i+1] - s[\textit{pre}])
+\textit{dfs}(i,j,\textit{leftK}) = \min_{k=j+1}^{\min(n-1, j+1+\textit{leftK})} \textit{dfs}(j+1,k,\textit{leftK} - (k-j-1)) + (\textit{position}[k] - \textit{position}[j])\cdot (s[j+1] - s[i])
 $$
 
-递归边界：$\textit{dfs}(0,n-1,\textit{pre})=0$，其余 $\textit{dfs}(\textit{leftK},n-1,\textit{pre})=\infty$。
+递归边界：当 $j=n-1$ 时，必须有 $\textit{leftK}=0$，所以 $\textit{dfs}(i,n-1,0)=0$，其余 $\textit{dfs}(i,n-1,\textit{leftK})=\infty$。返回 $\infty$ 这样 $\min$ 不会取到不合法的状态。
 
-递归入口：$\textit{dfs}(k,0,0)$，即答案。这里 $\textit{pre}$ 设为 $0$ 是因为第一趟路程的每公里所需时间一定是 $\textit{time}[0]$。
+递归入口：$\textit{dfs}(0,0,k)$，即答案。注意第一个子数组一定是 $[0,0]$。
 
 ## 写法一：记忆化搜索
 
@@ -38,16 +48,17 @@ $$
 
 ```py [sol-Python3]
 class Solution:
-    def minTravelTime(self, l: int, n: int, k: int, position: List[int], time: List[int]) -> int:
-        s = list(accumulate(time, initial=0))  # 计算前缀和
+    def minTravelTime(self, _, n: int, k: int, position: List[int], time: List[int]) -> int:
+        s = list(accumulate(time, initial=0))  # 计算 time 的前缀和
         @cache
-        def dfs(left_k: int, i: int, pre: int) -> int:
-            if i == n - 1:
+        def dfs(i: int, j: int, left_k: int) -> int:
+            if j == n - 1:  # 到达终点
                 return inf if left_k else 0
-            t = s[i + 1] - s[pre]  # 合并到 time[i] 的时间
-            return min(dfs(left_k - (nxt - i - 1), nxt, i + 1) + (position[nxt] - position[i]) * t
-                       for nxt in range(i + 1, min(n, i + 2 + left_k)))
-        return dfs(k, 0, 0)
+            t = s[j + 1] - s[i]  # 合并到 time[j] 的时间
+            # 枚举下一个子数组 [j+1, k]
+            return min(dfs(j + 1, k, left_k - (k - j - 1)) + (position[k] - position[j]) * t
+                       for k in range(j + 1, min(n, j + 2 + left_k)))
+        return dfs(0, 0, k)  # 第一个子数组是 [0, 0]
 ```
 
 ```java [sol-Java]
@@ -55,28 +66,29 @@ class Solution {
     public int minTravelTime(int l, int n, int k, int[] position, int[] time) {
         int[] s = new int[n];
         for (int i = 0; i < n - 1; i++) { // time[n-1] 用不到
-            s[i + 1] = s[i] + time[i]; // 计算前缀和
+            s[i + 1] = s[i] + time[i]; // 计算 time 的前缀和
         }
 
-        int[][][] memo = new int[k + 1][n - 1][n - 1];
-        return dfs(k, 0, 0, position, s, memo);
+        int[][][] memo = new int[n - 1][n - 1][k + 1];
+        return dfs(0, 0, k, position, s, memo); // 第一个子数组是 [0, 0]
     }
 
-    private int dfs(int leftK, int i, int pre, int[] position, int[] s, int[][][] memo) {
+    private int dfs(int i, int j, int leftK, int[] position, int[] s, int[][][] memo) {
         int n = position.length;
-        if (i == n - 1) {
+        if (j == n - 1) { // 到达终点
             return leftK > 0 ? Integer.MAX_VALUE / 2 : 0; // 除以 2，避免下面计算 r 的地方加法溢出
         }
-        if (memo[leftK][i][pre] > 0) {
-            return memo[leftK][i][pre];
+        if (memo[i][j][leftK] > 0) { // 之前计算过
+            return memo[i][j][leftK];
         }
         int res = Integer.MAX_VALUE;
-        int t = s[i + 1] - s[pre]; // 合并到 time[i] 的时间
-        for (int nxt = i + 1; nxt < Math.min(n, i + 2 + leftK); nxt++) {
-            int r = dfs(leftK - (nxt - i - 1), nxt, i + 1, position, s, memo) + (position[nxt] - position[i]) * t;
+        int t = s[j + 1] - s[i]; // 合并到 time[j] 的时间
+        // 枚举下一个子数组 [j+1, k]
+        for (int k = j + 1; k < Math.min(n, j + 2 + leftK); k++) {
+            int r = dfs(j + 1, k, leftK - (k - j - 1), position, s, memo) + (position[k] - position[j]) * t;
             res = Math.min(res, r);
         }
-        return memo[leftK][i][pre] = res;
+        return memo[i][j][leftK] = res; // 记忆化
     }
 }
 ```
@@ -84,68 +96,70 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minTravelTime(int l, int n, int k, vector<int>& position, vector<int>& time) {
-        vector<int> s(n); // 前缀和数组
+    int minTravelTime(int, int n, int K, vector<int>& position, vector<int>& time) {
+        vector<int> s(n); // time 的前缀和
         partial_sum(time.begin(), time.end() - 1, s.begin() + 1); // time[n-1] 用不到
 
-        vector memo(k + 1, vector(n - 1, vector<int>(n - 1)));
-        auto dfs = [&](this auto&& dfs, int left_k, int i, int pre) -> int {
-            if (i == n - 1) {
-                return left_k ? INT_MAX / 2 : 0;
+        vector memo(n - 1, vector(n - 1, vector<int>(K + 1)));
+        auto dfs = [&](this auto&& dfs, int i, int j, int left_k) -> int {
+            if (j == n - 1) { // 到达终点
+                return left_k ? INT_MAX / 2 : 0; // 除以 2，避免下面计算 r 的地方加法溢出
             }
-            int& res = memo[left_k][i][pre]; // 注意这里是引用
-            if (res) {
+            int& res = memo[i][j][left_k]; // 注意这里是引用
+            if (res) { // 之前计算过
                 return res;
             }
             res = INT_MAX;
-            int t = s[i + 1] - s[pre]; // 合并到 time[i] 的时间
-            for (int nxt = i + 1; nxt < min(n, i + 2 + left_k); nxt++) {
-                int r = dfs(left_k - (nxt - i - 1), nxt, i + 1) + (position[nxt] - position[i]) * t;
+            int t = s[j + 1] - s[i]; // 合并到 time[j] 的时间
+            // 枚举下一个子数组 [j+1, k]
+            for (int k = j + 1; k < min(n, j + 2 + left_k); k++) {
+                int r = dfs(j + 1, k, left_k - (k - j - 1)) + (position[k] - position[j]) * t;
                 res = min(res, r);
             }
             return res;
         };
-        return dfs(k, 0, 0);
+        return dfs(0, 0, K); // 第一个子数组是 [0, 0]
     }
 };
 ```
 
 ```go [sol-Go]
-func minTravelTime(_, n, k int, position, time []int) int {
+func minTravelTime(_, n, K int, position, time []int) int {
 	s := make([]int, n)
 	for i, t := range time[:n-1] { // time[n-1] 用不到
-		s[i+1] = s[i] + t // 计算前缀和
+		s[i+1] = s[i] + t // 计算 time 的前缀和
 	}
 
-	memo := make([][][]int, k+1)
+	memo := make([][][]int, n-1)
 	for i := range memo {
 		memo[i] = make([][]int, n-1)
 		for j := range memo[i] {
-			memo[i][j] = make([]int, n-1)
+			memo[i][j] = make([]int, K+1)
 		}
 	}
 	var dfs func(int, int, int) int
-	dfs = func(leftK, i, pre int) int {
-		if i == n-1 {
-			if leftK > 0 {
-				return math.MaxInt / 2
+	dfs = func(i, j, leftK int) int {
+		if j == n-1 { // 到达终点
+			if leftK > 0 { // 不合法
+				return math.MaxInt / 2 // 避免下面计算 r 的地方加法溢出
 			}
 			return 0
 		}
-		p := &memo[leftK][i][pre]
-		if *p > 0 {
+		p := &memo[i][j][leftK]
+		if *p > 0 { // 之前计算过
 			return *p
 		}
 		res := math.MaxInt
-		t := s[i+1] - s[pre] // 合并到 time[i] 的时间
-		for nxt := i + 1; nxt < min(n, i+2+leftK); nxt++ {
-            r := dfs(leftK-(nxt-i-1), nxt, i+1) + (position[nxt]-position[i])*t
+		t := s[j+1] - s[i] // 合并到 time[j] 的时间
+		// 枚举下一个子数组 [j+1, k]
+		for k := j + 1; k < min(n, j+2+leftK); k++ {
+			r := dfs(j+1, k, leftK-(k-j-1)) + (position[k]-position[j])*t
 			res = min(res, r)
 		}
-		*p = res
+		*p = res // 记忆化
 		return res
 	}
-	return dfs(k, 0, 0)
+	return dfs(0, 0, K) // 第一个子数组是 [0, 0]
 }
 ```
 
@@ -157,45 +171,48 @@ DP 数组的初始值怎么写？就是记忆化搜索的递归边界。
 
 ```py [sol-Python3]
 class Solution:
-    def minTravelTime(self, l: int, n: int, k: int, position: List[int], time: List[int]) -> int:
-        s = list(accumulate(time, initial=0))
-        f = [[[inf] * n for _ in range(n)] for _ in range(k + 1)]
-        f[0][-1] = [0] * n
-        for left_k in range(k + 1):
-            for i in range(n - 2, -1, -1):
-                for pre in range(i + 1):
-                    t = s[i + 1] - s[pre]
-                    f[left_k][i][pre] = min(f[left_k - (nxt - i - 1)][nxt][i + 1] + (position[nxt] - position[i]) * t
-                                            for nxt in range(i + 1, min(n, i + 2 + left_k)))
-        return f[k][0][0]
+    def minTravelTime(self, _, n: int, K: int, position: List[int], time: List[int]) -> int:
+        s = list(accumulate(time, initial=0))  # 计算 time 的前缀和
+        f = [[[inf] * (K + 1) for _ in range(n)] for _ in range(n)]
+        for i in range(n):
+            f[i][-1][0] = 0
+        for i in range(n - 2, -1, -1):  # 转移来源（j+1）比 i 大，所以要倒序
+            for j in range(i, n - 1):
+                t = s[j + 1] - s[i]  # 合并到 time[j] 的时间
+                for left_k in range(K + 1):
+                    # 枚举下一个子数组 [j+1, k]
+                    f[i][j][left_k] = min(f[j + 1][k][left_k - (k - j - 1)] + (position[k] - position[j]) * t
+                                          for k in range(j + 1, min(n, j + 2 + left_k)))
+        return f[0][0][K]  # 第一个子数组是 [0, 0]
 ```
 
 ```java [sol-Java]
 class Solution {
-    public int minTravelTime(int l, int n, int k, int[] position, int[] time) {
+    public int minTravelTime(int l, int n, int K, int[] position, int[] time) {
         int[] s = new int[n];
-        for (int i = 0; i < n - 1; i++) {
-            s[i + 1] = s[i] + time[i];
+        for (int i = 0; i < n - 1; i++) { // time[n-1] 用不到
+            s[i + 1] = s[i] + time[i]; // 计算 time 的前缀和
         }
 
-        int[][][] f = new int[k + 1][n][n];
-        for (int leftK = 1; leftK <= k; leftK++) {
-            Arrays.fill(f[leftK][n - 1], Integer.MAX_VALUE / 2);
+        int[][][] f = new int[n][n][K + 1];
+        for (int[][] a : f) {
+            Arrays.fill(a[n - 1], 1, K + 1, Integer.MAX_VALUE / 2);
         }
-        for (int leftK = 0; leftK <= k; leftK++) {
-            for (int i = n - 2; i >= 0; i--) {
-                for (int pre = 0; pre <= i; pre++) {
+        for (int i = n - 2; i >= 0; i--) { // 转移来源（j+1）比 i 大，所以要倒序
+            for (int j = i; j < n - 1; j++) {
+                int t = s[j + 1] - s[i]; // 合并到 time[i] 的时间
+                for (int leftK = 0; leftK <= K; leftK++) {
                     int res = Integer.MAX_VALUE;
-                    int t = s[i + 1] - s[pre];
-                    for (int nxt = i + 1; nxt < Math.min(n, i + 2 + leftK); nxt++) {
-                        int r = f[leftK - (nxt - i - 1)][nxt][i + 1] + (position[nxt] - position[i]) * t;
+                    // 枚举下一个子数组 [j+1, k]
+                    for (int k = j + 1; k < Math.min(n, j + 2 + leftK); k++) {
+                        int r = f[j + 1][k][leftK - (k - j - 1)] + (position[k] - position[j]) * t;
                         res = Math.min(res, r);
                     }
-                    f[leftK][i][pre] = res;
+                    f[i][j][leftK] = res;
                 }
             }
         }
-        return f[k][0][0];
+        return f[0][0][K]; // 第一个子数组是 [0, 0]
     }
 }
 ```
@@ -203,65 +220,65 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minTravelTime(int l, int n, int k, vector<int>& position, vector<int>& time) {
-        vector<int> s(n);
-        partial_sum(time.begin(), time.end() - 1, s.begin() + 1);
+    int minTravelTime(int, int n, int K, vector<int>& position, vector<int>& time) {
+        vector<int> s(n); // time 的前缀和
+        partial_sum(time.begin(), time.end() - 1, s.begin() + 1); // time[n-1] 用不到
 
-        vector f(k + 1, vector(n, vector<int>(n, INT_MAX / 2)));
-        for (int pre = 0; pre < n; pre++) {
-            f[0][n - 1][pre] = 0;
+        vector f(n, vector(n, vector<int>(K + 1, INT_MAX / 2)));
+        for (int i = 0; i < n; i++) {
+            f[i][n - 1][0] = 0;
         }
-        for (int left_k = 0; left_k <= k; left_k++) {
-            for (int i = n - 2; i >= 0; i--) {
-                for (int pre = 0; pre <= i; pre++) {
+        for (int i = n - 2; i >= 0; i--) { // 转移来源（j+1）比 i 大，所以要倒序
+            for (int j = i; j < n - 1; j++) {
+                int t = s[j + 1] - s[i]; // 合并到 time[j] 的时间
+                for (int left_k = 0; left_k <= K; left_k++) {
                     int res = INT_MAX;
-                    int t = s[i + 1] - s[pre];
-                    for (int nxt = i + 1; nxt < min(n, i + 2 + left_k); nxt++) {
-                        int r = f[left_k - (nxt - i - 1)][nxt][i + 1] + (position[nxt] - position[i]) * t;
+                    // 枚举下一个子数组 [j+1, k]
+                    for (int k = j + 1; k < min(n, j + 2 + left_k); k++) {
+                        int r = f[j + 1][k][left_k - (k - j - 1)] + (position[k] - position[j]) * t;
                         res = min(res, r);
                     }
-                    f[left_k][i][pre] = res;
+                    f[i][j][left_k] = res;
                 }
             }
         }
-        return f[k][0][0];
+        return f[0][0][K]; // 第一个子数组是 [0, 0]
     }
 };
 ```
 
 ```go [sol-Go]
-func minTravelTime(_, n, k int, position, time []int) int {
+func minTravelTime(_, n, K int, position, time []int) int {
 	s := make([]int, n)
-	for i, t := range time[:n-1] {
-		s[i+1] = s[i] + t
+	for i, t := range time[:n-1] { // time[n-1] 用不到
+		s[i+1] = s[i] + t // 计算 time 的前缀和
 	}
 
-	f := make([][][]int, k+1)
+	f := make([][][]int, n)
 	for i := range f {
 		f[i] = make([][]int, n)
 		for j := range f[i] {
-			f[i][j] = make([]int, n)
+			f[i][j] = make([]int, K+1)
+		}
+		for leftK := 1; leftK <= K; leftK++ {
+			f[i][n-1][leftK] = math.MaxInt / 2
 		}
 	}
-	for leftK := 1; leftK <= k; leftK++ {
-		for pre := range n {
-			f[leftK][n-1][pre] = math.MaxInt / 2
-		}
-	}
-
-	for leftK := range f {
-		for i := n - 2; i >= 0; i-- {
-			for pre := range i + 1 {
-				t := s[i+1] - s[pre]
+	for i := n - 2; i >= 0; i-- { // 转移来源（j+1）比 i 大，所以要倒序
+		for j := i; j < n-1; j++ {
+			t := s[j+1] - s[i] // 合并到 time[j] 的时间
+			for leftK := range K + 1 {
 				res := math.MaxInt
-				for nxt := i + 1; nxt < min(n, i+2+leftK); nxt++ {
-					res = min(res, f[leftK-(nxt-i-1)][nxt][i+1]+(position[nxt]-position[i])*t)
+				// 枚举下一个子数组 [j+1, k]
+				for k := j + 1; k < min(n, j+2+leftK); k++ {
+					r := f[j+1][k][leftK-(k-j-1)] + (position[k]-position[j])*t
+					res = min(res, r)
 				}
-				f[leftK][i][pre] = res
+				f[i][j][leftK] = res
 			}
 		}
 	}
-	return f[k][0][0]
+	return f[0][0][K] // 第一个子数组是 [0, 0]
 }
 ```
 
@@ -270,7 +287,7 @@ func minTravelTime(_, n, k int, position, time []int) int {
 - 时间复杂度：$\mathcal{O}(n^2k^2)$。注意最内层的循环是 $\mathcal{O}(k)$。
 - 空间复杂度：$\mathcal{O}(n^2k)$。
 
-更多相似题目，见下面动态规划题单的「**§5.3 约束划分个数**」。
+更多相似题目，见下面动态规划题单的「**五、划分型 DP**」。
 
 ## 分类题单
 
