@@ -6,7 +6,7 @@
 
 用区间 $[i,j]$ 表示子数组的左右端点（下标）。对于两个相邻的子数组 $A=[i,j]$ 和 $B=[j+1,k]$，我们需要从 $\textit{position}[j]$ 移动到 $\textit{position}[k]$，每公里所需时间为 $A$ 的元素和。
 
-设 $\textit{time}$ 的前缀和数组为 $s$。这对子数组 $(A,B)$ 对总旅行时间的贡献为
+设 $\textit{time}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solutions/2693498/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组为 $s$。这对子数组 $(A,B)$ 对总旅行时间的贡献为
 
 $$
 (\textit{position}[k] - \textit{position}[j])\cdot (s[j+1] - s[i])
@@ -36,7 +36,7 @@ $$
 \textit{dfs}(i,j,\textit{leftK}) = \min_{k=j+1}^{\min(n-1, j+1+\textit{leftK})} \textit{dfs}(j+1,k,\textit{leftK} - (k-j-1)) + (\textit{position}[k] - \textit{position}[j])\cdot (s[j+1] - s[i])
 $$
 
-递归边界：当 $j=n-1$ 时，必须有 $\textit{leftK}=0$，所以 $\textit{dfs}(i,n-1,0)=0$，其余 $\textit{dfs}(i,n-1,\textit{leftK})=\infty$。返回 $\infty$ 这样 $\min$ 不会取到不合法的状态。
+递归边界：当 $j=n-1$ 时，必须有 $\textit{leftK}=0$，所以 $\textit{dfs}(i,n-1,0)=0$，其余 $\textit{dfs}(i,n-1,\textit{leftK})=\infty$。返回 $\infty$，转移方程中的 $\min$ 不会取到不合法的状态。
 
 递归入口：$\textit{dfs}(0,0,k)$，即答案。注意第一个子数组一定是 $[0,0]$。
 
