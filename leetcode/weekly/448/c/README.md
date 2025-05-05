@@ -163,6 +163,125 @@ func minTravelTime(_, n, K int, position, time []int) int {
 }
 ```
 
+注意到子数组的长度不会超过 $k+1$，我们可以把子数组 $[i,j]$ 用 $[j-\textit{sz},j]$ 表示，从而减少 $\textit{memo}$ 数组的大小。注意这里的 $\textit{sz}$ 是子数组的长度减一。
+
+```py [sol-Python3]
+class Solution:
+    def minTravelTime(self, _, n: int, k: int, position: List[int], time: List[int]) -> int:
+        s = list(accumulate(time, initial=0))  # 计算 time 的前缀和
+        @cache
+        def dfs(j: int, sz: int, left_k: int) -> int:
+            if j == n - 1:  # 到达终点
+                return inf if left_k else 0
+            t = s[j + 1] - s[j - sz]  # 合并到 time[j] 的时间
+            # 枚举下一个子数组 [j+1, k]
+            return min(dfs(k, k - j - 1, left_k - (k - j - 1)) + (position[k] - position[j]) * t
+                       for k in range(j + 1, min(n, j + 2 + left_k)))
+        return dfs(0, 0, k)  # 第一个子数组是 [0, 0]
+```
+
+```java [sol-Java]
+class Solution {
+    public int minTravelTime(int l, int n, int k, int[] position, int[] time) {
+        int[] s = new int[n];
+        for (int i = 0; i < n - 1; i++) { // time[n-1] 用不到
+            s[i + 1] = s[i] + time[i]; // 计算 time 的前缀和
+        }
+
+        int[][][] memo = new int[n - 1][k + 1][k + 1];
+        return dfs(0, 0, k, position, s, memo); // 第一个子数组是 [0, 0]
+    }
+
+    private int dfs(int j, int sz, int leftK, int[] position, int[] s, int[][][] memo) {
+        int n = position.length;
+        if (j == n - 1) { // 到达终点
+            return leftK > 0 ? Integer.MAX_VALUE / 2 : 0; // 除以 2，避免下面计算 r 的地方加法溢出
+        }
+        if (memo[j][sz][leftK] > 0) { // 之前计算过
+            return memo[j][sz][leftK];
+        }
+        int res = Integer.MAX_VALUE;
+        int t = s[j + 1] - s[j - sz]; // 合并到 time[j] 的时间
+        // 枚举下一个子数组 [j+1, k]
+        for (int k = j + 1; k < Math.min(n, j + 2 + leftK); k++) {
+            int r = dfs(k, k - j - 1, leftK - (k - j - 1), position, s, memo) + (position[k] - position[j]) * t;
+            res = Math.min(res, r);
+        }
+        return memo[j][sz][leftK] = res; // 记忆化
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minTravelTime(int, int n, int K, vector<int>& position, vector<int>& time) {
+        vector<int> s(n); // time 的前缀和
+        partial_sum(time.begin(), time.end() - 1, s.begin() + 1); // time[n-1] 用不到
+
+        vector memo(n - 1, vector(K + 1, vector<int>(K + 1)));
+        auto dfs = [&](this auto&& dfs, int j, int sz, int left_k) -> int {
+            if (j == n - 1) { // 到达终点
+                return left_k ? INT_MAX / 2 : 0; // 除以 2，避免下面计算 r 的地方加法溢出
+            }
+            int& res = memo[j][sz][left_k]; // 注意这里是引用
+            if (res) { // 之前计算过
+                return res;
+            }
+            res = INT_MAX;
+            int t = s[j + 1] - s[j - sz]; // 合并到 time[j] 的时间
+            // 枚举下一个子数组 [j+1, k]
+            for (int k = j + 1; k < min(n, j + 2 + left_k); k++) {
+                int r = dfs(k, k - j - 1, left_k - (k - j - 1)) + (position[k] - position[j]) * t;
+                res = min(res, r);
+            }
+            return res;
+        };
+        return dfs(0, 0, K); // 第一个子数组是 [0, 0]
+    }
+};
+```
+
+```go [sol-Go]
+func minTravelTime(_, n, K int, position, time []int) int {
+	s := make([]int, n)
+	for i, t := range time[:n-1] { // time[n-1] 用不到
+		s[i+1] = s[i] + t // 计算 time 的前缀和
+	}
+
+	memo := make([][][]int, n-1)
+	for i := range memo {
+		memo[i] = make([][]int, K+1)
+		for j := range memo[i] {
+			memo[i][j] = make([]int, K+1)
+		}
+	}
+	var dfs func(int, int, int) int
+	dfs = func(j, sz, leftK int) int {
+		if j == n-1 { // 到达终点
+			if leftK > 0 { // 不合法
+				return math.MaxInt / 2 // 避免下面计算 r 的地方加法溢出
+			}
+			return 0
+		}
+		p := &memo[j][sz][leftK]
+		if *p > 0 {
+			return *p
+		}
+		res := math.MaxInt
+		t := s[j+1] - s[j-sz] // 合并到 time[j] 的时间
+		// 枚举下一个子数组 [j+1, k]
+		for k := j + 1; k < min(n, j+2+leftK); k++ {
+			r := dfs(k, k-j-1, leftK-(k-j-1)) + (position[k]-position[j])*t
+			res = min(res, r)
+		}
+		*p = res
+		return res
+	}
+	return dfs(0, 0, K) // 第一个子数组是 [0, 0]
+}
+```
+
 ## 写法二：递推
 
 把记忆化搜索 1:1 翻译成递推。
@@ -173,16 +292,16 @@ DP 数组的初始值怎么写？就是记忆化搜索的递归边界。
 class Solution:
     def minTravelTime(self, _, n: int, K: int, position: List[int], time: List[int]) -> int:
         s = list(accumulate(time, initial=0))  # 计算 time 的前缀和
-        f = [[[inf] * (K + 1) for _ in range(n)] for _ in range(n)]
-        for i in range(n):
-            f[i][-1][0] = 0
-        for i in range(n - 2, -1, -1):  # 转移来源（j+1）比 i 大，所以要倒序
-            for j in range(i, n - 1):
-                t = s[j + 1] - s[i]  # 合并到 time[j] 的时间
-                for left_k in range(K + 1):
+        f = [[[inf] * (K + 1) for _ in range(K + 1)] for _ in range(n)]
+        for sz in range(K + 1):
+            f[-1][sz][0] = 0
+        for j in range(n - 2, -1, -1):  # 转移来源 k 比 j 大，所以要倒序
+            for sz in range(min(K, j) + 1):
+                t = s[j + 1] - s[j - sz]  # 合并到 time[j] 的时间
+                for left_k in range(min(K, n - 2 - j) + 1):
                     # 枚举下一个子数组 [j+1, k]
-                    f[i][j][left_k] = min(f[j + 1][k][left_k - (k - j - 1)] + (position[k] - position[j]) * t
-                                          for k in range(j + 1, min(n, j + 2 + left_k)))
+                    f[j][sz][left_k] = min(f[k][k - j - 1][left_k - (k - j - 1)] + (position[k] - position[j]) * t
+                                          for k in range(j + 1, j + 2 + left_k))
         return f[0][0][K]  # 第一个子数组是 [0, 0]
 ```
 
@@ -194,21 +313,27 @@ class Solution {
             s[i + 1] = s[i] + time[i]; // 计算 time 的前缀和
         }
 
-        int[][][] f = new int[n][n][K + 1];
-        for (int[][] a : f) {
-            Arrays.fill(a[n - 1], 1, K + 1, Integer.MAX_VALUE / 2);
+        int[][][] f = new int[n][K + 1][K + 1];
+        for (int[][] mat : f) {
+            for (int[] row : mat) {
+                Arrays.fill(row, Integer.MAX_VALUE / 2);
+            }
         }
-        for (int i = n - 2; i >= 0; i--) { // 转移来源（j+1）比 i 大，所以要倒序
-            for (int j = i; j < n - 1; j++) {
-                int t = s[j + 1] - s[i]; // 合并到 time[i] 的时间
-                for (int leftK = 0; leftK <= K; leftK++) {
+        for (int sz = 0; sz <= K; sz++) {
+            f[n - 1][sz][0] = 0;
+        }
+
+        for (int j = n - 2; j >= 0; j--) { // 转移来源 k 比 j 大，所以要倒序
+            for (int sz = 0; sz <= Math.min(K, j); sz++) {
+                int t = s[j + 1] - s[j - sz]; // 合并到 time[j] 的时间
+                for (int leftK = 0; leftK <= Math.min(K, n - 2 - j); leftK++) {
                     int res = Integer.MAX_VALUE;
                     // 枚举下一个子数组 [j+1, k]
-                    for (int k = j + 1; k < Math.min(n, j + 2 + leftK); k++) {
-                        int r = f[j + 1][k][leftK - (k - j - 1)] + (position[k] - position[j]) * t;
+                    for (int k = j + 1; k <= j + 1 + leftK; k++) {
+                        int r = f[k][k - j - 1][leftK - (k - j - 1)] + (position[k] - position[j]) * t;
                         res = Math.min(res, r);
                     }
-                    f[i][j][leftK] = res;
+                    f[j][sz][leftK] = res;
                 }
             }
         }
@@ -224,21 +349,21 @@ public:
         vector<int> s(n); // time 的前缀和
         partial_sum(time.begin(), time.end() - 1, s.begin() + 1); // time[n-1] 用不到
 
-        vector f(n, vector(n, vector<int>(K + 1, INT_MAX / 2)));
-        for (int i = 0; i < n; i++) {
-            f[i][n - 1][0] = 0;
+        vector f(n, vector(K + 1, vector<int>(K + 1, INT_MAX / 2)));
+        for (int sz = 0; sz <= K; sz++) {
+            f[n - 1][sz][0] = 0;
         }
-        for (int i = n - 2; i >= 0; i--) { // 转移来源（j+1）比 i 大，所以要倒序
-            for (int j = i; j < n - 1; j++) {
-                int t = s[j + 1] - s[i]; // 合并到 time[j] 的时间
-                for (int left_k = 0; left_k <= K; left_k++) {
+        for (int j = n - 2; j >= 0; j--) { // 转移来源 k 比 j 大，所以要倒序
+            for (int sz = 0; sz <= min(K, j); sz++) {
+                int t = s[j + 1] - s[j - sz]; // 合并到 time[j] 的时间
+                for (int left_k = 0; left_k <= min(K, n - 2 - j); left_k++) {
                     int res = INT_MAX;
                     // 枚举下一个子数组 [j+1, k]
-                    for (int k = j + 1; k < min(n, j + 2 + left_k); k++) {
-                        int r = f[j + 1][k][left_k - (k - j - 1)] + (position[k] - position[j]) * t;
+                    for (int k = j + 1; k <= j + 1 + left_k; k++) {
+                        int r = f[k][k - j - 1][left_k - (k - j - 1)] + (position[k] - position[j]) * t;
                         res = min(res, r);
                     }
-                    f[i][j][left_k] = res;
+                    f[j][sz][left_k] = res;
                 }
             }
         }
@@ -255,26 +380,30 @@ func minTravelTime(_, n, K int, position, time []int) int {
 	}
 
 	f := make([][][]int, n)
-	for i := range f {
-		f[i] = make([][]int, n)
-		for j := range f[i] {
-			f[i][j] = make([]int, K+1)
-		}
-		for leftK := 1; leftK <= K; leftK++ {
-			f[i][n-1][leftK] = math.MaxInt / 2
+	for j := range f {
+		f[j] = make([][]int, K+1)
+		for sz := range f[j] {
+			f[j][sz] = make([]int, K+1)
+			for leftK := range f[j][sz] {
+				f[j][sz][leftK] = math.MaxInt / 2
+			}
 		}
 	}
-	for i := n - 2; i >= 0; i-- { // 转移来源（j+1）比 i 大，所以要倒序
-		for j := i; j < n-1; j++ {
-			t := s[j+1] - s[i] // 合并到 time[j] 的时间
-			for leftK := range K + 1 {
+	for sz := range K + 1 {
+		f[n-1][sz][0] = 0
+	}
+
+	for j := n - 2; j >= 0; j-- { // 转移来源 k 比 j 大，所以要倒序
+		for sz := range min(K, j) + 1 {
+			t := s[j+1] - s[j-sz] // 合并到 time[j] 的时间
+			for leftK := range min(K, n-2-j) + 1 {
 				res := math.MaxInt
 				// 枚举下一个子数组 [j+1, k]
-				for k := j + 1; k < min(n, j+2+leftK); k++ {
-					r := f[j+1][k][leftK-(k-j-1)] + (position[k]-position[j])*t
+				for k := j + 1; k <= j+1+leftK; k++ {
+					r := f[k][k-j-1][leftK-(k-j-1)] + (position[k]-position[j])*t
 					res = min(res, r)
 				}
-				f[i][j][leftK] = res
+				f[j][sz][leftK] = res
 			}
 		}
 	}
@@ -284,8 +413,8 @@ func minTravelTime(_, n, K int, position, time []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2k^2)$。注意最内层的循环是 $\mathcal{O}(k)$。
-- 空间复杂度：$\mathcal{O}(n^2k)$。
+- 时间复杂度：$\mathcal{O}(nk^3)$。注意最内层的循环是 $\mathcal{O}(k)$。
+- 空间复杂度：$\mathcal{O}(nk^2)$。
 
 更多相似题目，见下面动态规划题单的「**五、划分型 DP**」。
 
