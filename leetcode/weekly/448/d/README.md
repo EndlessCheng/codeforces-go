@@ -126,9 +126,9 @@ class Solution:
     def magicalSum(self, m: int, k: int, nums: List[int]) -> int:
         n = len(nums)
         pow_v = [[1] * (m + 1) for _ in range(n)]
-        for i in range(n):
+        for i, v in enumerate(nums):
             for j in range(1, m + 1):
-                pow_v[i][j] = pow_v[i][j - 1] * nums[i] % MOD
+                pow_v[i][j] = pow_v[i][j - 1] * v % MOD
 
         @cache
         def dfs(i: int, left_m: int, x: int, left_k: int) -> int:
@@ -411,9 +411,9 @@ class Solution:
     def magicalSum(self, m: int, k: int, nums: List[int]) -> int:
         n = len(nums)
         pow_v = [[1] * (m + 1) for _ in range(n)]
-        for i in range(n):
+        for i, v in enumerate(nums):
             for j in range(1, m + 1):
-                pow_v[i][j] = pow_v[i][j - 1] * nums[i] % MOD
+                pow_v[i][j] = pow_v[i][j - 1] * v % MOD
 
         f = [[[[0] * (k + 1) for _ in range(m // 2 + 1)] for _ in range(m + 1)] for _ in range(n + 1)]
         for x in range(m // 2 + 1):
