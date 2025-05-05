@@ -46,6 +46,16 @@ $$
 
 这样每一项就可以独立计算了。
 
+一般地，设我们分别选了 $c_0,c_1,c_2,\ldots,c_{n-1}$ 个下标 $0,1,2,\ldots,n-1$，那么
+
+$$
+f(I) = \prod_{j=0}^{m-1} \textit{nums}[I_j] = \prod_{i=0}^{n-1} \textit{nums}[i]^{c_i}
+$$
+
+$$
+\sum_{I}f(I) =  \sum_{I}\prod_{i=0}^{n-1} \textit{nums}[i]^{c_i} = m! \sum_{c_0+\cdots+c_{n-1} = m} \prod_{i=0}^{n-1} \dfrac{\textit{nums}[i]^{c_i}}{c_i!}
+$$
+
 现在还剩下一个难点，如何判断 $\displaystyle\sum\limits_{j=0}^{m-1} 2^{I_{j}}$ 的二进制中恰好有 $k$ 个 $1$？
 
 ## 关键思路
