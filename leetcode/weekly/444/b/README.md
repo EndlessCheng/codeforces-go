@@ -189,7 +189,7 @@ public:
         if (!packet_set.insert(packet).second) {
             return false;
         }
-        if (packet_q.size() == memory_limit) {  // 太多了
+        if (packet_q.size() == memory_limit) { // 太多了
             forwardPacket();
         }
         packet_q.push(packet); // 入队
@@ -259,7 +259,7 @@ public:
         if (!packet_set.insert(packet).second) {
             return false;
         }
-        if (packet_q.size() == memory_limit) {  // 太多了
+        if (packet_q.size() == memory_limit) { // 太多了
             forwardPacket();
         }
         packet_q.push(packet); // 入队
