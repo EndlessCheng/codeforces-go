@@ -9,19 +9,21 @@ import (
 func cf1006C(in io.Reader, out io.Writer) {
 	var n, ans, pre, suf int
 	Fscan(in, &n)
-	cnt := map[int]int{}
 	a := make([]int, n)
 	for i := range a {
 		Fscan(in, &a[i])
-		pre += a[i]
-		cnt[pre]++
 	}
-	for i := n - 1; i >= 0; i-- {
-		cnt[pre]--
-		pre -= a[i]
-		suf += a[i]
-		if cnt[suf] > 0 {
-			ans = max(ans, suf)
+	r := n - 1
+	for i, v := range a {
+		pre += v
+		for ; r >= 0 && suf < pre; r-- {
+			suf += a[r]
+		}
+		if r < i {
+			break
+		}
+		if suf == pre {
+			ans = max(ans, pre)
 		}
 	}
 	Fprint(out, ans)
