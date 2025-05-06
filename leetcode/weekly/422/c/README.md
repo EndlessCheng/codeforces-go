@@ -8,9 +8,9 @@ $$
 \max(\textit{dis}[i][j], \textit{moveTime}[x][y]) + \textit{time}
 $$
 
-对于周赛第二题来说，$\textit{time}$ 恒为 $1$。
+上一题 [3341. 到达最后一个房间的最少时间 I](https://leetcode.cn/problems/find-minimum-time-to-reach-last-room-i/)，$\textit{time}$ 恒为 $1$。
 
-对于本题，由于每走一步 $\textit{time}$ 都会在 $1,2$ 之间变化，联系国际象棋棋盘，$(i+j)$ 的奇偶性就决定了 $\textit{time}$，即
+本题由于每走一步 $\textit{time}$ 都会在 $1,2$ 之间变化，类似国际象棋棋盘，$(i+j)$ 的奇偶性就决定了 $\textit{time}$，即
 
 $$
 \textit{time} = (i+j)\bmod 2 + 1
@@ -20,7 +20,7 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1hcS1YCETs/)，欢迎点赞关注~
 
-### 答疑
+## 答疑
 
 **问**：为什么代码要判断 `d > dis[i][j]`？可以不写 `continue` 吗？
 
@@ -39,9 +39,10 @@ class Solution:
                 return d
             if d > dis[i][j]:
                 continue
+            time = (i + j) % 2 + 1
             for x, y in (i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1):  # 枚举周围四个格子
                 if 0 <= x < n and 0 <= y < m:
-                    new_dis = max(d, moveTime[x][y]) + (i + j) % 2 + 1
+                    new_dis = max(d, moveTime[x][y]) + time
                     if new_dis < dis[x][y]:
                         dis[x][y] = new_dis
                         heappush(h, (new_dis, x, y))
@@ -52,15 +53,19 @@ class Solution {
     private final static int[][] DIRS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
     public int minTimeToReach(int[][] moveTime) {
-        int n = moveTime.length, m = moveTime[0].length;
+        int n = moveTime.length;
+        int m = moveTime[0].length;
+
         int[][] dis = new int[n][m];
         for (int[] row : dis) {
             Arrays.fill(row, Integer.MAX_VALUE);
         }
         dis[0][0] = 0;
+
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
         pq.add(new int[]{0, 0, 0});
-        for (;;) {
+
+        while (true) {
             int[] p = pq.poll();
             int d = p[0], i = p[1], j = p[2];
             if (i == n - 1 && j == m - 1) {
@@ -69,10 +74,11 @@ class Solution {
             if (d > dis[i][j]) {
                 continue;
             }
+            int time = (i + j) % 2 + 1;
             for (int[] q : DIRS) {
                 int x = i + q[0], y = j + q[1];
                 if (0 <= x && x < n && 0 <= y && y < m) {
-                    int newDis = Math.max(d, moveTime[x][y]) + (i + j) % 2 + 1;
+                    int newDis = Math.max(d, moveTime[x][y]) + time;
                     if (newDis < dis[x][y]) {
                         dis[x][y] = newDis;
                         pq.add(new int[]{newDis, x, y});
@@ -94,7 +100,7 @@ public:
         dis[0][0] = 0;
         priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> pq;
         pq.emplace(0, 0, 0);
-        for (;;) {
+        while (true) {
             auto [d, i, j] = pq.top();
             pq.pop();
             if (i == n - 1 && j == m - 1) {
@@ -103,10 +109,11 @@ public:
             if (d > dis[i][j]) {
                 continue;
             }
+            int time = (i + j) % 2 + 1;
             for (auto& q : dirs) {
                 int x = i + q[0], y = j + q[1];
                 if (0 <= x && x < n && 0 <= y && y < m) {
-                    int new_dis = max(d, moveTime[x][y]) + (i + j) % 2 + 1;
+                    int new_dis = max(d, moveTime[x][y]) + time;
                     if (new_dis < dis[x][y]) {
                         dis[x][y] = new_dis;
                         pq.emplace(new_dis, x, y);
@@ -142,10 +149,11 @@ func minTimeToReach(moveTime [][]int) (ans int) {
 		if top.dis > dis[i][j] {
 			continue
 		}
+		time := (i+j)%2 + 1
 		for _, d := range dirs {
 			x, y := i+d.x, j+d.y
 			if 0 <= x && x < n && 0 <= y && y < m {
-				newD := max(top.dis, moveTime[x][y]) + (i+j)%2 + 1
+				newD := max(top.dis, moveTime[x][y]) + time
 				if newD < dis[x][y] {
 					dis[x][y] = newD
 					heap.Push(&h, tuple{newD, x, y})
@@ -169,7 +177,9 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 - 时间复杂度：$\mathcal{O}(nm\log (nm))$，其中 $n$ 和 $m$ 分别为 $\textit{moveTime}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(nm)$。
 
-**相似题目**：[2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)
+## 相似题目
+
+[2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)
 
 更多相似题目，见下面网格图题单中的「**BFS**」以及图论题单中的「**单源最短路：Dijkstra**」。
 
@@ -177,17 +187,19 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

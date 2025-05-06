@@ -29,10 +29,11 @@ func minTimeToReach(moveTime [][]int) (ans int) {
 		if top.dis > dis[i][j] {
 			continue
 		}
+		time := (i+j)%2 + 1
 		for _, d := range dirs {
 			x, y := i+d.x, j+d.y
 			if 0 <= x && x < n && 0 <= y && y < m {
-				newD := max(top.dis, moveTime[x][y]) + (i+j)%2 + 1
+				newD := max(top.dis, moveTime[x][y]) + time
 				if newD < dis[x][y] {
 					dis[x][y] = newD
 					heap.Push(&h, tuple{newD, x, y})
