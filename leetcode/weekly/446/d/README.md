@@ -280,9 +280,9 @@ class SegmentTree {
             return;
         }
         int m = (l + r) / 2;
-        if (i <= m) {  // i 在左子树
+        if (i <= m) { // i 在左子树
             update(node * 2, l, m, i, val);
-        } else {  // i 在右子树
+        } else { // i 在右子树
             update(node * 2 + 1, m + 1, r, i, val);
         }
         maintain(node);
@@ -293,10 +293,10 @@ class SegmentTree {
             return tree[node];
         }
         int m = (l + r) / 2;
-        if (qr <= m) {  // [ql, qr] 在左子树
+        if (qr <= m) { // [ql, qr] 在左子树
             return query(node * 2, l, m, ql, qr);
         }
-        if (ql > m) {  // [ql, qr] 在右子树
+        if (ql > m) { // [ql, qr] 在右子树
             return query(node * 2 + 1, m + 1, r, ql, qr);
         }
         T l_res = query(node * 2, l, m, ql, qr);
