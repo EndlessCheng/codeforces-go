@@ -17,6 +17,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1avVwz5EbY/?t=3m13s)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def specialGrid(self, n: int) -> List[List[int]]:
@@ -112,10 +114,120 @@ func specialGrid(n int) [][]int {
 }
 ```
 
+## 写法二
+
+注意子矩阵长宽是相同的。设子矩阵边长为 $\textit{size}$，那么有 $d = u + \textit{size}$，$r = l + \textit{size}$。
+
+所以只需要 $u,l,\textit{size}$ 三个参数就够了。
+
+```py [sol-Python3]
+class Solution:
+    def specialGrid(self, n: int) -> List[List[int]]:
+        a = [[0] * (1 << n) for _ in range(1 << n)]
+        val = 0
+
+        def dfs(u: int, l: int, size: int) -> None:
+            if size == 1:
+                nonlocal val
+                a[u][l] = val
+                val += 1
+                return
+            m = size // 2
+            dfs(u, l + m, m)
+            dfs(u + m, l + m, m)
+            dfs(u + m, l, m)
+            dfs(u, l, m)
+
+        dfs(0, 0, 1 << n)
+        return a
+```
+
+```java [sol-Java]
+class Solution {
+    public int[][] specialGrid(int n) {
+        int[][] a = new int[1 << n][1 << n];
+        dfs(a, 0, 0, 1 << n);
+        return a;
+    }
+
+    private int val = 0;
+
+    private void dfs(int[][] a, int u, int l, int size) {
+        if (size == 1) {
+            a[u][l] = val++;
+            return;
+        }
+        int m = size / 2;
+        dfs(a, u, l + m, m);
+        dfs(a, u + m, l + m, m);
+        dfs(a, u + m, l, m);
+        dfs(a, u, l, m);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<vector<int>> specialGrid(int n) {
+        vector a(1 << n, vector<int>(1 << n));
+        int val = 0;
+        auto dfs = [&](this auto&& dfs, int u, int l, int size) -> void {
+            if (size == 1) {
+                a[u][l] = val++;
+                return;
+            }
+            int m = size / 2;
+            dfs(u, l + m, m);
+            dfs(u + m, l + m, m);
+            dfs(u + m, l, m);
+            dfs(u, l, m);
+        };
+        dfs(0, 0, 1 << n);
+        return a;
+    }
+};
+```
+
+```go [sol-Go]
+func specialGrid(n int) [][]int {
+	val := 0
+	var dfs func([][]int, int)
+	dfs = func(a [][]int, l int) {
+		if len(a) == 1 {
+			a[0][l] = val
+			val++
+			return
+		}
+		m := len(a) / 2
+		dfs(a[:m], l+m)
+		dfs(a[m:], l+m)
+		dfs(a[m:], l)
+		dfs(a[:m], l)
+	}
+
+	a := make([][]int, 1<<n)
+	for i := range a {
+		a[i] = make([]int, 1<<n)
+	}
+	dfs(a, 0)
+	return a
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(4^n)$。每个格子恰好访问一次。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。递归需要 $\mathcal{O}(n)$ 的栈空间。
+
+## 思考题
+
+数据范围扩大至 $n\le 30$。
+
+1. 输入一个长为 $10^5$ 的 $\textit{queries}$ 数组，每个询问给定行列编号 $(r,c)$，计算位于 $(r,c)$ 处的数字是多少。
+2. 输入一个长为 $10^5$ 的 $\textit{queries}$ 数组，每个询问给定数字 $x$，计算这个数字所在行列编号。
+
+见 [CF2093D. Skibidi Table](https://codeforces.com/problemset/problem/2093/D)。
 
 ## 分类题单
 
