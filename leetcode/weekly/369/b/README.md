@@ -15,7 +15,8 @@ class Solution:
     def minSum(self, nums1: List[int], nums2: List[int]) -> int:
         s1 = sum(max(x, 1) for x in nums1)
         s2 = sum(max(x, 1) for x in nums2)
-        if s1 < s2 and 0 not in nums1 or s2 < s1 and 0 not in nums2:
+        if s1 < s2 and 0 not in nums1 or \
+           s2 < s1 and 0 not in nums2:
             return -1
         return max(s1, s2)
 ```
