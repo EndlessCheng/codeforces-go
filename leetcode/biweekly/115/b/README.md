@@ -9,7 +9,7 @@
 ```py [sol-Python3]
 class Solution:
     def getLongestSubsequence(self, words: List[str], groups: List[int]) -> List[str]:
-        n = len(words)
+        n = len(groups)
         ans = []
         for i, g in enumerate(groups):
             if i == n - 1 or g != groups[i + 1]:  # i 是连续相同段的末尾
@@ -27,7 +27,7 @@ class Solution:
 class Solution {
     public List<String> getLongestSubsequence(String[] words, int[] groups) {
         List<String> ans = new ArrayList<>();
-        int n = words.length;
+        int n = groups.length;
         for (int i = 0; i < n; i++) {
             if (i == n - 1 || groups[i] != groups[i + 1]) { // i 是连续相同段的末尾
                 ans.add(words[i]);
@@ -43,7 +43,7 @@ class Solution {
 public:
     vector<string> getLongestSubsequence(vector<string>& words, vector<int>& groups) {
         vector<string> ans;
-        int n = words.size();
+        int n = groups.size();
         for (int i = 0; i < n; i++) {
             if (i == n - 1 || groups[i] != groups[i + 1]) { // i 是连续相同段的末尾
                 ans.push_back(words[i]);
@@ -70,7 +70,7 @@ char** getLongestSubsequence(char** words, int wordsSize, int* groups, int group
 
 ```go [sol-Go]
 func getLongestSubsequence(words []string, groups []int) (ans []string) {
-	n := len(words)
+	n := len(groups)
 	for i, g := range groups {
 		if i == n-1 || g != groups[i+1] { // i 是连续相同段的末尾
 			ans = append(ans, words[i])
@@ -82,7 +82,7 @@ func getLongestSubsequence(words []string, groups []int) (ans []string) {
 
 ```js [sol-JavaScript]
 var getLongestSubsequence = function(words, groups) {
-    const n = words.length;
+    const n = groups.length;
     const ans = [];
     for (let i = 0; i < n; i++) {
         if (i === n - 1 || groups[i] !== groups[i + 1]) { // i 是连续相同段的末尾
