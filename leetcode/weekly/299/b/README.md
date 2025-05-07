@@ -18,11 +18,14 @@ $$
 
 由于两侧的房屋互相独立，根据乘法原理，答案为 $f[n]^2$。
 
-[本题视频讲解](https://www.bilibili.com/video/BV1pW4y1r7xs)
+为什么可以在 DP 的计算过程中取模？请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1pW4y1r7xs)。
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
 MX = 10_001
+
 f = [1, 2]
 while len(f) < MX:
     f.append((f[-1] + f[-2]) % MOD)
@@ -55,6 +58,7 @@ class Solution {
 ```cpp [sol-C++]
 const int MOD = 1'000'000'007;
 const int MX = 10'001;
+
 int f[MX] = {1, 2};
 
 int init = []() {
@@ -72,6 +76,31 @@ public:
 };
 ```
 
+```c [sol-C]
+#define MOD 1000000007
+#define MX 10001
+
+int f[MX];
+bool initialized; // 是否初始化过
+
+void init() {
+    if (initialized) {
+        return;
+    }
+    initialized = true;
+    f[0] = 1;
+    f[1] = 2;
+    for (int i = 2; i < MX; i++) {
+        f[i] = (f[i - 1] + f[i - 2]) % MOD;
+    }
+}
+
+int countHousePlacements(int n) {
+    init();
+    return 1LL * f[n] * f[n] % MOD;
+}
+```
+
 ```go [sol-Go]
 const mod = 1_000_000_007
 
@@ -85,6 +114,52 @@ func init() {
 
 func countHousePlacements(n int) int {
 	return f[n] * f[n] % mod
+}
+```
+
+```js [sol-JavaScript]
+const MOD = 1_000_000_007;
+const MX = 10_001
+
+const f = Array(MX);
+f[0] = 1;
+f[1] = 2;
+for (let i = 2; i < MX; i++) {
+    f[i] = (f[i - 1] + f[i - 2]) % MOD;
+}
+
+var countHousePlacements = function(n) {
+    return Number(BigInt(f[n]) * BigInt(f[n]) % BigInt(MOD));
+};
+```
+
+```rust [sol-Rust]
+static mut INITIALIZED: bool = false;
+static mut F: [i32; 10001] = [0; 10001];
+
+fn init_once() {
+    unsafe {
+        if INITIALIZED {
+            return;
+        }
+        INITIALIZED = true;
+
+        F[0] = 1;
+        F[1] = 2;
+        for i in 2..10001 {
+            F[i] = (F[i - 1] + F[i - 2]) % 1_000_000_007;
+        }
+    }
+}
+
+impl Solution {
+    pub fn count_house_placements(n: i32) -> i32 {
+        init_once();
+        unsafe {
+            let v = F[n as usize] as i64;
+            (v * v % 1_000_000_007) as _
+        }
+    }
 }
 ```
 
