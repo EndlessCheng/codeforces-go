@@ -17,29 +17,29 @@ func cf543C(in io.Reader, out io.Writer) {
 	}
 
 	cost := make([][]int, n)
-	minCost := make([]int, n)
+	rowCost := make([]int, n)
 	for i := range cost {
 		cost[i] = make([]int, m)
 		for j := range cost[i] {
 			Fscan(in, &cost[i][j])
 		}
-		minCost[i] = slices.Min(cost[i])
+		rowCost[i] = slices.Min(cost[i])
 	}
 
-	type pair struct{ mask, cost int }
-	same := make([][]pair, n)
+	type pair struct{ t, cost int }
+	colCost := make([][]pair, n)
 	for i, s := range a {
-		same[i] = make([]pair, m)
+		colCost[i] = make([]pair, m)
 		for j, b := range s {
 			mx := 0
 			for k, t := range a {
 				if t[j] == b {
-					same[i][j].mask |= 1 << k
-					same[i][j].cost += cost[k][j]
+					colCost[i][j].t |= 1 << k
+					colCost[i][j].cost += cost[k][j]
 					mx = max(mx, cost[k][j])
 				}
 			}
-			same[i][j].cost -= mx
+			colCost[i][j].cost -= mx
 		}
 	}
 
@@ -48,11 +48,11 @@ func cf543C(in io.Reader, out io.Writer) {
 	for i := 1; i < u; i++ {
 		f[i] = 1e9
 	}
-	for i, fv := range f[:u-1] {
-		j := bits.TrailingZeros(^uint(i))
-		f[i|1<<j] = min(f[i|1<<j], fv+minCost[j]) // 单改 j
-		for _, p := range same[j] {
-			f[i|p.mask] = min(f[i|p.mask], fv+p.cost) // 改 mask 这一组
+	for s, fs := range f[:u-1] {
+		i := bits.TrailingZeros(^uint(s))
+		f[s|1<<i] = min(f[s|1<<i], fs+rowCost[i])
+		for _, p := range colCost[i] {
+			f[s|p.t] = min(f[s|p.t], fs+p.cost)
 		}
 	}
 	Fprint(out, f[u-1])
