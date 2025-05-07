@@ -64,7 +64,7 @@ func magicalSum(m, k int, nums []int) int {
 		if c1+leftM < leftK { // 可行性剪枝
 			return
 		}
-		if i == n {
+		if i == n || leftM == 0 || leftK == 0 {
 			if leftM == 0 && c1 == leftK {
 				return 1
 			}
@@ -78,10 +78,8 @@ func magicalSum(m, k int, nums []int) int {
 			// 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
 			// 由于 x = S >> i，转化成对 x 的贡献是 j
 			bit := (x + j) & 1 // 取最低位，提前从 leftK 中减去，其余进位到 x 中
-			if bit <= leftK {
-				r := dfs(i+1, leftM-j, (x+j)>>1, leftK-bit)
-				res = (res + r*powV[i][j]%mod*invF[j]) % mod
-			}
+			r := dfs(i+1, leftM-j, (x+j)>>1, leftK-bit)
+			res = (res + r*powV[i][j]%mod*invF[j]) % mod
 		}
 		*p = res
 		return

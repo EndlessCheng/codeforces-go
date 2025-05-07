@@ -90,9 +90,7 @@ $$
 
 其中枚举的 $j$ 还需要满足 $\textit{bit}\le \textit{leftK}$。
 
-递归边界：$i=n$ 时，如果 $\textit{leftM}=0$ 且 $x$ 的二进制中恰好有 $\textit{leftK}$ 个 $1$，那么找到了一个合法序列，返回 $1$，否则返回 $0$。
-
-> **注**：也可以在 $\textit{leftM}=0$ 时提前返回，但由于后续枚举的 $j$ 只能为 $0$，循环次数都是 $1$，这个优化不显著。
+递归边界：$i=n$ 时，如果 $\textit{leftM}=0$ 且 $x$ 的二进制中恰好有 $\textit{leftK}$ 个 $1$，那么找到了一个合法序列，返回 $1$，否则返回 $0$。此外，如果 $\textit{leftM}=0$ 或者 $\textit{leftK}=0$，那么后续无法选任何数，可以直接返回，处理方式同 $i=n$。
 
 递归入口：$\textit{dfs}(0,m,0,k)\cdot m!$，即答案。
 
@@ -135,16 +133,15 @@ class Solution:
             c1 = x.bit_count()
             if c1 + left_m < left_k:  # 可行性剪枝
                 return 0
-            if i == n:
+            if i == n or left_m == 0 or left_k == 0:  # 无法继续选数字
                 return 1 if left_m == 0 and c1 == left_k else 0
             res = 0
             for j in range(left_m + 1):  # 枚举 I 中有 j 个下标 i
                 # 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
                 # 由于 x = S >> i，转化成对 x 的贡献是 j
                 bit = (x + j) & 1  # 取最低位，提前从 left_k 中减去，其余进位到 x 中
-                if bit <= left_k:
-                    r = dfs(i + 1, left_m - j, (x + j) >> 1, left_k - bit)
-                    res += r * pow_v[i][j] * inv_f[j]
+                r = dfs(i + 1, left_m - j, (x + j) >> 1, left_k - bit)
+                res += r * pow_v[i][j] * inv_f[j]
             return res % MOD
 
         return dfs(0, m, 0, k) * fac[m] % MOD
@@ -207,7 +204,7 @@ class Solution {
         if (c1 + leftM < leftK) { // 可行性剪枝
             return 0;
         }
-        if (i == powV.length) {
+        if (i == powV.length || leftM == 0 || leftK == 0) { // 无法继续选数字
             return leftM == 0 && c1 == leftK ? 1 : 0;
         }
         if (memo[i][leftM][x][leftK] != -1) {
@@ -218,10 +215,8 @@ class Solution {
             // 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
             // 由于 x = S >> i，转化成对 x 的贡献是 j
             int bit = (x + j) & 1; // 取最低位，提前从 leftK 中减去，其余进位到 x 中
-            if (bit <= leftK) {
-                long r = dfs(i + 1, leftM - j, (x + j) >> 1, leftK - bit, powV, memo);
-                res = (res + r * powV[i][j] % MOD * INV_F[j]) % MOD;
-            }
+            long r = dfs(i + 1, leftM - j, (x + j) >> 1, leftK - bit, powV, memo);
+            res = (res + r * powV[i][j] % MOD * INV_F[j]) % MOD;
         }
         return memo[i][leftM][x][leftK] = (int) res;
     }
@@ -277,7 +272,7 @@ public:
             if (c1 + left_m < left_k) { // 可行性剪枝
                 return 0;
             }
-            if (i == n) {
+            if (i == n || left_m == 0 || left_k == 0) { // 无法继续选数字
                 return left_m == 0 && c1 == left_k;
             }
             int& res = memo[i][left_m][x][left_k]; // 注意这里是引用
@@ -288,11 +283,9 @@ public:
             for (int j = 0; j <= left_m; j++) { // 枚举 I 中有 j 个下标 i
                 // 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
                 // 由于 x = S >> i，转化成对 x 的贡献是 j
-                int bit = (x + j) & 1; // 取最低位，提前从 leftK 中减去，其余进位到 x 中
-                if (bit <= left_k) {
-                    int r = dfs(i + 1, left_m - j, (x + j) >> 1, left_k - bit);
-                    res = (res + 1LL * r * pow_v[i][j] % MOD * INV_F[j]) % MOD;
-                }
+                int bit = (x + j) & 1; // 取最低位，提前从 left_k 中减去，其余进位到 x 中
+                int r = dfs(i + 1, left_m - j, (x + j) >> 1, left_k - bit);
+                res = (res + 1LL * r * pow_v[i][j] % MOD * INV_F[j]) % MOD;
             }
             return res;
         };
@@ -361,7 +354,7 @@ func magicalSum(m, k int, nums []int) int {
 		if c1+leftM < leftK { // 可行性剪枝
 			return
 		}
-		if i == n {
+		if i == n || leftM == 0 || leftK == 0 { // 无法继续选数字
 			if leftM == 0 && c1 == leftK {
 				return 1
 			}
@@ -375,10 +368,8 @@ func magicalSum(m, k int, nums []int) int {
 			// 这 j 个下标 i 对 S 的贡献是 j * pow(2, i)
 			// 由于 x = S >> i，转化成对 x 的贡献是 j
 			bit := (x + j) & 1 // 取最低位，提前从 leftK 中减去，其余进位到 x 中
-			if bit <= leftK {
-				r := dfs(i+1, leftM-j, (x+j)>>1, leftK-bit)
-				res = (res + r*powV[i][j]%mod*invF[j]) % mod
-			}
+			r := dfs(i+1, leftM-j, (x+j)>>1, leftK-bit)
+			res = (res + r*powV[i][j]%mod*invF[j]) % mod
 		}
 		*p = res
 		return
