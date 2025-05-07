@@ -443,7 +443,7 @@ public:
             int f = 0; // 方法一中的 f[i]
             for (int k = 0; k < w.size(); k++) {
                 long long h = hash | (31LL << (k * 5)); // 用记号笔把 w[k] 涂黑（置为 11111）
-                auto [max_f, j, max_f2, j2] = f_map[h];
+                auto& [max_f, j, max_f2, j2] = f_map[h];
                 if (g != groups[j]) { // 可以从最大值转移过来
                     if (max_f > f) {
                         f = max_f;
@@ -467,7 +467,7 @@ public:
             // 注意要保证最大次大的 group 值不同
             for (int k = 0; k < w.size(); k++) {
                 long long h = hash | (31LL << (k * 5));
-                auto [max_f, j, max_f2, j2] = f_map[h];
+                auto& [max_f, j, max_f2, j2] = f_map[h];
                 if (f > max_f) { // 最大值需要更新
                     if (g != groups[j]) {
                         max_f2 = max_f; // 旧最大值变成次大值
@@ -479,7 +479,6 @@ public:
                     max_f2 = f;
                     j2 = i;
                 }
-                f_map[h] = {max_f, j, max_f2, j2};
             }
         }
 
