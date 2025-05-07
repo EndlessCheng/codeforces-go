@@ -17,10 +17,10 @@ class Solution:
         return ans
 ```
 
-```py [sol-Python3 一行]
+```py [sol-Python3 groupby]
 class Solution:
     def getLongestSubsequence(self, words: List[str], groups: List[int]) -> List[str]:
-        return [w for (x, y), w in zip(pairwise(groups), words) if x != y] + [words[-1]]
+        return [next(g)[0] for _, g in groupby(zip(words, groups), key=lambda z: z[1])]
 ```
 
 ```java [sol-Java]
