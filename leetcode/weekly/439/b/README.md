@@ -1,3 +1,5 @@
+首先，读清楚题目，我们可以对同一个 $s[i]$ 反复执行多次操作。
+
 **前置题目**：[516. 最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/)，请看 [区间 DP【基础算法精讲 22】](https://www.bilibili.com/video/BV1Gs4y1E7EU/)。
 
 本题在 516 题的基础上，增加一个参数 $k$，表示剩余操作次数。
