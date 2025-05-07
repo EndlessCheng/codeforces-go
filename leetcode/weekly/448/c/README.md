@@ -12,6 +12,8 @@ $$
 (\textit{position}[k] - \textit{position}[j])\cdot (s[j+1] - s[i])
 $$
 
+示例 1 划分成 $[5],[8,3],[6]$ 三个子数组，其中子数组 $[8,3]$ 和 $[6]$，对应着从 $\textit{position}[2]=8$ 移动到 $\textit{position}[3]=10$，移动 $10-8=2$ 公里，每公里所需时间为子数组 $[8,3]$ 的元素和 $8+3=11$，所以路段旅行时间为 $2\times 11 = 22$。
+
 ## DP 模型：相邻相关划分型 DP
 
 回想一下 [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/) 的做法：设当前下标为 $i$，枚举下一个下标 $j$，判断 $\textit{nums}[i]< \textit{nums}[j]$ 是否成立。这是标准的相邻相关子序列 DP 问题。本题也类似，设当前子数组为 $[i,j]$，枚举下一个子数组为 $[j+1,k]$。
