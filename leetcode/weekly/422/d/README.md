@@ -100,7 +100,7 @@ $$
 n_1!\times (n-n_1)!\times \textit{dfs}(9,n_1,\textit{total}/2)
 $$
 
-关于取模的知识点，以及逆元的知识点，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+代码实现时，可以预处理阶乘及其逆元，原理请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 ## 记忆化搜索
 
