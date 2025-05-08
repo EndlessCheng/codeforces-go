@@ -43,15 +43,16 @@ func Asr(a, b, eps float64, f mathF) float64 {
 
 // 拉格朗日插值
 // 给定（同余）多项式上的 n 个点 (xi,yi)，我们可以得到一个 n-1 次多项式，
-// 利用拉格朗日插值可以在不用高斯消元的情况下，求出 f(k) 的值
+// 利用拉格朗日插值，可以在不用高斯消元的情况下，求出 f(k) 的值
 // https://en.wikipedia.org/wiki/Lagrange_polynomial
 // https://oi-wiki.org/math/poly/lagrange/
 // 浅谈几种插值方法 https://www.luogu.com.cn/blog/zhang-xu-jia/ji-zhong-cha-zhi-fang-fa-yang-xie
 //
 // 模板题 https://www.luogu.com.cn/problem/P4781
 // todo https://www.luogu.com.cn/problem/P5667
-// 等幂和 https://codeforces.com/problemset/problem/622/F
-// 交互 找零点 https://codeforces.com/problemset/problem/1155/E
+// https://codeforces.com/problemset/problem/1155/E 2200 交互 找零点
+// https://codeforces.com/problemset/problem/622/F 2600 等幂和
+// https://codeforces.com/problemset/problem/995/F 2700
 func lagrangePolynomialInterpolation(xs, ys []int, k int) int {
 	inv := func(a int) int { return pow(a, mod-2) }
 	div := func(a, b int) int { return a % mod * inv(b) % mod }
