@@ -719,7 +719,11 @@ func pow(x, n int) int {
 - 时间复杂度：$\mathcal{O}(n^2S)$，其中 $n$ 为 $\textit{num}$ 的长度，$S$ 为 $\textit{num}$ 的数字和的一半，这不超过 $9n/2$。注意把 $i$ 和 $k$ 结合起来看，这二者一起是 $\mathcal{O}(n)$ 的。
 - 空间复杂度：$\mathcal{O}(nS)$。保存多少状态，就需要多少空间。
 
-更多相似题目，见下面动态规划题单中的「**§7.5 多维 DP**」和数学题单中的「**§2.2 组合计数**」
+## 相似题目
+
+[3539. 魔法序列的数组乘积之和](https://leetcode.cn/problems/find-sum-of-array-product-of-magical-sequences/)
+
+更多相似题目，见下面动态规划题单的「**§7.6 多维 DP**」和数学题单的「**§2.2 组合计数**」。
 
 ## 分类题单
 
