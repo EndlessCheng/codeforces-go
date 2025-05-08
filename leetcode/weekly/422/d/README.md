@@ -1,18 +1,14 @@
 ## 公式推导
 
-设 $\textit{num}$ 中所有数字之和为 $\textit{total}$。
+设 $\textit{num}$ 中的数字之和为 $\textit{total}$。
 
-如果 $\textit{total}$ 是奇数，那么无法把 $\textit{num}$ 中的数字分成两个和相等的集合，返回 $0$。
+如果 $\textit{total}$ 是奇数，那么无法把 $\textit{num}$ 分成两个和相等的集合，返回 $0$。
 
-否则，问题相当于把 $\textit{num}$ **均分**成两个数字之和均为 $\dfrac{\textit{total}}{2}$ 的多重集。
+否则，可以把 $\textit{num}$ 分成两个多重集，大小分别为 $\left\lfloor\dfrac{n}{2}\right\rfloor$ 和 $\left\lceil\dfrac{n}{2}\right\rceil$（$n$ 是 $\textit{num}$ 的长度），每个多重集的元素和均为 $\dfrac{\textit{total}}{2}$。
 
-例如其中一个多重集为 $\{1,1,2,2,2\}$，那么 $5$ 个数有 $5!$ 个排列，其中 $2$ 个 $1$ 的排列个数 $2!$ 是重复的，要除掉；另外 $3$ 个 $2$ 的排列个数 $3!$ 是重复的，要除掉。所以这个多重集的排列数为 $\dfrac{5!}{2!3!}$。
+例如多重集 $\{1,1,2,2,2\}$，这 $5$ 个数有 $5!$ 个排列，其中 $2$ 个 $1$ 的排列是重复的，要除以 $2!$；$3$ 个 $2$ 的排列是重复的，要除以 $3!$。所以这个多重集的排列数为 $\dfrac{5!}{2!3!}$。
 
-设 $\textit{num}$ 中数字 $i$ 的出现次数为 $\textit{cnt}[i]$。
-
-设有 $k_i$ 个数字 $i$ 分给第一个多重集，那么剩余的 $\textit{cnt}[i] - k_i$ 个数字 $i$ 分给第二个多重集。
-
-设 $n$ 是 $\textit{num}$ 的长度。
+设 $\textit{num}$ 中数字 $i$ 的出现次数为 $\textit{cnt}[i]$。设有 $k_i$ 个数字 $i$ 分给第一个多重集，那么剩余的 $\textit{cnt}[i] - k_i$ 个数字 $i$ 分给第二个多重集。
 
 第一个多重集的大小为 $\left\lfloor\dfrac{n}{2}\right\rfloor$，排列数为
 
@@ -29,13 +25,19 @@ $$
 二者相乘，总的排列数为
 
 $$
-\dfrac{\left\lfloor\dfrac{n}{2}\right\rfloor!\left\lceil\dfrac{n}{2}\right\rceil!}{\left(\prod\limits_{i=0}^{i=9}k_i!\right)\left(\prod\limits_{i=0}^{i=9}(\textit{cnt}[i]-k_i)!\right)}
+\dfrac{\left\lfloor\dfrac{n}{2}\right\rfloor!\left\lceil\dfrac{n}{2}\right\rceil!}{\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!}
 $$
 
-由于分子可以直接计算，所以下面只计算
+枚举 $k_i$，把分子提出来，答案为
 
 $$
-f_9(k_0,k_1,\ldots,k_9) = \dfrac{1}{\left(\prod\limits_{i=0}^{i=9}k_i!\right)\left(\prod\limits_{i=0}^{i=9}(\textit{cnt}[i]-k_i)!\right)}
+\left\lfloor\dfrac{n}{2}\right\rfloor!\left\lceil\dfrac{n}{2}\right\rceil! \sum_{\substack{k_0+\cdots+k_9=\lfloor\frac{n}{2}\rfloor \\ 0k_0 + \cdots+9k_9=\frac{\textit{total}}{2} }} \dfrac{1}{\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!}
+$$
+
+下面计算
+
+$$
+f_9(k_0,k_1,\ldots,k_9) = \dfrac{1}{\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!}
 $$
 
 如果只枚举 $k_9$ 的话，有
@@ -44,7 +46,7 @@ $$
 \sum_{k_9=0}^{\textit{cnt}[9]} f_9(k_0,k_1,\ldots,k_9) =  \sum_{k_9=0}^{\textit{cnt}[9]} f_8(k_0,k_1,\ldots,k_8)\cdot \dfrac{1}{k_9!(\textit{cnt}[9]-k_9)!}
 $$
 
-其中 $f_8(k_0,k_1,\ldots,k_8) = \dfrac{1}{\left(\prod\limits_{i=0}^{i=8}k_i!\right)\left(\prod\limits_{i=0}^{i=8}(\textit{cnt}[i]-k_i)!\right)}$，这又可以通过枚举 $k_8$ 计算，转换成计算 $f_7(k_0,k_1,\ldots,k_7)$ 的子问题。
+其中 $f_8(k_0,k_1,\ldots,k_8) = \dfrac{1}{\prod\limits_{i=0}^{i=8}k_i!(\textit{cnt}[i]-k_i)!}$，这又可以通过枚举 $k_8$ 计算，转换成计算 $f_7(k_0,k_1,\ldots,k_7)$ 的子问题。
 
 ## 状态定义与状态转移方程
 
@@ -70,7 +72,7 @@ $$
 - 剩余要分配的数字是 $[0,i-1]$。
 - 第一个多重集还剩下 $\textit{left}_1 - k$ 个数字需要分配。
 - 第一个多重集还剩下 $\textit{leftS} - k\cdot i$ 的元素和需要分配。
-- 计算的式子为 $\sum\limits_{k_{i-1}=0}^{\textit{cnt}[i-1]} f_{i-1}(k_0,k_1,\ldots,k_{i-1})$。
+- 计算的式子为 $\displaystyle\sum\limits_{k_{i-1}=0}^{\textit{cnt}[i-1]} f_{i-1}(k_0,k_1,\ldots,k_{i-1})$。
 
 即 $\textit{dfs}(i-1,\textit{left}_1 - k, \textit{leftS} - k\cdot i)$。
 
@@ -80,7 +82,7 @@ $$
 \textit{dfs}(i,\textit{left}_1,\textit{leftS}) = \sum_{k=0}^{\textit{cnt}[i]}  \textit{dfs}(i-1,\textit{left}_1 - k, \textit{leftS} - k\cdot i)\cdot \dfrac{1}{k!(\textit{cnt}[i]-k)!}
 $$
 
-由于 $\textit{left}_1+\textit{left}_2 = \sum\limits_{j=0}^{i} \textit{cnt}[j]$ 恒成立，所以第二个多重集的大小 $\textit{left}_2$ 可以省略。
+由于 $\textit{left}_1+\textit{left}_2 = \displaystyle\sum\limits_{j=0}^{i} \textit{cnt}[j]$ 恒成立，所以第二个多重集的大小 $\textit{left}_2$ 可以省略。
 
 注意枚举 $k$ 的时候，还要满足 $k\le \textit{left}_1$ 且 $\textit{cnt}[i]-k \le \textit{left}_2$，所以 $k$ 的实际范围为
 
