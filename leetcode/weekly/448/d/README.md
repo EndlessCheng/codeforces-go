@@ -52,6 +52,8 @@ $$
 f(I) = \prod_{j=0}^{m-1} \textit{nums}[I_j] = \prod_{i=0}^{n-1} \textit{nums}[i]^{c_i}
 $$
 
+枚举 $c_i$，把 $m!$ 提出来，答案为
+
 $$
 \sum_{I}f(I) =  \sum_{I}\prod_{i=0}^{n-1} \textit{nums}[i]^{c_i} = m! \sum_{c_0+\cdots+c_{n-1} = m} \prod_{i=0}^{n-1} \dfrac{\textit{nums}[i]^{c_i}}{c_i!}
 $$
