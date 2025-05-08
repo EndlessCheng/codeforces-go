@@ -9,20 +9,16 @@
 ```py [sol-Python3]
 class Solution:
     def shiftDistance(self, s: str, t: str, nextCost: List[int], previousCost: List[int]) -> int:
-        SIGMA = 26
-        nxt_sum = [0] * (SIGMA * 2 + 1)
-        pre_sum = [0] * (SIGMA * 2 + 1)
-        for i in range(SIGMA * 2):
-            nxt_sum[i + 1] = nxt_sum[i] + nextCost[i % SIGMA]
-            pre_sum[i + 1] = pre_sum[i] + previousCost[i % SIGMA]
+        nxt_sum = list(accumulate(nextCost + nextCost, initial=0))
+        pre_sum = list(accumulate(previousCost + previousCost, initial=0))
 
         ans = 0
         ord_a = ord('a')
         for x, y in zip(s, t):
             x = ord(x) - ord_a
             y = ord(y) - ord_a
-            ans += min(nxt_sum[y + SIGMA if y < x else y] - nxt_sum[x],
-                       pre_sum[(x + SIGMA if x < y else x) + 1] - pre_sum[y + 1])
+            ans += min(nxt_sum[y + 26 if y < x else y] - nxt_sum[x],
+                       pre_sum[(x + 26 if x < y else x) + 1] - pre_sum[y + 1])
         return ans
 ```
 
@@ -61,7 +57,7 @@ public:
         }
 
         long long ans = 0;
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < s.size(); i++) {
             int x = s[i] - 'a', y = t[i] - 'a';
             ans += min(nxt_sum[y < x ? y + SIGMA : y] - nxt_sum[x],
                        pre_sum[(x < y ? x + SIGMA : x) + 1] - pre_sum[y + 1]);
