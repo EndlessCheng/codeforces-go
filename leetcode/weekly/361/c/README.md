@@ -47,6 +47,8 @@ $$
 
 > 此外，如果 $k>n$，那么 $s[l]\bmod \textit{modulo}\le s[l]\le n < k$，所有子数组都不满足要求，直接返回 $0$。不过这个优化不影响运行时间，可以不写。
 
+因为 $k < \textit{modulo}$，所以 $s[r]-k + \textit{modulo} > s[r]$。又因为 $s$ 是非降数组，所以当我们遍历到 $s[r] < k$ 时，$\textit{cnt}$ 中必然没有 $s[r]-k + \textit{modulo}$，所以此时无需更新 $\textit{ans}$。
+
 ## 写法一：前缀和数组
 
 ```py [sol-Python3]
