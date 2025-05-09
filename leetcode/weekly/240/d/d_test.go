@@ -23,8 +23,7 @@ func Test(t *testing.T) {
 			`6`,
 		},
 	}
-	targetCaseNum := -1
-	if err := testutil.RunLeetCodeFuncWithExamples(t, largestPathValue, examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, largestPathValue, examples, 0); err != nil {
 		t.Fatal(err)
 	}
 }
