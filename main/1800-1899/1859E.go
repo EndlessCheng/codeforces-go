@@ -7,9 +7,9 @@ import (
 
 // https://github.com/EndlessCheng
 func cf1859E(in io.Reader, out io.Writer) {
-	var T, n, m int
+	var T, n, k int
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n, &m)
+		Fscan(in, &n, &k)
 		a := make([]struct{ x, y int }, n+1)
 		for i := 1; i <= n; i++ {
 			Fscan(in, &a[i].x)
@@ -17,7 +17,7 @@ func cf1859E(in io.Reader, out io.Writer) {
 		for i := 1; i <= n; i++ {
 			Fscan(in, &a[i].y)
 		}
-		f := make([]int, m+1)
+		f := make([]int, k+1)
 		mx := make([][4]int, n+1)
 		for i := range mx {
 			for j := range mx[i] {
@@ -26,7 +26,7 @@ func cf1859E(in io.Reader, out io.Writer) {
 		}
 		for i := 1; i <= n; i++ {
 			x, y := a[i].x, a[i].y
-			for j := min(i, m); j > 0; j-- {
+			for j := min(i, k); j > 0; j-- {
 				mx[i-j][0] = max(mx[i-j][0], f[j-1]-y-x)
 				mx[i-j][1] = max(mx[i-j][1], f[j-1]+y-x)
 				mx[i-j][2] = max(mx[i-j][2], f[j-1]-y+x)
@@ -38,7 +38,7 @@ func cf1859E(in io.Reader, out io.Writer) {
 					mx[i-j][3]-x-y)
 			}
 		}
-		Fprintln(out, f[m])
+		Fprintln(out, f[k])
 	}
 }
 
