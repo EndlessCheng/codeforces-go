@@ -303,7 +303,7 @@ auto init = [] {
 class Solution {
 public:
     int countBalancedPermutations(string num) {
-        int cnt[10];
+        int cnt[10]{};
         int total = 0;
         for (char c : num) {
             cnt[c - '0']++;
@@ -318,8 +318,8 @@ public:
         partial_sum(cnt, cnt + 10, cnt);
 
         int n = num.size(), n1 = n / 2;
-        vector<vector<vector<int>>> memo(10, vector(n1 + 1, vector<int>(total / 2 + 1, -1))); // -1 表示没有计算过
-        auto dfs = [&](auto& dfs, int i, int left1, int left_s) -> int {
+        vector memo(10, vector(n1 + 1, vector<int>(total / 2 + 1, -1))); // -1 表示没有计算过
+        auto dfs = [&](this auto& dfs, int i, int left1, int left_s) -> int {
             if (i < 0) {
                 return left_s == 0;
             }
@@ -331,12 +331,12 @@ public:
             int c = cnt[i] - (i ? cnt[i - 1] : 0);
             int left2 = cnt[i] - left1;
             for (int k = max(c - left2, 0); k <= min(c, left1) && k * i <= left_s; k++) {
-                int r = dfs(dfs, i - 1, left1 - k, left_s - k * i);
+                int r = dfs(i - 1, left1 - k, left_s - k * i);
                 res = (res + r * INV_F[k] % MOD * INV_F[c - k]) % MOD;
             }
             return res;
         };
-        return F[n1] * F[n - n1] % MOD * dfs(dfs, 9, n1, total / 2) % MOD;
+        return F[n1] * F[n - n1] % MOD * dfs(9, n1, total / 2) % MOD;
     }
 };
 ```
@@ -607,7 +607,7 @@ auto init = [] {
 class Solution {
 public:
     int countBalancedPermutations(string num) {
-        int cnt[10];
+        int cnt[10]{};
         int total = 0;
         for (char c : num) {
             cnt[c - '0']++;
@@ -620,7 +620,7 @@ public:
 
         int n = num.size();
         int n1 = n / 2;
-        vector<vector<int>> f(n1 + 1, vector<int>(total / 2 + 1));
+        vector f(n1 + 1, vector<int>(total / 2 + 1));
         f[0][0] = 1;
         int sc = 0, s = 0;
         for (int i = 0; i < 10; i++) {
