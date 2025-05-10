@@ -143,11 +143,11 @@ impl Solution {
 
 ## 附：哈希表做法
 
-在三边长能构成三角形的情况下，用哈希表计算 $\textit{nums}$ 中有 $c$ 个不同元素，然后判断：
+在三边长能构成三角形的情况下，用哈希表计算 $\textit{nums}$ 中有 $c$ 个不同元素，然后：
 
-- $c=1$：答案是 $\texttt{equilateral}$。
-- $c=2$：答案是 $\texttt{isosceles}$。
-- $c=3$：答案是 $\texttt{scalene}$。
+- $c=1$ 即全等。
+- $c=2$ 即等腰。
+- $c=3$ 即边长互不相同。
 
 ```py
 class Solution:
