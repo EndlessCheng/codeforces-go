@@ -141,6 +141,23 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 附：哈希表做法
+
+在三边长能构成三角形的情况下，用哈希表计算 $\textit{nums}$ 中有 $c$ 个不同元素，然后判断：
+
+- $c=1$：答案是 $\texttt{equilateral}$。
+- $c=2$：答案是 $\texttt{isosceles}$。
+- $c=3$：答案是 $\texttt{scalene}$。
+
+```py
+class Solution:
+    def triangleType(self, nums: List[int]) -> str:
+        nums.sort()
+        if nums[0] + nums[1] <= nums[2]:
+            return "none"
+        return ("equilateral", "isosceles", "scalene")[len(set(nums)) - 1]
+```
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
