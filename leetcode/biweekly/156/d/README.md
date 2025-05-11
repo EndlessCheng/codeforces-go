@@ -496,9 +496,9 @@ class Solution {
     private long[] dfs(int x, int fa, List<Integer>[] g, int[] nums, int k, List<long[]> f) {
         f.add(new long[]{0, 0}); // 用于刷表
 
-        long s = nums[x];  // 子树和
+        long s = nums[x]; // 子树和
         long notInv0 = 0;
-        long notInv1 = 0;  // 不反转 x 时的额外增量（0 表示上面反转了偶数次，1 表示上面反转了奇数次）
+        long notInv1 = 0; // 不反转 x 时的额外增量（0 表示上面反转了偶数次，1 表示上面反转了奇数次）
         for (int y : g[x]) {
             if (y == fa) {
                 continue;
@@ -585,7 +585,7 @@ public:
         };
 
         auto [s, res0, _] = dfs(0, -1);
-        return s + res0;  // 对于根节点来说，上面一定反转了偶数次（0 次）
+        return s + res0; // 对于根节点来说，上面一定反转了偶数次（0 次）
     }
 };
 ```
