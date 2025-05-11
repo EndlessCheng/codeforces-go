@@ -1,0 +1,421 @@
+## 方法一：DFS
+
+**枚举**路径起点 $x$，从 $x$ 开始，DFS 这个 DAG。
+
+定义 $\textit{dfs}(x,i,s)$ 表示当前移动到节点 $x$，路径长为 $i$，路径边权和为 $s$。
+
+枚举 $x$ 的邻居 $y$，递归到 $\textit{dfs}(y,i+1,s+w)$，其中 $w$ 是有向边 $x\to y$ 的边权。如果 $s+w\ge t$ 则不递归。
+
+递归边界：如果 $i=k$，那么用 $s$ 更新答案的最大值。
+
+为避免重复访问同一个 $(x,i,s)$ 状态，可以用哈希集合记录访问过的状态。
+
+下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+
+```py [sol-Python3]
+class Solution:
+    def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        g = [[] for _ in range(n)]
+        for x, y, wt in edges:
+            g[x].append((y, wt))
+
+        ans = -1
+        @cache  # 也可以用 vis 哈希集合
+        def dfs(x: int, i: int, s: int) -> None:
+            if i == k:
+                nonlocal ans
+                ans = max(ans, s)
+                return
+            for y, wt in g[x]:
+                if s + wt < t:
+                    dfs(y, i + 1, s + wt)
+
+        for x in range(n):  # 枚举起点
+            dfs(x, 0, 0)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private int ans = -1;
+
+    public int maxWeight(int n, int[][] edges, int k, int t) {
+        List<int[]>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0], y = e[1], wt = e[2];
+            g[x].add(new int[]{y, wt});
+        }
+
+        Set<Integer> vis = new HashSet<>();
+        for (int x = 0; x < n; x++) { // 枚举起点
+            dfs(x, 0, 0, g, k, t, vis);
+        }
+        return ans;
+    }
+
+    private void dfs(int x, int i, int s, List<int[]>[] g, int k, int t, Set<Integer> vis) {
+        if (i == k) {
+            ans = Math.max(ans, s);
+            return;
+        }
+        int mask = x << 20 | i << 10 | s; // 每个参数存储在 10 个比特中
+        if (!vis.add(mask)) { // 访问过
+            return;
+        }
+        for (int[] e : g[x]) {
+            int wt = e[1];
+            if (s + wt < t) {
+                dfs(e[0], i + 1, s + wt, g, k, t, vis);
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        vector<vector<pair<int, int>>> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], wt = e[2];
+            g[x].emplace_back(y, wt);
+        }
+
+        int ans = -1;
+        unordered_set<int> vis;
+        auto dfs = [&](this auto&& dfs, int x, int i, int s) -> void {
+            if (i == k) {
+                ans = max(ans, s);
+                return;
+            }
+            int mask = x << 20 | i << 10 | s; // 每个参数存储在 10 个比特中
+            if (!vis.insert(mask).second) { // 访问过
+                return;
+            }
+            for (auto& [y, wt] : g[x]) {
+                if (s + wt < t) {
+                    dfs(y, i + 1, s + wt);
+                }
+            }
+        };
+        for (int x = 0; x < n; x++) { // 枚举起点
+            dfs(x, 0, 0);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxWeight(n int, edges [][]int, k int, t int) int {
+	type edge struct{ to, wt int }
+	g := make([][]edge, n)
+	for _, e := range edges {
+		x, y, wt := e[0], e[1], e[2]
+		g[x] = append(g[x], edge{y, wt})
+	}
+
+	ans := -1
+	type tuple struct{ x, i, s int }
+	vis := map[tuple]bool{}
+	var dfs func(int, int, int)
+	dfs = func(x, i, s int) {
+		if i == k {
+			ans = max(ans, s)
+			return
+		}
+		args := tuple{x, i, s}
+		if vis[args] { // 访问过
+			return
+		}
+		vis[args] = true
+		for _, e := range g[x] {
+			if s+e.wt < t {
+				dfs(e.to, i+1, s+e.wt)
+			}
+		}
+	}
+	for x := range n { // 枚举起点
+		dfs(x, 0, 0)
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
+- 空间复杂度：$\mathcal{O}(nkt)$。
+
+## 方法二：拓扑序 DP
+
+如果你没有做过任何拓扑序 DP 的题目，请先完成 [2050. 并行课程 III](https://leetcode.cn/problems/parallel-courses-iii/)。
+
+同方法一，定义 $f[x][i][s]$ 表示能否得到一个终点在 $x$，有 $i$ 条边且路径元素和为 $s$ 的路径。
+
+用**刷表法**转移，遍历 $x$ 的邻居 $y$，如果 $f[x][i][s]=\texttt{true}$，那么更新 $f[y][i+1][s+w]=\texttt{true}$。
+
+> 注：在动态规划中，用转移来源更新当前状态叫**查表法**，用当前状态更新其他状态叫**刷表法**。
+
+初始值：$f[x][0][0]=\texttt{true}$。
+
+代码实现时，第三个维度可以用哈希集合，减少无效状态的遍历。
+
+答案：用 $f[x][k]$ 的最大值更新答案的最大值。
+
+```py [sol-Python3]
+class Solution:
+    def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        g = [[] for _ in range(n)]
+        deg = [0] * n
+        for x, y, wt in edges:
+            g[x].append((y, wt))
+            deg[y] += 1
+
+        ans = -1
+        f = [[set() for _ in range(k + 1)] for _ in range(n)]
+        q = deque(i for i, d in enumerate(deg) if d == 0)
+        while q:
+            x = q.popleft()
+            f[x][0].add(0)  # x 单独一个点，路径边权和为 0
+            if f[x][k]:
+                ans = max(ans, max(f[x][k]))  # 恰好 k 条边
+            for y, wt in g[x]:
+                for i in range(k):
+                    for s in f[x][i]:
+                        if s + wt < t:
+                            f[y][i + 1].add(s + wt)
+                deg[y] -= 1
+                if deg[y] == 0:
+                    q.append(y)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxWeight(int n, int[][] edges, int k, int t) {
+        List<int[]>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        int[] deg = new int[n];
+        for (int[] e : edges) {
+            int x = e[0], y = e[1], wt = e[2];
+            g[x].add(new int[]{y, wt});
+            deg[y]++;
+        }
+
+        int ans = -1;
+        Set<Integer>[][] f = new HashSet[n][k + 1];
+        for (Set<Integer>[] row : f) {
+            Arrays.setAll(row, i -> new HashSet<>());
+        }
+        Queue<Integer> q = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            if (deg[i] == 0) {
+                q.add(i);
+            }
+        }
+        while (!q.isEmpty()) {
+            int x = q.poll();
+            f[x][0].add(0); // x 单独一个点，路径边权和为 0
+            for (int s : f[x][k]) { // 恰好 k 条边
+                ans = Math.max(ans, s);
+            }
+            for (int[] e : g[x]) {
+                int y = e[0], wt = e[1];
+                for (int i = 0; i < k; i++) {
+                    for (int s : f[x][i]) {
+                        if (s + wt < t) {
+                            f[y][i + 1].add(s + wt);
+                        }
+                    }
+                }
+                if (--deg[y] == 0) {
+                    q.add(y);
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        vector<vector<pair<int, int>>> g(n);
+        vector<int> deg(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], wt = e[2];
+            g[x].emplace_back(y, wt);
+            deg[y]++;
+        }
+
+        int ans = -1;
+        vector f(n, vector<unordered_set<int>>(k + 1));
+        queue<int> q;
+        for (int i = 0; i < n; i++) {
+            if (deg[i] == 0) {
+                q.push(i);
+            }
+        }
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            f[x][0].insert(0); // x 单独一个点，路径边权和为 0
+            for (int s : f[x][k]) { // 恰好 k 条边
+                ans = max(ans, s);
+            }
+            for (auto& [y, wt] : g[x]) {
+                for (int i = 0; i < k; i++) {
+                    for (int s : f[x][i]) {
+                        if (s + wt < t) {
+                            f[y][i + 1].insert(s + wt);
+                        }
+                    }
+                }
+                if (--deg[y] == 0) {
+                    q.push(y);
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxWeight(n int, edges [][]int, k int, t int) int {
+	type edge struct{ to, wt int }
+	g := make([][]edge, n)
+	deg := make([]int, n)
+	for _, e := range edges {
+		x, y, wt := e[0], e[1], e[2]
+		g[x] = append(g[x], edge{y, wt})
+	}
+
+	ans := -1
+	f := make([][]map[int]struct{}, n)
+	for i := range f {
+		f[i] = make([]map[int]struct{}, k+1)
+		for j := range f[i] {
+			f[i][j] = map[int]struct{}{}
+		}
+	}
+	q := []int{}
+	for i, d := range deg {
+		if d == 0 {
+			q = append(q, i)
+		}
+	}
+	for len(q) > 0 {
+		x := q[0]
+		q = q[1:]
+		f[x][0][0] = struct{}{} // x 单独一个点，路径边权和为 0
+		for s := range f[x][k] { // 恰好 k 条边
+			ans = max(ans, s)
+		}
+		for _, e := range g[x] {
+			y, wt := e.to, e.wt
+			for i, st := range f[x][:k] {
+				for s := range st {
+					if s+wt < t {
+						f[y][i+1][s+wt] = struct{}{}
+					}
+				}
+			}
+			deg[y]--
+			if deg[y] == 0 {
+				q = append(q, y)
+			}
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
+- 空间复杂度：$\mathcal{O}(nkt)$。
+
+## 附：bitset 优化
+
+把集合用二进制数表示，原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+
+本题集合太大，需要用 bitset 表示二进制数。
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        vector<vector<pair<int, int>>> g(n);
+        vector<int> deg(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], wt = e[2];
+            g[x].emplace_back(y, wt);
+            deg[y]++;
+        }
+
+        int ans = -1;
+        vector f(n, vector<bitset<600>>(k + 1));
+        queue<int> q;
+        for (int i = 0; i < n; i++) {
+            if (deg[i] == 0) {
+                q.push(i);
+            }
+        }
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            f[x][0].set(0); // x 单独一个点，路径边权和为 0
+            for (int s = t - 1; s >= 0; s--) {
+                if (f[x][k].test(s)) { // 恰好 k 条边
+                    ans = max(ans, s);
+                    break;
+                }
+            }
+            for (auto& [y, wt] : g[x]) {
+                for (int i = 0; i < k; i++) {
+                    f[y][i + 1] |= f[x][i] << wt;
+                }
+                if (--deg[y] == 0) {
+                    q.push(y);
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}((n+m)kt/w)$，其中 $m$ 是 $\textit{edges}$ 的长度，$w=64$ 或 $32$。
+- 空间复杂度：$\mathcal{O}(nkt/w)$。
+
+## 相似题目
+
+- [2050. 并行课程 III](https://leetcode.cn/problems/parallel-courses-iii/) 2084
+- [1857. 有向图中最大颜色值](https://leetcode.cn/problems/largest-color-value-in-a-directed-graph/) 2313
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
