@@ -1,7 +1,3 @@
-树形 DP：从 O(nk) 到 O(n)（Python/Java/C++/Go）
-
----
-
 反转操作的距离约束相当于：一旦执行了一次反转操作，那么会有 $k$ 秒的冷却期（CD），在冷却中不能执行反转操作。每往下走一步，CD 减一。
 
 定义 $\textit{dfs}(x, \textit{cd}, \textit{parity})$ 表示当前递归到节点 $x$，剩余冷却时间为 $\textit{cd}$，$x$ 的祖先节点执行的反转操作次数的奇偶性是 $\textit{parity}$ 时，$x$ 子树的最大点权和。
@@ -21,7 +17,7 @@ $\textit{dfs}(x, \textit{cd}, \textit{parity})$ 的返回值就是 $\max(s_0,s_1
 
 代码实现时，额外传入一个变量 $\textit{fa}$ 表示 $x$ 父节点，避免我们从 $x$ 递归到 $x$ 的父节点。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1m7EuzqEqr/?t=24m)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -32,7 +28,7 @@ class Solution:
             g[x].append(y)
             g[y].append(x)
 
-        memo = {}
+        memo = {}  # 手写 @cache
 
         # 这里为了计算方便，把 parity 改成 mul = 1 或者 -1
         def dfs(x: int, fa: int, cd: int, mul: int) -> int:
