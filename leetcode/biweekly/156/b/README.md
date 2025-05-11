@@ -18,7 +18,7 @@
 
 什么时候必须要操作？
 
-示例 3 $\textit{nums}=[1,2,1,2,1,2]$，因为 $2$ 左右两侧都有小于 $2$ 的数，都需要单独操作。
+示例 3 $\textit{nums}=[1,2,1,2,1,2]$，因为 $2$ 左右两侧都有小于 $2$ 的数，需要单独操作。
 
 又例如 $\textit{nums}=[1,2,3,2,1]$：
 
@@ -40,7 +40,7 @@
 
 代码实现时，可以直接把 $\textit{nums}$ 当作栈。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1m7EuzqEqr/?t=2m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -137,7 +137,7 @@ func minOperations(nums []int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个元素至多入栈出栈各一次，所以二重循环的循环次数是 $\mathcal{O}(n)$。
-- 空间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。原地做法可以做到 $\mathcal{O}(1)$ 空间。
 
 更多相似题目，见下面单调栈题单。
 

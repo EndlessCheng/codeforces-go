@@ -2,9 +2,9 @@
 
 然后遍历所有元音 $\texttt{aeiou}$，在 $\textit{cnt}$ 中查找元音的出现次数，统计最大值，然后把元音的出现次数置为 $0$。
 
-这样，最后求 $\textit{cnt}$ 的最大值，就是辅音的出现次数的最大值了。
+去掉元音后，求整个 $\textit{cnt}$ 的最大值，就是辅音的出现次数的最大值了。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1m7EuzqEqr/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
