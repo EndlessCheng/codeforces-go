@@ -382,7 +382,7 @@ public:
                 }
             }
             for (auto& [y, wt] : g[x]) {
-                for (int i = 0; i < k; i++) {
+                for (int i = 0; i < k && !f[x][i].none(); i++) {
                     f[y][i + 1] |= f[x][i] << wt;
                 }
                 if (--deg[y] == 0) {
@@ -530,6 +530,50 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 
 原理同方法二。
 
+```py [sol-Python3]
+class Solution:
+    def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        MASK = (1 << t) - 1
+        f = [[0] * n for _ in range(k + 1)]
+        f[0] = [1] * n
+        for i in range(k):
+            for x, y, wt in edges:
+                if f[i][x]:
+                    f[i + 1][y] |= (f[i][x] << wt) & MASK
+        return max(s.bit_length() for s in f[k]) - 1
+```
+
+```java [sol-Java]
+import java.math.BigInteger;
+
+class Solution {
+    public int maxWeight(int n, int[][] edges, int k, int t) {
+        BigInteger[][] f = new BigInteger[k + 1][n];
+        Arrays.fill(f[0], BigInteger.ONE);
+        for (int i = 1; i <= k; i++) {
+            Arrays.fill(f[i], BigInteger.ZERO);
+        }
+
+        final BigInteger MASK = BigInteger.ONE.shiftLeft(t).subtract(BigInteger.ONE);
+        for (int i = 0; i < k; i++) {
+            for (int[] e : edges) {
+                int x = e[0], y = e[1], wt = e[2];
+                if (!f[i][x].equals(BigInteger.ZERO)) {
+                    BigInteger shifted = f[i][x].shiftLeft(wt).and(MASK);
+                    f[i + 1][y] = f[i + 1][y].or(shifted);
+                }
+            }
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = Math.max(ans, f[k][i].bitLength());
+        }
+        return ans - 1;
+    }
+}
+```
+
 ```cpp [sol-C++]
 class Solution {
 public:
@@ -541,7 +585,9 @@ public:
         for (int i = 0; i < k; i++) {
             for (auto& e : edges) {
                 int x = e[0], y = e[1], wt = e[2];
-                f[i + 1][y] |= f[i][x] << wt;
+                if (!f[i][x].none()) {
+                    f[i + 1][y] |= f[i][x] << wt;
+                }
             }
         }
 
@@ -557,6 +603,39 @@ public:
         return ans;
     }
 };
+```
+
+```go [sol-Go]
+func maxWeight(n int, edges [][]int, k int, t int) int {
+	f := make([][]*big.Int, k+1)
+	for i := range f {
+		f[i] = make([]*big.Int, n)
+		for j := range f[i] {
+			f[i][j] = big.NewInt(0)
+		}
+	}
+	for i := range f[0] {
+		f[0][i] = big.NewInt(1)
+	}
+
+	p := new(big.Int)
+	mask := new(big.Int).Sub(p.Lsh(big.NewInt(1), uint(t)), big.NewInt(1))
+	for i, fi := range f[:k] {
+		for _, e := range edges {
+			x, y, wt := e[0], e[1], e[2]
+			if fi[x].Sign() != 0 {
+				shifted := p.And(p.Lsh(fi[x], uint(wt)), mask)
+				f[i+1][y].Or(f[i+1][y], shifted)
+			}
+		}
+	}
+
+	ans := 0
+	for _, bi := range f[k] {
+		ans = max(ans, bi.BitLen())
+	}
+	return ans - 1
+}
 ```
 
 #### 复杂度分析

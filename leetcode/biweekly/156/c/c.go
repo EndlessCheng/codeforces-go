@@ -1,5 +1,7 @@
 package main
 
+import "math/big"
+
 // https://space.bilibili.com/206214
 func maxWeight1(n int, edges [][]int, k int, t int) int {
 	type edge struct{ to, wt int }
@@ -83,7 +85,7 @@ func maxWeight2(n int, edges [][]int, k int, t int) int {
 	return ans
 }
 
-func maxWeight(n int, edges [][]int, k int, t int) int {
+func maxWeight3(n int, edges [][]int, k int, t int) int {
 	f := make([][]map[int]struct{}, k+1)
 	for i := range f {
 		f[i] = make([]map[int]struct{}, n)
@@ -112,4 +114,35 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 		}
 	}
 	return ans
+}
+
+func maxWeight(n int, edges [][]int, k int, t int) int {
+	f := make([][]*big.Int, k+1)
+	for i := range f {
+		f[i] = make([]*big.Int, n)
+		for j := range f[i] {
+			f[i][j] = big.NewInt(0)
+		}
+	}
+	for i := range f[0] {
+		f[0][i] = big.NewInt(1)
+	}
+
+	p := new(big.Int)
+	mask := new(big.Int).Sub(p.Lsh(big.NewInt(1), uint(t)), big.NewInt(1))
+	for i, fi := range f[:k] {
+		for _, e := range edges {
+			x, y, wt := e[0], e[1], e[2]
+			if fi[x].Sign() != 0 {
+				shifted := p.And(p.Lsh(fi[x], uint(wt)), mask)
+				f[i+1][y].Or(f[i+1][y], shifted)
+			}
+		}
+	}
+
+	ans := 0
+	for _, bi := range f[k] {
+		ans = max(ans, bi.BitLen())
+	}
+	return ans - 1
 }
