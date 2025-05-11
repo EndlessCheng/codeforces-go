@@ -19,6 +19,8 @@ $\textit{dfs}(x, \textit{cd}, \textit{parity})$ 的返回值就是 $\max(s_0,s_1
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1m7EuzqEqr/?t=24m)，欢迎点赞关注~
 
+### 写法一：记忆化搜索
+
 ```py [sol-Python3]
 class Solution:
     def subtreeInversionSum(self, edges: List[List[int]], nums: List[int], k: int) -> int:
@@ -202,7 +204,171 @@ func subtreeInversionSum(edges [][]int, nums []int, k int) int64 {
 		*p = res
 		return res
 	}
+
 	return int64(dfs(0, -1, 0, 0))
+}
+```
+
+### 写法二：递推
+
+```py [sol-Python3]
+class Solution:
+    def subtreeInversionSum(self, edges: List[List[int]], nums: List[int], k: int) -> int:
+        n = len(nums)
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        max = lambda x, y: y if y > x else x  # 手写 max 更快
+        def dfs(x: int, fa: int) -> List[List[int]]:
+            v = nums[x]
+            res = [[v, -v] for _ in range(k)]
+            s0, s1 = -v, v
+            for y in g[x]:
+                if y == fa:
+                    continue
+                fy = dfs(y, x)
+                # 不反转
+                for cd in range(k):
+                    res[cd][0] += fy[max(cd - 1, 0)][0]
+                    res[cd][1] += fy[max(cd - 1, 0)][1]
+                # 反转
+                s0 += fy[k - 1][1]
+                s1 += fy[k - 1][0]
+            # 反转
+            res[0][0] = max(res[0][0], s0)
+            res[0][1] = max(res[0][1], s1)
+            return res
+
+        return dfs(0, -1)[0][0]
+```
+
+```java [sol-Java]
+class Solution {
+    public long subtreeInversionSum(int[][] edges, int[] nums, int k) {
+        int n = nums.length;
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0], y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+        return dfs(0, -1, g, nums, k)[0][0];
+    }
+
+    private long[][] dfs(int x, int fa, List<Integer>[] g, int[] nums, int k) {
+        int v = nums[x];
+        long[][] res = new long[k][2];
+        for (int i = 0; i < k; i++) {
+            res[i][0] = v;
+            res[i][1] = -v;
+        }
+        long s0 = -v;
+        long s1 = v;
+        for (int y : g[x]) {
+            if (y == fa) {
+                continue;
+            }
+            long[][] fy = dfs(y, x, g, nums, k);
+            // 不反转
+            for (int cd = 0; cd < k; cd++) {
+                res[cd][0] += fy[Math.max(cd - 1, 0)][0];
+                res[cd][1] += fy[Math.max(cd - 1, 0)][1];
+            }
+            // 反转
+            s0 += fy[k - 1][1];
+            s1 += fy[k - 1][0];
+        }
+        // 反转
+        res[0][0] = Math.max(res[0][0], s0);
+        res[0][1] = Math.max(res[0][1], s1);
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long subtreeInversionSum(vector<vector<int>>& edges, vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<vector<int>> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            g[x].push_back(y);
+            g[y].push_back(x);
+        }
+
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> vector<array<long long, 2>> {
+            int v = nums[x];
+            vector<array<long long, 2>> res(k, {v, -v});
+            long long s0 = -v, s1 = v;
+            for (int y : g[x]) {
+                if (y == fa) {
+                    continue;
+                }
+                auto fy = dfs(y, x);
+                // 不反转
+                for (int cd = 0; cd < k; cd++) {
+                    res[cd][0] += fy[max(cd - 1, 0)][0];
+                    res[cd][1] += fy[max(cd - 1, 0)][1];
+                }
+                // 反转
+                s0 += fy[k - 1][1];
+                s1 += fy[k - 1][0];
+            }
+            // 反转
+            res[0][0] = max(res[0][0], s0);
+            res[0][1] = max(res[0][1], s1);
+            return res;
+        };
+
+        return dfs(0, -1)[0][0];
+    }
+};
+```
+
+```go [sol-Go]
+func subtreeInversionSum(edges [][]int, nums []int, k int) int64 {
+	n := len(nums)
+	g := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+
+	var dfs func(int, int) [][2]int
+	dfs = func(x, fa int) [][2]int {
+		v := nums[x]
+		res := make([][2]int, k)
+		for cd := range res {
+			res[cd] = [2]int{v, -v}
+		}
+		s0, s1 := -v, v
+		for _, y := range g[x] {
+			if y == fa {
+				continue
+			}
+			fy := dfs(y, x)
+			// 不反转
+			for cd := range res {
+				res[cd][0] += fy[max(cd-1, 0)][0]
+				res[cd][1] += fy[max(cd-1, 0)][1]
+			}
+			// 反转
+			s0 += fy[k-1][1]
+			s1 += fy[k-1][0]
+		}
+		// 反转
+		res[0][0] = max(res[0][0], s0)
+		res[0][1] = max(res[0][1], s1)
+		return res
+	}
+
+	return int64(dfs(0, -1)[0][0])
 }
 ```
 
