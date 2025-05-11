@@ -22,34 +22,33 @@ func subtreeInversionSum(edges [][]int, nums []int, k int) int64 {
 		}
 	}
 	var dfs func(int, int, int, int) int
-	dfs = func(x, fa, cd, parity int) (res int) {
+	dfs = func(x, fa, cd, parity int) int {
 		p := &memo[x][cd][parity]
 		if *p != math.MinInt {
 			return *p
 		}
 
 		// 不反转
+		res := nums[x] * (1 - parity*2)
 		for _, y := range g[x] {
 			if y != fa {
 				res += dfs(y, x, max(cd-1, 0), parity)
 			}
 		}
-		res += nums[x] * (1 - parity*2)
 
 		// 反转
 		if cd == 0 {
-			s := 0
+			s := nums[x] * (parity*2 - 1)
 			for _, y := range g[x] {
 				if y != fa {
 					s += dfs(y, x, k-1, parity^1) // 重置 CD
 				}
 			}
-			s += nums[x] * (parity*2 - 1)
 			res = max(res, s)
 		}
 
 		*p = res
-		return
+		return res
 	}
 	return int64(dfs(0, -1, 0, 0))
 }

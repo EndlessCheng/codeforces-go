@@ -88,26 +88,22 @@ class Solution {
             return memo[x][cd][parity];
         }
 
-        long res = 0;
-
         // 不反转
+        long res = parity > 0 ? -nums[x] : nums[x];
         for (int y : g[x]) {
             if (y != fa) {
                 res += dfs(y, x, Math.max(cd - 1, 0), parity, g, nums, k, memo);
             }
         }
 
-        res += parity > 0 ? -nums[x] : nums[x];
-
         // 反转
         if (cd == 0) {
-            long s = 0;
+            long s = parity > 0 ? nums[x] : -nums[x];
             for (int y : g[x]) {
                 if (y != fa) {
                     s += dfs(y, x, k - 1, parity ^ 1, g, nums, k, memo); // 重置 CD
                 }
             }
-            s += parity > 0 ? nums[x] : -nums[x];
             res = Math.max(res, s);
         }
 
@@ -135,24 +131,22 @@ public:
                 return res;
             }
 
-            res = 0;
             // 不反转
+            res = parity ? -nums[x] : nums[x];
             for (int y : g[x]) {
                 if (y != fa) {
                     res += dfs(y, x, max(cd - 1, 0), parity);
                 }
             }
-            res += parity ? -nums[x] : nums[x];
 
             // 反转
             if (cd == 0) {
-                long long s = 0;
+                long long s = parity ? nums[x] : -nums[x];
                 for (int y : g[x]) {
                     if (y != fa) {
                         s += dfs(y, x, k - 1, !parity); // 重置 CD
                     }
                 }
-                s += parity ? nums[x] : -nums[x];
                 res = max(res, s);
             }
 
@@ -184,34 +178,33 @@ func subtreeInversionSum(edges [][]int, nums []int, k int) int64 {
 		}
 	}
 	var dfs func(int, int, int, int) int
-	dfs = func(x, fa, cd, parity int) (res int) {
+	dfs = func(x, fa, cd, parity int) int {
 		p := &memo[x][cd][parity]
 		if *p != math.MinInt {
 			return *p
 		}
 
 		// 不反转
+		res := nums[x] * (1 - parity*2)
 		for _, y := range g[x] {
 			if y != fa {
 				res += dfs(y, x, max(cd-1, 0), parity)
 			}
 		}
-		res += nums[x] * (1 - parity*2)
 
 		// 反转
 		if cd == 0 {
-			s := 0
+			s := nums[x] * (parity*2 - 1)
 			for _, y := range g[x] {
 				if y != fa {
 					s += dfs(y, x, k-1, parity^1) // 重置 CD
 				}
 			}
-			s += nums[x] * (parity*2 - 1)
 			res = max(res, s)
 		}
 
 		*p = res
-		return
+		return res
 	}
 	return int64(dfs(0, -1, 0, 0))
 }
