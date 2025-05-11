@@ -523,7 +523,7 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
+- 时间复杂度：$\mathcal{O}(mkt)$，其中 $m$ 是 $\textit{edges}$ 的长度。忽略初始化 $f$ 的时间。
 - 空间复杂度：$\mathcal{O}(nkt)$。注：可以用滚动数组优化至 $\mathcal{O}(nt)$。
 
 ### 附：bitset 优化
@@ -561,7 +561,7 @@ public:
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)kt/w)$，其中 $m$ 是 $\textit{edges}$ 的长度，$w=64$ 或 $32$。
+- 时间复杂度：$\mathcal{O}(mkt/w)$，其中 $m$ 是 $\textit{edges}$ 的长度，$w=64$ 或 $32$。忽略初始化 $f$ 的时间。
 - 空间复杂度：$\mathcal{O}(nkt/w)$。注：可以用滚动数组优化至 $\mathcal{O}(nt/w)$。
 
 ## 相似题目
