@@ -1,3 +1,5 @@
+## 方法一：多维 DP
+
 反转操作的距离约束相当于：一旦执行了一次反转操作，那么会有 $k$ 秒的冷却期（CD），在冷却中不能执行反转操作。每往下走一步，CD 减一。
 
 定义 $\textit{dfs}(x, \textit{cd}, \textit{parity})$ 表示当前递归到节点 $x$，剩余冷却时间为 $\textit{cd}$，$x$ 的祖先节点执行的反转操作次数的奇偶性是 $\textit{parity}$ 时，$x$ 子树的最大点权和。
@@ -212,6 +214,8 @@ func subtreeInversionSum(edges [][]int, nums []int, k int) int64 {
 ### 写法二：递推
 
 ```py [sol-Python3]
+max = lambda a, b: b if b > a else a  # 手写 max 效率更高
+
 class Solution:
     def subtreeInversionSum(self, edges: List[List[int]], nums: List[int], k: int) -> int:
         n = len(nums)
@@ -220,7 +224,6 @@ class Solution:
             g[x].append(y)
             g[y].append(x)
 
-        max = lambda x, y: y if y > x else x  # 手写 max 更快
         def dfs(x: int, fa: int) -> List[List[int]]:
             v = nums[x]
             res = [[v, -v] for _ in range(k)]
@@ -376,6 +379,268 @@ func subtreeInversionSum(edges [][]int, nums []int, k int) int64 {
 
 - 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(nk)$。
+
+## 方法二：树上刷表法
+
+设这棵树的所有点权和为 $S$，我们来算算，在 $S$ 的基础上，用反转操作，可以让 $S$ 增加多少。我们算的是这个增量的最大值。
+
+$\textit{dfs}(x)$ 返回三个数：
+
+- 子树 $x$ 的点权和 $s$。
+- 在 $x$ 上面反转了偶数次的情况下，在 $s$ 的基础上的最大增量 $\textit{res}_0$。
+- 在 $x$ 上面反转了奇数次的情况下，在 $s$ 的基础上的最大增量 $\textit{res}_1$。
+
+设 $x$ 的儿子为 $y$。
+
+不反转 $x$：
+
+- 累加 $\textit{dfs}(y)$ 的 $\textit{res}_0$，得到 $\textit{notInv}_0$。
+- 累加 $\textit{dfs}(y)$ 的 $\textit{res}_1$，得到 $\textit{notInv}_1$。
+
+当我们反转 $x$ 时：
+
+- 如果 $x$ 上面反转了偶数次，我们会立刻得到 $-2s$ 的增量。
+- 如果 $x$ 上面反转了奇数次，我们会立刻得到 $2s$ 的增量。
+
+比如 $0\text{-}1\text{-}2$ 这棵树（这是一条链），点权为 $\textit{nums}=[-1,-1,1]$，$k=2$。反转根节点 $0$，我们会得到 $-2s = 2$ 的增量。此时点权为 $1,1,-1$，对于末端的叶子来说，反转它还可以再得到 $2s=2$ 的增量（注意这里的 $s$ 是基于原始 $\textit{nums}[2]=1$ 计算的）。所以可以在 $S=-1-1+1=-1$ 的基础上，一共可以得到 $2+2=4$ 的增量，最终答案为 $S+4=3$。
+
+一般地：
+
+- 如果 $x$ 上面反转了偶数次，反转 $x$ 会立刻得到 $-2s$ 的增量。对于 $x$ 的 $k$ 级后代来说，上面反转了奇数次，所以还需要再加上 $x$ 的所有 $k$ 级后代的 $\textit{res}_1$。结果记作 $\textit{inv}_0$。
+- 如果 $x$ 上面反转了奇数次，反转 $x$ 会立刻得到 $2s$ 的增量。对于 $x$ 的 $k$ 级后代来说，上面反转了偶数次，所以还需要再加上 $x$ 的所有 $k$ 级后代的 $\textit{res}_0$。结果记作 $\textit{inv}_1$。
+
+计算 $x$ 的返回值：
+
+$$
+\begin{aligned}
+\textit{res}_0 &= \max(\textit{notInv}_0, \textit{Inv}_0)     \\
+\textit{res}_1 &= \max(\textit{notInv}_1, \textit{Inv}_1)     \\
+\end{aligned}
+$$
+
+最后，如何累加 $x$ 的所有 $k$ 级后代 $z$ 的 $\textit{res}_i$？站在 $x$ 的视角计算，很不方便；但如果站在 $z$ 的视角，去更新 $x$，就很好算了。
+
+```py [sol-Python3]
+max = lambda a, b: b if b > a else a  # 手写 max 效率更高
+
+class Solution:
+    def subtreeInversionSum(self, edges: List[List[int]], nums: List[int], k: int) -> int:
+        n = len(nums)
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        f = []
+
+        def dfs(x: int, fa: int) -> Tuple[int, int, int]:
+            f.append([0, 0])  # 用于刷表
+
+            s = nums[x]  # 子树和
+            not_inv0 = not_inv1 = 0  # 不反转 x 时的额外增量（0 表示上面反转了偶数次，1 表示上面反转了奇数次）
+            for y in g[x]:
+                if y == fa:
+                    continue
+                sy, y0, y1 = dfs(y, x)
+                s += sy
+                # 不反转 x，反转次数的奇偶性不变
+                not_inv0 += y0
+                not_inv1 += y1
+
+            sub_res0, sub_res1 = f.pop()  # 被刷表后的结果
+
+            # 反转 x
+            # x 上面反转了偶数次，反转 x 会带来 -2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了奇数次（所以是 sub_res1）
+            inv0 = sub_res1 - s * 2
+            # x 上面反转了奇数次，反转 x 会带来 2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了偶数次（所以是 sub_res0）
+            inv1 = sub_res0 + s * 2
+
+            res0 = max(not_inv0, inv0)
+            res1 = max(not_inv1, inv1)
+
+            # 刷表法：更新 x 的 k 级祖先的状态
+            if len(f) >= k:
+                f[-k][0] += res0
+                f[-k][1] += res1
+
+            return s, res0, res1
+
+        s, res0, _ = dfs(0, -1)
+        return s + res0  # 对于根节点来说，上面一定反转了偶数次（0 次）
+```
+
+```java [sol-Java]
+class Solution {
+    public long subtreeInversionSum(int[][] edges, int[] nums, int k) {
+        int n = nums.length;
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0], y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+
+        List<long[]> f = new ArrayList<>();
+        long[] res = dfs(0, -1, g, nums, k, f);
+        return res[0] + res[1]; // 对于根节点来说，上面一定反转了偶数次（0 次）
+    }
+
+    private long[] dfs(int x, int fa, List<Integer>[] g, int[] nums, int k, List<long[]> f) {
+        f.add(new long[]{0, 0}); // 用于刷表
+
+        long s = nums[x];  // 子树和
+        long notInv0 = 0;
+        long notInv1 = 0;  // 不反转 x 时的额外增量（0 表示上面反转了偶数次，1 表示上面反转了奇数次）
+        for (int y : g[x]) {
+            if (y == fa) {
+                continue;
+            }
+            long[] resY = dfs(y, x, g, nums, k, f);
+            s += resY[0];
+            // 不反转 x，反转次数的奇偶性不变
+            notInv0 += resY[1];
+            notInv1 += resY[2];
+        }
+
+        long[] subRes = f.removeLast(); // 被刷表后的结果
+
+        // 反转 x
+        // x 上面反转了偶数次，反转 x 会带来 -2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了奇数次（所以是 subRes1）
+        long inv0 = subRes[1] - s * 2;
+        // x 上面反转了奇数次，反转 x 会带来 2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了偶数次（所以是 subRes0）
+        long inv1 = subRes[0] + s * 2;
+
+        long res0 = Math.max(notInv0, inv0);
+        long res1 = Math.max(notInv1, inv1);
+
+        // 刷表法：更新 x 的 k 级祖先的状态
+        if (f.size() >= k) {
+            long[] ancestor = f.get(f.size() - k);
+            ancestor[0] += res0;
+            ancestor[1] += res1;
+        }
+
+        return new long[]{s, res0, res1};
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long subtreeInversionSum(vector<vector<int>>& edges, vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<vector<int>> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            g[x].push_back(y);
+            g[y].push_back(x);
+        }
+
+        vector<pair<long long, long long>> f;
+
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> tuple<long long, long long, long long> {
+            f.emplace_back(0, 0); // 用于刷表
+
+            long long s = nums[x]; // 子树和
+            long long not_inv0 = 0, not_inv1 = 0; // 不反转 x 时的额外增量（0 表示上面反转了偶数次，1 表示上面反转了奇数次）
+            for (int y : g[x]) {
+                if (y == fa) {
+                    continue;
+                }
+                auto [sy, y0, y1] = dfs(y, x);
+                s += sy;
+                // 不反转 x，反转次数的奇偶性不变
+                not_inv0 += y0;
+                not_inv1 += y1;
+            }
+
+            auto [sub_res0, sub_res1] = f.back(); // 被刷表后的结果
+            f.pop_back();
+
+            // 反转 x
+            // x 上面反转了偶数次，反转 x 会带来 -2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了奇数次（所以是 sub_res1）
+            long long inv0 = sub_res1 - s * 2;
+            // x 上面反转了奇数次，反转 x 会带来 2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了偶数次（所以是 sub_res0）
+            long long inv1 = sub_res0 + s * 2;
+
+            long long res0 = max(not_inv0, inv0);
+            long long res1 = max(not_inv1, inv1);
+
+            // 刷表法：更新 x 的 k 级祖先的状态
+            if (f.size() >= k) {
+                f[f.size() - k].first += res0;
+                f[f.size() - k].second += res1;
+            }
+
+            return {s, res0, res1};
+        };
+
+        auto [s, res0, _] = dfs(0, -1);
+        return s + res0;  // 对于根节点来说，上面一定反转了偶数次（0 次）
+    }
+};
+```
+
+```go [sol-Go]
+func subtreeInversionSum(edges [][]int, nums []int, k int) int64 {
+	n := len(nums)
+	g := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+
+	f := [][2]int{}
+	var dfs func(int, int) (int, int, int)
+	dfs = func(x, fa int) (int, int, int) {
+		f = append(f, [2]int{}) // 用于刷表
+
+		s := nums[x] // 子树和
+		notInv0, notInv1 := 0, 0 // 不反转 x 时的额外增量（0 表示上面反转了偶数次，1 表示上面反转了奇数次）
+		for _, y := range g[x] {
+			if y == fa {
+				continue
+			}
+			sy, y0, y1 := dfs(y, x)
+			s += sy
+			// 不反转 x，反转次数的奇偶性不变
+			notInv0 += y0
+			notInv1 += y1
+		}
+
+		subRes := f[len(f)-1] // 被刷表后的结果
+		f = f[:len(f)-1]
+
+		// 反转 x
+		// x 上面反转了偶数次，反转 x 会带来 -2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了奇数次（所以是 subRes1）
+		inv0 := subRes[1] - s*2
+		// x 上面反转了奇数次，反转 x 会带来 2 倍子树和的增量，且对于 x 的 k 级后代来说，上面反转了偶数次（所以是 subRes0）
+		inv1 := subRes[0] + s*2
+
+		res0 := max(notInv0, inv0)
+		res1 := max(notInv1, inv1)
+
+		// 刷表法：更新 x 的 k 级祖先的状态
+		if len(f) >= k {
+			f[len(f)-k][0] += res0
+			f[len(f)-k][1] += res1
+		}
+
+		return s, res0, res1
+	}
+
+	s, res0, _ := dfs(0, -1)
+	return int64(s + res0) // 对于根节点来说，上面一定反转了偶数次（0 次）
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面动态规划题单的「**十二、树形 DP**」。
 
