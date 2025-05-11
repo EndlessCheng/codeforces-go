@@ -1,6 +1,6 @@
 ## 方法一：DFS
 
-**枚举**路径起点 $x$，从 $x$ 开始，DFS 这个 DAG。
+**枚举**路径起点 $x$，从 $x$ 开始，DFS 这个图。
 
 定义 $\textit{dfs}(x,i,s)$ 表示当前移动到节点 $x$，路径长为 $i$，路径边权和为 $s$。
 
@@ -10,7 +10,9 @@
 
 为避免重复访问同一个 $(x,i,s)$ 状态，可以用哈希集合记录访问过的状态。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+> 注：其实这个图有环也可以，下面的算法仍然是正确的，因为参数 $i$ 是递增的。一条路径如果包含同一个节点多次，这个节点对应的 $i$ 是不同的。换言之，加上 $i$ 之后，没有后效性。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1m7EuzqEqr/?t=13m21s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -149,21 +151,23 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 - 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
 - 空间复杂度：$\mathcal{O}(nkt)$。
 
-## 方法二：拓扑序 DP
+## 方法二：拓扑序 DP（适用于 DAG）
 
 如果你没有做过任何拓扑序 DP 的题目，请先完成 [2050. 并行课程 III](https://leetcode.cn/problems/parallel-courses-iii/)。
 
 同方法一，定义 $f[x][i][s]$ 表示能否得到一个终点在 $x$，有 $i$ 条边且路径元素和为 $s$ 的路径。
 
-用**刷表法**转移，遍历 $x$ 的邻居 $y$，如果 $f[x][i][s]=\texttt{true}$，那么更新 $f[y][i+1][s+w]=\texttt{true}$。
+用**刷表法**转移，遍历 $x$ 的邻居 $y$，如果 $f[x][i][s]=\texttt{true}$ 且 $s+w<t$，那么更新 $f[y][i+1][s+w]=\texttt{true}$。
 
 > 注：在动态规划中，用转移来源更新当前状态叫**查表法**，用当前状态更新其他状态叫**刷表法**。
 
-初始值：$f[x][0][0]=\texttt{true}$。
+初始值：$f[x][0][0]=\texttt{true}$。没有边的时候，边权和为 $0$。
 
-代码实现时，第三个维度可以用哈希集合，减少无效状态的遍历。
+代码实现时，第三个维度可以用哈希集合维护，减少无效状态的遍历。
 
-答案：用 $f[x][k]$ 的最大值更新答案的最大值。
+答案：$\max\limits_{x=0}^n\max(f[x][k])$。
+
+如果图中有环怎么办？请看方法三。
 
 ```py [sol-Python3]
 class Solution:
@@ -341,7 +345,7 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 - 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
 - 空间复杂度：$\mathcal{O}(nkt)$。
 
-## 附：bitset 优化
+### 附：bitset 优化
 
 把集合用二进制数表示，原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
@@ -395,6 +399,170 @@ public:
 
 - 时间复杂度：$\mathcal{O}((n+m)kt/w)$，其中 $m$ 是 $\textit{edges}$ 的长度，$w=64$ 或 $32$。
 - 空间复杂度：$\mathcal{O}(nkt/w)$。
+
+## 方法三：一般图 DP
+
+在方法一和方法二中，边的个数 $i$ 是递增的，我们可以从 $i$ 入手计算状态。
+
+略微调整状态定义，用 $f[i][x][s]$ 表示能否得到一个终点在 $x$，有 $i$ 条边且路径元素和为 $s$ 的路径。同样地，第三个维度可以用哈希集合维护，减少无效状态的遍历。
+
+**无需建图**，遍历 $\textit{edges}$，对于边权为 $w$ 的有向边 $x\to y$，如果 $f[i][x]$ 中有 $s$ 且 $s+w<t$，那么把 $s+w$ 加到 $f[i+1][y]$ 中。
+
+初始值：每个 $f[0][i]$ 都添加 $0$。没有边的时候，边权和为 $0$。
+
+答案：$\max\limits_{x=0}^n\max(f[k][x])$。
+
+```py [sol-Python3]
+class Solution:
+    def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        f = [[set() for _ in range(n)] for _ in range(k + 1)]
+        for i in range(n):
+            f[0][i].add(0)
+        for i in range(k):
+            for x, y, wt in edges:
+                for s in f[i][x]:
+                    if s + wt < t:
+                        f[i + 1][y].add(s + wt)
+        return max((max(st) for st in f[k] if st), default=-1)
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxWeight(int n, int[][] edges, int k, int t) {
+        Set<Integer>[][] f = new HashSet[k + 1][n];
+        for (Set<Integer>[] row : f) {
+            Arrays.setAll(row, i -> new HashSet<>());
+        }
+        for (int i = 0; i < n; i++) {
+            f[0][i].add(0);
+        }
+        for (int i = 0; i < k; i++) {
+            for (int[] e : edges) {
+                int x = e[0], y = e[1], wt = e[2];
+                for (int s : f[i][x]) {
+                    if (s + wt < t) {
+                        f[i + 1][y].add(s + wt);
+                    }
+                }
+            }
+        }
+
+        int ans = -1;
+        for (Set<Integer> st : f[k]) {
+            for (int s : st) {
+                ans = Math.max(ans, s);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        vector f(k + 1, vector<unordered_set<int>>(n));
+        for (int i = 0; i < n; i++) {
+            f[0][i].insert(0);
+        }
+        for (int i = 0; i < k; i++) {
+            for (auto& e : edges) {
+                int x = e[0], y = e[1], wt = e[2];
+                for (int s : f[i][x]) {
+                    if (s + wt < t) {
+                        f[i + 1][y].insert(s + wt);
+                    }
+                }
+            }
+        }
+
+        int ans = -1;
+        for (auto& st : f[k]) {
+            for (int s : st) {
+                ans = max(ans, s);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxWeight(n int, edges [][]int, k int, t int) int {
+	f := make([][]map[int]struct{}, k+1)
+	for i := range f {
+		f[i] = make([]map[int]struct{}, n)
+		for j := range f[i] {
+			f[i][j] = map[int]struct{}{}
+		}
+	}
+	for i := range f[0] {
+		f[0][i][0] = struct{}{}
+	}
+	for i, sets := range f[:k] {
+		for _, e := range edges {
+			x, y, wt := e[0], e[1], e[2]
+			for s := range sets[x] {
+				if s+wt < t {
+					f[i+1][y][s+wt] = struct{}{}
+				}
+			}
+		}
+	}
+
+	ans := -1
+	for _, set := range f[k] {
+		for s := range set {
+			ans = max(ans, s)
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
+- 空间复杂度：$\mathcal{O}(nkt)$。注：可以用滚动数组优化至 $\mathcal{O}(nt)$。
+
+### 附：bitset 优化
+
+原理同方法二。
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        vector f(k + 1, vector<bitset<600>>(n));
+        for (int i = 0; i < n; i++) {
+            f[0][i].set(0);
+        }
+        for (int i = 0; i < k; i++) {
+            for (auto& e : edges) {
+                int x = e[0], y = e[1], wt = e[2];
+                f[i + 1][y] |= f[i][x] << wt;
+            }
+        }
+
+        int ans = -1;
+        for (auto& bs : f[k]) {
+            for (int s = t - 1; s >= 0; s--) {
+                if (bs.test(s)) {
+                    ans = max(ans, s);
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}((n+m)kt/w)$，其中 $m$ 是 $\textit{edges}$ 的长度，$w=64$ 或 $32$。
+- 空间复杂度：$\mathcal{O}(nkt/w)$。注：可以用滚动数组优化至 $\mathcal{O}(nt/w)$。
 
 ## 相似题目
 

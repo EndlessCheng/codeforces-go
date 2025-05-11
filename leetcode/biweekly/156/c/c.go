@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func maxWeight(n int, edges [][]int, k int, t int) int {
+func maxWeight1(n int, edges [][]int, k int, t int) int {
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
 	for _, e := range edges {
@@ -78,6 +78,37 @@ func maxWeight2(n int, edges [][]int, k int, t int) int {
 			if deg[y] == 0 {
 				q = append(q, y)
 			}
+		}
+	}
+	return ans
+}
+
+func maxWeight(n int, edges [][]int, k int, t int) int {
+	f := make([][]map[int]struct{}, k+1)
+	for i := range f {
+		f[i] = make([]map[int]struct{}, n)
+		for j := range f[i] {
+			f[i][j] = map[int]struct{}{}
+		}
+	}
+	for i := range f[0] {
+		f[0][i][0] = struct{}{}
+	}
+	for i, sets := range f[:k] {
+		for _, e := range edges {
+			x, y, wt := e[0], e[1], e[2]
+			for s := range sets[x] {
+				if s+wt < t {
+					f[i+1][y][s+wt] = struct{}{}
+				}
+			}
+		}
+	}
+
+	ans := -1
+	for _, set := range f[k] {
+		for s := range set {
+			ans = max(ans, s)
 		}
 	}
 	return ans
