@@ -7,43 +7,43 @@ import (
 	"math"
 )
 
-const eps613 = 1e-6
+const eps13 = 1e-6
 
-type vec613 struct {
+type vec13 struct {
 	x, y float64
 }
 
-func (a vec613) add(b vec613) vec613  { return vec613{a.x + b.x, a.y + b.y} }
-func (a vec613) sub(b vec613) vec613  { return vec613{a.x - b.x, a.y - b.y} }
-func (a vec613) mul(k float64) vec613 { return vec613{a.x * k, a.y * k} }
-func (a vec613) len2() float64        { return a.x*a.x + a.y*a.y }
-func (a vec613) dot(b vec613) float64 { return a.x*b.x + a.y*b.y }
-func (a vec613) det(b vec613) float64 { return a.x*b.y - a.y*b.x }
+func (a vec13) add(b vec13) vec13   { return vec13{a.x + b.x, a.y + b.y} }
+func (a vec13) sub(b vec13) vec13   { return vec13{a.x - b.x, a.y - b.y} }
+func (a vec13) mul(k float64) vec13 { return vec13{a.x * k, a.y * k} }
+func (a vec13) len2() float64       { return a.x*a.x + a.y*a.y }
+func (a vec13) dot(b vec13) float64 { return a.x*b.x + a.y*b.y }
+func (a vec13) det(b vec13) float64 { return a.x*b.y - a.y*b.x }
 
 type line613 struct {
-	p1, p2 vec613
+	p1, p2 vec13
 }
 
-func (a vec613) perpendicular(l line613) line613 {
-	return line613{a, a.add(vec613{l.p1.y - l.p2.y, l.p2.x - l.p1.x})}
+func (a vec13) perpendicular(l line613) line613 {
+	return line613{a, a.add(vec13{l.p1.y - l.p2.y, l.p2.x - l.p1.x})}
 }
 
-func (a line613) intersection(b line613) vec613 {
+func (a line613) intersection(b line613) vec13 {
 	va, vb := a.p2.sub(a.p1), b.p2.sub(b.p1)
 	k := vb.det(b.p1.sub(a.p1)) / vb.det(a.p2.sub(a.p1))
 	return a.p1.add(va.mul(k))
 }
 
-func (a vec613) onSeg(l line613) bool {
+func (a vec13) onSeg(l line613) bool {
 	p1 := l.p1.sub(a)
 	p2 := l.p2.sub(a)
-	return math.Abs(p1.det(p2)) < eps613 && p1.dot(p2) < eps613
+	return math.Abs(p1.det(p2)) < eps13 && p1.dot(p2) < eps13
 }
 
-func (a vec613) disToSeg(l line613) float64 {
+func (a vec13) disToSeg(l line613) float64 {
 	p := l.intersection(a.perpendicular(l))
 	if !p.onSeg(l) {
-		if l.p2.sub(l.p1).dot(p.sub(l.p1)) < -eps613 {
+		if l.p2.sub(l.p1).dot(p.sub(l.p1)) < -eps13 {
 			p = l.p1
 		} else {
 			p = l.p2
@@ -53,16 +53,13 @@ func (a vec613) disToSeg(l line613) float64 {
 }
 
 // github.com/EndlessCheng/codeforces-go
-func Sol613A(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
+func Sol613A(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
 	var n int
-	var o vec613
+	var o vec13
 	Fscan(in, &n, &o.x, &o.y)
 	minD2, maxD2 := 1e18, 0.0
-	ps := make([]vec613, n)
+	ps := make([]vec13, n)
 	for i := range ps {
 		Fscan(in, &ps[i].x, &ps[i].y)
 		ps[i] = ps[i].sub(o)
@@ -76,13 +73,11 @@ func Sol613A(reader io.Reader, writer io.Writer) {
 	}
 	ls[n-1] = line613{ps[n-1], ps[0]}
 	for _, l := range ls {
-		if d2 := (vec613{0, 0}).disToSeg(l); d2 < minD2 {
+		if d2 := (vec13{0, 0}).disToSeg(l); d2 < minD2 {
 			minD2 = d2
 		}
 	}
 	Fprintf(out, "%.18f", (maxD2-minD2)*math.Pi)
 }
 
-//func main() {
-//	Sol613A(os.Stdin, os.Stdout)
-//}
+//func main() { Sol613A(os.Stdin, os.Stdout) }
