@@ -76,14 +76,18 @@ class Solution {
                 total += x;
             }
         }
+        
+        // 水平分割 or 垂直分割
         return check(grid, total) || check(rotate(grid), total);
     }
 
     private boolean check(int[][] a, long total) {
+        // 删除上半部分中的一个数
         if (f(a, total)) {
             return true;
         }
         reverse(a);
+        // 删除下半部分中的一个数
         return f(a, total);
     }
 
@@ -207,8 +211,8 @@ public:
             if (f()) {
                 return true;
             }
-            // 删除下半部分中的一个数
             ranges::reverse(a);
+            // 删除下半部分中的一个数
             return f();
         };
 
@@ -264,8 +268,8 @@ func canPartitionGrid(grid [][]int) bool {
 		if f() {
 			return true
 		}
-		// 删除下半部分中的一个数
 		slices.Reverse(a)
+		// 删除下半部分中的一个数
 		return f()
 	}
 
@@ -312,3 +316,5 @@ func rotate(a [][]int) [][]int {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

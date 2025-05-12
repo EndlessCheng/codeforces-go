@@ -48,8 +48,8 @@ func canPartitionGrid(grid [][]int) bool {
 		if f() {
 			return true
 		}
-		// 删除下半部分中的一个数
 		slices.Reverse(a)
+		// 删除下半部分中的一个数
 		return f()
 	}
 
