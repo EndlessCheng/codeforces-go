@@ -43,7 +43,7 @@ class Solution:
             g[x].append(y)
             g[y].append(x)
 
-        def dfs(x: int, fa: int) -> (int, int):
+        def dfs(x: int, fa: int) -> Tuple[int, int]:
             f0, f1 = 0, -inf  # f[x][0] 和 f[x][1]
             for y in g[x]:
                 if y != fa:
@@ -69,7 +69,8 @@ class Solution {
     }
 
     private long[] dfs(int x, int fa, List<Integer>[] g, int[] nums, int k) {
-        long f0 = 0, f1 = Long.MIN_VALUE; // f[x][0] 和 f[x][1]
+        long f0 = 0;
+        long f1 = Long.MIN_VALUE; // f[x][0] 和 f[x][1]
         for (int y : g[x]) {
             if (y != fa) {
                 long[] r = dfs(y, x, g, nums, k);
@@ -146,23 +147,23 @@ func maximumValueSum(nums []int, k int, edges [][]int) int64 {
 
 ## 方法二：结论 + 状态机 DP
 
-#### 第一个观察
+### 性质一
 
-由于一个数异或两次（偶数次）$k$ 后保持不变，所以对于一条从 $x$ 到 $y$ 的简单路径，我们把路径上的所有边操作后，路径上除了 $x$ 和 $y$ 的其它节点都恰好操作两次，所以只有 $\textit{nums}[x]$ 和 $\textit{nums}[y]$ 都异或了 $k$，其余元素不变。
+由于一个数异或两次 $k$ 后保持不变，所以对于一条从 $x$ 到 $y$ 的简单路径，我们把路径上的所有边操作后，路径上除了 $x$ 和 $y$ 的其它节点都恰好操作两次，所以只有 $\textit{nums}[x]$ 和 $\textit{nums}[y]$ 都异或了 $k$，其余元素不变。
 
-所以题目中的操作可以作用在**任意两个数**上。我们不需要建树，$\textit{edges}$ 是多余的。
+所以题目中的操作可以作用在**任意两个数**上。我们不需要建树，$\textit{edges}$ 是多余的！
 
-#### 第二个观察
+### 性质二
 
-注意到，无论操作多少次，总是有**偶数个**元素异或了 $k$，其余元素不变，理由如下：
+注意到，无论操作多少次，总是有**偶数个**元素异或了 $k$。理由如下：
 
 - 如果我们操作的两个数之前都没有异或过，那么操作后，异或 $k$ 的元素增加了 $2$。
 - 如果我们操作的两个数之前都异或过，那么操作后，异或 $k$ 的元素减少了 $2$。
 - 如果我们操作的两个数之前一个异或过，另一个没有异或过，那么操作后，异或 $k$ 的元素加一减一，不变。
 
-#### 思路
+### 思路
 
-结合这两个观察，问题变成：
+结合这两个性质，问题变成：
 
 - 选择 $\textit{nums}$ 中的**偶数**个元素，把这些数都异或 $k$，数组的最大元素和是多少？
 
@@ -207,7 +208,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long maximumValueSum(int[] nums, int k, int[][] edges) {
-        long f0 = 0, f1 = Long.MIN_VALUE;
+        long f0 = 0;
+        long f1 = Long.MIN_VALUE;
         for (int x : nums) {
             long t = Math.max(f1 + x, f0 + (x ^ k));
             f0 = Math.max(f0 + x, f1 + (x ^ k));
@@ -248,4 +250,23 @@ func maximumValueSum(nums []int, k int, _ [][]int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-[2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
