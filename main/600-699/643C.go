@@ -28,8 +28,8 @@ func cf643C(in io.Reader, out io.Writer) {
 
 	f := slices.Clone(ss)
 	for i := 2; i <= k; i++ {
-		q := []vec43{{float64(s[i-1]), f[i-1] - ss[i-1] + float64(s[i-1])*t[i-1]}}
-		for j := i; j <= n-(k-i); j++ {
+		q := []vec43{{0, 1e99}}
+		for j := i - 1; j <= n-(k-i); j++ {
 			p := vec43{-t[j], 1}
 			for len(q) > 1 && p.dot(q[0]) >= p.dot(q[1]) {
 				q = q[1:]
