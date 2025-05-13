@@ -15,14 +15,23 @@ func cf1422E(in io.Reader, _w io.Writer) {
 	n := len(s)
 	ans := make([]struct{sz int; s string}, n)
 	st := make([]byte, n+1)
+	preDiff := make([]byte, n+1) // 上一个不同字母
 	j := n
+	canCmp := true
 	for i := n - 1; i >= 0; i-- {
 		c := s[i]
-		if c == st[j] && c > st[j+1] {
+		if canCmp && c == st[j] && c > preDiff[j] {
+			canCmp = false
 			j++
 		} else {
+			canCmp = true
 			j--
 			st[j] = c
+			if c != st[j+1] {
+				preDiff[j] = st[j+1]
+			} else {
+				preDiff[j] = preDiff[j+1]
+			}
 		}
 		ans[i].sz = n - j
 		if n-j > 10 {
