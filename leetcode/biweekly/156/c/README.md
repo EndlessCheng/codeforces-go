@@ -12,11 +12,16 @@
 
 > 注：其实这个图有环也可以，下面的算法仍然是正确的，因为参数 $i$ 是递增的。一条路径如果包含同一个节点多次，这个节点对应的 $i$ 是不同的。换言之，加上 $i$ 之后，没有后效性。
 
+**优化**：如果 $n \le k$，由于 DAG 最长路径至多有 $n-1$ 条边，所以一定无法满足要求，直接返回 $-1$。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1m7EuzqEqr/?t=13m21s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        if n <= k:
+            return -1
+
         g = [[] for _ in range(n)]
         for x, y, wt in edges:
             g[x].append((y, wt))
@@ -42,6 +47,10 @@ class Solution {
     private int ans = -1;
 
     public int maxWeight(int n, int[][] edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         List<int[]>[] g = new ArrayList[n];
         Arrays.setAll(g, i -> new ArrayList<>());
         for (int[] e : edges) {
@@ -79,6 +88,10 @@ class Solution {
 class Solution {
 public:
     int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         vector<vector<pair<int, int>>> g(n);
         for (auto& e : edges) {
             int x = e[0], y = e[1], wt = e[2];
@@ -112,6 +125,10 @@ public:
 
 ```go [sol-Go]
 func maxWeight(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
 	for _, e := range edges {
@@ -172,6 +189,9 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 ```py [sol-Python3]
 class Solution:
     def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        if n <= k:
+            return -1
+
         g = [[] for _ in range(n)]
         deg = [0] * n
         for x, y, wt in edges:
@@ -200,6 +220,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxWeight(int n, int[][] edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         List<int[]>[] g = new ArrayList[n];
         Arrays.setAll(g, i -> new ArrayList<>());
         int[] deg = new int[n];
@@ -249,6 +273,10 @@ class Solution {
 class Solution {
 public:
     int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         vector<vector<pair<int, int>>> g(n);
         vector<int> deg(n);
         for (auto& e : edges) {
@@ -292,6 +320,10 @@ public:
 
 ```go [sol-Go]
 func maxWeight(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
 	deg := make([]int, n)
@@ -355,6 +387,10 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 class Solution {
 public:
     int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         vector<vector<pair<int, int>>> g(n);
         vector<int> deg(n);
         for (auto& e : edges) {
@@ -415,6 +451,9 @@ public:
 ```py [sol-Python3]
 class Solution:
     def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        if n <= k:
+            return -1
+
         f = [[set() for _ in range(n)] for _ in range(k + 1)]
         for i in range(n):
             f[0][i].add(0)
@@ -429,6 +468,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxWeight(int n, int[][] edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         Set<Integer>[][] f = new HashSet[k + 1][n];
         for (Set<Integer>[] row : f) {
             Arrays.setAll(row, i -> new HashSet<>());
@@ -462,6 +505,10 @@ class Solution {
 class Solution {
 public:
     int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         vector f(k + 1, vector<unordered_set<int>>(n));
         for (int i = 0; i < n; i++) {
             f[0][i].insert(0);
@@ -490,6 +537,10 @@ public:
 
 ```go [sol-Go]
 func maxWeight(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	f := make([][]map[int]struct{}, k+1)
 	for i := range f {
 		f[i] = make([]map[int]struct{}, n)
@@ -533,6 +584,9 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 ```py [sol-Python3]
 class Solution:
     def maxWeight(self, n: int, edges: List[List[int]], k: int, t: int) -> int:
+        if n <= k:
+            return -1
+
         MASK = (1 << t) - 1
         f = [[0] * n for _ in range(k + 1)]
         f[0] = [1] * n
@@ -548,6 +602,10 @@ import java.math.BigInteger;
 
 class Solution {
     public int maxWeight(int n, int[][] edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         BigInteger[][] f = new BigInteger[k + 1][n];
         Arrays.fill(f[0], BigInteger.ONE);
         for (int i = 1; i <= k; i++) {
@@ -578,6 +636,10 @@ class Solution {
 class Solution {
 public:
     int maxWeight(int n, vector<vector<int>>& edges, int k, int t) {
+        if (n <= k) {
+            return -1;
+        }
+
         vector f(k + 1, vector<bitset<600>>(n));
         for (int i = 0; i < n; i++) {
             f[0][i].set(0);
@@ -607,6 +669,10 @@ public:
 
 ```go [sol-Go]
 func maxWeight(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	f := make([][]*big.Int, k+1)
 	for i := range f {
 		f[i] = make([]*big.Int, n)

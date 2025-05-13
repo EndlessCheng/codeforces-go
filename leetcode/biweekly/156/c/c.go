@@ -4,6 +4,10 @@ import "math/big"
 
 // https://space.bilibili.com/206214
 func maxWeight1(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
 	for _, e := range edges {
@@ -38,6 +42,10 @@ func maxWeight1(n int, edges [][]int, k int, t int) int {
 }
 
 func maxWeight2(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
 	deg := make([]int, n)
@@ -86,6 +94,10 @@ func maxWeight2(n int, edges [][]int, k int, t int) int {
 }
 
 func maxWeight3(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	f := make([][]map[int]struct{}, k+1)
 	for i := range f {
 		f[i] = make([]map[int]struct{}, n)
@@ -117,6 +129,10 @@ func maxWeight3(n int, edges [][]int, k int, t int) int {
 }
 
 func maxWeight(n int, edges [][]int, k int, t int) int {
+	if n <= k {
+		return -1
+	}
+
 	f := make([][]*big.Int, k+1)
 	for i := range f {
 		f[i] = make([]*big.Int, n)
