@@ -10,7 +10,7 @@
 
 上面的例子，就是 $f[i][0] = f[i-1][1] + f[i-1][2]$。
 
-一般地，设 $c=\textit{nums}[i]$，我们有
+一般地，设 $c=\textit{nums}[j]$，我们有
 
 $$
 f[i][j] = \sum_{k=j+1}^{j+c} f[i-1][k\bmod 26]
@@ -82,11 +82,11 @@ $$
 
 $$
 \begin{aligned}
-F[t] ={} & M\times F[t-1]      \\
-={} & M\times M\times F[t-2]        \\
-={} & M\times M\times M\times  F[t-3]        \\
-\vdots & \\
-={} & M^t\times F[0]
+F[t] &= M\times F[t-1]      \\
+&= M\times M\times F[t-2]        \\
+&= M\times M\times M\times  F[t-3]        \\
+&\ \ \vdots  \\
+&= M^t\times F[0]  \\
 \end{aligned}
 $$
 
