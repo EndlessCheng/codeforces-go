@@ -18,7 +18,7 @@ class Solution:
         # 能否水平分割
         def check(a: List[List[int]]) -> bool:
             s = 0
-            for row in a[:-1]:
+            for row in a[:-1]:  # 最后一行无需遍历
                 s += sum(row)
                 if s * 2 == total:
                     return True
@@ -45,7 +45,7 @@ class Solution {
     // 能否水平分割
     private boolean check(int[][] a, long total) {
         long s = 0;
-        for (int i = 0; i < a.length - 1; i++) {
+        for (int i = 0; i < a.length - 1; i++) { // 最后一行无需遍历
             for (int x : a[i]) {
                 s += x;
             }
@@ -95,8 +95,8 @@ public:
 
         auto check = [&](vector<vector<int>> a) -> bool {
             long long s = 0;
-            for (auto& row : a) {
-                s += reduce(row.begin(), row.end(), 0LL);
+            for (int i = 0; i + 1 < a.size(); i++) { // 最后一行无需遍历
+                s += reduce(a[i].begin(), a[i].end(), 0LL);
                 if (s * 2 == total) {
                     return true;
                 }
@@ -122,7 +122,7 @@ func canPartitionGrid(grid [][]int) bool {
 	// 能否水平分割
 	check := func(a [][]int) bool {
 		s := 0
-		for _, row := range a[:len(a)-1] {
+		for _, row := range a[:len(a)-1] { // 最后一行无需遍历
 			for _, x := range row {
 				s += x
 			}
