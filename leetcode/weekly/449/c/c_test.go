@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -11,5 +12,26 @@ func Test_c(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
 // https://leetcode.cn/contest/weekly-contest-449/problems/maximum-sum-of-edge-values-in-a-graph/
 // https://leetcode.cn/problems/maximum-sum-of-edge-values-in-a-graph/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (size []int, mx int) {
+		//return
+		rg.Clear()
+		n := rg.Int(1, 2)
+		size = rg.IntSlice(n, 2, 3)
+		tot := 0
+		for _, v := range size {
+			tot += v
+		}
+		mx = rg.Int(tot, tot+5)
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, runAC, chainGreedy)
+}
