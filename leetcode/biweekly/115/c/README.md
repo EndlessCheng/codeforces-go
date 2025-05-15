@@ -268,17 +268,11 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 
 ### 4
 
-把 $\textit{groups}$ 的约束加进来。
+考虑 $\textit{groups}$ 的约束。
 
-需要保证转移来源（上文中的子序列的第二个字符串）的 $\textit{groups}[j]$ 与当前的 $\textit{groups}[i]$ 不同。
+我们需要保证转移来源（上文中的子序列的第二个字符串）的 $\textit{groups}[j]$ 与当前的 $\textit{groups}[i]$ 不同。如果 $\textit{groups}[i] = \textit{groups}[j]$，不能转移，跳过即可。
 
-如果 $\textit{groups}[i] \ne \textit{groups}[j]$，直接转移。
-
-如果 $\textit{groups}[i] = \textit{groups}[j]$ 呢？
-
-设 $g = \textit{groups}[i] = \textit{groups}[j]$，这两个下标所对应的状态，都会从更右边的某个满足 $\textit{groups}[k]\ne g$ 的状态转移过来，所以 $\textit{fMap}[s]$ 是不变的。因此若遇到 $\textit{groups}[i] = \textit{groups}[j]$，跳过即可。
-
-> 注：更通用的做法是额外维护一个次大 $f$ 值（保证 $\textit{groups}$ 值不等于最大的 $f$ 的 $\textit{groups}$ 值），从次大 $f$ 值转移过来。但不需要这么麻烦。
+> **注**：虽然通用做法是额外维护一个次大 $f$ 值（保证其 $\textit{groups}$ 值不等于最大的 $f$ 的 $\textit{groups}$ 值），从次大 $f$ 值转移过来，但本题并不需要。设 $g = \textit{groups}[i] = \textit{groups}[j]$，这两个下标所对应的状态，都会从更右边的某个满足 $\textit{groups}[k]\ne g$ 的状态转移过来，所以 $\textit{fMap}[s]$ 是不变的。因此若遇到 $\textit{groups}[i] = \textit{groups}[j]$，跳过即可。
 
 ### 5
 
