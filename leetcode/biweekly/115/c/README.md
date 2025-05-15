@@ -261,7 +261,7 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
     $$
     \max(\textit{fMap}[\texttt{?ab}],\textit{fMap}[\texttt{b?b}],\textit{fMap}[\texttt{ba?}])
     $$
-2. 把上式加一，就是方法一费了九牛二虎之力 $\mathcal{O}(nL)$ 算出的 $f[i]$。方法二只需要 $\mathcal{O}(L)$ 的时间。
+2. 把上式加一，就是方法一费了九牛二虎之力 $\mathcal{O}(nl)$ 算出的 $f[i]$。方法二只需要 $\mathcal{O}(l)$ 的时间。
 3. 用上式加一的结果，再去更新 $\textit{fMap}[w']$ 的最大值。接着上面的例子，就是更新 $\textit{fMap}[\texttt{?ab}],\textit{fMap}[\texttt{b?b}],\textit{fMap}[\texttt{ba?}]$ 的最大值。
 
 例如 $\textit{words}=[\texttt{aab},\texttt{aaa},\texttt{baa}]$ 的答案是 $3$，读者可以动手算算这个例子，体会 $\texttt{aaa}$ 是如何作为「桥梁」连接 $\texttt{aab}$ 和 $\texttt{baa}$ 的。
