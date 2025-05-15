@@ -325,12 +325,12 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private record Info(int maxF, int j) {
+    private record Pair(int maxF, int j) {
     }
 
     public List<String> getWordsInLongestSubsequence(String[] words, int[] groups) {
         int n = words.length;
-        Map<Long, Info> fMap = new HashMap<>(); // 哈希值 -> (maxF, j)
+        Map<Long, Pair> fMap = new HashMap<>(); // 哈希值 -> (maxF, j)
         int[] from = new int[n];
         int globalMaxF = 0;
         int maxI = 0;
@@ -348,7 +348,7 @@ class Solution {
             int f = 0;
             for (int k = 0; k < w.length; k++) {
                 long h = hash | (31L << (k * 5)); // 用记号笔把 w[k] 涂黑（置为 11111）
-                Info t = fMap.get(h);
+                Pair t = fMap.get(h);
                 if (t != null && t.maxF > f && groups[t.j] != g) {
                     f = t.maxF;
                     from[i] = t.j;
@@ -364,9 +364,9 @@ class Solution {
             // 用 f 更新 fMap[h]
             for (int k = 0; k < w.length; k++) {
                 long h = hash | (31L << (k * 5));
-                Info t = fMap.get(h);
+                Pair t = fMap.get(h);
                 if (t == null || f > t.maxF) {
-                    fMap.put(h, new Info(f, i));
+                    fMap.put(h, new Pair(f, i));
                 }
             }
         }
@@ -387,7 +387,7 @@ class Solution {
 public:
     vector<string> getWordsInLongestSubsequence(vector<string>& words, vector<int>& groups) {
         int n = words.size();
-        unordered_map<long long, tuple<int, int>> f_map; // 哈希值 -> (max_f, j)
+        unordered_map<long long, pair<int, int>> f_map; // 哈希值 -> (max_f, j)
         vector<int> from(n);
         int global_max_f = 0, max_i = 0;
         for (int i = n - 1; i >= 0; i--) {
