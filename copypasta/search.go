@@ -688,9 +688,6 @@ func searchCollection() {
 	// http://poj.org/problem?id=2248
 
 	// 折半枚举/双向搜索 Meet in the middle
-	// - [805. 数组的均值分割](https://leetcode.cn/problems/split-array-with-same-average/) 1983
-	// - [1755. 最接近目标值的子序列和](https://leetcode.cn/problems/closest-subsequence-sum/) 2364
-	// - [2035. 将数组分成两个数组并最小化数组和的差](https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/) 2490
 	// hqz 的题解 https://leetcode.cn/problems/count-almost-equal-pairs-ii/solutions/2892259/on-log2-ufen-lei-tao-lun-meet-in-the-mid-ysyy/
 	// https://codeforces.com/problemset/problem/1006/F 
 	// https://atcoder.jp/contests/abc271/tasks/abc271_f 
