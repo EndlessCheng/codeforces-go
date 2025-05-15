@@ -47,7 +47,8 @@ func getWordsInLongestSubsequence1(words []string, groups []int) []string {
 // 线性做法
 func getWordsInLongestSubsequence(words []string, groups []int) []string {
 	n := len(words)
-	fMap := map[int]struct{ maxF, j, maxF2, j2 int }{}
+	type pair struct{ maxF, j int }
+	fMap := map[int]pair{}
 	from := make([]int, n)
 	maxF, maxI := 0, 0
 	for i := n - 1; i >= 0; i-- {
@@ -59,20 +60,14 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 			hash = hash<<5 | int(ch&31)
 		}
 
-		f := 0 // 方法一中的 f[i]
+		// 计算方法一中的 f[i]
+		f := 0
 		for j := range w {
 			h := hash | 31<<(j*5) // 用记号笔把 w[k] 涂黑（置为 11111）
 			t := fMap[h]
-			if g != groups[t.j] { // 可以从最大值转移过来
-				if t.maxF > f {
-					f = t.maxF
-					from[i] = t.j
-				}
-			} else { // 只能从次大值转移过来
-				if t.maxF2 > f {
-					f = t.maxF2
-					from[i] = t.j2
-				}
+			if t.maxF > f && g != groups[t.j] {
+				f = t.maxF
+				from[i] = t.j
 			}
 		}
 
@@ -81,23 +76,12 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 			maxF, maxI = f, i
 		}
 
-		// 用 f 更新 fMap[h] 的最大次大
-		// 注意要保证最大次大的 group 值不同
+		// 用 f 更新 fMap[h]
 		for j := range w {
 			h := hash | 31<<(j*5)
-			t := fMap[h]
-			if f > t.maxF { // 最大值需要更新
-				if g != groups[t.j] {
-					t.maxF2 = t.maxF // 最大值变成次大值
-					t.j2 = t.j
-				}
-				t.maxF = f
-				t.j = i
-			} else if f > t.maxF2 && g != groups[t.j] { // 次大值需要更新
-				t.maxF2 = f
-				t.j2 = i
+			if f > fMap[h].maxF {
+				fMap[h] = pair{f, i}
 			}
-			fMap[h] = t
 		}
 	}
 
