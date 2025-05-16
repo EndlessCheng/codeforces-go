@@ -222,6 +222,8 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 
 如果 $n=10^5$，方法一就超时了。怎么办？
 
+在方法一中，我们其实没有充分利用这个性质：汉明距离只有 $1$，也就是只有一个字母不同。如何利用这个性质？
+
 方法一是枚举字符串，计算不同字母个数。横看成岭侧成峰，反过来，枚举哪个字母不同。
 
 字符串 $w=\textit{words}[i]$ 的长度至多为 $10$，与 $w$ 只有一个字母不同的字符串，本质只有 $10$ 种：
@@ -268,11 +270,17 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 
 ### 4
 
-考虑 $\textit{groups}$ 的约束。
+把 $\textit{groups}$ 的约束加进来。
 
-我们需要保证转移来源（上文中的子序列的第二个字符串）的 $\textit{groups}[j]$ 与当前的 $\textit{groups}[i]$ 不同。如果 $\textit{groups}[i] = \textit{groups}[j]$，不能转移，跳过即可。
+在上述方法的基础上，额外维护**次大值**，并保证最大值和次大值对应的 $\textit{group}$ 值不同，从而保证最大值和次大值中一定有一个可以转移到当前状态。
 
-> **注**：虽然通用做法是额外维护一个次大 $f$ 值（保证其 $\textit{groups}$ 值不等于最大的 $f$ 的 $\textit{groups}$ 值），从次大 $f$ 值转移过来，但本题并不需要。设 $g = \textit{groups}[i] = \textit{groups}[j]$，这两个下标所对应的状态，都会从更右边的某个满足 $\textit{groups}[k]\ne g$ 的状态转移过来，所以 $\textit{fMap}[s]$ 是不变的。因此若遇到 $\textit{groups}[i] = \textit{groups}[j]$，跳过即可。
+具体来说，$\textit{fMap}[s]$ 保存 $4$ 个值：
+
+- 以 $s$ 为首的最大子序列长度 $\textit{maxF}$，以及这个 $s$ 的下标 $j$。
+- 以 $s$ 为首的次大子序列长度 $\textit{maxF}_2$，以及这个 $s$ 的下标 $j_2$。
+- 要求：$\textit{groups}[j]\ne \textit{groups}[j_2]$。
+
+最终答案就是 $\textit{fMap}[s].\textit{maxF}$ 的最大值。
 
 ### 5
 
@@ -287,7 +295,7 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 class Solution:
     def getWordsInLongestSubsequence(self, words: List[str], groups: List[int]) -> List[str]:
         n = len(words)
-        f_map = {}  # 哈希值 -> (max_f, j)
+        f_map = {}  # 哈希值 -> (max_f, j, max_f2, j2)
         from_ = [0] * n
         global_max_f = max_i = 0
         for i in range(n - 1, -1, -1):
@@ -296,24 +304,35 @@ class Solution:
             # 计算 w 的哈希值
             hash_val = sum((ord(ch) & 31) << (k * 5) for k, ch in enumerate(w))
 
-            # 计算方法一中的 f[i]
-            f = 0
+            f = 0  # 方法一中的 f[i]
             for k in range(len(w)):
                 h = hash_val | (31 << (k * 5))  # 用记号笔把 w[k] 涂黑（置为 11111）
-                max_f, j = f_map.get(h, (0, 0))
-                if max_f > f and groups[j] != g:
-                    f = max_f
-                    from_[i] = j
+                max_f, j, max_f2, j2 = f_map.get(h, (0, 0, 0, 0))
+                if g != groups[j]:  # 可以从最大值转移过来
+                    if max_f > f:
+                        f = max_f
+                        from_[i] = j
+                else:  # 只能从次大值转移过来
+                    if max_f2 > f:
+                        f = max_f2
+                        from_[i] = j2
 
             f += 1
             if f > global_max_f:
                 global_max_f, max_i = f, i
 
-            # 用 f 更新 f_map[h]
+            # 用 f 更新 f_map[h] 的最大次大
+            # 注意要保证最大次大的 group 值不同
             for k in range(len(w)):
                 h = hash_val | (31 << (k * 5))
-                if h not in f_map or f > f_map[h][0]:
-                    f_map[h] = (f, i)
+                max_f, j, max_f2, j2 = f_map.get(h, (0, 0, 0, 0))
+                if f > max_f:  # 最大值需要更新
+                    if g != groups[j]:
+                        max_f2, j2 = max_f, j  # 旧最大值变成次大值
+                    max_f, j = f, i
+                elif f > max_f2 and g != groups[j]:  # 次大值需要更新
+                    max_f2, j2 = f, i
+                f_map[h] = (max_f, j, max_f2, j2)
 
         ans = [''] * global_max_f
         i = max_i
@@ -325,15 +344,16 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private record Pair(int maxF, int j) {
+    private record Info(int maxF, int j, int maxF2, int j2) {
     }
 
     public List<String> getWordsInLongestSubsequence(String[] words, int[] groups) {
         int n = words.length;
-        Map<Long, Pair> fMap = new HashMap<>(); // 哈希值 -> (maxF, j)
+        Map<Long, Info> fMap = new HashMap<>();
         int[] from = new int[n];
         int globalMaxF = 0;
         int maxI = 0;
+
         for (int i = n - 1; i >= 0; i--) {
             char[] w = words[i].toCharArray();
             int g = groups[i];
@@ -344,14 +364,23 @@ class Solution {
                 hash = (hash << 5) | (c & 31);
             }
 
-            // 计算方法一中的 f[i]
-            int f = 0;
+            int f = 0; // 方法一中的 f[i]
             for (int k = 0; k < w.length; k++) {
                 long h = hash | (31L << (k * 5)); // 用记号笔把 w[k] 涂黑（置为 11111）
-                Pair t = fMap.get(h);
-                if (t != null && t.maxF > f && groups[t.j] != g) {
-                    f = t.maxF;
-                    from[i] = t.j;
+                Info t = fMap.get(h);
+                if (t == null) {
+                    continue;
+                }
+                if (g != groups[t.j]) { // 可以从最大值转移过来
+                    if (t.maxF > f) {
+                        f = t.maxF;
+                        from[i] = t.j;
+                    }
+                } else { // 只能从次大值转移过来
+                    if (t.maxF2 > f) {
+                        f = t.maxF2;
+                        from[i] = t.j2;
+                    }
                 }
             }
 
@@ -361,13 +390,24 @@ class Solution {
                 maxI = i;
             }
 
-            // 用 f 更新 fMap[h]
+            // 用 f 更新 fMap[h] 的最大次大
+            // 注意要保证最大次大的 group 值不同
             for (int k = 0; k < w.length; k++) {
                 long h = hash | (31L << (k * 5));
-                Pair t = fMap.get(h);
-                if (t == null || f > t.maxF) {
-                    fMap.put(h, new Pair(f, i));
+                Info t = fMap.getOrDefault(h, new Info(0, 0, 0, 0));
+                int maxF = t.maxF, j = t.j, maxF2 = t.maxF2, j2 = t.j2;
+                if (f > maxF) { // 最大值需要更新
+                    if (g != groups[j]) {
+                        maxF2 = maxF; // 旧最大值变成次大值
+                        j2 = j;
+                    }
+                    maxF = f;
+                    j = i;
+                } else if (f > maxF2 && g != groups[j]) { // 次大值需要更新
+                    maxF2 = f;
+                    j2 = i;
                 }
+                fMap.put(h, new Info(maxF, j, maxF2, j2));
             }
         }
 
@@ -387,7 +427,7 @@ class Solution {
 public:
     vector<string> getWordsInLongestSubsequence(vector<string>& words, vector<int>& groups) {
         int n = words.size();
-        unordered_map<long long, pair<int, int>> f_map; // 哈希值 -> (max_f, j)
+        unordered_map<long long, tuple<int, int, int, int>> f_map; // 哈希值 -> (max_f, j, max_f2, j2)
         vector<int> from(n);
         int global_max_f = 0, max_i = 0;
         for (int i = n - 1; i >= 0; i--) {
@@ -400,14 +440,20 @@ public:
                 hash = (hash << 5) | (ch & 31);
             }
 
-            // 计算方法一中的 f[i]
-            int f = 0;
+            int f = 0; // 方法一中的 f[i]
             for (int k = 0; k < w.size(); k++) {
                 long long h = hash | (31LL << (k * 5)); // 用记号笔把 w[k] 涂黑（置为 11111）
-                auto& [max_f, j] = f_map[h];
-                if (max_f > f && groups[j] != g) {
-                    f = max_f;
-                    from[i] = j;
+                auto& [max_f, j, max_f2, j2] = f_map[h];
+                if (g != groups[j]) { // 可以从最大值转移过来
+                    if (max_f > f) {
+                        f = max_f;
+                        from[i] = j;
+                    }
+                } else { // 只能从次大值转移过来
+                    if (max_f2 > f) {
+                        f = max_f2;
+                        from[i] = j2;
+                    }
                 }
             }
 
@@ -417,13 +463,21 @@ public:
                 max_i = i;
             }
 
-            // 用 f 更新 f_map[h]
+            // 用 f 更新 f_map[h] 的最大次大
+            // 注意要保证最大次大的 group 值不同
             for (int k = 0; k < w.size(); k++) {
                 long long h = hash | (31LL << (k * 5));
-                auto& [max_f, j] = f_map[h]; // 注意是引用，更新可以直接影响到 f_map 中
-                if (f > max_f) {
+                auto& [max_f, j, max_f2, j2] = f_map[h];
+                if (f > max_f) { // 最大值需要更新
+                    if (g != groups[j]) {
+                        max_f2 = max_f; // 旧最大值变成次大值
+                        j2 = j;
+                    }
                     max_f = f;
                     j = i;
+                } else if (f > max_f2 && g != groups[j]) { // 次大值需要更新
+                    max_f2 = f;
+                    j2 = i;
                 }
             }
         }
@@ -442,8 +496,7 @@ public:
 ```go [sol-Go]
 func getWordsInLongestSubsequence(words []string, groups []int) []string {
 	n := len(words)
-	type pair struct{ maxF, j int }
-	fMap := map[int]pair{}
+	fMap := map[int]struct{ maxF, j, maxF2, j2 int }{}
 	from := make([]int, n)
 	maxF, maxI := 0, 0
 	for i := n - 1; i >= 0; i-- {
@@ -455,14 +508,20 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 			hash = hash<<5 | int(ch&31)
 		}
 
-		// 计算方法一中的 f[i]
-		f := 0
+		f := 0 // 方法一中的 f[i]
 		for j := range w {
 			h := hash | 31<<(j*5) // 用记号笔把 w[k] 涂黑（置为 11111）
 			t := fMap[h]
-			if t.maxF > f && g != groups[t.j] {
-				f = t.maxF
-				from[i] = t.j
+			if g != groups[t.j] { // 可以从最大值转移过来
+				if t.maxF > f {
+					f = t.maxF
+					from[i] = t.j
+				}
+			} else { // 只能从次大值转移过来
+				if t.maxF2 > f {
+					f = t.maxF2
+					from[i] = t.j2
+				}
 			}
 		}
 
@@ -471,12 +530,23 @@ func getWordsInLongestSubsequence(words []string, groups []int) []string {
 			maxF, maxI = f, i
 		}
 
-		// 用 f 更新 fMap[h]
+		// 用 f 更新 fMap[h] 的最大次大
+		// 注意要保证最大次大的 group 值不同
 		for j := range w {
 			h := hash | 31<<(j*5)
-			if f > fMap[h].maxF {
-				fMap[h] = pair{f, i}
+			t := fMap[h]
+			if f > t.maxF { // 最大值需要更新
+				if g != groups[t.j] {
+					t.maxF2 = t.maxF // 旧最大值变成次大值
+					t.j2 = t.j
+				}
+				t.maxF = f
+				t.j = i
+			} else if f > t.maxF2 && g != groups[t.j] { // 次大值需要更新
+				t.maxF2 = f
+				t.j2 = i
 			}
+			fMap[h] = t
 		}
 	}
 
