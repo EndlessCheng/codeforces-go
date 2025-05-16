@@ -16,17 +16,17 @@ func cf498B(in io.Reader, out io.Writer) {
 	for i := 1; i <= n; i++ {
 		Fscan(in, &p, &t)
 		p /= 100
-		p1 := math.Pow(1-p, float64(t-1))
-		p2 := math.Pow(1-p, float64(t))
+		np := math.Pow(1-p, float64(t-1))
+		np2 := np * (1 - p)
 		nf := make([]float64, T+1)
 		for j := i; j <= T; j++ {
 			d := 0.
 			if j > t {
-				d = f[j-t-1]*p1*p + f[j-t-1]*p2
+				d = f[j-t-1] * np
 			}
 			nf[j] = (nf[j-1]-d)*(1-p) + f[j-1]*p
 			if j >= t {
-				nf[j] += f[j-t] * p2
+				nf[j] += f[j-t] * np2
 			}
 			ans += nf[j]
 		}
