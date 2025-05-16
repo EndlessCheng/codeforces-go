@@ -43,14 +43,16 @@ $$
 
 **定理 3**：如果删除的字符串在 $[\textit{mxI},\textit{mxI}+k-1]$ 中，答案是 $\textit{mx}_2$。
 
-**证明**：
+**证明**：需要证明以下两点。
 
-首先，删除一个字符串后，设新的 LCP 长为 $m$，那么 $m$ 不可能比 $\textit{mx}_2$ 还大。如果删除字符串后，添加的是下标为 $\textit{mxI}-1$ 的字符串，说明以 $\textit{mxI}-1$ 开头的长为 $k+1$ 的子数组的 LCP 长为 $m$，那么根据定理 1 和引理，以 $\textit{mxI}-1$ 开头的长为 $k$ 的子数组的 LCP 至少是 $m$，所以我们先前算出来的 $\textit{mx}_2$ 也应当来以 $\textit{mxI}-1$ 开头的子数组，所以 $\textit{mx}_2 = m$，矛盾。其他「删除-添加」字符串的情况，证明方法类似。
+删除一个字符串后，设新的 LCP 长为 $m$，那么 $m$ 不可能比 $\textit{mx}_2$ 还大。
 
-其次，删除一个字符串不会导致 $\textit{mx}_2$ 变小。
+- 反证，假设 $m > \textit{mx}_2$。如果删除字符串后，添加的是下标为 $\textit{mxI}-1$ 的字符串，说明以 $\textit{mxI}-1$ 开头的长为 $k+1$ 的子数组的 LCP 长为 $m$，那么根据定理 1 和引理，以 $\textit{mxI}-1$ 开头的长为 $k$ 的子数组的 LCP 至少是 $m$，所以我们先前算出来的 $\textit{mx}_2$ 也应当来自以 $\textit{mxI}-1$ 开头的子数组，所以 $\textit{mx}_2 = m$，矛盾。其他「删除-添加」字符串的情况，证明方法类似。
 
-- 如果次大子数组不包含删除的字符串，那么答案是 $\textit{mx}_2$。
-- 如果次大子数组包含删除的字符串（记作 $s$），说明最大子数组和次大子数组都包含 $s$，这两个子数组是相交的（有公共部分）。在这种情况下，**次大子数组的 LCP，是最大子数组的 LCP 的前缀**。所以从次大子数组中删除 $s$，再增加一个在最大子数组中的字符串（恢复成 $k$ 个字符串），相当于增加了一个前缀包含次大子数组 LCP 的字符串，所以次大子数组的 LCP 是保持不变的，$\textit{mx}_2$ 不会变小，所以答案是 $\textit{mx}_2$。
+删除一个字符串不会导致 $\textit{mx}_2$ 变小。
+
+- 如果次大子数组不包含删除的字符串，$\textit{mx}_2$ 不会变小。
+- 如果次大子数组包含删除的字符串（记作 $s$），说明最大子数组和次大子数组都包含 $s$，这两个子数组是相交的（有公共部分）。在这种情况下，**次大子数组的 LCP，是最大子数组的 LCP 的前缀**。所以从次大子数组中删除 $s$，再增加一个在最大子数组中的字符串（恢复成 $k$ 个字符串），相当于增加了一个前缀包含次大子数组 LCP 的字符串，所以次大子数组的 LCP 是保持不变的，$\textit{mx}_2$ 不会变小。
 
 代码实现时，由于答案和 $\textit{words}$ 的字符串顺序相关，不能直接对 $\textit{words}$ 排序，可以改为对下标排序。
 
@@ -248,8 +250,8 @@ func longestCommonPrefix(words []string, k int) []int {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
@@ -257,3 +259,5 @@ func longestCommonPrefix(words []string, k int) []int {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
