@@ -113,9 +113,17 @@ todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-
    https://atcoder.jp/contests/abc154/tasks/abc154_f
    https://codeforces.com/contest/1696/problem/E
    https://codeforces.com/contest/1967/problem/C
-范德蒙德恒等式 Vandermonde's identity https://en.wikipedia.org/wiki/Vandermonde%27s_identity
-∑i=[0..k] C(n,i)*C(m,k-i) = C(n+m,k)   https://www.luogu.com.cn/problem/P7386
-特别地：∑i=[0..m] C(n,i)*C(m,i) = ∑i=[0..m] C(n,i)*C(m,m-i) = C(n+m,m)   https://codeforces.com/problemset/problem/785/D
+
+范德蒙德卷积 Vandermonde's identity
+https://en.wikipedia.org/wiki/Vandermonde%27s_identity
+https://oi-wiki.org/math/combinatorics/vandermonde-convolution/ 常用变形
+∑i=[0..k] C(n,i)*C(m,k-i) = C(n+m,k)
+- https://www.luogu.com.cn/problem/P7386
+特别地，∑i=[0..m] C(n,i)*C(m,i) = ∑i=[0..m] C(n,i)*C(m,m-i) = C(n+m,m)
+- https://codeforces.com/problemset/problem/785/D 2300
+https://codeforces.com/problemset/problem/1264/D2 2900
+https://www.luogu.com.cn/problem/P2791
+
 ∑i>=n and k-i>=m C(i,n)*C(k-i,m) = C(k+1,n+m+1)   https://www.luogu.com.cn/blog/hanzhongtlx/ti-xie-0-1-trie
 组合恒等式之万金油方法 https://zhuanlan.zhihu.com/p/25195967
 ∑i*C(n,i) = n*2^(n-1)
