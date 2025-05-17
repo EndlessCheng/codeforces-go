@@ -135,7 +135,7 @@ func findMinimumTime(strength []int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n!)$，其中 $n$ 是 $\textit{strength}$ 的长度。证明见[【基础算法精讲 16】](https://www.bilibili.com/video/BV1mY411D7f6/)。
+- 时间复杂度：$\mathcal{O}(n\cdot n!)$，其中 $n$ 是 $\textit{strength}$ 的长度。证明见[【基础算法精讲 16】](https://www.bilibili.com/video/BV1mY411D7f6/)。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 方法二：状压 DP
