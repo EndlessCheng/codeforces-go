@@ -36,7 +36,7 @@ func cf1778D(in io.Reader, _w io.Writer) {
 			continue
 		}
 		inv := pow(n, mod-2)
-		f0, f1 := 0, pow(2, n)-1
+		f0, f1 := 0, pow(2, n)-1 // 为什么是 2^n-1？证明见 https://zhuanlan.zhihu.com/p/649553515
 		for i := 1; i < d; i++ {
 			p := i * inv % mod
 			f0, f1 = f1, (f1-1-f0*p%mod)*pow(1-p, mod-2)%mod
