@@ -325,6 +325,12 @@ func minimumWeight(edges [][]int, queries [][]int) []int {
 - 时间复杂度：$\mathcal{O}((n+q)\log n)$，其中 $n$ 是 $\textit{edges}$ 的长度（加一），$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n\log n)$。返回值不计入。
 
+## 思考题
+
+如果每个询问包含 $4$ 个点，要怎么做？
+
+如果第 $i$ 个询问包含 $k_i$ 个点，要怎么做？保证所有 $k_i$ 之和不超过 $10^5$。
+
 更多相似题目，见下面树题单的「**§3.8 倍增算法、最近公共祖先（LCA）**」。
 
 ## 分类题单
