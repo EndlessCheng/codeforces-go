@@ -18,7 +18,9 @@
 
 也可以用 $n$ 减去连通块的个数（每个连通块可以少操作一次），即为答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+计算连通块个数，可以用 DFS、BFS、并查集等，下面用的并查集。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1Z3JGzwEU9/?t=3m37s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 完整的并查集模板，见我的数据结构题单
@@ -232,7 +234,7 @@ func minSwaps(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。
+- 时间复杂度：$\mathcal{O}(n\log U + n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 相似题目

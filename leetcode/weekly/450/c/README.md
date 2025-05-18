@@ -10,15 +10,15 @@
 - 如果当前格子是非字母格子，那么像普通 BFS 那样遍历四方向的相邻格子。
 - 如果当前格子是字母格子，那么除了像普通 BFS 那样遍历四方向的相邻格子以外，还需要遍历该字母的所有传送门，传送过去（边权为 $0$）。使用所有传送门后，清空传送门的位置列表，避免反复使用传送门。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1Z3JGzwEU9/?t=19m54s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def minMoves(self, matrix: List[str]) -> int:
-        m, n = len(matrix), len(matrix[0])
-        if matrix[m - 1][n - 1] == '#':
+        if matrix[-1][-1] == '#':
             return -1
 
+        m, n = len(matrix), len(matrix[0])
         pos = defaultdict(list)
         for i, row in enumerate(matrix):
             for j, c in enumerate(row):
@@ -32,23 +32,25 @@ class Solution:
 
         while q:
             x, y = q.popleft()
-            if x == m - 1 and y == n - 1:
-                return dis[x][y]
+            d = dis[x][y]
+
+            if x == m - 1 and y == n - 1:  # 到达终点
+                return d
 
             c = matrix[x][y]
             if c in pos:
                 # 使用所有传送门
                 for px, py in pos[c]:
-                    if dis[x][y] < dis[px][py]:
-                        dis[px][py] = dis[x][y]
+                    if d < dis[px][py]:
+                        dis[px][py] = d
                         q.appendleft((px, py))
                 del pos[c]  # 避免重复使用传送门
 
             # 下面代码和普通 BFS 是一样的
             for dx, dy in DIRS:
                 nx, ny = x + dx, y + dy
-                if 0 <= nx < m and 0 <= ny < n and matrix[nx][ny] != '#' and dis[x][y] + 1 < dis[nx][ny]:
-                    dis[nx][ny] = dis[x][y] + 1
+                if 0 <= nx < m and 0 <= ny < n and matrix[nx][ny] != '#' and d + 1 < dis[nx][ny]:
+                    dis[nx][ny] = d + 1
                     q.append((nx, ny))
 
         return -1
@@ -87,8 +89,10 @@ class Solution {
         while (!q.isEmpty()) {
             int[] p = q.pollFirst();
             int x = p[0], y = p[1];
+            int d = dis[x][y];
+            
             if (x == m - 1 && y == n - 1) {
-                return dis[x][y];
+                return d;
             }
 
             char c = matrix[x].charAt(y);
@@ -96,8 +100,8 @@ class Solution {
                 // 使用所有传送门
                 for (int[] portal : pos[c - 'A']) {
                     int px = portal[0], py = portal[1];
-                    if (dis[x][y] < dis[px][py]) {
-                        dis[px][py] = dis[x][y];
+                    if (d < dis[px][py]) {
+                        dis[px][py] = d;
                         q.addFirst(new int[]{px, py});
                     }
                 }
@@ -105,13 +109,11 @@ class Solution {
             }
 
             // 下面代码和普通 BFS 是一样的
-            for (int[] d : DIRS) {
-                int nx = x + d[0], ny = y + d[1];
-                if (0 <= nx && nx < m && 0 <= ny && ny < n && matrix[nx].charAt(ny) != '#') {
-                    if (dis[x][y] + 1 < dis[nx][ny]) {
-                        dis[nx][ny] = dis[x][y] + 1;
-                        q.addLast(new int[]{nx, ny});
-                    }
+            for (int[] dir : DIRS) {
+                int nx = x + dir[0], ny = y + dir[1];
+                if (0 <= nx && nx < m && 0 <= ny && ny < n && matrix[nx].charAt(ny) != '#' && d + 1 < dis[nx][ny]) {
+                    dis[nx][ny] = d + 1;
+                    q.addLast(new int[]{nx, ny});
                 }
             }
         }
@@ -148,16 +150,18 @@ public:
         while (!q.empty()) {
             auto [x, y] = q.front();
             q.pop_front();
+            int d = dis[x][y];
+            
             if (x == m - 1 && y == n - 1) {
-                return dis[x][y];
+                return d;
             }
 
             char c = matrix[x][y];
             if (c != '.') {
                 // 使用所有传送门
                 for (auto& [px, py] : pos[c - 'A']) {
-                    if (dis[x][y] < dis[px][py]) {
-                        dis[px][py] = dis[x][y];
+                    if (d < dis[px][py]) {
+                        dis[px][py] = d;
                         q.emplace_front(px, py);
                     }
                 }
@@ -167,8 +171,8 @@ public:
             // 下面代码和普通 BFS 是一样的
             for (auto& [dx, dy] : DIRS) {
                 int nx = x + dx, ny = y + dy;
-                if (0 <= nx && nx < m && 0 <= ny && ny < n && matrix[nx][ny] != '#' && dis[x][y] + 1 < dis[nx][ny]) {
-                    dis[nx][ny] = dis[x][y] + 1;
+                if (0 <= nx && nx < m && 0 <= ny && ny < n && matrix[nx][ny] != '#' && d + 1 < dis[nx][ny]) {
+                    dis[nx][ny] = d + 1;
                     q.emplace_back(nx, ny);
                 }
             }
@@ -218,17 +222,18 @@ func minMoves(matrix []string) int {
 		} else {
 			p, q1 = q1[0], q1[1:]
 		}
+		d := dis[p.x][p.y]
 
 		if p.x == m-1 && p.y == n-1 {
-			return dis[p.x][p.y]
+			return d
 		}
 
 		if c := matrix[p.x][p.y]; c != '.' {
 			// 使用所有传送门
 			for _, q := range pos[c] {
 				x, y := q.x, q.y
-				if dis[p.x][p.y] < dis[x][y] {
-					dis[x][y] = dis[p.x][p.y]
+				if d < dis[x][y] {
+					dis[x][y] = d
 					q0 = append(q0, pair{x, y}) // 加到队首
 				}
 			}
@@ -236,10 +241,10 @@ func minMoves(matrix []string) int {
 		}
 
 		// 下面代码和普通 BFS 是一样的
-		for _, d := range dirs {
-			x, y := p.x+d.x, p.y+d.y
-			if 0 <= x && x < m && 0 <= y && y < n && matrix[x][y] != '#' && dis[p.x][p.y]+1 < dis[x][y] {
-				dis[x][y] = dis[p.x][p.y] + 1
+		for _, dir := range dirs {
+			x, y := p.x+dir.x, p.y+dir.y
+			if 0 <= x && x < m && 0 <= y && y < n && matrix[x][y] != '#' && d+1 < dis[x][y] {
+				dis[x][y] = d + 1
 				q1 = append(q1, pair{x, y}) // 加到队尾
 			}
 		}

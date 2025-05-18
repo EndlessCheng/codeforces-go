@@ -4,7 +4,7 @@
 
 **这三条路径，恰好形成了一个回路**（从 $a$ 到 $b$ 到 $c$ 再回到 $a$），所以回路中的**每条边都恰好出现在两条路径中**。因此，把这三个距离相加，再除以 $2$，即为答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1Z3JGzwEU9/?t=28m48s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class LcaBinaryLifting:
@@ -330,6 +330,8 @@ func minimumWeight(edges [][]int, queries [][]int) []int {
 如果每个询问包含 $4$ 个点，要怎么做？
 
 如果第 $i$ 个询问包含 $k_i$ 个点，要怎么做？保证所有 $k_i$ 之和不超过 $10^5$。
+
+解答见 [本题视频讲解](https://www.bilibili.com/video/BV1Z3JGzwEU9/?t=28m48s)。
 
 更多相似题目，见下面树题单的「**§3.8 倍增算法、最近公共祖先（LCA）**」。
 

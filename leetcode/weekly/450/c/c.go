@@ -45,16 +45,17 @@ func minMoves(matrix []string) int {
 			p, q1 = q1[0], q1[1:]
 		}
 
+		d := dis[p.x][p.y]
 		if p.x == m-1 && p.y == n-1 {
-			return dis[p.x][p.y]
+			return d
 		}
 
 		if c := matrix[p.x][p.y]; c != '.' {
 			// 使用所有传送门
 			for _, q := range pos[c] {
 				x, y := q.x, q.y
-				if dis[p.x][p.y] < dis[x][y] {
-					dis[x][y] = dis[p.x][p.y]
+				if d < dis[x][y] {
+					dis[x][y] = d
 					q0 = append(q0, pair{x, y}) // 加到队首
 				}
 			}
@@ -62,10 +63,10 @@ func minMoves(matrix []string) int {
 		}
 
 		// 下面代码和普通 BFS 是一样的
-		for _, d := range dirs {
-			x, y := p.x+d.x, p.y+d.y
-			if 0 <= x && x < m && 0 <= y && y < n && matrix[x][y] != '#' && dis[p.x][p.y]+1 < dis[x][y] {
-				dis[x][y] = dis[p.x][p.y] + 1
+		for _, dir := range dirs {
+			x, y := p.x+dir.x, p.y+dir.y
+			if 0 <= x && x < m && 0 <= y && y < n && matrix[x][y] != '#' && d+1 < dis[x][y] {
+				dis[x][y] = d + 1
 				q1 = append(q1, pair{x, y}) // 加到队尾
 			}
 		}
