@@ -7,29 +7,28 @@ import (
 
 // https://github.com/EndlessCheng
 func cf1270B(in io.Reader, out io.Writer) {
-	var T, n, v int
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+	var T, n, pre, v int
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n, &v)
-		mn, mx := v, v
-		minL, maxL, l, r := 0, 0, -1, -1
+		Fscan(in, &n, &pre)
+		l, r := 0, 0
 		for i := 1; i < n; i++ {
 			Fscan(in, &v)
-			if v-i > mn {
-				l, r = minL, i
-			} else {
-				mn, minL = v-i, i
+			if abs(v-pre) > 1 {
+				l, r = i, i+1
 			}
-			if v+i < mx {
-				l, r = maxL, i
-			} else {
-				mx, maxL = v+i, i
-			}
+			pre = v
 		}
-		if r < 0 {
+		if r == 0 {
 			Fprintln(out, "NO")
 		} else {
 			Fprintln(out, "YES")
-			Fprintln(out, l+1, r+1)
+			Fprintln(out, l, r)
 		}
 	}
 }
