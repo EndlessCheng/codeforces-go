@@ -31,22 +31,28 @@ $$
 枚举 $k_i$，把分子提出来，答案为
 
 $$
-\left\lfloor\dfrac{n}{2}\right\rfloor!\left\lceil\dfrac{n}{2}\right\rceil! \sum_{\substack{k_0+\cdots+k_9=\lfloor\frac{n}{2}\rfloor \\ 0k_0 + \cdots+9k_9=\frac{\textit{total}}{2} }} \dfrac{1}{\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!}
+\left\lfloor\dfrac{n}{2}\right\rfloor!\left\lceil\dfrac{n}{2}\right\rceil! \sum_{\substack{k_0+\cdots+k_9=\lfloor\frac{n}{2}\rfloor \\ 0k_0 + \cdots+9k_9=\frac{\textit{total}}{2} }} \left(\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!\right)^{-1}
 $$
 
 下面计算
 
 $$
-f_9(k_0,k_1,\ldots,k_9) = \dfrac{1}{\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!}
+f_9(k_0,k_1,\ldots,k_9) = \left(\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!\right)^{-1}
 $$
 
-如果只枚举 $k_9$ 的话，有
+枚举 $k_9$，有
 
 $$
-\sum_{k_9=0}^{\textit{cnt}[9]} f_9(k_0,k_1,\ldots,k_9) =  \sum_{k_9=0}^{\textit{cnt}[9]} f_8(k_0,k_1,\ldots,k_8)\cdot \dfrac{1}{k_9!(\textit{cnt}[9]-k_9)!}
+\sum_{k_9=0}^{\textit{cnt}[9]} f_9(k_0,k_1,\ldots,k_9) =  \sum_{k_9=0}^{\textit{cnt}[9]} \dfrac{f_8(k_0,k_1,\ldots,k_8)}{k_9!(\textit{cnt}[9]-k_9)!}
 $$
 
-其中 $f_8(k_0,k_1,\ldots,k_8) = \dfrac{1}{\prod\limits_{i=0}^{i=8}k_i!(\textit{cnt}[i]-k_i)!}$，这又可以通过枚举 $k_8$ 计算，转换成计算 $f_7(k_0,k_1,\ldots,k_7)$ 的子问题。
+转化成子问题
+
+$$
+f_8(k_0,k_1,\ldots,k_8) = \left(\prod\limits_{i=0}^{i=8}k_i!(\textit{cnt}[i]-k_i)!\right)^{-1}
+$$
+
+这又可以通过枚举 $k_8$，转化成子问题 $f_7(k_0,k_1,\ldots,k_7)$。
 
 ## 状态定义与状态转移方程
 
@@ -79,7 +85,7 @@ $$
 累加得
 
 $$
-\textit{dfs}(i,\textit{left}_1,\textit{leftS}) = \sum_{k=0}^{\textit{cnt}[i]}  \textit{dfs}(i-1,\textit{left}_1 - k, \textit{leftS} - k\cdot i)\cdot \dfrac{1}{k!(\textit{cnt}[i]-k)!}
+\textit{dfs}(i,\textit{left}_1,\textit{leftS}) = \sum_{k=0}^{\textit{cnt}[i]}  \dfrac{\textit{dfs}(i-1,\textit{left}_1 - k, \textit{leftS} - k\cdot i)}{k!(\textit{cnt}[i]-k)!}
 $$
 
 由于 $\textit{left}_1+\textit{left}_2 = \displaystyle\sum\limits_{j=0}^{i} \textit{cnt}[j]$ 恒成立，所以第二个多重集的大小 $\textit{left}_2$ 可以省略。
@@ -442,7 +448,7 @@ $$
 递推式
 
 $$
-f[i+1][\textit{left}_1][\textit{leftS}] = \sum_{k=0}^{\textit{cnt}[i]} f[i][\textit{left}_1 - k][\textit{leftS} - k\cdot i]\cdot \dfrac{1}{k!(\textit{cnt}[i]-k)!}
+f[i+1][\textit{left}_1][\textit{leftS}] = \sum_{k=0}^{\textit{cnt}[i]}  \dfrac{f[i][\textit{left}_1 - k][\textit{leftS} - k\cdot i]}{k!(\textit{cnt}[i]-k)!}
 $$
 
 初始值：$f[0][0][0] = 1$，其余 $f[0][0][\textit{leftS}]=0$。
