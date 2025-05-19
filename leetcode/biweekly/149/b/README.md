@@ -15,10 +15,10 @@ class Solution:
     def maxFreeTime(self, eventTime: int, k: int, startTime: List[int], endTime: List[int]) -> int:
         def get(i: int) -> int:
             if i == 0:
-                return startTime[0]
+                return startTime[0]  # 最左边的空余时间段
             if i == n:
-                return eventTime - endTime[-1]
-            return startTime[i] - endTime[i - 1]
+                return eventTime - endTime[-1]  # 最右边的空余时间段
+            return startTime[i] - endTime[i - 1]  # 中间的空余时间段
 
         n = len(startTime)
         ans = s = 0
@@ -63,13 +63,13 @@ class Solution {
 
     private int get(int i, int eventTime, int[] startTime, int[] endTime) {
         if (i == 0) {
-            return startTime[0];
+            return startTime[0]; // 最左边的空余时间段
         }
         int n = startTime.length;
         if (i == n) {
-            return eventTime - endTime[n - 1];
+            return eventTime - endTime[n - 1]; // 最右边的空余时间段
         }
-        return startTime[i] - endTime[i - 1];
+        return startTime[i] - endTime[i - 1]; // 中间的空余时间段
     }
 }
 ```
@@ -81,12 +81,12 @@ public:
         int n = startTime.size();
         auto get = [&](int i) -> int {
             if (i == 0) {
-                return startTime[0];
+                return startTime[0]; // 最左边的空余时间段
             }
             if (i == n) {
-                return eventTime - endTime[n - 1];
+                return eventTime - endTime[n - 1]; // 最右边的空余时间段
             }
-            return startTime[i] - endTime[i - 1];
+            return startTime[i] - endTime[i - 1]; // 中间的空余时间段
         };
 
         int s = 0, ans = 0;
@@ -108,12 +108,12 @@ func maxFreeTime(eventTime, k int, startTime, endTime []int) (ans int) {
 	n := len(startTime)
 	get := func(i int) int {
 		if i == 0 {
-			return startTime[0]
+			return startTime[0] // 最左边的空余时间段
 		}
 		if i == n {
-			return eventTime - endTime[n-1]
+			return eventTime - endTime[n-1] // 最右边的空余时间段
 		}
-		return startTime[i] - endTime[i-1]
+		return startTime[i] - endTime[i-1] // 中间的空余时间段
 	}
 
 	s := 0
