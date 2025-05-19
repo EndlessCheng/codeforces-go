@@ -9,21 +9,20 @@ import (
 	"strconv"
 )
 
-// bufio.NewWriter
-// 相比 fmt.Println，每减少 1e5 次 Flush 可以加速约 200ms（Codeforces/AtCoder）
-// 也就是说，对于 1e4 及以下量级的输出，加不加 buffer 都一样，所以直接用 fmt.Println 输出即可
-// 注：大多数 CF 题目都是 T <= 1e4 的
-// 附对比：
-// 405ms https://codeforces.com/contest/1603/submission/135520593
-// 187ms https://codeforces.com/contest/1603/submission/134450945
-// NOTE: 调用 Fprintln 打印 int(0)   1e6 次的耗时为 77ms https://codeforces.com/contest/1603/submission/169796327
-// NOTE: 调用 Fprintln 打印 int(1e9) 1e6 次的耗时为 155ms https://codeforces.com/contest/1603/submission/169796385
-
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
-// 相比 fmt.Scan，每读入 1e5 个 int 可以加速约 1300ms（Codeforces/AtCoder）
+//
+// bufio.NewReader(os.Stdin) 相比 fmt.Scan，每读入 1e5 个 int 可以加速约 1300ms（Codeforces/AtCoder）
 // 对比：（3e4 个 int）
 // 623ms https://codeforces.com/problemset/submission/981/124239306
 // 233ms https://codeforces.com/problemset/submission/981/124237530
+//
+// bufio.NewWriter(os.Stdout) 相比 fmt.Println，每减少 1e5 次直接换行输出，可以加速约 200ms（Codeforces/AtCoder）
+// 换句话说，对于 <~1e4 的输出量，加不加 buffer 都一样，直接用 fmt.Println 输出即可（大多数 CF 题目都是 T<~2e4 的）
+// 对比：（1e5 个 int）
+// 405ms https://codeforces.com/contest/1603/submission/135520593
+// 187ms https://codeforces.com/contest/1603/submission/134450945
+// NOTE: 调用 Fprintln 打印 int(0)   1e6 次的耗时为  77ms https://codeforces.com/contest/1603/submission/169796327
+// NOTE: 调用 Fprintln 打印 int(1e9) 1e6 次的耗时为 155ms https://codeforces.com/contest/1603/submission/169796385
 func bufferIO() {
 	in := bufio.NewReader(os.Stdin)
 	out := bufio.NewWriter(os.Stdout)
