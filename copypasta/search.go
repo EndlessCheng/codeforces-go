@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"math"
 	"math/bits"
 	"slices"
 	"sort"
@@ -89,7 +90,7 @@ https://oeis.org/A001333 Number of n-step non-selfintersecting paths starting at
 https://codeforces.com/problemset/problem/954/F
 
 */
-func searchCollection() {
+func backtracking() {
 	// 指数型，即 n 层循环
 	// https://codeforces.com/contest/459/problem/C
 	loopAny := func(n, low, up int) { // or lows ups []int
@@ -688,18 +689,19 @@ func searchCollection() {
 	// http://poj.org/problem?id=2248
 
 	// 折半枚举/双向搜索 Meet in the middle
-	// hqz 的题解 https://leetcode.cn/problems/count-almost-equal-pairs-ii/solutions/2892259/on-log2-ufen-lei-tao-lun-meet-in-the-mid-ysyy/
-	// https://codeforces.com/problemset/problem/1006/F 
-	// https://atcoder.jp/contests/abc271/tasks/abc271_f 
-	// https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
-	// O(3^(n/2)) 放A组/放B组/不选 https://www.luogu.com.cn/problem/P3067
-	// - https://www.luogu.com.cn/record/88785388
-	// https://www.luogu.com.cn/problem/P5194
-	// https://www.luogu.com.cn/problem/P4799
+	// https://codeforces.com/problemset/problem/1006/F 2100
 	// https://codeforces.com/problemset/problem/327/E 2300
 	// https://codeforces.com/problemset/problem/912/E 2400
+	// https://atcoder.jp/contests/abc271/tasks/abc271_f 
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
 	// NEERC 2003 https://codeforces.com/gym/101388 J
+	// https://www.luogu.com.cn/problem/P3067 O(3^(n/2)) 放A组/放B组/不选
+	// - https://www.luogu.com.cn/record/88785388
+	// https://www.luogu.com.cn/problem/P9234 O(3^(n/2)) [蓝桥杯 2023 省 A] 买瓜
+	// https://www.luogu.com.cn/problem/P5194
+	// https://www.luogu.com.cn/problem/P4799
+	// https://leetcode.cn/problems/count-almost-equal-pairs-ii/solutions/2892259/on-log2-ufen-lei-tao-lun-meet-in-the-mid-ysyy/
+	// https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
 
 	// 折半枚举 - 超大背包问题
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
@@ -833,7 +835,14 @@ func searchCollection() {
 枚举大小为 k 的子集
 枚举格点周围（曼哈顿距离、切比雪夫距离）
 */
-func _(abs func(int) int) {
+func loop() {
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+
 	// 枚举 {0,1,...,n-1} 的全部子集
 	loopSet := func(a []int) {
 		n := len(a)
@@ -1239,30 +1248,14 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
 - [59. 螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)
 
 */
-func gridCollection() {
+func gridProblems() {
 	type pair struct{ x, y int }
 	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-
-	// 获取网格图的 labelS, labelT 的坐标
-	getST := func(g [][]byte, labelS, labelT byte) (pair, pair) {
-		var s, t pair
-		for i, row := range g {
-			for j, b := range row {
-				p := pair{i, j}
-				if b == labelS {
-					s = p
-				} else if b == labelT {
-					t = p
-				}
-			}
-		}
-		return s, t
-	}
 
 	// 矩形网格图，返回从起点 (s.x,s.y) 到其余所有可达点的最短距离。'#' 表示无法通过的格子   bfsGridAll 单源最短距离
 	// https://codeforces.com/contest/1520/problem/G
 	// LC2146 https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/
-	disAll := func(g [][]byte, sx, sy int) [][]int {
+	bfsAll := func(g [][]byte, sx, sy int) [][]int {
 		n, m := len(g), len(g[0])
 		dis := make([][]int, n)
 		for i := range dis {
@@ -1288,12 +1281,62 @@ func gridCollection() {
 		return dis
 	}
 
+	// 返回 (sx,sy) 到其他格子的最短距离
+	// https://leetcode.cn/problems/grid-teleportation-traversal/
+	bfs01 := func(a [][]int, sx, sy int) [][]int {
+		n, m := len(a), len(a[0])
+		dirs := []pair{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
+
+		dis := make([][]int, n)
+		for i := range dis {
+			dis[i] = make([]int, m)
+			for j := range dis[i] {
+				dis[i][j] = math.MaxInt
+			}
+		}
+		dis[sx][sy] = 0
+
+		// 或者写 q := [2][]pair{{{sx, sy}}}
+		q0 := []pair{{sx, sy}}
+		q1 := []pair{}
+
+		for len(q0) > 0 || len(q1) > 0 {
+			var p pair
+			if len(q0) > 0 {
+				p, q0 = q0[len(q0)-1], q0[:len(q0)-1]
+			} else {
+				p, q1 = q1[0], q1[1:]
+			}
+			d := dis[p.x][p.y]
+			//if p.x == tx && p.y == ty { return d }
+
+			for _, dir := range dirs {
+				x, y := p.x+dir.x, p.y+dir.y
+				if 0 <= x && x < n && 0 <= y && y < m && a[x][y] != '#' {
+					wt := a[x][y]
+					newD := d + wt
+					if newD >= dis[x][y] {
+						continue
+					}
+					dis[x][y] = newD
+					if wt == 0 {
+						q0 = append(q0, pair{x, y})
+					} else {
+						q1 = append(q1, pair{x, y})
+					}
+				}
+			}
+		}
+
+		return dis
+	}
+
 	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGridDep 最短距离
 	// 无法到达时返回 inf
 	// t 也可是别的东西，比如某个特殊符号等
 	// https://ac.nowcoder.com/acm/contest/6781/B
 	// https://atcoder.jp/contests/abc184/tasks/abc184_e
-	disST := func(g [][]byte, sx, sy, tx, ty int) int {
+	bfsST := func(g [][]byte, sx, sy, tx, ty int) int {
 		n, m := len(g), len(g[0])
 		const inf int = 1e9 // 1e18
 
@@ -1327,7 +1370,7 @@ func gridCollection() {
 
 	// 从 s 出发寻找 t，返回所有 t 所处的坐标。'#' 表示无法通过的格子   bfsGrid 可达
 	// https://leetcode.cn/contest/season/2020-spring/problems/xun-bao/
-	findAllReachableTargets := func(g [][]byte, s pair, t byte) (ps []pair) {
+	bfsFindAllReachableTargets := func(g [][]byte, s pair, t byte) (ps []pair) {
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
@@ -1522,8 +1565,7 @@ func gridCollection() {
 	}
 
 	_ = []interface{}{
-		getST,
-		disAll, disST, findAllReachableTargets,
+		bfsAll, bfs01, bfsST, bfsFindAllReachableTargets,
 		cntCC, dfsValidGrids,
 		findSameValueCC,
 		isValidPoint, findOneTargetAnyWhere, findAllTargetsAnyWhere,
