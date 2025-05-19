@@ -34,7 +34,7 @@ $$
 \left\lfloor\dfrac{n}{2}\right\rfloor!\left\lceil\dfrac{n}{2}\right\rceil! \sum_{\substack{k_0+\cdots+k_9=\lfloor\frac{n}{2}\rfloor \\ 0k_0 + \cdots+9k_9=\frac{\textit{total}}{2} }} \left(\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!\right)^{-1}
 $$
 
-下面计算
+定义
 
 $$
 f_9(k_0,k_1,\ldots,k_9) = \left(\prod\limits_{i=0}^{i=9}k_i!(\textit{cnt}[i]-k_i)!\right)^{-1}
