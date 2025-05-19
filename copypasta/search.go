@@ -1282,6 +1282,7 @@ func gridProblems() {
 	}
 
 	// 返回 (sx,sy) 到其他格子的最短距离
+	// 0-1 BFS
 	// https://leetcode.cn/problems/grid-teleportation-traversal/
 	bfs01 := func(a [][]int, sx, sy int) [][]int {
 		n, m := len(a), len(a[0])
