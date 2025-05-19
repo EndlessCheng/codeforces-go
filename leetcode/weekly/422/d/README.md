@@ -46,7 +46,7 @@ $$
 \sum_{k_9=0}^{\textit{cnt}[9]} f_9(k_0,k_1,\ldots,k_9) =  \sum_{k_9=0}^{\textit{cnt}[9]} \dfrac{f_8(k_0,k_1,\ldots,k_8)}{k_9!(\textit{cnt}[9]-k_9)!}
 $$
 
-转化成子问题
+其中子问题
 
 $$
 f_8(k_0,k_1,\ldots,k_8) = \left(\prod\limits_{i=0}^{i=8}k_i!(\textit{cnt}[i]-k_i)!\right)^{-1}
