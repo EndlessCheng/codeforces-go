@@ -254,8 +254,8 @@ func numberOfComponents(properties [][]int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2m)$，其中 $n$ 是 $\textit{properties}$ 的长度，$m$ 是 $\textit{properties}[i]$ 的长度。
-- 空间复杂度：$\mathcal{O}(nm)$ 或者 $\mathcal{O}(nm/w)$。其中 $w$ 等于 $32$ 或 $64$。
+- 时间复杂度：$\mathcal{O}(n^2m)$ 或者 $\mathcal{O}(n^2m/w)$，其中 $n$ 是 $\textit{properties}$ 的长度，$m$ 是 $\textit{properties}[i]$ 的长度，$w$ 等于 $32$ 或 $64$。
+- 空间复杂度：$\mathcal{O}(nm)$ 或者 $\mathcal{O}(nm/w)$。
 
 更多相似题目，见下面数据结构题单中的「**并查集**」。
 
