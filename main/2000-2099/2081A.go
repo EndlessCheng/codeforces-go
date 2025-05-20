@@ -16,29 +16,13 @@ func cf2081A(in io.Reader, _w io.Writer) {
 	var s string
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &s)
-		cnt1 := make([]int, n)
-		c1 := 0
-		for i, b := range s {
-			if b == '0' {
-				c1 = 0
-			} else {
-				c1++
-				cnt1[i] = c1
-			}
+		// s[i] = 0，那么上一位必须进位且本位上取整，f[i] = f[i-1] * (1/2)
+		// s[i] = 1，那么上一位进位，或者上一位没有进位且本位上取整，f[i] = f[i-1] + (1-f[i-1]) * (1/2) = (f[i-1]+1) * (1/2)
+		f := 0
+		for i := n - 1; i > 0; i-- {
+			f = (f + int(s[i]&1)) * inv2 % mod
 		}
-
-		f := make([][2]int, n+1)
-		for i := 1; i < n; i++ {
-			for j := range 2 {
-				res := f[i][0] + 1
-				if j > 0 || s[i] == '1' {
-					c := cnt1[i-j] + j
-					res = (res + f[i-c+1][1] + c) * inv2 % mod
-				}
-				f[i+1][j] = res
-			}
-		}
-		Fprintln(out, f[n][0])
+		Fprintln(out, (n-1+f)%mod)
 	}
 }
 
