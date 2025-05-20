@@ -36,7 +36,7 @@ func (u *unionFind) merge(from, to int) {
 	u.cc-- // 合并后，连通块个数减一
 }
 
-func minSwaps(nums []int) int {
+func minSwaps1(nums []int) int {
 	n := len(nums)
 	type tuple struct{ s, x, i int }
 	a := make([]tuple, n)
@@ -55,4 +55,31 @@ func minSwaps(nums []int) int {
 		u.merge(i, p.i)
 	}
 	return n - u.cc
+}
+
+func minSwaps(nums []int) int {
+	n := len(nums)
+	type tuple struct{ s, x, i int }
+	a := make([]tuple, n)
+	for i, num := range nums {
+		s := 0
+		for x := num; x > 0; x /= 10 {
+			s += x % 10
+		}
+		a[i] = tuple{s, num, i}
+	}
+
+	slices.SortFunc(a, func(a, b tuple) int { return cmp.Or(a.s-b.s, a.x-b.x) })
+
+	cc := 0
+	for _, p := range a {
+		if p.i < 0 {
+			continue
+		}
+		cc++
+		for i := p.i; i >= 0; {
+			i, a[i].i = a[i].i, -1
+		}
+	}
+	return n - cc
 }

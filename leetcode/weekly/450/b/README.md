@@ -20,9 +20,11 @@
 
 也可以用 $n$ 减去连通块的个数（每个连通块可以少操作一次），即为答案。
 
-计算连通块个数，可以用 DFS、BFS、并查集等，下面用的并查集。
+计算连通块个数，可以用 DFS、BFS、并查集等。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Z3JGzwEU9/?t=3m37s)，欢迎点赞关注~
+
+## 写法一：并查集
 
 ```py [sol-Python3]
 # 完整的并查集模板，见我的数据结构题单
@@ -161,7 +163,7 @@ class Solution {
 public:
     int minSwaps(vector<int>& nums) {
         int n = nums.size();
-        vector<tuple<int, int, int>> a(n);
+        vector<array<int, 3>> a(n);
         for (int i = 0; i < n; i++) {
             int s = 0;
             for (int x = nums[i]; x > 0; x /= 10) {
@@ -174,7 +176,7 @@ public:
 
         UnionFind u(n);
         for (int i = 0; i < n; i++) {
-            u.merge(i, get<2>(a[i]));
+            u.merge(i, a[i][2]);
         }
         return n - u.cc;
     }
@@ -231,6 +233,119 @@ func minSwaps(nums []int) int {
 		u.merge(i, p.i)
 	}
 	return n - u.cc
+}
+```
+
+## 写法二：迭代
+
+```py [sol-Python3]
+class Solution:
+    def minSwaps(self, nums: List[int]) -> int:
+        a = sorted([sum(map(int, str(x))), x, i] for i, x in enumerate(nums))
+        cc = 0
+        for _, _, i in a:
+            if i < 0:  # 访问过
+                continue
+            cc += 1
+            while i >= 0:
+                a[i][2], i = -1, a[i][2]
+        return len(a) - cc
+```
+
+```java [sol-Java]
+class Solution {
+    public int minSwaps(int[] nums) {
+        int n = nums.length;
+        int[][] a = new int[n][3];
+        for (int i = 0; i < n; i++) {
+            int s = 0;
+            for (int x = nums[i]; x > 0; x /= 10) {
+                s += x % 10;
+            }
+            a[i][0] = s;
+            a[i][1] = nums[i];
+            a[i][2] = i;
+        }
+
+        Arrays.sort(a, (p, q) -> p[0] != q[0] ? p[0] - q[0] : p[1] - q[1]);
+
+        int cc = 0;
+        for (int[] t : a) {
+            int i = t[2];
+            if (i < 0) { // 访问过
+                continue;
+            }
+            cc++;
+            while (i >= 0) {
+                int nxt = a[i][2];
+                a[i][2] = -1;
+                i = nxt;
+            }
+        }
+        return n - cc;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minSwaps(vector<int>& nums) {
+        int n = nums.size();
+        vector<array<int, 3>> a(n);
+        for (int i = 0; i < n; i++) {
+            int s = 0;
+            for (int x = nums[i]; x > 0; x /= 10) {
+                s += x % 10;
+            }
+            a[i] = {s, nums[i], i};
+        }
+
+        ranges::sort(a);
+
+        int cc = 0;
+        for (auto [_, _, i] : a) {
+            if (i < 0) { // 访问过
+                continue;
+            }
+            cc++;
+            while (i >= 0) {
+                int nxt = a[i][2];
+                a[i][2] = -1;
+                i = nxt;
+            }
+        }
+        return n - cc;
+    }
+};
+```
+
+```go [sol-Go]
+func minSwaps(nums []int) int {
+	n := len(nums)
+	type tuple struct{ s, x, i int }
+	a := make([]tuple, n)
+	for i, num := range nums {
+		s := 0
+		for x := num; x > 0; x /= 10 {
+			s += x % 10
+		}
+		a[i] = tuple{s, num, i}
+	}
+
+	slices.SortFunc(a, func(a, b tuple) int { return cmp.Or(a.s-b.s, a.x-b.x) })
+
+	cc := 0
+	for _, p := range a {
+		if p.i < 0 { // 访问过
+			continue
+		}
+		cc++
+		for i := p.i; i >= 0; {
+			i, a[i].i = a[i].i, -1
+		}
+	}
+	return n - cc
 }
 ```
 
