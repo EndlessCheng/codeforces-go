@@ -8,6 +8,8 @@
 
 这可以用**定长滑动窗口**解决，原理见[【套路】教你解决定长滑窗！适用于所有定长滑窗题目！](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)
 
+代码实现时，可以用一个数组保存所有的空余时间段的长度。也可以直接写一个函数获取各个空余时间段的长度，从而做到 $\mathcal{O}(1)$ 空间复杂度。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1eUF6eaERQ/?t=38s)，欢迎点赞关注~
 
 ```py [sol-Python3]
