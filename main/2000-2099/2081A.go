@@ -27,29 +27,18 @@ func cf2081A(in io.Reader, _w io.Writer) {
 			}
 		}
 
-		dp := make([][2]int, n)
-		for i := range dp {
-			dp[i] = [2]int{-1, -1}
+		f := make([][2]int, n+1)
+		for i := 1; i < n; i++ {
+			for j := range 2 {
+				res := f[i][0] + 1
+				if j > 0 || s[i] == '1' {
+					c := cnt1[i-j] + j
+					res = (res + f[i-c+1][1] + c) * inv2 % mod
+				}
+				f[i+1][j] = res
+			}
 		}
-		var f func(int, int) int
-		f = func(i, j int) (res int) {
-			if i <= 0 {
-				return
-			}
-			p := &dp[i][j]
-			if *p >= 0 {
-				return *p
-			}
-			defer func() { *p = res }()
-			res = f(i-1, 0) + 1
-			if j == 0 && s[i] == '0' {
-				return
-			}
-			c := cnt1[i-j] + j
-			res2 := f(i-c, 1) + c
-			return (res + res2) * inv2 % mod
-		}
-		Fprintln(out, f(n-1, 0))
+		Fprintln(out, f[n][0])
 	}
 }
 
