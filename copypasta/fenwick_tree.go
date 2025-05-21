@@ -294,7 +294,7 @@ func (t fenwickDiff2) get(x, y int) (res int) {
 
 // 树套树：树状数组套动态开点权值线段树
 // 三维偏序 https://www.luogu.com.cn/problem/P3810 https://www.luogu.com.cn/record/136178821
-// 二逼平衡树 https://www.luogu.com.cn/problem/P3380 https://www.luogu.com.cn/record/136286395
+// https://www.luogu.com.cn/problem/P3380 https://www.luogu.com.cn/record/136286395
 // 树状数组在这里就是纯纯工具人，只用来拆分区间
 // 注：如果 TLE 可以使用 func init() { debug.SetGCPercent(-1) } 加速
 type fenwickWithSeg []*stNode // 见 segment_tree.go

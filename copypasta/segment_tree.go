@@ -124,7 +124,7 @@ import "math/bits"
 // EXTRA: 树套树
 // 代码见 fenwick_tree.go
 // 三维偏序：树状数组套动态开点权值线段树 https://www.luogu.com.cn/problem/P3810
-// 二逼平衡树 https://www.luogu.com.cn/problem/P3380
+// https://www.luogu.com.cn/problem/P3380
 // - 两种 O((n+q)lognlogU) 做法：
 // - 树状数组套动态开点权值线段树（AC）
 // - 动态开点权值线段树套下标平衡树（TLE）https://www.luogu.com.cn/record/136191286
