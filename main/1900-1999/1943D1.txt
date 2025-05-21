@@ -1,0 +1,2 @@
+a[0] = a[n+1] = 0
+f(i,pre,pre2) = sum_{v=pre-pre2}^{mx} f(i-1,v,pre)
