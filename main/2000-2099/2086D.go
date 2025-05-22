@@ -41,13 +41,11 @@ func cf2086D(in io.Reader, out io.Writer) {
 
 		f := make([]int, m+1)
 		f[0] = 1
-		s := 0
 		for _, v := range a {
 			if v == 0 {
 				continue
 			}
-			s = min(s+v, m)
-			for j := s; j >= v; j-- {
+			for j := m; j >= v; j-- {
 				f[j] = (f[j] + f[j-v]) % mod
 			}
 		}
