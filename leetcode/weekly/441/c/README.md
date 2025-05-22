@@ -81,7 +81,7 @@ public:
             if (x == 0) {
                 continue;
             }
-            vector<int> f(x + 1);
+            vector<uint8_t> f(x + 1);
             f[0] = true;
             for (int k = 0; k < queries.size(); k++) {
                 auto& q = queries[k];
@@ -212,7 +212,7 @@ public:
             if (x == 0) {
                 continue;
             }
-            bitset<10001> f;
+            bitset<1001> f;
             f.set(0);
             for (int k = 0; k < queries.size(); k++) {
                 auto& q = queries[k];
@@ -383,7 +383,7 @@ public:
                     }
                 }
                 // 多重背包（二进制优化）
-                bitset<10001> f;
+                bitset<1001> f;
                 f.set(0);
                 for (int v = 1; v <= 10 && !f[x]; v++) {
                     int num = cnt[v];
