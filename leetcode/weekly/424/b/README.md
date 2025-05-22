@@ -4,7 +4,9 @@
 
 如果所有元素都 $\le 0$，那么我们可以撤销一部分元素的减一，使其调整为 $0$，从而满足原始题意的要求。
 
-这可以用**差分数组**计算，[原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)（推荐和[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/) 一起看）。
+这可以用**差分数组**计算，[详细原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)。
+
+![图解差分数组](https://pic.leetcode.cn/1747885435-uDDcwT-lc1094-c.png)
 
 [本题视频讲解](https://www.bilibili.com/video/BV1yiU6YnEfU/?t=8m17s)，欢迎点赞关注~
 
