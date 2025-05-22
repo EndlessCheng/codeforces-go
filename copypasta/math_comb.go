@@ -27,22 +27,12 @@ https://codeforces.com/problemset/problem/618/F
 - 用 DP 推导，然后尝试优化
 - 假设法
 
-简单计数
+排列组合问题
 https://codeforces.com/problemset/problem/617/B 1300
-
-- [1359. 有效的快递序列数目](https://leetcode.cn/problems/count-all-valid-pickup-and-delivery-options/) 1723
-- [2147. 分隔长廊的方案数](https://leetcode.cn/problems/number-of-ways-to-divide-a-long-corridor/) 1915
-LC2514 https://leetcode.cn/problems/count-anagrams/ 2070
-- [1643. 第 K 条最小指令](https://leetcode.cn/problems/kth-smallest-instructions/) 2080
-LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/ 2092
-LC1916 https://leetcode.cn/problems/count-ways-to-build-rooms-in-an-ant-colony/ 2486
-LC2954 https://leetcode.cn/problems/count-the-number-of-infection-sequences/ 2645
-LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会员题）
-- [LCP 25. 古董键盘](https://leetcode.cn/problems/Uh984O/)
-另见下面的「放球问题」
 https://atcoder.jp/contests/abc202/tasks/abc202_d 入门
 https://atcoder.jp/contests/abc178/tasks/abc178_d
 https://codeforces.com/problemset/problem/1879/C 1300
+https://codeforces.com/problemset/problem/677/C 1500
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
 https://codeforces.com/problemset/problem/1999/F 1500
@@ -53,6 +43,7 @@ https://codeforces.com/problemset/problem/2040/C 1600
 https://atcoder.jp/contests/abc133/tasks/abc133_e 1505~CF1700 变形题：改成距离 <= 3
 https://atcoder.jp/contests/abc156/tasks/abc156_e 1514~CF1700
 https://atcoder.jp/contests/abc129/tasks/abc129_e 1547~CF1700
+https://codeforces.com/problemset/problem/2086/D 1700 可重集排列
 https://codeforces.com/problemset/problem/300/C 1800
 https://codeforces.com/problemset/problem/869/C 1800
 https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
@@ -69,6 +60,7 @@ https://codeforces.com/problemset/problem/1946/E 2200 排列
 https://codeforces.com/problemset/problem/1204/E 2300 推荐
 https://codeforces.com/problemset/problem/1342/E 2300
 https://codeforces.com/problemset/problem/2077/C 2300
+https://codeforces.com/problemset/problem/1109/D 2400 Prufer 序列
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
 https://codeforces.com/problemset/problem/1608/D 2400
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
@@ -80,6 +72,7 @@ https://codeforces.com/problemset/problem/140/E 2600 推荐
 https://atcoder.jp/contests/abc290/tasks/abc290_f
 https://atcoder.jp/contests/abc160/tasks/abc160_f 2048
 todo https://www.luogu.com.cn/problem/P6017
+另见下面的「放球问题」
 
 期望
 https://atcoder.jp/contests/abc194/tasks/abc194_d
@@ -148,9 +141,12 @@ a(n) = 长度为 n 的字符串的所有子串长度之和
 
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 
-todo 可重集排列组合 https://oi-wiki.org/math/combination/
+可重集排列组合
+https://oi-wiki.org/math/combination/
+https://codeforces.com/problemset/problem/2086/D 1700
 todo https://codeforces.com/problemset/problem/451/E
 不相邻的排列 https://oi-wiki.org/math/combination/#_10
+
 错排 https://oeis.org/A000166 subfactorial numbers  D[0]=1, D[1]=0, D[n]=(n-1)*(D[n-1]+D[n-2])
 证明一
 - an 有 n-1 种取值，不失一般性，设 an=1
@@ -454,7 +450,7 @@ func solveInclusionExclusion(a []int) int {
 	return ans
 }
 
-// 多重集组合数 https://oi-wiki.org/math/combinatorics/combination/#%E5%A4%9A%E9%87%8D%E9%9B%86%E7%9A%84%E7%BB%84%E5%90%88%E6%95%B0-2
+// 可重集组合 多重集组合 https://oi-wiki.org/math/combinatorics/combination/#%E5%A4%9A%E9%87%8D%E9%9B%86%E7%9A%84%E7%BB%84%E5%90%88%E6%95%B0-2
 // https://www.cnblogs.com/Xy-top/p/17657960.html https://iai.sh.cn/problem/839
 // https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solutions/2495815/python3-1155zhi-tou-zi-deng-yu-mu-biao-h-4yzp/
 
