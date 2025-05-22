@@ -10,12 +10,15 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1yiU6YnEfU/?t=8m17s)，欢迎点赞关注~
 
+代码实现时，计算的是「区间减一」执行的**次数**。累加差分数组，可以得到在 $\textit{nums}[i]$ 处减一的次数 $\textit{sumD}$。
+
+如果 $\textit{nums}[i] > \textit{sumD}$，意味着 $\textit{nums}[i]$ 减少后大于 $0$，不符合要求。
+
 ```py [sol-Python3]
 class Solution:
     def isZeroArray(self, nums: List[int], queries: List[List[int]]) -> bool:
         diff = [0] * (len(nums) + 1)
         for l, r in queries:
-            # 区间 [l,r] 中的数都加一
             diff[l] += 1
             diff[r + 1] -= 1
 
@@ -32,7 +35,6 @@ class Solution {
         int n = nums.length;
         int[] diff = new int[n + 1];
         for (int[] q : queries) {
-            // 区间 [l,r] 中的数都加一
             diff[q[0]]++;
             diff[q[1] + 1]--;
         }
@@ -57,7 +59,6 @@ public:
         int n = nums.size();
         vector<int> diff(n + 1);
         for (auto& q : queries) {
-            // 区间 [l,r] 中的数都加一
             diff[q[0]]++;
             diff[q[1] + 1]--;
         }
@@ -79,7 +80,6 @@ public:
 func isZeroArray(nums []int, queries [][]int) bool {
 	diff := make([]int, len(nums)+1)
 	for _, q := range queries {
-		// 区间 [l,r] 中的数都加一
 		diff[q[0]]++
 		diff[q[1]+1]--
 	}
