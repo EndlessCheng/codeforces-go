@@ -26,7 +26,7 @@ class Solution {
         return IntStream.range(0, words.length)
                         .filter(i -> words[i].indexOf(x) >= 0)
                         .boxed()
-                        .collect(Collectors.toList());
+                        .toList();
     }
 }
 ```
