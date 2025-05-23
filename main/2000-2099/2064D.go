@@ -5,7 +5,7 @@ import (
 	. "fmt"
 	"io"
 	"math/bits"
-	"sort"
+	"slices"
 )
 
 // https://github.com/EndlessCheng
@@ -16,12 +16,18 @@ func cf2064D(in io.Reader, _w io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &q)
 		a := make([]int, n)
-		pos := [31][]int{}
+		pre := [31]int{}
+		for i := range pre {
+			pre[i] = -1
+		}
+		pres := make([][31]int, n+1)
 		for i := range a {
 			Fscan(in, &a[i])
 			m := bits.Len(uint(a[i]))
-			pos[m] = append(pos[m], i)
+			pres[i] = pre
+			pre[m] = i
 		}
+		pres[n] = pre
 		s := make([]int, n+1)
 		for i := n - 1; i >= 0; i-- {
 			s[i] = s[i+1] ^ a[i]
@@ -33,15 +39,10 @@ func cf2064D(in io.Reader, _w io.Writer) {
 			cur, preM, maxP := n, 31, -1
 			for {
 				m := bits.Len(uint(x))
-				for _, ps := range pos[m+1 : preM] {
-					if j := sort.SearchInts(ps, cur); j > 0 {
-						maxP = max(maxP, ps[j-1])
-					}
+				if m+1 < preM {
+					maxP = max(maxP, slices.Max(pres[cur][m+1:preM]))
 				}
-				p := -1
-				if j := sort.SearchInts(pos[m], cur); j > 0 {
-					p = pos[m][j-1]
-				}
+				p := pres[cur][m]
 				if p <= maxP {
 					Fprint(out, n-1-maxP, " ")
 					break
