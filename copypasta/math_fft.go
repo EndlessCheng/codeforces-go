@@ -22,6 +22,7 @@ https://oi-wiki.org/math/poly/fft/
 https://cp-algorithms.com/algebra/fft.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FFT.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Polynomial.java.html
+Complex FFT is not as bad as you think https://codeforces.com/blog/entry/142860
 用 FFT 做字符串匹配 https://zhuanlan.zhihu.com/p/267765026
 Arrow product: How to enumerate directed graphs https://codeforces.com/blog/entry/115617
 能否在 O(nlogn) 时间内实现大数的进制转换？ https://www.zhihu.com/question/395557989
@@ -37,6 +38,7 @@ https://www.luogu.com.cn/blog/command-block/fft-xue-xi-bi-ji
 有关快速数论变换（NTT）以及多项式运算的内容见 math_ntt.go
 
 模板题 https://www.luogu.com.cn/problem/P3803
+https://leetcode.cn/problems/multiply-two-polynomials/
 todo 推式子 https://www.luogu.com.cn/problem/P3338 花絮 https://zhuanlan.zhihu.com/p/349249817
  https://codeforces.com/problemset/problem/993/E
  https://codeforces.com/gym/104081/problem/K
