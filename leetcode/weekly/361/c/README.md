@@ -29,7 +29,7 @@ $$
 (s[r]-s[l])\bmod \textit{modulo} = k \bmod \textit{modulo}
 $$
 
-所以 $s[r]-s[l]$ 与 $k$ 关于模 $\textit{modulo}$ **同余**。由于模运算加减法封闭，可以移项，得
+所以 $s[r]-s[l]$ 与 $k$ 关于模 $\textit{modulo}$ **同余**。根据 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)，同余式可以移项，得
 
 $$
 (s[r]-k)\bmod \textit{modulo} = s[l]\bmod \textit{modulo}
