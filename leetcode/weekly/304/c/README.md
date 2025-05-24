@@ -1,15 +1,15 @@
-我们需要知道 $\textit{node}_1$ 到每个点的最短路长度 $\textit{dis}_1[i]$，以及 $\textit{node}_2$ 到每个点的最短路长度 $\textit{dis}_2[i]$。若无法到达，则最短路长度为 $n$。
+我们需要知道 $\textit{node}_1$ 到每个点的最短路长度 $\textit{dis}_1[i]$，以及 $\textit{node}_2$ 到每个点的最短路长度 $\textit{dis}_2[i]$。
 
-答案为 $\max(\textit{dis}_1[i],\textit{dis}_2[i])$ 的最小值对应的 $i$。若没有这样的节点，返回 $-1$。
+题目要我们计算的，是 $\max(\textit{dis}_1[i],\textit{dis}_2[i])$ 的最小值对应的节点编号 $i$。若没有这样的节点，返回 $-1$。
 
-这可以用 BFS 做，但由于题目的输入是 [内向基环树](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)（森林），每个连通块至多有一个环，我们可以用一个简单的循环求出 $\textit{dis}_i$。
+求最短路可以用 BFS 做。不过，由于本题输入的是 [内向基环树](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)（森林），每个连通块至多有一个环，我们可以用一个简单的循环求出 $\textit{dis}_i$。
 
 ```py [sol-Python3]
 class Solution:
     def closestMeetingNode(self, edges: List[int], node1: int, node2: int) -> int:
         n = len(edges)
         def calc_dis(x: int) -> List[int]:
-            dis = [n] * n
+            dis = [n] * n  # 初始化成 n，表示无法到达或者尚未访问的节点
             d = 0
             # 从 x 出发，直到无路可走（x=-1）或者重复访问节点（dis[x]<n）
             while x >= 0 and dis[x] == n:
@@ -51,7 +51,7 @@ class Solution {
     private int[] calcDis(int[] edges, int x) {
         int n = edges.length;
         int[] dis = new int[n];
-        Arrays.fill(dis, n);
+        Arrays.fill(dis, n); // n 表示无法到达或者尚未访问的节点
         // 从 x 出发，直到无路可走（x=-1）或者重复访问节点（dis[x]<n）
         for (int d = 0; x >= 0 && dis[x] == n; x = edges[x]) {
             dis[x] = d++;
@@ -67,7 +67,7 @@ public:
     int closestMeetingNode(vector<int>& edges, int node1, int node2) {
         int n = edges.size();
         auto calc_dis = [&](int x) {
-            vector<int> dis(n, n);
+            vector<int> dis(n, n); // 初始化成 n，表示无法到达或者尚未访问的节点
             // 从 x 出发，直到无路可走（x=-1）或者重复访问节点（dis[x]<n）
             for (int d = 0; x >= 0 && dis[x] == n; x = edges[x]) {
                 dis[x] = d++;
@@ -97,7 +97,7 @@ func closestMeetingNode(edges []int, node1, node2 int) int {
 	calcDis := func(x int) []int {
 		dis := make([]int, n)
 		for i := range dis {
-			dis[i] = n
+			dis[i] = n // n 表示无法到达或者尚未访问的节点
 		}
 		// 从 x 出发，直到无路可走（x=-1）或者重复访问节点（dis[x]<n）
 		for d := 0; x >= 0 && dis[x] == n; x = edges[x] {
