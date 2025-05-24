@@ -1,6 +1,6 @@
 我们需要知道 $\textit{node}_1$ 到每个点的最短路长度 $\textit{dis}_1[i]$，以及 $\textit{node}_2$ 到每个点的最短路长度 $\textit{dis}_2[i]$。若无法到达，则最短路长度为 $n$。
 
-然后遍历 $\textit{dis}_1$ 和 $\textit{dis}_2$，答案为 $\max(\textit{dis}_1[i],\textit{dis}_2[i])$ 的最小值对应的 $i$。若没有这样的节点，返回 $-1$。
+答案为 $\max(\textit{dis}_1[i],\textit{dis}_2[i])$ 的最小值对应的 $i$。若没有这样的节点，返回 $-1$。
 
 这可以用 BFS 做，但由于题目的输入是 [内向基环树](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)（森林），每个连通块至多有一个环，我们可以用一个简单的循环求出 $\textit{dis}_i$。
 
