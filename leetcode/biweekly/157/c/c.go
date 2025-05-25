@@ -13,14 +13,14 @@ func assignEdgeWeights(edges [][]int) int {
 	var dfs func(int, int) int
 	dfs = func(x, fa int) (d int) {
 		for _, y := range g[x] {
-			if y != fa {
-				d = max(d, dfs(y, x))
+			if y != fa { // 不递归到父节点
+				d = max(d, dfs(y, x)+1)
 			}
 		}
-		return d + 1
+		return
 	}
 
-	k := dfs(1, 0) - 1 // dfs 返回的是节点个数，减一得到边的个数
+	k := dfs(1, 0)
 	return pow(2, k-1)
 }
 

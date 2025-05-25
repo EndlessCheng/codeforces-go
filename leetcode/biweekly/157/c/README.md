@@ -22,10 +22,10 @@ class Solution:
             d = 0
             for y in g[x]:
                 if y != fa:  # 不递归到父节点
-                    d = max(d, dfs(y, x))
-            return d + 1
+                    d = max(d, dfs(y, x) + 1)
+            return d
 
-        k = dfs(1, 0) - 1  # dfs 返回的是节点个数，减一得到边的个数
+        k = dfs(1, 0)
         return pow(2, k - 1, MOD)
 ```
 
@@ -33,7 +33,7 @@ class Solution:
 class Solution {
     private static final int MOD = 1_000_000_007;
 
-    int assignEdgeWeights(int[][] edges) {
+    public int assignEdgeWeights(int[][] edges) {
         int n = edges.length + 1;
         List<Integer>[] g = new ArrayList[n + 1];
         Arrays.setAll(g, i -> new ArrayList<>());
@@ -44,18 +44,18 @@ class Solution {
             g[y].add(x);
         }
 
-        int k = dfs(g, 1, 0) - 1; // dfs 返回的是节点个数，减一得到边的个数
+        int k = dfs(1, 0, g);
         return (int) pow(2, k - 1);
     }
 
-    private int dfs(List<Integer>[] g, int x, int fa) {
+    private int dfs(int x, int fa, List<Integer>[] g) {
         int d = 0;
         for (int y : g[x]) {
             if (y != fa) { // 不递归到父节点
-                d = Math.max(d, dfs(g, y, x));
+                d = Math.max(d, dfs(y, x, g) + 1);
             }
         }
-        return d + 1;
+        return d;
     }
 
     private long pow(long x, int n) {
@@ -100,13 +100,13 @@ public:
             int d = 0;
             for (int y : g[x]) {
                 if (y != fa) { // 不递归到父节点
-                    d = max(d, dfs(y, x));
+                    d = max(d, dfs(y, x) + 1);
                 }
             }
-            return d + 1;
+            return d;
         };
 
-        int k = dfs(1, 0) - 1; // dfs 返回的是节点个数，减一得到边的个数
+        int k = dfs(1, 0);
         return qpow(2, k - 1);
     }
 };
@@ -126,13 +126,13 @@ func assignEdgeWeights(edges [][]int) int {
 	dfs = func(x, fa int) (d int) {
 		for _, y := range g[x] {
 			if y != fa { // 不递归到父节点
-				d = max(d, dfs(y, x))
+				d = max(d, dfs(y, x)+1)
 			}
 		}
-		return d + 1
+		return
 	}
 
-	k := dfs(1, 0) - 1 // dfs 返回的是节点个数，减一得到边的个数
+	k := dfs(1, 0)
 	return pow(2, k-1)
 }
 
