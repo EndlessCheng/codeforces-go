@@ -7,7 +7,7 @@
 
 ## 寻找子问题
 
-推荐看 [本题视频讲解]()，从链开始，带你一步步思考。
+推荐看 [本题视频讲解](https://www.bilibili.com/video/BV1o1jgzJE51/?t=7m52s)，从特殊到一般，带你一步步思考。
 
 对于节点 $x$ 来说：
 
@@ -41,7 +41,8 @@ $\textit{dfs}(x)$ 返回一个长为 $(\textit{budget}+1)\times 2$ 的二维数�
 
 最终答案为根节点的 $f[\textit{budget}][0]$，这里的 $0$ 是因为根节点没有父节点。
 
-```py [sol-Python3]
+```py [sol-Python3 列表]
+# 注意！这个写法很慢，推荐先理解列表的写法，然后看【Python3 字典】的写法
 max = lambda a, b: b if b > a else a
 
 class Solution:
@@ -65,14 +66,55 @@ class Solution:
                 for k in range(2):
                     cost = present[x] // (k + 1)
                     if j >= cost:
-                        # 不买 x，转移来源是 subF[j][0]
-                        # 买 x，转移来源为 subF[j-cost][1]，因为对于子树来说，父节点一定买
+                        # 不买 x，转移来源是 sub_f[j][0]
+                        # 买 x，转移来源为 sub_f[j-cost][1]，因为对于子树来说，父节点一定买
                         f[j][k] = max(sub_f[j][0], sub_f[j - cost][1] + future[x] - cost)
                     else:  # 只能不买 x
                         f[j][k] = sub_f[j][0]
             return f
 
         return dfs(0)[budget][0]
+```
+
+```py [sol-Python3 字典]
+fmax = lambda a, b: b if b > a else a
+
+class Solution:
+    def maxProfit(self, n: int, present: List[int], future: List[int], hierarchy: List[List[int]], budget: int) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in hierarchy:
+            g[x - 1].append(y - 1)
+
+        def dfs(x: int) -> List[Dict[int, int]]:
+            # 计算从 x 的所有儿子子树 y 中，能得到的最大利润之和
+            sub_f = [defaultdict(int), defaultdict(int)]
+            sub_f[0][0] = sub_f[1][0] = 0
+            for y in g[x]:
+                fy = dfs(y)
+                for k, fyk in enumerate(fy):
+                    nf = defaultdict(int)
+                    for j, v in sub_f[k].items():
+                        for jy, vy in fyk.items():  # 枚举子树 y 的预算为 jy
+                            s = j + jy
+                            if s <= budget:
+                                nf[s] = fmax(nf[s], v + vy)
+                    sub_f[k] = nf
+
+            f = [None] * 2
+            for k in range(2):
+                res = sub_f[0].copy()  # 不买 x
+                cost = present[x] // (k + 1)
+                if cost <= budget:
+                    earn = future[x] - cost
+                    # 买 x，转移来源为 sub_f[1]，因为对于子树来说，父节点一定买
+                    for j, v in sub_f[1].items():
+                        j += cost
+                        if j <= budget:
+                            res[j] = fmax(res[j], v + earn)
+                f[k] = res
+            return f
+
+        return max(dfs(0)[0].values())
 ```
 
 ```java [sol-Java]
@@ -150,8 +192,8 @@ public:
                 for (int k = 0; k < 2; k++) {
                     int cost = present[x] / (k + 1);
                     if (j >= cost) {
-                        // 不买 x，转移来源是 subF[j][0]
-                        // 买 x，转移来源为 subF[j-cost][1]，因为对于子树来说，父节点一定买
+                        // 不买 x，转移来源是 sub_f[j][0]
+                        // 买 x，转移来源为 sub_f[j-cost][1]，因为对于子树来说，父节点一定买
                         f[j][k] = max(sub_f[j][0], sub_f[j - cost][1] + future[x] - cost);
                     } else { // 只能不买 x
                         f[j][k] = sub_f[j][0];

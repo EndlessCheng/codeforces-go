@@ -6,7 +6,7 @@
 
 最后答案就是栈中剩余字符，即栈底到栈顶。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1o1jgzJE51/?t=3m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 def is_consecutive(x: str, y: str) -> bool:
