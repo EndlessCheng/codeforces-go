@@ -8,10 +8,10 @@
 
 注意 $1$ 不是质数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1cqjgzdEPP/)，欢迎点赞关注~
 
 ```py [sol-Python3]
-def isPrime(n: int) -> bool:
+def is_prime(n: int) -> bool:
     for i in range(2, isqrt(n) + 1):
         if n % i == 0:
             return False
@@ -22,9 +22,9 @@ class Solution:
         primes = set()
         for i in range(len(s)):
             x = 0
-            for j in range(i, len(s)):
-                x = x * 10 + int(s[j])
-                if isPrime(x):
+            for ch in s[i:]:
+                x = x * 10 + int(ch)
+                if is_prime(x):
                     primes.add(x)
         return sum(sorted(primes)[-3:])
 ```
@@ -109,8 +109,8 @@ func sumOfLargestPrimes(s string) (ans int64) {
 	n := len(s)
 	for i := range n {
 		x := 0
-		for j := i; j < n; j++ {
-			x = x*10 + int(s[j]-'0')
+		for _, b := range s[i:] {
+			x = x*10 + int(b-'0')
 			if isPrime(x) {
 				primes = append(primes, x)
 			}
@@ -133,7 +133,7 @@ func sumOfLargestPrimes(s string) (ans int64) {
    $$  
    S = n\cdot 10^{1/2} + (n-1)\cdot 10^{2/2} + \cdots + 1\cdot 10^{n/2}
    $$
-   用**错位相减法**可以求出 $S=\mathcal{O}(10^{n/2})$。
+   用**错位相减法**可以求出 $S=\mathcal{O}(10^{n/2})$。详细推导过程请看 [视频讲解](https://www.bilibili.com/video/BV1cqjgzdEPP/)。
 - 空间复杂度：$\mathcal{O}(n^2)$。
 
 更多相似题目，见下面数学题单的「**§1.1 判断质数**」。

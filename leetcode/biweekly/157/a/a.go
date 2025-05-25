@@ -17,8 +17,8 @@ func sumOfLargestPrimes(s string) (ans int64) {
 	n := len(s)
 	for i := range n {
 		x := 0
-		for j := i; j < n; j++ {
-			x = x*10 + int(s[j]-'0')
+		for _, b := range s[i:] {
+			x = x*10 + int(b-'0')
 			if isPrime(x) {
 				primes = append(primes, x)
 			}

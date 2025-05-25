@@ -4,11 +4,9 @@
 
 **定理**：从 $k$ 个不同元素中，选奇数个数，有 $2^{k-1}$ 种选法。
 
-[证明](https://zhuanlan.zhihu.com/p/1909852852114948837)。
+请看 [文字证明](https://zhuanlan.zhihu.com/p/1909852852114948837) 或者 [视频讲解](https://www.bilibili.com/video/BV1cqjgzdEPP/?t=9m12s)，欢迎点赞关注~
 
-可以用循环，或者用 [快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/) 计算 $2^{k-1}\bmod M$，其中 $M=10^9+7$。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+怎么计算 $2^{k-1}\bmod M$？可以用循环，也可以用 [快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
 ```py [sol-Python3]
 class Solution:

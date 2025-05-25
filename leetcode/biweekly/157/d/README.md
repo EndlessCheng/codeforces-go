@@ -1,8 +1,10 @@
 先把上一题 [3558. 给边赋权值的方案数 I](https://leetcode.cn/problems/number-of-ways-to-assign-edge-weights-i/description/) 做了。
 
-本题需要快速计算两点之间的距离（边数），套 LCA 模板即可，[原理讲解](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/)。
+**定理**：从 $k$ 个不同元素中，选奇数个数（选奇数条边设置边权为 $1$），有 $2^{k-1}$ 种选法。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+请看 [文字证明](https://zhuanlan.zhihu.com/p/1909852852114948837) 或者 [视频讲解](https://www.bilibili.com/video/BV1cqjgzdEPP/?t=9m12s)，欢迎点赞关注~
+
+本题需要快速计算两点之间的距离（边数），套 LCA 模板即可，[原理讲解](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/)。
 
 ```py [sol-Python3]
 class LcaBinaryLifting:
