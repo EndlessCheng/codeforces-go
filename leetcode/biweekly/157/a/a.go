@@ -3,13 +3,35 @@ package main
 import "slices"
 
 // https://space.bilibili.com/206214
+const mx = 100_000
+
+var np = [mx + 1]bool{true, true}
+var primeNumbers []int
+
+func init() {
+	for i := 2; i <= mx; i++ {
+		if !np[i] {
+			primeNumbers = append(primeNumbers, i)
+			for j := i * i; j <= mx; j += i {
+				np[j] = true
+			}
+		}
+	}
+}
+
 func isPrime(n int) bool {
-	for i := 2; i*i <= n; i++ {
-		if n%i == 0 {
+	if n <= mx {
+		return !np[n]
+	}
+	for _, p := range primeNumbers {
+		if p*p > n {
+			break
+		}
+		if n%p == 0 {
 			return false
 		}
 	}
-	return n >= 2
+	return true
 }
 
 func sumOfLargestPrimes(s string) (ans int64) {

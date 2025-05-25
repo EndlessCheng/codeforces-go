@@ -10,6 +10,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1cqjgzdEPP/)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 def is_prime(n: int) -> bool:
     for i in range(2, isqrt(n) + 1):
@@ -134,6 +136,222 @@ func sumOfLargestPrimes(s string) (ans int64) {
    S = n\cdot 10^{1/2} + (n-1)\cdot 10^{2/2} + \cdots + 1\cdot 10^{n/2}
    $$
    用**错位相减法**可以求出 $S=\mathcal{O}(10^{n/2})$。详细推导过程请看 [视频讲解](https://www.bilibili.com/video/BV1cqjgzdEPP/)。
+- 空间复杂度：$\mathcal{O}(n^2)$。
+
+## 写法二
+
+也可以用筛法预处理 $10^{n/2} \le 10^5$ 以内的质数。如果整数 $m$ 没有被 $\sqrt m$ 以内的质数整除，那么 $m$ 就是质数。
+
+```py [sol-Python3]
+MX = 100_001
+is_p = [True] * MX
+is_p[0] = is_p[1] = False
+prime_numbers = []
+for i in range(2, MX):
+    if is_p[i]:
+        prime_numbers.append(i)
+        for j in range(i * i, MX, i):
+            is_p[j] = False
+
+def is_prime(n: int) -> bool:
+     if n < MX:
+         return is_p[n]
+     for p in prime_numbers:
+         if p * p > n:
+             break
+         if n % p == 0:
+             return False
+     return True
+
+class Solution:
+    def sumOfLargestPrimes(self, s: str) -> int:
+        primes = set()
+        for i in range(len(s)):
+            x = 0
+            for ch in s[i:]:
+                x = x * 10 + int(ch)
+                if is_prime(x):
+                    primes.add(x)
+        return sum(sorted(primes)[-3:])
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MX = 100_000;
+    private static final boolean[] np = new boolean[MX + 1];
+    private static final List<Integer> primeNumbers = new ArrayList<>();
+    private static boolean initialized = false;
+
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        np[0] = np[1] = true;
+        for (int i = 2; i <= MX; i++) {
+            if (!np[i]) {
+                primeNumbers.add(i);
+                for (int j = i; j <= MX / i; j++) { // 避免溢出的写法
+                    np[i * j] = true;
+                }
+            }
+        }
+    }
+
+    private boolean isPrime(long n) {
+        if (n <= MX) {
+            return !np[(int) n];
+        }
+        for (int p : primeNumbers) {
+            if (p > n / p) {
+                break;
+            }
+            if (n % p == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public long sumOfLargestPrimes(String S) {
+        init();
+        char[] s = S.toCharArray();
+        TreeSet<Long> set = new TreeSet<>();
+        for (int i = 0; i < s.length; i++) {
+            long x = 0;
+            for (int j = i; j < s.length; j++) {
+                x = x * 10 + (s[j] - '0');
+                if (isPrime(x)) {
+                    set.add(x);
+                }
+            }
+        }
+
+        return set.descendingSet()
+                .stream()
+                .limit(3)
+                .mapToLong(Long::longValue)
+                .sum();
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MX = 100'000;
+bool np[MX + 1];
+vector<int> prime_numbers;
+
+int init = []() {
+    np[0] = np[1] = true;
+    for (int i = 2; i <= MX; i++) {
+        if (!np[i]) {
+            prime_numbers.push_back(i);
+            for (int j = i; j <= MX / i; j++) { // 避免溢出的写法
+                np[i * j] = true;
+            }
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+    bool is_prime(long long n) {
+        if (n <= MX) {
+            return !np[n];
+        }
+        for (long long p : prime_numbers) {
+            if (p * p > n) {
+                break;
+            }
+            if (n % p == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+public:
+    long long sumOfLargestPrimes(string s) {
+        vector<long long> primes;
+        for (int i = 0; i < s.size(); i++) {
+            long long x = 0;
+            for (int j = i; j < s.size(); j++) {
+                x = x * 10 + (s[j] - '0');
+                if (is_prime(x)) {
+                    primes.push_back(x);
+                }
+            }
+        }
+
+        // 排序，去重，计算前三大之和
+        ranges::sort(primes, greater());
+        int n = ranges::unique(primes).begin() - primes.begin();
+        return reduce(primes.begin(), primes.begin() + min(n, 3), 0LL);
+    }
+};
+```
+
+```go [sol-Go]
+const mx = 100_000
+
+var np = [mx + 1]bool{true, true}
+var primeNumbers []int
+
+func init() {
+	for i := 2; i <= mx; i++ {
+		if !np[i] {
+			primeNumbers = append(primeNumbers, i)
+			for j := i * i; j <= mx; j += i {
+				np[j] = true
+			}
+		}
+	}
+}
+
+func isPrime(n int) bool {
+	if n <= mx {
+		return !np[n]
+	}
+	for _, p := range primeNumbers {
+		if p*p > n {
+			break
+		}
+		if n%p == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func sumOfLargestPrimes(s string) (ans int64) {
+	primes := []int{}
+	n := len(s)
+	for i := range n {
+		x := 0
+		for _, b := range s[i:] {
+			x = x*10 + int(b-'0')
+			if isPrime(x) {
+				primes = append(primes, x)
+			}
+		}
+	}
+
+	slices.Sort(primes)
+	primes = slices.Compact(primes) // 去重
+
+	for _, p := range primes[max(len(primes)-3, 0):] {
+		ans += int64(p)
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+忽略预处理的时间和空间。
+
+- 时间复杂度：$\mathcal{O}\left(\dfrac{10^{n/2}}{n}\right)$，其中 $n$ 是 $s$ 的长度。根据质数密度，枚举量除以 $\log 10^{n/2} = n/2 \cdot \log 10 = \mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n^2)$。
 
 更多相似题目，见下面数学题单的「**§1.1 判断质数**」。
