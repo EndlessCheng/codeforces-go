@@ -1661,12 +1661,12 @@ func _(abs func(int) int) {
 	}
 
 	// 分组背包·每组至多选一个（恰好选一个见后面）
-	// https://www.acwing.com/problem/content/9/
 	// https://atcoder.jp/contests/abc248/tasks/abc248_c 也可以用容斥或者生成函数做
 	// https://www.luogu.com.cn/problem/P1757
 	// LC2218 https://leetcode.cn/problems/maximum-value-of-k-coins-from-piles/
-	// https://codeforces.com/problemset/problem/148/E
-	// todo 进一步优化 https://codeforces.com/problemset/problem/1442/D
+	// https://codeforces.com/problemset/problem/148/E 1900
+	// https://codeforces.com/problemset/problem/2000/F 1900 至少
+	// todo 进一步优化 https://codeforces.com/problemset/problem/1442/D 2800
 	// 方案数（可以用前缀和优化）https://www.luogu.com.cn/problem/P1077
 	groupKnapsack := func(groups [][]struct{ value, weight int }, maxW int) int {
 		f := make([]int, maxW+1)
@@ -1712,7 +1712,7 @@ func _(abs func(int) int) {
 		return f // f[j] 表示从每组恰好选一个，能否凑成重量 j
 	}
 
-	// 树上背包/树形背包/依赖背包 · 其一
+	// 树上背包/树形背包/依赖背包
 	// 要求：对于每个选择的节点，其父节点一定要选
 	// 等价表述：选一个包含根节点的连通块
 	// 返回一个长为 n+1 的数组 f，其中 f[i] 表示在树上选 i 个节点的最大价值和
@@ -1740,6 +1740,55 @@ func _(abs func(int) int) {
 	// - https://www.luogu.com.cn/problem/U53878 数据加强版
 	// https://www.luogu.com.cn/problem/P4322 分数规划
 	// https://codeforces.com/problemset/problem/815/C 2400
+
+	// 其一 · 无依赖（父节点不选也可以）
+	// 时间复杂度 O(n*maxW^2)
+	// https://leetcode.cn/problems/maximum-profit-from-trading-stocks-with-discounts/
+	treeKnapsackSimple := func(g [][]int, weights, values []int, maxW int) int {
+		// 至多 maxW
+		var dfs func(int, int) []int
+		dfs = func(v, fa int) []int {
+			// 汇总 v 的儿子 w 的 fw
+			// 计算从 v 的所有儿子子树 w 中，能得到的 value 总和的最大值
+			// 这个过程不考虑 v 怎么选
+			subF := make([]int, maxW+1)
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				fw := dfs(w, v)
+				// 枚举遍历过的子树（包括 w）至多装 j
+				for j := maxW; j >= 0; j-- {
+					// 枚举子树 w 至多装 j2
+					// 那么前面遍历过的所有子树，至多装 j-j2
+					for j2, r := range fw[:j+1] {
+						subF[j] = max(subF[j], subF[j-j2]+r)
+					}
+				}
+			}
+
+			// 然后考虑 v 怎么选
+			f := make([]int, maxW+1)
+			wt := weights[v]
+			val := values[v]
+			for j, r := range subF {
+				if j >= wt {
+					// 不选 v 还是选 v
+					// 如果选 v，留给子树的容量为 j-wt
+					f[j] = max(r, subF[j-wt]+val)
+				} else {
+					// 只能不选
+					f[j] = r
+				}
+			}
+			return f
+		}
+
+		f0 := dfs(0, -1)
+		return f0[maxW]
+	}
+
+	// 其二 · 有依赖（父节点必须选，才能选儿子），只关心节点个数
 	treeKnapsack := func(g [][]int, a []int) []int {
 		var dfs func(int, int) ([]int, int)
 		dfs = func(v, fa int) ([]int, int) {
@@ -1799,8 +1848,8 @@ func _(abs func(int) int) {
 		return f
 	}
 
-	// 树上背包 · 其二
-	// 类似其一，但物品有体积与价值，返回的数组与背包容量有关
+	// 树上背包 · 其三
+	// 类似其二，但物品有体积与价值，返回的数组与背包容量有关
 	// 时间复杂度 O(nW)
 	// 图解 https://loj.ac/d/3144 https://www.luogu.com.cn/article/kq00ov2b
 	//
@@ -2088,6 +2137,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/446/A 1600
 	https://codeforces.com/problemset/problem/1826/D 1700 式子变形
 	https://codeforces.com/problemset/problem/2029/C 1700
+	https://codeforces.com/problemset/problem/2081/A 1800
 	https://codeforces.com/problemset/problem/404/D 1900
 	https://codeforces.com/problemset/problem/1613/D 1900 爽
 	https://codeforces.com/problemset/problem/623/B 2300
@@ -2121,18 +2171,16 @@ func _(abs func(int) int) {
 	https://en.wikipedia.org/wiki/Probability
 	https://en.wikipedia.org/wiki/Expected_value
 	https://en.wikipedia.org/wiki/Variance
-	https://en.wikipedia.org/wiki/Optional_stopping_theorem
-	todo https://codeforces.com/blog/entry/62690
-	     https://codeforces.com/blog/entry/62792
-	 https://www.luogu.com.cn/blog/Troverld/gai-shuai-ji-wang-xue-xi-bi-ji
-	 一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
-	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
-	todo 生成函数与期望 http://www.matrix67.com/blog/archives/4534
 	方差 σ²(x) = sum(x²)/n - (sum(x)/n)²
+	todo https://codeforces.com/blog/entry/62690
+	 https://codeforces.com/blog/entry/62792
+	 https://www.luogu.com.cn/blog/Troverld/gai-shuai-ji-wang-xue-xi-bi-ji
+	 生成函数与期望 http://www.matrix67.com/blog/archives/4534
 
 	Secretary problem 秘书问题、37% 法则、麦穗理论、相亲问题、止步问题、见好就收问题、苏丹的嫁妆问题、挑剔的求婚者问题
 	https://en.wikipedia.org/wiki/Secretary_problem
 	https://en.wikipedia.org/wiki/Optimal_stopping 最佳停止问题
+	https://en.wikipedia.org/wiki/Optional_stopping_theorem
 
 	期望的可加性
 	https://zhidao.baidu.com/question/259203053.html
@@ -2143,9 +2191,18 @@ func _(abs func(int) int) {
 	切尔诺夫界 Chernoff bound https://en.wikipedia.org/wiki/Chernoff_bound
 	https://leetcode.cn/problems/soup-servings/solutions/1982989/shou-lian-su-du-by-hqztrue-afba/
 
+	鞅与停时定理
+	https://en.wikipedia.org/wiki/Martingale_(probability_theory)
+	https://en.wikipedia.org/wiki/Stopping_time
+	https://zhuanlan.zhihu.com/p/20280190
+	https://zhuanlan.zhihu.com/p/721900819
+	https://www.cnblogs.com/TinyWong/p/12887591.html 包含一些题目
+	https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
+
 	概率 DP
 	https://atcoder.jp/contests/dp/tasks/dp_i 入门题
 	- 在本题中，选或不选不是人为决定的，而是由概率决定的
+	https://codeforces.com/problemset/problem/2081/A 1800 转化成概率 DP
 	https://codeforces.com/problemset/problem/16/E 1900
 	https://codeforces.com/problemset/problem/540/D 1900
 	https://codeforces.com/problemset/problem/678/E 2200
@@ -2170,7 +2227,6 @@ func _(abs func(int) int) {
 	- https://atcoder.jp/contests/abc144/tasks/abc144_f 可以删一条边
 	https://www.luogu.com.cn/problem/P1850 好题，注意这句话：所有的申请只能在学期开始前一次性提交。我们不能在计算的过程中，根据当前位置，决策是否申请换课
 	https://atcoder.jp/contests/abc326/tasks/abc326_e 后缀和优化
-	todo https://codeforces.com/contest/1842/problem/G https://codeforces.com/blog/entry/117640
 	https://codeforces.com/problemset/problem/2081/A 1800
 	https://codeforces.com/problemset/problem/235/B 2000
 	https://codeforces.com/problemset/problem/1753/C 2000
@@ -2185,17 +2241,20 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/494/C 2600
 	https://codeforces.com/problemset/problem/1172/C2 2600
 	https://codeforces.com/problemset/problem/1823/F 2600 树上随机游走
-	https://codeforces.com/problemset/problem/1842/G 2800
+	https://codeforces.com/problemset/problem/850/F 2800 鞅与停时定理
+	https://codeforces.com/problemset/problem/1842/G 2800 题解 https://codeforces.com/blog/entry/117640
+	https://codeforces.com/problemset/problem/1025/G 3200 鞅与停时定理
+	https://codeforces.com/problemset/problem/1349/D 3200 鞅与停时定理
+	https://codeforces.com/problemset/problem/1479/E 3500 鞅与停时定理
 	https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff48/00000000003f4dea Kick Start 2020 Round F Yeetzhee
 	todo https://leetcode.cn/contest/ubiquant2022/problems/I3Gm2h/
 	 https://ac.nowcoder.com/acm/contest/76681/J
+	 题单（待整理）https://www.luogu.com/paste/3cp2ob1v
 
 	尾和公式
 	E(x) = ∑i*P(x=i) = ∑P(x>=i)
 	https://codeforces.com/problemset/problem/1623/D 2300
 	https://codeforces.com/problemset/problem/1523/E 2600
-
-	题单（待整理）https://www.luogu.com/paste/3cp2ob1v
 	*/
 
 	/* 状压 DP
@@ -3374,11 +3433,16 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/46/E 1900 前缀最大值/后缀最大值
 	https://codeforces.com/problemset/problem/479/E 1900
 	- https://atcoder.jp/contests/abc253/tasks/abc253_e
+	https://codeforces.com/problemset/problem/1943/D1 2400 结论
+	https://codeforces.com/problemset/problem/1542/E2 2700
+	- 对于 f[i] = sum_j f[j] * |i-j|，可以用前缀和优化
+	- 数形结合：考虑绝对值图像，当 i 右移一位时，可以认为绝对值函数的左段上移一个单位，右段下移一个单位
+	https://codeforces.com/problemset/problem/708/E 3100
 	https://atcoder.jp/contests/dp/tasks/dp_t 排列问题的状态设计
 	- 相似题目 https://leetcode.cn/problems/count-the-number-of-inversions/
 	https://atcoder.jp/contests/abc248/tasks/abc248_c
 	https://atcoder.jp/contests/diverta2019/tasks/diverta2019_e
-	https://codeforces.com/problemset/problem/708/E 3100
+
 	另见本页面的 boundedKnapsackWays（前缀和优化多重背包方案数）
 
 	其他
@@ -4435,11 +4499,12 @@ func _(abs func(int) int) {
 		distinctSubsequence,
 		palindromeO1Space, isPalindrome, minPalindromeCut,
 
+		// 背包
 		zeroOneKnapsack, zeroOneKnapsackExactlyFull, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary, boundedKnapsackMonotoneQueue, boundedKnapsackWays, boundedKnapsackWays2,
 		groupKnapsack, groupKnapsackFill,
-		treeKnapsack, treeKnapsackWeighted,
+		treeKnapsackSimple, treeKnapsack, treeKnapsackWeighted,
 
 		// 划分型 DP
 		splitDP, splitDPWithLimit,
