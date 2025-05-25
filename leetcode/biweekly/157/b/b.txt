@@ -1,0 +1,8 @@
+"abcdeafdef"
+2
+
+"bcdaaaab"
+1
+
+
+
