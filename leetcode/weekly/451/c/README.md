@@ -29,6 +29,7 @@ $\textit{dfs}(x)$ 返回一个长为 $(\textit{budget}+1)\times 2$ 的二维数�
 - $k=0$ 表示 $x$ 不能半价购买，$k=1$ 表示 $x$ 可以半价购买。
 
 首先计算 $x$ 的所有儿子子树 $y$ 的最大利润总和 $\textit{subF}[j][k]$。枚举 $x$ 的儿子 $y$：
+
 - 枚举分配给儿子 $y$ 的预算 $j_y = 0,1,2,\ldots,j$。
 - 用前面遍历过的儿子的收益 $\textit{subF}[j-j_y][k]$ 加上儿子 $y$ 的收益 $\textit{dfs}(y)[j_y][k]$，更新 $\textit{subF}[j][k]$ 的最大值。注意这里用到了 0-1 背包的空间优化。
 

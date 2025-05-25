@@ -84,7 +84,7 @@ class Solution:
                 return ""
             # 包含 s[i]
             res = s[i] + dfs(i + 1)
-            # 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+            # 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
             for j in range(i + 1, n, 2):
                 if can_be_empty(i, j):  # 消除 s[i] 到 s[j]
                     res = min(res, dfs(j + 1))
@@ -149,7 +149,7 @@ class Solution {
         // 包含 s[i]
         String res = s[i] + dfs(i + 1);
 
-        // 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+        // 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
         for (int j = i + 1; j < s.length; j += 2) {
             if (canBeEmpty(i, j) > 0) { // 消除 s[i] 到 s[j]
                 String t = dfs(j + 1);
@@ -207,7 +207,7 @@ public:
             }
             // 包含 s[i]
             res = s[i] + dfs(i + 1);
-            // 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+            // 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
             for (int j = i + 1; j < n; j += 2) {
                 if (can_be_empty(i, j)) { // 消除 s[i] 到 s[j]
                     res = min(res, dfs(j + 1));
@@ -277,7 +277,7 @@ func lexicographicallySmallestString(s string) string {
 
 		// 包含 s[i]
 		res := string(s[i]) + dfs(i+1)
-		// 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+		// 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
 		for j := i + 1; j < n; j += 2 {
 			if canBeEmpty(i, j) > 0 { // 消除 s[i] 到 s[j]
 				res = min(res, dfs(j+1))
@@ -296,19 +296,21 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 ## 写法二：递推
 
 ```py [sol-Python3]
-def is_consecutive(x: str, y: str) -> bool:
-    d = abs(ord(x) - ord(y))
+def is_consecutive(x: int, y: int) -> bool:
+    d = abs(x - y)
     return d == 1 or d == 25
 
 class Solution:
     def lexicographicallySmallestString(self, s: str) -> str:
+        a = list(map(ord, s))  # 避免反复调用 ord
         n = len(s)
+
         can_be_empty = [[False] * n for _ in range(n)]
         for i in range(n - 2, -1, -1):
             can_be_empty[i + 1][i] = True  # 空串
             for j in range(i + 1, n, 2):
                 # 性质 2
-                if is_consecutive(s[i], s[j]) and can_be_empty[i + 1][j - 1]:
+                if is_consecutive(a[i], a[j]) and can_be_empty[i + 1][j - 1]:
                     can_be_empty[i][j] = True
                     continue
                 # 性质 3
@@ -321,7 +323,7 @@ class Solution:
         for i in range(n - 1, -1, -1):
             # 包含 s[i]
             res = s[i] + f[i + 1]
-            # 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+            # 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
             for j in range(i + 1, n, 2):
                 if can_be_empty[i][j]:  # 消除 s[i] 到 s[j]
                     res = min(res, f[j + 1])
@@ -358,7 +360,7 @@ class Solution {
         for (int i = n - 1; i >= 0; i--) {
             // 包含 s[i]
             String res = s[i] + f[i + 1];
-            // 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+            // 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
             for (int j = i + 1; j < n; j += 2) { // 枚举消除 s[i] 到 s[j]
                 if (canBeEmpty[i][j] && f[j + 1].compareTo(res) < 0) {
                     res = f[j + 1];
@@ -409,7 +411,7 @@ public:
         for (int i = n - 1; i >= 0; i--) {
             // 包含 s[i]
             f[i] = s[i] + f[i + 1];
-            // 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+            // 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
             for (int j = i + 1; j < n; j += 2) {
                 if (can_be_empty[i][j]) { // 消除 s[i] 到 s[j]
                     f[i] = min(f[i], f[j + 1]);
@@ -455,7 +457,7 @@ func lexicographicallySmallestString(s string) (ans string) {
 	for i := n - 1; i >= 0; i-- {
 		// 包含 s[i]
 		res := string(s[i]) + f[i+1]
-		// 不包含 s[i]，但 s[i] 不能单独消除，必须和其他字符一起消除
+		// 不包含 s[i]，注意 s[i] 不能单独消除，必须和其他字符一起消除
 		for j := i + 1; j < n; j += 2 {
 			if canBeEmpty[i][j] { // 消除 s[i] 到 s[j]
 				res = min(res, f[j+1])
