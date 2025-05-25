@@ -18,26 +18,24 @@ $$
 \max(k(n-k), 0)
 $$
 
-最终答案为
+由于题目保证存在能被运输的方案，$n$ 和 $m$ 一定有一个 $\le k$，我们只需考虑二者的较大值 $\max(n,m)$。所以最终答案为
 
 $$
-\max(k(n-k), 0) + \max(k(m-k), 0)
+\max(k\cdot(\max(n,m)-k), 0)
 $$
-
-> 注：题目保证存在能被运输的方案。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1o1jgzJE51/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def minCuttingCost(self, n: int, m: int, k: int) -> int:
-        return max(k * (n - k), 0) + max(k * (m - k), 0)
+        return max(k * (max(n, m) - k), 0)
 ```
 
 ```java [sol-Java]
 class Solution {
     public long minCuttingCost(int n, int m, int k) {
-        return Math.max((long) k * (n - k), 0) + Math.max((long) k * (m - k), 0);
+        return Math.max((long) k * (Math.max(n, m) - k), 0);
     }
 }
 ```
@@ -46,14 +44,14 @@ class Solution {
 class Solution {
 public:
     long long minCuttingCost(int n, int m, int k) {
-        return max(1LL * k * (n - k), 0LL) + max(1LL * k * (m - k), 0LL);
+        return max(1LL * k * (max(n, m) - k), 0LL);
     }
 };
 ```
 
 ```go [sol-Go]
 func minCuttingCost(n, m, k int) int64 {
-	return int64(max(k*(n-k), 0) + max(k*(m-k), 0))
+	return int64(max(k*(max(n, m)-k), 0))
 }
 ```
 
