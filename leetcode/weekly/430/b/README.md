@@ -102,11 +102,25 @@ impl Solution {
             return s;
         }
         let n = s.len();
+        (0..n).map(|i| &s[i..n.min(i + n - k as usize + 1)])
+              .max()
+              .unwrap()
+              .to_string()
+    }
+}
+```
+
+```rust [sol-Rust 写法二]
+impl Solution {
+    pub fn answer_string(s: String, k: i32) -> String {
+        if k == 1 {
+            return s;
+        }
+        let n = s.len();
         let mut ans = "";
         for i in 0..n {
             let end = n.min(i + n - k as usize + 1);
-            let sub = unsafe { s.get_unchecked(i..end) };
-            ans = ans.max(sub);
+            ans = ans.max(&s[i..end]);
         }
         ans.to_string()
     }
