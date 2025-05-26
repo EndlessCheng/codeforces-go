@@ -15,6 +15,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1cqjgzdEPP/?t=9m12s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def maxSubstrings(self, word: str) -> int:
@@ -115,6 +117,83 @@ func maxSubstrings(word string) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$ 或 $\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+
+## 优化：位运算
+
+其实，我们只需要知道在下标 $\le i-3$ 的字符中，是否有 $\textit{word}[i]$ 就行。所以可以用一个布尔数组记录。
+
+进一步地，用 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/) 中的技巧，布尔数组压缩成一个二进制数。
+
+```py [sol-Python3]
+class Solution:
+    def maxSubstrings(self, word: str) -> int:
+        ans = seen = 0
+        i = 3
+        while i < len(word):
+            seen |= 1 << (ord(word[i - 3]) - ord('a'))
+            if seen >> (ord(word[i]) - ord('a')) & 1:  # 再次遇到 word[i]
+                ans += 1
+                seen = 0
+                i += 3
+            i += 1
+        return ans  
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxSubstrings(String word) {
+        int ans = 0;
+        int seen = 0;
+        for (int i = 3; i < word.length(); i++) {
+            seen |= 1 << (word.charAt(i - 3) - 'a');
+            if ((seen >> (word.charAt(i) - 'a') & 1) > 0) { // 再次遇到 word[i]
+                ans++;
+                seen = 0;
+                i += 3;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxSubstrings(string word) {
+        int ans = 0, seen = 0;
+        for (int i = 3; i < word.size(); i++) {
+            seen |= 1 << (word[i - 3] - 'a');
+            if (seen >> (word[i] - 'a') & 1) { // 再次遇到 word[i]
+                ans++;
+                seen = 0;
+                i += 3;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxSubstrings(word string) (ans int) {
+	seen := 0
+	for i := 3; i < len(word); i++ {
+		seen |= 1 << (word[i-3] - 'a')
+		if seen>>(word[i]-'a')&1 > 0 { // 再次遇到 word[i]
+			ans++
+			seen = 0
+			i += 3
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 更多相似题目，见下面贪心题单的「**§1.5 划分型贪心**」。
 

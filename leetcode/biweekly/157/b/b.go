@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func maxSubstrings(word string) (ans int) {
+func maxSubstrings1(word string) (ans int) {
 	pos := [26]int{}
 	for i, b := range word {
 		b -= 'a'
@@ -10,6 +10,19 @@ func maxSubstrings(word string) (ans int) {
 		} else if i-pos[b] > 1 {
 			ans++
 			clear(pos[:])
+		}
+	}
+	return
+}
+
+func maxSubstrings(word string) (ans int) {
+	seen := 0
+	for i := 3; i < len(word); i++ {
+		seen |= 1 << (word[i-3] - 'a')
+		if seen>>(word[i]-'a')&1 > 0 { // 再次遇到 word[i]
+			ans++
+			seen = 0
+			i += 3
 		}
 	}
 	return
