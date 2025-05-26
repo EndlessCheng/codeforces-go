@@ -8,6 +8,8 @@
 
 怎么计算 $2^{k-1}\bmod M$？可以用循环，也可以用 [快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
+如果你发现取模算错了，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+
 ```py [sol-Python3]
 class Solution:
     def assignEdgeWeights(self, edges: List[List[int]]) -> int:
