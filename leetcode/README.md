@@ -126,6 +126,8 @@
 ||[279. 完全平方数](https://leetcode.cn/problems/perfect-squares/)|[代码](https://leetcode.cn/problems/perfect-squares/solution/dong-tai-gui-hua-cong-ji-yi-hua-sou-suo-3kz1g/)|*课后作业|
 |[最长公共子序列 LCS](https://www.bilibili.com/video/BV1TM4y1o7ug/)|[1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/)|[代码](https://leetcode.cn/problems/longest-common-subsequence/solutions/2133188/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-lbz5/)|包含空间优化|
 ||[72. 编辑距离](https://leetcode.cn/problems/edit-distance/)|[代码](https://leetcode.cn/problems/edit-distance/solutions/2133222/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-uo5q/)|包含空间优化|
+||[97. 交错字符串](https://leetcode.cn/problems/interleaving-string/)|[代码](https://leetcode.cn/problems/interleaving-string/solutions/3060419/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-qcen/)|*课后作业|
+||[1092. 最短公共超序列](https://leetcode.cn/problems/shortest-common-supersequence/)|[代码](https://leetcode.cn/problems/shortest-common-supersequence/solutions/2194615/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/)|*课后作业|
 |[最长递增子序列 LIS](https://www.bilibili.com/video/BV1ub411Q7sB/)|[300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/)|[代码](https://leetcode.cn/problems/longest-increasing-subsequence/solution/jiao-ni-yi-bu-bu-si-kao-dpfu-o1-kong-jia-4zma/)|包括贪心二分 + $O(1)$ 空间|
 ||[1671. 得到山形数组的最少删除次数](https://leetcode.cn/problems/minimum-number-of-removals-to-make-mountain-array/)|[代码](https://leetcode.cn/problems/minimum-number-of-removals-to-make-mountain-array/solution/qian-hou-zhui-fen-jie-zui-chang-di-zeng-9vowl/)|*课后作业|
 ||[1626. 无矛盾的最佳球队](https://leetcode.cn/problems/best-team-with-no-conflicts/)|[代码](https://leetcode.cn/problems/best-team-with-no-conflicts/solution/zui-chang-di-zeng-zi-xu-lie-cong-on2-dao-ojqu/)|*课后作业|
