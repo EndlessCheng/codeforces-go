@@ -24,23 +24,21 @@ func p160(in io.Reader, out io.Writer) {
 		Fscan(in, &a[i].v)
 	}
 
-	var dfs func(int, []int) ([]int, int)
-	dfs = func(v int, pre []int) ([]int, int) {
-		size := 1
+	var dfs func(int, []int) []int
+	dfs = func(v int, pre []int) []int {
 		t := pre
 		for _, w := range g[v] {
-			f, sz := dfs(w, t)
+			f := dfs(w, t)
 			t = f
-			size += sz
 		}
 		f := slices.Clone(pre)
 		p := a[v]
 		for j := W; j >= p.w; j-- {
 			f[j] = max(f[j], t[j-p.w]+p.v)
 		}
-		return f, size
+		return f
 	}
-	f, _ := dfs(0, make([]int, W+1))
+	f := dfs(0, make([]int, W+1))
 	Fprint(out, f[W])
 }
 
