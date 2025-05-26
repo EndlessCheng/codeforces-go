@@ -1848,43 +1848,39 @@ func _(abs func(int) int) {
 		return f
 	}
 
-	// 树上背包 · 其三
+	// 其三 · 有依赖（父节点必须选，才能选儿子）
 	// 类似其二，但物品有体积与价值，返回的数组与背包容量有关
 	// 时间复杂度 O(nW)
-	// 图解 https://loj.ac/d/3144 https://www.luogu.com.cn/article/kq00ov2b
+	// 图解 https://loj.ac/d/3144 备份 https://www.luogu.com.cn/article/kq00ov2b
 	//
 	// 模板题 https://loj.ac/p/160
 	// 模板题 https://www.luogu.com.cn/problem/P1064 NOIP06·提高 金明的预算方案
 	// EXTRA: https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
-	treeKnapsackWeighted := func(g [][]int, items []struct{ value, weight int }, root, maxW int) []int {
+	treeKnapsackWeighted := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
 		// 我自创的一种实现。对于随机树（或者高度小的树），消耗的内存更少，跑得也更快
-		var dfs func(int, int, []int) ([]int, int)
-		dfs = func(v, fa int, pre []int) ([]int, int) {
-			size := 1
-			lastF := pre
+		var dfs func(int, int, []int) []int
+		dfs = func(v, fa int, preF []int) []int {
+			f := slices.Clone(preF) // 不选 v
 			for _, w := range g[v] {
-				if w == fa {
-					continue
+				if w != fa {
+					preF = dfs(w, v, preF)
 				}
-				f, sz := dfs(w, v, lastF)
-				lastF = f
-				size += sz
 			}
-			// 循环结束后，lastF 再加上 p.value 就是「选 v」
-			f := slices.Clone(pre) // 不选 v
+			// 循环结束后，preF 再加上 p.value 就是「选 v」
 			p := items[v]
 			for j := maxW; j >= p.weight; j-- {
-				f[j] = max(f[j], lastF[j-p.weight]+p.value) // 不选 vs 选
+				f[j] = max(f[j], preF[j-p.weight]+p.value) // 不选 vs 选
 			}
-			return f, size
+			return f
 		}
-		f0 := make([]int, maxW+1) // 至多
-		f, _ := dfs(root, -1, f0)
-		return f
+		// maxW 至多
+		f0 := make([]int, maxW+1)
+		f := dfs(root, -1, f0)
+		return f[maxW]
 	}
 
 	// 其他写法
-	treeKnapsackWeighted = func(g [][]int, items []struct{ value, weight int }, root, maxW int) []int {
+	treeKnapsackWeighted2 := func(g [][]int, items []struct{ value, weight int }, root, maxW int) []int {
 		f := make([][]int, 1, len(g))
 		f[0] = make([]int, maxW+1) // 至多
 		var dfs func(int, int) int
@@ -4504,7 +4500,7 @@ func _(abs func(int) int) {
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary, boundedKnapsackMonotoneQueue, boundedKnapsackWays, boundedKnapsackWays2,
 		groupKnapsack, groupKnapsackFill,
-		treeKnapsackSimple, treeKnapsack, treeKnapsackWeighted,
+		treeKnapsackSimple, treeKnapsack, treeKnapsackWeighted, treeKnapsackWeighted2,
 
 		// 划分型 DP
 		splitDP, splitDPWithLimit,
