@@ -28,8 +28,7 @@ func p160(in io.Reader, out io.Writer) {
 	dfs = func(v int, pre []int) []int {
 		t := pre
 		for _, w := range g[v] {
-			f := dfs(w, t)
-			t = f
+			t = dfs(w, t)
 		}
 		f := slices.Clone(pre)
 		p := a[v]
