@@ -18,24 +18,20 @@ func p1064(in io.Reader, out io.Writer) {
 		g[v] = append(g[v], w)
 	}
 
-	var dfs func(int, []int) ([]int, int)
-	dfs = func(v int, pre []int) ([]int, int) {
-		size := 1
-		t := pre
+	var dfs func(int, []int) []int
+	dfs = func(v int, t []int) []int {
+		f := slices.Clone(t)
 		for _, w := range g[v] {
-			f, sz := dfs(w, t)
-			t = f
-			size += sz
+			t = dfs(w, t)
 		}
-		f := slices.Clone(pre)
 		p := a[v]
 		for j := W; j >= p.w; j-- {
 			f[j] = max(f[j], t[j-p.w]+p.v)
 		}
-		return f, size
+		return f
 	}
-	f, _ := dfs(0, make([]int, W+1))
-	Fprint(out, f[W])
+	t := make([]int, W+1)
+	Fprint(out, dfs(0, t)[W])
 }
 
 //func main() { p1064(bufio.NewReader(os.Stdin), os.Stdout) }
