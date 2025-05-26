@@ -5,6 +5,8 @@ import (
 	"io"
 )
 
+// 注：O(1) space 做法 https://codeforces.com/problemset/submission/1109/120376830
+
 // https://github.com/EndlessCheng
 func cf1109D(in io.Reader, out io.Writer) {
 	const M = 1_000_000_007
