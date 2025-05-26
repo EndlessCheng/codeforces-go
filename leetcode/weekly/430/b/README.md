@@ -78,6 +78,41 @@ func answerString(s string, k int) (ans string) {
 }
 ```
 
+```js [sol-JavaScript]
+var answerString = function(s, k) {
+    if (k === 1) {
+        return s;
+    }
+    const n = s.length;
+    let ans = "";
+    for (let i = 0; i < n; i++) {
+        const sub = s.substring(i, Math.min(i + n - k + 1, n));
+        if (sub > ans) {
+            ans = sub;
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn answer_string(s: String, k: i32) -> String {
+        if k == 1 {
+            return s;
+        }
+        let n = s.len();
+        let mut ans = "";
+        for i in 0..n {
+            let end = n.min(i + n - k as usize + 1);
+            let sub = unsafe { s.get_unchecked(i..end) };
+            ans = ans.max(sub);
+        }
+        ans.to_string()
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n(n-k))$，其中 $n$ 是 $s$ 的长度。
@@ -197,6 +232,59 @@ func answerString(s string, k int) string {
 	n := len(s)
 	i := int(sa[n-1])
 	return s[i:min(i+n-k+1, n)]
+}
+```
+
+```js [sol-JavaScript]
+var answerString = function(s, numFriends) {
+    if (numFriends === 1) {
+        return s;
+    }
+    const n = s.length;
+    let i = 0, j = 1;
+    while (j < n) {
+        let k = 0;
+        while (j + k < n && s[i + k] === s[j + k]) {
+            k++;
+        }
+        if (j + k < n && s[i + k] < s[j + k]) {
+            const t = i;
+            i = j;
+            j = Math.max(j + 1, t + k + 1);
+        } else {
+            j += k + 1;
+        }
+    }
+    return s.substring(i, Math.min(i + n - numFriends + 1, n));
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn answer_string(word: String, k: i32) -> String {
+        if k == 1 {
+            return word;
+        }
+        let n = word.len();
+        let s = word.as_bytes();
+        let mut i = 0;
+        let mut j = 1;
+        while j < n {
+            let mut k = 0;
+            while j + k < n && s[i + k] == s[j + k] {
+                k += 1;
+            }
+            if j + k < n && s[i + k] < s[j + k] {
+                let t = i;
+                i = j;
+                j = (j + 1).max(t + k + 1);
+            } else {
+                j += k + 1;
+            }
+        }
+        let end = n.min(i + n - k as usize + 1);
+        word[i..end].to_string()
+    }
 }
 ```
 
