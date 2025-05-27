@@ -46,9 +46,10 @@ $$
 
 最终答案为根节点的 $f[\textit{budget}][0]$，这里的 $0$ 是因为根节点没有父节点。
 
-```py [sol-Python3 列表]
-# 注意！这个写法很慢，推荐先理解列表的写法，然后看【Python3 字典】的写法
+## 写法一：至多
 
+```py [sol-Python3]
+# 注意！这个写法很慢，更快的写法见写法二
 max = lambda a, b: b if b > a else a
 
 class Solution:
@@ -63,7 +64,9 @@ class Solution:
             for y in g[x]:
                 fy = dfs(y)
                 for j in range(budget, -1, -1):
-                    for jy in range(j + 1):  # 枚举子树 y 的预算为 jy
+                    # 枚举子树 y 的预算为 jy
+                    # 当作一个体积为 jy，价值为 fy[jy][k] 的物品
+                    for jy in range(j + 1):  
                         for k in range(2):
                             sub_f[j][k] = max(sub_f[j][k], sub_f[j - jy][k] + fy[jy][k])
 
@@ -82,55 +85,13 @@ class Solution:
         return dfs(0)[budget][0]
 ```
 
-```py [sol-Python3 字典]
-fmax = lambda a, b: b if b > a else a
-
-class Solution:
-    def maxProfit(self, n: int, present: List[int], future: List[int], hierarchy: List[List[int]], budget: int) -> int:
-        g = [[] for _ in range(n)]
-        for x, y in hierarchy:
-            g[x - 1].append(y - 1)
-
-        def dfs(x: int) -> List[Dict[int, int]]:
-            # 计算从 x 的所有儿子子树 y 中，能得到的最大利润之和
-            sub_f = [defaultdict(int), defaultdict(int)]
-            sub_f[0][0] = sub_f[1][0] = 0
-            for y in g[x]:
-                fy = dfs(y)
-                for k, fyk in enumerate(fy):
-                    nf = defaultdict(int)
-                    for j, v in sub_f[k].items():
-                        for jy, vy in fyk.items():  # 枚举子树 y 的预算为 jy
-                            s = j + jy
-                            if s <= budget:
-                                nf[s] = fmax(nf[s], v + vy)
-                    sub_f[k] = nf
-
-            f = [None] * 2
-            for k in range(2):
-                res = sub_f[0].copy()  # 不买 x
-                cost = present[x] // (k + 1)
-                if cost <= budget:
-                    earn = future[x] - cost
-                    # 买 x，转移来源为 sub_f[1]，因为对于子树来说，父节点一定买
-                    for j, v in sub_f[1].items():
-                        j += cost
-                        if j <= budget:
-                            res[j] = fmax(res[j], v + earn)
-                f[k] = res
-            return f
-
-        return max(dfs(0)[0].values())
-```
-
 ```java [sol-Java]
 class Solution {
     public int maxProfit(int n, int[] present, int[] future, int[][] hierarchy, int budget) {
         List<Integer>[] g = new ArrayList[n];
         Arrays.setAll(g, i -> new ArrayList<>());
         for (int[] e : hierarchy) {
-            int x = e[0] - 1, y = e[1] - 1;
-            g[x].add(y);
+            g[e[0] - 1].add(e[1] - 1);
         }
 
         int[][] f0 = dfs(0, g, present, future, budget);
@@ -143,7 +104,9 @@ class Solution {
         for (int y : g[x]) {
             int[][] fy = dfs(y, g, present, future, budget);
             for (int j = budget; j >= 0; j--) {
-                for (int jy = 0; jy <= j; jy++) { // 枚举子树 y 的预算为 jy
+                // 枚举子树 y 的预算为 jy
+                // 当作一个体积为 jy，价值为 fy[jy][k] 的物品
+                for (int jy = 0; jy <= j; jy++) {
                     for (int k = 0; k < 2; k++) {
                         subF[j][k] = Math.max(subF[j][k], subF[j - jy][k] + fy[jy][k]);
                     }
@@ -175,8 +138,7 @@ public:
     int maxProfit(int n, vector<int>& present, vector<int>& future, vector<vector<int>>& hierarchy, int budget) {
         vector<vector<int>> g(n);
         for (auto& e : hierarchy) {
-            int x = e[0] - 1, y = e[1] - 1;
-            g[x].push_back(y);
+            g[e[0] - 1].push_back(e[1] - 1);
         }
 
         auto dfs = [&](this auto&& dfs, int x) -> vector<array<int, 2>> {
@@ -185,7 +147,9 @@ public:
             for (int y : g[x]) {
                 auto fy = dfs(y);
                 for (int j = budget; j >= 0; j--) {
-                    for (int jy = 0; jy <= j; jy++) { // 枚举子树 y 的预算为 jy
+                    // 枚举子树 y 的预算为 jy
+                    // 当作一个体积为 jy，价值为 fy[jy][k] 的物品
+                    for (int jy = 0; jy <= j; jy++) {
                         for (int k = 0; k < 2; k++) {
                             sub_f[j][k] = max(sub_f[j][k], sub_f[j - jy][k] + fy[jy][k]);
                         }
@@ -229,7 +193,9 @@ func maxProfit(n int, present []int, future []int, hierarchy [][]int, budget int
 		for _, y := range g[x] {
 			fy := dfs(y)
 			for j := budget; j >= 0; j-- {
-				for jy, p := range fy[:j+1] { // 枚举子树 y 的预算为 jy
+				// 枚举子树 y 的预算为 jy
+				// 当作一个体积为 jy，价值为 resY=fy[jy][k] 的物品
+				for jy, p := range fy[:j+1] {
 					for k, resY := range p {
 						subF[j][k] = max(subF[j][k], subF[j-jy][k]+resY)
 					}
@@ -254,6 +220,242 @@ func maxProfit(n int, present []int, future []int, hierarchy [][]int, budget int
 	}
 
 	return dfs(0)[budget][0]
+}
+```
+
+## 写法二：恰好
+
+把状态值改成在总花费**恰好**为 $j$ 的情况下的最大利润。
+
+同时交换 $f$ 数组的维度，改成两个长为 $\textit{budget}+1$ 的数组。
+
+```py [sol-Python3 列表]
+# 更快的写法见【Python3 字典】
+fmax = lambda a, b: b if b > a else a
+
+class Solution:
+    def maxProfit(self, n: int, present: List[int], future: List[int], hierarchy: List[List[int]], budget: int) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in hierarchy:
+            g[x - 1].append(y - 1)
+
+        def dfs(x: int) -> List[Dict[int, int]]:
+            # 计算从 x 的所有儿子子树 y 中，能得到的最大利润之和
+            sub_f = [[0] + [-inf] * budget for _ in range(2)]
+            for y in g[x]:
+                fy = dfs(y)
+                for k, fyk in enumerate(fy):
+                    nf = [0] + [-inf] * budget
+                    for jy, res_y in enumerate(fyk):
+                        if res_y < 0:  # 重要优化：物品价值为负数，一定不选
+                            continue
+                        for j in range(jy, budget + 1):
+                            nf[j] = fmax(nf[j], sub_f[k][j - jy] + res_y)
+                    sub_f[k] = nf
+
+            f = [None] * 2
+            for k in range(2):
+                # 不买 x，转移来源为 sub_f[0]，因为对于子树来说，父节点一定不买
+                f[k] = sub_f[0].copy()
+                cost = present[x] // (k + 1)
+                # 买 x，转移来源为 sub_f[1]，因为对于子树来说，父节点一定买
+                for j in range(cost, budget + 1):
+                    f[k][j] = fmax(f[k][j], sub_f[1][j - cost] + future[x] - cost)
+            return f
+
+        return max(dfs(0)[0])
+```
+
+```py [sol-Python3 字典]
+fmax = lambda a, b: b if b > a else a
+
+class Solution:
+    def maxProfit(self, n: int, present: List[int], future: List[int], hierarchy: List[List[int]], budget: int) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in hierarchy:
+            g[x - 1].append(y - 1)
+
+        def dfs(x: int) -> List[Dict[int, int]]:
+            sub_f = [defaultdict(int) for _ in range(2)]
+            sub_f[0][0] = sub_f[1][0] = 0
+            for y in g[x]:
+                fy = dfs(y)
+                for k, fyk in enumerate(fy):
+                    nf = defaultdict(int)
+                    for j, pre_res_y in sub_f[k].items():
+                        for jy, res_y in fyk.items():
+                            sj = j + jy
+                            if sj <= budget:
+                                nf[sj] = fmax(nf[sj], pre_res_y + res_y)
+                    sub_f[k] = nf
+
+            f = [None] * 2
+            for k in range(2):
+                res = sub_f[0].copy()
+                cost = present[x] // (k + 1)
+                if cost <= budget:
+                    earn = future[x] - cost
+                    for j, res_y in sub_f[1].items():
+                        sj = j + cost
+                        if sj <= budget:
+                            res[sj] = fmax(res[sj], res_y + earn)
+                f[k] = res
+            return f
+
+        return max(dfs(0)[0].values())
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxProfit(int n, int[] present, int[] future, int[][] hierarchy, int budget) {
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] e : hierarchy) {
+            g[e[0] - 1].add(e[1] - 1);
+        }
+
+        int[][] f0 = dfs(0, g, present, future, budget);
+        return Arrays.stream(f0[0]).max().getAsInt();
+    }
+
+    private int[][] dfs(int x, List<Integer>[] g, int[] present, int[] future, int budget) {
+        // 计算从 x 的所有儿子子树 y 中，能得到的最大利润之和
+        int[][] subF = new int[2][budget + 1];
+        Arrays.fill(subF[0], Integer.MIN_VALUE / 2); // 表示不存在对应的花费总和
+        Arrays.fill(subF[1], Integer.MIN_VALUE / 2);
+        subF[0][0] = subF[1][0] = 0;
+        for (int y : g[x]) {
+            int[][] fy = dfs(y, g, present, future, budget);
+            for (int k = 0; k < 2; k++) {
+                int[] nf = new int[budget + 1];
+                Arrays.fill(nf, Integer.MIN_VALUE / 2);
+                nf[0] = 0;
+                for (int jy = 0; jy <= budget; jy++) {
+                    int resY = fy[k][jy];
+                    if (resY < 0) { // 重要优化：物品价值为负数，一定不选
+                        continue;
+                    }
+                    for (int j = jy; j <= budget; j++) {
+                        nf[j] = Math.max(nf[j], subF[k][j - jy] + resY);
+                    }
+                }
+                subF[k] = nf;
+            }
+        }
+
+        int[][] f = new int[2][];
+        for (int k = 0; k < 2; k++) {
+            // 不买 x，转移来源为 subF[0]，因为对于子树来说，父节点一定不买
+            f[k] = subF[0].clone();
+            int cost = present[x] / (k + 1);
+            // 买 x，转移来源为 subF[1]，因为对于子树来说，父节点一定买
+            for (int j = cost; j <= budget; j++) {
+                f[k][j] = Math.max(f[k][j], subF[1][j - cost] + future[x] - cost);
+            }
+        }
+        return f;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxProfit(int n, vector<int>& present, vector<int>& future, vector<vector<int>>& hierarchy, int budget) {
+        vector<vector<int>> g(n);
+        for (auto& e : hierarchy) {
+            g[e[0] - 1].push_back(e[1] - 1);
+        }
+
+        auto dfs = [&](this auto&& dfs, int x) -> array<vector<int>, 2> {
+            // 计算从 x 的所有儿子子树 y 中，能得到的最大利润之和
+            vector<int> sub_f[2]{vector<int>(budget + 1, INT_MIN / 2), vector<int>(budget + 1, INT_MIN / 2)};
+            sub_f[0][0] = sub_f[1][0] = 0;
+            for (int y : g[x]) {
+                auto fy = dfs(y);
+                for (int k = 0; k < 2; k++) {
+                    vector<int> nf(budget + 1, INT_MIN / 2);
+                    nf[0] = 0;
+                    for (int jy = 0; jy <= budget; jy++) {
+                        int res_y = fy[k][jy];
+                        if (res_y < 0) { // 重要优化：物品价值为负数，一定不选
+                            continue;
+                        }
+                        for (int j = jy; j <= budget; j++) {
+                            nf[j] = max(nf[j], sub_f[k][j - jy] + res_y);
+                        }
+                    }
+                    sub_f[k] = move(nf);
+                }
+            }
+
+            array<vector<int>, 2> f;
+            for (int k = 0; k < 2; k++) {
+                // 不买 x，转移来源为 sub_f[0]，因为对于子树来说，父节点一定不买
+                f[k] = sub_f[0];
+                int cost = present[x] / (k + 1);
+                // 买 x，转移来源为 sub_f[1]，因为对于子树来说，父节点一定买
+                for (int j = cost; j <= budget; j++) {
+                    f[k][j] = max(f[k][j], sub_f[1][j - cost] + future[x] - cost);
+                }
+            }
+            return f;
+        };
+
+        return ranges::max(dfs(0)[0]);
+    }
+};
+```
+
+```go [sol-Go]
+func maxProfit(n int, present []int, future []int, hierarchy [][]int, budget int) int {
+	g := make([][]int, n)
+	for _, e := range hierarchy {
+		x, y := e[0]-1, e[1]-1
+		g[x] = append(g[x], y)
+	}
+
+	var dfs func(int) [2][]int
+	dfs = func(x int) [2][]int {
+		// 计算从 x 的所有儿子子树 y 中，能得到的最大利润之和
+		subF := [2][]int{make([]int, budget+1), make([]int, budget+1)}
+		for i := 1; i <= budget; i++ {
+			subF[0][i] = math.MinInt / 2 // 表示不存在对应的花费总和
+			subF[1][i] = math.MinInt / 2
+		}
+		for _, y := range g[x] {
+			fy := dfs(y)
+			for k, fyk := range fy {
+				nf := make([]int, budget+1)
+				for i := 1; i <= budget; i++ {
+					nf[i] = math.MinInt / 2
+				}
+				for jy, resY := range fyk {
+					if resY < 0 { // 重要优化：物品价值为负数，一定不选
+						continue
+					}
+					for j := jy; j <= budget; j++ {
+						nf[j] = max(nf[j], subF[k][j-jy]+resY)
+					}
+				}
+				subF[k] = nf
+			}
+		}
+
+		f := [2][]int{}
+		for k := range 2 {
+			// 不买 x，转移来源为 subF[0]，因为对于子树来说，父节点一定不买
+			f[k] = slices.Clone(subF[0])
+			cost := present[x] / (k + 1)
+			// 买 x，转移来源为 subF[1]，因为对于子树来说，父节点一定买
+			for j := cost; j <= budget; j++ {
+				f[k][j] = max(f[k][j], subF[1][j-cost]+future[x]-cost)
+			}
+		}
+		return f
+	}
+
+	return slices.Max(dfs(0)[0])
 }
 ```
 
