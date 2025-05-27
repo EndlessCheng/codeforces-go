@@ -18,8 +18,6 @@
 
 注意特判 $k=1$ 的情况，此时无法分割，子串左端点只能是 $0$，答案是 $s$。
 
-[本题视频讲解](https://www.bilibili.com/video/BV13f68YjE7o/?t=5m16s)，欢迎点赞关注~
-
 ```py [sol-Python3]
 class Solution:
     def answerString(self, s: str, k: int) -> str:
