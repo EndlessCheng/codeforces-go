@@ -1,6 +1,6 @@
-设 $k = \left\lfloor\dfrac{n}{m}\right\rfloor$。
+$[1,n]$ 中有 $k = \left\lfloor\dfrac{n}{m}\right\rfloor$ 个 $m$ 的倍数。比如 $[1,20]$ 中有 $\left\lfloor\dfrac{20}{3}\right\rfloor=6$ 个数是 $3$ 的倍数：$3,6,9,12,15,18$。
 
-$\textit{num}_2$ 是在 $[1,n]$ 范围中的 $m$ 的倍数之和，即
+根据题意，$\textit{num}_2$ 是在 $[1,n]$ 范围中的 $m$ 的倍数之和，即
 
 $$
 \begin{aligned}
