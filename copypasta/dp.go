@@ -1741,11 +1741,14 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P4322 分数规划
 	// https://codeforces.com/problemset/problem/815/C 2400
 
-	// 其一 · 无依赖（父节点不选也可以）
+	// 其一 · 朴素写法
+	// 这种写法父节点不选也可以
 	// 时间复杂度 O(n*maxW^2)
 	// https://leetcode.cn/problems/maximum-profit-from-trading-stocks-with-discounts/
-	treeKnapsackSimple := func(g [][]int, weights, values []int, maxW int) int {
+	// https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
+	treeKnapsackNaive := func(g [][]int, weights, values []int, maxW int) int {
 		// 至多 maxW
+		// 恰好的写法见后面
 		var dfs func(int, int) []int
 		dfs = func(v, fa int) []int {
 			// 汇总 v 的儿子 w 的 fw
@@ -1759,10 +1762,11 @@ func _(abs func(int) int) {
 				fw := dfs(w, v)
 				// 枚举遍历过的子树（包括 w）至多装 j
 				for j := maxW; j >= 0; j-- {
-					// 枚举子树 w 至多装 j2
-					// 那么前面遍历过的所有子树，至多装 j-j2
-					for j2, r := range fw[:j+1] {
-						subF[j] = max(subF[j], subF[j-j2]+r)
+					// 枚举子树 w 至多装 jw
+					// 那么前面遍历过的所有子树，至多装 j-jw
+					// 相当于把一个体积为 jw，价值为 r=fw[jw] 的物品装入 subF
+					for jw, r := range fw[:j+1] {
+						subF[j] = max(subF[j], subF[j-jw]+r)
 					}
 				}
 			}
@@ -1773,7 +1777,7 @@ func _(abs func(int) int) {
 			val := values[v]
 			for j, r := range subF {
 				if j >= wt {
-					// 不选 v 还是选 v
+					// 如果不选 v，留给子树的容量为 j，直接从 r=subF[j] 转移过来
 					// 如果选 v，留给子树的容量为 j-wt
 					f[j] = max(r, subF[j-wt]+val)
 				} else {
@@ -1786,6 +1790,65 @@ func _(abs func(int) int) {
 
 		f0 := dfs(0, -1)
 		return f0[maxW]
+	}
+
+	treeKnapsackNaive2 := func(g [][]int, weights, values []int, maxW int) int {
+		// 恰好 maxW
+		var dfs func(int, int) []int
+		dfs = func(v, fa int) []int {
+			// 汇总 v 的儿子 w 的 fw
+			// 计算从 v 的所有儿子子树 w 中，能得到的 value 总和的最大值
+			// 这个过程不考虑 v 怎么选
+			subF := make([]int, maxW+1)
+			for i := range subF {
+				subF[i] = -1e18
+			}
+			subF[0] = 0
+			
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				fw := dfs(w, v)
+
+				nf := make([]int, maxW+1)
+				for i := range nf {
+					nf[i] = -1e18
+				}
+				nf[0] = 0
+				for jw, r := range fw {
+					if r < 0 { // 重要优化
+						continue
+					}
+					// 枚举子树 w 至多装 jw
+					// 那么前面遍历过的所有子树，至多装 j-jw
+					// 相当于把一个体积为 jw，价值为 r=fw[jw] 的物品装入 subF
+					for j := jw; j <= maxW; j++ {
+						nf[j] = max(nf[j], subF[j-jw]+r)
+					}
+				}
+				subF = nf
+			}
+
+			// 然后考虑 v 怎么选
+			f := make([]int, maxW+1)
+			wt := weights[v]
+			val := values[v]
+			for j, r := range subF {
+				if j >= wt {
+					// 如果不选 v，留给子树的容量为 j，直接从 r=subF[j] 转移过来
+					// 如果选 v，留给子树的容量为 j-wt
+					f[j] = max(r, subF[j-wt]+val)
+				} else {
+					// 只能不选
+					f[j] = r
+				}
+			}
+			return f
+		}
+
+		f0 := dfs(0, -1)
+		return f0[maxW] // slices.Max(f0)
 	}
 
 	// 其二 · 有依赖（父节点必须选，才能选儿子），只关心节点个数
@@ -1855,18 +1918,18 @@ func _(abs func(int) int) {
 	//
 	// 模板题 https://loj.ac/p/160
 	// 模板题 https://www.luogu.com.cn/problem/P1064 NOIP06·提高 金明的预算方案
-	// EXTRA: https://www.luogu.com.cn/problem/P12136 蓝桥杯 2025 省赛 C++ B 组
 	treeKnapsackWeighted := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
 		// 我自创的一种实现。对于随机树（或者高度小的树），消耗的内存更少，跑得也更快
+		// dfs 返回值表示后序遍历 order 的以 v 结尾的前缀，对应的 DP 数组
 		var dfs func(int, int, []int) []int
 		dfs = func(v, fa int, preF []int) []int {
-			f := slices.Clone(preF) // 不选 v
+			f := slices.Clone(preF) // 不选 v，直接跳过 v 子树
 			for _, w := range g[v] {
 				if w != fa {
 					preF = dfs(w, v, preF)
 				}
 			}
-			// 循环结束后，preF 再加上 p.value 就是「选 v」
+			// 循环结束后，preF 项加上 p.value 就是「选 v」
 			p := items[v]
 			for j := maxW; j >= p.weight; j-- {
 				f[j] = max(f[j], preF[j-p.weight]+p.value) // 不选 vs 选
@@ -1879,8 +1942,8 @@ func _(abs func(int) int) {
 		return f[maxW]
 	}
 
-	// 其他写法
-	treeKnapsackWeighted2 := func(g [][]int, items []struct{ value, weight int }, root, maxW int) []int {
+	// 其他写法（不推荐）
+	treeKnapsackWeighted = func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
 		f := make([][]int, 1, len(g))
 		f[0] = make([]int, maxW+1) // 至多
 		var dfs func(int, int) int
@@ -1901,7 +1964,7 @@ func _(abs func(int) int) {
 			return size
 		}
 		dfs(root, -1)
-		return f[len(f)-1] // 根节点的 DP 是最后算出来的
+		return f[len(f)-1][maxW] // 根节点的 DP 是最后算出来的
 	}
 
 	/* 划分型 DP ① 最优分割
@@ -4500,7 +4563,7 @@ func _(abs func(int) int) {
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary, boundedKnapsackMonotoneQueue, boundedKnapsackWays, boundedKnapsackWays2,
 		groupKnapsack, groupKnapsackFill,
-		treeKnapsackSimple, treeKnapsack, treeKnapsackWeighted, treeKnapsackWeighted2,
+		treeKnapsackNaive, treeKnapsackNaive2, treeKnapsack, treeKnapsackWeighted,
 
 		// 划分型 DP
 		splitDP, splitDPWithLimit,
