@@ -9,9 +9,10 @@ func isConsecutive(x, y byte) bool {
 func resultingString(s string) string {
 	st := []byte{}
 	for _, b := range s {
-		st = append(st, byte(b))
-		if len(st) > 1 && isConsecutive(st[len(st)-2], st[len(st)-1]) {
-			st = st[:len(st)-2]
+		if len(st) > 0 && isConsecutive(byte(b), st[len(st)-1]) {
+			st = st[:len(st)-1]
+		} else {
+			st = append(st, byte(b))
 		}
 	}
 	return string(st)
