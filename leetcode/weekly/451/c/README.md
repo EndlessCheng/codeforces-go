@@ -462,7 +462,7 @@ func maxProfit(n int, present []int, future []int, hierarchy [][]int, budget int
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\cdot \textit{budget}^2)$。有 $n-1$ 条边，每条边计算一次 $\mathcal{O}(\textit{budget}^2)$ 的转移。
-- 空间复杂度：$\mathcal{O}(n\cdot \textit{budget})$。
+- 空间复杂度：$\mathcal{O}(h\cdot \textit{budget})$，其中 $h$ 是树的高度。在随机数据下，$h=\Theta(\log n)$，这个做法比在 DFS 外面创建数组更好。
 
 ## 分类题单
 
