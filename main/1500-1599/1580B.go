@@ -34,6 +34,8 @@ func cf1580B(in io.Reader, out io.Writer) {
 	}
 	var f func(int, int, int) int
 	f = func(dep, size, need int) (res int) {
+		// 无明显优化
+		// if need > (size+1)/2 { return }
 		if dep < 0 {
 			if need > 0 {
 				return
