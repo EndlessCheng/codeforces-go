@@ -55,7 +55,7 @@ func cf1580B(in io.Reader, out io.Writer) {
 		for leftSz := range size {
 			for leftNeed := max(need-(size-1-leftSz), 0); leftNeed <= min(leftSz, need); leftNeed++ {
 				leftRes := f(dep-1, leftSz, leftNeed)
-				if leftRes == 0 {
+				if leftRes == 0 { // 可以快一倍
 					continue
 				}
 				res = (res + C[size-1][leftSz]*leftRes%mod*f(dep-1, size-1-leftSz, need-leftNeed)) % mod
