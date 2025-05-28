@@ -227,12 +227,6 @@ func maxTargetNodes(edges1, edges2 [][]int) []int {
 - 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $\textit{edges}_1$ 的长度，$m$ 是 $\textit{edges}_2$ 的长度。
 - 空间复杂度：$\mathcal{O}(n+m)$。
 
-## 思考题
-
-额外输入一个整数 $k$，把「距离是偶数」改成「距离是 $k$ 的倍数」，要怎么做？
-
-请注意 $n$ 和 $m$ 小于 $k$ 的情况。
-
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
