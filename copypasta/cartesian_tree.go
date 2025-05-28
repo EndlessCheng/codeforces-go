@@ -8,7 +8,8 @@ todo 一些题目 https://www.luogu.com.cn/blog/AAAbbb123/di-ka-er-shu-xue-xi-bi
 
 模板题 https://www.luogu.com.cn/problem/P5854 https://judge.yosupo.jp/problem/cartesian_tree
       https://www.luogu.com.cn/problem/P1377
-https://codeforces.com/problemset/problem/1777/D
+https://codeforces.com/problemset/problem/1777/D 1900
+https://codeforces.com/problemset/problem/1580/B 2600 思想
 */
 
 type ctNode struct {
