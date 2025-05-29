@@ -24,7 +24,7 @@ func cf360C(in io.Reader, out io.Writer) {
 		for j := range f[i] {
 			f[i][j] = sum[j] * int(b-'a')
 			for sz := 1; sz <= min(i, j/(n-i+1)); sz++ {
-				f[i][j] += f[i-sz][j-sz*(n-i+1)] * int('z'-b)
+				f[i][j] += f[i-sz][j-sz*(n-i+1)] * int('z'-b) // 注意这里的 n-i+1 把右边的情况都计算进来了
 			}
 			f[i][j] %= mod
 			sum[j] += f[i][j]
