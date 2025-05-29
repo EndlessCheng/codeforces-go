@@ -131,7 +131,7 @@ func closestMeetingNode(edges []int, node1, node2 int) int {
 1. 如果输入的不止两个节点 $\textit{node}_1$ 和 $\textit{node}_2$，而是一个很长的 $\textit{nodes}$ 列表，要怎么做呢？
 2. 如果输入的是 $\textit{queries}$ 询问数组，每个询问包含两个节点 $\textit{node}_1$ 和 $\textit{node}_2$，你需要快速计算 `closestMeetingNode(edges, node1, node2)`，要怎么做呢？
 
-解答见 [视频讲解](https://www.bilibili.com/video/BV1Ba411N78j)。
+**解答**：见 [视频讲解](https://www.bilibili.com/video/BV1Ba411N78j/?t=22m01s) 第三题。
 
 ## 分类题单
 
