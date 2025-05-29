@@ -8,13 +8,13 @@ LC723 https://leetcode.cn/problems/candy-crush/（会员题）
 - [2254. 设计视频共享平台](https://leetcode.cn/problems/design-video-sharing-platform/)（会员题）
 - [723. 粉碎糖果](https://leetcode.cn/problems/candy-crush/)（会员题）消除游戏
 https://codeforces.com/problemset/problem/799/B 1400 有序集合/最小堆
+https://codeforces.com/problemset/problem/1974/F 1900
 https://codeforces.com/problemset/problem/2064/D 1900
 
 */
 
 /* 有较多下标参与运算的题目
 
-https://codeforces.com/problemset/problem/1974/F 1900
 https://codeforces.com/problemset/problem/2009/G2 2200
 LC3261 https://leetcode.cn/problems/count-substrings-that-satisfy-k-constraint-ii/ 子串的子串
 
