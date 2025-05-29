@@ -258,7 +258,13 @@ func clearStars(S string) string {
 - $\textit{mask}$ 从右往左第 $i$ 位是 $0$，表示第 $i$ 个栈是空的。
 - $\textit{mask}$ 从右往左第 $i$ 位是 $1$，表示第 $i$ 个栈不是空的。
 
-那么 $\textit{mask}$ 尾零的个数，即为最小的字母。这可以 $\mathcal{O}(1)$ 求出。
+举例：
+
+- $\textit{mask}=\cdots 001$ 表示最小的非空栈对应字母 $\texttt{a}$。
+- $\textit{mask}=\cdots 010$ 表示最小的非空栈对应字母 $\texttt{b}$。
+- $\textit{mask}=\cdots 100$ 表示最小的非空栈对应字母 $\texttt{c}$。
+
+所以 $\textit{mask}$ 尾零的个数，即为我们要找的 $\textit{stacks}$ 的下标。这可以 $\mathcal{O}(1)$ 求出。
 
 详见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
