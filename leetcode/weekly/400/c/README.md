@@ -134,6 +134,11 @@ func clearStars(s string) string {
 }
 ```
 
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n|\Sigma| + n\log n)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
+
 ## 写法二
 
 把要删除的字母**标记**为 $\texttt{*}$ 号，最后去掉所有 $\texttt{*}$ 号。
@@ -243,7 +248,7 @@ func clearStars(S string) string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
 
 ## 写法三：位运算优化
@@ -370,7 +375,7 @@ func clearStars(S string) string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n+|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 时间复杂度：$\mathcal{O}(n+|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
 
 ## 思考题
