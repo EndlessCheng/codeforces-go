@@ -7,7 +7,7 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF1183H(_r io.Reader, _w io.Writer) {
+func cf1183H_old(_r io.Reader, _w io.Writer) {
 	var n int
 	var k, ans int64
 	var s []byte
@@ -46,4 +46,4 @@ func CF1183H(_r io.Reader, _w io.Writer) {
 	Fprint(_w, ans)
 }
 
-//func main() { CF1183H(os.Stdin, os.Stdout) }
+//func main() { cf1183H_old(os.Stdin, os.Stdout) }

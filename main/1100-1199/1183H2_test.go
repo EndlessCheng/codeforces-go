@@ -28,5 +28,5 @@ inputCopy
 ajihiushda
 outputCopy
 233`
-	testutil.AssertEqualCase(t, rawText, 0, CF1183H)
+	testutil.AssertEqualCase(t, rawText, 0, cf1183H_old)
 }
