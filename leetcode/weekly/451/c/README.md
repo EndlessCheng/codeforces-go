@@ -239,7 +239,7 @@ class Solution:
         for x, y in hierarchy:
             g[x - 1].append(y - 1)
 
-        def dfs(x: int) -> List[Dict[int, int]]:
+        def dfs(x: int) -> List[List[int, int]]:
             # 计算从 x 的所有儿子子树 y 中，能得到的最大利润之和
             sub_f = [[0] + [-inf] * budget for _ in range(2)]
             for y in g[x]:
