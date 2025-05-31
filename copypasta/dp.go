@@ -42,6 +42,7 @@ LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-
 https://codeforces.com/problemset/problem/1547/E 1500
 https://codeforces.com/problemset/problem/1881/E 1500
 https://codeforces.com/problemset/problem/1875/D 1600
+https://codeforces.com/problemset/problem/1994/C 1600 结合滑窗
 https://codeforces.com/problemset/problem/30/C 1800
 https://codeforces.com/problemset/problem/1627/E 2200 刷表法 双指针
 https://codeforces.com/problemset/problem/1739/E 2400
@@ -57,6 +58,7 @@ https://codeforces.com/problemset/problem/404/D 1900
 https://codeforces.com/problemset/problem/1920/E 2000
 https://codeforces.com/problemset/problem/2027/D2 2200 在 DP 数组上滑窗
 https://codeforces.com/problemset/problem/2045/H 2200
+https://codeforces.com/problemset/problem/360/C 2500
 https://codeforces.com/problemset/problem/6/D 2600
 https://codeforces.com/problemset/problem/367/E 2700 状态设计
 https://atcoder.jp/contests/dp/tasks/dp_t 状态设计
@@ -272,15 +274,17 @@ https://codeforces.com/problemset/problem/1479/B2
 
 计数 DP
 另见 math_comb.go 中的「一些组合问题」
-入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
-入门计数 DP LC1079 https://leetcode.cn/problems/letter-tile-possibilities/
+https://atcoder.jp/contests/abc248/tasks/abc248_c 入门计数 DP
+LC1079 https://leetcode.cn/problems/letter-tile-possibilities/ 入门计数 DP
 - 相似技巧 LC1681 https://leetcode.cn/problems/minimum-incompatibility/discussion/comments/2051770
 https://codeforces.com/problemset/problem/414/B 1400 刷表法
 https://codeforces.com/problemset/problem/1794/D 1900
 https://codeforces.com/problemset/problem/1767/C 2100 带约束的计数 DP
 https://codeforces.com/problemset/problem/2060/F 2200
 https://codeforces.com/problemset/problem/626/F 2400 转换
+https://codeforces.com/problemset/problem/756/D 2400
 https://codeforces.com/problemset/problem/1237/F 2600
+https://codeforces.com/problemset/problem/1580/B 2600
 https://codeforces.com/problemset/problem/995/F 2700 也可以用拉格朗日插值
 https://www.luogu.com.cn/problem/P5664 状态设计
 todo https://atcoder.jp/contests/abc234/tasks/abc234_f
@@ -1126,52 +1130,54 @@ func _(abs func(int) int) {
 	}
 
 	// 合法子序列 DP
+
 	// 本质不同非空子序列个数
 	// 详细讲解见 https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/
-	// - [940. 不同的子序列 II](https://leetcode.cn/problems/distinct-subsequences-ii/) 1985
-	// - [1987. 不同的好子序列数目](https://leetcode.cn/problems/number-of-unique-good-subsequences/) 2422
-	// 需要一点构造能力 https://codeforces.com/problemset/problem/645/E
+	// https://leetcode.cn/problems/distinct-subsequences-ii/
+	// https://leetcode.cn/problems/number-of-unique-good-subsequences/
+	// https://codeforces.com/problemset/problem/645/E 2200 需要一点构造能力
+	// 另见下面的 distinctSubsequenceWithFixedLength
 	distinctSubsequence := func(s string) int {
 		f := [26]int{}
 		sumF := 0
 		for _, b := range s {
 			b -= 'a'
-			tmp := (sumF + mod - f[b]) % mod
+			others := (sumF - f[b] + mod) % mod
 			f[b] = (sumF + 1) % mod
-			sumF = (tmp + f[b]) % mod
+			sumF = (others + f[b]) % mod
 		}
-		// 把空的也算上
+		// 空的也算上
 		//sumF = (sumF + 1) % mod
 		return sumF
 	}
 
-	// 扩展：长度为 k 的本质不同子序列个数
-	// 返回一个数组 f，f[k] 表示长度为 k 的本质不同子序列个数
-	// https://codeforces.com/problemset/problem/1183/H
+	// 长为 k 的本质不同子序列个数
+	// 返回一个数组 sumF，其中 sumF[k] 表示长度为 k 的本质不同子序列个数
+	// https://codeforces.com/problemset/problem/1183/H 1900
+	// https://codeforces.com/problemset/problem/756/D 2400 子序列相邻字母一定不同
 	// https://ac.nowcoder.com/acm/contest/4853/C 题解 https://ac.nowcoder.com/discuss/394080
-	//distinctSubsequenceWithFixedLength := func(s string) []int {
-	//	const mod int = 1e9 + 7
-	//
-	//	panic("impl me")
-	//	//f := [26]int{}
-	//	//
-	//	//return sumF
-	//}
-
-	// 滚动数组写法
-	distinctSubsequence = func(s string) int {
-		last := make([]int, 26)
-		f := 1
-		for _, v := range s {
-			v -= 'a'
-			res := f - last[v]
-			if res < 0 {
-				res += mod
-			}
-			f = (f + res) % mod
-			last[v] = (last[v] + res) % mod
+	distinctSubsequenceWithFixedLength := func(s string) []int {
+		n := len(s)
+		f := [26][]int{}
+		for i := range f {
+			f[i] = make([]int, n+1)
 		}
-		return (f + mod - 1) % mod // 去掉空序列
+		sumF := make([]int, n+1)
+		for i, b := range s {
+			b -= 'a'
+			for sz := i + 1; sz > 0; sz-- {
+				others := (sumF[sz] - f[b][sz] + mod) % mod
+				if sz > 1 {
+					// 如果要求子序列相邻字母一定不同，这里改成 sumF[sz-1] - f[b][sz-1]（注意取模）
+					f[b][sz] = sumF[sz-1]
+				} else {
+					f[b][sz] = 1 // 以 b 结尾的长为 1 的子序列本质只有 1 个
+				}
+				sumF[sz] = (others + f[b][sz]) % mod
+			}
+		}
+		sumF[0] = 1 // 空子序列
+		return sumF
 	}
 
 	// 回文串：中心扩展法
@@ -1235,10 +1241,10 @@ func _(abs func(int) int) {
 			if prefixP { // f[i] = 0
 				continue
 			}
-			f[i] = int(1e9)
-			for j := 0; j < i; j++ {
-				if isP[j+1][i] {
-					f[i] = min(f[i], f[j]+1)
+			f[i] = 1e9
+			for l := 0; l < i; l++ {
+				if isP[l+1][i] {
+					f[i] = min(f[i], f[l]+1)
 				}
 			}
 		}
@@ -1804,7 +1810,7 @@ func _(abs func(int) int) {
 				subF[i] = -1e18
 			}
 			subF[0] = 0
-			
+
 			for _, w := range g[v] {
 				if w == fa {
 					continue
@@ -4284,6 +4290,50 @@ func _(abs func(int) int) {
 		return ans
 	}
 
+	// 返回一个二维数组 cnt，其中 cnt[x][i] 表示到 x 的距离为 i 的节点个数
+	// 特别地，cnt[x][0] = 1
+	// https://leetcode.cn/problems/maximize-the-number-of-target-nodes-after-connecting-trees-i/
+	reroot1Cnt := func(g [][]int, k int) [][]int {
+		cnt := make([][]int, len(g))
+		for i := range cnt {
+			cnt[i] = make([]int, k+1)
+			cnt[i][0] = 1
+		}
+
+		var dfs func(int, int)
+		dfs = func(v, fa int) {
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				dfs(w, v)
+				for i, c := range cnt[w][:k] {
+					cnt[v][i+1] += c
+				}
+			}
+		}
+		dfs(0, -1)
+
+		var reroot func(int, int)
+		reroot = func(v, fa int) {
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				for i := k - 1; i > 0; i-- {
+					cnt[w][i+1] += cnt[v][i] - cnt[w][i-1]
+				}
+				if k > 0 {
+					cnt[w][1]++
+				}
+				reroot(w, v)
+			}
+		}
+		reroot(0, -1)
+
+		return cnt
+	}
+
 	// 换根 DP · 其二（维护最大次大）
 	// LC3241 https://leetcode.cn/problems/time-taken-to-mark-all-nodes/
 	// https://codeforces.com/problemset/problem/1822/F 1700
@@ -4555,7 +4605,7 @@ func _(abs func(int) int) {
 
 		lcs, lcsCount,
 		lisSlow, lis, lisAll, lisModify, lisRollback, cntLis, lcis, lcisPath, countLIS,
-		distinctSubsequence,
+		distinctSubsequence, distinctSubsequenceWithFixedLength,
 		palindromeO1Space, isPalindrome, minPalindromeCut,
 
 		// 背包
@@ -4590,7 +4640,7 @@ func _(abs func(int) int) {
 
 		diameter, countDiameter, maxDisOfDiffColor, countPath, countVerticesOnDiameter, maxPathSum,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
-		reroot1, reroot2, rerootPreSuf, // 换根 DP
+		reroot1, reroot1Cnt, reroot2, rerootPreSuf, // 换根 DP
 		andPathSum, xorPathSum, xorPathXorSum,
 	}
 }
