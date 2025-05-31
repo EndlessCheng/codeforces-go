@@ -4,7 +4,7 @@
 
 题目要我们计算的，是 $\max(\textit{dis}_1[i],\textit{dis}_2[i])$ 的最小值对应的节点编号 $i$。若没有这样的节点，返回 $-1$。
 
-求最短路可以用 BFS 做。不过，由于本题输入的是 [内向基环树](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)（森林），每个连通块至多有一个环，我们可以用一个简单的循环求出 $\textit{dis}_i$。
+求最短路可以用 BFS 做。不过，由于本题输入是树或者 [内向基环树](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)（森林），每个连通块至多有一个环，我们可以用一个简单的循环求出 $\textit{dis}_i$。
 
 ```py [sol-Python3]
 class Solution:
