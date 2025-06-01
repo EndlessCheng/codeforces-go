@@ -237,7 +237,7 @@ class Solution:
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n2^{n/2})$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(2^{n/2})$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(2^{n/2})$。
 
 ## 思考题
