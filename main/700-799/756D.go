@@ -77,13 +77,13 @@ func cf756D(in io.Reader, out io.Writer) {
 	for i, b := range s {
 		b -= 'a'
 		for sz := i + 1; sz > 0; sz-- {
-			others := (sumF[sz] - f[b][sz]) % mod
+			old := f[b][sz]
 			if sz > 1 {
 				f[b][sz] = (sumF[sz-1] - f[b][sz-1]) % mod
 			} else {
 				f[b][sz] = 1
 			}
-			sumF[sz] = (others + f[b][sz]) % mod
+			sumF[sz] = (sumF[sz] + f[b][sz] - old) % mod
 		}
 	}
 
