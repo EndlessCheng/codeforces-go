@@ -118,14 +118,14 @@ func newLazySegmentTree(n int, initVal int) lazySeg {
 func maximumCount(nums []int, queries [][]int) (ans []int) {
 	n := len(nums)
 	pos := map[int]*redblacktree.Tree[int, struct{}]{}
-	for i, v := range nums {
-		if np[v] {
+	for i, x := range nums {
+		if np[x] {
 			continue
 		}
-		if _, ok := pos[v]; !ok {
-			pos[v] = redblacktree.New[int, struct{}]()
+		if _, ok := pos[x]; !ok {
+			pos[x] = redblacktree.New[int, struct{}]()
 		}
-		pos[v].Put(i, struct{}{})
+		pos[x].Put(i, struct{}{})
 	}
 
 	t := newLazySegmentTree(n, 0)
@@ -140,14 +140,12 @@ func maximumCount(nums []int, queries [][]int) (ans []int) {
 		old := nums[i]
 		nums[i] = v
 
-		// 删除旧值 old 的影响
 		if !np[old] {
 			ps := pos[old]
 			if ps.Size() > 1 {
 				t.update(1, ps.Left().Key, ps.Right().Key, -1)
 			}
 			ps.Remove(i)
-
 			if ps.Size() > 1 {
 				t.update(1, ps.Left().Key, ps.Right().Key, 1)
 			} else if ps.Empty() {
@@ -155,7 +153,6 @@ func maximumCount(nums []int, queries [][]int) (ans []int) {
 			}
 		}
 
-		// 插入新值 v 的影响
 		if !np[v] {
 			if _, ok := pos[v]; !ok {
 				pos[v] = redblacktree.New[int, struct{}]()

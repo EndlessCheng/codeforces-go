@@ -132,30 +132,31 @@ class Solution:
                 t.update(sl[0], sl[-1], 1)
 
         ans = []
-        for i, x in queries:
+        for i, val in queries:
             old = nums[i]
-            nums[i] = x
+            nums[i] = val
 
             # 处理旧值
             if is_p[old]:
                 sl = pos[old]
                 if len(sl) > 1:
-                    t.update(sl[0], sl[-1], -1)
+                    t.update(sl[0], sl[-1], -1)  # 撤销之前的区间 +1
                 sl.remove(i)
                 if len(sl) > 1:
-                    t.update(sl[0], sl[-1], 1)
+                    t.update(sl[0], sl[-1], 1)  # 新的区间 +1
                 elif not sl:
                     del pos[old]
 
             # 处理新值
-            if is_p[x]:
-                sl = pos[x]
+            if is_p[val]:
+                sl = pos[val]
                 if len(sl) > 1:
-                    t.update(sl[0], sl[-1], -1)
+                    t.update(sl[0], sl[-1], -1)  # 撤销之前的区间 +1
                 sl.add(i)
                 if len(sl) > 1:
-                    t.update(sl[0], sl[-1], 1)
+                    t.update(sl[0], sl[-1], 1)  # 新的区间 +1
 
+            # 整个数组的不同质数个数 + 切一刀的最大额外收益
             ans.append(len(pos) + t.query(0, n - 1))
 
         return ans
@@ -164,7 +165,7 @@ class Solution:
 ```java [sol-Java]
 class LazySegmentTree {
     // 懒标记初始值
-    private static final int TODO_INIT = 0; // **根据题目修改**
+    private static final int TODO_INIT = 0;
 
     private static final class Node {
         int val;
@@ -315,16 +316,14 @@ class Solution {
 
         int n = nums.length;
         Map<Integer, TreeSet<Integer>> pos = new HashMap<>();
-
-        LazySegmentTree t = new LazySegmentTree(n, 0);
         for (int i = 0; i < n; i++) {
-            int v = nums[i];
-            if (!np[v]) {
-                pos.computeIfAbsent(v, k -> new TreeSet<>()).add(i);
+            int x = nums[i];
+            if (!np[x]) {
+                pos.computeIfAbsent(x, k -> new TreeSet<>()).add(i);
             }
         }
 
-        // 对出现次数大于 1 的质数，其最小最大索引之间的区间 +1
+        LazySegmentTree t = new LazySegmentTree(n, 0);
         for (TreeSet<Integer> s : pos.values()) {
             if (s.size() > 1) {
                 t.update(s.first(), s.last(), 1);
@@ -339,32 +338,33 @@ class Solution {
             int old = nums[i];
             nums[i] = v;
 
-            // 删除旧值 old 的影响
+            // 处理旧值
             if (!np[old]) {
                 TreeSet<Integer> s = pos.get(old);
                 if (s.size() > 1) {
-                    t.update(s.first(), s.last(), -1);
+                    t.update(s.first(), s.last(), -1); // 撤销之前的区间 +1
                 }
                 s.remove(i);
                 if (s.size() > 1) {
-                    t.update(s.first(), s.last(), 1);
+                    t.update(s.first(), s.last(), 1); // 新的区间 +1
                 } else if (s.isEmpty()) {
                     pos.remove(old);
                 }
             }
 
-            // 插入新值 v 的影响
+            // 处理新值
             if (!np[v]) {
                 TreeSet<Integer> s = pos.computeIfAbsent(v, k -> new TreeSet<>());
                 if (s.size() > 1) {
-                    t.update(s.first(), s.last(), -1);
+                    t.update(s.first(), s.last(), -1); // 撤销之前的区间 +1
                 }
                 s.add(i);
                 if (s.size() > 1) {
-                    t.update(s.first(), s.last(), 1);
+                    t.update(s.first(), s.last(), 1); // 新的区间 +1
                 }
             }
 
+            // 整个数组的不同质数个数 + 切一刀的最大额外收益
             ans[qi] = pos.size() + t.query(0, n - 1);
         }
         return ans;
@@ -517,14 +517,11 @@ class Solution {
 public:
     vector<int> maximumCount(vector<int>& nums, vector<vector<int>>& queries) {
         int n = nums.size();
-
         unordered_map<int, set<int>> pos;
-
-        // 初始化 pos，记录每个质数的位置（有序）
         for (int i = 0; i < n; i++) {
-            int v = nums[i];
-            if (!np[v]) {
-                pos[v].insert(i);
+            int x = nums[i];
+            if (!np[x]) {
+                pos[x].insert(i);
             }
         }
 
@@ -541,32 +538,33 @@ public:
             int old = nums[i];
             nums[i] = v;
 
-            // 删除旧值 old 的影响
+            // 处理旧值
             if (!np[old]) {
                 auto& s = pos[old];
                 if (s.size() > 1) {
-                    t.update(*s.begin(), *s.rbegin(), -1);
+                    t.update(*s.begin(), *s.rbegin(), -1); // 撤销之前的区间 +1
                 }
                 s.erase(i);
                 if (s.size() > 1) {
-                    t.update(*s.begin(), *s.rbegin(), 1);
+                    t.update(*s.begin(), *s.rbegin(), 1); // 新的区间 +1
                 } else if (s.empty()) {
                     pos.erase(old);
                 }
             }
 
-            // 插入新值 v 的影响
+            // 处理新值
             if (!np[v]) {
                 auto& s = pos[v];
                 if (s.size() > 1) {
-                    t.update(*s.begin(), *s.rbegin(), -1);
+                    t.update(*s.begin(), *s.rbegin(), -1); // 撤销之前的区间 +1
                 }
                 s.insert(i);
                 if (s.size() > 1) {
-                    t.update(*s.begin(), *s.rbegin(), 1);
+                    t.update(*s.begin(), *s.rbegin(), 1); // 新的区间 +1
                 }
             }
 
+            // 整个数组的不同质数个数 + 切一刀的最大额外收益
             ans.push_back(pos.size() + t.query(0, n - 1));
         }
 
@@ -690,14 +688,14 @@ func newLazySegmentTree(n int, initVal int) lazySeg {
 func maximumCount(nums []int, queries [][]int) (ans []int) {
 	n := len(nums)
 	pos := map[int]*redblacktree.Tree[int, struct{}]{}
-	for i, v := range nums {
-		if np[v] {
+	for i, x := range nums {
+		if np[x] {
 			continue
 		}
-		if _, ok := pos[v]; !ok {
-			pos[v] = redblacktree.New[int, struct{}]()
+		if _, ok := pos[x]; !ok {
+			pos[x] = redblacktree.New[int, struct{}]()
 		}
-		pos[v].Put(i, struct{}{})
+		pos[x].Put(i, struct{}{})
 	}
 
 	t := newLazySegmentTree(n, 0)
@@ -712,36 +710,36 @@ func maximumCount(nums []int, queries [][]int) (ans []int) {
 		old := nums[i]
 		nums[i] = v
 
-		// 删除旧值 old 的影响
+		// 处理旧值
 		if !np[old] {
 			ps := pos[old]
 			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, -1)
+				t.update(1, ps.Left().Key, ps.Right().Key, -1) // 撤销之前的区间 +1
 			}
 			ps.Remove(i)
-
 			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, 1)
+				t.update(1, ps.Left().Key, ps.Right().Key, 1) // 新的区间 +1
 			} else if ps.Empty() {
 				delete(pos, old)
 			}
 		}
 
-		// 插入新值 v 的影响
+		// 处理新值
 		if !np[v] {
 			if _, ok := pos[v]; !ok {
 				pos[v] = redblacktree.New[int, struct{}]()
 			}
 			ps := pos[v]
 			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, -1)
+				t.update(1, ps.Left().Key, ps.Right().Key, -1) // 撤销之前的区间 +1
 			}
 			ps.Put(i, struct{}{})
 			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, 1)
+				t.update(1, ps.Left().Key, ps.Right().Key, 1) // 新的区间 +1
 			}
 		}
 
+		// 整个数组的不同质数个数 + 切一刀的最大额外收益
 		ans = append(ans, len(pos)+t.query(1, 0, n-1))
 	}
 
