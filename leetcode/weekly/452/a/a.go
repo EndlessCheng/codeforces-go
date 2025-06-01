@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func checkEqualPartitions(nums []int, target int64) bool {
+func checkEqualPartitions2(nums []int, target int64) bool {
 	tar := int(target)
 	u := 1<<len(nums) - 1
 	for s := 1; s < u; s++ { // 枚举 u 的非空真子集 s
@@ -18,4 +18,19 @@ func checkEqualPartitions(nums []int, target int64) bool {
 		}
 	}
 	return false
+}
+
+func checkEqualPartitions(nums []int, target int64) bool {
+	tar := int(target)
+	var dfs func(int, int, int) bool
+	dfs = func(i, mul1, mul2 int) bool {
+		if mul1 > tar || mul2 > tar {
+			return false
+		}
+		if i == len(nums) {
+			return mul1 == tar && mul2 == tar
+		}
+		return dfs(i+1, mul1*nums[i], mul2) || dfs(i+1, mul1, mul2*nums[i])
+	}
+	return dfs(0, 1, 1)
 }

@@ -1,12 +1,85 @@
 **前置题目**：[78. 子集](https://leetcode.cn/problems/subsets/)。
 
-由于数组长度 $n$ 很小，可以枚举每个 $\textit{nums}[i]$ **分给第一个子集还是分给第二个子集**。可以写回溯，也可以写二进制枚举，见 [我的题解](https://leetcode.cn/problems/subsets/solutions/2059409/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-8tkl/) 的方法一和方法三。
+## 方法一：递归
+
+由于数组长度 $n$ 很小，可以枚举每个 $\textit{nums}[i]$ **分给第一个子集还是分给第二个子集**。
+
+**细节**：为防止乘积溢出，可以在乘积大于 $\textit{target}$ 时退出，或者在乘积大于 $\textit{target}$ 时修改成 $\textit{target}+1$。
+
+如果两个子集的乘积都等于 $\textit{target}$，返回 $\texttt{true}$。
+
+```py [sol-Python3]
+class Solution:
+    def checkEqualPartitions(self, nums: List[int], target: int) -> bool:
+        def dfs(i: int, mul1: int, mul2: int) -> bool:
+            if i == len(nums):
+                return mul1 == mul2 == target
+            return dfs(i + 1, mul1 * nums[i], mul2) or dfs(i + 1, mul1, mul2 * nums[i])
+        return dfs(0, 1, 1)
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean checkEqualPartitions(int[] nums, long target) {
+        return dfs(0, 1, 1, nums, target);
+    }
+
+    private boolean dfs(int i, long mul1, long mul2, int[] nums, long target) {
+        if (mul1 > target || mul2 > target) {
+            return false;
+        }
+        if (i == nums.length) {
+            return mul1 == target && mul2 == target;
+        }
+        return dfs(i + 1, mul1 * nums[i], mul2, nums, target) ||
+               dfs(i + 1, mul1, mul2 * nums[i], nums, target);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool checkEqualPartitions(vector<int>& nums, long long target) {
+        auto dfs = [&](this auto&& dfs, int i, long long mul1, long long mul2) -> bool {
+            if (mul1 > target || mul2 > target) {
+                return false;
+            }
+            if (i == nums.size()) {
+                return mul1 == target && mul2 == target;
+            }
+            return dfs(i + 1, mul1 * nums[i], mul2) || dfs(i + 1, mul1, mul2 * nums[i]);
+        };
+        return dfs(0, 1, 1);
+    }
+};
+```
+
+```go [sol-Go]
+func checkEqualPartitions(nums []int, target int64) bool {
+	tar := int(target)
+	var dfs func(int, int, int) bool
+	dfs = func(i, mul1, mul2 int) bool {
+		if mul1 > tar || mul2 > tar {
+			return false
+		}
+		if i == len(nums) {
+			return mul1 == tar && mul2 == tar
+		}
+		return dfs(i+1, mul1*nums[i], mul2) || dfs(i+1, mul1, mul2*nums[i])
+	}
+	return dfs(0, 1, 1)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。搜索树是一棵高为 $\mathcal{O}(n)$ 的二叉树，有 $\mathcal{O}(2^n)$ 个节点，所以遍历搜索树需要 $\mathcal{O}(2^n)$ 的时间。
+- 空间复杂度：$\mathcal{O}(n)$。递归需要 $\mathcal{O}(n)$ 的栈空间。
+
+## 方法二：二进制枚举
 
 枚举下标全集 $U=\{0,1,2,\ldots, n-1\}$ 的**非空真子集** $S$，计算子集 $S$ 的 $\textit{nums}[i]$ 的乘积以及补集 $\complement_US$ 的 $\textit{nums}[i]$ 的乘积。
-
-如果两个乘积都等于 $\textit{target}$，返回 $\texttt{true}$。
-
-**细节**：为防止乘积溢出，可以在乘积大于 $\textit{target}$ 时退出循环，或者在乘积大于 $\textit{target}$ 时修改成 $\textit{target}+1$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Dz76zfEdi/)，欢迎点赞关注~
 
@@ -24,16 +97,6 @@ class Solution:
             if mul1 == target and mul2 == target:
                 return True
         return False
-```
-
-```py [sol-Python3 回溯]
-class Solution:
-    def checkEqualPartitions(self, nums: List[int], target: int) -> bool:
-        def dfs(i: int, mul1: int, mul2: int) -> bool:
-            if i == len(nums):
-                return mul1 == mul2 == target
-            return dfs(i + 1, mul1 * nums[i], mul2) or dfs(i + 1, mul1, mul2 * nums[i])
-        return dfs(0, 1, 1)
 ```
 
 ```java [sol-Java]
@@ -106,7 +169,7 @@ func checkEqualPartitions(nums []int, target int64) bool {
 
 #### 复杂度分析
 
-- 时间复杂度：二进制枚举 $\mathcal{O}(n2^n)$，回溯 $\mathcal{O}(2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 思考题
