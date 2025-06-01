@@ -125,6 +125,10 @@ func minAbsDiff(grid [][]int, k int) [][]int {
 - 时间复杂度：$\mathcal{O}((m-k)(n-k)k^2\log k)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(k^2)$。返回值不计入。
 
+**注**：考虑用定长滑动窗口 + 有序集合 + 懒删除堆，用有序集合维护窗口（子矩阵）元素，用懒删除堆维护相邻不同元素之差。添加删除的时候更新相邻不同元素之差。
+
+这样可以做到 $\mathcal{O}((m-k)nk\log k)$，但常数非常大。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
