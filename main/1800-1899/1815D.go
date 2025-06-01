@@ -23,23 +23,23 @@ func cf1815D(in io.Reader, out io.Writer) {
 		}
 
 		n := bits.Len(uint(s))
-		f := make([][2]struct{ c, s int }, n+1)
-		f[n][0].c = 1
+		f := make([][2]struct{ ways, f int }, n+1)
+		f[n][0].ways = 1
 		for i := n - 1; i >= 0; i-- {
 			for carry := range 2 {
 				res := &f[i][carry]
 				for si := range 3 {
 					if (si+carry)&1 == s>>i&1 {
 						q := f[i+1][(si+carry)>>1]
-						res.c += q.c
-						res.s += q.s + si&1<<i%M*q.c
+						res.ways += q.ways
+						res.f += q.f + si&1<<i%M*q.ways
 					}
 				}
-				res.c %= M
-				res.s %= M
+				res.ways %= M
+				res.f %= M
 			}
 		}
-		Fprintln(out, f[0][0].s)
+		Fprintln(out, f[0][0].f)
 	}
 }
 
