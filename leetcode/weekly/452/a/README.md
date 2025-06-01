@@ -1,10 +1,22 @@
-**前置题目**：[78. 子集](https://leetcode.cn/problems/subsets/)。
+## 错误做法一
+
+判断所有元素的乘积是否等于 $\textit{target}^2$。
+
+这会错在 $\textit{nums}=[1,2,8]$，$\textit{target}=4$ 的情况。正确答案是 $\texttt{false}$。
+
+## 错误做法二
+
+如果有元素不是 $\textit{target}$ 的因子，则返回 $\texttt{false}$。否则，判断所有元素的乘积是否等于 $\textit{target}^2$。
+
+这会错在 $\textit{nums}=[6,8,12]$，$\textit{target}=24$ 的情况。正确答案是 $\texttt{false}$。
 
 ## 方法一：递归
 
+**前置题目**：[78. 子集](https://leetcode.cn/problems/subsets/)。
+
 由于数组长度 $n$ 很小，可以枚举每个 $\textit{nums}[i]$ **分给第一个子集还是分给第二个子集**。
 
-**细节**：为防止乘积溢出，可以在乘积大于 $\textit{target}$ 时退出，或者在乘积大于 $\textit{target}$ 时修改成 $\textit{target}+1$。
+**细节**：为防止乘积过大导致溢出，可以在乘积大于 $\textit{target}$ 时返回 $\texttt{false}$。（Python 用户可以忽略）
 
 如果两个子集的乘积都等于 $\textit{target}$，返回 $\texttt{true}$。
 
@@ -81,7 +93,9 @@ func checkEqualPartitions(nums []int, target int64) bool {
 
 枚举下标全集 $U=\{0,1,2,\ldots, n-1\}$ 的**非空真子集** $S$，计算子集 $S$ 的 $\textit{nums}[i]$ 的乘积以及补集 $\complement_US$ 的 $\textit{nums}[i]$ 的乘积。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1Dz76zfEdi/)，欢迎点赞关注~
+原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+
+[本题视频讲解](https://www.bilibili.com/video/BV1Dz76zfEdi/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
