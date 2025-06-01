@@ -26,6 +26,16 @@ class Solution:
         return False
 ```
 
+```py [sol-Python3 回溯]
+class Solution:
+    def checkEqualPartitions(self, nums: List[int], target: int) -> bool:
+        def dfs(i: int, mul1: int, mul2: int) -> bool:
+            if i == len(nums):
+                return mul1 == mul2 == target
+            return dfs(i + 1, mul1 * nums[i], mul2) or dfs(i + 1, mul1, mul2 * nums[i])
+        return dfs(0, 1, 1)
+```
+
 ```java [sol-Java]
 class Solution {
     public boolean checkEqualPartitions(int[] nums, long target) {
@@ -96,7 +106,7 @@ func checkEqualPartitions(nums []int, target int64) bool {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。注：用状压 DP 可以做到 $\mathcal{O}(2^n)$。
+- 时间复杂度：二进制枚举 $\mathcal{O}(n2^n)$，回溯 $\mathcal{O}(2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 思考题
