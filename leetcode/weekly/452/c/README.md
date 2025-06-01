@@ -20,6 +20,12 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1Dz76zfEdi/?t=15m01s)，欢迎点赞关注~
 
+## 答疑
+
+**问**：能不能写类似旅行商问题（TSP）的状压 DP？
+
+**答**：恐怕不行。考虑这样一种情况：$\texttt{L}\to \texttt{R}\to\texttt{R}\to\cdots \to\texttt{R} \to\texttt{L}$。有什么好的策略能快速判断在两个 $\texttt{L}$ 之间用哪些 $\texttt{R}$ 是最优的？
+
 ## 优化前
 
 ```py [sol-Python3]
