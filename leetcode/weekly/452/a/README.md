@@ -209,6 +209,8 @@ $$
 
 遍历第二个哈希集合，判断元素是否在第一个哈希集合中。或者说，两个集合的交集不为空。
 
+**注**：不建议用浮点数计算，有精度误差。
+
 ```py [sol-Python3]
 class Solution:
     def calc(self, nums: List[int], target: int) -> Set[Tuple[int, int]]:
@@ -228,7 +230,7 @@ class Solution:
         return st
 
     def checkEqualPartitions(self, nums: List[int], target: int) -> bool:
-        if reduce(mul, nums) != target ** 2:
+        if prod(nums) != target ** 2:
             return False
 
         m = len(nums) // 2
