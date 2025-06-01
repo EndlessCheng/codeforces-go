@@ -189,6 +189,57 @@ func checkEqualPartitions(nums []int, target int64) bool {
 - 时间复杂度：$\mathcal{O}(n2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 方法三：折半枚举
+
+首先，判断所有元素的乘积是否等于 $\textit{target}^2$，如果不等于，返回 $\texttt{false}$。
+
+把 $\textit{nums}$ 均分成左右两个数组 $A$ 和 $B$。
+
+从数组 $A$ 中，选择一些数，放入第一个集合，乘积为 $a_1$；其余元素放入第二个集合，乘积为 $b_1$。
+
+从数组 $B$ 中，选择一些数，放入第一个集合，乘积为 $b_2$；其余元素放入第二个集合，乘积为 $a_2$。
+
+题目要求 $a_1\cdot b_2 = b_1\cdot a_2$，变形得
+
+$$
+\dfrac{a_1}{b_1} = \dfrac{a_2}{b_2}
+$$
+
+我们可以用一个哈希集合维护所有 $\dfrac{a_1}{b_1}$ 的最简分数，另一个哈希集合维护所有 $\dfrac{a_2}{b_2}$ 的最简分数。
+
+遍历第二个哈希集合，判断元素是否在第一个哈希集合中。或者说，两个集合的交集不为空。
+
+```py [sol-Python3]
+class Solution:
+    def calc_pairs(self, nums: List[int]) -> Set[Tuple[int, int]]:
+        st = set()
+
+        def dfs(i: int, a: int, b: int) -> None:
+            if i == len(nums):
+                g = gcd(a, b)
+                st.add((a // g, b // g))  # 最简分数
+                return
+            dfs(i + 1, a * nums[i], b)
+            dfs(i + 1, a, b * nums[i])
+
+        dfs(0, 1, 1)
+        return st
+
+    def checkEqualPartitions(self, nums: List[int], target: int) -> bool:
+        if reduce(mul, nums) != target ** 2:
+            return False
+
+        m = len(nums) // 2
+        set1 = self.calc_pairs(nums[:m])
+        set2 = self.calc_pairs(nums[m:])
+        return len(set1 & set2) > 0  # 交集不为空
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n2^{n/2})$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(2^{n/2})$。
+
 ## 思考题
 
 如果把题目改成分成非空前后缀呢？
