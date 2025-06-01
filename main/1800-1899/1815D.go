@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 	"math/bits"
-	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -23,41 +21,26 @@ func cf1815D(in io.Reader, out io.Writer) {
 			Fprintln(out, (s%2+s)%M*(s/2%M+1)%M*inv2%M)
 			continue
 		}
-		n := bits.Len(uint(s))
-		type pair struct{ c, s int }
-		dp := make([][2]pair, n)
-		for i := range dp {
-			for j := range dp[i] {
-				dp[i][j].c = -1
-			}
-		}
-		var f func(int, int) pair
-		f = func(i, carry int) (res pair) {
-			if i == n {
-				if carry == 0 {
-					res.c = 1
-				}
-				return
-			}
-			p := &dp[i][carry]
-			if p.c >= 0 {
-				return *p
-			}
 
-			for si := range 3 {
-				if (si+carry)&1 == s>>i&1 {
-					q := f(i+1, (si+carry)>>1)
-					res.c += q.c
-					res.s += q.s + si&1<<i%M*q.c
+		n := bits.Len(uint(s))
+		f := make([][2]struct{ c, s int }, n+1)
+		f[n][0].c = 1
+		for i := n - 1; i >= 0; i-- {
+			for carry := range 2 {
+				res := &f[i][carry]
+				for si := range 3 {
+					if (si+carry)&1 == s>>i&1 {
+						q := f[i+1][(si+carry)>>1]
+						res.c += q.c
+						res.s += q.s + si&1<<i%M*q.c
+					}
 				}
+				res.c %= M
+				res.s %= M
 			}
-			res.c %= M
-			res.s %= M
-			*p = res
-			return
 		}
-		Fprintln(out, f(0, 0).s)
+		Fprintln(out, f[0][0].s)
 	}
 }
 
-func main() { cf1815D(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf1815D(bufio.NewReader(os.Stdin), os.Stdout) }
