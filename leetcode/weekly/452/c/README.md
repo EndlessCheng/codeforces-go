@@ -492,7 +492,10 @@ func minMoves(classroom []string, energy int) (ans int) {
 - 时间复杂度：$\mathcal{O}(m\cdot n\cdot \textit{energy}\cdot 2^L)$，其中 $m$ 和 $n$ 分别为 $\textit{classroom}$ 的行数和列数，$L\le 10$ 为垃圾个数。
 - 空间复杂度：$\mathcal{O}(m\cdot n\cdot \textit{energy}\cdot 2^L)$。每个状态至多访问一次。
 
-更多相似题目，见下面网格图题单的 BFS。
+## 相似题目
+
+- [864. 获取所有钥匙的最短路径](https://leetcode.cn/problems/shortest-path-to-get-all-keys/)
+- [LCP 13. 寻宝](https://leetcode.cn/problems/xun-bao/)
 
 ## 分类题单
 
