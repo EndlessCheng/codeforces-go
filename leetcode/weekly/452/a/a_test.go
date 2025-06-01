@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,31 @@ func Test_a(t *testing.T) {
 }
 // https://leetcode.cn/contest/weekly-contest-452/problems/partition-array-into-two-equal-product-subsets/
 // https://leetcode.cn/problems/partition-array-into-two-equal-product-subsets/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a []int, tar int64) {
+		//return
+		rg.Clear()
+		n := rg.Int(3, 3)
+		a = rg.IntSliceUnique(n, 1, 12)
+		tar = int64(rg.Int(1, 24))
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, checkEqualPartitions, checkEqualPartitionsWA)
+}
+
+func checkEqualPartitionsWA(nums []int, target int64) bool {
+	tar := int(target)
+	mul := 1
+	for _, x := range nums {
+		if tar%x > 0 {
+			return false
+		}
+		mul *= x
+	}
+	return mul == tar*tar
+}
