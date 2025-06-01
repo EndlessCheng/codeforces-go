@@ -211,10 +211,12 @@ $$
 
 ```py [sol-Python3]
 class Solution:
-    def calc_pairs(self, nums: List[int]) -> Set[Tuple[int, int]]:
+    def calc(self, nums: List[int], target: int) -> Set[Tuple[int, int]]:
         st = set()
 
         def dfs(i: int, a: int, b: int) -> None:
+            if a > target or b > target:
+                return
             if i == len(nums):
                 g = gcd(a, b)
                 st.add((a // g, b // g))  # 最简分数
@@ -230,14 +232,163 @@ class Solution:
             return False
 
         m = len(nums) // 2
-        set1 = self.calc_pairs(nums[:m])
-        set2 = self.calc_pairs(nums[m:])
+        set1 = self.calc(nums[:m], target)
+        set2 = self.calc(nums[m:], target)
         return len(set1 & set2) > 0  # 交集不为空
+```
+
+```java [sol-Java]
+import java.math.BigInteger;
+
+class Solution {
+    private record Pair(long a, long b) {
+    }
+
+    public boolean checkEqualPartitions(int[] nums, long target) {
+        BigInteger prodAll = Arrays.stream(nums)
+                .mapToObj(BigInteger::valueOf)
+                .reduce(BigInteger.ONE, BigInteger::multiply);
+        if (!prodAll.equals(BigInteger.valueOf(target).pow(2))) {
+            return false;
+        }
+
+        int m = nums.length / 2;
+        int[] left = Arrays.copyOfRange(nums, 0, m);
+        int[] right = Arrays.copyOfRange(nums, m, nums.length);
+        Set<Pair> set1 = calc(left, target);
+        Set<Pair> set2 = calc(right, target);
+
+        for (Pair p : set1) {
+            if (set2.contains(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<Pair> calc(int[] nums, long target) {
+        Set<Pair> st = new HashSet<>();
+        dfs(0, 1, 1, nums, target, st);
+        return st;
+    }
+
+    private void dfs(int i, long a, long b, int[] nums, long target, Set<Pair> st) {
+        if (a > target || b > target) {
+            return;
+        }
+        if (i == nums.length) {
+            long g = gcd(a, b);
+            st.add(new Pair(a / g, b / g)); // 最简分数
+            return;
+        }
+        dfs(i + 1, a * nums[i], b, nums, target, st);
+        dfs(i + 1, a, b * nums[i], nums, target, st);
+    }
+
+    private long gcd(long a, long b) {
+        while (a != 0) {
+            long tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    set<pair<long long, long long>> calc(const vector<int>& nums, long long target) {
+        set<pair<long long, long long>> st; // 可以用 unordered_set + 自定义哈希
+        auto dfs = [&](this auto&& dfs, int i, long long a, long long b) -> void {
+            if (a > target || b > target) {
+                return;
+            }
+            if (i == nums.size()) {
+                long long g = gcd(a, b);
+                st.emplace(a / g, b / g); // 最简分数
+                return;
+            }
+            dfs(i + 1, a * nums[i], b);
+            dfs(i + 1, a, b * nums[i]);
+        };
+        dfs(0, 1, 1);
+        return st;
+    }
+
+public:
+    bool checkEqualPartitions(vector<int>& nums, long long target) {
+        __int128 prod_all = 1;
+        for (int x : nums) {
+            prod_all *= x;
+        }
+        if (prod_all != (__int128) target * target) {
+            return false;
+        }
+
+        int m = nums.size() / 2;
+        auto set1 = calc(vector<int>(nums.begin(), nums.begin() + m), target);
+        auto set2 = calc(vector<int>(nums.begin() + m, nums.end()), target);
+
+        for (auto& p : set1) {
+            if (set2.contains(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+```
+
+```go [sol-Go]
+func calc(nums []int, target int) map[[2]int]struct{} {
+	set := map[[2]int]struct{}{}
+	var dfs func(int, int, int)
+	dfs = func(i, a, b int) {
+		if a > target || b > target {
+			return
+		}
+		if i == len(nums) {
+			g := gcd(a, b)
+			set[[2]int{a / g, b / g}] = struct{}{} // 最简分数
+			return
+		}
+		dfs(i+1, a*nums[i], b)
+		dfs(i+1, a, b*nums[i])
+	}
+	dfs(0, 1, 1)
+	return set
+}
+
+func checkEqualPartitions(nums []int, target int64) bool {
+	prodAll := big.NewInt(1)
+	for _, x := range nums {
+		prodAll.Mul(prodAll, big.NewInt(int64(x)))
+	}
+	square := big.NewInt(target)
+	square.Mul(square, square)
+	if prodAll.Cmp(square) != 0 {
+		return false
+	}
+
+	m := len(nums) / 2
+	set1 := calc(nums[:m], int(target))
+	set2 := calc(nums[m:], int(target))
+
+	for p := range set1 {
+		if _, ok := set2[p]; ok {
+			return true
+		}
+	}
+	return false
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(2^{n/2}\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是乘积的最大值。$\log U$ 是计算 GCD 的复杂度。
+- 时间复杂度：$\mathcal{O}(2^{n/2}\log \textit{target})$，其中 $n$ 是 $\textit{nums}$ 的长度。$\log \textit{target}$ 是计算 GCD 的复杂度。
 - 空间复杂度：$\mathcal{O}(2^{n/2})$。
 
 ## 思考题
