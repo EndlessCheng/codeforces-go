@@ -237,7 +237,7 @@ class Solution:
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(2^{n/2})$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(2^{n/2}\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是乘积的最大值。$\log U$ 是计算 GCD 的复杂度。
 - 空间复杂度：$\mathcal{O}(2^{n/2})$。
 
 ## 思考题
