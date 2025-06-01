@@ -20,6 +20,8 @@
 
 如果两个子集的乘积都等于 $\textit{target}$，返回 $\texttt{true}$。
 
+**注**：由于题目保证 $n\ge 3$ 且 $\textit{nums}$ 的所有元素互不相同，所以当一个子集是空集时，乘积为 $1$，另一个乘积一定大于 $1$，所以这种情况一定不符合要求。所以无需判断子集是空集的情况。
+
 ```py [sol-Python3]
 class Solution:
     def checkEqualPartitions(self, nums: List[int], target: int) -> bool:
@@ -95,13 +97,15 @@ func checkEqualPartitions(nums []int, target int64) bool {
 
 原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
+**优化**：根据对称性，无需枚举 $n-1$ 在 $S$ 中的情况，也就是说，二进制的最高位一定是 $0$。
+
 [本题视频讲解](https://www.bilibili.com/video/BV1Dz76zfEdi/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def checkEqualPartitions(self, nums: List[int], target: int) -> bool:
-        u = (1 << len(nums)) - 1
-        for s in range(1, u):  # 枚举 u 的非空真子集 s
+        n = len(nums)
+        for s in range(1, 1 << (n - 1)):
             mul1 = mul2 = 1
             for i, x in enumerate(nums):
                 if s >> i & 1:  # i 在集合 s 中
@@ -117,8 +121,8 @@ class Solution:
 class Solution {
     public boolean checkEqualPartitions(int[] nums, long target) {
         int n = nums.length;
-        int u = (1 << n) - 1;
-        for (int s = 1; s < u; s++) { // 枚举 u 的非空真子集 s
+        int u = 1 << (n - 1);
+        for (int s = 1; s < u; s++) {
             long mul1 = 1, mul2 = 1;
             for (int i = 0; i < n && mul1 <= target && mul2 <= target; i++) {
                 if ((s >> i & 1) > 0) { // i 在集合 s 中
@@ -141,8 +145,8 @@ class Solution {
 public:
     bool checkEqualPartitions(vector<int>& nums, long long target) {
         int n = nums.size();
-        int u = (1 << n) - 1;
-        for (int s = 1; s < u; s++) { // 枚举 u 的非空真子集 s
+        int u = 1 << (n - 1);
+        for (int s = 1; s < u; s++) {
             long long mul1 = 1, mul2 = 1;
             for (int i = 0; i < n && mul1 <= target && mul2 <= target; i++) {
                 if (s >> i & 1) { // i 在集合 s 中
@@ -163,8 +167,7 @@ public:
 ```go [sol-Go]
 func checkEqualPartitions(nums []int, target int64) bool {
 	tar := int(target)
-	u := 1<<len(nums) - 1
-	for s := 1; s < u; s++ { // 枚举 u 的非空真子集 s
+	for s := 1; s < 1<<(len(nums)-1); s++ {
 		mul1, mul2 := 1, 1
 		for i, x := range nums {
 			if s>>i&1 > 0 { // i 在集合 s 中
