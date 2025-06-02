@@ -135,6 +135,17 @@ func maximumCount(nums []int, queries [][]int) (ans []int) {
 		}
 	}
 
+	update := func(ps *redblacktree.Tree[int, struct{}], i, delta int) {
+		l, r := ps.Left().Key, ps.Right().Key
+		if l == r {
+			t.update(1, min(l, i), max(r, i), delta)
+		} else if i < l {
+			t.update(1, i, l-1, delta)
+		} else if i > r {
+			t.update(1, r+1, i, delta)
+		}
+	}
+
 	for _, q := range queries {
 		i, v := q[0], q[1]
 		old := nums[i]
@@ -142,33 +153,24 @@ func maximumCount(nums []int, queries [][]int) (ans []int) {
 
 		if !np[old] {
 			ps := pos[old]
-			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, -1)
-			}
 			ps.Remove(i)
-			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, 1)
-			} else if ps.Empty() {
+			if ps.Empty() {
 				delete(pos, old)
+			} else {
+				update(ps, i, -1)
 			}
 		}
 
 		if !np[v] {
-			if _, ok := pos[v]; !ok {
+			if ps, ok := pos[v]; !ok {
 				pos[v] = redblacktree.New[int, struct{}]()
+			} else {
+				update(ps, i, 1)
 			}
-			ps := pos[v]
-			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, -1)
-			}
-			ps.Put(i, struct{}{})
-			if ps.Size() > 1 {
-				t.update(1, ps.Left().Key, ps.Right().Key, 1)
-			}
+			pos[v].Put(i, struct{}{})
 		}
 
 		ans = append(ans, len(pos)+t.query(1, 0, n-1))
 	}
-
 	return
 }
