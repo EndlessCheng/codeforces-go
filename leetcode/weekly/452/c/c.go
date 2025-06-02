@@ -11,7 +11,7 @@ func minMoves(classroom []string, energy int) (ans int) {
 	for i, row := range classroom {
 		for j, b := range row {
 			if b == 'L' {
-				idx[i][j] = cntL // 给垃圾分配编号
+				idx[i][j] = 1 << cntL
 				cntL++
 			} else if b == 'S' {
 				sx, sy = i, j
@@ -32,18 +32,18 @@ func minMoves(classroom []string, energy int) (ans int) {
 		}
 	}
 
-	maxEnergy[sx][sy][u-1] = int8(energy)
+	maxEnergy[sx][sy][0] = int8(energy)
 	type tuple struct{ x, y, e, mask int }
-	q := []tuple{{sx, sy, energy, u - 1}}
+	q := []tuple{{sx, sy, energy, 0}}
 
 	for ; len(q) > 0; ans++ {
 		tmp := q
 		q = nil
 		for _, p := range tmp {
-			if p.mask == 0 { // 所有垃圾清理完毕
+			if p.mask == u-1 {
 				return
 			}
-			if p.e == 0 { // 走不动了
+			if p.e == 0 {
 				continue
 			}
 			for _, d := range dirs {
@@ -51,12 +51,9 @@ func minMoves(classroom []string, energy int) (ans int) {
 				if 0 <= x && x < m && 0 <= y && y < n && classroom[x][y] != 'X' {
 					newE := p.e - 1
 					if classroom[x][y] == 'R' {
-						newE = energy // 充满能量
+						newE = energy
 					}
-					newMask := p.mask
-					if classroom[x][y] == 'L' {
-						newMask &^= 1 << idx[x][y] // 清理垃圾
-					}
+					newMask := p.mask | idx[x][y]
 					if int8(newE) > maxEnergy[x][y][newMask] {
 						maxEnergy[x][y][newMask] = int8(newE)
 						q = append(q, tuple{x, y, newE, newMask})
@@ -78,7 +75,7 @@ func minMoves1(classroom []string, energy int) (ans int) {
 	for i, row := range classroom {
 		for j, b := range row {
 			if b == 'L' {
-				idx[i][j] = cntL // 给垃圾分配编号
+				idx[i][j] = 1 << cntL // 给垃圾分配编号（提前计算左移）
 				cntL++
 			} else if b == 'S' {
 				sx, sy = i, j
@@ -99,14 +96,15 @@ func minMoves1(classroom []string, energy int) (ans int) {
 		}
 	}
 
-	vis[sx][sy][energy][u-1] = true
+	vis[sx][sy][energy][0] = true
 	type tuple struct{ x, y, e, mask int }
-	q := []tuple{{sx, sy, energy, u - 1}}
+	q := []tuple{{sx, sy, energy, 0}}
+
 	for ; len(q) > 0; ans++ {
 		tmp := q
 		q = nil
 		for _, p := range tmp {
-			if p.mask == 0 { // 所有垃圾清理完毕
+			if p.mask == u-1 { // 所有垃圾收集完毕
 				return
 			}
 			if p.e == 0 { // 走不动了
@@ -119,10 +117,7 @@ func minMoves1(classroom []string, energy int) (ans int) {
 					if classroom[x][y] == 'R' {
 						newE = energy // 充满能量
 					}
-					newMask := p.mask
-					if classroom[x][y] == 'L' {
-						newMask &^= 1 << idx[x][y] // 清理垃圾
-					}
+					newMask := p.mask | idx[x][y] // 添加垃圾（没有垃圾时 mask 不变）
 					if !vis[x][y][newE][newMask] {
 						vis[x][y][newE][newMask] = true
 						q = append(q, tuple{x, y, newE, newMask})

@@ -1,18 +1,18 @@
 本质是计算最短路，但需要一些额外的信息。
 
 - 基本信息是当前位置，即行列下标 $(x,y)$。
-- 需要知道当前能量值 $e$。
-- 需要知道剩余垃圾有哪些，即垃圾的编号集合 $\textit{mask}$。
+- 需要额外知道当前能量值 $e$。
+- 需要额外知道当前已收集的垃圾有哪些，即垃圾的编号集合 $\textit{mask}$。
 
-从当前状态 $(x,y,e,\textit{mask})$ 移动到相邻格子，新的状态为：
+从当前状态 $(x,y,e,\textit{mask})$ 移动到四方向相邻格子，新的状态为：
 
 - 新的位置 $(x',y')$。
 - 新的能量值：如果新的位置是 $\texttt{R}$，那么新的能量值为 $\textit{energy}$，否则为 $e-1$。
-- 新的剩余垃圾编号集合：如果新的位置是 $\texttt{L}$，从 $\textit{mask}$ 中去掉这个垃圾的编号。**注**：BFS 之前，给每个垃圾分配一个从 $0$ 开始的编号。
+- 新的已收集垃圾编号集合：如果新的位置是 $\texttt{L}$，往 $\textit{mask}$ 中添加这个垃圾的编号。**注**：BFS 之前，给每个垃圾分配一个从 $0$ 开始的编号。
 
-起点：$(\textit{sx},\textit{sy},\textit{energy},U)$，其中 $(\textit{sx},\textit{sy})$ 是学生的起始位置，$U$ 是一开始的垃圾编号集合。
+起点：$(\textit{sx},\textit{sy},\textit{energy},\varnothing)$，其中 $(\textit{sx},\textit{sy})$ 是学生的起始位置。
 
-终点：$(x,y,e,\varnothing)$，所有垃圾清理完毕。
+终点：$(x,y,e,U)$，所有垃圾清理完毕。其中 $U$ 是所有垃圾编号的集合。
 
 关于 BFS 的原理和双列表写法，见[【基础算法精讲 13】](https://www.bilibili.com/video/BV1hG4y1277i/)。
 
@@ -37,7 +37,7 @@ class Solution:
         for i, row in enumerate(classroom):
             for j, b in enumerate(row):
                 if b == 'L':
-                    idx[i][j] = ~(1 << cnt_l)  # 给垃圾分配编号（提前计算取反后的值）
+                    idx[i][j] = 1 << cnt_l  # 给垃圾分配编号（提前计算左移）
                     cnt_l += 1
                 elif b == 'S':
                     sx, sy = i, j
@@ -45,17 +45,17 @@ class Solution:
             return 0
 
         DIRS = (-1, 0), (1, 0), (0, -1), (0, 1)
-        full_mask = (1 << cnt_l) - 1
         vis = [[[[False] * (1 << cnt_l) for _ in range(energy + 1)] for _ in range(n)] for _ in range(m)]
-        vis[sx][sy][energy][full_mask] = True
-        q = [(sx, sy, energy, full_mask)]
+        vis[sx][sy][energy][0] = True
+        q = [(sx, sy, energy, 0)]
 
+        full_mask = (1 << cnt_l) - 1
         ans = 0
         while q:
             tmp = q
             q = []
             for x, y, e, mask in tmp:
-                if mask == 0:  # 所有垃圾清理完毕
+                if mask == full_mask:  # 所有垃圾收集完毕
                     return ans
                 if e == 0:  # 没能量了
                     continue
@@ -63,7 +63,7 @@ class Solution:
                     nx, ny = x + dx, y + dy
                     if 0 <= nx < m and 0 <= ny < n and classroom[nx][ny] != 'X':
                         new_e = energy if classroom[nx][ny] == 'R' else e - 1
-                        new_mask = mask & idx[nx][ny] if classroom[nx][ny] == 'L' else mask
+                        new_mask = mask | idx[nx][ny]  # 添加垃圾（没有垃圾时 mask 不变）
                         if not vis[nx][ny][new_e][new_mask]:
                             vis[nx][ny][new_e][new_mask] = True
                             q.append((nx, ny, new_e, new_mask))
@@ -88,7 +88,7 @@ class Solution {
             for (int j = 0; j < n; j++) {
                 char b = row.charAt(j);
                 if (b == 'L') {
-                    idx[i][j] = cntL++; // 给垃圾分配编号
+                    idx[i][j] = 1 << cntL++; // 给垃圾分配编号（提前计算左移）
                 } else if (b == 'S') {
                     sx = i;
                     sy = j;
@@ -98,15 +98,15 @@ class Solution {
 
         int u = 1 << cntL;
         boolean[][][][] vis = new boolean[m][n][energy + 1][u];
-        vis[sx][sy][energy][u - 1] = true;
+        vis[sx][sy][energy][0] = true;
 
         List<Node> q = new ArrayList<>();
-        q.add(new Node(sx, sy, energy, u - 1));
+        q.add(new Node(sx, sy, energy, 0));
         for (int ans = 0; !q.isEmpty(); ans++) {
             List<Node> tmp = q;
             q = new ArrayList<>();
             for (Node p : tmp) {
-                if (p.mask == 0) { // 所有垃圾清理完毕
+                if (p.mask == u - 1) { // 所有垃圾收集完毕
                     return ans;
                 }
                 if (p.e == 0) { // 走不动了
@@ -116,7 +116,7 @@ class Solution {
                     int x = p.x + d[0], y = p.y + d[1];
                     if (x >= 0 && x < m && y >= 0 && y < n && classroom[x].charAt(y) != 'X') {
                         int newE = classroom[x].charAt(y) == 'R' ? energy : p.e - 1;
-                        int newMask = classroom[x].charAt(y) == 'L' ? p.mask & ~(1 << idx[x][y]) : p.mask;
+                        int newMask = p.mask | idx[x][y]; // 添加垃圾（没有垃圾时 mask 不变）
                         if (!vis[x][y][newE][newMask]) {
                             vis[x][y][newE][newMask] = true;
                             q.add(new Node(x, y, newE, newMask));
@@ -140,11 +140,11 @@ public:
         vector idx(m, vector<int>(n));
         int cnt_l = 0, sx = 0, sy = 0;
         for (int i = 0; i < m; i++) {
-            const string& row = classroom[i];
+            auto& row = classroom[i];
             for (int j = 0; j < n; j++) {
                 char b = row[j];
                 if (b == 'L') {
-                    idx[i][j] = cnt_l++; // 给垃圾分配编号
+                    idx[i][j] = 1 << cnt_l++; // 给垃圾分配编号（提前计算左移）
                 } else if (b == 'S') {
                     sx = i;
                     sy = j;
@@ -154,14 +154,15 @@ public:
 
         int u = 1 << cnt_l;
         vector vis(m, vector(n, vector(energy + 1, vector<int8_t>(u))));
-        vis[sx][sy][energy][u - 1] = true;
+        vis[sx][sy][energy][0] = true;
         struct Node { int x, y, e, mask; };
-        vector<Node> q = {{sx, sy, energy, u - 1}};
+        vector<Node> q = {{sx, sy, energy, 0}};
+
         for (int ans = 0; !q.empty(); ans++) {
             auto tmp = q;
             q.clear();
             for (auto& [x, y, e, mask] : tmp) {
-                if (mask == 0) { // 所有垃圾清理完毕
+                if (mask == u - 1) { // 所有垃圾收集完毕
                     return ans;
                 }
                 if (e == 0) { // 走不动了
@@ -171,7 +172,7 @@ public:
                     int nx = x + dx, ny = y + dy;
                     if (0 <= nx && nx < m && 0 <= ny && ny < n && classroom[nx][ny] != 'X') {
                         int new_e = classroom[nx][ny] == 'R' ? energy : e - 1;
-                        int new_mask = classroom[nx][ny] == 'L' ? mask & ~(1 << idx[nx][ny]) : mask;
+                        int new_mask = mask | idx[nx][ny]; // 添加垃圾（没有垃圾时 mask 不变）
                         if (!vis[nx][ny][new_e][new_mask]) {
                             vis[nx][ny][new_e][new_mask] = true;
                             q.emplace_back(nx, ny, new_e, new_mask);
@@ -196,7 +197,7 @@ func minMoves(classroom []string, energy int) (ans int) {
 	for i, row := range classroom {
 		for j, b := range row {
 			if b == 'L' {
-				idx[i][j] = cntL // 给垃圾分配编号
+				idx[i][j] = 1 << cntL // 给垃圾分配编号（提前计算左移）
 				cntL++
 			} else if b == 'S' {
 				sx, sy = i, j
@@ -217,14 +218,15 @@ func minMoves(classroom []string, energy int) (ans int) {
 		}
 	}
 
-	vis[sx][sy][energy][u-1] = true
+	vis[sx][sy][energy][0] = true
 	type tuple struct{ x, y, e, mask int }
-	q := []tuple{{sx, sy, energy, u - 1}}
+	q := []tuple{{sx, sy, energy, 0}}
+
 	for ; len(q) > 0; ans++ {
 		tmp := q
 		q = nil
 		for _, p := range tmp {
-			if p.mask == 0 { // 所有垃圾清理完毕
+			if p.mask == u-1 { // 所有垃圾收集完毕
 				return
 			}
 			if p.e == 0 { // 走不动了
@@ -237,10 +239,7 @@ func minMoves(classroom []string, energy int) (ans int) {
 					if classroom[x][y] == 'R' {
 						newE = energy // 充满能量
 					}
-					newMask := p.mask
-					if classroom[x][y] == 'L' {
-						newMask &^= 1 << idx[x][y] // 清理垃圾
-					}
+					newMask := p.mask | idx[x][y] // 添加垃圾（没有垃圾时 mask 不变）
 					if !vis[x][y][newE][newMask] {
 						vis[x][y][newE][newMask] = true
 						q = append(q, tuple{x, y, newE, newMask})
@@ -270,7 +269,7 @@ class Solution:
         for i, row in enumerate(classroom):
             for j, b in enumerate(row):
                 if b == 'L':
-                    idx[i][j] = ~(1 << cnt_l)  # 给垃圾分配编号（提前计算取反后的值）
+                    idx[i][j] = 1 << cnt_l
                     cnt_l += 1
                 elif b == 'S':
                     sx, sy = i, j
@@ -279,24 +278,24 @@ class Solution:
 
         DIRS = (-1, 0), (1, 0), (0, -1), (0, 1)
         max_energy = [[[-1] * (1 << cnt_l) for _ in range(n)] for _ in range(m)]
-        full_mask = (1 << cnt_l) - 1
-        max_energy[sx][sy][full_mask] = energy
-        q = [(sx, sy, energy, full_mask)]
+        max_energy[sx][sy][0] = energy
+        q = [(sx, sy, energy, 0)]
 
+        full_mask = (1 << cnt_l) - 1
         ans = 0
         while q:
             tmp = q
             q = []
             for x, y, e, mask in tmp:
-                if mask == 0:  # 所有垃圾清理完毕
+                if mask == full_mask:
                     return ans
-                if e == 0:  # 没能量了
+                if e == 0:
                     continue
                 for dx, dy in DIRS:
                     nx, ny = x + dx, y + dy
                     if 0 <= nx < m and 0 <= ny < n and classroom[nx][ny] != 'X':
                         new_e = energy if classroom[nx][ny] == 'R' else e - 1
-                        new_mask = mask & idx[nx][ny] if classroom[nx][ny] == 'L' else mask
+                        new_mask = mask | idx[nx][ny]
                         if new_e > max_energy[nx][ny][new_mask]:
                             max_energy[nx][ny][new_mask] = new_e
                             q.append((nx, ny, new_e, new_mask))
@@ -314,14 +313,15 @@ class Solution {
     public int minMoves(String[] classroom, int energy) {
         int m = classroom.length;
         int n = classroom[0].length();
+        char[][] grid = new char[m][]; // 把 String[] 转成 char[][]，读取效率更高
         int[][] idx = new int[m][n];
         int cntL = 0, sx = 0, sy = 0;
         for (int i = 0; i < m; i++) {
-            String row = classroom[i];
+            grid[i] = classroom[i].toCharArray();
             for (int j = 0; j < n; j++) {
-                char b = row.charAt(j);
+                char b = grid[i][j];
                 if (b == 'L') {
-                    idx[i][j] = cntL++; // 给垃圾分配编号
+                    idx[i][j] = 1 << cntL++;
                 } else if (b == 'S') {
                     sx = i;
                     sy = j;
@@ -336,25 +336,25 @@ class Solution {
                 Arrays.fill(row, (byte) -1);
             }
         }
-        maxEnergy[sx][sy][u - 1] = (byte) energy;
+        maxEnergy[sx][sy][0] = (byte) energy;
         List<Node> q = new ArrayList<>();
-        q.add(new Node(sx, sy, (byte) energy, u - 1));
+        q.add(new Node(sx, sy, (byte) energy, 0));
 
         for (int ans = 0; !q.isEmpty(); ans++) {
             List<Node> tmp = q;
             q = new ArrayList<>();
             for (Node p : tmp) {
-                if (p.mask == 0) { // 所有垃圾清理完毕
+                if (p.mask == u - 1) {
                     return ans;
                 }
-                if (p.e == 0) { // 走不动了
+                if (p.e == 0) {
                     continue;
                 }
                 for (int[] d : DIRS) {
                     int x = p.x + d[0], y = p.y + d[1];
-                    if (x >= 0 && x < m && y >= 0 && y < n && classroom[x].charAt(y) != 'X') {
-                        byte newE = (byte) (classroom[x].charAt(y) == 'R' ? energy : p.e - 1);
-                        int newMask = classroom[x].charAt(y) == 'L' ? p.mask & ~(1 << idx[x][y]) : p.mask;
+                    if (x >= 0 && x < m && y >= 0 && y < n && grid[x][y] != 'X') {
+                        byte newE = (byte) (grid[x][y] == 'R' ? energy : p.e - 1);
+                        int newMask = p.mask | idx[x][y];
                         if (newE > maxEnergy[x][y][newMask]) {
                             maxEnergy[x][y][newMask] = newE;
                             q.add(new Node(x, y, newE, newMask));
@@ -378,11 +378,11 @@ public:
         vector idx(m, vector<int>(n));
         int cnt_l = 0, sx = 0, sy = 0;
         for (int i = 0; i < m; i++) {
-            const string& row = classroom[i];
+            auto& row = classroom[i];
             for (int j = 0; j < n; j++) {
                 char b = row[j];
                 if (b == 'L') {
-                    idx[i][j] = cnt_l++; // 给垃圾分配编号
+                    idx[i][j] = 1 << cnt_l++;
                 } else if (b == 'S') {
                     sx = i;
                     sy = j;
@@ -392,25 +392,25 @@ public:
 
         int u = 1 << cnt_l;
         vector max_energy(m, vector(n, vector<int8_t>(u, -1)));
-        max_energy[sx][sy][u - 1] = energy;
+        max_energy[sx][sy][0] = energy;
         struct Node { int x, y, e, mask; };
-        vector<Node> q = {{sx, sy, energy, u - 1}};
+        vector<Node> q = {{sx, sy, energy, 0}};
 
         for (int ans = 0; !q.empty(); ans++) {
             auto tmp = q;
             q.clear();
             for (auto& [x, y, e, mask] : tmp) {
-                if (mask == 0) { // 所有垃圾清理完毕
+                if (mask == u - 1) {
                     return ans;
                 }
-                if (e == 0) { // 走不动了
+                if (e == 0) {
                     continue;
                 }
                 for (auto& [dx, dy] : dirs) {
                     int nx = x + dx, ny = y + dy;
                     if (0 <= nx && nx < m && 0 <= ny && ny < n && classroom[nx][ny] != 'X') {
                         int new_e = classroom[nx][ny] == 'R' ? energy : e - 1;
-                        int new_mask = classroom[nx][ny] == 'L' ? mask & ~(1 << idx[nx][ny]) : mask;
+                        int new_mask = mask | idx[nx][ny];
                         if (new_e > max_energy[nx][ny][new_mask]) {
                             max_energy[nx][ny][new_mask] = new_e;
                             q.emplace_back(nx, ny, new_e, new_mask);
@@ -435,7 +435,7 @@ func minMoves(classroom []string, energy int) (ans int) {
 	for i, row := range classroom {
 		for j, b := range row {
 			if b == 'L' {
-				idx[i][j] = cntL // 给垃圾分配编号
+				idx[i][j] = 1 << cntL
 				cntL++
 			} else if b == 'S' {
 				sx, sy = i, j
@@ -456,18 +456,18 @@ func minMoves(classroom []string, energy int) (ans int) {
 		}
 	}
 
-	maxEnergy[sx][sy][u-1] = int8(energy)
+	maxEnergy[sx][sy][0] = int8(energy)
 	type tuple struct{ x, y, e, mask int }
-	q := []tuple{{sx, sy, energy, u - 1}}
+	q := []tuple{{sx, sy, energy, 0}}
 
 	for ; len(q) > 0; ans++ {
 		tmp := q
 		q = nil
 		for _, p := range tmp {
-			if p.mask == 0 { // 所有垃圾清理完毕
+			if p.mask == u-1 {
 				return
 			}
-			if p.e == 0 { // 走不动了
+			if p.e == 0 {
 				continue
 			}
 			for _, d := range dirs {
@@ -475,12 +475,9 @@ func minMoves(classroom []string, energy int) (ans int) {
 				if 0 <= x && x < m && 0 <= y && y < n && classroom[x][y] != 'X' {
 					newE := p.e - 1
 					if classroom[x][y] == 'R' {
-						newE = energy // 充满能量
+						newE = energy
 					}
-					newMask := p.mask
-					if classroom[x][y] == 'L' {
-						newMask &^= 1 << idx[x][y] // 清理垃圾
-					}
+					newMask := p.mask | idx[x][y]
 					if int8(newE) > maxEnergy[x][y][newMask] {
 						maxEnergy[x][y][newMask] = int8(newE)
 						q = append(q, tuple{x, y, newE, newMask})
