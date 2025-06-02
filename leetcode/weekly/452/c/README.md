@@ -24,7 +24,7 @@
 
 **问**：能不能写类似旅行商问题（TSP）的状压 DP？
 
-**答**：恐怕不行。考虑这样一种情况：$\texttt{L}\to \texttt{R}\to\texttt{R}\to\cdots \to\texttt{R} \to\texttt{L}$。有什么好的策略能快速判断在两个 $\texttt{L}$ 之间用哪些 $\texttt{R}$ 是最优的？
+**答**：恐怕不行。考虑这样一种「接力」情况：$\texttt{L}\to \texttt{R}\to\texttt{R}\to\cdots \to\texttt{R} \to\texttt{L}$。有什么好的策略能快速判断在两个 $\texttt{L}$ 之间用哪些 $\texttt{R}$ 是最优的？
 
 ## 优化前
 
@@ -495,8 +495,8 @@ func minMoves(classroom []string, energy int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(m\cdot n\cdot \textit{energy}\cdot 2^L)$，其中 $m$ 和 $n$ 分别为 $\textit{classroom}$ 的行数和列数，$L\le 10$ 为垃圾个数。
-- 空间复杂度：$\mathcal{O}(m\cdot n\cdot \textit{energy}\cdot 2^L)$。每个状态至多访问一次。
+- 时间复杂度：$\mathcal{O}(m\cdot n\cdot \textit{energy}\cdot 2^L)$，其中 $m$ 和 $n$ 分别为 $\textit{classroom}$ 的行数和列数，$L\le 10$ 为垃圾个数。每个状态至多访问一次。
+- 空间复杂度：$\mathcal{O}(m\cdot n\cdot \textit{energy}\cdot 2^L)$。这是双列表（队列）需要的空间。
 
 ## 相似题目
 
