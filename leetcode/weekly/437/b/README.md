@@ -99,6 +99,10 @@ func maxWeight(pizzas []int) (ans int64) {
 
 更多相似题目，见下面贪心题单中的「**§1.1 从最小/最大开始贪心**」。
 
+## 思考题
+
+把最大改成最小，怎么做？
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
