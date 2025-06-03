@@ -2,7 +2,9 @@
 
 「最小化最大值」就是二分答案的代名词。我们猜测一个上界 $\textit{limit}$，即要求操作后所有元素均不超过 $\textit{limit}$。由于 $\textit{limit}$ 越大越能够满足，越小越无法满足，可以**二分猜答案**。
 
-从后往前模拟：如果 $\textit{nums}[i]>\textit{limit}$，那么应当去掉多余的 $\textit{extra}=\textit{nums}[i]-\textit{limit}$ 加到 $\textit{nums}[i-1]$ 上，最后如果 $\textit{nums}[0]\le\textit{limit}$，则二分判定成功。
+把 $\textit{nums}[i]$ 想象成一个大小为 $\textit{nums}[i]$ 的积木堆，我们可以把一个积木移动到左边相邻的积木堆中。进一步地，多出的积木并不是只能移动一次，而是可以多次向左移动，从 $i$ 移动到 $i-1$，再移动到 $i-2$，依此类推。
+
+我们可以从右往左模拟：如果 $\textit{nums}[i]>\textit{limit}$，那么应当去掉多余的 $\textit{extra}=\textit{nums}[i]-\textit{limit}$ 加到 $\textit{nums}[i-1]$ 上，最后如果 $\textit{nums}[0]\le\textit{limit}$，则二分判定成功。
 
 代码实现时可以不用修改 $\textit{nums}$，而是维护 $\textit{extra}$ 变量。
 
