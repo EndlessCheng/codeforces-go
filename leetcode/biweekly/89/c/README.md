@@ -1,6 +1,6 @@
 ## 方法一：二分答案
 
-「最小化最大值」就是二分答案的代名词。我们猜测一个上界 $\textit{limit}$，即要求操作后所有元素均不超过 $\textit{limit}$。由于 $\textit{limit}$ 越大越能够满足，越小越无法满足，有**单调性**，可以二分答案。
+「最小化最大值」就是二分答案的代名词。我们猜测一个上界 $\textit{limit}$，即要求操作后所有元素均不超过 $\textit{limit}$。由于 $\textit{limit}$ 越大越能够满足，越小越无法满足，可以**二分猜答案**。
 
 从后往前模拟：如果 $\textit{nums}[i]>\textit{limit}$，那么应当去掉多余的 $\textit{extra}=\textit{nums}[i]-\textit{limit}$ 加到 $\textit{nums}[i-1]$ 上，最后如果 $\textit{nums}[0]\le\textit{limit}$，则二分判定成功。
 
