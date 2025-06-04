@@ -1,10 +1,6 @@
-[本题视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/)
-
 **挨个判断**每台机器最多可以制造多少份合金。
 
-假设要制造 $\textit{num}$ 份合金，由于 $\textit{num}$ 越小，花费的钱越少，$\textit{num}$ 越多，花费的钱越多，有**单调性**，可以二分。
-
-关于二分的基础知识，以及各种开闭区间的写法，请看视频讲解[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
+假设要制造 $\textit{num}$ 份合金，由于 $\textit{num}$ 越小，花费的钱越少，$\textit{num}$ 越多，花费的钱越多，可以据此**二分猜答案**。关于二分算法的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 对于第 $j$ 类金属：
 
@@ -17,12 +13,17 @@ $$
 
 遍历每类金属，计算总花费。如果总花费超过 $\textit{budget}$，则无法制造 $\textit{num}$ 份合金，否则可以制造。
 
-最后讨论下二分的上下界：
+## 细节
 
-- **二分上界**：粗略计算一下，假设 $\textit{composition}[i][j]$ 和 $\textit{cost}[j]$ 都是 $1$，此时可以制造最多的合金，个数为 $\min(\textit{stock}) + \textit{budget}$。
-- **二分下界**：可以设为 $1$。更巧妙的做法是，设当前答案为 $\textit{ans}$，那么可以初始化二分下界为 $\textit{ans}+1$，因为算出小于等于 $\textit{ans}$ 的值是没有意义的，不会让 $\textit{ans}$ 变大。如果这台机器无法制造出至少 $\textit{ans}+1$ 份合金，那么二分循环结束后的结果为 $\textit{ans}$，不影响答案。
+下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的，喜欢哪种写法就用哪种。
 
-下面的代码采用开区间写法，要把上界加一，下界减一。
+- 开区间左端点初始值：$0$。不需要造合金，直接就满足要求了。
+- 开区间左端点初始值（优化）：更巧妙的做法是，设当前答案为 $\textit{ans}$，那么开区间左端点可以初始化为 $\textit{ans}$，因为算出小于等于 $\textit{ans}$ 的值是没有意义的，不会让 $\textit{ans}$ 变得更大。如果这台机器无法制造出至少 $\textit{ans}+1$ 份合金，那么二分循环结束后的结果为 $\textit{ans}$，不影响答案。
+- 开区间右端点初始值：粗略估计即可。假设 $\textit{composition}[i][j]$ 和 $\textit{cost}[j]$ 都是 $1$，此时可以制造最多的合金，个数为 $\min(\textit{stock}) + \textit{budget}$。加一之后，一定无法满足要求。
+
+对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/)
 
 ```py [sol-Python3]
 class Solution:
@@ -71,28 +72,24 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxNumberOfAlloys(int n, int k, int budget, List<List<Integer>> composition, List<Integer> Stock, List<Integer> Cost) {
-        int ans = 0;
         int mx = Collections.min(Stock) + budget;
         Integer[] stock = Stock.toArray(Integer[]::new); // 转成数组更快
         Integer[] cost = Cost.toArray(Integer[]::new);
+
+        int ans = 0;
         for (List<Integer> Comp : composition) {
             Integer[] comp = Comp.toArray(Integer[]::new);
             int left = ans;
             int right = mx + 1;
             while (left + 1 < right) { // 开区间写法
-                int mid = left + (right - left) / 2;
-                boolean ok = true;
+                int mid = (left + right) >>> 1;
                 long money = 0;
-                for (int i = 0; i < n; i++) {
+                for (int i = 0; i < n && money <= budget; i++) {
                     if (stock[i] < (long) comp[i] * mid) {
                         money += ((long) comp[i] * mid - stock[i]) * cost[i];
-                        if (money > budget) {
-                            ok = false;
-                            break;
-                        }
                     }
                 }
-                if (ok) {
+                if (money <= budget) {
                     left = mid;
                 } else {
                     right = mid;
