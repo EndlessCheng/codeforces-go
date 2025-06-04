@@ -78,7 +78,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    vector<int> findIndices(vector<int> &nums, int indexDifference, int valueDifference) {
+    vector<int> findIndices(vector<int>& nums, int indexDifference, int valueDifference) {
         int max_idx = 0, min_idx = 0;
         for (int j = indexDifference; j < nums.size(); j++) {
             int i = j - indexDifference;
@@ -101,9 +101,9 @@ public:
 
 ```c [sol-C]
 int* findIndices(int* nums, int numsSize, int indexDifference, int valueDifference, int* returnSize) {
-    int max_idx = 0, min_idx = 0;
     int* ans = malloc(2 * sizeof(int));
     *returnSize = 2;
+    int max_idx = 0, min_idx = 0;
     for (int j = indexDifference; j < numsSize; j++) {
         int i = j - indexDifference;
         if (nums[i] > nums[max_idx]) {
@@ -198,6 +198,10 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(n-\textit{indexDifference})$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 思考题
+
+改成求满足要求的下标对的个数，要怎么做？
 
 ## 分类题单
 
