@@ -58,9 +58,9 @@ $$
 
 ## 答疑
 
-**问**：为什么二分的结果一定来自 $\textit{nums}$ 中两个数的差值？
+**问**：为什么二分结束后，答案 $\textit{ans}$ 一定来自 $\textit{nums}$ 中某两个数的差值？
 
-**答**：反证法。如果不来自 $\textit{nums}$ 中两个数的差值，则说明最大差值 $\le \textit{ans}-1$，换句话说，$\text{check}(\textit{ans}-1)=\texttt{true}$。但根据循环不变量，二分循环结束时 $\text{check}(\textit{ans}-1)=\texttt{false}$，矛盾。故原命题成立。
+**答**：反证法。假设 $\textit{ans}$ 不来自 $\textit{nums}$ 中某两个数的差值，这意味着最大差值 $\le \textit{ans}-1$，换句话说，$\text{check}(\textit{ans}-1)=\texttt{true}$。但根据循环不变量，二分结束后 $\text{check}(\textit{ans}-1)=\texttt{false}$，矛盾。故原命题成立。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1iN411w7my/)
 
