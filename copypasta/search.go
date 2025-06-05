@@ -692,6 +692,7 @@ func backtracking() {
 	// 折半枚举/双向搜索 Meet in the middle
 	// https://codeforces.com/problemset/problem/1006/F 2100
 	// https://codeforces.com/problemset/problem/327/E 2300
+	// https://codeforces.com/problemset/problem/31/E 2400
 	// https://codeforces.com/problemset/problem/912/E 2400
 	// https://atcoder.jp/contests/abc271/tasks/abc271_f 
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
