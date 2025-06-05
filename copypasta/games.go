@@ -26,15 +26,16 @@ todo 取石子游戏总结 https://www.luogu.com.cn/blog/Wolfycz/qian-tan-suan-f
 mex = minimum excluded
 https://en.wikipedia.org/wiki/Mex_(mathematics)
 
-入门分类讨论 https://codeforces.com/problemset/problem/78/C
-三定理的模板题 https://codeforces.com/problemset/problem/1033/C
-             https://atcoder.jp/contests/dp/tasks/dp_k
+https://codeforces.com/problemset/problem/197/A 1600 入门
+https://codeforces.com/problemset/problem/1033/C 1600 三定理的模板题
+https://codeforces.com/problemset/problem/1194/D 1700 1-2-K Game 我的题解 https://www.acwing.com/file_system/file/content/whole/index/content/3179098/
+https://atcoder.jp/contests/dp/tasks/dp_k
+https://codeforces.com/problemset/problem/78/C 2000 分类讨论
 LC2868 https://leetcode.cn/problems/the-wording-game/
-1-2-K Game https://codeforces.com/problemset/problem/1194/D 我的题解 https://www.acwing.com/file_system/file/content/whole/index/content/3179098/
 TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
-一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
+https://codeforces.com/problemset/problem/936/B 2100 一道不错的有向图博弈
 todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
-阶梯博弈 https://codeforces.com/problemset/problem/812/E
+阶梯博弈 https://codeforces.com/problemset/problem/812/E 2300
 todo 阶梯博弈 移动金币 https://www.luogu.com.cn/problem/P5363
 todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
 todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
@@ -45,8 +46,9 @@ todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推�
 - LC877 https://leetcode.cn/problems/stone-game/
 
 交互+博弈
-https://codeforces.com/problemset/problem/1934/D2
+https://codeforces.com/problemset/problem/1934/D2 2400
 todo https://codeforces.com/problemset/problem/1903/E 
+
 */
 func _() {
 	{
