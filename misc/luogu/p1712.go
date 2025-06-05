@@ -42,7 +42,7 @@ func (t seg1712) build(o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg1712) update(o, l, r int, f int) {
+func (t seg1712) update(o, l, r, f int) {
 	if l <= t[o].l && t[o].r <= r {
 		t.apply(o, f)
 		return
@@ -56,21 +56,6 @@ func (t seg1712) update(o, l, r int, f int) {
 		t.update(o<<1|1, l, r, f)
 	}
 	t.maintain(o)
-}
-
-func (t seg1712) query(o, l, r int) int {
-	if l <= t[o].l && t[o].r <= r {
-		return t[o].mx
-	}
-	t.spread(o)
-	m := (t[o].l + t[o].r) >> 1
-	if r <= m {
-		return t.query(o<<1, l, r)
-	}
-	if l > m {
-		return t.query(o<<1|1, l, r)
-	}
-	return max(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
 }
 
 func p1712(in io.Reader, out io.Writer) {
@@ -94,7 +79,7 @@ func p1712(in io.Reader, out io.Writer) {
 	left := 0
 	for _, p := range a {
 		t.update(1, sort.SearchInts(b, p.l), sort.SearchInts(b, p.r), 1)
-		for t.query(1, 0, k-1) >= m {
+		for t[1].mx >= m {
 			q := a[left]
 			ans = min(ans, p.r-p.l-(q.r-q.l))
 			t.update(1, sort.SearchInts(b, q.l), sort.SearchInts(b, q.r), -1)
