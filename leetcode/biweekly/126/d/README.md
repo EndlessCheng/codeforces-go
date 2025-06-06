@@ -146,7 +146,7 @@ func sumOfPower(nums []int, k int) (ans int) {
 
 ## 方法二：一维 0-1 背包
 
-定义 $f[i+1][j]$ 表示在 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 中选子序列，元素和恰好等于 $j$ 的子序列个数。
+定义 $f[i+1][j]$ 表示在 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 中选子序列，子序列中的元素和恰好等于 $j$ 的子序列个数。
 
 对于 $\textit{nums}[i]$，它只有三种可能：
 
