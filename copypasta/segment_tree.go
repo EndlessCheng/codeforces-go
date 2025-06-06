@@ -77,6 +77,7 @@ import "math/bits"
 // https://codeforces.com/problemset/problem/1906/F 2200 最大子数组和（非空） 离线
 // https://codeforces.com/problemset/problem/438/D 2300 取模
 // https://codeforces.com/problemset/problem/1093/G 2300 k 维曼哈顿（单点修改+区间最大值）
+// https://codeforces.com/problemset/problem/498/D 2400
 // https://codeforces.com/problemset/problem/1187/D 2400 转换的好题
 // https://codeforces.com/problemset/problem/1401/F 2400 区间 swap & reverse
 // - 联想 reverse bit 的递归思路
@@ -201,6 +202,10 @@ i/n    n i range
 3.9922 524800 2095105 [523777,523777]
 3.9941 1049088 4190209 [1047041,1047041]
 3.9941 1049600 4192257 [1048577,1048577]
+
+趣味研究：∑ 叶子子集的 LCA
+https://codeforces.com/problemset/problem/1905/E 2400
+
 */
 
 // 线段树有两个下标，一个是线段树节点数组的下标，另一个是线段树维护的区间的下标
