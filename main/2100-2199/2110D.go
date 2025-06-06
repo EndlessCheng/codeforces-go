@@ -3,7 +3,6 @@ package main
 import (
 	. "fmt"
 	"io"
-	"slices"
 	"sort"
 )
 
@@ -18,55 +17,27 @@ func cf2110D(in io.Reader, out io.Writer) {
 		}
 		type nb struct{ to, wt int }
 		g := make([][]nb, n)
-		deg0 := make([]int, n)
 		for range m {
 			var v, w, wt int
 			Fscan(in, &v, &w, &wt)
 			g[v-1] = append(g[v-1], nb{w - 1, wt})
-			deg0[w-1]++
 		}
 
-		q := []int{}
-		for i := 1; i < n; i++ {
-			if deg0[i] == 0 {
-				q = append(q, i)
-			}
-		}
-		for len(q) > 0 {
-			v := q[0]
-			q = q[1:]
-			for _, e := range g[v] {
-				w := e.to
-				if deg0[w]--; deg0[w] == 0 {
-					q = append(q, w)
-				}
-			}
-		}
-
+		f := make([]int, n)
 		ans := sort.Search(1e9+1, func(mx int) bool {
-			deg := slices.Clone(deg0)
-			f := make([]int, n)
-			q := []int{0}
-			for len(q) > 0 {
-				v := q[0]
-				q = q[1:]
-				if v == n-1 {
-					return f[v] > 0
-				}
-				if v == 0 || f[v] > 0 {
-					f[v] = min(f[v]+b[v], mx)
+			clear(f)
+			for v, fv := range f {
+				if v == 0 || fv > 0 {
+					fv = min(fv+b[v], mx)
 				}
 				for _, e := range g[v] {
 					w := e.to
-					if e.wt <= f[v] {
-						f[w] = max(f[w], f[v])
-					}
-					if deg[w]--; deg[w] == 0 {
-						q = append(q, w)
+					if e.wt <= fv {
+						f[w] = max(f[w], fv)
 					}
 				}
 			}
-			return false
+			return f[n-1] > 0
 		})
 		if ans > 1e9 {
 			ans = -1
