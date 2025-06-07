@@ -143,7 +143,7 @@ func (t *trie) remove(s string) *trieNode {
 	return o
 }
 
-// 求小于 s 的字符串个数
+// 求字典序严格小于 s 的字符串个数
 func (t *trie) rank(s string) (k int) {
 	o := t.root
 	for _, b := range s {
@@ -161,7 +161,7 @@ func (t *trie) rank(s string) (k int) {
 		k += o.cnt // 以 b 结尾的字符串个数
 	}
 	// 上面算的是小于等于 s 的字符串个数
-	// 要算小于 s 的字符串个数，要把恰好等于 s 的字符串个数减掉
+	// 要算严格小于 s 的字符串个数，要把恰好等于 s 的字符串个数减掉
 	k -= o.cnt
 	return
 }
