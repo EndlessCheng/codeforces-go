@@ -30,7 +30,8 @@ https://atcoder.jp/contests/abc390/tasks/abc390_d
 暴搜
 可行性剪枝 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
 https://www.luogu.com.cn/problem/P1379
-https://codeforces.com/problemset/problem/429/C
+https://codeforces.com/problemset/problem/429/C 2300
+https://codeforces.com/problemset/problem/58/E 2400
 https://atcoder.jp/contests/abc233/tasks/abc233_c
 https://atcoder.jp/contests/abc319/tasks/abc319_c
 https://atcoder.jp/contests/abc197/tasks/abc197_c
@@ -692,7 +693,7 @@ func backtracking() {
 	// 折半枚举/双向搜索 Meet in the middle
 	// https://codeforces.com/problemset/problem/1006/F 2100
 	// https://codeforces.com/problemset/problem/327/E 2300
-	// https://codeforces.com/problemset/problem/31/E 2400
+	// https://codeforces.com/problemset/problem/31/E 2400 也可以 DP
 	// https://codeforces.com/problemset/problem/912/E 2400
 	// https://atcoder.jp/contests/abc271/tasks/abc271_f 
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
