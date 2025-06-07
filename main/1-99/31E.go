@@ -28,7 +28,7 @@ func cf31E(in io.Reader, out io.Writer) {
 			if mul {
 				res = a*int(math.Pow10(n-c)) + b*int(math.Pow10(c))
 			}
-			if res > g[c].s {
+			if res >= g[c].s {
 				g[c] = pair{res, i}
 			}
 		}
@@ -39,15 +39,15 @@ func cf31E(in io.Reader, out io.Writer) {
 
 	for i, p := range a {
 		sum := p.s + b[n-i].s
-		if sum > mx {
+		if sum >= mx {
 			mx, mask, mask2 = sum, p.mask, b[n-i].mask
 		}
 	}
 	for i := range n {
-		Fprintf(out, "%c", "HM"[mask>>i&1])
+		Fprintf(out, "%c", "MH"[mask>>i&1])
 	}
 	for i := range n {
-		Fprintf(out, "%c", "HM"[mask2>>i&1])
+		Fprintf(out, "%c", "MH"[mask2>>i&1])
 	}
 }
 
