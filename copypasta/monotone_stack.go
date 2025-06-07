@@ -47,6 +47,8 @@ https://codeforces.com/problemset/problem/1919/D 2100 结论
 https://atcoder.jp/contests/arc189/tasks/arc189_d 2006=CF2228
 https://atcoder.jp/contests/agc029/tasks/agc029_c 2103=CF2302
 https://codeforces.com/problemset/problem/1827/C 2600 Manacher DP
+https://codeforces.com/problemset/problem/2064/F 2600
+https://codeforces.com/problemset/problem/1422/E 2700
 https://www.luogu.com.cn/problem/P7167 倍增
 https://www.luogu.com.cn/problem/P9290
 
