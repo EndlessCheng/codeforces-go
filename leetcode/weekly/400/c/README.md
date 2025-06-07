@@ -212,7 +212,7 @@ public:
             }
         }
 
-        s.erase(ranges::remove(s, '*').begin(), s.end());
+        erase(s, '*');
         return s;
     }
 };
@@ -342,7 +342,7 @@ public:
             }
         }
 
-        s.erase(ranges::remove(s, '*').begin(), s.end());
+        erase(s, '*');
         return s;
     }
 };
