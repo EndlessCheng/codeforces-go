@@ -143,8 +143,8 @@ func monotoneStack(a []int) (ans int) {
 
 	{
 		// TIPS: 如果有一侧定义成小于等于，还可以一次遍历求出 left 和 right
-		leftL := make([]int, len(a))   // a[left[i]] < a[i]
-		rightLE := make([]int, len(a)) // a[right[i]] <= a[i]
+		leftL := make([]int, len(a))   // a[leftL[i]] < a[i]
+		rightLE := make([]int, len(a)) // a[rightLE[i]] <= a[i]
 		st := []int{-1}
 		for i, v := range a {
 			for len(st) > 1 && v <= a[st[len(st)-1]] {
@@ -157,6 +157,45 @@ func monotoneStack(a []int) (ans int) {
 		}
 		for _, i := range st[1:] { // 其它语言的话，在创建 right 数组的时候初始化即可
 			rightLE[i] = len(rightLE)
+		}
+	}
+
+	{
+		// 合集：左右两边严格小于 a[i]，以及左右两边严格大于 a[i]
+		leftL := make([]int, len(a))
+		leftG := make([]int, len(a))
+		st := []int{-1}
+		st2 := []int{-1}
+		for i, v := range a {
+			for len(st) > 1 && a[st[len(st)-1]] >= v {
+				st = st[:len(st)-1]
+			}
+			leftL[i] = st[len(st)-1]
+			st = append(st, i)
+
+			for len(st2) > 1 && a[st2[len(st2)-1]] <= v {
+				st2 = st2[:len(st2)-1]
+			}
+			leftG[i] = st2[len(st2)-1]
+			st2 = append(st2, i)
+		}
+
+		rightL := make([]int, len(a))
+		rightG := make([]int, len(a))
+		st = []int{len(a)}
+		st2 = []int{len(a)}
+		for i, v := range slices.Backward(a) {
+			for len(st) > 1 && a[st[len(st)-1]] >= v {
+				st = st[:len(st)-1]
+			}
+			rightL[i] = st[len(st)-1]
+			st = append(st, i)
+
+			for len(st2) > 1 && a[st2[len(st2)-1]] <= v {
+				st2 = st2[:len(st2)-1]
+			}
+			rightG[i] = st2[len(st2)-1]
+			st2 = append(st2, i)
 		}
 	}
 
