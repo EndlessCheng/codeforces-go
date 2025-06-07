@@ -43,12 +43,14 @@ type trieNode struct {
 }
 
 func (o *trieNode) empty() bool {
-	for _, son := range o.son {
-		if son != nil {
-			return false
-		}
-	}
-	return true
+	return o.sum == 0
+	// 如果不维护 sum，需要写循环
+	//for _, son := range o.son {
+	//	if son != nil {
+	//		return false
+	//	}
+	//}
+	//return true
 }
 
 type trie struct{ root *trieNode }
@@ -108,17 +110,25 @@ func (t *trie) find(s string) (*trieNode, bool) {
 	return o, o.cnt != 0
 }
 
-// 删除字符串 s，返回字符串末尾对应的节点
+// 删除字符串 s，返回 s 对应的节点（s 末尾字母所在节点）
+// 如果 s 不在 trie 中，什么也不做，返回 nil
 // LC1804 https://leetcode.cn/problems/implement-trie-ii-prefix-tree/
 func (t *trie) remove(s string) *trieNode {
-	fa := make([]*trieNode, len(s))
+	// 先看看 s 是否在 trie 中
 	o := t.root
-	for i, b := range s {
-		fa[i] = o
+	for _, b := range s {
 		o = o.son[t.ord(b)]
 		if o == nil {
 			return nil
 		}
+	}
+
+	fa := make([]*trieNode, len(s))
+	o = t.root
+	for i, b := range s {
+		fa[i] = o // 方便删除
+		o = o.son[t.ord(b)]
+		o.sum--
 	}
 	o.cnt--
 	if o.cnt == 0 {
