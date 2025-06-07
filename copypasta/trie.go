@@ -38,7 +38,7 @@ func init() { debug.SetGCPercent(-1) }
 type trieNode struct {
 	son [26]*trieNode
 	cnt int // trieNode 对应的完整字符串的个数
-	sum int // 子树 cnt 之和
+	sum int // 子树 cnt 之和（trieNode 对应的字符串是多少个完整字符串的前缀）
 	val int // 额外存储的信息
 }
 
@@ -198,7 +198,7 @@ outer:
 // 结合 rank 和 kth，可以求出一个字符串的前驱和后继
 // 见 bst.go 中的 prev 和 next
 
-// 返回字符串 s 在 trie 中的前缀个数
+// 输入 s，返回 trie 中完整字符串 p 的个数，满足 p 是 s 的前缀（注意与下面 countStringHasPrefix 的区别）
 // https://codeforces.com/gym/101628/problem/K
 // https://www.acwing.com/problem/content/144/
 func (t *trie) countPrefixOfString(s string) (cnt int) {
@@ -208,12 +208,12 @@ func (t *trie) countPrefixOfString(s string) (cnt int) {
 		if o == nil {
 			return
 		}
-		cnt += o.cnt
+		cnt += o.cnt // o 对应的字符串 p 是 s 的前缀
 	}
 	return
 }
 
-// 返回 trie 中前缀为 p 的字符串个数
+// 输入 p，返回 trie 中完整字符串 s 的个数，满足 p 是 s 的前缀
 // 此时 o.endCnt 保存子树字符串个数
 // https://codeforces.com/gym/101628/problem/K
 // LC1804 https://leetcode.cn/problems/implement-trie-ii-prefix-tree/
@@ -225,7 +225,7 @@ func (t *trie) countStringHasPrefix(p string) int {
 			return 0
 		}
 	}
-	return o.cnt
+	return o.sum // p 是 o 子树中的完整字符串 s 的前缀
 }
 
 // s 的本质不同子串数量 O(n^2)
