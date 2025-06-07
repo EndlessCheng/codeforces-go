@@ -20,6 +20,11 @@ func Test_cf31E(t *testing.T) {
 9911`,
 			`HMHM`,
 		},
+		{
+			`10
+89959999998998796989`,
+			`HHHHHHMMMMHMMHHMHMMM`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf31E)
 }

@@ -8,7 +8,7 @@ import (
 
 // https://github.com/EndlessCheng
 func cf31E(in io.Reader, out io.Writer) {
-	var n, mx, mask int
+	var n, mx, mask, mask2 int
 	var s []byte
 	Fscan(in, &n, &s)
 	type pair struct{ s, mask int }
@@ -40,12 +40,14 @@ func cf31E(in io.Reader, out io.Writer) {
 	for i, p := range a {
 		sum := p.s + b[n-i].s
 		if sum > mx {
-			mx = sum
-			mask = p.mask<<n | b[n-i].mask
+			mx, mask, mask2 = sum, p.mask, b[n-i].mask
 		}
 	}
-	for i := range n * 2 {
-		Fprintf(out, "%c", "MH"[mask>>i&1])
+	for i := range n {
+		Fprintf(out, "%c", "HM"[mask>>i&1])
+	}
+	for i := range n {
+		Fprintf(out, "%c", "HM"[mask2>>i&1])
 	}
 }
 
