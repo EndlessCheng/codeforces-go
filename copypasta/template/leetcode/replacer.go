@@ -45,6 +45,16 @@ func init() {
 		"s2", "t",
 		"s3", "z",
 
+		// 图 树
+		"edges", "es",
+		"edges1", "es1",
+		"edges2", "es2",
+		"parents", "pa",
+		"par", "pa",
+		"start", "st",
+		"source", "st",
+		"destination", "end",
+
 		// 其余常见变量名
 		"number", "n",
 		"num", "n",
@@ -52,9 +62,6 @@ func init() {
 		"num2", "y",
 		"num3", "z",
 		"size", "n",
-		"edges", "es",
-		"edges1", "es1",
-		"edges2", "es2",
 		"points", "ps",
 		"point1", "p1",
 		"point2", "p2",
@@ -63,9 +70,6 @@ func init() {
 		"query", "qs",
 		"queries", "qs",
 		"startPos", "st",
-		"start", "st",
-		"source", "st",
-		"destination", "end",
 		"target", "tar",
 		"total", "tot",
 		"limit", "lim",
