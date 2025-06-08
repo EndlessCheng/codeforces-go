@@ -36,7 +36,6 @@ func maxGCDScore1(nums []int, k int) int64 {
 	return int64(ans)
 }
 
-// https://space.bilibili.com/206214
 func maxGCDScore(nums []int, k int) int64 {
 	mx := bits.Len(uint(slices.Max(nums)))
 	lowbitPos := make([][]int, mx)
@@ -85,9 +84,4 @@ func maxGCDScore(nums []int, k int) int64 {
 	return int64(ans)
 }
 
-func gcd(a, b int) int {
-	for a != 0 {
-		a, b = b%a, a
-	}
-	return b
-}
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }

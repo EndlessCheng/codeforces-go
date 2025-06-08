@@ -14,7 +14,7 @@
 
 如果不足 $3$ 组，返回 $-1$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1rET9zsEsB/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -24,7 +24,7 @@ class Solution:
             mx[a] = max(mx[a], b)
         if len(mx) < 3:
             return -1
-        return sum(nlargest(3, mx.values()))
+        return sum(nlargest(3, mx.values()))  # 底层用的堆
 ```
 
 ```java [sol-Java]
@@ -59,8 +59,8 @@ public:
         for (auto& [_, val] : mx) {
             a.push_back(val);
         }
-        ranges::sort(a, greater<>());
-        return a[0] + a[1] + a[2];
+        ranges::nth_element(a, a.end() - 3); // 快速选择
+        return reduce(a.end() - 3, a.end());
     }
 };
 ```
@@ -81,7 +81,7 @@ func maxSumDistinctTriplet(x, y []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$，其中 $n$ 是 $x$ 的长度。用堆或者手动维护前三大可以做到 $\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$，其中 $n$ 是 $x$ 的长度。用快速选择，或者堆维护前三大可以做到 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单

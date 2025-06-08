@@ -14,7 +14,7 @@
 
 什么是 $\text{lowbit}$？请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+[本题视频讲解](https://www.bilibili.com/video/BV1rET9zsEsB/?t=11m24s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 max = lambda a, b: b if b > a else a  # 手写 max 更快
@@ -392,7 +392,7 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。外层循环每次会增加一个区间，这个区间在整个算法过程中，要么合并到其他区间中（消失啦），要么 GCD 一共减少 $\mathcal{O}(\log U)$ 次，所以**总的循环次数之和**是 $\mathcal{O}(n\log U)$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。外层循环每次会增加一个区间，这个区间在整个算法过程中，要么合并到其他区间中（消失啦），要么其 GCD 一共减少 $\mathcal{O}(\log U)$ 次，所以每个区间的 GCD 的计算过程会贡献 $\mathcal{O}(\log U)$ 个循环次数，所以**总的循环次数**是 $\mathcal{O}(n\log U)$。
 - 空间复杂度：$\mathcal{O}(n+\log U)$。**注**：位置列表改成队列的话可以做到 $\mathcal{O}(\min(n+\log U, k\log U))$。
 
 更多相似题目，见下面位运算题单的「**LogTrick**」。

@@ -5,9 +5,9 @@
 - $\textit{dfs}(i,j,0)$ 表示在 $\textit{prices}[0]$ 到 $\textit{prices}[i]$ 中完成至多 $j$ 笔交易，第 $i$ 天结束时**未持有股票**的最大利润。
 - $\textit{dfs}(i,j,1)$ 表示在 $\textit{prices}[0]$ 到 $\textit{prices}[i]$ 中完成至多 $j$ 笔交易，第 $i$ 天结束时**持有股票**的最大利润。
 
-本题可以做空交易，我们需要额外增加一个状态：
+本题可以做空交易，也就是可以**先加再减**（普通交易是先减再加）。我们需要额外增加一类状态：
 
-- $\textit{dfs}(i,j,2)$ 表示在 $\textit{prices}[0]$ 到 $\textit{prices}[i]$ 中完成至多 $j$ 笔交易，第 $i$ 天结束时**处于做空中**（**空头状态**）的最大利润。
+- $\textit{dfs}(i,j,2)$ 表示在 $\textit{prices}[0]$ 到 $\textit{prices}[i]$ 中完成至多 $j$ 笔交易，第 $i$ 天结束时**处于做空中**（空头状态）的最大利润。
 
 同样地，转移方程增加一条：
 
@@ -15,11 +15,11 @@ $$
 \textit{dfs}(i,j,2) = \max(\textit{dfs}(i-1, j, 2), \textit{dfs}(i-1, j-1, 0)+\textit{prices}[i])
 $$
 
-分别对应继续处于空头状态，或者在第 $i$ 天卖出股票，开始做空（开空）。
+分别对应继续处于做空中，或者在第 $i$ 天卖出股票，开始做空（开空）。
 
-此外，对于 $\textit{dfs}(i,j,0)$，在计算最大值时额外考虑在第 $i$ 天买回（平空）的情况，即 $\textit{dfs}(i,j,2) - \textit{prices}[i]$。
+此外，对于 $\textit{dfs}(i,j,0)$，在计算最大值时额外考虑在第 $i$ 天买回股票（平空）的情况，即 $\textit{dfs}(i,j,2) - \textit{prices}[i]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+什么是做空？[简单科普一下](https://www.bilibili.com/video/BV1rET9zsEsB/?t=4m32s)~
 
 ## 一、记忆化搜索
 
