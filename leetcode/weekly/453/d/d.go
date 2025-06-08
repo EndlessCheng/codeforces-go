@@ -10,7 +10,8 @@ func minOperations(s, t string) int {
 	for i := range revOp {
 		revOp[i] = make([]int, n)
 	}
-	// i 为偶数表示奇回文串，i 为奇数表示偶回文串
+	// 中心扩展法
+	// i 为偶数表示奇长度子串，i 为奇数表示偶长度子串
 	for i := range 2*n - 1 {
 		cnt := [26][26]int{}
 		op := 1
@@ -26,6 +27,17 @@ func minOperations(s, t string) int {
 					op++
 				}
 			}
+
+			x, y = s[r]-'a', t[l]-'a'
+			if l != r && x != y {
+				if cnt[y][x] > 0 {
+					cnt[y][x]--
+				} else {
+					cnt[x][y]++
+					op++
+				}
+			}
+
 			revOp[l][r] = op
 			l--
 			r++
@@ -36,9 +48,8 @@ func minOperations(s, t string) int {
 	for i := range n {
 		res := math.MaxInt
 		cnt := [26][26]int{}
-		op := 0
+		op := 0 // 不反转时的最小操作次数
 		for j := i; j >= 0; j-- {
-			// 不反转
 			x, y := s[j]-'a', t[j]-'a'
 			if x != y {
 				if cnt[y][x] > 0 {

@@ -16,7 +16,7 @@ $$
 
 ## 贪心
 
-如何计算子串 $[j,i]$ 的操作次数 $\text{op}(j,i)$？
+如何计算子串 $[j,i]$ 的最小操作次数 $\text{op}(j,i)$？
 
 先只考虑操作 1 和操作 2。
 
@@ -42,13 +42,15 @@ $$
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minOperations(self, s: str, t: str) -> int:
         n = len(s)
         f = [0] * (n + 1)
         for i in range(n):
-            res = sys.maxsize
+            res = inf
             cnt = defaultdict(int)
             op = 0
             for j in range(i, -1, -1):
@@ -94,7 +96,8 @@ class Solution {
 
             for (int j = i; j >= 0; j--) {
                 // 不反转
-                int x = s[j] - 'a', y = t[j] - 'a';
+                int x = s[j] - 'a';
+                int y = t[j] - 'a';
                 if (x != y) {
                     if (cnt[y][x] > 0) {
                         cnt[y][x]--;
@@ -227,6 +230,271 @@ func minOperations(s, t string) int {
 
 - 时间复杂度：$\mathcal{O}(n^3)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 优化：预处理 revOp
+
+预处理区间 $[j,i]$ 对应的 $\textit{revOp}$。
+
+使用**中心扩展法**（见 [5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/)），可以从区间 $[j+1,i-1]$ 增量地计算区间 $[j,i]$，这样计算所有 $\textit{revOp}$ 一共只需要 $\mathcal{O}(n^2)$ 的时间。
+
+```py [sol-Python3]
+class Solution:
+    def minOperations(self, s: str, t: str) -> int:
+        n = len(s)
+
+        # 预处理 rev_op
+        rev_op = [[0] * n for _ in range(n)]
+        # 中心扩展法
+        # i 为偶数表示奇长度子串，i 为奇数表示偶长度子串
+        for i in range(2 * n - 1):
+            cnt = defaultdict(int)
+            op = 1
+            # 从闭区间 [l, r] 开始向左右扩展
+            l, r = i // 2, (i + 1) // 2
+            while l >= 0 and r < n:
+                x, y = s[l], t[r]
+                if x != y:
+                    if cnt[(y, x)] > 0:
+                        cnt[(y, x)] -= 1
+                    else:
+                        cnt[(x, y)] += 1
+                        op += 1
+
+                x, y = s[r], t[l]
+                if l != r and x != y:
+                    if cnt[(y, x)] > 0:
+                        cnt[(y, x)] -= 1
+                    else:
+                        cnt[(x, y)] += 1
+                        op += 1
+
+                rev_op[l][r] = op
+                l -= 1
+                r += 1
+
+        f = [0] * (n + 1)
+        for i in range(n):
+            res = inf
+            cnt = defaultdict(int)
+            op = 0  # 不反转时的最小操作次数
+            for j in range(i, -1, -1):
+                x, y = s[j], t[j]
+                if x != y:
+                    if cnt[(y, x)] > 0:
+                        cnt[(y, x)] -= 1
+                    else:
+                        cnt[(x, y)] += 1
+                        op += 1
+                res = min(res, f[j] + min(op, rev_op[j][i]))
+            f[i + 1] = res
+        return f[n]
+```
+
+```java [sol-Java]
+class Solution {
+    public int minOperations(String S, String T) {
+        char[] s = S.toCharArray();
+        char[] t = T.toCharArray();
+        int n = s.length;
+
+        // 预处理 revOp
+        int[][] revOp = new int[n][n];
+        // 中心扩展法
+        // i 为偶数表示奇长度子串，i 为奇数表示偶长度子串
+        for (int i = 0; i < 2 * n - 1; i++) {
+            int[][] cnt = new int[26][26];
+            int op = 1;
+            // 从闭区间 [l, r] 开始向左右扩展
+            int l = i / 2;
+            int r = (i + 1) / 2;
+            while (l >= 0 && r < n) {
+                int x = s[l] - 'a';
+                int y = t[r] - 'a';
+                if (x != y) {
+                    if (cnt[y][x] > 0) {
+                        cnt[y][x]--;
+                    } else {
+                        cnt[x][y]++;
+                        op++;
+                    }
+                }
+
+                x = s[r] - 'a';
+                y = t[l] - 'a';
+                if (l != r && x != y) {
+                    if (cnt[y][x] > 0) {
+                        cnt[y][x]--;
+                    } else {
+                        cnt[x][y]++;
+                        op++;
+                    }
+                }
+
+                revOp[l][r] = op;
+                l--;
+                r++;
+            }
+        }
+
+        int[] f = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            int res = Integer.MAX_VALUE;
+            int[][] cnt = new int[26][26];
+            int op = 0; // 不反转时的最小操作次数
+            for (int j = i; j >= 0; j--) {
+                int x = s[j] - 'a';
+                int y = t[j] - 'a';
+                if (x != y) {
+                    if (cnt[y][x] > 0) {
+                        cnt[y][x]--;
+                    } else {
+                        cnt[x][y]++;
+                        op++;
+                    }
+                }
+                res = Math.min(res, f[j] + Math.min(op, revOp[j][i]));
+            }
+            f[i + 1] = res;
+        }
+        return f[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minOperations(string s, string t) {
+        int n = s.size();
+        // 预处理 rev_op
+        vector rev_op(n, vector<int>(n));
+        // 中心扩展法
+        // i 为偶数表示奇长度子串，i 为奇数表示偶长度子串
+        for (int i = 0; i < 2 * n - 1; i++) {
+            int cnt[26][26]{};
+            int op = 1;
+            // 从闭区间 [l, r] 开始向左右扩展
+            int l = i / 2, r = (i + 1) / 2;
+            while (l >= 0 && r < n) {
+                int x = s[l] - 'a', y = t[r] - 'a';
+                if (x != y) {
+                    if (cnt[y][x] > 0) {
+                        cnt[y][x]--;
+                    } else {
+                        cnt[x][y]++;
+                        op++;
+                    }
+                }
+
+                x = s[r] - 'a', y = t[l] - 'a';
+                if (l != r && x != y) {
+                    if (cnt[y][x] > 0) {
+                        cnt[y][x]--;
+                    } else {
+                        cnt[x][y]++;
+                        op++;
+                    }
+                }
+
+                rev_op[l][r] = op;
+                l--;
+                r++;
+            }
+        }
+
+        vector<int> f(n + 1);
+        for (int i = 0; i < n; i++) {
+            int res = INT_MAX;
+            int cnt[26][26]{};
+            int op = 0; // 不反转时的最小操作次数
+            for (int j = i; j >= 0; j--) {
+                int x = s[j] - 'a', y = t[j] - 'a';
+                if (x != y) {
+                    if (cnt[y][x] > 0) {
+                        cnt[y][x]--;
+                    } else {
+                        cnt[x][y]++;
+                        op++;
+                    }
+                }
+                res = min(res, f[j] + min(op, rev_op[j][i]));
+            }
+            f[i + 1] = res;
+        }
+        return f[n];
+    }
+};
+```
+
+```go [sol-Go]
+func minOperations(s, t string) int {
+	n := len(s)
+	// 预处理 revOp
+	revOp := make([][]int, n)
+	for i := range revOp {
+		revOp[i] = make([]int, n)
+	}
+	// 中心扩展法
+	// i 为偶数表示奇长度子串，i 为奇数表示偶长度子串
+	for i := range 2*n - 1 {
+		cnt := [26][26]int{}
+		op := 1
+		// 从闭区间 [l,r] 开始向左右扩展
+		l, r := i/2, (i+1)/2
+		for l >= 0 && r < n {
+			x, y := s[l]-'a', t[r]-'a'
+			if x != y {
+				if cnt[y][x] > 0 {
+					cnt[y][x]--
+				} else {
+					cnt[x][y]++
+					op++
+				}
+			}
+
+			x, y = s[r]-'a', t[l]-'a'
+			if l != r && x != y {
+				if cnt[y][x] > 0 {
+					cnt[y][x]--
+				} else {
+					cnt[x][y]++
+					op++
+				}
+			}
+
+			revOp[l][r] = op
+			l--
+			r++
+		}
+	}
+
+	f := make([]int, n+1)
+	for i := range n {
+		res := math.MaxInt
+		cnt := [26][26]int{}
+		op := 0 // 不反转时的最小操作次数
+		for j := i; j >= 0; j-- {
+			x, y := s[j]-'a', t[j]-'a'
+			if x != y {
+				if cnt[y][x] > 0 {
+					cnt[y][x]--
+				} else {
+					cnt[x][y]++
+					op++
+				}
+			}
+			res = min(res, f[j]+min(op, revOp[j][i]))
+		}
+		f[i+1] = res
+	}
+	return f[n]
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(n^2)$。
 
 更多相似题目，见下面动态规划题单的「**§5.2 最优划分**」。
 
