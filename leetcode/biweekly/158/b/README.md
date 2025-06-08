@@ -28,7 +28,7 @@ class Solution:
     def maximumProfit(self, prices: List[int], k: int) -> int:
         # 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 end_state 的情况下的最大收益
         @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
-        def dfs(i: int, j: int, end_state: bool) -> int:
+        def dfs(i: int, j: int, end_state: int) -> int:
             if j < 0:
                 return -inf
             if i < 0:
@@ -40,7 +40,7 @@ class Solution:
                 return max(dfs(i - 1, j, 1), dfs(i - 1, j - 1, 0) - p)
             return max(dfs(i - 1, j, 2), dfs(i - 1, j - 1, 0) + p)
         ans = dfs(len(prices) - 1, k, 0)
-        dfs.cache_clear()  # 防止爆内存
+        dfs.cache_clear()  # 防止爆内存（一般来说，状态数达到 1e6 就需要写这个）
         return ans
 ```
 
