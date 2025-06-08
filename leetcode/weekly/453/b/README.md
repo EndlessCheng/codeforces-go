@@ -7,11 +7,11 @@
 由于一开始就解锁的计算机有且仅有一台：计算机 $0$，所以：
 
 - 如果 $[1,n-1]$ 中存在 $i$ 满足 $\textit{complexity}[i]\le \textit{complexity}[0]$，那么计算机 $i$ 无法被解锁，方案数为 $0$。反证法：如果计算机  $i$ 可以被解锁，说明存在密码复杂度小于 $\textit{complexity}[i]$ 的计算机，但这个计算机的密码复杂度又比 $\textit{complexity}[0]$ 还小，不可能被解锁，矛盾，故原命题成立。
-- 否则，用计算机 $0$ 可以解锁任意计算机，方案数为 $(n-1)!$。
+- 否则，用计算机 $0$ 可以解锁任意计算机，**解锁顺序随意**，所以方案数为 $n-1$ 个数的全排列个数，即 $(n-1)!$。
 
 注意取模。关于模运算的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV113T9zFEjQ/?t=7m8s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

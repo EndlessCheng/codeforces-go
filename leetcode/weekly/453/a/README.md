@@ -10,7 +10,7 @@
 
 代码实现时，可以用一个变量 $\textit{mul}$ 表示 $\textit{nums}[i]$ 要乘以的数，从而避免修改 $\textit{nums}$（注意我们要判断两次，第一次的修改不能影响第二次）。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV113T9zFEjQ/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -21,12 +21,12 @@ class Solution:
             mul = 1
             for i, x in enumerate(nums):
                 if x * mul == target:
-                    mul = 1  # 下一个数不用乘 -1
+                    mul = 1  # 不操作，下一个数不用乘 -1
                     continue
                 if left == 0 or i == n - 1:
                     return False
                 left -= 1
-                mul = -1  # 下一个数要乘 -1
+                mul = -1  # 操作，下一个数要乘 -1
             return True
         return check(-1) or check(1)
 ```
@@ -43,14 +43,14 @@ class Solution {
         int mul = 1;
         for (int i = 0; i < n; i++) {
             if (nums[i] * mul == target) {
-                mul = 1; // 下一个数不用乘 -1
+                mul = 1; // 不操作，下一个数不用乘 -1
                 continue;
             }
             if (left == 0 || i == n - 1) {
                 return false;
             }
             left--;
-            mul = -1; // 下一个数要乘 -1
+            mul = -1; // 操作，下一个数要乘 -1
         }
         return true;
     }
@@ -66,14 +66,14 @@ public:
             int mul = 1;
             for (int i = 0; i < nums.size(); i++) {
                 if (nums[i] * mul == target) {
-                    mul = 1; // 下一个数不用乘 -1
+                    mul = 1; // 不操作，下一个数不用乘 -1
                     continue;
                 }
                 if (left == 0 || i + 1 == nums.size()) {
                     return false;
                 }
                 left--;
-                mul = -1; // 下一个数要乘 -1
+                mul = -1; // 操作，下一个数要乘 -1
             }
             return true;
         };
@@ -89,14 +89,14 @@ func canMakeEqual(nums []int, k int) bool {
 		mul := 1
 		for i, x := range nums {
 			if x*mul == target {
-				mul = 1 // 下一个数不用乘 -1
+				mul = 1 // 不操作，下一个数不用乘 -1
 				continue
 			}
 			if left == 0 || i == len(nums)-1 {
 				return false
 			}
 			left--
-			mul = -1 // 下一个数要乘 -1
+			mul = -1 // 操作，下一个数要乘 -1
 		}
 		return true
 	}
@@ -108,6 +108,8 @@ func canMakeEqual(nums []int, k int) bool {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+更多相似题目，见下面贪心题单的「**§1.4 从最左/最右开始贪心**」。
 
 ## 分类题单
 
