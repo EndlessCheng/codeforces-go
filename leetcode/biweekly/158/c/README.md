@@ -392,7 +392,7 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。使用势能分析，每往 $\textit{intervals}$ 中添加一个元素会增加 $\mathcal{O}(\log U)$ 的势能，每次计算 GCD 平均会减少 $1$ 的势能，所以每个 $\textit{nums}[i]$ 的均摊复杂度为 $\mathcal{O}(\log U)$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。外层循环每次会增加一个区间，这个区间在整个算法过程中，要么合并到其他区间中（消失啦），要么 GCD 一共减少 $\mathcal{O}(\log U)$ 次，所以**总的循环次数之和**是 $\mathcal{O}(n\log U)$。
 - 空间复杂度：$\mathcal{O}(n+\log U)$。**注**：位置列表改成队列的话可以做到 $\mathcal{O}(\min(n+\log U, k\log U))$。
 
 更多相似题目，见下面位运算题单的「**LogTrick**」。
