@@ -1,12 +1,18 @@
+## 初步分析
+
 题目要求子集中 $0$ 到 $9$ 每个数字在所有数的数位中最多出现一次。
 
-把 $\textit{vals}[i]$ 的数位保存到集合 $V_i$ 中（不考虑有重复数位的数字），题目要求转化成：
+把 $\textit{vals}[i]$ 的数位保存到集合 $V_i$ 中（不考虑有重复数位的数字），比如数字 $130$ 对应集合 $\{0,1,3\}$。
+
+题目要求转化成：
 
 - 从子树中选择若干没有交集的集合，对应的 $\textit{vals}[i]$ 之和越大越好。
 
+## 方法一：枚举子集
+
 定义 $f_x[S]$ 表示从 $x$ 子树中选择若干没有交集的集合，这些集合的并集为 $S$ 的情况下，对应的 $\textit{vals}[i]$ 之和的最大值。
 
-枚举 $S$ 的非空真子集 $T$，把集合 $S$ 视作 $T$ 和 $\complement_ST$ 的并集，那么：
+枚举 $S$ 的非空真子集 $T$，把集合 $S$ 视作 $T$ 和 $\complement_ST$ 的并集（这两个集合是两个规模更小的子问题），那么：
 
 - 集合的并集为 $T$ 的情况下，对应的 $\textit{vals}[i]$ 之和的最大值，即 $f_x[T]$。
 - 集合的并集为 $\complement_ST$ 的情况下，对应的 $\textit{vals}[i]$ 之和的最大值，即 $f_x[\complement_ST]$。
@@ -26,13 +32,13 @@ $\max(f_x)$ 就是题目要求的 $\textit{maxScore}[x]$，加到答案中。
 
 **代码实现时，用二进制表示集合，用位运算实现集合操作，具体请看** [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+⚠**注意**：这个方法很慢，更快的做法见方法二。
 
 ```py [sol-Python3]
-fmax = lambda a, b: b if b > a else a
-
+# 超时了！请看方法二！
 class Solution:
     def goodSubtreeSum(self, vals: List[int], par: List[int]) -> int:
+        D = 10
         n = len(par)
         g = [[] for _ in range(n)]
         for i in range(1, n):
@@ -40,41 +46,154 @@ class Solution:
 
         ans = 0
 
-        def dfs(x: int) -> Dict[int, int]:
-            f = defaultdict(int)
+        def dfs(x: int) -> List[int]:
+            max_score = [0] * (1 << D)
 
-            # 计算 vals[x] 的 mask
+            # 计算 vals[x] 的数位集合 mask
             mask = 0
             v = vals[x]
             while v:
-                v, d = divmod(v, 10)
+                v, d = divmod(v, D)
                 if mask >> d & 1:
                     break
                 mask |= 1 << d
             else:  # 没有中途 break
-                f[mask] = vals[x]
+                max_score[mask] = vals[x]
 
+            # 同一个 mask 至多选一个，直接取 max
             for y in g[x]:
                 fy = dfs(y)
-                nf = f.copy()
-                for msk, s in fy.items():
-                    # 同一个 mask 至多选一个，直接取 max
-                    nf[msk] = max(nf[msk], s)
-                    # 求两个 mask 的并集，刷表转移
-                    for msk2, s2 in f.items():
-                        if msk & msk2:
-                            continue
-                        new_mask = msk | msk2
-                        nf[new_mask] = max(nf[new_mask], s + s2)
-                f = nf
+                for i, s in enumerate(fy):
+                    max_score[i] = max(max_score[i], s)
 
-            if f:
-                nonlocal ans
-                ans += max(f.values())
-            return f
+            for i in range(3, 1 << D):
+                # 枚举 i 的非空真子集 sub
+                sub = (i - 1) & i
+                while sub:
+                    max_score[i] = max(max_score[i], max_score[i ^ sub] + max_score[sub])
+                    sub = (sub - 1) & i
+
+            nonlocal ans
+            ans += max(max_score)
+            return max_score
 
         dfs(0)
         return ans % 1_000_000_007
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int D = 10;
+    private long ans = 0;
+
+    public int goodSubtreeSum(int[] vals, int[] par) {
+        int n = par.length;
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int i = 1; i < n; i++) {
+            g[par[i]].add(i);
+        }
+        dfs(0, vals, g);
+        return (int) (ans % MOD);
+    }
+
+    private int[] dfs(int x, int[] vals, List<Integer>[] g) {
+        int[] f = new int[1 << D];
+
+        // 计算 vals[x] 的数位集合 mask
+        int mask = 0;
+        for (int v = vals[x]; v > 0; v /= D) {
+            int d = v % D;
+            if ((mask >> d & 1) > 0) { // d 在集合 mask 中
+                mask = 0; // 不符合要求
+                break;
+            }
+            mask |= 1 << d; // 把 d 加到集合 mask 中
+        }
+
+        if (mask > 0) {
+            f[mask] = vals[x];
+        }
+
+        // 同一个集合 i 至多选一个，直接取 max
+        for (int y : g[x]) {
+            int[] fy = dfs(y, vals, g);
+            for (int i = 0; i < f.length; i++) {
+                f[i] = Math.max(f[i], fy[i]);
+            }
+        }
+
+        int mx = 0;
+        for (int i = 3; i < f.length; i++) {
+            // 枚举集合 i 的非空真子集 sub
+            for (int sub = i & (i - 1); sub > 0; sub = (sub - 1) & i) {
+                f[i] = Math.max(f[i], f[sub] + f[i ^ sub]);
+            }
+            mx = Math.max(mx, f[i]);
+        }
+        ans += mx;
+
+        return f;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int goodSubtreeSum(vector<int>& vals, vector<int>& par) {
+        const int MOD = 1'000'000'007;
+        const int D = 10;
+        int n = par.size();
+        vector<vector<int>> g(n);
+        for (int i = 1; i < n; i++) {
+            g[par[i]].push_back(i);
+        }
+
+        long long ans = 0;
+
+        auto dfs = [&](this auto&& dfs, int x) -> array<int, 1 << D> {
+            array<int, 1 << D> f{};
+
+            // 计算 vals[x] 的数位集合 mask
+            int mask = 0;
+            for (int v = vals[x]; v > 0; v /= D) {
+                int d = v % D;
+                if (mask >> d & 1) { // d 在集合 mask 中
+                    mask = 0; // 不符合要求
+                    break;
+                }
+                mask |= 1 << d; // 把 d 加到集合 mask 中
+            }
+
+            if (mask > 0) {
+                f[mask] = vals[x];
+            }
+
+            // 同一个集合 i 至多选一个，直接取 max
+            for (int y : g[x]) {
+                auto fy = dfs(y);
+                for (int i = 0; i < (1 << D); i++) {
+                    f[i] = max(f[i], fy[i]);
+                }
+            }
+
+            for (int i = 3; i < (1 << D); i++) {
+                // 枚举集合 i 的非空真子集 sub
+                for (int sub = i & (i - 1); sub > 0; sub = (sub - 1) & i) {
+                    f[i] = max(f[i], f[sub] + f[i ^ sub]);
+                }
+            }
+
+            ans += ranges::max(f);
+            return f;
+        };
+
+        dfs(0);
+        return ans % MOD;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -131,6 +250,252 @@ func goodSubtreeSum(vals, par []int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\cdot 3^D)$，其中 $n$ 是 $\textit{vals}$ 的长度，$D=10$。大小为 $D$ 的集合的大小为 $m$ 的子集有 $\binom D m$ 个，子集的子集有 $2^m$ 个，根据二项式定理，$\sum\limits_{m=0}^D \binom D m 2^m = (2+1)^D = 3^D$，所以二重循环的时间复杂度为 $\mathcal{O}(3^D)$。
+- 空间复杂度：$\mathcal{O}(n\cdot 2^D)$。
+
+## 方法二：合并
+
+类似 [3562. 折扣价交易股票的最大利润](https://leetcode.cn/problems/maximum-profit-from-trading-stocks-with-discounts/)，把 $f_y$ 合并到 $f_x$ 中：
+
+- 枚举 $f_y$ 中的集合 $S$ 和 $f_x$ 中的集合 $T$。
+- 如果 $S$ 和 $T$ 交集为空，那么（刷表法）用 $f_y[S] + f_x[T]$ 更新 $f_x[S\cup T]$ 的最大值。
+ 
+此外用 $f_y[S]$ 更新 $f_x[T]$ 的最大值。
+
+用哈希表实现，相比数组可以避免遍历很多无效状态。
+
+```py [sol-Python3]
+class Solution:
+    def goodSubtreeSum(self, vals: List[int], par: List[int]) -> int:
+        n = len(par)
+        g = [[] for _ in range(n)]
+        for i in range(1, n):
+            g[par[i]].append(i)
+
+        ans = 0
+
+        def dfs(x: int) -> Dict[int, int]:
+            f = defaultdict(int)
+
+            # 计算 vals[x] 的数位集合 mask
+            mask = 0
+            v = vals[x]
+            while v:
+                v, d = divmod(v, 10)
+                if mask >> d & 1:
+                    break
+                mask |= 1 << d
+            else:  # 没有中途 break
+                f[mask] = vals[x]
+
+            for y in g[x]:
+                fy = dfs(y)
+                nf = f.copy()
+                for msk, s in fy.items():
+                    # 同一个 mask 至多选一个，直接取 max
+                    nf[msk] = max(nf[msk], s)
+                    # 求两个 mask 的并集，刷表转移
+                    for msk2, s2 in f.items():
+                        if msk & msk2 == 0:
+                            nf[msk | msk2] = max(nf[msk | msk2], s + s2)
+                f = nf
+
+            if f:
+                nonlocal ans
+                ans += max(f.values())
+            return f
+
+        dfs(0)
+        return ans % 1_000_000_007
+```
+
+```java [sol-Java]
+class Solution {
+    private long ans = 0;
+
+    public int goodSubtreeSum(int[] vals, int[] par) {
+        int n = par.length;
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int i = 1; i < n; i++) {
+            g[par[i]].add(i);
+        }
+
+        dfs(0, vals, g);
+        return (int) (ans % 1_000_000_007);
+    }
+
+    // 返回每种 mask 下的最大子树和
+    private Map<Integer, Integer> dfs(int x, int[] vals, List<Integer>[] g) {
+        Map<Integer, Integer> f = new HashMap<>();
+
+        // 计算 vals[x] 的数位集合 mask
+        int mask = 0;
+        for (int v = vals[x]; v > 0; v /= 10) {
+            int d = v % 10;
+            if ((mask >> d & 1) > 0) { // d 在集合 mask 中
+                mask = 0; // 不符合要求
+                break;
+            }
+            mask |= 1 << d; // 把 d 加到集合 mask 中
+        }
+
+        if (mask > 0) {
+            f.put(mask, vals[x]);
+        }
+
+        for (int y : g[x]) {
+            Map<Integer, Integer> fy = dfs(y, vals, g);
+            Map<Integer, Integer> nf = new HashMap<>(f);
+            for (Map.Entry<Integer, Integer> e : fy.entrySet()) {
+                int msk = e.getKey();
+                int s = e.getValue();
+                // 同一个 mask 至多选一个，直接取 max
+                nf.merge(msk, s, Math::max);
+                // 求两个 mask 的并集，刷表转移
+                for (Map.Entry<Integer, Integer> e2 : f.entrySet()) {
+                    int msk2 = e2.getKey();
+                    if ((msk & msk2) == 0) {
+                        nf.merge(msk | msk2, s + e2.getValue(), Math::max);
+                    }
+                }
+            }
+            f = nf;
+        }
+
+        if (!f.isEmpty()) {
+            ans += Collections.max(f.values());
+        }
+
+        return f;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int goodSubtreeSum(vector<int>& vals, vector<int>& par) {
+        const int MOD = 1'000'000'007;
+        const int D = 10;
+        int n = par.size();
+        vector<vector<int>> g(n);
+        for (int i = 1; i < n; i++) {
+            g[par[i]].push_back(i);
+        }
+
+        long long ans = 0;
+
+        auto dfs = [&](this auto&& dfs, int x) -> unordered_map<int, int> {
+            unordered_map<int, int> f;
+
+            // 计算 vals[x] 的数位集合 mask
+            int mask = 0;
+            for (int v = vals[x]; v > 0; v /= D) {
+                int d = v % D;
+                if (mask >> d & 1) { // d 在集合 mask 中
+                    mask = 0; // 不符合要求
+                    break;
+                }
+                mask |= 1 << d; // 把 d 加到集合 mask 中
+            }
+
+            if (mask > 0) {
+                f[mask] = vals[x];
+            }
+
+            for (int y : g[x]) {
+                auto fy = dfs(y);
+                auto nf = f;
+                for (auto& [msk, s] : fy) {
+                    // 同一个 mask 至多选一个，直接取 max
+                    nf[msk] = max(nf[msk], s);
+                    // 求两个 mask 的并集，刷表转移
+                    for (auto& [msk2, s2] : f) {
+                        if ((msk & msk2) == 0) {
+                            nf[msk | msk2] = max(nf[msk | msk2], s + s2);
+                        }
+                    }
+                }
+                f = move(nf);
+            }
+
+            int mx = 0;
+            for (auto& [_, s] : f) {
+                mx = max(mx, s);
+            }
+            ans += mx;
+
+            return f;
+        };
+
+        dfs(0);
+        return ans % MOD;
+    }
+};
+```
+
+```go [sol-Go]
+func goodSubtreeSum(vals, par []int) (ans int) {
+	const mod = 1_000_000_007
+	const D = 10
+	n := len(par)
+	g := make([][]int, n)
+	for i := 1; i < n; i++ {
+		p := par[i]
+		g[p] = append(g[p], i)
+	}
+
+	var dfs func(int) map[int]int
+	dfs = func(x int) map[int]int {
+		f := map[int]int{}
+
+		// 计算 vals[x] 的数位集合 mask
+		mask := 0
+		for v := vals[x]; v > 0; v /= D {
+			d := v % D
+			if mask>>d&1 > 0 { // d 在集合 mask 中
+				mask = 0 // 不符合要求
+				break
+			}
+			mask |= 1 << d // 把 d 加到集合 mask 中
+		}
+
+		if mask > 0 {
+			f[mask] = vals[x]
+		}
+
+		for _, y := range g[x] {
+			fy := dfs(y)
+			nf := maps.Clone(f)
+			for msk, s := range fy {
+				// 同一个 mask 至多选一个，直接取 max
+				nf[msk] = max(nf[msk], s)
+				// 求两个 mask 的并集，刷表转移
+				for msk2, s2 := range f {
+					if msk&msk2 == 0 {
+						nf[msk|msk2] = max(nf[msk|msk2], s+s2)
+					}
+				}
+			}
+			f = nf
+		}
+
+		mx := 0
+		for _, s := range f {
+			mx = max(mx, s)
+		}
+		ans += mx
+
+		return f
+	}
+	dfs(0)
+	return ans % mod
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\cdot 4^D)$，其中 $n$ 是 $\textit{vals}$ 的长度，$D=10$。有 $n-1$ 条边，每条边都有一次 $\mathcal{O}(4^D)$ 的状态转移。
 - 空间复杂度：$\mathcal{O}(n\cdot 2^D)$。
 
 ## 分类题单
