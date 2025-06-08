@@ -4,33 +4,35 @@ package main
 var dirs = []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 
 func countPaths(grid [][]int) (ans int) {
-	const mod int = 1e9 + 7
+	const mod = 1_000_000_007
 	m, n := len(grid), len(grid[0])
-	f := make([][]int, m)
-	for i := range f {
-		f[i] = make([]int, n)
-		for j := range f[i] {
-			f[i][j] = -1
+	memo := make([][]int, m)
+	for i := range memo {
+		memo[i] = make([]int, n)
+		for j := range memo[i] {
+			memo[i][j] = -1
 		}
 	}
 	var dfs func(int, int) int
 	dfs = func(i, j int) int {
-		if f[i][j] != -1 {
-			return f[i][j]
+		p := &memo[i][j]
+		if *p != -1 {
+			return *p
 		}
 		res := 1
 		for _, d := range dirs {
-			if x, y := i+d.x, j+d.y; 0 <= x && x < m && 0 <= y && y < n && grid[x][y] > grid[i][j] {
+			x, y := i+d.x, j+d.y
+			if 0 <= x && x < m && 0 <= y && y < n && grid[x][y] > grid[i][j] {
 				res = (res + dfs(x, y)) % mod
 			}
 		}
-		f[i][j] = res
+		*p = res
 		return res
 	}
 	for i, row := range grid {
 		for j := range row {
-			ans = (ans + dfs(i, j)) % mod
+			ans += dfs(i, j)
 		}
 	}
-	return
+	return ans % mod
 }
