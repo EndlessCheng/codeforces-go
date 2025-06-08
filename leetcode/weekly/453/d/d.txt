@@ -1,0 +1,14 @@
+"abcdf"
+"dacbe"
+4
+
+"abceded"
+"baecfef"
+4
+
+"abcdef"
+"fedabc"
+2
+
+
+
