@@ -9,11 +9,15 @@ func maximumWhiteTiles(tiles [][]int, carpetLen int) (ans int) {
 	for _, tile := range tiles {
 		tl, tr := tile[0], tile[1]
 		cover += tr - tl + 1
-		for tiles[left][1]+carpetLen-1 < tr {
+
+		carpetLeft := tr - carpetLen + 1  // 毯子左端点
+		for tiles[left][1] < carpetLeft { // tiles[left] 完全不在窗口中
 			cover -= tiles[left][1] - tiles[left][0] + 1
 			left++
 		}
-		uncover := max(tr-carpetLen+1-tiles[left][0], 0)
+
+		// tiles[left] 中的小于 carpetLeft 的这部分不在窗口中
+		uncover := max(carpetLeft-tiles[left][0], 0)
 		ans = max(ans, cover-uncover)
 	}
 	return
