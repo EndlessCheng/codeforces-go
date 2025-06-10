@@ -4,12 +4,12 @@
 
 **多一个约束，就多一个参数。**
 
-额外增加一个参数 $k$，定义 $\textit{dfs}(i,j,k)$ 表示从 $(i,j)$ 走到 $(0,0)$，在剩余不选次数为 $k$ 的情况下，可以获得的最大金币数。
+额外增加一个参数 $k$，定义 $\textit{dfs}(i,j,k)$ 表示从 $(0,0)$ 走到 $(i,j)$，在可用感化次数为 $k$ 的情况下，可以获得的最大金币数。
 
 用「选或不选」分类讨论：
 
 - 选：$\textit{dfs}(i,j,k) = \max(\textit{dfs}(i - 1, j, k), \textit{dfs}(i, j - 1, k)) + \textit{coins}[i][j]$。
-- 不选：如果 $k>0$ 且 $\textit{coins}[i][j]<0$，则可以不选，$\textit{dfs}(i,j,k) = \max(\textit{dfs}(i - 1, j, k-1), \textit{dfs}(i, j - 1, k-1))$。
+- 不选（感化）：如果 $k>0$ 且 $\textit{coins}[i][j]<0$，则可以不选，$\textit{dfs}(i,j,k) = \max(\textit{dfs}(i - 1, j, k-1), \textit{dfs}(i, j - 1, k-1))$。
 
 两种情况取最大值。
 
@@ -21,7 +21,7 @@
 
 **递归入口**：$\textit{dfs}(m-1,n-1,2)$，这是原问题，也是答案。
 
-⚠**注意**：由于答案可能是负数，所以记忆化数组的初始值不能是 $-1$，可以初始化成 $-\infty$。
+⚠**注意**：由于答案可能是负数，所以记忆化数组的初始值不能是 $-1$。可以初始化成 $-\infty$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1HKcue9ETm/?t=3m51s)，欢迎点赞关注~
 
