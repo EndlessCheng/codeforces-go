@@ -5,9 +5,11 @@
 
 ## 引入前缀和
 
-枚举数字 $x$ 和 $y$，分别表示出现奇数次的数字和出现偶数次的数字。
+枚举数字 $x$ 和 $y$，分别表示子串中出现奇数次的数字和出现偶数次的数字。
 
 定义 $\textit{sum}[i+1][j]$ 表示 $s[0]$ 到 $s[i]$ 中的 $j$ 的出现次数。为什么是 $i+1$ 而不是 $i$，见 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
+
+设子串对应的下标区间为 $[l,r)$。那么子串中有 $\textit{sum}[r][x] - \textit{sum}[l][x]$ 个 $x$，以及 $\textit{sum}[r][y] - \textit{sum}[l][y]$ 个 $y$。
 
 我们要计算的是
 
@@ -18,11 +20,10 @@ $$
 \end{aligned}
 $$
 
-的最大值，其中：
+的最大值，且必须满足：
 
-- 子串对应的下标区间为 $[l,r)$。
 - $r-l\ge k$
-- 子串必须包含奇数个 $x$，那么至少要满足 $\textit{sum}[r][x] > \textit{sum}[l][x]$。
+- 子串必须包含正奇数个 $x$，那么至少要满足 $\textit{sum}[r][x] > \textit{sum}[l][x]$。
 - 子串必须包含正偶数个 $y$，那么至少要满足 $\textit{sum}[r][y] > \textit{sum}[l][y]$。
 
 枚举 $r$（枚举右），问题变成计算满足上述约束的
@@ -33,21 +34,29 @@ $$
 
 的最小值（维护左）。
 
+如果没有奇偶性的要求，我们只需维护上式最小值。如何处理奇偶性呢？
+
 ## 处理奇偶性
 
 题目奇偶性的要求，等价于：
 
-- $\textit{sum}[r][x]$ 的奇偶性必须与 $\textit{sum}[l][x]$ **不同**。
-- $\textit{sum}[r][y]$ 的奇偶性必须与 $\textit{sum}[l][y]$ **相同**。
+- $\textit{sum}[r][x]$ 的奇偶性必须与 $\textit{sum}[l][x]$ **不同**，这样 $\textit{sum}[r][x] - \textit{sum}[l][x]$ 才是奇数。
+- $\textit{sum}[r][y]$ 的奇偶性必须与 $\textit{sum}[l][y]$ **相同**，这样 $\textit{sum}[r][y] - \textit{sum}[l][y]$ 才是偶数。
 
-$x$ 个数的奇偶和 $y$ 个数的奇偶两两组合，有 $4$ 种情况，我们需要维护 $4$ 种最小前缀和。
+比如 $\textit{sum}[r][x]=6$，$\textit{sum}[r][y]=8$，那么 $\textit{sum}[l][x]$ 必须是奇数，$\textit{sum}[l][y]$ 必须是偶数。我们要维护的是在这个条件下的 $\textit{sum}[l][x] - \textit{sum}[l][y]$ 的最小值。
+
+一般地，奇偶性两两组合，需要维护 $4$ 种 $\textit{sum}[l][x] - \textit{sum}[l][y]$ 的最小值。
 
 定义 $\textit{minS}[p][q]$ 表示最小的 $\textit{sum}[l][x] - \textit{sum}[l][y]$，其中
 
-- $x$ 在下标 $[0,l)$ 中的出现次数的奇偶性为 $p$。其中 $p=0$ 表示偶，$p=1$ 表示奇。
-- $y$ 在下标 $[0,l)$ 中的出现次数的奇偶性为 $q$。
+- $\textit{sum}[l][x]$ 的奇偶性为 $p$。其中 $p=0$ 表示偶，$p=1$ 表示奇。
+- $\textit{sum}[l][y]$ 的奇偶性为 $q$。其中 $q=0$ 表示偶，$q=1$ 表示奇。
 
-并满足以下条件（把 $r$ 当作定值）：
+比如 $\textit{sum}[r][x]=6$，$\textit{sum}[r][y]=8$，相应的最小值就是 $\textit{minS}[1][0]$。
+
+## 滑动窗口
+
+此外，我们还要满足以下条件（枚举 $r$，然后把 $r$ 当作定值）：
 
 - $r-l\ge k$
 - $\textit{sum}[r][x] > \textit{sum}[l][x]$
@@ -57,7 +66,7 @@ $x$ 个数的奇偶和 $y$ 个数的奇偶两两组合，有 $4$ 种情况，我
 
 ⚠**注意**：我们要维护的是窗口左边的 $4$ 种最小前缀和，并不关心窗口内的东西。
 
-内层循环结束后，在 $[0,\textit{left}-1]$ 中的左端点 $l$ 都是符合要求的，并且相应的最小前缀和也已保存到 $\textit{minS}[p][q]$ 中。
+滑窗内层循环结束后，在 $[0,\textit{left}-1]$ 中的左端点 $l$ 都是符合要求的，并且相应的最小前缀和也已保存到 $\textit{minS}[p][q]$ 中。
 
 此时用
 
