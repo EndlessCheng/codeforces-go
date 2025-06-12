@@ -180,8 +180,50 @@ func minimizeMax(nums []int, p int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n + n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})-\min(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(n\log n + n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})-\min(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序时的栈空间。
+
+## 附：与值域无关的做法
+
+由于答案一定是（排序后）相邻元素的差值，我们可以**只在差值中二分**。
+
+具体来说，计算相邻元素的差值，记录到一个 $\textit{diffs}$ 数组中（为兼容 $p=0$ 这种特殊情况，把 $0$ 也加到 $\textit{diffs}$ 中）。然后把 $\textit{diffs}$ 排序。
+
+由于答案一定在 $\textit{diffs}$ 中，我们可以在 $\textit{diffs}$ 中二分下标 $\textit{idx}$，上面代码中的 $\textit{mx} = \textit{diff}[\textit{idx}]$，其余不变。
+
+注意开区间二分右端点是 $n-1$，不是 $n$。因为 $\textit{diffs}[n-1]$ 是最大的差值，一定满足要求。
+
+```py
+class Solution:
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        nums.sort()
+        diffs = [0] + sorted(y - x for x, y in pairwise(nums))
+
+        def check(idx: int) -> int:
+            mx = diffs[idx]
+            cnt = i = 0
+            while i < len(nums) - 1:
+                if nums[i + 1] - nums[i] <= mx:  # 选 nums[i] 和 nums[i+1]
+                    cnt += 1
+                    i += 2
+                else:  # 不选 nums[i]
+                    i += 1
+            return cnt >= p
+
+        left, right = -1, len(nums) - 1
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if check(mid):
+                right = mid
+            else:
+                left = mid
+        return diffs[right]
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 
