@@ -15,26 +15,27 @@ func cf526E(in io.Reader, out io.Writer) {
 		s[i] += s[i-1]
 	}
 	tot := s[n]
-	f := make([]struct{ f, st int }, n+1)
+	f := make([]int, n+1)
+	st := make([]int, n+1)
 	for range q {
 		Fscan(in, &mx)
 		if tot <= mx {
 			Fprintln(out, 1)
 			continue
 		}
-		left := 0
+		l := 0
 		for i := 1; ; i++ {
-			for s[i]-s[left] > mx {
-				left++
+			for s[i]-s[l] > mx {
+				l++
 			}
-			f[i].f = f[left].f + 1
-			if f[i].f == 2 {
-				f[i].st = left
+			f[i] = f[l] + 1
+			if f[i] == 2 {
+				st[i] = l
 			} else {
-				f[i].st = f[left].st
+				st[i] = st[l]
 			}
-			if tot-(s[i]-s[f[i].st]) <= mx {
-				Fprintln(out, max(f[i].f, 2))
+			if tot-(s[i]-s[st[i]]) <= mx {
+				Fprintln(out, max(f[i], 2))
 				break
 			}
 		}
