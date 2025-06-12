@@ -291,8 +291,9 @@ class Solution:
                 fy = dfs(y)
                 nf = f.copy()
                 for msk, s in fy.items():
-                    # 同一个 mask 至多选一个，直接取 max
-                    nf[msk] = max(nf[msk], s)
+                    if s <= nf[msk]:  # 重要优化！无法让最大值变大
+                        continue
+                    nf[msk] = s
                     # 求两个 mask 的并集，刷表转移
                     for msk2, s2 in f.items():
                         if msk & msk2 == 0:
@@ -349,8 +350,10 @@ class Solution {
             for (Map.Entry<Integer, Integer> e : fy.entrySet()) {
                 int msk = e.getKey();
                 int s = e.getValue();
-                // 同一个 mask 至多选一个，直接取 max
-                nf.merge(msk, s, Math::max);
+                if (s <= nf.getOrDefault(msk, 0)) { // 重要优化！无法让最大值变大
+                    continue;
+                }
+                nf.put(msk, s);
                 // 求两个 mask 的并集，刷表转移
                 for (Map.Entry<Integer, Integer> e2 : f.entrySet()) {
                     int msk2 = e2.getKey();
@@ -407,8 +410,10 @@ public:
                 auto fy = dfs(y);
                 auto nf = f;
                 for (auto& [msk, s] : fy) {
-                    // 同一个 mask 至多选一个，直接取 max
-                    nf[msk] = max(nf[msk], s);
+                    if (s <= nf[msk]) { // 重要优化！无法让最大值变大
+                        continue;
+                    }
+                    nf[msk] = s;
                     // 求两个 mask 的并集，刷表转移
                     for (auto& [msk2, s2] : f) {
                         if ((msk & msk2) == 0) {
@@ -468,8 +473,10 @@ func goodSubtreeSum(vals, par []int) (ans int) {
 			fy := dfs(y)
 			nf := maps.Clone(f)
 			for msk, s := range fy {
-				// 同一个 mask 至多选一个，直接取 max
-				nf[msk] = max(nf[msk], s)
+				if s <= nf[msk] { // 重要优化！无法让最大值变大
+					continue
+				}
+				nf[msk] = s
 				// 求两个 mask 的并集，刷表转移
 				for msk2, s2 := range f {
 					if msk&msk2 == 0 {

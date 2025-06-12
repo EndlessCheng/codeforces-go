@@ -88,8 +88,10 @@ func goodSubtreeSum(vals, par []int) (ans int) {
 			fy := dfs(y)
 			nf := maps.Clone(f)
 			for msk, s := range fy {
-				// 同一个 mask 至多选一个，直接取 max
-				nf[msk] = max(nf[msk], s)
+				if s <= nf[msk] { // 不可能让最大值变大
+					continue
+				}
+				nf[msk] = s
 				// 求两个 mask 的并集，刷表转移
 				for msk2, s2 := range f {
 					if msk&msk2 == 0 {
