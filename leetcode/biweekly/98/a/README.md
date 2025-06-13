@@ -47,22 +47,14 @@ public:
         for (char c : s) {
             if (c != '9') { // 第一个不等于 9 的字符
                 string tmp = s;
-                for (char& ch : tmp) {
-                    if (ch == c) {
-                        ch = '9'; // 替换成 9
-                    }
-                }
+                ranges::replace(tmp, c, '9'); // 替换成 9
                 mx = stoi(tmp);
                 break;
             }
         }
 
         char s0 = s[0]; // 第一个不等于 0 的字符
-        for (char& ch : s) {
-            if (ch == s0) {
-                ch = '0'; // 替换成 0
-            }
-        }
+        ranges::replace(s, s0, '0'); // 替换成 0
         int mn = stoi(s);
 
         return mx - mn;
