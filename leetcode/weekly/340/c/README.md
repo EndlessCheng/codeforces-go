@@ -31,9 +31,19 @@ $\textit{mx}$ 越小，要求就越**苛刻**，越不能找到 $p$ 个数对。
 
 但实际上，可以贪心。
 
-注意到，$f(n-1)$ 至多为 $f(n-3)+1$。这里加一表示选 $\textit{nums}[1]$ 和 $\textit{nums}[2]$。
+由于 $f(n-1)$ 比 $f(n-3)$ 只多了两个数，至多比 $f(n-3)$ 多一个下标对，所以有
 
-此外，由于元素个数越少，$f(i)$ 越小，所以 $f(n-2)\ge f(n-3)$，所以 
+$$
+f(n-1) \le f(n-3)+1
+$$
+
+此外，由于元素个数越少，$f(i)$ 越小，所以有
+
+$$
+f(n-2)\ge f(n-3)
+$$
+
+两边加一，得
 
 $$
 f(n-2)+1\ge f(n-3)+1 \ge f(n-1)
@@ -68,7 +78,7 @@ $$
 class Solution:
     def minimizeMax(self, nums: List[int], p: int) -> int:
         nums.sort()
-        def check(mx: int) -> int:
+        def check(mx: int) -> bool:
             cnt = i = 0
             while i < len(nums) - 1:
                 if nums[i + 1] - nums[i] <= mx:  # 选 nums[i] 和 nums[i+1]
@@ -92,7 +102,7 @@ class Solution:
 class Solution:
     def minimizeMax(self, nums: List[int], p: int) -> int:
         nums.sort()
-        def check(mx: int) -> int:
+        def check(mx: int) -> bool:
             cnt = i = 0
             while i < len(nums) - 1:
                 if nums[i + 1] - nums[i] <= mx:  # 选 nums[i] 和 nums[i+1]
