@@ -76,7 +76,7 @@ class Solution {
     public int countPartitions(int[] nums, int k) {
         final int MOD = 1_000_000_007;
         int n = nums.length;
-        Deque<Integer> minQ = new ArrayDeque<>();
+        Deque<Integer> minQ = new ArrayDeque<>(); // 更快的写法见【Java 数组】
         Deque<Integer> maxQ = new ArrayDeque<>();
         int[] f = new int[n + 1];
         f[0] = 1;
@@ -107,6 +107,56 @@ class Solution {
                 }
                 if (maxQ.peekFirst() < left) {
                     maxQ.pollFirst();
+                }
+            }
+
+            // 3. 更新答案
+            f[i + 1] = (int) (sumF % MOD);
+        }
+
+        return f[n];
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public int countPartitions(int[] nums, int k) {
+        final int MOD = 1_000_000_007;
+        int n = nums.length;
+        int[] minQ = new int[n];
+        int[] maxQ = new int[n];
+        int minHead = 0, minTail = -1;
+        int maxHead = 0, maxTail = -1;
+        int[] f = new int[n + 1];
+        f[0] = 1;
+        long sumF = 0; // 窗口中的 f[i] 之和
+        int left = 0;
+
+        for (int i = 0; i < n; i++) {
+            // 1. 入
+            sumF += f[i];
+
+            int x = nums[i];
+            while (minHead <= minTail && x <= nums[minQ[minTail]]) {
+                minTail--;
+            }
+            minQ[++minTail] = i;
+
+            while (maxHead <= maxTail && x >= nums[maxQ[maxTail]]) {
+                maxTail--;
+            }
+            maxQ[++maxTail] = i;
+
+            // 2. 出
+            while (nums[maxQ[maxHead]] - nums[minQ[minHead]] > k) {
+                sumF -= f[left];
+                left++;
+                if (minQ[minHead] < left) {
+                    minHead++;
+                }
+                if (maxQ[maxHead] < left) {
+                    maxHead++;
                 }
             }
 
@@ -214,6 +264,10 @@ func countPartitions(nums []int, k int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个下标至多入队出队各两次。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 相似题目
+
+- [2762. 不间断子数组](https://leetcode.cn/problems/continuous-subarrays/)
 
 更多相似题目，见下面动态规划题单的「**§5.2 最优划分**」和「**§11.3 单调队列优化 DP**」。
 
