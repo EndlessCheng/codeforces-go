@@ -1,28 +1,34 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"slices"
 )
 
 // https://github.com/EndlessCheng
 func cf95D(in io.Reader, out io.Writer) {
 	const mod = 1_000_000_007
+	const mx = 1001
+	pow10 := [mx]int{1}
+	for i := 1; i < mx; i++ {
+		pow10[i] = pow10[i-1] * 10 % mod
+	}
+
 	var T, k int
 	var s []byte
 	Fscan(in, &T, &k)
-	// todo 去掉 ok，改成 pow10 数组提前返回
-	dp := make([][1001][2]int, k+1)
+	dp := make([][mx]int, k+1)
 	var f func(int, int, int, bool) int
 	f = func(i, left, ok int, isLimit bool) (res int) {
 		if i < 0 {
 			return ok
 		}
 		if !isLimit {
-			p := &dp[left][i][ok]
+			if ok > 0 {
+				return pow10[i+1]
+			}
+			p := &dp[left][i]
 			if *p > 0 {
 				return *p - 1
 			}
@@ -71,4 +77,4 @@ func cf95D(in io.Reader, out io.Writer) {
 	}
 }
 
-func main() { cf95D(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf95D(bufio.NewReader(os.Stdin), os.Stdout) }
