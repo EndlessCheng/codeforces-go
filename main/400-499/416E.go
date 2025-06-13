@@ -56,9 +56,11 @@ func cf416E(in io.Reader, _w io.Writer) {
 		}
 		for j := i + 1; j < n; j++ {
 			s := 0
-			for k := range n {
-				if gi[k]+g[k][j] == gi[j] {
-					s += cnt[k]
+			if gi[j] < 1e9 {
+				for k := range n {
+					if gi[k]+g[k][j] == gi[j] {
+						s += cnt[k]
+					}
 				}
 			}
 			Fprint(out, s, " ")
