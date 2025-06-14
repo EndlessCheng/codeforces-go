@@ -45,6 +45,7 @@ https://codeforces.com/problemset/problem/940/E 2000
 https://codeforces.com/problemset/problem/1237/D 2000
 https://codeforces.com/problemset/problem/1077/F2 2100
 https://codeforces.com/problemset/problem/1216/F 2100
+https://codeforces.com/problemset/problem/939/F 2400 两个
 https://codeforces.com/problemset/problem/797/F 2600
 https://codeforces.com/problemset/problem/377/E 2800
 https://www.luogu.com.cn/problem/P3572
@@ -64,8 +65,9 @@ https://www.luogu.com.cn/problem/P1714
 https://www.luogu.com.cn/problem/P3522
 https://codeforces.com/problemset/problem/6/E 1900
 
-单调双端队列
+其他单调队列
 https://codeforces.com/problemset/problem/1584/E 2300
+https://codeforces.com/problemset/problem/1175/F 2500
 
 */
 type MqData struct {
