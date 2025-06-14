@@ -62,6 +62,7 @@ https://codeforces.com/problemset/problem/2009/G2 2200
 字典序最小
 - [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) ~1800
    - 402 变形：不允许自动去掉前导零 https://codeforces.com/problemset/problem/1765/N
+https://codeforces.com/problemset/problem/1076/A 1200 只能删一个
 https://codeforces.com/problemset/problem/1730/C 1200
 https://codeforces.com/problemset/problem/1905/C 1400
 https://codeforces.com/problemset/problem/2046/B 1600
