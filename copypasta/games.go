@@ -49,6 +49,9 @@ todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推�
 https://codeforces.com/problemset/problem/1934/D2 2400
 todo https://codeforces.com/problemset/problem/1903/E 
 
+纳什均衡
+https://codeforces.com/problemset/problem/98/E 2700
+
 */
 func _() {
 	{
