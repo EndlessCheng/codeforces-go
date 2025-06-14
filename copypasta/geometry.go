@@ -290,7 +290,8 @@ func (a vec) rotateCCW90() vec { return vec{-a.y, a.x} } // 逆时针旋转 90°
 func (a vec) rotateCW90() vec  { return vec{a.y, -a.x} } // 顺时针旋转 90°
 
 // 逆时针旋转，传入旋转的弧度
-// https://codeforces.com/problemset/problem/618/E
+// https://codeforces.com/problemset/problem/618/E 2500
+// 注意：如果传入的是角度 angle，那么 rad = float64(angle%360) / 180 * math.Pi，这里模 360 很重要，避免过大的浮点误差
 func (a vec) rotateCCW(rad float64) vecF {
 	sin, cos := math.Sincos(rad)
 	return vecF{
