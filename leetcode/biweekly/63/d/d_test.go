@@ -7,7 +7,6 @@ import (
 )
 
 func Test(t *testing.T) {
-	t.Log("Current test is [d]")
 	examples := [][]string{
 		{
 			`[2,5]`, `[3,4]`, `2`, 
@@ -21,10 +20,16 @@ func Test(t *testing.T) {
 			`[-2,-1,0,1,2]`, `[-3,-1,2,4,5]`, `3`, 
 			`-6`,
 		},
-		
+		{
+			`[-9,6,10]`, `[-7,-1,1,2,3,4,4,6,9,10]`, `15`,
+			`10`,
+		},
+		{
+			`[1,6]`, `[-10,-10,-5,-4,-3,-1]`, `9`,
+			`-5`,
+		},
 	}
-	targetCaseNum := 1
-	if err := testutil.RunLeetCodeFuncWithExamples(t, kthSmallestProduct, examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, kthSmallestProduct, examples, 0); err != nil {
 		t.Fatal(err)
 	}
 }
