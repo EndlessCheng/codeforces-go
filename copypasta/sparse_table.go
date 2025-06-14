@@ -16,6 +16,8 @@ todo O(n)-O(1) lca/rmq, not method of 4 russians https://codeforces.com/blog/ent
 todo O(n)-O(1) RMQ https://atcoder.jp/contests/arc165/submissions/45673031
 
 模板题 https://www.luogu.com.cn/problem/P3865
+模板题 https://www.luogu.com.cn/problem/P2880
+模板题 https://www.luogu.com.cn/problem/P1816
 https://codeforces.com/problemset/problem/1709/D 1700
 https://codeforces.com/problemset/problem/2050/F 1700 GCD
 https://codeforces.com/problemset/problem/1548/B 1800 GCD
@@ -37,8 +39,8 @@ func NewST(a []int) ST {
 		st[i] = make([]int, sz)
 		st[i][0] = v
 	}
-	for j := 1; 1<<j <= n; j++ {
-		for i := 0; i+1<<j <= n; i++ {
+	for j := 1; j < sz; j++ {
+		for i := range n - 1<<j + 1 {
 			st[i][j] = st.Op(st[i][j-1], st[i+1<<(j-1)][j-1])
 		}
 	}
