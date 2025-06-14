@@ -3,6 +3,7 @@ package main
 import (
 	. "fmt"
 	"io"
+	"slices"
 )
 
 // https://github.com/EndlessCheng
@@ -13,10 +14,9 @@ func cf939F(in io.Reader, out io.Writer) {
 	for i := 1; i <= n; i++ {
 		f[i] = 1e9
 	}
-	nf := make([]int, n*2+1)
+	nf := slices.Clone(f)
 	for range k {
 		Fscan(in, &l, &r)
-		copy(nf, f)
 		q := []int{}
 		for j := r; j >= 0; j-- {
 			for len(q) > 0 && f[r-j] <= f[q[len(q)-1]] {
@@ -26,7 +26,7 @@ func cf939F(in io.Reader, out io.Writer) {
 			if q[0] < l-j {
 				q = q[1:]
 			}
-			nf[j] = min(nf[j], f[q[0]]+1)
+			nf[j] = min(f[j], f[q[0]]+1)
 		}
 
 		q = q[:0]
