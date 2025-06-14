@@ -43,8 +43,12 @@ https://codeforces.com/problemset/problem/1547/E 1500
 https://codeforces.com/problemset/problem/1881/E 1500
 https://codeforces.com/problemset/problem/1875/D 1600
 https://codeforces.com/problemset/problem/1994/C 1600 结合滑窗
+https://codeforces.com/problemset/problem/2061/C 1600 也可以状态机 DP
 https://codeforces.com/problemset/problem/30/C 1800
+https://codeforces.com/problemset/problem/2114/F 2000
 https://codeforces.com/problemset/problem/1627/E 2200 刷表法 双指针
+https://codeforces.com/problemset/problem/526/E 2400 滑动窗口
+- 相似题目 https://leetcode.cn/problems/maximize-the-distance-between-points-on-a-square/ 我题解方法五
 https://codeforces.com/problemset/problem/1739/E 2400
 另见「最长递增子序列」
 
@@ -58,8 +62,11 @@ https://codeforces.com/problemset/problem/404/D 1900
 https://codeforces.com/problemset/problem/1920/E 2000
 https://codeforces.com/problemset/problem/2027/D2 2200 在 DP 数组上滑窗
 https://codeforces.com/problemset/problem/2045/H 2200
+https://codeforces.com/problemset/problem/31/E 2400
+https://codeforces.com/problemset/problem/796/E 2400 状态设计
 https://codeforces.com/problemset/problem/360/C 2500
 https://codeforces.com/problemset/problem/6/D 2600
+https://codeforces.com/problemset/problem/93/E 2600 记忆化搜索 时间换空间
 https://codeforces.com/problemset/problem/367/E 2700 状态设计
 https://atcoder.jp/contests/dp/tasks/dp_t 状态设计
 https://www.luogu.com.cn/problem/P2258
@@ -70,6 +77,7 @@ https://www.luogu.com.cn/problem/P4933
 
 输出具体方案
 做这一道题就够了 https://codeforces.com/problemset/problem/56/D 2100
+https://codeforces.com/problemset/problem/31/E 2400
 
 从 X 操作到 Y（部分题目也可以用 BFS）
 +1 -1 /2 [397. 整数替换](https://leetcode.cn/problems/integer-replacement/)
@@ -189,6 +197,7 @@ todo https://codeforces.com/problemset/problem/441/E 2400 考虑 x+i 的尾零�
 https://atcoder.jp/contests/arc115/tasks/arc115_e 容斥
 - https://codeforces.com/contest/1591/problem/F
 todo https://codeforces.com/problemset/problem/744/C 2400
+https://codeforces.com/problemset/problem/796/E 2400
 https://codeforces.com/problemset/problem/1348/E 2400 做到 O(nk) todo 需要复习
 https://codeforces.com/problemset/problem/840/C 2500
 https://atcoder.jp/contests/abc237/tasks/abc237_f
@@ -282,7 +291,6 @@ https://codeforces.com/problemset/problem/1794/D 1900
 https://codeforces.com/problemset/problem/1767/C 2100 带约束的计数 DP
 https://codeforces.com/problemset/problem/2060/F 2200
 https://codeforces.com/problemset/problem/626/F 2400 转换
-https://codeforces.com/problemset/problem/756/D 2400
 https://codeforces.com/problemset/problem/1237/F 2600
 https://codeforces.com/problemset/problem/1580/B 2600
 https://codeforces.com/problemset/problem/995/F 2700 也可以用拉格朗日插值
@@ -1142,9 +1150,9 @@ func _(abs func(int) int) {
 		sumF := 0
 		for _, b := range s {
 			b -= 'a'
-			others := (sumF - f[b] + mod) % mod
+			old := f[b]
 			f[b] = (sumF + 1) % mod
-			sumF = (others + f[b]) % mod
+			sumF = (sumF + f[b] - old + mod) % mod
 		}
 		// 空的也算上
 		//sumF = (sumF + 1) % mod
@@ -1166,14 +1174,14 @@ func _(abs func(int) int) {
 		for i, b := range s {
 			b -= 'a'
 			for sz := i + 1; sz > 0; sz-- {
-				others := (sumF[sz] - f[b][sz] + mod) % mod
+				old := f[b][sz]
 				if sz > 1 {
 					// 如果要求子序列相邻字母一定不同，这里改成 sumF[sz-1] - f[b][sz-1]（注意取模）
 					f[b][sz] = sumF[sz-1]
 				} else {
 					f[b][sz] = 1 // 以 b 结尾的长为 1 的子序列本质只有 1 个
 				}
-				sumF[sz] = (others + f[b][sz]) % mod
+				sumF[sz] = (sumF[sz] + f[b][sz] - old + mod) % mod
 			}
 		}
 		sumF[0] = 1 // 空子序列
@@ -2200,12 +2208,14 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/2069/C 1500
 	- LC1955 https://leetcode.cn/problems/count-number-of-special-subsequences/
 	https://codeforces.com/problemset/problem/446/A 1600
+	https://codeforces.com/problemset/problem/2061/C 1600 也可以线性 DP
 	https://codeforces.com/problemset/problem/1826/D 1700 式子变形
 	https://codeforces.com/problemset/problem/2029/C 1700
 	https://codeforces.com/problemset/problem/2081/A 1800
 	https://codeforces.com/problemset/problem/404/D 1900
 	https://codeforces.com/problemset/problem/1613/D 1900 爽
 	https://codeforces.com/problemset/problem/623/B 2300
+	https://codeforces.com/problemset/problem/796/E 2400
 	https://codeforces.com/problemset/problem/1701/E 2500 LCS 变形题
 	*/
 
@@ -2964,11 +2974,16 @@ func _(abs func(int) int) {
 	数位乘积个数 (n*(n+1)/2)^2 = O(n^4) https://oeis.org/A000537
 	- 详细公式推导 https://leetcode.cn/problems/count-beautiful-numbers/solutions/3613931/mo-ban-shu-wei-dp-v21pythonjavacgo-by-en-fdzz/
 	https://atcoder.jp/contests/abc194/tasks/abc194_f 2197=CF2373 恰好用到了 k 个不同数位
+	todo https://codeforces.com/problemset/problem/1245/F 2300
+	https://codeforces.com/problemset/problem/1670/F 2400
+	- 类似套路 https://leetcode.cn/problems/find-sum-of-array-product-of-magical-sequences/
 	https://codeforces.com/problemset/problem/55/D 2500 被每个非零数位都整除的数字个数
+	https://codeforces.com/problemset/problem/95/D 2500 考虑 memo 的复用
+	https://codeforces.com/problemset/problem/1710/C 2500
 	https://codeforces.com/problemset/problem/908/G 2800 排序后的数字之和
+	- 相似题目 https://codeforces.com/problemset/problem/2104/F
 	https://codeforces.com/gym/104337/problem/B 【妙】数位众数，把 freq 排序作为 key
-	todo https://codeforces.com/problemset/problem/1245/F
-	【转换】选两个不超过 U 的数，满足异或和为 target https://atcoder.jp/contests/arc133/tasks/arc133_d 2658
+	https://atcoder.jp/contests/arc133/tasks/arc133_d 2658 【转换】选两个不超过 U 的数，满足异或和为 target
 	https://www.luogu.com.cn/problem/P6669 两个上界约束
 	- https://www.luogu.com.cn/problem/P8688
 	- https://codeforces.com/problemset/problem/582/D 3300 模数为 p^a
@@ -3164,6 +3179,47 @@ func _(abs func(int) int) {
 		}
 		ans = (ans%mod + mod) % mod
 		return ans
+	}
+
+	// 只能从低到高计算的场景
+	// https://codeforces.com/problemset/problem/1670/F
+	digitDPRightToLeft := func(high, k int) int {
+		m := bits.Len(uint(high))
+		dp := make([][][2]int, m)
+		for i := range dp {
+			dp[i] = make([][2]int, k)
+			for j := range dp[i] {
+				dp[i][j] = [2]int{-1, -1}
+			}
+		}
+		var f func(int, int, int) int
+		f = func(i, s, lessEq int) (res int) {
+			if i == m {
+				return lessEq
+			}
+
+			p := &dp[i][s][lessEq]
+			if *p >= 0 {
+				return *p
+			}
+			defer func() { *p = res }()
+
+			for v := range 2 {
+				newS := s
+				// ...
+
+				le := 0
+				if v < high>>i&1 {
+					le = 1
+				} else if v == high>>i&1 {
+					le = lessEq
+				}
+				res += f(i+1, newS, le)
+				res %= mod
+			}
+			return
+		}
+		return f(0, 0, 1)
 	}
 
 	// 若需要计算的不是合法数字个数，而是合法数字之和，则需要在计算时考虑单个数位的贡献
@@ -3481,11 +3537,6 @@ func _(abs func(int) int) {
 	LC3122 https://leetcode.cn/problems/minimum-number-of-operations-to-satisfy-conditions/ 1905
 	https://codeforces.com/problemset/problem/264/C 2000
 
-	滑动窗口优化 DP
-	https://codeforces.com/problemset/problem/985/E 2100
-	- 把 a 从小到大排序后，如果分组方案存在，那么一定有一个分组方案是，同一组的数在 a 中是连续的
-	- 证明：因为交换两个不同组的数，一定不会变得更优
-
 	前缀和优化 DP
 	优化空间时，可以直接把前缀和保存到 f 数组上，然后倒序遍历，计算实际的 f
 	- 例如 https://leetcode.cn/problems/count-the-number-of-inversions/
@@ -3508,13 +3559,21 @@ func _(abs func(int) int) {
 	https://atcoder.jp/contests/abc248/tasks/abc248_c
 	https://atcoder.jp/contests/diverta2019/tasks/diverta2019_e
 
+	滑动窗口优化 DP
+	https://codeforces.com/problemset/problem/985/E 2100
+	- 把 a 从小到大排序后，如果分组方案存在，那么一定有一个分组方案是，同一组的数在 a 中是连续的
+	- 证明：因为交换两个不同组的数，一定不会变得更优
+
+	单调队列优化 DP
+	见 monotone_queue.go
+
 	另见本页面的 boundedKnapsackWays（前缀和优化多重背包方案数）
+
+	数论分块优化 DP
+	https://codeforces.com/problemset/problem/1603/C 2300
 
 	其他
 	https://codeforces.com/problemset/problem/1863/F 2600
-
-	数论分块优化 DP
-	https://codeforces.com/problemset/problem/1603/C
 
 	动态 DP
 	https://oi-wiki.org/dp/dynamic/
@@ -3532,11 +3591,9 @@ func _(abs func(int) int) {
 	todo 与树剖结合 https://www.luogu.com.cn/problem/P4719 https://www.luogu.com.cn/problem/P4751
 	*/
 
-	// 单调队列优化 DP
-	// 见 monotone_queue.go
-
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
 	// 状态转移方程形如 f[i] = min_{j=0}^{i-1} a[i]*b[j] + k[i]*f[j] + C，包含 i 和 j 的乘积项
+	// 应用：最小化方差问题，例如 https://leetcode.cn/problems/split-array-largest-sum/ 改成最小化子数组和的方差
 	//
 	// 理解方法一：点积的几何意义（向量投影长度）
 	// 推荐，比斜率、截距好想很多
@@ -4627,7 +4684,7 @@ func _(abs func(int) int) {
 		subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
 		// 数位 DP
-		digitDP, digitDP2, calcSum, digitDP2D, kth666,
+		digitDP, digitDP2, digitDPRightToLeft, calcSum, digitDP2D, kth666,
 
 		// 倍增
 		binaryLifting, binaryLifting2,
