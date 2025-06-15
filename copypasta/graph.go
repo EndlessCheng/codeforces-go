@@ -701,6 +701,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 // LC753 https://leetcode.cn/problems/cracking-the-safe/ 2274
 // https://codeforces.com/problemset/problem/1511/D 1600 构造
 // https://codeforces.com/problemset/problem/723/E 2200 虚点
+// https://codeforces.com/problemset/problem/21/D 2400 可以重复经过边的欧拉回路
 // https://codeforces.com/problemset/problem/209/C 2400 添加边使得图存在欧拉回路
 // https://codeforces.com/problemset/problem/1186/F 2400
 // https://codeforces.com/problemset/problem/1361/C 2500 转换
@@ -1496,6 +1497,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // https://codeforces.com/problemset/problem/1715/E 2400 斜率优化
 // https://codeforces.com/problemset/problem/1753/D 2400 建模+转换+多源最短路 
 // https://atcoder.jp/contests/abc245/tasks/abc245_g 2270=CF2428
+// https://codeforces.com/problemset/problem/416/E 2500 在最短路上的边
 // https://codeforces.com/problemset/problem/1528/D 2500 建模【好题】
 // https://atcoder.jp/contests/arc064/tasks/arc064_c * 稠密图
 // https://atcoder.jp/contests/abc237/tasks/abc237_e 转换
@@ -1761,10 +1763,9 @@ func (*graph) dijkstraShortestPath2(g [][]int, st int) []int {
 // https://oi-wiki.org/graph/bfs/#%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97-bfs
 // https://codeforces.com/blog/entry/22276
 // EXTRA: 1-2 最短路 https://codeforces.com/blog/entry/90917
+// - https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Specialized_variants
+// - Dial 算法 https://chatgpt.com/c/6829c9b6-e418-8011-8fc6-4f3b633ee6f1
 //
-// - [1824. 最少侧跳次数](https://leetcode.cn/problems/minimum-sideway-jumps/) 1778
-// - [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 2069
-// - [2290. 到达角落需要移除障碍物的最小数目](https://leetcode.cn/problems/minimum-obstacle-removal-to-reach-corner/) 2138
 // https://codeforces.com/problemset/problem/173/B 1800
 // https://codeforces.com/problemset/problem/1063/B 1800
 // https://codeforces.com/problemset/problem/1941/G 2000 也可以 BFS（需要合适的建图方式）
@@ -1774,6 +1775,7 @@ func (*graph) dijkstraShortestPath2(g [][]int, st int) []int {
 // https://codeforces.com/problemset/problem/1340/C 2400 建图技巧
 // https://codeforces.com/problemset/problem/1442/C 2400
 // https://codeforces.com/problemset/problem/1749/E 2400 建图技巧
+// https://codeforces.com/problemset/problem/346/D 2600 结合拓扑排序
 // 建图技巧 https://www.lanqiao.cn/problems/6281/learning/?contest_id=146
 // 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
 //         https://atcoder.jp/contests/abc176/tasks/abc176_d
@@ -1908,6 +1910,7 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dis []int) { // 有负
 // https://codeforces.com/problemset/problem/33/B 1800
 // https://codeforces.com/problemset/problem/25/C 1900 动态加边
 // https://codeforces.com/problemset/problem/691/E 1900 传递闭包+矩阵快速幂
+// https://codeforces.com/problemset/problem/416/E 2500 在最短路上的边
 // https://atcoder.jp/contests/abc143/tasks/abc143_e 最少加油次数 跑两次 Floyd
 // LC2977 https://leetcode.cn/problems/minimum-cost-to-convert-string-ii/ DP
 // https://atcoder.jp/contests/abc243/tasks/abc243_e 寻找不影响最短路的边
@@ -1942,13 +1945,13 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 		g[v][w] = min(g[v][w], wt)
 		g[w][v] = min(g[w][v], wt)
 	}
-	for k := range g {
+	for mid := range g {
 		for i := range g {
-			if g[i][k] == inf {
+			if g[i][mid] == inf {
 				continue
 			}
 			for j := range g {
-				g[i][j] = min(g[i][j], g[i][k]+g[k][j])
+				g[i][j] = min(g[i][j], g[i][mid]+g[mid][j])
 			}
 		}
 	}
@@ -3478,23 +3481,26 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, 
 //        LC1857 https://leetcode.cn/problems/largest-color-value-in-a-directed-graph/
 //        https://ac.nowcoder.com/acm/contest/6384/C
 //        https://www.luogu.com.cn/problem/P3387
+//        https://codeforces.com/problemset/problem/2110/D 1700
 //        https://codeforces.com/problemset/problem/721/C 1800
 // 删点 LC310 https://leetcode.cn/problems/minimum-height-trees/
-// - https://codeforces.com/problemset/problem/1881/F
+// - https://codeforces.com/problemset/problem/1881/F 1700
 // https://www.luogu.com.cn/problem/P3275 缩点+判断是否有环
-// https://codeforces.com/problemset/problem/1572/A 1800
-// 混合图拓扑排序+定向 https://codeforces.com/problemset/problem/1385/E 2000
-//                  https://codeforces.com/problemset/problem/1100/E 2200
-// 构造 https://codeforces.com/problemset/problem/269/C 2100
-// 与「环形」结合 https://codeforces.com/contest/1863/problem/E  2100
-// 好题 https://codeforces.com/problemset/problem/915/D 2200
-// 利用拓扑思想 https://codeforces.com/problemset/problem/1037/E 2200
-// 与堆结合 https://codeforces.com/problemset/problem/825/E 2300
-//         https://codeforces.com/problemset/problem/1283/F 2200
-// 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E 2400
-// 关键点 次关键点 https://codeforces.com/contest/1062/problem/F 2900
 // 拓扑序是否唯一：任意时刻队列中不能有超过一个元素
+// - https://codeforces.com/problemset/problem/645/D 1800
 // - LC444 https://leetcode.cn/problems/sequence-reconstruction/
+// https://codeforces.com/problemset/problem/1572/A 1800
+// https://codeforces.com/problemset/problem/1385/E 2000 混合图拓扑排序+定向
+// https://codeforces.com/problemset/problem/269/C 2100 构造 
+// https://codeforces.com/problemset/problem/1863/E 2100 与「环形」结合 
+// https://codeforces.com/problemset/problem/915/D 2200 好题
+// https://codeforces.com/problemset/problem/1037/E 2200 拓扑思想 
+// https://codeforces.com/problemset/problem/1100/E 2200 混合图拓扑排序+定向
+// https://codeforces.com/problemset/problem/1283/F 2200 与堆结合
+// https://codeforces.com/problemset/problem/825/E 2300 与堆结合
+// https://codeforces.com/problemset/problem/1463/E 2400 缩点后的拓扑序
+// https://codeforces.com/problemset/problem/346/D 2600 结合 0-1 BFS
+// https://codeforces.com/problemset/problem/1062/F 2900 关键点 次关键点
 // 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
 func (*graph) topoSort(n int, edges [][]int) []int {
 	g := make([][]int, n)
