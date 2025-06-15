@@ -109,7 +109,7 @@ func specialTriplets(nums []int) (ans int) {
 
 枚举 $k$，设 $x=\textit{nums}[k]$，问题变成：
 
-- 有多少个二元组 $(i,j)$，满足 $i<j<k$ 且 $\textit{nums}[i]=x$ 且 $\textit{nums}[j] = \dfrac{x}{2}$。哈希表 $\textit{cnt}_{12}$ 记录这样的二元组个数。
+- 有多少个二元组 $(i,j)$，满足 $i<j<k$ 且 $\textit{nums}[i]=x$ 且 $\textit{nums}[j] = \dfrac{x}{2}$。用哈希表 $\textit{cnt}_{12}$ 记录这样的二元组个数。
 
 这个问题也可以枚举右维护左，即枚举 $j$，问题变成：
 
