@@ -1,3 +1,5 @@
+## 方法一：枚举中间
+
 三变量问题，一般**枚举中间的变量**最简单。为什么？对比一下：
 
 - 枚举 $i$，后续计算中还需要保证 $j$ 和 $k$ 的位置关系。
@@ -103,9 +105,97 @@ func specialTriplets(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 方法二：枚举右，维护左（一次遍历）
+
+枚举 $k$，设 $x=\textit{nums}[k]$，问题变成：
+
+- 有多少个二元组 $(i,j)$，满足 $i<j<k$ 且 $\textit{nums}[i]=x$ 且 $\textit{nums}[j] = \dfrac{x}{2}$。哈希表 $\textit{cnt}_{12}$ 记录这样的二元组个数。
+
+这个问题也可以枚举右维护左，即枚举 $j$，问题变成：
+
+- 在 $j$ 左边有多少个数等于 $\textit{nums}[j]\cdot 2$？用哈希表 $\textit{cnt}_{1}$ 记录。
+
+```py [sol-Python3]
+class Solution:
+    def specialTriplets(self, nums: List[int]) -> int:
+        MOD = 1_000_000_007
+        cnt1 = defaultdict(int)
+        cnt12 = defaultdict(int)
+        cnt123 = 0
+        for x in nums:
+            if x % 2 == 0:
+                cnt123 += cnt12[x // 2]  # 把 x 当作 nums[k]
+            cnt12[x] += cnt1[x * 2]  # 把 x 当作 nums[j]
+            cnt1[x] += 1  # 把 x 当作 nums[i]
+        return cnt123 % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    public int specialTriplets(int[] nums) {
+        final int MOD = 1_000_000_007;
+        Map<Integer, Integer> cnt1 = new HashMap<>();
+        Map<Integer, Long> cnt12 = new HashMap<>();
+        long cnt123 = 0;
+        for (int x : nums) {
+            if (x % 2 == 0) {
+                cnt123 += cnt12.getOrDefault(x / 2, 0L); // 把 x 当作 nums[k]
+            }
+            cnt12.merge(x, (long) cnt1.getOrDefault(x * 2, 0), Long::sum); // 把 x 当作 nums[j]
+            cnt1.merge(x, 1, Integer::sum); // 把 x 当作 nums[i]
+        }
+        return (int) (cnt123 % MOD);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int specialTriplets(vector<int>& nums) {
+        const int MOD = 1'000'000'007;
+        unordered_map<int, int> cnt1;
+        unordered_map<int, long long> cnt12;
+        long long cnt123 = 0;
+        for (int x : nums) {
+            if (x % 2 == 0) {
+                cnt123 += cnt12[x / 2]; // 把 x 当作 nums[k]
+            }
+            cnt12[x] += cnt1[x * 2]; // 把 x 当作 nums[j]
+            cnt1[x]++; // 把 x 当作 nums[i]
+        }
+        return cnt123 % MOD;
+    }
+};
+```
+
+```go [sol-Go]
+func specialTriplets(nums []int) (cnt123 int) {
+	const mod = 1_000_000_007
+	cnt1 := map[int]int{}
+	cnt12 := map[int]int{}
+	for _, x := range nums {
+		if x%2 == 0 {
+			cnt123 += cnt12[x/2] // 把 x 当作 nums[k]
+		}
+		cnt12[x] += cnt1[x*2] // 把 x 当作 nums[j]
+		cnt1[x]++ // 把 x 当作 nums[i]
+	}
+	return cnt123 % mod
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
 ## 相似题目
 
-见下面数据结构题单的「**§0.2 枚举中间**」和动态规划题单的「**专题：前后缀分解**」。
+- [2874. 有序三元组中的最大值 II](https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-ii/)
+- [2552. 统计上升四元组](https://leetcode.cn/problems/count-increasing-quadruplets/)
+
+更多相似题目，见下面数据结构题单的「**§0.2 枚举中间**」和动态规划题单的「**专题：前后缀分解**」。
 
 ## 分类题单
 

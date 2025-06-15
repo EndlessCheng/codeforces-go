@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func specialTriplets(nums []int) (ans int) {
+func specialTriplets1(nums []int) (ans int) {
 	const mod = 1_000_000_007
 	suf := map[int]int{}
 	for _, x := range nums {
@@ -16,4 +16,18 @@ func specialTriplets(nums []int) (ans int) {
 		pre[x]++
 	}
 	return ans % mod
+}
+
+func specialTriplets(nums []int) (cnt123 int) {
+	const mod = 1_000_000_007
+	cnt1 := map[int]int{}
+	cnt12 := map[int]int{}
+	for _, x := range nums {
+		if x%2 == 0 {
+			cnt123 += cnt12[x/2] // 把 x 当作 nums[k]
+		}
+		cnt12[x] += cnt1[x*2] // 把 x 当作 nums[j]
+		cnt1[x]++ // 把 x 当作 nums[i]
+	}
+	return cnt123 % mod
 }
