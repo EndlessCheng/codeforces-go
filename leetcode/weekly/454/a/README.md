@@ -16,8 +16,7 @@ class Solution:
         for i, s in enumerate(caption.split()):
             s = s.capitalize() if i else s.lower()
             a.append(s)
-        ans = ''.join(a)
-        return ans if len(ans) <= 100 else ans[:100]
+        return ''.join(a)[:100]  # join 后，取前 100 个字符
 ```
 
 ```java [sol-Java]
@@ -25,10 +24,7 @@ class Solution {
     public String generateTag(String caption) {
         StringBuilder ans = new StringBuilder();
         ans.append('#');
-        for (String s : caption.split("\\s+")) {
-            if (s.isEmpty()) {
-                continue;
-            }
+        for (String s : caption.trim().split("\\s+")) { // 用一个或多个空格分隔 caption
             if (ans.length() == 1) { // s 是第一个单词
                 s = s.toLowerCase();
             } else {
