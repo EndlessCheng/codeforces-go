@@ -26,6 +26,8 @@
 4. 继续枚举下一个 $i$。
 5. 最终返回跳到的节点。
 
+注意 $x=y$ 的情况，可以直接把 $x$ 加到答案中。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1qsMxz6EEd/?t=28m32s)，欢迎点赞关注~
 
 ```py [sol-Python3]
