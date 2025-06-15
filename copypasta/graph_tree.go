@@ -1138,6 +1138,7 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // - 先把这题做了 https://www.luogu.com.cn/problem/P3320
 // https://ac.nowcoder.com/acm/contest/6913/C 路径点权乘积 
 // https://oj.niumacode.com/problem/P1499 包含两个点 x y 的最长路径
+// k=3 个点的子树边权和 https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths-ii/
 //
 // 维护元素和 LC2836 https://leetcode.cn/problems/maximize-value-of-function-in-a-ball-passing-game/
 // 维护边权出现次数 LC2846 https://leetcode.cn/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/
@@ -1157,7 +1158,7 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // todo poj2763 poj1986 poj3728
 func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	// 另见 dp.go 中的 binaryLifting
-	
+
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, len(g))
 	dep := make([]int, len(g)) // 根节点的深度为 0
@@ -1213,6 +1214,31 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	}
 	getDis := func(v, w int) int { return dep[v] + dep[w] - dep[getLCA(v, w)]*2 }
 	//getDis := func(v, w int) int { return dis[v] + dis[w] - dis[getLCA(v, w)]*2 }
+
+	{
+		var dis []int
+		// 从 v 开始向根移动【至多】d 距离，返回最大移动次数，以及能移动到的离根最近的点
+		// 如果求【至少】d 距离的目标节点，可以改成往上跳至多 d-1，然后再往上跳一个节点
+		// 讲解 https://leetcode.cn/problems/find-weighted-median-node-in-tree/solutions/3700556/mo-ban-zui-jin-gong-gong-zu-xian-lcapyth-6ekj/
+		//
+		// NOIP2012·提高 疫情控制 https://www.luogu.com.cn/problem/P1084
+		// 变形 https://codeforces.com/problemset/problem/932/D
+		// 点权写法 https://codeforces.com/problemset/problem/1059/E 2400
+		// https://www.luogu.com.cn/problem/P7167
+		// https://leetcode.cn/problems/find-weighted-median-node-in-tree/
+		uptoDis := func(v, d int) (int, int) {
+			step := 0
+			dv := dis[v]
+			for i := mx - 1; i >= 0; i-- {
+				if p := pa[v][i]; p != -1 && dv-dis[p] <= d {
+					step |= 1 << i
+					v = p
+				}
+			}
+			return step, v
+		}
+		_ = uptoDis
+	}
 
 	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
 	// 如果 to 不是 v 的子孙，返回 -1
@@ -1302,28 +1328,6 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	}
 
 	{
-		// 加权树上二分
-		var dep []int // 加权深度，dfs 预处理略
-		// 从 v 开始向根移动至多 d 距离，返回最大移动次数，以及能移动到的离根最近的点
-		// NOIP2012·提高 疫情控制 https://www.luogu.com.cn/problem/P1084
-		// 变形 https://codeforces.com/problemset/problem/932/D
-		// 点权写法 https://codeforces.com/problemset/problem/1059/E 2400
-		// https://www.luogu.com.cn/problem/P7167
-		uptoDep := func(v, d int) (int, int) {
-			step := 0
-			dv := dep[v]
-			for i := mx - 1; i >= 0; i-- {
-				if p := pa[v][i]; p != -1 && dv-dep[p] <= d {
-					step |= 1 << i
-					v = p
-				}
-			}
-			return step, v
-		}
-		_ = uptoDep
-	}
-
-	{
 		// EXTRA: 倍增的时候维护其他属性，如边权最值等
 		// 下面的代码来自 https://codeforces.com/problemset/problem/609/E 2100
 		// EXTRA: 额外维护最值边的下标，见 https://codeforces.com/contest/733/submission/120955685
@@ -1405,7 +1409,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 // 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的。内存占用也比倍增要大一倍左右（这点可忽略）
 // 优点是查询的复杂度低，适用于查询量大的情形
 // https://oi-wiki.org/graph/lca/#rmq
-// todo DFS 序求 LCA（常数更小） https://www.cnblogs.com/alex-wei/p/DFN_LCA.html
+// todo DFS 序求 LCA（常数更小）https://www.luogu.com.cn/article/pu52m9ue https://www.cnblogs.com/alex-wei/p/DFN_LCA.html
 // https://codeforces.com/problemset/problem/342/E
 // 注：如果只有路径修改+查询，可以用欧拉序列 + 树状数组/线段树，见《挑战》p.332 http://poj.org/problem?id=2763
 func (*tree) lcaRMQ(root int, g [][]int) {
@@ -2050,7 +2054,8 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // https://atcoder.jp/contests/abc183/tasks/abc183_f
 // https://www.luogu.com.cn/problem/U41492
 // todo https://www.luogu.com.cn/problem/P3201 HNOI09 梦幻布丁
-// LC2003 https://leetcode.cn/problems/smallest-missing-genetic-value-in-each-subtree/ 所有子树 mex
+// https://leetcode.cn/problems/smallest-missing-genetic-value-in-each-subtree/ 所有子树 mex
+// https://leetcode.cn/problems/maximum-good-subtree-score/
 // https://ac.nowcoder.com/acm/contest/4010/E
 
 // 写法一：按 map 的大小合并
@@ -2126,21 +2131,22 @@ func (*tree) maxDisOfSameColor(a []int, es [][]int) (ans int) {
 // 根节点到树上任意节点的轻边数不超过 O(logn) 条
 // 某些题目可以不用 map，而是像莫队那样添加和撤销，这样只用数组就行，例如 https://codeforces.com/problemset/problem/375/D
 func (*tree) dsuMap(root int, g [][]int, vals []int) { // vals 为点权
+	// 小技巧：也可以把重儿子交换到 g[v][0] 中，方便实现
 	hson := make([]int, len(g))
 	var build func(int, int) int
 	build = func(v, fa int) int {
-		sz, hsz, hs := 1, 0, -1
+		size, hsz, hs := 1, 0, -1
 		for _, w := range g[v] {
 			if w != fa {
-				s := build(w, v)
-				sz += s
-				if s > hsz {
-					hsz, hs = s, w
+				sz := build(w, v)
+				size += sz
+				if sz > hsz {
+					hsz, hs = sz, w
 				}
 			}
 		}
 		hson[v] = hs // 叶子的重儿子是 -1
-		return sz
+		return size
 	}
 	build(root, -1)
 
@@ -2285,6 +2291,7 @@ func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
 
 // 普吕弗序列（Prufer 序列，Prüfer sequence）
 // https://en.wikipedia.org/wiki/Pr%C3%BCfer_sequence
+// https://chatgpt.com/c/682ec926-0540-8011-b07b-584afa1c9c98
 // https://oeis.org/A000272 Cayley's formula https://en.wikipedia.org/wiki/Cayley%27s_formula
 // https://www.luogu.com.cn/problem/P6086
 // todo 光之大陆 https://www.acwing.com/problem/content/2420/
@@ -2296,10 +2303,11 @@ func (*tree) treeToPrufer(n int, pa []int) []int { // 传入的 pa 是以 n 为�
 	}
 	prufer := make([]int, n-2)
 	for i, j := 0, 1; i < n-2; j++ {
+		// 找最小的叶子
 		for deg[j] > 0 {
 			j++
 		}
-		prufer[i] = pa[j]
+		prufer[i] = pa[j] // 记录该叶子的邻居
 		for i++; i < n-2; i++ {
 			p := prufer[i-1]
 			if deg[p]--; deg[p] > 0 || p > j {
