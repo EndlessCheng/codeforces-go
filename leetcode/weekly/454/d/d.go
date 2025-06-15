@@ -12,8 +12,7 @@ func findMedian(n int, edges [][]int, queries [][]int) []int {
 		g[y] = append(g[y], edge{x, wt})
 	}
 
-	const mx = 17 // 也可以写 bits.Len(uint(n))
-	pa := make([][mx]int, n)
+	pa := make([][17]int, n)
 	dep := make([]int, n)
 	dis := make([]int, n)
 
@@ -32,6 +31,7 @@ func findMedian(n int, edges [][]int, queries [][]int) []int {
 	}
 	dfs(0, -1)
 
+	mx := bits.Len(uint(n))
 	for i := range mx - 1 {
 		for x := range pa {
 			p := pa[x][i]

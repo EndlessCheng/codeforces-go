@@ -7,9 +7,18 @@
 5. 把单词列表 join 起来，得到答案。
 6. 如果答案长度超过 $100$，截断，只保留前 $100$ 个字符。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1qsMxz6EEd/)，欢迎点赞关注~
 
 ```py [sol-Python3]
+class Solution:
+    def generateTag(self, caption: str) -> str:
+        s = caption.title().replace(' ', '')
+        if not s:
+            return '#'
+        return '#' + s[0].lower() + s[1:99]
+```
+
+```py [sol-Python3 写法二]
 class Solution:
     def generateTag(self, caption: str) -> str:
         a = ['#']
@@ -66,7 +75,7 @@ public:
 };
 ```
 
-```go [sol-Go 写法一]
+```go [sol-Go]
 func generateTag(caption string) string {
 	ans := []byte{'#'}
 	for i, s := range strings.Fields(caption) {

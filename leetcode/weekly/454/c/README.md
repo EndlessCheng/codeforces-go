@@ -8,7 +8,7 @@
 
 注意最终答案可能是负数，要把答案初始化成 $-\infty$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1qsMxz6EEd/?t=20m04s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -87,6 +87,15 @@ func maximumProduct(nums []int, m int) int64 {
 
 - 时间复杂度：$\mathcal{O}(n-m)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 思考题
+
+1. 改成任意非空**子序列**的最大乘积。
+2. 改成长为 $m$ 的**子序列**的最大乘积。
+3. 改成长为 $m$ 的**子数组**的最大乘积。
+4. 改成任意非空**子数组**的最大乘积。见 [152. 乘积最大子数组](https://leetcode.cn/problems/maximum-product-subarray/)。
+
+欢迎在评论区发表你的思路/代码。
 
 ## 相似题目
 
