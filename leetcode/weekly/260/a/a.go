@@ -1,28 +1,16 @@
 package main
 
+import "math"
+
 // github.com/EndlessCheng/codeforces-go
 func maximumDifference(nums []int) (ans int) {
-	preMin := nums[0]
-	for j := 1; j < len(nums); j++ {
-		ans = max(ans, nums[j]-preMin)
-		preMin = min(preMin, nums[j])
+	preMin := math.MaxInt
+	for _, x := range nums {
+		ans = max(ans, x-preMin) // 把 x 当作 nums[j]
+		preMin = min(preMin, x)  // 把 x 当作 nums[i]
 	}
 	if ans == 0 {
-		ans--
+		ans = -1
 	}
 	return
-}
-
-func min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
-}
-
-func max(a, b int) int {
-	if b > a {
-		return b
-	}
-	return a
 }
