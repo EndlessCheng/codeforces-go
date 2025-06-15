@@ -60,8 +60,9 @@ func findMedian(n int, edges [][]int, queries [][]int) []int {
 			return x
 		}
 		for i := mx - 1; i >= 0; i-- {
-			if pv, pw := pa[x][i], pa[y][i]; pv != pw {
-				x, y = pv, pw // 同时往上跳 2^i 步
+			px, py := pa[x][i], pa[y][i]
+			if px != py {
+				x, y = px, py // 同时往上跳 2^i 步
 			}
 		}
 		return pa[x][0]
