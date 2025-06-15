@@ -524,6 +524,7 @@ func _() {
 	// https://leetcode.cn/problems/is-subsequence/
 	// https://leetcode.cn/problems/subsequence-with-the-minimum-score/
 	// - https://leetcode.cn/problems/find-the-lexicographically-smallest-valid-sequence/
+	// https://codeforces.com/problemset/problem/1989/B 1200
 	// https://codeforces.com/problemset/problem/1194/C 1300
 	// https://codeforces.com/problemset/problem/778/A 1700
 	// https://codeforces.com/problemset/problem/223/B 1900 记录 s 的每个字母匹配到 t 中的第几个
@@ -545,21 +546,17 @@ func _() {
 	}
 
 	// 子序列自动机
-	// 如果值域很大可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
-	// https://leetcode.cn/problems/is-subsequence/
-	// - [514. 自由之路](https://leetcode.cn/problems/freedom-trail/)
-	// LC727 https://leetcode.cn/problems/minimum-window-subsequence/
-	// LC792 https://leetcode.cn/problems/number-of-matching-subsequences/
-	// LC2014 https://leetcode.cn/problems/longest-subsequence-repeated-k-times/
-	// LC466 https://leetcode.cn/problems/count-the-repetitions/
-	// - [727. 最小窗口子序列](https://leetcode.cn/problems/minimum-window-subsequence/)（会员题）
-	// https://codeforces.com/problemset/problem/91/A
+	// 如果值域很大，可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
+	// LC392 https://leetcode.cn/problems/is-subsequence/
+	// https://codeforces.com/problemset/problem/1845/C 1400
+	// https://codeforces.com/problemset/problem/91/A 1500
 	// - https://www.luogu.com.cn/problem/P9572?contestId=124047
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
-	// https://atcoder.jp/contests/abc138/tasks/abc138_e
-	// https://codeforces.com/contest/1845/problem/C
+	// https://codeforces.com/problemset/problem/2104/E 1700
+	// - 相似题目 LC2350 不可能得到的最短骰子序列 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
 	// https://codeforces.com/problemset/problem/1789/F 2700
 	// - 相关 LC2350 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
+	// https://atcoder.jp/contests/abc138/tasks/abc138_e
 	subsequenceAutomaton := func(s string) {
 		const base = 'a'
 		n := len(s)
@@ -579,11 +576,11 @@ func _() {
 			for j, b := range t {
 				i = nxt[i+1][b-base]
 				if i == n { // 找不到 t[j]
-					return j
+					return j // i
 				}
 			}
 			// 此时 s[i] 匹配 t[-1]
-			return len(t)
+			return len(t) // i
 		}
 		_ = match
 	}
@@ -658,6 +655,7 @@ func _() {
 	// LC1745 分割成三个非空回文子字符串 https://leetcode.cn/problems/palindrome-partitioning-iv/
 	// LC2472 不重叠回文子字符串（长度至少为 k）的最大数目 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
 	// - 只需要考虑长度为 k or k+1 的
+	// https://www.luogu.com.cn/problem/P5018 对称二叉子树 O(n)
 	// todo https://www.luogu.com.cn/problem/P1659
 	//  https://www.luogu.com.cn/problem/P3501
 	//  https://www.luogu.com.cn/problem/UVA11475
@@ -1219,6 +1217,7 @@ func _() {
 	}
 
 	// 注：这是《挑战》上的实现方案，复杂度 O(nlog^2(n))
+	// 相关思想 https://codeforces.com/problemset/problem/1654/F 2800
 	suffixArrayInt2 := func(a []int) []int {
 		n := len(a)
 		sa := make([]int, n+1)
@@ -1325,7 +1324,7 @@ func _() {
 		kmpCalcPi, kmpSearch, calcMinPeriod, failTree,
 		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
-		isSubseq, subsequenceAutomaton,
+		isSubseq, subsequenceAutomaton, // 子序列自动机
 		manacher, manacherOdd, manacherEven,
 		suffixArray, suffixArrayInt, suffixArrayInt2, // 后缀数组
 		lcpArray,
