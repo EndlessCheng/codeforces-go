@@ -9,7 +9,9 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1qsMxz6EEd/)，欢迎点赞关注~
 
-```py [sol-Python3]
+**注**：不用库函数的写法见 Java 写法二。
+
+```py [sol-Py3]
 class Solution:
     def generateTag(self, caption: str) -> str:
         s = caption.title().replace(' ', '')
@@ -18,7 +20,7 @@ class Solution:
         return '#' + s[0].lower() + s[1:99]
 ```
 
-```py [sol-Python3 写法二]
+```py [sol-Py3 写法二]
 class Solution:
     def generateTag(self, caption: str) -> str:
         a = ['#']
@@ -29,10 +31,10 @@ class Solution:
 ```
 
 ```java [sol-Java]
+// 更快写法见【Java 写法二】
 class Solution {
     public String generateTag(String caption) {
-        StringBuilder ans = new StringBuilder();
-        ans.append('#');
+        StringBuilder ans = new StringBuilder("#");
         for (String s : caption.trim().split("\\s+")) { // 用一个或多个空格分隔 caption
             if (ans.length() == 1) { // s 是第一个单词
                 s = s.toLowerCase();
@@ -43,6 +45,28 @@ class Solution {
             if (ans.length() >= 100) {
                 ans.setLength(100);
                 break;
+            }
+        }
+        return ans.toString();
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    public String generateTag(String caption) {
+        StringBuilder ans = new StringBuilder("#");
+        char[] s = caption.toCharArray();
+        for (int i = 0; i < s.length && ans.length() < 100; i++) {
+            char c = s[i];
+            if (c == ' ') {
+                continue;
+            }
+            // 如果前一个字符是空格，那么当前字符是首字母
+            if (ans.length() > 1 && s[i - 1] == ' ') { // 不是第一个单词
+                ans.append((char) (c & ~32)); // 变成大写
+            } else {
+                ans.append((char) (c | 32)); // 变成小写
             }
         }
         return ans.toString();
