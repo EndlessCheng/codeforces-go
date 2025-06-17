@@ -8,6 +8,8 @@
 
 注意最终答案可能是负数，要把答案初始化成 $-\infty$。
 
+注意无需特判 $m=1$ 的情况，此时答案来自 $\textit{nums}$ 的最大值与自己相乘，或者最小值与自己相乘，这一定可以被我们枚举到。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1qsMxz6EEd/?t=20m04s)，欢迎点赞关注~
 
 ```py [sol-Python3]
