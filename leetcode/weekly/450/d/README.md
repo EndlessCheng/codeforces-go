@@ -333,7 +333,11 @@ func minimumWeight(edges [][]int, queries [][]int) []int {
 
 解答见 [本题视频讲解](https://www.bilibili.com/video/BV1Z3JGzwEU9/?t=28m48s)。
 
-更多相似题目，见下面树题单的「**§3.8 倍增算法、最近公共祖先（LCA）**」。
+如果动态添加删除询问的点呢？见 [Codeforces 176E. Archaeology](https://codeforces.com/problemset/problem/176/E)。
+
+## 相似题目
+
+见下面树题单的「**§3.8 倍增算法、最近公共祖先（LCA）**」。
 
 ## 分类题单
 
