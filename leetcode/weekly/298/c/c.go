@@ -10,12 +10,12 @@ import (
 func longestSubsequence(s string, k int) int {
 	n, m := len(s), bits.Len(uint(k))
 	if n < m {
-		return n
+		return n // 全选
 	}
 	ans := m
-	v, _ := strconv.ParseInt(s[n-m:], 2, 64)
-	if int(v) > k {
+	sufVal, _ := strconv.ParseInt(s[n-m:], 2, 0) // 找后缀
+	if int(sufVal) > k {
 		ans--
 	}
-	return ans + strings.Count(s[:n-m], "0")
+	return ans + strings.Count(s[:n-m], "0") // 添加前导零
 }
