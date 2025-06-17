@@ -37,6 +37,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
+// 更快的写法见【Java 数组】
 class Solution {
     public int specialTriplets(int[] nums) {
         final int MOD = 1_000_000_007;
@@ -52,6 +53,34 @@ class Solution {
             // 现在 pre 中的是 [0,j-1]，suf 中的是 [j+1,n-1]
             ans += (long) pre.getOrDefault(x * 2, 0) * suf.getOrDefault(x * 2, 0);
             pre.merge(x, 1, Integer::sum); // pre[x]++
+        }
+        return (int) (ans % MOD);
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public int specialTriplets(int[] nums) {
+        final int MOD = 1_000_000_007;
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        int[] suf = new int[mx + 1];
+        for (int x : nums) {
+            suf[x]++;
+        }
+
+        long ans = 0;
+        int[] pre = new int[mx + 1];
+        for (int x : nums) {
+            suf[x]--;
+            if (x * 2 <= mx) {
+                ans += (long) pre[x * 2] * suf[x * 2];
+            }
+            pre[x]++;
         }
         return (int) (ans % MOD);
     }
