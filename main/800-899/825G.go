@@ -7,41 +7,43 @@ import (
 )
 
 // https://github.com/EndlessCheng
+var g25 [][]uint32
+var mn25 []uint32
+
+func dfs25(v, fa, x uint32) {
+	x = min(x, v)
+	mn25[v] = x
+	for _, w := range g25[v] {
+		if w != fa {
+			dfs25(w, v, x)
+		}
+	}
+}
+
 func cf825G(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	var n, q, op, v, w, last int
+	var n, q, op, v, w, last uint32
 	Fscan(in, &n, &q)
-	g := make([][]int, n)
+	g25 = make([][]uint32, n+1)
 	for range n - 1 {
 		Fscan(in, &v, &w)
-		v--
-		w--
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
+		g25[v] = append(g25[v], w)
+		g25[w] = append(g25[w], v)
 	}
 	Fscan(in, &v, &v)
-	mn := make([]int, n)
-	var dfs func(int, int, int)
-	dfs = func(v, fa, x int) {
-		x = min(x, v)
-		mn[v] = x
-		for _, w := range g[v] {
-			if w != fa {
-				dfs(w, v, x)
-			}
-		}
-	}
-	dfs(v%n, -1, n)
+	v = v%n + 1
+	mn25 = make([]uint32, n+1)
+	dfs25(v, 0, v)
 
-	ans := v % n
+	ans := v
 	for range q - 1 {
 		Fscan(in, &op, &v)
-		v = (v + last) % n
+		v = (v+last)%n + 1
 		if op == 1 {
-			ans = min(ans, mn[v])
+			ans = min(ans, mn25[v])
 		} else {
-			last = min(ans, mn[v]) + 1
+			last = min(ans, mn25[v])
 			Fprintln(out, last)
 		}
 	}
