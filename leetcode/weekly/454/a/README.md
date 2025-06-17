@@ -78,7 +78,7 @@ class Solution {
 class Solution {
 public:
     string generateTag(string caption) {
-        stringstream ss(caption);
+        istringstream ss(caption);
         string ans = "#";
         string s;
         while (ss >> s) {
