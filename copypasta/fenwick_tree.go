@@ -252,6 +252,7 @@ func (t fenwickDiff) query(l, r int) int {
 
 // 二维差分树状数组
 // https://codeforces.com/problemset/problem/869/E 2400
+// https://codeforces.com/problemset/problem/341/D 2500 XOR 区间更新 区间查询
 type fenwickDiff2 [][]int
 
 func newFenwickTreeDiff2(n, m int) fenwickDiff2 {
