@@ -798,12 +798,14 @@ func backtracking() {
 		return
 	}
 
-	// 剪枝:
-	// todo https://blog.csdn.net/weixin_43914593/article/details/104613920 算法竞赛专题解析（7）：搜索进阶(2)--剪枝
+	// 剪枝
+	// https://blog.csdn.net/weixin_43914593/article/details/104613920 算法竞赛专题解析（7）：搜索进阶(2)--剪枝
 
-	// A*:
-	// todo https://blog.csdn.net/weixin_43914593/article/details/104935011 算法竞赛专题解析（9）：搜索进阶(4)--A*搜索
-	//  https://www.redblobgames.com/pathfinding/a-star/introduction.html
+	// A* (A star)
+	// https://blog.csdn.net/weixin_43914593/article/details/104935011 算法竞赛专题解析（9）：搜索进阶(4)--A*搜索
+	// https://www.redblobgames.com/pathfinding/a-star/introduction.html
+	// 简单例题 https://leetcode.cn/problems/shortest-path-in-binary-matrix/
+	// - 由于是八连通，启发函数（估价函数）为切比雪夫距离，即 h(x,y) = max(n-1-x,n-1-y) = n-1-min(x,y)
 
 	// 舞蹈链 Dancing Links 精确覆盖问题
 	// https://en.wikipedia.org/wiki/Dancing_Links
