@@ -1492,34 +1492,34 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // https://codeforces.com/problemset/problem/507/E 2100 双关键字+记录路径编号 
 // https://codeforces.com/problemset/problem/1005/F 2100
 // https://codeforces.com/problemset/problem/567/E 2200 * 关键边、伪关键边（与割边结合）
+// https://codeforces.com/problemset/problem/1486/E 2200 涉及到相邻两条边的最短路
 // https://codeforces.com/problemset/problem/715/B 2300 https://leetcode.cn/problems/modify-graph-edge-weights/
+// https://codeforces.com/problemset/problem/786/B 2300 线段树优化建图 
+// - https://www.luogu.com.cn/problem/P5025 [SNOI2017] 炸弹 todo
 // https://codeforces.com/problemset/problem/1693/C 2300 转换
+// https://codeforces.com/problemset/problem/1442/C 2400 分层图最短路 空间压缩 
+// https://codeforces.com/problemset/problem/1473/E 2400 分层图最短路 转换 
 // https://codeforces.com/problemset/problem/1715/E 2400 斜率优化
 // https://codeforces.com/problemset/problem/1753/D 2400 建模+转换+多源最短路 
 // https://atcoder.jp/contests/abc245/tasks/abc245_g 2270=CF2428
 // https://codeforces.com/problemset/problem/416/E 2500 在最短路上的边
+// https://codeforces.com/problemset/problem/1253/F 2500 多源到单源 + 巧妙转化
 // https://codeforces.com/problemset/problem/1528/D 2500 建模【好题】
+// https://codeforces.com/problemset/problem/196/E 2600 传送门
+// https://codeforces.com/problemset/problem/1163/F 3000 todo 动态最短路
 // https://atcoder.jp/contests/arc064/tasks/arc064_c * 稠密图
 // https://atcoder.jp/contests/abc237/tasks/abc237_e 转换
 // LC864 https://leetcode.cn/problems/shortest-path-to-get-all-keys/ 2259 建模 
 // https://www.luogu.com.cn/problem/P4644 建模 
-// [SDOI2010]大陆争霸 https://www.luogu.com.cn/problem/P2446
-// [AHOI2014/JSOI2014]骑士游戏 https://www.luogu.com.cn/problem/P4042
+// https://www.luogu.com.cn/problem/P2446 [SDOI2010] 大陆争霸 
+// https://www.luogu.com.cn/problem/P4042 [AHOI2014/JSOI2014] 骑士游戏 
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-// 线段树优化建图 https://codeforces.com/problemset/problem/786/B 2300
-// - todo [SNOI2017] 炸弹 https://www.luogu.com.cn/problem/P5025
-// 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E 2200
 // todo 与扩欧结合 https://www.acwing.com/problem/content/3418/
-// 分层图最短路
-// - 空间压缩 https://codeforces.com/problemset/problem/1442/C 2400
-// - 转换 https://codeforces.com/problemset/problem/1473/E 2400
-// todo 动态最短路 https://codeforces.com/problemset/problem/1163/F 3000
 // todo 与类似并查集的东西结合 https://ac.nowcoder.com/acm/problem/19789
-//
 // 最短路树
-// todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
-// 最短路树上跑拓扑排序 LC1786 https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/ 2079
-// 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D 1800
+// - todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
+// - LC1786 https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/ 最短路树上跑拓扑排序 
+// - https://codeforces.com/contest/1076/problem/D 1800 最短路树上跑拓扑排序
 func (*graph) dijkstraShortestPath(n, st int, edges [][]int) (dis []int) {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
