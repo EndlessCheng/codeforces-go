@@ -802,6 +802,7 @@ func backtracking() {
 	// https://blog.csdn.net/weixin_43914593/article/details/104613920 算法竞赛专题解析（7）：搜索进阶(2)--剪枝
 
 	// A* (A star)
+	// https://www.youtube.com/watch?v=CgW0HPHqFE8
 	// https://blog.csdn.net/weixin_43914593/article/details/104935011 算法竞赛专题解析（9）：搜索进阶(4)--A*搜索
 	// https://www.redblobgames.com/pathfinding/a-star/introduction.html
 	// 简单例题 https://leetcode.cn/problems/shortest-path-in-binary-matrix/
