@@ -165,7 +165,7 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
+- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。有 $\mathcal{O}(nkt)$ 个状态。有 $m$ 条边，每条边往下递归时，对应的参数 $(i,s)$ 有 $\mathcal{O}(kt)$ 个不同的值，所以每条边会发生 $\mathcal{O}(kt)$ 次转移，所以总的转移次数是 $\mathcal{O}(mkt)$。
 - 空间复杂度：$\mathcal{O}(nkt)$。
 
 ## 方法二：拓扑序 DP（适用于 DAG）
@@ -374,7 +374,7 @@ func maxWeight(n int, edges [][]int, k int, t int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。
+- 时间复杂度：$\mathcal{O}((n+m)kt)$，其中 $m$ 是 $\textit{edges}$ 的长度。有 $\mathcal{O}(nkt)$ 个状态。有 $m$ 条边，每条边会发生 $\mathcal{O}(kt)$ 次状态转移，所以总的转移次数是 $\mathcal{O}(mkt)$。
 - 空间复杂度：$\mathcal{O}(nkt)$。
 
 ### 附：bitset 优化
