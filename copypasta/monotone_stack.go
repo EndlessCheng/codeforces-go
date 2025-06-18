@@ -313,7 +313,7 @@ func next2Greater(a []int) ([]int, []int) {
 // https://codeforces.com/contest/1156/problem/E
 // https://atcoder.jp/contests/abc140/tasks/abc140_e
 func permLR(perm []int) ([]int, []int) {
-	// 注：无脑的写法是用有序集合维护「剩余未被删除的下标」
+	// 注：无脑的写法是用有序集合维护「剩余未被删除的下标」，或者并查集（适用场景更多）
 	n := len(perm)
 	pos := make([]int, n+1)
 	left := make([]int, n+2)
@@ -323,8 +323,9 @@ func permLR(perm []int) ([]int, []int) {
 		left[i], right[i] = i-1, i+1
 	}
 	right[0] = 1
-	left[n+1] = n // 哨兵（本题不需要这两行，但是某些题目需要，比如 https://codeforces.com/problemset/problem/1154/E）
+	left[n+1] = n // 哨兵
 	del := func(i int) {
+		// 注：不能访问已删除元素的 left 和 right，这种场景请使用并查集或者有序集合
 		l, r := left[i], right[i]
 		right[l] = r
 		left[r] = l
