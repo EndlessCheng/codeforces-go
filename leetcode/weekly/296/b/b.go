@@ -1,16 +1,19 @@
 package main
 
-import "sort"
+import (
+	"math"
+	"slices"
+)
 
 // https://space.bilibili.com/206214/dynamic
-func partitionArray(nums []int, k int) int {
-	sort.Ints(nums)
-	ans, min := 1, nums[0]
-	for _, num := range nums {
-		if num-min > k {
+func partitionArray(nums []int, k int) (ans int) {
+	slices.Sort(nums)
+	mn := math.MinInt / 2 // 防止减法溢出
+	for _, x := range nums {
+		if x-mn > k { // 必须分割
 			ans++
-			min = num
+			mn = x // mn 是下一段的最小值
 		}
 	}
-	return ans
+	return
 }
