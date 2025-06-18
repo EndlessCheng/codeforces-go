@@ -1,6 +1,6 @@
 不妨假设 $i$ 在左，$j$ 在右，即 $i\le j - \textit{indexDifference}$。
 
-枚举 $j$，寻找左边的 $i$。要想满足 $|\textit{nums}[i]-\textit{nums}[j]|\ge \textit{valueDifference}$，要找的 $\textit{nums}[i]$ 应当尽量大或者尽量小，这样差的绝对值才能尽量大。
+枚举 $j$，寻找左边的 $i$。要想满足 $|\textit{nums}[i]-\textit{nums}[j]|\ge \textit{valueDifference}$，根据绝对值的几何意义，$\textit{nums}[i]$ 应当尽量远离 $\textit{nums}[j]$，才能让绝对值尽量大。也就是说，要找的 $\textit{nums}[i]$ 应当**尽量大**或者**尽量小**。
 
 类似 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)，我们可以在枚举 $j$ 的同时，维护 $\textit{nums}[0]$ 到 $\textit{nums}[j - \textit{indexDifference}]$ 中的最大值 $\textit{mx}$ 和最小值 $\textit{mn}$。
 
