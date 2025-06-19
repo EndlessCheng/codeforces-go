@@ -10,8 +10,6 @@
 2. $\textit{packetSet}$：存储所有未转发的数据包，方便判重。
 3. $\textit{destToTimestamps}$：哈希表套队列，key 是 $\textit{destination}$，value 是对应的由 $\textit{timestamp}$ 组成的队列。
 
-> 注：$\textit{packetSet}$ 可以不保存 $\textit{timestamp}$，因为这个值保存在 $\textit{destToTimestamps}$ 中，可以通过 $\textit{destination}$ 获取到。
-
 $\texttt{addPacket}$ 和 $\textit{forwardPacket}$ 按题目要求实现，具体见代码。
 
 $\texttt{getCount}$ 可以用二分查找，类似 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)。
