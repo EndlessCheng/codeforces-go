@@ -130,6 +130,7 @@ https://codeforces.com/problemset/problem/2028/C 1600
 https://codeforces.com/problemset/problem/2031/D 1700
 https://codeforces.com/problemset/problem/1957/D 1900
 https://codeforces.com/problemset/problem/1969/D 1900
+https://codeforces.com/problemset/problem/2101/C 2200 式子变形可知，只需知道前缀所选数的下标，和后缀所选数的下标
 https://codeforces.com/problemset/problem/1837/F 2400
 https://codeforces.com/problemset/problem/2005/D 2400 GCD logTrick
 https://codeforces.com/problemset/problem/314/D 2500
@@ -215,6 +216,7 @@ https://atcoder.jp/contests/abc155/tasks/abc155_d
 a[i] + b[j] <= target 的方案数
 - 相向双指针
 - LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
+- LC1498 https://leetcode.cn/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/
 - https://codeforces.com/problemset/problem/1538/C 1300
 - https://atcoder.jp/contests/abc366/tasks/abc366_e
 - https://leetcode.cn/problems/3sum-smaller/
@@ -273,19 +275,20 @@ https://codeforces.com/problemset/problem/1626/D 2100
 https://codeforces.com/problemset/problem/339/E 2700
 
 贪心及其证明
-- [881. 救生艇](https://leetcode.cn/problems/boats-to-save-people/) 1530
-    - https://codeforces.com/problemset/problem/1690/E
+- [881. 救生艇](https://leetcode.cn/problems/boats-to-save-people/)
+    - https://codeforces.com/problemset/problem/1690/E 1500
+    - https://codeforces.com/problemset/problem/1765/D 1700
     - https://www.lanqiao.cn/problems/4174/learning/?contest_id=135
-    - https://codeforces.com/problemset/problem/1765/D
-- [2350. 不可能得到的最短骰子序列](https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/) 1961
+- [2350. 不可能得到的最短骰子序列](https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/)
     - https://codeforces.com/problemset/problem/1924/A 1500 输出方案
-- [1686. 石子游戏 VI](https://leetcode.cn/problems/stone-game-vi/) 2001
+- [1686. 石子游戏 VI](https://leetcode.cn/problems/stone-game-vi/)
     - https://codeforces.com/contest/1914/problem/E2 1400
 - todo 复习 [659. 分割数组为连续子序列](https://leetcode.cn/problems/split-array-into-consecutive-subsequences/)
 - [2193. 得到回文串的最少操作次数](https://leetcode.cn/problems/minimum-number-of-moves-to-make-palindrome/) 好题！可以做到 O(nlogn)
 https://codeforces.com/problemset/problem/1920/B 1100
 https://codeforces.com/problemset/problem/1993/B 1100
-https://codeforces.com/problemset/problem/2047/B ~1200 做到 O(n)
+https://codeforces.com/problemset/problem/2047/B O(n) 做法约 1200
+https://codeforces.com/problemset/problem/2117/C 1200
 https://codeforces.com/problemset/problem/545/D 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1498/B 1300 从大到小贪心
@@ -324,11 +327,11 @@ https://codeforces.com/problemset/problem/3/B 1900
 https://codeforces.com/problemset/problem/1479/B1 1900
 https://codeforces.com/problemset/problem/1804/D 2000
 https://codeforces.com/problemset/problem/1029/E 2100 树
-https://codeforces.com/problemset/problem/1479/B2 2100
-    https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
+https://codeforces.com/problemset/problem/1479/B2 2100 https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
+https://codeforces.com/problemset/problem/2101/C 2200 式子变形
 https://codeforces.com/problemset/problem/442/C 2500
-    如果 x>=y<=z，那么删除 y 最优
-    结束后剩下一个长为 m 的 /\ 形状的序列，由于无法取到最大值和次大值，那么加上剩下最小的 m-2 个数
+- 如果 x>=y<=z，那么删除 y 最优
+- 结束后剩下一个长为 m 的 /\ 形状的序列，由于无法取到最大值和次大值，那么加上剩下最小的 m-2 个数
 https://atcoder.jp/contests/arc147/tasks/arc147_e 难
 https://www.luogu.com.cn/problem/P1016
 https://www.luogu.com.cn/problem/P2127
@@ -435,6 +438,7 @@ https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/500/C 1600
 https://codeforces.com/problemset/problem/601/A 1600
 https://codeforces.com/problemset/problem/1763/C 2000
+https://codeforces.com/problemset/problem/825/G 2500 树
 https://atcoder.jp/contests/abc194/tasks/abc194_e
 https://atcoder.jp/contests/abc196/tasks/abc196_e
 https://www.luogu.com.cn/problem/P12137 蓝桥杯 2025 省赛 C++ 大学 B 组 H 题
@@ -463,14 +467,6 @@ LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-a
 https://codeforces.com/contest/1977/problem/C
 
 构造
-题单 https://www.luogu.com.cn/training/14#problems
-LC767 https://leetcode.cn/problems/reorganize-string/
-LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
-LC2745 https://leetcode.cn/problems/construct-the-longest-new-string/ 1607
-LC2573 https://leetcode.cn/problems/find-the-string-with-lcp/ 2682
-LC3311 https://leetcode.cn/problems/construct-2d-grid-matching-graph-layout/
-构造反例 https://leetcode.cn/problems/parallel-courses-iii/solution/tuo-bu-pai-xu-dong-tai-gui-hua-by-endles-dph6/2310439
-构造 TLE 数据 https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/solutions/2805413/bitset-you-hua-0-1-bei-bao-by-endlessche-m1xn/comments/2320111
 https://codeforces.com/problemset/problem/1927/B   900
 https://codeforces.com/problemset/problem/1772/C  1000
 https://codeforces.com/problemset/problem/1998/B  1000
@@ -478,7 +474,6 @@ https://codeforces.com/problemset/problem/2037/C  1000
 https://codeforces.com/problemset/problem/2039/B  1000 分析性质
 https://codeforces.com/problemset/problem/2040/B  1000
 https://codeforces.com/problemset/problem/2044/D  1100 脑筋急转弯
-https://atcoder.jp/contests/keyence2020/tasks/keyence2020_c 625=CF1183
 https://codeforces.com/problemset/problem/4/B     1200
 https://codeforces.com/problemset/problem/482/A   1200
 https://codeforces.com/problemset/problem/651/B   1200
@@ -498,11 +493,11 @@ https://codeforces.com/problemset/problem/1844/D  1400
 https://codeforces.com/problemset/problem/1863/D  1400 棋盘+多米诺染色
 https://codeforces.com/problemset/problem/1896/C  1400
 https://codeforces.com/problemset/problem/1974/D  1400
-https://atcoder.jp/contests/abc347/tasks/abc347_d 1041=CF1498 位运算
 https://codeforces.com/problemset/problem/1630/A  1500
 https://codeforces.com/problemset/problem/1710/A  1500
 https://codeforces.com/problemset/problem/1722/G  1500
 https://codeforces.com/problemset/problem/1809/C  1500
+https://codeforces.com/problemset/problem/2107/C  1500 经典 DP 的构造版本
 https://codeforces.com/problemset/problem/1968/E  1600
 https://codeforces.com/problemset/problem/201/A   1700
 https://codeforces.com/problemset/problem/584/C   1700 分类讨论
@@ -520,25 +515,28 @@ https://codeforces.com/problemset/problem/327/D   1900
 https://codeforces.com/problemset/problem/388/B   1900 两点间恰好 k 条最短路径
 https://codeforces.com/problemset/problem/550/D   1900 度数均为 k 且至少（恰好）有一条割边
 https://codeforces.com/problemset/problem/708/B   1900 分类讨论
+https://codeforces.com/problemset/problem/1659/D  1900
 https://codeforces.com/problemset/problem/1823/D  1900
 https://codeforces.com/problemset/problem/1854/A2 1900 分类讨论
 https://codeforces.com/problemset/problem/2040/D  1900 树 质数
-https://atcoder.jp/contests/arc088/tasks/arc088_b 1646=CF1956
 https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
+https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
 https://codeforces.com/problemset/problem/1761/E  2400
+https://codeforces.com/problemset/problem/1689/E  2500 脑筋急转弯
 https://codeforces.com/problemset/problem/1227/G  2600 证明是亮点
 https://codeforces.com/problemset/problem/1521/E  2700 二维相邻不同
 https://codeforces.com/problemset/problem/1838/F  3000 交互 二分
+https://atcoder.jp/contests/keyence2020/tasks/keyence2020_c 625=CF1183
+https://atcoder.jp/contests/abc347/tasks/abc347_d 1041=CF1498 位运算
+https://atcoder.jp/contests/arc088/tasks/arc088_b 1646=CF1956
 https://atcoder.jp/contests/arc145/tasks/arc145_a
 https://atcoder.jp/contests/agc015/tasks/agc015_d bit OR
-
-不好想到的构造
-https://codeforces.com/contest/1659/problem/D
 https://atcoder.jp/contests/abc178/tasks/abc178_f
-https://codeforces.com/problemset/problem/1689/E 脑筋急转弯
-https://codeforces.com/problemset/problem/1787/E
+构造反例 https://leetcode.cn/problems/parallel-courses-iii/solution/tuo-bu-pai-xu-dong-tai-gui-hua-by-endles-dph6/2310439
+构造 TLE 数据 https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/solutions/2805413/bitset-you-hua-0-1-bei-bao-by-endlessche-m1xn/comments/2320111
+题单 https://www.luogu.com.cn/training/14#problems
 
 不变量（想一想，操作不会改变什么）
 https://codeforces.com/problemset/problem/1881/D 1300
@@ -570,6 +568,7 @@ https://codeforces.com/problemset/problem/1251/B 1400
 https://codeforces.com/problemset/problem/1292/A 1400 也有简单写法
 https://codeforces.com/problemset/problem/1605/C 1400
 https://codeforces.com/problemset/problem/1989/C 1400
+https://codeforces.com/problemset/problem/2110/C 1400
 https://codeforces.com/problemset/problem/115/B 1500
 https://codeforces.com/problemset/problem/960/B 1500
 https://codeforces.com/problemset/problem/1051/C 1500
@@ -590,6 +589,7 @@ https://codeforces.com/problemset/problem/1516/C 1700
 https://codeforces.com/problemset/problem/1799/C 1700
 https://codeforces.com/problemset/problem/1468/J 1800 MST
 https://codeforces.com/problemset/problem/1833/G 1800 样例给的挺良心的
+https://codeforces.com/problemset/problem/2117/F 1800
 https://codeforces.com/problemset/problem/796/C 1900
 https://codeforces.com/problemset/problem/1095/E 1900
 https://codeforces.com/problemset/problem/1714/F 1900 锻炼代码实现技巧的好题
