@@ -40,7 +40,7 @@ func cf156D(in io.Reader, out io.Writer) {
 		}
 	}
 	if cc == 1 {
-		Fprint(out, 1)
+		Fprint(out, 1%mod)
 		return
 	}
 	for range cc - 2 {
