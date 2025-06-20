@@ -187,6 +187,8 @@ impl Solution {
 
 [2171. 拿出最少数目的魔法豆](https://leetcode.cn/problems/removing-minimum-number-of-magic-beans/)
 
+更多相似题目，见贪心题单中的「**§1.6 先枚举，再贪心**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
