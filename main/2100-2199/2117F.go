@@ -8,7 +8,7 @@ import (
 // https://github.com/EndlessCheng
 func cf2117F(in io.Reader, out io.Writer) {
 	const mod = 1_000_000_007
-	pow := func(x, n int) int {
+	pow2 := func(n int) int {
 		res := 1
 		for range n {
 			res = res * 2 % mod
@@ -44,7 +44,7 @@ func cf2117F(in io.Reader, out io.Writer) {
 			continue
 		}
 		if cnt == 0 {
-			Fprintln(out, pow(2, n))
+			Fprintln(out, pow2(n))
 			continue
 		}
 
@@ -67,9 +67,9 @@ func cf2117F(in io.Reader, out io.Writer) {
 		dfs(0, -1)
 		x, y := a[0], a[1]
 		if x == y {
-			Fprintln(out, pow(2, n-x*2+1))
+			Fprintln(out, pow2(n-x*2+1))
 		} else {
-			Fprintln(out, pow(2, n-min(x, y)*2-1)*3%mod)
+			Fprintln(out, pow2(n-min(x, y)*2-1)*3%mod)
 		}
 	}
 }
