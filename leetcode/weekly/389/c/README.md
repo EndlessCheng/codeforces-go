@@ -2,18 +2,22 @@
 
 **证明**：反证法，假设每种字母都至少删除一个。删除后，对于剩下的每种字母，把每种字母的出现次数都增加一，这不影响字母数量之差，但总删除次数更少了，矛盾。故原命题成立。
 
-统计 $\textit{word}$ 每种字母的出现次数，记到一个数组 $\textit{cnt}$ 中。
+统计 $\textit{word}$ 每种字母的出现次数，记到数组（或者哈希表）$\textit{cnt}$ 中。
 
-**枚举** $i$ 作为出现次数最小的字母，为了保留尽量多的字母，字母 $i$ 肯定不需要删除。此外，出现次数最多的字母，出现次数不能超过 $\textit{cnt}[i]+k$。
+删除字母后，$\textit{cnt}[i]$ 的值有三种情况：
 
-分类讨论：
+1. 变成 $0$。这样的字母不参与「出现次数绝对差 $\le k$」的计算。
+2. 不变。
+3. 出现次数超过 $\min(\textit{cnt})+k$，需要变小至 $\min(\textit{cnt})+k$。
+
+枚举 $\textit{cnt}[i]$ 作为 $\min(\textit{cnt})$，分类讨论：
 
 - 出现次数小于 $\textit{cnt}[i]$ 的字母，全部删除。
 - 出现次数大于等于 $\textit{cnt}[i]$ 的字母 $j$，保留 $\min(\textit{cnt}[j], \textit{cnt}[i] + k)$ 个。累加保留的字母个数，取最大值，得到最多保留的字母个数 $\textit{maxSave}$。
 
-最后，用 $\textit{word}$ 的长度，减去 $\textit{maxSave}$，即为答案。
+最后，用 $\textit{word}$ 的长度，减去 $\textit{maxSave}$，即为需要删除的字母个数。
 
-代码实现时，为方便计算那些字母的出现次数小于 $\textit{cnt}[i]$，哪些大于等于 $\textit{cnt}[i]$，把 $\textit{cnt}$ 排序。
+代码实现时，为方便计算哪些字母的出现次数小于 $\textit{cnt}[i]$，哪些大于等于 $\textit{cnt}[i]$，把 $\textit{cnt}$ 排序。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1RH4y1W7DP/?t=5m37s)
 
