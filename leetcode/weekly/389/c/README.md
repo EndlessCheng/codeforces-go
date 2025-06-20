@@ -183,6 +183,10 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n + |\Sigma|^2)$，其中 $n$ 为 $\textit{word}$ 的长度，$|\Sigma|=26$ 为字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
+## 相似题目
+
+[2171. 拿出最少数目的魔法豆](https://leetcode.cn/problems/removing-minimum-number-of-magic-beans/)
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
