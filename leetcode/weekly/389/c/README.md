@@ -29,6 +29,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1RH4y1W7DP/?t=5m37s)
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minimumDeletions(self, word: str, k: int) -> int:
@@ -91,7 +93,7 @@ public:
             max_save = max(max_save, sum);
         }
 
-        return word.length() - max_save;
+        return word.size() - max_save;
     }
 };
 ```
@@ -193,6 +195,222 @@ impl Solution {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n + |\Sigma|^2)$，其中 $n$ 为 $\textit{word}$ 的长度，$|\Sigma|=26$ 为字符集合的大小。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+
+## 优化
+
+如果把 $s$ 改成整数数组 $\textit{nums}$，值域范围 $|\Sigma|=10^5$，上面的做法就会超时。
+
+复杂度更低的做法是，用一个 [滑动窗口](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 维护出现次数不变的字母出现次数之和，即 $\textit{cnt}[j]$ 在闭区间 $[\textit{cnt}[i],\textit{cnt}[i]+k]$ 中的 $\textit{cnt}[j]$ 之和。由于 $\textit{cnt}[i]$ 越大，区间右端点单调增大，所以可以滑动窗口。
+
+维护窗口中的 $\textit{cnt}[j]$ 之和，记在变量 $s$ 中。
+
+滑动窗口内层循环结束后，下标在 $[\textit{right},|\textit{cnt}|-1]$ 中的字母出现次数都要变成 $\textit{cnt}[i]+k$，出现次数之和为
+
+$$
+(\textit{cnt}[i]+k)(|\textit{cnt}| - \textit{right})
+$$
+
+保留下来的字母总个数为
+
+$$
+s + (\textit{cnt}[i]+k)(|\textit{cnt}| - \textit{right})
+$$
+
+```py [sol-Python3]
+class Solution:
+    def minimumDeletions(self, word: str, k: int) -> int:
+        cnt = sorted(Counter(word).values())
+        max_save = s = right = 0
+        for base in cnt:
+            mx = base + k
+            while right < len(cnt) and cnt[right] <= mx:
+                s += cnt[right]
+                right += 1
+            # 现在 s 表示出现次数不变的字母个数之和
+            # 再加上出现次数减少为 mx 的 len(cnt)-right 种字母，即为保留的字母总数
+            max_save = max(max_save, s + mx * (len(cnt) - right))
+            # 下一轮循环 base 全删
+            s -= base
+        return len(word) - max_save
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumDeletions(String word, int k) {
+        final int SIGMA = 26;
+        int[] cnt = new int[SIGMA];
+        for (char c : word.toCharArray()) {
+            cnt[c - 'a']++;
+        }
+        Arrays.sort(cnt);
+
+        int maxSave = 0;
+        int s = 0;
+        int right = 0;
+        for (int base : cnt) {
+            while (right < SIGMA && cnt[right] <= base + k) {
+                s += cnt[right];
+                right++;
+            }
+            // 现在 s 表示出现次数不变的字母个数之和
+            // 再加上出现次数减少为 base+k 的 SIGMA-right 种字母，即为保留的字母总数
+            maxSave = Math.max(maxSave, s + (base + k) * (SIGMA - right));
+            // 下一轮循环 base 全删
+            s -= base;
+        }
+
+        return word.length() - maxSave;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumDeletions(string word, int k) {
+        const int SIGMA = 26;
+        int cnt[SIGMA]{};
+        for (char c: word) {
+            cnt[c - 'a']++;
+        }
+        ranges::sort(cnt);
+
+        int max_save = 0, s = 0, right = 0;
+        for (int base : cnt) {
+            while (right < SIGMA && cnt[right] <= base + k) {
+                s += cnt[right];
+                right++;
+            }
+            // 现在 s 表示出现次数不变的字母个数之和
+            // 再加上出现次数减少为 base+k 的 SIGMA-right 种字母，即为保留的字母总数
+            max_save = max(max_save, s + (base + k) * (SIGMA - right));
+            // 下一轮循环 base 全删
+            s -= base;
+        }
+
+        return word.size() - max_save;
+    }
+};
+```
+
+```c [sol-C]
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
+
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+int minimumDeletions(char* word, int k) {
+    #define SIGMA 26
+    int cnt[SIGMA] = {};
+    int n = 0;
+    for (; word[n]; n++) {
+        cnt[word[n] - 'a']++;
+    }
+    qsort(cnt, SIGMA, sizeof(int), cmp);
+
+    int max_save = 0, s = 0, right = 0;
+    for (int i = 0; i < SIGMA; i++) {
+        int base = cnt[i];
+        while (right < SIGMA && cnt[right] <= base + k) {
+            s += cnt[right];
+            right++;
+        }
+        // 现在 s 表示出现次数不变的字母个数之和
+        // 再加上出现次数减少为 base+k 的 SIGMA-right 种字母，即为保留的字母总数
+        max_save = MAX(max_save, s + (base + k) * (SIGMA - right));
+        // 下一轮循环 base 全删
+        s -= base;
+    }
+
+    return n - max_save;
+}
+```
+
+```go [sol-Go]
+func minimumDeletions(word string, k int) int {
+	const sigma = 26
+	cnt := make([]int, sigma)
+	for _, b := range word {
+		cnt[b-'a']++
+	}
+	slices.Sort(cnt)
+
+	var maxSave, s, right int
+	for _, base := range cnt {
+		for right < sigma && cnt[right] <= base+k {
+			s += cnt[right]
+			right++
+		}
+		// 现在 s 表示出现次数不变的字母个数之和
+		// 再加上出现次数减少为 base+k 的 len(cnt)-right 种字母，即为保留的字母总数
+		maxSave = max(maxSave, s+(base+k)*(sigma-right))
+		// 下一轮循环 base 全删
+		s -= base
+	}
+	return len(word) - maxSave
+}
+```
+
+```js [sol-JavaScript]
+var minimumDeletions = function(word, k) {
+    const SIGMA = 26;
+    const cnt = Array(SIGMA).fill(0);
+    for (const c of word) {
+        cnt[c.charCodeAt(0) - 97]++;
+    }
+    cnt.sort((a, b) => a - b);
+
+    let maxSave = 0, s = 0, right = 0;
+    for (const base of cnt) {
+        while (right < SIGMA && cnt[right] <= base + k) {
+            s += cnt[right];
+            right++;
+        }
+        // 现在 s 表示出现次数不变的字母个数之和
+        // 再加上出现次数减少为 base+k 的 SIGMA-right 种字母，即为保留的字母总数
+        maxSave = Math.max(maxSave, s + (base + k) * (SIGMA - right));
+        // 下一轮循环 base 全删
+        s -= base;
+    }
+
+    return word.length - maxSave;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn minimum_deletions(word: String, k: i32) -> i32 {
+        let mut cnt = [0; 26];
+        for c in word.bytes() {
+            cnt[(c - b'a') as usize] += 1;
+        }
+        cnt.sort_unstable();
+
+        let mut max_save = 0;
+        let mut s = 0;
+        let mut right = 0;
+        for &base in &cnt {
+            while right < cnt.len() && cnt[right] <= base + k {
+                s += cnt[right];
+                right += 1;
+            }
+            // 现在 s 表示出现次数不变的字母个数之和
+            // 再加上出现次数减少为 base+k 的 cnt.len()-right 种字母，即为保留的字母总数
+            max_save = max_save.max(s + (base + k) * (cnt.len() - right) as i32);
+            // 下一轮循环 base 全删
+            s -= base;
+        }
+
+        word.len() as i32 - max_save
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|\log |\Sigma|)$，其中 $n$ 为 $\textit{word}$ 的长度，$|\Sigma|=26$ 为字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
 ## 相似题目
