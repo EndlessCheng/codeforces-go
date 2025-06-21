@@ -199,13 +199,13 @@ impl Solution {
 
 ## 优化
 
-如果把 $s$ 改成整数数组 $\textit{nums}$，值域范围 $|\Sigma|=10^5$，上面的做法就会超时。
+如果把 $\textit{word}$ 改成整数数组 $\textit{nums}$，值域范围大小 $|\Sigma|=10^5$，上面的做法就会超时。
 
-复杂度更低的做法是，用一个 [滑动窗口](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 维护出现次数不变的字母出现次数之和，即 $\textit{cnt}[j]$ 在闭区间 $[\textit{cnt}[i],\textit{cnt}[i]+k]$ 中的 $\textit{cnt}[j]$ 之和。由于 $\textit{cnt}[i]$ 越大，区间右端点单调增大，所以可以滑动窗口。
+时间复杂度更低的做法是，用一个 [滑动窗口](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 维护出现次数不变的字母，即出现次数在闭区间 $[\textit{cnt}[i],\textit{cnt}[i]+k]$ 中的字母。由于 $\textit{cnt}[i]$ 越大，区间右端点也越大，所以可以滑动窗口。
 
-维护窗口中的 $\textit{cnt}[j]$ 之和，记在变量 $s$ 中。
+维护窗口中的字母出现次数之和，记在变量 $s$ 中。
 
-滑动窗口内层循环结束后，下标在 $[\textit{right},|\textit{cnt}|-1]$ 中的字母出现次数都要变成 $\textit{cnt}[i]+k$，出现次数之和为
+滑动窗口内层循环结束后，下标在 $[\textit{right},|\textit{cnt}|-1]$ 中的字母出现次数都要减小为 $\textit{cnt}[i]+k$，出现次数之和为
 
 $$
 (\textit{cnt}[i]+k)(|\textit{cnt}| - \textit{right})
@@ -331,11 +331,11 @@ int minimumDeletions(char* word, int k) {
 ```go [sol-Go]
 func minimumDeletions(word string, k int) int {
 	const sigma = 26
-	cnt := make([]int, sigma)
+	cnt := [sigma]int{}
 	for _, b := range word {
 		cnt[b-'a']++
 	}
-	slices.Sort(cnt)
+	slices.Sort(cnt[:])
 
 	var maxSave, s, right int
 	for _, base := range cnt {
@@ -344,7 +344,7 @@ func minimumDeletions(word string, k int) int {
 			right++
 		}
 		// 现在 s 表示出现次数不变的字母个数之和
-		// 再加上出现次数减少为 base+k 的 len(cnt)-right 种字母，即为保留的字母总数
+		// 再加上出现次数减少为 base+k 的 sigma-right 种字母，即为保留的字母总数
 		maxSave = max(maxSave, s+(base+k)*(sigma-right))
 		// 下一轮循环 base 全删
 		s -= base

@@ -5,11 +5,11 @@ import "slices"
 // https://space.bilibili.com/206214
 func minimumDeletions(word string, k int) int {
 	const sigma = 26
-	cnt := make([]int, sigma)
+	cnt := [sigma]int{}
 	for _, b := range word {
 		cnt[b-'a']++
 	}
-	slices.Sort(cnt)
+	slices.Sort(cnt[:])
 
 	var maxSave, s, right int
 	for _, base := range cnt {
