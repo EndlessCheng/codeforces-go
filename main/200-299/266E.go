@@ -131,11 +131,11 @@ func cf266E(in io.Reader, _w io.Writer) {
 			t.update(1, l, r, k)
 		} else {
 			s := t.query(1, l, r)
-			res := s[k]
+			res := 0
 			powL := 1
-			for j := k - 1; j >= 0; j-- {
-				powL = powL * -(l - 1) % mod66
+			for j := k; j >= 0; j-- {
 				res += s[j] * C[k][j] % mod66 * powL
+				powL = powL * -(l - 1) % mod66
 			}
 			Fprintln(out, (res%mod66+mod66)%mod66)
 		}
