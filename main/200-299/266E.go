@@ -21,7 +21,7 @@ type seg66 []struct {
 
 func (seg66) mergeInfo(a, b [mx66]int) [mx66]int {
 	for i, v := range b {
-		a[i] += v
+		a[i] += v // mod
 	}
 	return a
 }
