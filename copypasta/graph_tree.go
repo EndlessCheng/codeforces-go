@@ -1136,6 +1136,9 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // https://codeforces.com/problemset/problem/916/E 2400
 // https://codeforces.com/problemset/problem/372/D 2600
 // - 先把这题做了 https://www.luogu.com.cn/problem/P3320
+// https://codeforces.com/problemset/problem/176/E 3100
+// - 简化版 https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths-ii/
+// - 静态查询 https://atcoder.jp/contests/typical90/tasks/typical90_ai
 // https://ac.nowcoder.com/acm/contest/6913/C 路径点权乘积 
 // https://oj.niumacode.com/problem/P1499 包含两个点 x y 的最长路径
 // k=3 个点的子树边权和 https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths-ii/
@@ -1217,7 +1220,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 
 	{
 		var dis []int
-		// 从 v 开始向根移动【至多】d 距离，返回最大移动次数，以及能移动到的离根最近的点
+		// 从 v 开始向根移动【至多】d 距离，返回往上能移动到的最远节点
 		// 如果求【至少】d 距离的目标节点，可以改成往上跳至多 d-1，然后再往上跳一个节点
 		// 讲解 https://leetcode.cn/problems/find-weighted-median-node-in-tree/solutions/3700556/mo-ban-zui-jin-gong-gong-zu-xian-lcapyth-6ekj/
 		//
@@ -1226,16 +1229,15 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		// 点权写法 https://codeforces.com/problemset/problem/1059/E 2400
 		// https://www.luogu.com.cn/problem/P7167
 		// https://leetcode.cn/problems/find-weighted-median-node-in-tree/
-		uptoDis := func(v, d int) (int, int) {
-			step := 0
+		uptoDis := func(v, d int) int {
 			dv := dis[v]
 			for i := mx - 1; i >= 0; i-- {
 				if p := pa[v][i]; p != -1 && dv-dis[p] <= d {
-					step |= 1 << i
 					v = p
 				}
 			}
-			return step, v
+			// dep[v0] - dep[v] 就是移动的步数
+			return v
 		}
 		_ = uptoDis
 	}
@@ -1999,15 +2001,15 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 		// 这样带来的好处是在合并之后，我们可以将当前节点的信息直接添加在 DP 数组末尾
 		// 下面的代码来自 https://codeforces.com/problemset/problem/1009/F
 		ans := make([]int, n)
-		var f func(v, fa int) ([]int, int)
-		f = func(v, fa int) (cnt []int, maxI int) { // maxI 为 cnt 中最大最右元素的下标
+		var dfs func(int, int) ([]int, int)
+		dfs = func(v, fa int) (cnt []int, maxI int) { // maxI 为 cnt 中最大最右元素的下标
 			if hson[v] == -1 {
 				return []int{1}, 0
 			}
-			cnt, maxI = f(hson[v], v)
+			cnt, maxI = dfs(hson[v], v)
 			for _, w := range g[v] {
 				if w != fa && w != hson[v] {
-					subCnt, _ := f(w, v)
+					subCnt, _ := dfs(w, v)
 					// do...
 					shift := len(cnt) - len(subCnt)
 					for i, c := range subCnt {
@@ -2025,7 +2027,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 			ans[v] = len(cnt) - 1 - maxI // 转化成题目要求的定义
 			return
 		}
-		f(root, -1)
+		dfs(root, -1)
 	}
 }
 
