@@ -31,7 +31,7 @@
 ```py [sol-Python3]
 class Solution:
     def countNumbers(self, l: str, r: str, b: int) -> int:
-        # 把 s 转成 b 进制
+        # 把 s 转成 b 进制，库函数写法见【Numpy】代码
         def trans(s: str) -> List[int]:
             x = int(s)
             digits = []
@@ -40,6 +40,37 @@ class Solution:
                 digits.append(r)
             digits.reverse()
             return digits
+
+        high = trans(r)
+        n = len(high)
+        low = trans(l)
+        low = [0] * (n - len(low)) + low
+
+        @cache
+        def dfs(i: int, pre: int, limit_low: bool, limit_high: bool) -> int:
+            if i == n:
+                return 1
+
+            lo = low[i] if limit_low else 0
+            hi = high[i] if limit_high else b - 1
+
+            res = 0
+            for d in range(max(lo, pre), hi + 1):
+                res += dfs(i + 1, d, limit_low and d == lo, limit_high and d == hi)
+            return res
+
+        return dfs(0, 0, True, True) % 1_000_000_007
+```
+
+```py [sol-NumPy]
+import numpy as np
+
+class Solution:
+    def countNumbers(self, l: str, r: str, b: int) -> int:
+        # 把 s 转成 b 进制
+        def trans(s: str) -> List[int]:
+            t = np.base_repr(int(s), base=b)
+            return list(map(int, t))
 
         high = trans(r)
         n = len(high)
@@ -272,17 +303,15 @@ $$
 
 ```py [sol-Python3]
 # 关于预处理组合数的写法，见【Python3 预处理】
+import numpy as np
+
 class Solution:
     def countNumbers(self, l: str, r: str, b: int) -> int:
         # 把 s 转成 b 进制
         def trans(s: str, inc: int) -> List[int]:
             x = int(s) + inc
-            digits = []
-            while x:
-                x, r = divmod(x, b)
-                digits.append(r)
-            digits.reverse()
-            return digits
+            t = np.base_repr(x, base=b)
+            return list(map(int, t))
 
         def calc(s: str, inc: int) -> int:
             s = trans(s, inc)
@@ -302,6 +331,8 @@ class Solution:
 ```
 
 ```py [sol-Python3 预处理]
+import numpy as np
+
 MAX_N = 333  # 进制转换后的最大长度
 MAX_B = 10
 
@@ -318,12 +349,8 @@ class Solution:
         # 把 s 转成 b 进制
         def trans(s: str, inc: int) -> List[int]:
             x = int(s) + inc
-            digits = []
-            while x:
-                x, r = divmod(x, b)
-                digits.append(r)
-            digits.reverse()
-            return digits
+            t = np.base_repr(x, base=b)
+            return list(map(int, t))
 
         def calc(s: str, inc: int) -> int:
             s = trans(s, inc)
