@@ -8,21 +8,16 @@ func minIncrease(n int, edges [][]int, cost []int) (ans int) {
 		g[x] = append(g[x], y)
 		g[y] = append(g[y], x)
 	}
-	g[0] = append(g[0], -1) // 避免误把根节点当作叶子
+	g[0] = append(g[0], -1)
 
-	var dfs func(int, int, int) int
-	dfs = func(x, fa, pathSum int) (maxS int) {
-		pathSum += cost[x]
-		if len(g[x]) == 1 {
-			return pathSum
-		}
-
-		cnt := 0 // 在根到叶子的 pathSum 中，有 cnt 个 pathSum 等于 maxS
+	var dfs func(int, int) int
+	dfs = func(x, fa int) (maxS int) {
+		cnt := 0
 		for _, y := range g[x] {
 			if y == fa {
 				continue
 			}
-			mx := dfs(y, x, pathSum)
+			mx := dfs(y, x)
 			if mx > maxS {
 				maxS = mx
 				cnt = 1
@@ -30,10 +25,9 @@ func minIncrease(n int, edges [][]int, cost []int) (ans int) {
 				cnt++
 			}
 		}
-		// 其余小于 maxS 的 pathSum，可以通过增大 cost[y] 的值，改成 maxS
 		ans += len(g[x]) - 1 - cnt
-		return maxS
+		return maxS + cost[x]
 	}
-	dfs(0, -1, 0)
+	dfs(0, -1)
 	return
 }

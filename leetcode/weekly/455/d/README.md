@@ -1,24 +1,30 @@
-⚠**注意**：可能存在这样一种情况：用一个人来来回回过河，**调整当前阶段**，调整到一个倍率很小的阶段上，在这个时候再过河，是更优的。
+⚠**注意**：坐船回来的那个人，不一定是刚才过河的人，也可能是之前（比如上上次）过河的人。
 
-⚠**注意**：坐船回来的那个人，不一定是刚才过河的人，也可能是之前过河的人。
+⚠**注意**：可能存在这样一种情况：用一个人来来回回过河，调整到一个倍率很小的阶段上，在这个时候过河，是更优的。
 
-由于存在来来回回过河的情况，计算过程中可能会形成环，所以 DP 不太合适。
+由于存在来来回回过河的情况，计算过程中可能会形成环，所以 DP（记忆化搜索）不太合适。
 
 改成建图，跑 Dijkstra 最短路。
 
 把 $(\textit{stage},S)$ 当作节点，其中 $\textit{stage}$ 表示当前阶段，$S$ 表示剩余为过河的人的下标集合。
 
-起点为 $(0,U)$，其中 $U=\{0,1,2,\ldots, n-1\}$。
+起点为 $(0,U)$，其中全集 $U=\{0,1,2,\ldots, n-1\}$。
 
 终点为 $(\textit{stage},\varnothing)$。
 
-对于节点 $(\textit{stage},S)$ 来说，我们枚举 $S$ 的大小 $\le k$ 的非空子集 $T$，作为过河的人。
+对于节点 $(\textit{stage},S)$ 来说，我们枚举 $S$ 的大小 $\le k$ 的非空子集 $T$，作为这次过河的人群。
 
 如果 $T\ne S$，也就是还有没过河的人，那么需要从已过河的人 $\complement_U (S\setminus T)$ 中枚举一个人回来。
 
 代码实现时，用二进制表示集合，用位运算操作集合，具体见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+## 答疑
+
+**问**：为什么回来的人不能贪心选 $\textit{time}$ 最小的？
+
+**答**：这只是局部最优，不是全局最优。可能存在这样一种情况，选一个 $\textit{time}$ 大的，调整到一个 $\textit{mul}$ 很小的阶段，后面消耗的时间更少。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1GCNRzgEYp/?t=32m18s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -43,7 +49,7 @@ class Solution:
         dis = [[inf] * u for _ in range(m)]
         h = []
 
-        def push(d: float, stage: int, mask: int):
+        def push(d: float, stage: int, mask: int) -> None:
             if d < dis[stage][mask]:
                 dis[stage][mask] = d
                 heappush(h, (d, stage, mask))
@@ -304,7 +310,7 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 
 对于大小为 $n$ 的集合，它的大小为 $m$ 的子集有 $\binom n m$ 个，每个子集又有 $2^m$ 个子集。根据二项式定理，$\sum\limits_{m=0}^n \binom n m 2^m = (2+1)^n = 3^n$，所以「枚举子集的子集」的时间复杂度为 $\mathcal{O}(3^n)$。
 
-- 时间复杂度：$\mathcal{O}(nM\log M)$，其中 $M=m3^n$ 是图中的点边总数。
+- 时间复杂度：$\mathcal{O}(M\log M)$，其中 $M=nm3^n$ 是图中的边数上限。
 - 空间复杂度：$\mathcal{O}(M)$。
 
 ## 相似题目

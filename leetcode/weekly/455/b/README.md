@@ -1,4 +1,4 @@
-**前置知识**：[完全背包【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)
+**前置知识**：[0-1 背包与完全背包【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)
 
 本题是一个反向构造题：给你完全背包的 DP 数组 $\textit{numWays}$，已知 $\textit{numWays}$ 是由数组 $a$ 算出来的（算方案数），请你还原数组 $a$。
 
@@ -12,13 +12,13 @@
 
 继续向后遍历 $\textit{numWays}$：
 
-- 如果 $\textit{numWays}[i] = f[i]+1$，这意味着 $i$ 可以单独一个数，贡献一个和为 $i$ 的方案，所以 $a$ 中一定有 $i$。比如 $i=4$ 符合要求。
-- 如果 $\textit{numWays}[i] = f[i]$，说明 $a$ 中没有 $i$。
-- 其他情况：矛盾，$\textit{numWays}$ 不合法。
+- 如果 $\textit{numWays}[i] = f[i]$，说明所有和为 $i$ 的方案均由小于 $i$ 的元素组成，$a$ 中没有 $i$。
+- 如果 $\textit{numWays}[i] = f[i]+1$，意味着 $i$ 可以单独一个数，贡献 $1$ 个和为 $i$ 的方案，所以 $a$ 中一定有 $i$。这里 $i=4$ 符合要求。把 $i$ 加入答案，用 $i$ 继续更新 $f$（见后文）。
+- 其他情况：$\textit{numWays}$ 不可能是某个数组 $a$ 的完全背包 DP 数组，返回空列表。
 
 用这个 $4$ 去更新 $f$，得到 $f =[1,0,1,0,2,0,2,0,3,0,3]$。
 
-继续向后遍历 $\textit{numWays}$，发现 $\textit{numWays}[6] = f[6]+1$，这意味着 $6$ 可以单独一个数，贡献一个和为 $4$ 的方案，所以 $a$ 中一定有 $6$。
+继续向后遍历 $\textit{numWays}$，发现 $\textit{numWays}[6] = f[6]+1$，这意味着 $6$ 可以单独一个数，贡献 $1$ 个和为 $4$ 的方案，所以 $a$ 中一定有 $6$。
 
 用这个 $6$ 去更新 $f$，得到 $f =[1,0,1,0,2,0,3,0,4,0,5]$。
 
@@ -26,9 +26,9 @@
 
 最终 $a=[2,4,6]$。
 
-**细节**：为避免方案数溢出，可以把 $f[i]$ 与一个 $\ge \max(\textit{numWays})+2$ 的数取最小值。也可以在发现 $f[i]\ge \max(\textit{numWays})+2$ 时返回空数组。
+**细节**：为避免方案数溢出，可以把 $f[i]$ 与一个大于 $\max(\textit{numWays})$ 的数取最小值。也可以在发现 $f[i] > \max(\textit{numWays})$ 时，返回空数组。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1GCNRzgEYp/?t=9m14s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -46,7 +46,7 @@ class Solution:
             # 现在得到了一个大小为 i 的物品，用 i 计算完全背包（空间优化写法）
             for j in range(i, n + 1):
                 f[j] += f[j - i]
-                if f[j] > mx + 1:  # 不合法
+                if f[j] > mx:  # 不合法
                     return []
         return ans
 ```
@@ -67,7 +67,7 @@ class Solution {
                 return List.of();
             }
             ans.add(i);
-            // 现在得到了一个大小为 i 的物品，用 i 计算完全背包
+            // 现在得到了一个大小为 i 的物品，用 i 计算完全背包（空间优化写法）
             for (int j = i; j <= n; j++) {
                 f[j] = Math.min(f[j] + f[j - i], Integer.MAX_VALUE / 2); // 防止溢出
             }
@@ -94,7 +94,7 @@ public:
                 return {};
             }
             ans.push_back(i);
-            // 现在得到了一个大小为 i 的物品，用 i 计算完全背包
+            // 现在得到了一个大小为 i 的物品，用 i 计算完全背包（空间优化写法）
             for (int j = i; j <= n; j++) {
                 f[j] = min(f[j] + f[j - i], INT_MAX / 2); // 防止溢出
             }

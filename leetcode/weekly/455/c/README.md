@@ -22,7 +22,9 @@ $\text{DFS}(x)$ 返回从根经过 $x$ 到叶子的最大路径和，对于 $x$ 
 
 为避免误把根节点（只有一个邻居的情况）认为是叶子，可以把 $0$ 与 $-1$ 相连，这样可以保证根至少有两个邻居。注意本题 $n\ge 2$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1GCNRzgEYp/?t=24m5s)，欢迎点赞关注~
+
+## 写法一：有递有归
 
 ```py [sol-Python3]
 class Solution:
@@ -188,6 +190,154 @@ func minIncrease(n int, edges [][]int, cost []int) (ans int) {
 		return maxS
 	}
 	dfs(0, -1, 0)
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 写法二：自底向上
+
+在计算节点 $x$ 的 $\textit{maxS}$ 时，由于路径和都会经过 $x$，所以从根到 $x$ 的这一段和都是一样的。如果去掉这一段和，改成自底向上计算，并不会影响等于 $\textit{maxS}$ 的 $\textit{cnt}$ 值，所以也可以自底向上计算。
+
+```py [sol-Python3]
+class Solution:
+    def minIncrease(self, n: int, edges: List[List[int]], cost: List[int]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        g[0].append(-1)
+
+        def dfs(x: int, fa: int) -> int:
+            max_s = cnt = 0
+            for y in g[x]:
+                if y == fa:
+                    continue
+                mx = dfs(y, x)
+                if mx > max_s:
+                    max_s = mx
+                    cnt = 1
+                elif mx == max_s:
+                    cnt += 1
+
+            nonlocal ans
+            ans += len(g[x]) - 1 - cnt
+            return max_s + cost[x]
+
+        ans = 0
+        dfs(0, -1)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private int ans = 0;
+
+    public int minIncrease(int n, int[][] edges, int[] cost) {
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0], y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+        g[0].add(-1);
+
+        dfs(0, -1, g, cost);
+        return ans;
+    }
+
+    private long dfs(int x, int fa, List<Integer>[] g, int[] cost) {
+        long maxS = 0;
+        int cnt = 0;
+        for (int y : g[x]) {
+            if (y == fa) {
+                continue;
+            }
+            long mx = dfs(y, x, g, cost);
+            if (mx > maxS) {
+                maxS = mx;
+                cnt = 1;
+            } else if (mx == maxS) {
+                cnt++;
+            }
+        }
+        ans += g[x].size() - 1 - cnt;
+        return maxS + cost[x];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minIncrease(int n, vector<vector<int>>& edges, vector<int>& cost) {
+        vector<vector<int>> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            g[x].push_back(y);
+            g[y].push_back(x);
+        }
+        g[0].push_back(-1);
+
+        int ans = 0;
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> long long {
+            long long max_s = 0;
+            int cnt = 0;
+            for (int y : g[x]) {
+                if (y == fa) {
+                    continue;
+                }
+                long long mx = dfs(y, x);
+                if (mx > max_s) {
+                    max_s = mx;
+                    cnt = 1;
+                } else if (mx == max_s) {
+                    cnt++;
+                }
+            }
+            ans += g[x].size() - 1 - cnt;
+            return max_s + cost[x];
+        };
+        dfs(0, -1);
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minIncrease(n int, edges [][]int, cost []int) (ans int) {
+	g := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+	g[0] = append(g[0], -1)
+
+	var dfs func(int, int) int
+	dfs = func(x, fa int) (maxS int) {
+		cnt := 0
+		for _, y := range g[x] {
+			if y == fa {
+				continue
+			}
+			mx := dfs(y, x)
+			if mx > maxS {
+				maxS = mx
+				cnt = 1
+			} else if mx == maxS {
+				cnt++
+			}
+		}
+		ans += len(g[x]) - 1 - cnt
+		return maxS + cost[x]
+	}
+	dfs(0, -1)
 	return
 }
 ```
