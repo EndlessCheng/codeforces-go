@@ -1,7 +1,5 @@
 package main
 
-import "math"
-
 // https://space.bilibili.com/206214
 func findCoins(numWays []int) (ans []int) {
 	n := len(numWays)
@@ -18,7 +16,7 @@ func findCoins(numWays []int) (ans []int) {
 		ans = append(ans, i)
 		// 现在得到了一个大小为 i 的物品，用 i 计算完全背包
 		for j := i; j <= n; j++ {
-			f[j] = min(f[j]+f[j-i], math.MaxInt/2)
+			f[j] += f[j-i]
 		}
 	}
 	return

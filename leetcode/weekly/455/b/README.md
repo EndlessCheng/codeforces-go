@@ -26,9 +26,13 @@
 
 最终 $a=[2,4,6]$。
 
-**细节**：为避免方案数溢出，可以把 $f[i]$ 与一个大于 $\max(\textit{numWays})$ 的数取最小值。也可以在发现 $f[i] > \max(\textit{numWays})$ 时，返回空数组。
-
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1GCNRzgEYp/?t=9m14s)，欢迎点赞关注~
+
+## 答疑
+
+**问**：`f[j] += f[j - i]` 是否会导致 $f[j]$ 溢出？
+
+**答**：不会，如果 $f[j]$ 很大，会触发代码中的 `if ways - 1 != f[i]`，在溢出前我们就返回了。
 
 ```py [sol-Python3]
 class Solution:
@@ -46,8 +50,6 @@ class Solution:
             # 现在得到了一个大小为 i 的物品，用 i 计算完全背包（空间优化写法）
             for j in range(i, n + 1):
                 f[j] += f[j - i]
-                if f[j] > mx:  # 不合法
-                    return []
         return ans
 ```
 
@@ -69,7 +71,7 @@ class Solution {
             ans.add(i);
             // 现在得到了一个大小为 i 的物品，用 i 计算完全背包（空间优化写法）
             for (int j = i; j <= n; j++) {
-                f[j] = Math.min(f[j] + f[j - i], Integer.MAX_VALUE / 2); // 防止溢出
+                f[j] += f[j - i];
             }
         }
         return ans;
@@ -96,7 +98,7 @@ public:
             ans.push_back(i);
             // 现在得到了一个大小为 i 的物品，用 i 计算完全背包（空间优化写法）
             for (int j = i; j <= n; j++) {
-                f[j] = min(f[j] + f[j - i], INT_MAX / 2); // 防止溢出
+                f[j] += f[j - i];
             }
         }
         return ans;
@@ -118,9 +120,9 @@ func findCoins(numWays []int) (ans []int) {
 			return nil
 		}
 		ans = append(ans, i)
-		// 现在得到了一个大小为 i 的物品，用 i 计算完全背包（空间优化写法）
+		// 现在得到了一个大小为 i 的物品，用 i 计算完全背包
 		for j := i; j <= n; j++ {
-			f[j] = min(f[j]+f[j-i], math.MaxInt/2) // 防止溢出
+			f[j] += f[j-i]
 		}
 	}
 	return
