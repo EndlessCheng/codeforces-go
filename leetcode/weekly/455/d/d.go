@@ -65,8 +65,8 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 			// 枚举回来的人
 			for s, lb := u-1^left, 0; s > 0; s ^= lb {
 				lb = s & -s
-				returnTime := float64(maxTime[lb]) * mul[stage]
-				push(d+returnTime, (stage+int(returnTime))%m, left^lb, 0)
+				cost := float64(maxTime[lb]) * mul[stage]
+				push(d+cost, (stage+int(cost))%m, left^lb, 0)
 			}
 		}
 	}

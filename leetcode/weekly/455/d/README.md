@@ -317,12 +317,12 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 
 ## 写法二：状态机
 
-写法一的问题在于，在坐船过河后，有很多不同的节点 $x$ 都可以到达同一个节点 $y$，这些 $x$ 在「枚举坐船回来的人」的枚举的内容是完全一样的，可以优化。
+写法一的优化点是，不同的集合 $A$ 在去掉坐船过河的子集后，得到的集合 $B$ 可以是相同的，这些集合 $B$ 在「枚举坐船回来的人」时，枚举的内容是完全一样的，这些重复的枚举可以优化。
 
 添加一个维度，把 $(\textit{stage},S,\textit{state})$ 当作节点，其中：
 
-- $\textit{state}=0$ 表示一群人要过河。
-- $\textit{state}=1$ 表示一个人要回来。
+- $\textit{state}=0$ 表示一群人要过河的状态。
+- $\textit{state}=1$ 表示一个人要回来的状态。
 
 起点为 $(0,U,0)$，其中全集 $U=\{0,1,2,\ldots, n-1\}$。
 
@@ -374,8 +374,8 @@ class Solution:
                 s = (u - 1) ^ left
                 while s:
                     lb = s & -s
-                    return_time = max_time[lb] * mul[stage]
-                    push(d + return_time, (stage + floor(return_time)) % m, left ^ lb, 0)
+                    cost = max_time[lb] * mul[stage]
+                    push(d + cost, (stage + floor(cost)) % m, left ^ lb, 0)
                     s ^= lb
 
         return -1
@@ -437,8 +437,8 @@ class Solution {
                 // 枚举回来的人
                 for (int s = (u - 1) ^ left, lb = 0; s > 0; s ^= lb) {
                     lb = s & -s;
-                    double returnTime = maxTime[lb] * mul[stage];
-                    push(d + returnTime, (stage + (int) returnTime) % m, left ^ lb, 0, dis, h);
+                    double cost = maxTime[lb] * mul[stage];
+                    push(d + cost, (stage + (int) cost) % m, left ^ lb, 0, dis, h);
                 }
             }
         }
@@ -511,8 +511,8 @@ public:
                 // 枚举回来的人
                 for (int s = (u - 1) ^ left, lb; s > 0; s ^= lb) {
                     lb = s & -s;
-                    double return_time = max_time[lb] * mul[stage];
-                    push(d + return_time, (stage + int(return_time)) % m, left ^ lb, 0);
+                    double cost = max_time[lb] * mul[stage];
+                    push(d + cost, (stage + int(cost)) % m, left ^ lb, 0);
                 }
             }
         }
@@ -580,8 +580,8 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 			// 枚举回来的人
 			for s, lb := u-1^left, 0; s > 0; s ^= lb {
 				lb = s & -s
-				returnTime := float64(maxTime[lb]) * mul[stage]
-				push(d+returnTime, (stage+int(returnTime))%m, left^lb, 0)
+				cost := float64(maxTime[lb]) * mul[stage]
+				push(d+cost, (stage+int(cost))%m, left^lb, 0)
 			}
 		}
 	}
