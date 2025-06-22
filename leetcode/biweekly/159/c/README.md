@@ -10,6 +10,8 @@ $$
 
 个合法左端点，加入答案。
 
+**注**：当 $\textit{left} = \textit{last}_2+1$ 时，窗口中至多有一个质数，一定满足要求，所以 $\textit{left} \le  \textit{last}_2+1$ 恒成立。另请注意，$\textit{last}_2=-1$ 这一初始值同样满足这一性质。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1qeNRzjEEk/?t=13m22s)，欢迎点赞关注~
 
 ```py [sol-Python3]
@@ -28,8 +30,8 @@ class Solution:
         ans = left = 0
 
         for i, x in enumerate(nums):
-            # 1. 入
             if is_prime[x]:
+                # 1. 入
                 last2 = last
                 last = i
 
@@ -90,8 +92,8 @@ class Solution {
         for (int i = 0; i < nums.length; i++) {
             int x = nums[i];
 
-            // 1. 入
             if (!NOT_PRIME[x]) {
+                // 1. 入
                 last2 = last;
                 last = i;
 
@@ -152,8 +154,8 @@ public:
         for (int i = 0; i < nums.size(); i++) {
             int x = nums[i];
 
-            // 1. 入
             if (!np[x]) {
+                // 1. 入
                 last2 = last;
                 last = i;
 
@@ -208,8 +210,8 @@ func primeSubarray(nums []int, k int) (ans int) {
 	left := 0
 
 	for i, x := range nums {
-		// 1. 入
 		if !np[x] {
+			// 1. 入
 			last2 = last
 			last = i
 
