@@ -10,7 +10,7 @@ $$
 
 个合法左端点，加入答案。
 
-**注**：当 $\textit{left} = \textit{last}_2+1$ 时，窗口中至多有一个质数，一定满足要求，所以 $\textit{left} \le  \textit{last}_2+1$ 恒成立，所以 $\textit{last}_2 - \textit{left} + 1\ge 0$ 恒成立。另请注意，$\textit{last}_2=-1$ 这一初始值同样满足这一性质。
+**注**：当 $\textit{left} = \textit{last}_2+1$ 时，窗口中至多有一个质数，一定满足要求，所以 $\textit{left} \le  \textit{last}_2+1$ 恒成立，即 $\textit{last}_2 - \textit{left} + 1\ge 0$ 恒成立。另请注意，$\textit{last}_2=-1$ 这一初始值同样满足这一性质。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1qeNRzjEEk/?t=13m22s)，欢迎点赞关注~
 
