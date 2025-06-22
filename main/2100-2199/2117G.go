@@ -34,6 +34,7 @@ func cf2117G(in io.Reader, out io.Writer) {
 			}
 			return rt
 		}
+		ans := int(2e9)
 		for _, e := range es {
 			v, w := find(e.v), find(e.w)
 			if v == w {
@@ -42,10 +43,10 @@ func cf2117G(in io.Reader, out io.Writer) {
 			mn[w] = min(mn[w], mn[v], e.wt)
 			fa[v] = w
 			if find(1) == find(n) {
-				Fprintln(out, mn[fa[1]]+e.wt)
-				break
+				ans = min(ans, mn[fa[1]]+e.wt)
 			}
 		}
+		Fprintln(out, ans)
 	}
 }
 
