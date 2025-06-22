@@ -50,7 +50,7 @@ func cf196E(in io.Reader, out io.Writer) {
 			newD := d + e.wt
 			if newD < dis[w] {
 				dis[w] = newD
-				from[w] = from[v]
+				from[w] = from[v] // 易错点
 				heap.Push(&h, pair96{newD, w})
 			}
 		}
