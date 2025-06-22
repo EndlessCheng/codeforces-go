@@ -1,6 +1,6 @@
 **前置知识**：[0-1 背包与完全背包【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)
 
-本题是一个反向构造题：给你完全背包的 DP 数组 $\textit{numWays}$，已知 $\textit{numWays}$ 是由数组 $a$ 算出来的（算方案数），请你还原数组 $a$。
+本题是 [518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/) 的反向构造题：给你完全背包的 DP 数组 $\textit{numWays}$，已知 $\textit{numWays}$ 是由数组 $a$ 算出来的（算方案数），请你还原数组 $a$。
 
 想一想，$\textit{numWays}$ 中最小非零元素，意味着什么？
 
