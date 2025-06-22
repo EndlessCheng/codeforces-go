@@ -24,52 +24,49 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 		}
 	}
 
-	dis := make([][]float64, m)
+	dis := make([][][2]float64, m)
 	for i := range dis {
-		dis[i] = make([]float64, u)
+		dis[i] = make([][2]float64, u)
 		for j := range dis[i] {
-			dis[i][j] = math.MaxFloat64
+			dis[i][j] = [2]float64{math.MaxFloat64, math.MaxFloat64}
 		}
 	}
 	h := hp{}
-	push := func(d float64, stage, mask int) {
-		if d < dis[stage][mask] {
-			dis[stage][mask] = d
-			heap.Push(&h, tuple{d, stage, mask})
+	push := func(d float64, stage, mask int, state uint8) {
+		if d < dis[stage][mask][state] {
+			dis[stage][mask][state] = d
+			heap.Push(&h, tuple{d, stage, mask, state})
 		}
 	}
 
-	push(0, 0, u-1) // 起点
+	push(0, 0, u-1, 0) // 起点
 
 	for len(h) > 0 {
 		top := heap.Pop(&h).(tuple)
 		d := top.dis
 		stage := top.stage
 		left := top.mask // 剩余没有过河的人
-		if left == 0 {   // 所有人都过河了
+		state := top.state
+		if left == 0 { // 所有人都过河了
 			return d
 		}
-		if d > dis[stage][left] {
+		if d > dis[stage][left][state] {
 			continue
 		}
-		// 枚举 sub 这群人坐一艘船
-		for sub := left; sub > 0; sub = (sub - 1) & left {
-			if maxTime[sub] == math.MaxInt {
-				continue
+		if state == 0 {
+			// 枚举 sub 这群人坐一艘船
+			for sub := left; sub > 0; sub = (sub - 1) & left {
+				if maxTime[sub] != math.MaxInt {
+					cost := float64(maxTime[sub]) * mul[stage]
+					push(d+cost, (stage+int(cost))%m, left^sub, 1)
+				}
 			}
-			// sub 过河
-			cost := float64(maxTime[sub]) * mul[stage]
-			curStage := (stage + int(cost)) % m // 过河后的阶段
-			// 所有人都过河了
-			if sub == left {
-				push(d+cost, curStage, 0)
-				continue
-			}
-			// 枚举回来的人（可以是之前过河的人）
-			for s, lb := u-1^left^sub, 0; s > 0; s ^= lb {
+		} else {
+			// 枚举回来的人
+			for s, lb := u-1^left, 0; s > 0; s ^= lb {
 				lb = s & -s
-				returnTime := float64(maxTime[lb]) * mul[curStage]
-				push(d+cost+returnTime, (curStage+int(returnTime))%m, left^sub^lb)
+				returnTime := float64(maxTime[lb]) * mul[stage]
+				push(d+returnTime, (stage+int(returnTime))%m, left^lb, 0)
 			}
 		}
 	}
@@ -79,6 +76,7 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 type tuple struct {
 	dis         float64
 	stage, mask int
+	state       uint8 // 状态机：0 未过河，1 已过河
 }
 type hp []tuple
 

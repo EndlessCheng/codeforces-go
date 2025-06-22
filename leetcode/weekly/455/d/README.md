@@ -10,7 +10,7 @@
 
 起点为 $(0,U)$，其中全集 $U=\{0,1,2,\ldots, n-1\}$。
 
-终点为 $(\textit{stage},\varnothing)$。
+终点为 $S=\varnothing$ 的节点。
 
 对于节点 $(\textit{stage},S)$ 来说，我们枚举 $S$ 的大小 $\le k$ 的非空子集 $T$，作为这次过河的人群。
 
@@ -25,6 +25,8 @@
 **答**：这只是局部最优，不是全局最优。可能存在这样一种情况，选一个 $\textit{time}$ 大的，调整到一个 $\textit{mul}$ 很小的阶段，后面消耗的时间更少。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1GCNRzgEYp/?t=32m18s)，欢迎点赞关注~
+
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -311,6 +313,297 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 对于大小为 $n$ 的集合，它的大小为 $m$ 的子集有 $\binom n m$ 个，每个子集又有 $2^m$ 个子集。根据二项式定理，$\sum\limits_{m=0}^n \binom n m 2^m = (2+1)^n = 3^n$，所以「枚举子集的子集」的时间复杂度为 $\mathcal{O}(3^n)$。
 
 - 时间复杂度：$\mathcal{O}(M\log M)$，其中 $M=nm3^n$ 是图中的边数上限。
+- 空间复杂度：$\mathcal{O}(M)$。
+
+## 写法二：状态机
+
+写法一的问题在于，在坐船过河后，有很多不同的节点 $x$ 都可以到达同一个节点 $y$，这些 $x$ 在「枚举坐船回来的人」的枚举的内容是完全一样的，可以优化。
+
+添加一个维度，把 $(\textit{stage},S,\textit{state})$ 当作节点，其中：
+
+- $\textit{state}=0$ 表示一群人要过河。
+- $\textit{state}=1$ 表示一个人要回来。
+
+起点为 $(0,U,0)$，其中全集 $U=\{0,1,2,\ldots, n-1\}$。
+
+终点为 $S=\varnothing$ 的节点。
+
+```py [sol-Python3]
+class Solution:
+    def minTime(self, n: int, k: int, m: int, time: List[int], mul: List[float]) -> float:
+        u = 1 << n
+        # 预处理每个 time 子集的最大值
+        max_time = [0] * u
+        for i, t in enumerate(time):
+            high_bit = 1 << i
+            for mask in range(high_bit):
+                max_time[high_bit | mask] = max(max_time[mask], t)
+
+        # 预处理每个集合的大小 <= k 的非空子集
+        sub_masks = [[] for _ in range(u)]
+        for i in range(u):
+            sub = i
+            while sub:
+                if sub.bit_count() <= k:
+                    sub_masks[i].append(sub)
+                sub = (sub - 1) & i
+
+        dis = [[[inf, inf] for _ in range(u)] for _ in range(m)]
+        h = []
+
+        def push(d: float, stage: int, mask: int, state: int) -> None:
+            if d < dis[stage][mask][state]:
+                dis[stage][mask][state] = d
+                heappush(h, (d, stage, mask, state))
+
+        push(0, 0, u - 1, 0)  # 起点
+
+        while h:
+            d, stage, left, state = heappop(h)  # left 是剩余没有过河的人
+            if left == 0:  # 所有人都过河了
+                return d
+            if d > dis[stage][left][state]:
+                continue
+            if state == 0:
+                # 枚举 sub 这群人坐一艘船过河
+                for sub in sub_masks[left]:
+                    cost = max_time[sub] * mul[stage]
+                    push(d + cost, (stage + floor(cost)) % m, left ^ sub, 1)
+            else:
+                # 枚举回来的人
+                s = (u - 1) ^ left
+                while s:
+                    lb = s & -s
+                    return_time = max_time[lb] * mul[stage]
+                    push(d + return_time, (stage + floor(return_time)) % m, left ^ lb, 0)
+                    s ^= lb
+
+        return -1
+```
+
+```java [sol-Java]
+class Solution {
+    private record Tuple(double dis, int stage, int mask, int state) {
+    }
+
+    public double minTime(int n, int k, int m, int[] time, double[] mul) {
+        int u = 1 << n;
+        // 计算每个 time 子集的最大值
+        int[] maxTime = new int[u];
+        for (int i = 0; i < n; i++) {
+            int highBit = 1 << i;
+            for (int mask = 0; mask < highBit; mask++) {
+                maxTime[highBit | mask] = Math.max(maxTime[mask], time[i]);
+            }
+        }
+        // 把 maxTime 中的大小大于 k 的集合改为 inf
+        for (int i = 0; i < u; i++) {
+            if (Integer.bitCount(i) > k) {
+                maxTime[i] = Integer.MAX_VALUE;
+            }
+        }
+
+        double[][][] dis = new double[m][u][2];
+        for (double[][] mat : dis) {
+            for (double[] row : mat) {
+                Arrays.fill(row, Double.MAX_VALUE);
+            }
+        }
+
+        PriorityQueue<Tuple> h = new PriorityQueue<>(Comparator.comparingDouble(t -> t.dis));
+        push(0, 0, u - 1, 0, dis, h); // 起点
+
+        while (!h.isEmpty()) {
+            Tuple top = h.poll();
+            double d = top.dis;
+            int stage = top.stage;
+            int left = top.mask; // 剩余没有过河的人
+            int state = top.state;
+            if (left == 0) { // 所有人都过河了
+                return d;
+            }
+            if (d > dis[stage][left][state]) {
+                continue;
+            }
+            if (state == 0) {
+                // 枚举 sub 这群人坐一艘船过河
+                for (int sub = left; sub > 0; sub = (sub - 1) & left) {
+                    if (maxTime[sub] != Integer.MAX_VALUE) {
+                        double cost = maxTime[sub] * mul[stage];
+                        push(d + cost, (stage + (int) cost) % m, left ^ sub, 1, dis, h);
+                    }
+                }
+            } else {
+                // 枚举回来的人
+                for (int s = (u - 1) ^ left, lb = 0; s > 0; s ^= lb) {
+                    lb = s & -s;
+                    double returnTime = maxTime[lb] * mul[stage];
+                    push(d + returnTime, (stage + (int) returnTime) % m, left ^ lb, 0, dis, h);
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    private void push(double d, int stage, int mask, int state, double[][][] dis, PriorityQueue<Tuple> pq) {
+        if (d < dis[stage][mask][state]) {
+            dis[stage][mask][state] = d;
+            pq.add(new Tuple(d, stage, mask, state));
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    double minTime(int n, int k, int m, vector<int>& time, vector<double>& mul) {
+        int u = 1 << n;
+        // 计算每个 time 子集的最大值
+        vector<int> max_time(u);
+        for (int i = 0; i < n; i++) {
+            int t = time[i];
+            int high_bit = 1 << i;
+            for (int mask = 0; mask < high_bit; mask++) {
+                max_time[high_bit | mask] = max({max_time[high_bit | mask], max_time[mask], t});
+            }
+        }
+        // 把 max_time 中的大小大于 k 的集合改为 inf
+        for (uint32_t i = 0; i < u; i++) {
+            if (popcount(i) > k) {
+                max_time[i] = INT_MAX;
+            }
+        }
+
+        const double inf = numeric_limits<double>::max();
+        vector dis(m, vector<array<double, 2>>(u, {inf, inf}));
+        using T = tuple<double, int, int, uint8_t>;
+        priority_queue<T, vector<T>, greater<>> pq;
+
+        auto push = [&](double d, int stage, int mask, uint8_t state) {
+            if (d < dis[stage][mask][state]) {
+                dis[stage][mask][state] = d;
+                pq.emplace(d, stage, mask, state);
+            }
+        };
+
+        push(0, 0, u - 1, 0); // 起点
+
+        while (!pq.empty()) {
+            auto [d, stage, left, state] = pq.top();
+            pq.pop();
+            if (left == 0) { // 所有人都过河了
+                return d;
+            }
+            if (d > dis[stage][left][state]) {
+                continue;
+            }
+            if (state == 0) {
+                // 枚举 sub 这群人坐一艘船过河
+                for (int sub = left; sub > 0; sub = (sub - 1) & left) {
+                    if (max_time[sub] != INT_MAX) {
+                        double cost = max_time[sub] * mul[stage];
+                        push(d + cost, (stage + int(cost)) % m, left ^ sub, 1);
+                    }
+                }
+            } else {
+                // 枚举回来的人
+                for (int s = (u - 1) ^ left, lb; s > 0; s ^= lb) {
+                    lb = s & -s;
+                    double return_time = max_time[lb] * mul[stage];
+                    push(d + return_time, (stage + int(return_time)) % m, left ^ lb, 0);
+                }
+            }
+        }
+        return -1;
+    }
+};
+```
+
+```go [sol-Go]
+func minTime(n, k, m int, time []int, mul []float64) float64 {
+	u := 1 << n
+	// 计算每个 time 子集的最大值
+	maxTime := make([]int, u)
+	for i, t := range time {
+		highBit := 1 << i
+		for mask, mx := range maxTime[:highBit] {
+			maxTime[highBit|mask] = max(mx, t)
+		}
+	}
+	// 把 maxTime 中的大小大于 k 的集合改为 inf
+	for i := range maxTime {
+		if bits.OnesCount(uint(i)) > k {
+			maxTime[i] = math.MaxInt
+		}
+	}
+
+	dis := make([][][2]float64, m)
+	for i := range dis {
+		dis[i] = make([][2]float64, u)
+		for j := range dis[i] {
+			dis[i][j] = [2]float64{math.MaxFloat64, math.MaxFloat64}
+		}
+	}
+	h := hp{}
+	push := func(d float64, stage, mask int, state uint8) {
+		if d < dis[stage][mask][state] {
+			dis[stage][mask][state] = d
+			heap.Push(&h, tuple{d, stage, mask, state})
+		}
+	}
+
+	push(0, 0, u-1, 0) // 起点
+
+	for len(h) > 0 {
+		top := heap.Pop(&h).(tuple)
+		d := top.dis
+		stage := top.stage
+		left := top.mask // 剩余没有过河的人
+		state := top.state
+		if left == 0 { // 所有人都过河了
+			return d
+		}
+		if d > dis[stage][left][state] {
+			continue
+		}
+		if state == 0 {
+			// 枚举 sub 这群人坐一艘船
+			for sub := left; sub > 0; sub = (sub - 1) & left {
+				if maxTime[sub] != math.MaxInt {
+					cost := float64(maxTime[sub]) * mul[stage]
+					push(d+cost, (stage+int(cost))%m, left^sub, 1)
+				}
+			}
+		} else {
+			// 枚举回来的人
+			for s, lb := u-1^left, 0; s > 0; s ^= lb {
+				lb = s & -s
+				returnTime := float64(maxTime[lb]) * mul[stage]
+				push(d+returnTime, (stage+int(returnTime))%m, left^lb, 0)
+			}
+		}
+	}
+	return -1
+}
+
+type tuple struct {
+	dis         float64
+	stage, mask int
+	state       uint8 // 状态机：0 未过河，1 已过河
+}
+type hp []tuple
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return h[i].dis < h[j].dis }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(tuple)) }
+func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(M\log M)$，其中 $M=m3^n$ 是图中的边数上限。
 - 空间复杂度：$\mathcal{O}(M)$。
 
 ## 相似题目
