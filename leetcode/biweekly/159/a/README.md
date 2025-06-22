@@ -8,19 +8,15 @@
 
 计算每辆车 $a[i]$ 到其目标位置 $b[i]$ 的距离 $|a[i]-b[i]|$，累加即为交换次数。
 
-设车的个数为 $m$，那么空位的个数为 $n-m$，如果 $|(n-m)-m| > 1$，则无法形成有效排列，返回 $-1$。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1qeNRzjEEk/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def minSwaps(self, nums: List[int]) -> int:
-        pos1 = [i for i, x in enumerate(nums) if x % 2]
+        pos1 = [i for i, x in enumerate(nums) if x % 2]  # 车（奇数）的下标
 
         n = len(nums)
         m = len(pos1)
-        if abs(n - 2 * m) > 1:
-            return -1
 
         # start=0 表示车要去偶数下标，start=1 表示车要去奇数下标
         def calc(start: int) -> int:
@@ -29,26 +25,23 @@ class Solution:
                 return inf
             return sum(abs(i - j) for i, j in zip(range(start, n, 2), pos1))
 
-        return min(calc(0), calc(1))
+        ans = min(calc(0), calc(1))
+        return -1 if ans == inf else ans
 ```
 
 ```java [sol-Java]
 class Solution {
     public int minSwaps(int[] nums) {
         int n = nums.length;
-        List<Integer> pos1 = new ArrayList<>();
+        List<Integer> pos1 = new ArrayList<>(); // 车（奇数）的下标
         for (int i = 0; i < n; i++) {
             if (nums[i] % 2 != 0) {
                 pos1.add(i);
             }
         }
 
-        int m = pos1.size();
-        if (Math.abs(n - 2 * m) > 1) {
-            return -1;
-        }
-
-        return Math.min(calc(0, pos1, n), calc(1, pos1, n));
+        int ans = Math.min(calc(0, pos1, n), calc(1, pos1, n));
+        return ans == Integer.MAX_VALUE ? -1 : ans;
     }
 
     // start=0 表示车要去偶数下标，start=1 表示车要去奇数下标
@@ -70,18 +63,14 @@ class Solution {
 class Solution {
 public:
     int minSwaps(vector<int>& nums) {
-        vector<int> pos1;
         int n = nums.size();
+        vector<int> pos1; // 车（奇数）的下标
         for (int i = 0; i < n; i++) {
             if (nums[i] % 2) {
                 pos1.push_back(i);
             }
         }
-
         int m = pos1.size();
-        if (abs(n - 2 * m) > 1) {
-            return -1;
-        }
 
         // start=0 表示车要去偶数下标，start=1 表示车要去奇数下标
         auto calc = [&](int start) {
@@ -96,14 +85,15 @@ public:
             return res;
         };
 
-        return min(calc(0), calc(1));
+        int ans = min(calc(0), calc(1));
+        return ans == INT_MAX ? -1 : ans;
     }
 };
 ```
 
 ```go [sol-Go]
 func minSwaps(nums []int) int {
-	pos1 := []int{}
+	pos1 := []int{} // 车（奇数）的下标
 	for i, x := range nums {
 		if x%2 != 0 {
 			pos1 = append(pos1, i)
@@ -112,13 +102,10 @@ func minSwaps(nums []int) int {
 
 	n := len(nums)
 	m := len(pos1)
-	if abs(n-m*2) > 1 {
-		return -1
-	}
 
-	// start=0 表示车要去偶数下标，start=1 表示车要去奇数下标
+	// start=0 表示车去偶数下标，start=1 表示车去奇数下标
 	calc := func(start int) (res int) {
-		if (n-start+1)/2 != m { // (n-start+1)/2 表示偶数（奇数）下标的个数
+		if (n-start+1)/2 != m {
 			return math.MaxInt
 		}
 		for i, j := range pos1 {
@@ -126,7 +113,11 @@ func minSwaps(nums []int) int {
 		}
 		return
 	}
-	return min(calc(0), calc(1))
+	ans := min(calc(0), calc(1))
+	if ans == math.MaxInt {
+		return -1
+	}
+	return ans
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }

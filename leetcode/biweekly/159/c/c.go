@@ -49,7 +49,7 @@ func primeSubarray(nums []int, k int) (ans int) {
 		}
 
 		// 3. 更新答案
-		ans += max(last2-left+1, 0)
+		ans += last2 - left + 1
 	}
 
 	return

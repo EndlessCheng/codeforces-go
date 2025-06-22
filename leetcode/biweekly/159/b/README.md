@@ -1,8 +1,8 @@
 讨论三角形底边与 $y$ 轴平行的情况（如示例 1）。
 
-假设底边 $x=1$，为了最大化三角形面积，我们需要最大化三角形的底边长，以及三角形的高，二者相乘，就是三角形面积乘二的最大值。
+假设底边横坐标 $x=1$，为了最大化三角形面积，我们需要最大化三角形的底边长，以及三角形的高，二者相乘，就是三角形面积乘二的最大值。
 
-- **底边**：我们需要知道所有 $x=1$ 的点中，$y$ 的最小值 $\textit{minY}[x]$ 和最大值 $\textit{maxY}[x]$，取这两个点的连线作为底边，长度为 $\textit{maxY}[x] - \textit{minY}[x]$
+- **底边**：我们需要知道所有 $x=1$ 的点中，$y$ 的最小值 $\textit{minY}[x]$ 和最大值 $\textit{maxY}[x]$，取这两个点的连线作为底边，长度为 $\textit{maxY}[x] - \textit{minY}[x]$。
 - **高**：我们需要知道 $x$ 的最小值 $\textit{minX}$ 和最大值 $\textit{maxX}$，那么高就是 $\max(x-\textit{minX},\textit{maxX}-x)$。
 
 三角形面积乘二为
@@ -13,7 +13,7 @@ $$
 
 对于三角形底边与 $x$ 轴平行的情况，我们只需交换每个点的横纵坐标，就可以复用上面的逻辑了。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1qeNRzjEEk/?t=6m51s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 手写 min max 更快
@@ -53,7 +53,7 @@ class Solution {
         calc(coords);
 
         for (int[] p : coords) {
-            int tmp = p[0];
+            int tmp = p[0]; // 交换横纵坐标
             p[0] = p[1];
             p[1] = tmp;
         }
@@ -167,6 +167,14 @@ func maxArea(coords [][]int) int64 {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{coords}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 思考题
+
+如果不要求一定有一边与坐标轴平行呢？
+
+换言之，任选三个点，所组成的三角形的面积，最大是多少？
+
+这是一个经典问题，感兴趣的读者可以搜索相关资料。
 
 ## 分类题单
 

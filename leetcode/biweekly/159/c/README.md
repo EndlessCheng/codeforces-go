@@ -1,16 +1,16 @@
-用埃氏筛（或者欧拉筛）预处理一个布尔数组，表示哪些数是质数。注意 $1$ 不是质数。
+用 [埃氏筛](https://www.bilibili.com/video/BV1GCNRzgEYp/)（或者欧拉筛）预处理一个布尔数组，表示哪些数是质数。注意 $1$ 不是质数。
 
 本题与不久前的周赛题 [3578. 统计极差最大为 K 的分割方式数](https://leetcode.cn/problems/count-partitions-with-max-min-difference-at-most-k/) 一样，用两个单调队列维护滑动窗口的最小质数和最大质数。
 
-对于本题，我们需要知道上上个质数的位置 $\textit{last}_2$。当右端点固定在 $i$ 时，左端点的合法范围为 $[\textit{left},\textit{last}_2]$，有
+对于本题，我们需要知道上上个质数的位置 $\textit{last}_2$。当右端点**固定**为 $i$ 时，左端点的合法范围为 $[\textit{left},\textit{last}_2]$，有
 
 $$
-\max(\textit{last}_2 - \textit{left} + 1, 0)
+\textit{last}_2 - \textit{left} + 1
 $$
 
 个合法左端点，加入答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1qeNRzjEEk/?t=13m22s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 50_001
@@ -50,7 +50,7 @@ class Solution:
                         max_q.popleft()
 
             # 3. 更新答案
-            ans += max(last2 - left + 1, 0)
+            ans += last2 - left + 1
 
         return ans
 ```
@@ -68,7 +68,7 @@ class Solution {
         }
         initialized = true;
 
-        NOT_PRIME[1] = true;
+        NOT_PRIME[1] = true; // 1 不是质数
         for (int i = 2; i * i < MX; i++) {
             if (NOT_PRIME[i]) {
                 continue;
@@ -118,7 +118,7 @@ class Solution {
             }
 
             // 3. 更新答案
-            ans += Math.max(last2 - left + 1, 0);
+            ans += last2 - left + 1;
         }
 
         return ans;
@@ -131,7 +131,7 @@ const int MX = 50'001;
 bool np[MX];
 
 auto init = [] {
-    np[1] = true;
+    np[1] = true; // 1 不是质数
     for (int i = 2; i * i < MX; i++) {
         if (!np[i]) {
             for (int j = i * i; j < MX; j += i) {
@@ -180,7 +180,7 @@ public:
             }
 
             // 3. 更新答案
-            ans += max(last2 - left + 1, 0);
+            ans += last2 - left + 1;
         }
 
         return ans;
@@ -190,8 +190,7 @@ public:
 
 ```go [sol-Go]
 const mx = 50_001
-
-var np = [mx]bool{1: true}
+var np = [mx]bool{1: true} // 1 不是质数
 
 func init() {
 	for i := 2; i*i < mx; i++ {
@@ -237,7 +236,7 @@ func primeSubarray(nums []int, k int) (ans int) {
 		}
 
 		// 3. 更新答案
-		ans += max(last2-left+1, 0)
+		ans += last2 - left + 1
 	}
 
 	return
@@ -255,7 +254,10 @@ func primeSubarray(nums []int, k int) (ans int) {
 
 [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
 
-更多相似题目，见下面数据结构题单的「**§4.4 单调队列**」。
+更多相似题目，见
+
+1. 滑动窗口题单的「**§2.3.2 越短越合法**」。
+2. 数据结构题单的「**§4.4 单调队列**」。
 
 ## 分类题单
 
