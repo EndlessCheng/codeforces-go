@@ -54,7 +54,7 @@ class Solution:
 
             # 其余小于 max_s 的 path_sum，可以通过增大 cost[y] 的值，改成 max_s
             nonlocal ans
-            ans += len(g[x]) - 1 - cnt
+            ans += len(g[x]) - 1 - cnt  # -1 表示减去父节点，len(g[x])-1 是儿子个数
             return max_s
 
         ans = 0
@@ -103,7 +103,7 @@ class Solution {
         }
 
         // 其余小于 maxS 的 pathSum，可以通过增大 cost[y] 的值，改成 maxS
-        ans += g[x].size() - 1 - cnt;
+        ans += g[x].size() - 1 - cnt; // -1 表示减去父节点，g[x].size()-1 是儿子个数
         return maxS;
     }
 }
@@ -145,7 +145,7 @@ public:
             }
 
             // 其余小于 max_s 的 path_sum，可以通过增大 cost[y] 的值，改成 max_s
-            ans += g[x].size() - 1 - cnt;
+            ans += g[x].size() - 1 - cnt; // -1 表示减去父节点，g[x].size()-1 是儿子个数
             return max_s;
         };
         dfs(0, -1, 0);
@@ -186,7 +186,7 @@ func minIncrease(n int, edges [][]int, cost []int) (ans int) {
 		}
 
 		// 其余小于 maxS 的 pathSum，可以通过增大 cost[y] 的值，改成 maxS
-		ans += len(g[x]) - 1 - cnt
+		ans += len(g[x]) - 1 - cnt // -1 表示减去父节点，len(g[x])-1 是儿子个数
 		return maxS
 	}
 	dfs(0, -1, 0)
