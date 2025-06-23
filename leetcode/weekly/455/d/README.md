@@ -186,7 +186,7 @@ public:
             }
         }
 
-        vector dis(m, vector<double>(u, numeric_limits<double>::max()));
+        vector dis(m, vector<double>(u, DBL_MAX));
         using T = tuple<double, int, int>;
         priority_queue<T, vector<T>, greater<>> pq;
 
@@ -484,8 +484,7 @@ public:
             }
         }
 
-        const double inf = numeric_limits<double>::max();
-        vector dis(m, vector<array<double, 2>>(u, {inf, inf}));
+        vector dis(m, vector<array<double, 2>>(u, {DBL_MAX, DBL_MAX}));
         using T = tuple<double, int, int, uint8_t>;
         priority_queue<T, vector<T>, greater<>> pq;
 
