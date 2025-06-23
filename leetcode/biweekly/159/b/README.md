@@ -15,6 +15,8 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1qeNRzjEEk/?t=6m51s)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 # 手写 min max 更快
 min = lambda a, b: b if b < a else a
@@ -24,7 +26,7 @@ class Solution:
     def maxArea(self, coords: List[List[int]]) -> int:
         ans = 0
 
-        def calc():
+        def calc() -> None:
             min_x, max_x = inf, 0
             min_y = defaultdict(lambda: inf)
             max_y = defaultdict(int)
@@ -108,6 +110,7 @@ public:
                     min_y[x] = min(min_y[x], y);
                 }
             }
+
             for (auto& [x, y] : min_y) {
                 ans = max(ans, 1LL * (max_y[x] - y) * max(max_x - x, x - min_x));
             }
@@ -145,10 +148,12 @@ func maxArea(coords [][]int) int64 {
 				minY[x] = min(mn, y)
 			}
 		}
+
 		for x, y := range minY {
 			ans = max(ans, (maxY[x]-y)*max(maxX-x, x-minX))
 		}
 	}
+
 	calc()
 
 	for _, p := range coords {
@@ -156,6 +161,139 @@ func maxArea(coords [][]int) int64 {
 	}
 	calc()
 
+	if ans == 0 {
+		ans = -1
+	}
+	return int64(ans)
+}
+```
+
+## 写法二
+
+$\texttt{calc}$ 传入一个参数 $j$ 来控制是否交换横纵坐标。
+
+- 如果 $j=0$，那么 $x=p[0],\ y=p[1]$。
+- 如果 $j=1$，那么 $x=p[1],\ y=p[0]$。这样也相当于交换横纵坐标，但不修改输入。
+
+两种情况合并为：$x=p[j],\ y=p[1-j]$。
+
+```py [sol-Python3]
+# 手写 min max 更快
+min = lambda a, b: b if b < a else a
+max = lambda a, b: b if b > a else a
+
+class Solution:
+    def maxArea(self, coords: List[List[int]]) -> int:
+        def calc(j: int) -> int:
+            min_x, max_x = inf, 0
+            min_y = defaultdict(lambda: inf)
+            max_y = defaultdict(int)
+            for p in coords:
+                x, y = p[j], p[1 - j]
+                min_x = min(min_x, x)
+                max_x = max(max_x, x)
+                min_y[x] = min(min_y[x], y)
+                max_y[x] = max(max_y[x], y)
+
+            res = 0
+            for x, y in min_y.items():
+                res = max(res, (max_y[x] - y) * max(max_x - x, x - min_x))
+            return res
+
+        return max(calc(0), calc(1)) or -1
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxArea(int[][] coords) {
+        long ans = Math.max(calc(coords, 0), calc(coords, 1));
+        return ans > 0 ? ans : -1;
+    }
+
+    private long calc(int[][] coords, int j) {
+        int minX = Integer.MAX_VALUE;
+        int maxX = 0;
+        Map<Integer, Integer> minY = new HashMap<>();
+        Map<Integer, Integer> maxY = new HashMap<>();
+
+        for (int[] p : coords) {
+            int x = p[j];
+            int y = p[1 - j];
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+            maxY.put(x, Math.max(maxY.getOrDefault(x, 0), y));
+            minY.put(x, Math.min(minY.getOrDefault(x, y), y));
+        }
+
+        long res = 0;
+        for (Map.Entry<Integer, Integer> e : minY.entrySet()) {
+            int x = e.getKey();
+            int y = e.getValue();
+            res = Math.max(res, (long) (maxY.get(x) - y) * Math.max(maxX - x, x - minX));
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxArea(vector<vector<int>>& coords) {
+        auto calc = [&](int j) -> long long {
+            int min_x = INT_MAX, max_x = 0;
+            unordered_map<int, int> min_y, max_y;
+            for (auto& p : coords) {
+                int x = p[j], y = p[1 - j];
+                min_x = min(min_x, x);
+                max_x = max(max_x, x);
+                max_y[x] = max(max_y[x], y);
+                if (!min_y.contains(x)) {
+                    min_y[x] = y;
+                } else {
+                    min_y[x] = min(min_y[x], y);
+                }
+            }
+
+            long long res = 0;
+            for (auto& [x, y] : min_y) {
+                res = max(res, 1LL * (max_y[x] - y) * max(max_x - x, x - min_x));
+            }
+            return res;
+        };
+
+        long long ans = max(calc(0), calc(1));
+        return ans ? ans : -1;
+    }
+};
+```
+
+```go [sol-Go]
+func maxArea(coords [][]int) int64 {
+	calc := func(j int) (res int) {
+		minX, maxX := math.MaxInt, 0
+		minY := map[int]int{}
+		maxY := map[int]int{}
+		for _, p := range coords {
+			x, y := p[j], p[1-j]
+			minX = min(minX, x)
+			maxX = max(maxX, x)
+			maxY[x] = max(maxY[x], y)
+			mn, ok := minY[x]
+			if !ok {
+				minY[x] = y
+			} else {
+				minY[x] = min(mn, y)
+			}
+		}
+
+		for x, y := range minY {
+			res = max(res, (maxY[x]-y)*max(maxX-x, x-minX))
+		}
+		return
+	}
+
+	ans := max(calc(0), calc(1))
 	if ans == 0 {
 		ans = -1
 	}
