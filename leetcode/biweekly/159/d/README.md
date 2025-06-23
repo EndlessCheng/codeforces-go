@@ -1,4 +1,4 @@
-## 思路
+## 方法一：有序集合 + 启发式合并
 
 > **离线**：按照自己定义的某种顺序回答询问，而不是按照输入顺序 $\textit{queries}[0],\textit{queries}[1],\cdots$ 回答询问。
 
@@ -12,7 +12,7 @@
 
 有序集合中的第 $k$ 小，即为答案。
 
-## 启发式合并
+### 启发式合并
 
 怎么计算子树 $x$ 的有序集合 $A$？
 
@@ -362,6 +362,514 @@ func kthSmallest(par []int, vals []int, queries [][]int) []int {
 
 - 时间复杂度：$\mathcal{O}(n\log^2 n + q\log n)$，其中 $n$ 是 $\textit{par}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。有 $\mathcal{O}(n\log n)$ 次合并，每次合并需要 $\mathcal{O}(\log n)$ 的时间插入有序集合。每次询问查询第 $k$ 小需要 $\mathcal{O}(\log n)$ 的时间。
 - 空间复杂度：$\mathcal{O}(n + q)$。
+
+## 方法二：DFS 时间戳 + 莫队 + 树状数组第 k 小
+
+### 前置知识
+
+1. [DFS 时间戳——处理树上问题的有力工具](https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/solutions/1625899/dfs-shi-jian-chuo-chu-li-shu-shang-wen-t-x1kk/)
+2. [莫队算法](https://oi-wiki.org/misc/mo-algo/)
+3. [分析：莫队算法的块大小取多少合适？](https://zhuanlan.zhihu.com/p/1920472309522740969)
+4. [树状数组](https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/)
+5. [权值树状数组第 k 小](https://oi-wiki.org/ds/fenwick/#%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9%E6%9F%A5%E8%AF%A2%E5%85%A8%E5%B1%80%E7%AC%AC-k-%E5%B0%8F)
+
+### 思路
+
+通过 DFS 时间戳，把树上问题转化成子数组中的区间（无重复）第 $k$ 小。
+
+用莫队算法离线回答询问。
+
+现在我们需要一个数据结构，支持：
+
+- 添加元素。
+- 删除元素。
+- 查询第 $k$ 小（不含重复元素）。
+
+这可以用权值树状数组解决。
+
+为了保证权值树状数组中没有重复元素，我们需要维护在莫队区间中的元素出现次数：
+
+- 如果元素 $x$ 的出现次数从 $0$ 变成 $1$，那么把 $x$ 加到权值树状数组中。
+- 如果元素 $x$ 的出现次数从 $1$ 变成 $0$，那么把 $x$ 从权值树状数组中移除。
+
+```py [sol-Python3]
+class FenwickTree:
+    def __init__(self, n: int):
+        self.tree = [0] * (n + 1)  # 使用下标 1 到 n
+        self.hb = 1 << (n.bit_length() - 1)
+
+    # a[i] 增加 val
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def update(self, i: int, val: int) -> None:
+        while i < len(self.tree):
+            self.tree[i] += val
+            i += i & -i
+
+    # 求第 k 小（k 从 1 开始）
+    # 如果不存在第 k 小，返回 n+1
+    # 时间复杂度 O(log n)
+    def kth(self, k: int) -> int:
+        res = 0
+        b = self.hb
+        while b > 0:
+            next_ = res | b
+            if next_ < len(self.tree) and k > self.tree[next_]:
+                k -= self.tree[next_]
+                res = next_
+            b >>= 1
+        return res + 1
+
+class Solution:
+    def kthSmallest(self, par: List[int], vals: List[int], queries: List[List[int]]) -> List[int]:
+        n = len(par)
+        g = [[] for _ in range(n)]
+        for i in range(1, n):
+            g[par[i]].append(i)
+
+        a = [0] * n
+        in_ = [0] * n
+        out = [0] * n  # 左闭右开
+        dfn = 0
+
+        def dfs(x: int, xor: int) -> None:
+            nonlocal dfn
+            in_[x] = dfn
+            xor ^= vals[x]
+            a[dfn] = xor
+            dfn += 1
+            for y in g[x]:
+                dfs(y, xor)
+            out[x] = dfn
+
+        dfs(0, 0)
+
+        # 排序去重
+        b = sorted(set(a))
+        # 离散化
+        a = [bisect_left(b, v) + 1 for v in a]
+
+        nq = len(queries)
+        block_size = ceil(n / sqrt(nq * 2))  # 块大小
+
+        qs = []
+        for i, (x, k) in enumerate(queries):
+            l, r = in_[x], out[x]  # 左闭右开
+            qs.append((l // block_size, l, r, k, i))
+
+        # 奇偶化排序
+        qs.sort(key=lambda q: (q[0], q[2] if q[0] % 2 == 0 else -q[2]))
+
+        m = len(b)
+        t = FenwickTree(m + 1)
+        cnt = [0] * (m + 1)
+
+        def move(i: int, delta: int) -> None:
+            v = a[i]
+            if delta > 0:
+                if cnt[v] == 0:
+                    t.update(v, 1)
+                cnt[v] += 1
+            else:
+                cnt[v] -= 1
+                if cnt[v] == 0:
+                    t.update(v, -1)
+
+        ans = [-1] * nq
+        l = r = 0
+        for _, ql, qr, k, i in qs:
+            while l < ql:
+                move(l, -1)
+                l += 1
+            while l > ql:
+                l -= 1
+                move(l, 1)
+            while r < qr:
+                move(r, 1)
+                r += 1
+            while r > qr:
+                r -= 1
+                move(r, -1)
+
+            res = t.kth(k) - 1  # 离散化时 +1 了，所以要 -1
+            if res < m:
+                ans[i] = b[res]
+        return ans
+```
+
+```java [sol-Java]
+class FenwickTree {
+    private final int[] tree;
+    private final int hb;
+
+    // 使用下标 1 到 n
+    public FenwickTree(int n) {
+        tree = new int[n + 1];
+        hb = Integer.highestOneBit(n);
+    }
+
+    // a[i] 增加 val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public void update(int i, int val) {
+        for (; i < tree.length; i += i & -i) {
+            tree[i] += val;
+        }
+    }
+
+    // 求第 k 小（k 从 1 开始）
+    // 如果不存在第 k 小，返回 n+1
+    // 时间复杂度 O(log n)
+    public int kth(int k) {
+        int res = 0;
+        for (int b = hb; b > 0; b >>= 1) {
+            int next = res | b;
+            if (next < tree.length && k > tree[next]) {
+                k -= tree[next];
+                res = next;
+            }
+        }
+        return res + 1;
+    }
+}
+
+class Solution {
+    public int[] kthSmallest(int[] par, int[] vals, int[][] queries) {
+        int n = par.length;
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int i = 1; i < n; i++) {
+            g[par[i]].add(i);
+        }
+
+        int[] a = new int[n];
+        int[] in = new int[n];
+        int[] out = new int[n]; // 左闭右开
+        dfs(0, 0, g, vals, a, in, out);
+
+        // 排序
+        int[] b = Arrays.copyOf(a, n);
+        Arrays.sort(b);
+
+        // 离散化
+        for (int i = 0; i < n; i++) {
+            a[i] = Arrays.binarySearch(b, a[i]) + 1;
+        }
+
+        int nq = queries.length;
+        int blockSize = (int) Math.ceil(n / Math.sqrt(nq * 2)); // 块大小
+
+        record Query(int bid, int l, int r, int k, int qid) {}
+        Query[] qs = new Query[nq];
+        for (int i = 0; i < nq; i++) {
+            int[] q = queries[i];
+            int l = in[q[0]], r = out[q[0]]; // 左闭右开
+            qs[i] = new Query(l / blockSize, l, r, q[1], i);
+        }
+
+        Arrays.sort(qs, (x, y) -> {
+            if (x.bid != y.bid) {
+                return x.bid - y.bid;
+            }
+            // 奇偶化排序
+            return x.bid % 2 == 0 ? x.r - y.r : y.r - x.r;
+        });
+
+        int[] cnt = new int[n + 1];
+        FenwickTree t = new FenwickTree(n + 1);
+
+        int[] ans = new int[nq];
+        int l = 0, r = 0;
+        for (Query q : qs) {
+            int ql = q.l, qr = q.r, k = q.k, qi = q.qid;
+            while (l < ql) move(a[l++], -1, cnt, t);
+            while (l > ql) move(a[--l], 1, cnt, t);
+            while (r < qr) move(a[r++], 1, cnt, t);
+            while (r > qr) move(a[--r], -1, cnt, t);
+
+            int res = t.kth(k) - 1; // 离散化时 +1 了，所以要 -1
+            ans[qi] = res < n ? b[res] : -1;
+        }
+        return ans;
+    }
+
+    private int dfn = 0;
+
+    private void dfs(int x, int xorVal, List<Integer>[] g, int[] vals, int[] a, int[] in, int[] out) {
+        in[x] = dfn;
+        xorVal ^= vals[x];
+        a[dfn++] = xorVal;
+        for (int y : g[x]) {
+            dfs(y, xorVal, g, vals, a, in, out);
+        }
+        out[x] = dfn;
+    }
+
+    private void move(int v, int delta, int[] cnt, FenwickTree t) {
+        if (delta > 0) {
+            if (cnt[v] == 0) {
+                t.update(v, 1);
+            }
+            cnt[v]++;
+        } else {
+            cnt[v]--;
+            if (cnt[v] == 0) {
+                t.update(v, -1);
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+template<typename T>
+class FenwickTree {
+    vector<T> tree;
+    int hb;
+
+public:
+    // 使用下标 1 到 n
+    FenwickTree(size_t n) : tree(n + 1), hb(1 << (bit_width(n) - 1)) {}
+
+    // a[i] 增加 val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    void update(int i, T val) {
+        for (; i < tree.size(); i += i & -i) {
+            tree[i] += val;
+        }
+    }
+
+    // 求第 k 小（k 从 1 开始）
+    // 如果不存在第 k 小，返回 n+1
+    // 时间复杂度 O(log n)
+    int kth(int k) {
+        int res = 0;
+        for (int b = hb; b > 0; b >>= 1) {
+            int next = res | b;
+            if (next < tree.size() && k > tree[next]) {
+                k -= tree[next];
+                res = next;
+            }
+        }
+        return res + 1;
+    }
+};
+
+class Solution {
+public:
+    vector<int> kthSmallest(vector<int>& par, vector<int>& vals, vector<vector<int>>& queries) {
+        int n = par.size();
+        vector<vector<int>> g(n);
+        for (int i = 1; i < n; i++) {
+            g[par[i]].push_back(i);
+        }
+
+        vector<int> a(n);
+        vector<pair<int, int>> ranges(n); // 左闭右开 [l,r)
+        int dfn = 0;
+        auto dfs = [&](this auto&& dfs, int x, int xor_val) -> void {
+            ranges[x].first = dfn;
+            xor_val ^= vals[x];
+            a[dfn++] = xor_val;
+            for (int y : g[x]) {
+                dfs(y, xor_val);
+            }
+            ranges[x].second = dfn;
+        };
+        dfs(0, 0);
+
+        // 排序去重
+        vector<int> b = a;
+        ranges::sort(b);
+        b.erase(ranges::unique(b).begin(), b.end());
+
+        // 离散化
+        for (int& v : a) {
+            v = ranges::lower_bound(b, v) - b.begin() + 1;
+        }
+
+        int nq = queries.size();
+        int block_size = ceil(n / sqrt(nq * 2)); // 块大小
+
+        struct Query { int bid, l, r, k, qid; };
+        vector<Query> qs(nq);
+        for (int i = 0; i < nq; i++) {
+            auto& q = queries[i];
+            auto [l, r] = ranges[q[0]]; // 左闭右开
+            qs[i] = {l / block_size, l, r, q[1], i};
+        }
+
+        ranges::sort(qs, [](auto& a, auto& b) {
+            if (a.bid != b.bid) {
+                return a.bid < b.bid;
+            }
+            // 奇偶化排序
+            return a.bid % 2 == 0 ? a.r < b.r : a.r > b.r;
+        });
+
+        int m = b.size();
+        FenwickTree<int> t(m + 1);
+        vector<int> cnt(m + 1);
+        auto move = [&](int i, int delta) {
+            int v = a[i];
+            if (delta > 0) {
+                if (cnt[v] == 0) {
+                    t.update(v, 1);
+                }
+                cnt[v]++;
+            } else {
+                cnt[v]--;
+                if (cnt[v] == 0) {
+                    t.update(v, -1);
+                }
+            }
+        };
+
+        vector<int> ans(nq, -1);
+        int l = 0, r = 0;
+        for (auto& [_, ql, qr, k, i] : qs) {
+            while (l < ql) move(l++, -1);
+            while (l > ql) move(--l, 1);
+            while (r < qr) move(r++, 1);
+            while (r > qr) move(--r, -1);
+
+            int res = t.kth(k) - 1; // 离散化时 +1 了，所以要 -1
+            if (res < m) {
+                ans[i] = b[res];
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+type fenwick []int
+
+func (f fenwick) update(i, val int) {
+	for ; i < len(f); i += i & -i {
+		f[i] += val
+	}
+}
+
+func (f fenwick) kth(hb, k int) (res int) {
+	for b := hb; b > 0; b >>= 1 {
+		next := res | b
+		if next < len(f) && k > f[next] {
+			k -= f[next]
+			res = next
+		}
+	}
+	return res + 1
+}
+
+func kthSmallest(par []int, vals []int, queries [][]int) []int {
+	n := len(par)
+	g := make([][]int, n)
+	for i := 1; i < n; i++ {
+		p := par[i]
+		g[p] = append(g[p], i)
+	}
+
+	a := make([]int, n)
+	ranges := make([]struct{ l, r int }, n) // 左闭右开 [l,r)
+	dfn := 0
+	var dfs func(int, int)
+	dfs = func(x, xor int) {
+		ranges[x].l = dfn
+		xor ^= vals[x]
+		a[dfn] = xor
+		dfn++
+		for _, y := range g[x] {
+			dfs(y, xor)
+		}
+		ranges[x].r = dfn
+	}
+	dfs(0, 0)
+
+	// 排序去重
+	b := slices.Clone(a)
+	slices.Sort(b)
+	b = slices.Compact(b)
+	// 离散化
+	for i, v := range a {
+		a[i] = sort.SearchInts(b, v) + 1
+	}
+
+	nq := len(queries)
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(nq*2))))
+	type query struct{ bid, l, r, k, qid int } // 左闭右开 [l,r)
+	qs := make([]query, nq)
+	for i, q := range queries {
+		p := ranges[q[0]]
+		qs[i] = query{p.l / blockSize, p.l, p.r, q[1], i}
+	}
+	slices.SortFunc(qs, func(a, b query) int {
+		if a.bid != b.bid {
+			return a.bid - b.bid
+		}
+		// 奇偶化排序
+		if a.bid%2 == 0 {
+			return a.r - b.r
+		}
+		return b.r - a.r
+	})
+
+	m := len(b)
+	hb := 1 << (bits.Len(uint(m)) - 1)
+	t := make(fenwick, m+1)
+	cnt := make([]int, m+1)
+	move := func(i, delta int) {
+		v := a[i]
+		if delta > 0 {
+			if cnt[v] == 0 {
+				t.update(v, 1)
+			}
+			cnt[v]++
+		} else {
+			cnt[v]--
+			if cnt[v] == 0 {
+				t.update(v, -1)
+			}
+		}
+	}
+
+	ans := make([]int, len(qs))
+	l, r := 0, 0
+	for _, q := range qs {
+		for ; l < q.l; l++ {
+			move(l, -1)
+		}
+		for l > q.l {
+			l--
+			move(l, 1)
+		}
+		for ; r < q.r; r++ {
+			move(r, 1)
+		}
+		for r > q.r {
+			r--
+			move(r, -1)
+		}
+
+		res := t.kth(hb, q.k) - 1 // 离散化时 +1 了，所以要 -1
+		if res < m {
+			ans[q.qid] = b[res]
+		} else {
+			ans[q.qid] = -1
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\sqrt q\log n + q\log q)$，其中 $n$ 是 $\textit{par}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。做了 $\mathcal{O}(n\sqrt q)$ 次查询第 $k$ 小，每次需要 $\mathcal{O}(\log n)$ 时间。排序需要 $\mathcal{O}(n\log n + q\log q)$ 时间。
+- 空间复杂度：$\mathcal{O}(n + q)$。
+
+**注**：复杂度看上去高，但常数小，实际比方法一块（除了 Python）。
 
 ## 思考题
 

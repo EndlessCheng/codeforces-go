@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,24 @@ func Test_d(t *testing.T) {
 }
 // https://leetcode.cn/contest/biweekly-contest-159/problems/kth-smallest-path-xor-sum/
 // https://leetcode.cn/problems/kth-smallest-path-xor-sum/
+
+func TestCompareInf(_t *testing.T) {
+	return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (pa,vals []int, queries [][]int) {
+		//return
+		rg.Clear()
+		n := rg.Int(1, 2)
+		pa = make([]int, n)
+		pa[0] = -1
+		for i := 1; i < n; i++ {
+			pa[i] = rg.Int(0, i-1)
+		}
+		vals = rg.IntSlice(n, 0, 3)
+		queries = [][]int{{rg.Int(0, n-1), rg.Int(1, n+2)}}
+		return
+	}
+	
+	testutil.CompareInf(_t, inputGenerator, kthSmallest2, kthSmallest)
+}
