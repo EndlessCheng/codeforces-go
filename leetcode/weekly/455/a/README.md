@@ -31,7 +31,7 @@ class Solution {
         }
         initialized = true;
 
-        NOT_PRIME[1] = true;
+        NOT_PRIME[0] = NOT_PRIME[1] = true;
         for (int i = 2; i * i < MX; i++) {
             if (NOT_PRIME[i]) {
                 continue;
@@ -45,12 +45,60 @@ class Solution {
     public boolean checkPrimeFrequency(int[] nums) {
         init();
 
+        // 更快的写法见【Java 数组】
         Map<Integer, Integer> cnt = new HashMap<>();
         for (int x : nums) {
             cnt.merge(x, 1, Integer::sum);
         }
 
         for (int c : cnt.values()) {
+            if (!NOT_PRIME[c]) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    private static final int MX = 101;
+    private static final boolean[] NOT_PRIME = new boolean[MX];
+    private static boolean initialized = false;
+
+    // 这样写比 static block 更快
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        NOT_PRIME[0] = NOT_PRIME[1] = true;
+        for (int i = 2; i * i < MX; i++) {
+            if (NOT_PRIME[i]) {
+                continue;
+            }
+            for (int j = i * i; j < MX; j += i) {
+                NOT_PRIME[j] = true; // j 是质数 i 的倍数
+            }
+        }
+    }
+
+    public boolean checkPrimeFrequency(int[] nums) {
+        init();
+
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        int[] cnt = new int[mx + 1];
+        for (int x : nums) {
+            cnt[x]++;
+        }
+
+        for (int c : cnt) {
             if (!NOT_PRIME[c]) {
                 return true;
             }
