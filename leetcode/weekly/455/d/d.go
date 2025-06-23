@@ -32,10 +32,10 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 		}
 	}
 	h := hp{}
-	push := func(d float64, stage, mask int, state uint8) {
-		if d < dis[stage][mask][state] {
-			dis[stage][mask][state] = d
-			heap.Push(&h, tuple{d, stage, mask, state})
+	push := func(d float64, stage, mask int, direction uint8) {
+		if d < dis[stage][mask][direction] {
+			dis[stage][mask][direction] = d
+			heap.Push(&h, tuple{d, stage, mask, direction})
 		}
 	}
 
@@ -46,14 +46,14 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 		d := top.dis
 		stage := top.stage
 		left := top.mask // 剩余没有过河的人
-		state := top.state
+		direction := top.direction
 		if left == 0 { // 所有人都过河了
 			return d
 		}
-		if d > dis[stage][left][state] {
+		if d > dis[stage][left][direction] {
 			continue
 		}
-		if state == 0 {
+		if direction == 0 {
 			// 枚举 sub 这群人坐一艘船
 			for sub := left; sub > 0; sub = (sub - 1) & left {
 				if maxTime[sub] != math.MaxInt {
@@ -76,7 +76,7 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 type tuple struct {
 	dis         float64
 	stage, mask int
-	state       uint8 // 状态机：0 未过河，1 已过河
+	direction   uint8 // 状态机：0 未过河，1 已过河
 }
 type hp []tuple
 

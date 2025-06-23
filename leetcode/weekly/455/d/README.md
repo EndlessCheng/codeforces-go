@@ -327,10 +327,10 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 
 写法一的优化点是，不同的集合 $A$ 在去掉坐船过河的子集后，得到的集合 $B$ 可以是相同的，这些集合 $B$ 在「枚举坐船回来的人」时，枚举的内容是完全一样的，这些重复的枚举可以优化。
 
-添加一个维度，把 $(\textit{stage},S,\textit{state})$ 当作节点，其中：
+添加一个维度 $\textit{direction}$，把 $(\textit{stage},S,\textit{direction})$ 当作节点，其中：
 
-- $\textit{state}=0$ 表示一群人要过河的状态。
-- $\textit{state}=1$ 表示一个人要回来的状态。
+- $\textit{direction}=0$ 表示一群人要过河的状态。
+- $\textit{direction}=1$ 表示一个人要回来的状态。
 
 起点为 $(0,U,0)$，其中全集 $U=\{0,1,2,\ldots, n-1\}$。
 
@@ -359,20 +359,20 @@ class Solution:
         dis = [[[inf, inf] for _ in range(u)] for _ in range(m)]
         h = []
 
-        def push(d: float, stage: int, mask: int, state: int) -> None:
-            if d < dis[stage][mask][state]:
-                dis[stage][mask][state] = d
-                heappush(h, (d, stage, mask, state))
+        def push(d: float, stage: int, mask: int, direction: int) -> None:
+            if d < dis[stage][mask][direction]:
+                dis[stage][mask][direction] = d
+                heappush(h, (d, stage, mask, direction))
 
         push(0, 0, u - 1, 0)  # 起点
 
         while h:
-            d, stage, left, state = heappop(h)  # left 是剩余没有过河的人
+            d, stage, left, direction = heappop(h)  # left 是剩余没有过河的人
             if left == 0:  # 所有人都过河了
                 return d
-            if d > dis[stage][left][state]:
+            if d > dis[stage][left][direction]:
                 continue
-            if state == 0:
+            if direction == 0:
                 # 枚举 sub 这群人坐一艘船过河
                 for sub in sub_masks[left]:
                     cost = max_time[sub] * mul[stage]
@@ -391,7 +391,7 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private record Tuple(double dis, int stage, int mask, int state) {
+    private record Tuple(double dis, int stage, int mask, int direction) {
     }
 
     public double minTime(int n, int k, int m, int[] time, double[] mul) {
@@ -426,14 +426,14 @@ class Solution {
             double d = top.dis;
             int stage = top.stage;
             int left = top.mask; // 剩余没有过河的人
-            int state = top.state;
+            int direction = top.direction;
             if (left == 0) { // 所有人都过河了
                 return d;
             }
-            if (d > dis[stage][left][state]) {
+            if (d > dis[stage][left][direction]) {
                 continue;
             }
-            if (state == 0) {
+            if (direction == 0) {
                 // 枚举 sub 这群人坐一艘船过河
                 for (int sub = left; sub > 0; sub = (sub - 1) & left) {
                     if (maxTime[sub] != Integer.MAX_VALUE) {
@@ -454,10 +454,10 @@ class Solution {
         return -1;
     }
 
-    private void push(double d, int stage, int mask, int state, double[][][] dis, PriorityQueue<Tuple> pq) {
-        if (d < dis[stage][mask][state]) {
-            dis[stage][mask][state] = d;
-            pq.add(new Tuple(d, stage, mask, state));
+    private void push(double d, int stage, int mask, int direction, double[][][] dis, PriorityQueue<Tuple> pq) {
+        if (d < dis[stage][mask][direction]) {
+            dis[stage][mask][direction] = d;
+            pq.add(new Tuple(d, stage, mask, direction));
         }
     }
 }
@@ -488,25 +488,25 @@ public:
         using T = tuple<double, int, int, uint8_t>;
         priority_queue<T, vector<T>, greater<>> pq;
 
-        auto push = [&](double d, int stage, int mask, uint8_t state) {
-            if (d < dis[stage][mask][state]) {
-                dis[stage][mask][state] = d;
-                pq.emplace(d, stage, mask, state);
+        auto push = [&](double d, int stage, int mask, uint8_t direction) {
+            if (d < dis[stage][mask][direction]) {
+                dis[stage][mask][direction] = d;
+                pq.emplace(d, stage, mask, direction);
             }
         };
 
         push(0, 0, u - 1, 0); // 起点
 
         while (!pq.empty()) {
-            auto [d, stage, left, state] = pq.top();
+            auto [d, stage, left, direction] = pq.top();
             pq.pop();
             if (left == 0) { // 所有人都过河了
                 return d;
             }
-            if (d > dis[stage][left][state]) {
+            if (d > dis[stage][left][direction]) {
                 continue;
             }
-            if (state == 0) {
+            if (direction == 0) {
                 // 枚举 sub 这群人坐一艘船过河
                 for (int sub = left; sub > 0; sub = (sub - 1) & left) {
                     if (max_time[sub] != INT_MAX) {
@@ -554,10 +554,10 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 		}
 	}
 	h := hp{}
-	push := func(d float64, stage, mask int, state uint8) {
-		if d < dis[stage][mask][state] {
-			dis[stage][mask][state] = d
-			heap.Push(&h, tuple{d, stage, mask, state})
+	push := func(d float64, stage, mask int, direction uint8) {
+		if d < dis[stage][mask][direction] {
+			dis[stage][mask][direction] = d
+			heap.Push(&h, tuple{d, stage, mask, direction})
 		}
 	}
 
@@ -568,14 +568,14 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 		d := top.dis
 		stage := top.stage
 		left := top.mask // 剩余没有过河的人
-		state := top.state
+		direction := top.direction
 		if left == 0 { // 所有人都过河了
 			return d
 		}
-		if d > dis[stage][left][state] {
+		if d > dis[stage][left][direction] {
 			continue
 		}
-		if state == 0 {
+		if direction == 0 {
 			// 枚举 sub 这群人坐一艘船
 			for sub := left; sub > 0; sub = (sub - 1) & left {
 				if maxTime[sub] != math.MaxInt {
@@ -598,7 +598,7 @@ func minTime(n, k, m int, time []int, mul []float64) float64 {
 type tuple struct {
 	dis         float64
 	stage, mask int
-	state       uint8 // 状态机：0 未过河，1 已过河
+	direction   uint8 // 状态机：0 未过河，1 已过河
 }
 type hp []tuple
 func (h hp) Len() int           { return len(h) }
