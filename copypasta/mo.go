@@ -25,11 +25,12 @@ import (
 // 普通莫队（没有修改操作）
 // 本质是通过巧妙地改变回答询问的顺序，使区间左右端点移动的次数由 O(nm) 降至 O(n√m)，其中 n 是数组长度，m 是询问个数
 // 对于每个块，右端点在 [1,n] 中一直向右或者一直向左，而左端点只在块内「抖动」
-// 对于每个块，右端点的平均移动次数是 n/2，总移动次数是 O(n * 块个数) = O(n^2 / 块大小)，系数为 1/2
+// 对于每个块，右端点的最坏移动次数是 n，平均移动次数是 n/2，总移动次数是 O(n * 块个数) = O(n^2 / 块大小)，系数为 1/2 ~ 1
 // 对于每个询问，左端点移动次数是 O(块大小)，总移动次数是 O(m * 块大小)
-// n^2 / (块大小*2) = m * 块大小  =>  块大小取 n/√(2m) 时，总移动次数最优，为 O(n√m)；回答一个询问的均摊移动次数为 O(n/√m)
+// n^2 / 块大小 = m * 块大小 => 块大小取 n/√m 时，总移动次数最优，为 O(n√m)。
+// 在随机数据下，块大小取 n/√(2m) 更好。
 // 注 1：如果块大小取 √n，那么移动次数约为 (n+m)√n >= 2n√m，当且仅当 n=m 时取等号（基本不等式），其中不等式右侧为块大小取 n/√m 时的移动次数
-// 注 2：为防止块大小为 0，代码中要取 ceil(n/√(2m))
+// 注 2：为防止块大小为 0，代码中要取 ceil(n/√m)
 //
 // https://oi-wiki.org/misc/mo-algo/
 // 模板题 https://www.luogu.com.cn/problem/P1494
@@ -52,10 +53,10 @@ import (
 // https://www.codechef.com/problems/QCHEF
 func normalMo(a []int, queries [][]int) []int {
 	n := len(a)
-	m := len(queries)
-	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m*2))))
+	nq := len(queries)
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(nq))))
 	type moQuery struct{ bid, l, r, qid int } // [l,r)
-	qs := make([]moQuery, m)
+	qs := make([]moQuery, nq)
 	for i, q := range queries {
 		// 输入是从 1 开始的
 		l, r := q[0], q[1] // read...
@@ -237,7 +238,7 @@ func moWithRollback(in io.Reader) []int {
 		Fscan(in, &a[i])
 	}
 	ans := make([]int, q)
-	B := int(math.Ceil(float64(n) / math.Sqrt(float64(q*2))))
+	B := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
 	type query struct{ lb, l, r, qid int }
 	qs := []query{}
 	cnt := make([]int, n+1)
