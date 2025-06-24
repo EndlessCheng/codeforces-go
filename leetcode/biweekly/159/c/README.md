@@ -110,10 +110,10 @@ class Solution {
                 // 2. 出
                 while (nums[maxQ.peekFirst()] - nums[minQ.peekFirst()] > k) {
                     left++;
-                    if (!minQ.isEmpty() && minQ.peekFirst() < left) {
+                    if (minQ.peekFirst() < left) {
                         minQ.pollFirst();
                     }
-                    if (!maxQ.isEmpty() && maxQ.peekFirst() < left) {
+                    if (maxQ.peekFirst() < left) {
                         maxQ.pollFirst();
                     }
                 }
@@ -172,10 +172,10 @@ public:
                 // 2. 出
                 while (nums[max_q.front()] - nums[min_q.front()] > k) {
                     left++;
-                    if (!min_q.empty() && min_q.front() < left) {
+                    if (min_q.front() < left) {
                         min_q.pop_front();
                     }
-                    if (!max_q.empty() && max_q.front() < left) {
+                    if (max_q.front() < left) {
                         max_q.pop_front();
                     }
                 }
