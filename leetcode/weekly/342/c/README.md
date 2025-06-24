@@ -28,20 +28,6 @@ class Solution:
         return ans
 ```
 
-```py [sol-Python3 SortedList]
-from sortedcontainers import SortedList  # 有序数据结构
-
-class Solution:
-    def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
-        sl = SortedList(nums[:k - 1])
-        ans = []
-        for in_, out in zip(nums[k - 1:], nums):
-            sl.add(in_)  # 进入窗口（保证窗口有恰好 k 个数）
-            ans.append(min(sl[x - 1], 0))
-            sl.discard(out)  # 离开窗口（也可以写 remove）
-        return ans
-```
-
 ```java [sol-Java]
 class Solution {
     public int[] getSubarrayBeauty(int[] nums, int k, int x) {
@@ -128,6 +114,54 @@ func getSubarrayBeauty(nums []int, k, x int) []int {
 
 - 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=50$。
 - 空间复杂度：$\mathcal{O}(U)$。
+
+## 附：有序集合写法
+
+```py [sol-Python3]
+class Solution:
+    def getSubarrayBeauty(self, nums: List[int], k: int, x: int) -> List[int]:
+        sl = SortedList(nums[:k - 1])  # SortedList 来自 sortedcontainers
+        ans = []
+        for in_, out in zip(nums[k - 1:], nums):
+            sl.add(in_)  # 进入窗口（保证窗口有恰好 k 个数）
+            ans.append(min(sl[x - 1], 0))
+            sl.discard(out)  # 离开窗口（也可以写 remove）
+        return ans
+```
+
+```cpp [sol-C++]
+#include <ext/pb_ds/assoc_container.hpp>
+
+using namespace __gnu_pbds;
+
+// 使用 pair<value, index> 支持重复元素
+using ordered_set = tree<pair<int, int>, null_type, less<>, rb_tree_tag, tree_order_statistics_node_update>;
+
+class Solution {
+public:
+    vector<int> getSubarrayBeauty(vector<int>& nums, int k, int x) {
+        ordered_set st;
+        for (int i = 0; i < k - 1; i++) {
+            st.insert({nums[i], i});
+        }
+
+        int n = nums.size();
+        vector<int> ans(n - k + 1);
+        for (int i = k - 1; i < n; i++) {
+            st.insert({nums[i], i});
+            auto [v, _] = *st.find_by_order(x - 1); // 第 x 小
+            ans[i - k + 1] = min(v, 0);
+            st.erase({nums[i - k + 1], i - k + 1});
+        }
+        return ans;
+    }
+};
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log k)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(k)$。
 
 ## 分类题单
 
