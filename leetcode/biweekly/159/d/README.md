@@ -71,7 +71,7 @@ class Solution:
 #include <ext/pb_ds/assoc_container.hpp>
 
 using namespace __gnu_pbds;
-using ordered_set = tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update>;
+using ordered_set = tree<int, null_type, less<>, rb_tree_tag, tree_order_statistics_node_update>;
 
 class Solution {
 public:
@@ -581,14 +581,14 @@ class Solution {
         int[] ans = new int[nq];
         int l = 0, r = 0;
         for (Query q : qs) {
-            int ql = q.l, qr = q.r, k = q.k, qi = q.qid;
+            int ql = q.l, qr = q.r, k = q.k, i = q.qid;
             while (l < ql) move(a[l++], -1, cnt, t);
             while (l > ql) move(a[--l], 1, cnt, t);
             while (r < qr) move(a[r++], 1, cnt, t);
             while (r > qr) move(a[--r], -1, cnt, t);
 
             int res = t.kth(k) - 1; // 离散化时 +1 了，所以要 -1
-            ans[qi] = res < n ? b[res] : -1;
+            ans[i] = res < n ? b[res] : -1;
         }
         return ans;
     }
