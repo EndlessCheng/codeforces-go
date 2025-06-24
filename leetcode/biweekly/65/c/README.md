@@ -115,9 +115,10 @@ func maximumBeauty(items [][]int, queries []int) []int {
 ```js [sol-JavaScript]
 var maximumBeauty = function(items, queries) {
     items.sort((a, b) => a[0] - b[0]);
-    const idx = queries.map((_, i) => i).sort((i, j) => queries[i] - queries[j]);
+    const nq = queries.length;
+    const idx = _.range(nq).sort((i, j) => queries[i] - queries[j]);
 
-    const ans = Array(queries.length);
+    const ans = Array(nq);
     let maxBeauty = 0, j = 0;
     for (const i of idx) {
         const q = queries[i];
