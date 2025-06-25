@@ -125,6 +125,7 @@ https://codeforces.com/problemset/problem/1706/C 1400
 https://codeforces.com/problemset/problem/1980/D 1400 pairwise 的前后缀分解
 https://codeforces.com/problemset/problem/1492/C 1500
 https://codeforces.com/problemset/problem/2008/E 1500
+https://codeforces.com/problemset/problem/2107/C 1500
 https://codeforces.com/problemset/problem/1029/C 1600
 https://codeforces.com/problemset/problem/2028/C 1600
 https://codeforces.com/problemset/problem/2031/D 1700
@@ -588,7 +589,7 @@ https://codeforces.com/problemset/problem/411/C 1700
 https://codeforces.com/problemset/problem/1516/C 1700
 https://codeforces.com/problemset/problem/1799/C 1700
 https://codeforces.com/problemset/problem/1468/J 1800 MST
-https://codeforces.com/problemset/problem/1833/G 1800 样例给的挺良心的
+https://codeforces.com/problemset/problem/1833/G 1800 样例给得挺良心的
 https://codeforces.com/problemset/problem/2117/F 1800
 https://codeforces.com/problemset/problem/796/C 1900
 https://codeforces.com/problemset/problem/1095/E 1900
@@ -601,6 +602,7 @@ https://codeforces.com/problemset/problem/2051/F 2000
 https://codeforces.com/problemset/problem/1811/F 2100
 https://codeforces.com/problemset/problem/1798/E 2300
 https://codeforces.com/problemset/problem/209/C 2400
+https://codeforces.com/problemset/problem/416/D 2400 推荐
 https://codeforces.com/problemset/problem/1594/F 2400
 https://codeforces.com/problemset/problem/1736/C2 2400
 https://codeforces.com/problemset/problem/1761/E 2400
