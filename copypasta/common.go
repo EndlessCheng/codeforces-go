@@ -259,6 +259,7 @@ https://codeforces.com/problemset/problem/525/C 1600
 https://codeforces.com/problemset/problem/1748/C 1600
 https://codeforces.com/problemset/problem/1849/D 1700
 https://codeforces.com/problemset/problem/2031/D 1700
+https://codeforces.com/problemset/problem/416/D 2400 推荐
 
 哨兵
 - [1465. 切割后面积最大的蛋糕](https://leetcode.cn/problems/maximum-area-of-a-piece-of-cake-after-horizontal-and-vertical-cuts/) 1445
@@ -607,6 +608,7 @@ https://codeforces.com/problemset/problem/1594/F 2400
 https://codeforces.com/problemset/problem/1736/C2 2400
 https://codeforces.com/problemset/problem/1761/E 2400
 https://codeforces.com/problemset/problem/1832/D2 2400
+https://codeforces.com/problemset/problem/504/C 2500
 https://codeforces.com/problemset/problem/599/E 2600
 https://codeforces.com/problemset/problem/1016/F 2600
 https://codeforces.com/problemset/problem/1422/E 2700 LCS
