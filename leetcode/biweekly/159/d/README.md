@@ -885,7 +885,7 @@ func kthSmallest(par []int, vals []int, queries [][]int) []int {
 设 $\textit{cnt}$ 的长度为 $m$，把 $\textit{cnt}$ 分割成若干段，每一段的大小为 $B=\left\lfloor\sqrt m\right\rfloor$。额外用一个 $\textit{blockUniqueCnt}$ 数组维护每一段的不同元素个数。
 
 - 每次 $\texttt{move}$ 只需要 $\mathcal{O}(1)$ 时间。
-- 每次询问需要 $\mathcal{O}(\sqrt n)$ 时间：
+- 每次询问需要 $\mathcal{O}(\sqrt m)$ 时间：
    - 遍历 $\textit{blockUniqueCnt}$。
    - 如果 $k> \textit{blockUniqueCnt}[i]$，把 $k$ 减少 $\textit{blockUniqueCnt}[i]$，继续遍历。
    - 否则，答案在 $\textit{blockUniqueCnt}[i]$ 对应的 $\textit{cnt}$ 数组的子数组 $[i\cdot B, (i+1)\cdot B)$ 中，遍历这个子数组即可。
