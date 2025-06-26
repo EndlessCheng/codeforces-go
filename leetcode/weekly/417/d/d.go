@@ -7,9 +7,7 @@ func kthCharacter(k int64, operations []int) byte {
 	k--
 	inc := 0
 	for i, op := range operations[:bits.Len64(uint64(k))] {
-		if k>>i&1 > 0 {
-			inc += op
-		}
+		inc += int(k) >> i & op
 	}
 	return 'a' + byte(inc%26)
 }

@@ -1,3 +1,5 @@
+## 方法一：递归
+
 设 $\textit{operations}$ 的长度为 $n$。
 
 $n$ 次操作执行完成后，字符串的长度为 $2^n$。
@@ -10,8 +12,6 @@ $n$ 次操作执行完成后，字符串的长度为 $2^n$。
 递归边界：如果 $n=0$，那么返回 $\texttt{a}$。 
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1TqxCeZEmb/) 第四题，欢迎点赞关注~
-
-## 递归做法
 
 ```py [sol-Python3]
 class Solution:
@@ -88,7 +88,7 @@ func kthCharacter(k int64, operations []int) byte {
 }
 ```
 
-## 迭代做法
+## 方法二：迭代
 
 写出上面的递归代码后，可以发现：
 
@@ -110,8 +110,9 @@ $$
 ```py [sol-Python3]
 class Solution:
     def kthCharacter(self, k: int, operations: List[int]) -> str:
+        m = (k - 1).bit_length()
         inc = 0
-        for i in range((k - 1).bit_length() - 1, -1, -1):
+        for i in range(m - 1, -1, -1):
             if k > 1 << i:  # k 在右半边
                 inc += operations[i]
                 k -= 1 << i
@@ -125,7 +126,7 @@ class Solution {
         for (int i = 63 - Long.numberOfLeadingZeros(k - 1); i >= 0; i--) {
             if (k > (1L << i)) { // k 在右半边
                 inc += operations[i];
-                k -= (1L << i);
+                k -= 1L << i;
             }
         }
         return (char) ('a' + inc % 26);
@@ -137,11 +138,12 @@ class Solution {
 class Solution {
 public:
     char kthCharacter(long long k, vector<int>& operations) {
+        int m = bit_width((uint64_t) k - 1);
         int inc = 0;
-        for (int i = __lg(k - 1); i >= 0; i--) {
+        for (int i = m - 1; i >= 0; i--) {
             if (k > (1LL << i)) { // k 在右半边
                 inc += operations[i];
-                k -= (1LL << i);
+                k -= 1LL << i;
             }
         }
         return 'a' + inc % 26;
@@ -164,23 +166,14 @@ func kthCharacter(k int64, operations []int) byte {
 
 ### 写法二
 
-本质上，我们相当于在遍历 $k-1$ 二进制的每个比特 $1$。
+本质上，我们相当于在遍历 $k-1$ 二进制的每个比特 $1$，累加 $1$ 对应的 $\textit{operations}[i]$。
 
 ```py [sol-Python3]
 class Solution:
     def kthCharacter(self, k: int, operations: List[int]) -> str:
         k -= 1
-        len_k = k.bit_length()
-        inc = sum(op for i, op in enumerate(operations[:len_k]) if k >> i & 1)
-        return ascii_lowercase[inc % 26]
-```
-
-```py [sol-Python3 写法二]
-class Solution:
-    def kthCharacter(self, k: int, operations: List[int]) -> str:
-        k -= 1
-        len_k = k.bit_length()
-        inc = sum(k >> i & op for i, op in enumerate(operations[:len_k]))
+        m = k.bit_length()
+        inc = sum(op for i, op in enumerate(operations[:m]) if k >> i & 1)
         return ascii_lowercase[inc % 26]
 ```
 
@@ -204,8 +197,9 @@ class Solution {
 public:
     char kthCharacter(long long k, vector<int>& operations) {
         k--;
+        int m = bit_width((uint64_t) k);
         int inc = 0;
-        for (int i = __lg(k); i >= 0; i--) {
+        for (int i = m - 1; i >= 0; i--) {
             if (k >> i & 1) {
                 inc += operations[i];
             }
@@ -228,6 +222,56 @@ func kthCharacter(k int64, operations []int) byte {
 }
 ```
 
+### 写法三
+
+```py [sol-Python3]
+class Solution:
+    def kthCharacter(self, k: int, operations: List[int]) -> str:
+        k -= 1
+        m = k.bit_length()
+        inc = sum(k >> i & op for i, op in enumerate(operations[:m]))
+        return ascii_lowercase[inc % 26]
+```
+
+```java [sol-Java]
+class Solution {
+    public char kthCharacter(long k, int[] operations) {
+        k--;
+        int inc = 0;
+        for (int i = 63 - Long.numberOfLeadingZeros(k); i >= 0; i--) {
+            inc += k >> i & operations[i];
+        }
+        return (char) ('a' + inc % 26);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    char kthCharacter(long long k, vector<int>& operations) {
+        k--;
+        int m = bit_width((uint64_t) k);
+        int inc = 0;
+        for (int i = m - 1; i >= 0; i--) {
+            inc += k >> i & operations[i];
+        }
+        return 'a' + inc % 26;
+    }
+};
+```
+
+```go [sol-Go]
+func kthCharacter(k int64, operations []int) byte {
+	k--
+	inc := 0
+	for i, op := range operations[:bits.Len64(uint64(k))] {
+		inc += int(k) >> i & op
+	}
+	return 'a' + byte(inc%26)
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(\log k)$。注意题目保证 $\textit{operations}$ 数组足够长。
@@ -241,16 +285,19 @@ func kthCharacter(k int64, operations []int) byte {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
