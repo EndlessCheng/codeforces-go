@@ -50,6 +50,8 @@ import (
 // https://codeforces.com/contest/86/problem/D
 // https://codeforces.com/problemset/problem/617/E 2200
 // https://codeforces.com/contest/877/problem/F
+// https://atcoder.jp/contests/abc405/tasks/abc405_g 莫队 + 分块
+// - 相似题目 https://leetcode.cn/problems/kth-smallest-path-xor-sum/
 // https://www.codechef.com/problems/QCHEF
 func normalMo(a []int, queries [][]int) []int {
 	n := len(a)
