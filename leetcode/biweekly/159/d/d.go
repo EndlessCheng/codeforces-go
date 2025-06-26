@@ -182,7 +182,7 @@ func newSetWith[K comparable](comp func(a, b K) int) *treapS[K] {
 	}
 }
 
-func kthSmallest2(par []int, vals []int, queries [][]int) []int {
+func kthSmallest1(par []int, vals []int, queries [][]int) []int {
 	n := len(par)
 	g := make([][]int, n)
 	for i := 1; i < n; i++ {
