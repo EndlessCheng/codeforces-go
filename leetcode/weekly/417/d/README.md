@@ -154,7 +154,7 @@ public:
 ```go [sol-Go]
 func kthCharacter(k int64, operations []int) byte {
 	inc := 0
-	for i := bits.Len64(uint64(k-1)) - 1; i >= 0; i-- {
+	for i := bits.Len(uint(k-1)) - 1; i >= 0; i-- {
 		if k > 1<<i { // k 在右半边
 			inc += operations[i]
 			k -= 1 << i
@@ -213,7 +213,7 @@ public:
 func kthCharacter(k int64, operations []int) byte {
 	k--
 	inc := 0
-	for i, op := range operations[:bits.Len64(uint64(k))] {
+	for i, op := range operations[:bits.Len(uint(k))] {
 		if k>>i&1 > 0 {
 			inc += op
 		}
@@ -265,7 +265,7 @@ public:
 func kthCharacter(k int64, operations []int) byte {
 	k--
 	inc := 0
-	for i, op := range operations[:bits.Len64(uint64(k))] {
+	for i, op := range operations[:bits.Len(uint(k))] {
 		inc += int(k) >> i & op
 	}
 	return 'a' + byte(inc%26)
