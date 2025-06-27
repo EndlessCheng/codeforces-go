@@ -77,6 +77,7 @@ https://codeforces.com/problemset/problem/883/I 1900 DP
 https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
 https://codeforces.com/problemset/problem/314/D 2500
+https://codeforces.com/problemset/problem/875/E 2600
 https://www.luogu.com.cn/problem/P2680
 
 ### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
@@ -554,8 +555,9 @@ func sortCollections() {
 	// https://codeforces.com/blog/entry/60702
 	// NOTE: 若有大量相同的离散点则可能会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
 	// https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=ternary+search
-	// https://codeforces.com/problemset/problem/1355/E
-	// https://codeforces.com/problemset/problem/1301/B (只是举例，不用三分也可做)
+	// https://codeforces.com/problemset/problem/1301/B 1500 不用三分也可以
+	// https://codeforces.com/problemset/problem/1355/E 2100
+	// https://codeforces.com/problemset/problem/626/E 2400 最大化平均值减中位数
 	// https://atcoder.jp/contests/abc130/tasks/abc130_f
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for r-l > 4 { // 最小区间长度根据题目可以扩大点
