@@ -87,6 +87,7 @@ https://atcoder.jp/contests/abc374/tasks/abc374_e 1504=CF1849
 https://codeforces.com/problemset/problem/2046/C 2100
 https://atcoder.jp/contests/abc215/tasks/abc215_f 1853=CF2113
 https://codeforces.com/problemset/problem/1550/E 2500
+https://codeforces.com/problemset/problem/627/D 2600
 https://www.luogu.com.cn/problem/P3017
 
 ### 最小化中位数
@@ -608,7 +609,8 @@ func sortCollections() {
 	//     https://codeforces.com/problemset/problem/1003/C 1300
 	//     - https://www.luogu.com.cn/problem/P1404
 	//     - LC644 https://leetcode.cn/problems/maximum-average-subarray-ii/（会员题）
-	//     - O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》（或紫书 p.243 例题 8-9，UVa 1451 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=447&page=show_problem&problem=4197）
+	//     - O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》
+	//       （或紫书 p.243 例题 8-9，UVa 1451 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=447&page=show_problem&problem=4197）
 	//     https://www.acwing.com/problem/content/104/
 	//
 	// 与 0-1 背包结合，即最优比率背包 
