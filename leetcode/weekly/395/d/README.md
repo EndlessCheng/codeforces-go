@@ -11,10 +11,10 @@ $\textit{nums}$ 的唯一性数组有多少个？也就是 $\textit{nums}$ 的�
 中位数是这 $m$ 个数中的第 
 
 $$
-k = \left\lceil\dfrac{m}{2} = \left\lfloor\dfrac{m+1}{2}\right\rfloor
+k = \left\lceil\dfrac{m}{2}\right\rceil = \left\lfloor\dfrac{m+1}{2}\right\rfloor
 $$
 
-小。例如 $m=4$ 时，中位数是其中第 $2$ 小元素。
+小。例如 $m=4$ 时，中位数是其中第 $2$ 小元素。$m=5$ 时，中位数是其中第 $3$ 小元素。
 
 考虑这 $m$ 个数中，小于等于某个定值 $\textit{upper}$ 的数有多少个。
 
