@@ -608,7 +608,7 @@ https://codeforces.com/problemset/problem/1594/F 2400
 https://codeforces.com/problemset/problem/1736/C2 2400
 https://codeforces.com/problemset/problem/1761/E 2400
 https://codeforces.com/problemset/problem/1832/D2 2400
-https://codeforces.com/problemset/problem/504/C 2500
+https://codeforces.com/problemset/problem/501/E 2500
 https://codeforces.com/problemset/problem/599/E 2600
 https://codeforces.com/problemset/problem/1016/F 2600
 https://codeforces.com/problemset/problem/1422/E 2700 LCS
@@ -2279,11 +2279,11 @@ func _() {
 	// 常与树状数组、线段树、平衡树等数据结构结合
 	// https://en.wikipedia.org/wiki/Sweep_line_algorithm
 	// https://cses.fi/book/book.pdf 30.1
-	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
-	// TODO 矩形周长 https://www.luogu.com.cn/problem/P1856
+	// 窗口的星星 https://www.luogu.com.cn/problem/P1502
+	// 矩形周长 https://www.luogu.com.cn/problem/P1856
 	// 天际线问题 LC218 https://leetcode.cn/problems/the-skyline-problem/
-	// TODO 矩形面积并 LC850 https://leetcode.cn/problems/rectangle-area-ii/ 《算法与实现》5.4.3
-	//  矩形周长并 http://poj.org/problem?id=1177
+	// 矩形面积并 LC850 https://leetcode.cn/problems/rectangle-area-ii/
+	// 矩形周长并 http://poj.org/problem?id=1177
 	// 经典题 https://codeforces.com/problemset/problem/1000/C
 	// https://codeforces.com/problemset/problem/1379/D
 	// 转换求解目标 https://codeforces.com/problemset/problem/1285/E
