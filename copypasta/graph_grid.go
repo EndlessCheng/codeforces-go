@@ -20,6 +20,7 @@ https://codeforces.com/problemset/problem/1948/C 1300
 https://codeforces.com/problemset/problem/723/D 1600
 https://codeforces.com/problemset/problem/598/D 1700
 https://codeforces.com/problemset/problem/1365/D 1700
+https://codeforces.com/problemset/problem/679/C 2400
 
 网格图 BFS
 https://codeforces.com/problemset/problem/35/C 1500
