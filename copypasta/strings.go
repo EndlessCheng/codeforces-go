@@ -546,6 +546,7 @@ func _() {
 	}
 
 	// 子序列自动机
+	// 讲解 https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/
 	// 如果值域很大，可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
 	// LC392 https://leetcode.cn/problems/is-subsequence/
 	// https://codeforces.com/problemset/problem/1845/C 1400
@@ -961,9 +962,11 @@ func _() {
 			题解 https://leetcode.cn/problems/distinct-echo-substrings/solution/geng-kuai-de-onlog2n-jie-fa-hou-zhui-shu-8wby/
 		子串统计类题目
 			用单调栈统计矩形面积 + 用单调栈跳过已经统计的
-			https://codeforces.com/problemset/problem/123/D (注：这是《挑战》上推荐的题目)
-			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D 本质上就是 CF123D
-			https://codeforces.com/problemset/problem/802/I 稍作改动
+			https://codeforces.com/problemset/problem/123/D 2300 注：这是《挑战》上推荐的题目
+			- https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D 本质上就是 CF123D
+			https://codeforces.com/problemset/problem/802/I 2300 稍作改动
+			https://codeforces.com/problemset/problem/316/G3 2400
+			https://codeforces.com/problemset/problem/653/F 2600
 			todo https://www.luogu.com.cn/problem/P2178
 			 https://www.luogu.com.cn/problem/P3804
 			 AHOI13 差异 https://www.luogu.com.cn/problem/P4248
@@ -991,6 +994,8 @@ func _() {
 		所有循环串的比较计数 https://atcoder.jp/contests/abc272/tasks/abc272_f https://atcoder.jp/contests/abc272/submissions/35520643
 			构造 s+s+"#"+t+t+"|"
 		todo http://poj.org/problem?id=3729
+		其他
+			https://codeforces.com/problemset/problem/822/E 2400
 	多个字符串
 		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171
 	        LC1923 https://leetcode.cn/problems/longest-common-subpath/ http://poj.org/problem?id=3450
@@ -1038,13 +1043,13 @@ func _() {
 		}
 
 		// 计算高度数组（也叫 LCP 数组）
-		// height[0] = height[len(sa)] = 0（哨兵）
+		// height[0] = 0（哨兵）
 		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
 		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
 		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 		// 	  https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/E
 		//    https://codeforces.com/problemset/problem/873/F
-		height := make([]int, len(sa)+1)
+		height := make([]int, len(sa)) // 注：也可以定义 height[n]=0 作为哨兵
 		h := 0
 		// 计算 s 与 s[sa[rank[0]-1]:] 的 LCP（记作 LCP0）
 		// 计算 s[1:] 与 s[sa[rank[1]-1]:] 的 LCP（记作 LCP1）
@@ -1054,7 +1059,7 @@ func _() {
 		// 从 LCP0 到 LCP1，我们只去掉了 s[0] 和 s[sa[rank[0]-1]] 这两个字符
 		// 所以 LCP1 >= LCP0 - 1
 		// 这样就能加快 LCP 的计算了（类似滑动窗口）
-		// 注：上面只计算了 n-1 对 LCP，因为我们跳过了 rank[i] = 0 的情况
+		// 注：实际只计算了 n-1 对 LCP，因为我们跳过了 rank[i] = 0 的情况
 		for i, rk := range rank {
 			if h > 0 {
 				h--
@@ -1068,7 +1073,8 @@ func _() {
 
 		// 任意两后缀的 LCP
 		// 注：若允许离线可以用 Trie+Tarjan 做到线性
-		//st := make([][17]int, n) // 131072, 262144, 524288, 1048576
+		// st := make([][17]int, n) // 131072, 262144, 524288, 1048576
+		// https://codeforces.com/problemset/problem/822/E
 		logN := bits.Len(uint(len(sa)))
 		st := make([][]int, len(sa))
 		for i, v := range height {
