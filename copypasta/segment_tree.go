@@ -366,15 +366,17 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/718/C   2300 矩阵乘法 ∑ 
 // https://codeforces.com/problemset/problem/1797/E  2300 phi*
 // https://codeforces.com/problemset/problem/145/E   2400
+// https://codeforces.com/problemset/problem/377/D   2400
 // https://codeforces.com/problemset/problem/1114/F  2400
-// https://codeforces.com/problemset/problem/618/E   2500 旋转
-// - http://poj.org/problem?id=2991
+// https://codeforces.com/problemset/problem/266/E   2500 k 次幂带权前缀和
+// https://codeforces.com/problemset/problem/618/E   2500 旋转 http://poj.org/problem?id=2991
+// https://codeforces.com/problemset/problem/739/C   2500
 // https://codeforces.com/problemset/problem/240/F   2600
 // https://codeforces.com/problemset/problem/1439/C  2600 =max 求和的 O(log^2) 性质 
 // https://codeforces.com/problemset/problem/1614/E  2600
 // https://codeforces.com/problemset/problem/2009/G3 2700
 // https://codeforces.com/problemset/problem/794/F   2800 数位修改 考察对懒标记的理解 
-// todo https://codeforces.com/problemset/problem/1209/G2 3200
+// https://codeforces.com/problemset/problem/1209/G2 3200 todo
 //
 // 线段树二分
 // https://atcoder.jp/contests/abc389/tasks/abc389_f 
@@ -926,7 +928,7 @@ func (o *pstNode) querySingle(i int) int {
 
 // EXTRA: 查询区间 [l,r] 中第 k 小（k 从 1 开始）的数
 // 初始 t[0] = buildPST(1, len(a))
-//     t[i+1] = t[i].update(kth[i], 1)   kth[i] 为 a[i] 离散化后的值（从 1 开始）
+//     t[i+1] = t[i].modify(b[i], 1)     b[i] 为 a[i] 离散化后的值（从 1 开始）
 // 查询 t[r].kth(t[l-1], k)               类似前缀和 [l,r] 1<=l<=r<=n
 // https://www.luogu.com.cn/problem/P2617
 // https://codeforces.com/problemset/problem/840/D
