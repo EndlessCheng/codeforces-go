@@ -3,6 +3,9 @@ package copypasta
 /* 链表
 https://en.wikipedia.org/wiki/Linked_list
 
+模拟链表
+https://codeforces.com/problemset/problem/706/E 2500
+
 链表 + 哈希表
 https://ac.nowcoder.com/acm/contest/74362/D
 
