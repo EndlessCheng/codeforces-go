@@ -149,6 +149,7 @@ https://codeforces.com/problemset/problem/608/B 1500
 https://codeforces.com/problemset/problem/1687/A 1600
 https://codeforces.com/problemset/problem/69/E 1800
 https://codeforces.com/problemset/problem/371/E 2000
+https://codeforces.com/problemset/problem/679/C 2400
 
 不定长滑动窗口：求最长/最大
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
@@ -1775,6 +1776,7 @@ func _() {
 	https://codeforces.com/problemset/problem/1852/C 2400 差分思想
 	- 一图解释 https://cdn.luogu.com.cn/upload/image_hosting/3k25nf8y.png
 	https://codeforces.com/problemset/problem/1887/C 2400 差分思想
+	https://codeforces.com/problemset/problem/407/C 2500 k 阶差分
 	https://codeforces.com/problemset/problem/1634/F 2700 差分思想
 	https://codeforces.com/problemset/problem/79/D 2800 差分思想
 	https://atcoder.jp/contests/abc274/tasks/abc274_f 浮点数差分（也可以用扫描线）
@@ -1809,12 +1811,13 @@ func _() {
 		return
 	}
 
-	// 差分套差分（适用于金字塔式更新 +1 +2 +3 +4 +3 +2 +1）
-	// https://ac.nowcoder.com/acm/contest/56446/C
-	// https://www.luogu.com.cn/problem/U318099?contestId=123900
+	// 二阶差分
+	// 比如金字塔式更新 +1 +2 +3 +4 +3 +2 +1
 	// https://codeforces.com/problemset/problem/1661/D 1900 简化
 	// https://codeforces.com/problemset/problem/1710/B 2100
+	// https://www.luogu.com.cn/problem/U318099?contestId=123900
 	// todo LC2735 https://leetcode.cn/problems/collecting-chocolates/
+	// https://ac.nowcoder.com/acm/contest/56446/C
 	diffOfDiff := func(n int) {
 		diff := make([]int, n+1)
 		diff2 := make([]int, n+1)
