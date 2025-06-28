@@ -332,6 +332,10 @@ func (matrix) inv(A matrix) matrix {
 //       https://codeforces.com/problemset/problem/21/B
 // https://www.luogu.com.cn/problem/P4035
 // https://www.luogu.com.cn/problem/P6030 与 SCC 结合
+//
+// 三对角矩阵算法 托马斯算法
+// https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
+// https://codeforces.com/problemset/problem/24/D 2400
 func gaussJordanElimination(A matrix, B []int) (sol []float64, infSol bool) {
 	const eps = 1e-8
 	n := len(A)
@@ -417,7 +421,20 @@ func (a matrix) determinant(mod int) int {
 // 求矩阵的特征多项式
 // todo https://www.cnblogs.com/ywwyww/p/8522541.html
 //  https://www.luogu.com.cn/problem/P7776
-//  Berlekamp–Massey 算法 https://www.luogu.com.cn/problem/P5487
+
+// 最短递推式 
+// todo
+//  Berlekamp–Massey 算法 
+//  https://mzhang2021.github.io/cp-blog/berlekamp-massey/
+//  https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
+//  https://oi-wiki.org/math/berlekamp-massey/
+//  https://codeforces.com/blog/entry/61306
+//  https://codeforces.com/blog/entry/96199
+//  https://www.luogu.com.cn/problem/P5487
+//  https://codeforces.com/problemset/problem/1511/F 2700
+//  https://codeforces.com/problemset/problem/506/E
+//  https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/description/
+//  - https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/solutions/2973816/os2logtjie-fa-bmsuan-fa-you-hua-ju-zhen-gdknh/
 
 // 线性基（异或空间的极大线性无关子集）
 // 可以用来解决「子序列异或和」相关问题
@@ -433,21 +450,20 @@ func (a matrix) determinant(mod int) int {
 // 线性基求交 https://www.cnblogs.com/BakaCirno/p/11298102.html
 // https://zhuanlan.zhihu.com/p/139074556
 //
-// 图上线性基
-// https://www.luogu.com.cn/problem/P4151
-// https://codeforces.com/problemset/problem/724/G 2600
-// 类似思想 https://codeforces.com/problemset/problem/19/E 2900
-//
 // 模板题 https://loj.ac/p/113 https://www.luogu.com.cn/problem/P3812
 // 题单 https://www.luogu.com.cn/training/11251
-// https://codeforces.com/problemset/problem/959/F
+// https://codeforces.com/problemset/problem/895/C 2000
+// - 加强版 https://loj.ac/p/2978
+// https://codeforces.com/problemset/problem/845/G 2300 异或最短路/最长路
+// - https://www.luogu.com.cn/problem/P4151
+// https://codeforces.com/problemset/problem/1101/G 2300
+// https://codeforces.com/problemset/problem/959/F 2400
+// https://codeforces.com/problemset/problem/1902/F 2400
+// https://codeforces.com/problemset/problem/1427/E 2500 构造
+// https://codeforces.com/problemset/problem/724/G 2600 图上线性基
+// https://codeforces.com/problemset/problem/19/E 2900 图上线性基
 // https://atcoder.jp/contests/abc141/tasks/abc141_f
-// todo 构造 https://codeforces.com/problemset/problem/1427/E
-//  https://codeforces.com/problemset/problem/1101/G
-//  https://codeforces.com/problemset/problem/895/C   
-//  - 加强版 https://loj.ac/p/2978
-//  异或最短路/最长路 https://codeforces.com/problemset/problem/845/G https://www.luogu.com.cn/problem/P4151
-//  https://www.luogu.com.cn/problem/P3857
+// https://www.luogu.com.cn/problem/P3857
 type xorBasis struct {
 	b []int // 核心就这一个
 
