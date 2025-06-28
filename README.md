@@ -284,6 +284,7 @@
       - 轻重儿子合并
     - 树分块
     - Prufer 序列
+  - [网格图 graph_grid.go](/copypasta/graph_grid.go)
 - 其他
   - [bitset](/copypasta/bitset.go)
   - [位运算笔记 bits.go](/copypasta/bits.go)
