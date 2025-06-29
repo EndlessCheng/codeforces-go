@@ -11,12 +11,7 @@ func lcp(s, t string) (cnt int) {
 
 func longestCommonPrefix(words []string) []int {
 	n := len(words)
-	ans := make([]int, n)
-	if n == 1 {
-		return ans
-	}
-
-	mx1, mx2 := 0, 0
+	mx1, mx2 := -1, -1
 	i1, i2 := -2, -2
 	for i := range n - 1 {
 		l := lcp(words[i], words[i+1])
@@ -28,6 +23,7 @@ func longestCommonPrefix(words []string) []int {
 		}
 	}
 
+	ans := make([]int, n)
 	for i := range n {
 		l := 0
 		if 0 < i && i < n-1 {

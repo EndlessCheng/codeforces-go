@@ -185,12 +185,7 @@ def lcp(s: str, t: str) -> int:
 class Solution:
     def longestCommonPrefix(self, words: List[str]) -> List[int]:
         n = len(words)
-        ans = [0] * n
-        if n == 1:
-            return ans
-
-        mx1 = mx2 = mx3 = 0
-        i1 = i2 = -2
+        mx1 = mx2 = mx3 = i1 = i2 = -2
         for i in range(n - 1):
             l = lcp(words[i], words[i + 1])
             if l > mx1:
@@ -203,6 +198,7 @@ class Solution:
             elif l > mx3:
                 mx3 = l
 
+        ans = [0] * n
         for i in range(n):
             l = lcp(words[i - 1], words[i + 1]) if 0 < i < n - 1 else 0
             if i != i1 and i != i1 + 1:  # 最大 LCP 没被破坏
@@ -218,12 +214,7 @@ class Solution:
 class Solution {
     public int[] longestCommonPrefix(String[] words) {
         int n = words.length;
-        int[] ans = new int[n];
-        if (n == 1) {
-            return ans;
-        }
-
-        int mx1 = 0, mx2 = 0, mx3 = 0;
+        int mx1 = -1, mx2 = -1, mx3 = -1;
         int i1 = -2, i2 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
@@ -242,6 +233,7 @@ class Solution {
             }
         }
 
+        int[] ans = new int[n];
         for (int i = 0; i < n; i++) {
             int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
             if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
@@ -280,12 +272,7 @@ class Solution {
 public:
     vector<int> longestCommonPrefix(vector<string>& words) {
         int n = words.size();
-        vector<int> ans(n);
-        if (n == 1) {
-            return ans;
-        }
-
-        int mx1 = 0, mx2 = 0, mx3 = 0;
+        int mx1 = -1, mx2 = -1, mx3 = -1;
         int i1 = -2, i2 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
@@ -304,6 +291,7 @@ public:
             }
         }
 
+        vector<int> ans(n);
         for (int i = 0; i < n; i++) {
             int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
             if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
@@ -330,12 +318,7 @@ func lcp(s, t string) (cnt int) {
 
 func longestCommonPrefix(words []string) []int {
 	n := len(words)
-	ans := make([]int, n)
-	if n == 1 {
-		return ans
-	}
-
-	mx1, mx2, mx3 := 0, 0, 0
+	mx1, mx2, mx3 := -1, -1, -1
 	i1, i2 := -2, -2
 	for i := range n - 1 {
 		l := lcp(words[i], words[i+1])
@@ -351,6 +334,7 @@ func longestCommonPrefix(words []string) []int {
 		}
 	}
 
+	ans := make([]int, n)
 	for i := range n {
 		l := 0
 		if 0 < i && i < n-1 {
@@ -397,12 +381,7 @@ def lcp(s: str, t: str) -> int:
 class Solution:
     def longestCommonPrefix(self, words: List[str]) -> List[int]:
         n = len(words)
-        ans = [0] * n
-        if n == 1:
-            return ans
-
-        mx1 = mx2 = 0
-        i1 = i2 = -2
+        mx1 = mx2 = i1 = i2 = -2
         for i in range(n - 1):
             l = lcp(words[i], words[i + 1])
             if l > mx1:
@@ -411,6 +390,7 @@ class Solution:
             elif l > mx2:
                 mx2, i2 = l, i
 
+        ans = [0] * n
         for i in range(n):
             l = lcp(words[i - 1], words[i + 1]) if 0 < i < n - 1 else 0
             if i != i1 and i != i1 + 1:  # 最大 LCP 没被破坏
@@ -426,12 +406,7 @@ class Solution:
 class Solution {
     public int[] longestCommonPrefix(String[] words) {
         int n = words.length;
-        int[] ans = new int[n];
-        if (n == 1) {
-            return ans;
-        }
-
-        int mx1 = 0, mx2 = 0;
+        int mx1 = -1, mx2 = -1;
         int i1 = -2, i2 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
@@ -446,6 +421,7 @@ class Solution {
             }
         }
 
+        int[] ans = new int[n];
         for (int i = 0; i < n; i++) {
             int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
             if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
@@ -484,12 +460,7 @@ class Solution {
 public:
     vector<int> longestCommonPrefix(vector<string>& words) {
         int n = words.size();
-        vector<int> ans(n);
-        if (n == 1) {
-            return ans;
-        }
-
-        int mx1 = 0, mx2 = 0;
+        int mx1 = -1, mx2 = -1;
         int i1 = -2, i2 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
@@ -504,6 +475,7 @@ public:
             }
         }
 
+        vector<int> ans(n);
         for (int i = 0; i < n; i++) {
             int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
             if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
@@ -530,12 +502,7 @@ func lcp(s, t string) (cnt int) {
 
 func longestCommonPrefix(words []string) []int {
 	n := len(words)
-	ans := make([]int, n)
-	if n == 1 {
-		return ans
-	}
-
-	mx1, mx2 := 0, 0
+	mx1, mx2 := -1, -1
 	i1, i2 := -2, -2
 	for i := range n - 1 {
 		l := lcp(words[i], words[i+1])
@@ -547,6 +514,7 @@ func longestCommonPrefix(words []string) []int {
 		}
 	}
 
+	ans := make([]int, n)
 	for i := range n {
 		l := 0
 		if 0 < i && i < n-1 {
