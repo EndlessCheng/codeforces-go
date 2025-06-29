@@ -1,0 +1,8 @@
+"abbccccd"
+["a","b","bc","c","cc","d"]
+
+"aaaa"
+["a","aa"]
+
+
+
