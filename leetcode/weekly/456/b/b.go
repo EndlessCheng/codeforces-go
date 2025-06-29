@@ -17,7 +17,7 @@ func longestCommonPrefix(words []string) []int {
 	}
 
 	mx1, mx2 := 0, 0
-	i1, i2 := -1, -1
+	i1, i2 := -2, -2
 	for i := range n - 1 {
 		l := lcp(words[i], words[i+1])
 		if l > mx1 {
