@@ -182,8 +182,8 @@ func partitionString(s string) (ans []string) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
-- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。
+- 时间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。用哈希表实现可以做到 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n|\Sigma|)$。用哈希表实现可以做到 $\mathcal{O}(n)$。
 
 ## 专题训练
 
