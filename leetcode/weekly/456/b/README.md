@@ -382,7 +382,7 @@ func longestCommonPrefix(words []string) []int {
 
 **证明**：不失一般性，假设 $\textit{mx}_1 = \text{LCP}(A,B)$，$\textit{mx}_2 = \text{LCP}(B,C)$。这意味着 $B$ 和 $C$ 的前 $\textit{mx}_2$ 个字母是一样的，$A$ 和 $B$ 的前 $\textit{mx}_1$ 个字母是一样的，由于 $\textit{mx}_1\ge \textit{mx}_2$，所以 $A$ 和 $B$ 的前 $\textit{mx}_2$ 个字母也是一样的。所以 $A$ 和 $C$ 的前 $\textit{mx}_2$ 个字母是一样的，也就是说，$\text{LCP}(A,C)$ 至少是 $\textit{mx}_2$。证毕。
 
-由于 $\textit{mx}_2 \ge \textit{mx}_3$，所以当程序进入计算 $\max(\textit{mx}_3,\ell)$ 的分支时，$\max(\textit{mx}_3,\ell)$ 的计算结果一定等于 $\ell$，这意味着我们无需维护第三大 LCP 的长度。
+当程序进入计算 $\max(\textit{mx}_3,\ell)$ 的分支时，由于 $\ell \ge \textit{mx}_2 \ge \textit{mx}_3$，所以 $\max(\textit{mx}_3,\ell) = \ell$，这意味着我们无需维护第三大 LCP 的长度 $\textit{mx}_3$。
 
 ```py [sol-Python3]
 @cache  # 不加就是 O(1) 空间，但测试发现，加这个更快（可能有些测试数据有很多重复的字符串）
