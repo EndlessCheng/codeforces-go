@@ -7,4 +7,4 @@ Q2 https://leetcode.cn/problems/longest-common-prefix-between-adjacent-strings-a
 Q3 https://leetcode.cn/problems/partition-array-to-minimize-xor/solution/hua-fen-xing-dp-de-tong-yong-tao-lu-pyth-lmcm/
 Q4 https://leetcode.cn/problems/maximize-spanning-tree-stability-with-upgrades/solution/liang-chong-fang-fa-er-fen-da-an-kruskal-6p7a/
 
-具体请看 [视频讲解](https://www.bilibili.com/video/TODO时间/?t=2m30s)，欢迎点赞关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1j6gZzqEdc/?t=2m30s)，欢迎点赞关注~

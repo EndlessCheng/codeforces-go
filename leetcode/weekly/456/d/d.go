@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 	"slices"
+	"sort"
 )
 
 // https://space.bilibili.com/206214
@@ -66,6 +67,10 @@ func maxStability(n int, edges [][]int, k int) int {
 		return -1
 	}
 
+	if uf.cc == 1 { // 只需选必选边
+		return minS1
+	}
+
 	// Kruskal 算法求最大生成树
 	slices.SortFunc(edges, func(a, b []int) int { return b[2] - a[2] })
 	a := []int{}
@@ -76,17 +81,18 @@ func maxStability(n int, edges [][]int, k int) int {
 		}
 	}
 
-	// 如下三者的最小值：
+	// 答案为如下三者的最小值：
 	// 1. must = 1 中的最小值
-	// 2. a 中的最小边权 * 2
-	// 3. a 中的第 k+1 小边权
+	// 2. a 中最小边权 * 2
+	// 3. a 中第 k+1 小边权
 	m := len(a)
-	if m == 0 {
-		return minS1
-	}
 	ans := min(minS1, a[m-1]*2)
 	if k < m {
 		ans = min(ans, a[m-1-k])
 	}
 	return ans
 }
+
+//
+
+

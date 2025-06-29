@@ -1,8 +1,10 @@
+## 方法一：哈希集合
+
 按题意模拟即可。
 
 为了快速判断当前字符串 $t$ 是否在答案中，用一个哈希集合保存在答案中的字符串。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1j6gZzqEdc/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -77,7 +79,111 @@ func partitionString(s string) (ans []string) {
 - 时间复杂度：$\mathcal{O}(n\sqrt n)$，其中 $n$ 是 $s$ 的长度。最坏情况下 $n$ 个一样的字母，加到答案中的字符串长度为 $1,2,3,\ldots,k$，解不等式 $1+2+3+\cdots+k = \dfrac{k(k+1)}{2}\le n$，得 $k = \mathcal{O}(\sqrt n)$。每次判断一个长为 $\mathcal{O}(\sqrt n)$ 的字符串是否在哈希集合中，需要 $\mathcal{O}(\sqrt n)$ 的时间，一共判断 $n$ 次。所以时间复杂度为 $\mathcal{O}(n\sqrt n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-**注**：用字典树（或者字符串哈希），可以做到 $\mathcal{O}(n)$。直播结束后补充。
+## 方法二：字典树
+
+原理见 [208. 实现 Trie (前缀树)](https://leetcode.cn/problems/implement-trie-prefix-tree/)，[我的题解](https://leetcode.cn/problems/implement-trie-prefix-tree/solutions/2993894/cong-er-cha-shu-dao-er-shi-liu-cha-shu-p-xsj4/)。
+
+```py [sol-Python3]
+class Solution:
+    def partitionString(self, s: str) -> List[str]:
+        ans = []
+        t = []
+        cur = root = {}
+        for c in s:
+            t.append(c)
+            if c not in cur:  # 无路可走？
+                cur[c] = {}  # 那就造路！
+                ans.append(''.join(t))
+                t.clear()  # 重置
+                cur = root  # 重置
+            else:
+                cur = cur[c]
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public List<String> partitionString(String s) {
+        record Node(Node[] son) {
+            Node() { this(new Node[26]); }
+        }
+
+        List<String> ans = new ArrayList<>();
+        StringBuilder t = new StringBuilder();
+        Node root = new Node();
+        Node cur = root;
+        for (char c : s.toCharArray()) {
+            t.append(c);
+            c -= 'a';
+            if (cur.son[c] == null) { // 无路可走？
+                cur.son[c] = new Node(); // 那就造路！
+                ans.add(t.toString());
+                t.setLength(0); // 重置
+                cur = root; // 重置
+            } else {
+                cur = cur.son[c];
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+struct Node {
+    Node* son[26]{};
+};
+
+class Solution {
+public:
+    vector<string> partitionString(string s) {
+        vector<string> ans;
+        string t;
+        Node* root = new Node();
+        Node* cur = root;
+        for (char c : s) {
+            t += c;
+            c -= 'a';
+            if (cur->son[c] == nullptr) { // 无路可走？
+                cur->son[c] = new Node(); // 那就造路！
+                ans.push_back(t);
+                t.clear(); // 重置
+                cur = root; // 重置
+            } else {
+                cur = cur->son[c];
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func partitionString(s string) (ans []string) {
+	type node struct{ son [26]*node }
+	root := &node{}
+	cur := root
+	t := []byte{}
+	for _, c := range s {
+		t = append(t, byte(c))
+		c -= 'a'
+		if cur.son[c] == nil { // 无路可走？
+			cur.son[c] = &node{} // 那就造路！
+			ans = append(ans, string(t))
+			t = t[:0]  // 重置
+			cur = root // 重置
+		} else {
+			cur = cur.son[c]
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。
 
 ## 专题训练
 

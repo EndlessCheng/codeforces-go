@@ -28,7 +28,7 @@ $$
 
 **答案**：$f[k][n]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1j6gZzqEdc/?t=17m37s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -46,10 +46,36 @@ class Solution:
             # 前后每个子数组长度至少是 1，预留空间给这些子数组
             for j in range(i, n - (k - i) + 1):
                 s = 0
+                # 枚举所有分割方案，取最小值
                 for l in range(j - 1, i - 2, -1):
                     s ^= nums[l]
+                    # 对于单个分割方案，子数组异或和需要取最大值
                     f[i][j] = min(f[i][j], max(f[i - 1][l], s))
         return f[k][n]
+```
+
+```py [sol-Python3 记忆化搜索]
+# 手写 min max 更快
+min = lambda a, b: b if b < a else a
+max = lambda a, b: b if b > a else a
+
+class Solution:
+    def minXor(self, nums: List[int], k: int) -> int:
+        # 把 nums[0] 到 nums[j] 分割成 i 个子数组，返回所有分割方案的 max(子数组异或和) 的最小值
+        @cache
+        def dfs(i: int, j: int) -> int:
+            if i == 0:
+                return 0 if j < 0 else inf
+            res = inf
+            s = 0
+            # 枚举所有分割方案，取最小值
+            # 前面还有 i-1 个子数组，每个子数组长度至少是 1，所以至少留 i-1 个元素给前面
+            for l in range(j, i - 2, -1):
+                s ^= nums[l]
+                # 对于单个分割方案，子数组异或和需要取最大值
+                res = min(res, max(dfs(i - 1, l - 1), s))
+            return res
+        return dfs(k, len(nums) - 1)
 ```
 
 ```java [sol-Java]
@@ -64,8 +90,10 @@ class Solution {
             for (int j = i; j <= n - (k - i); j++) {
                 int res = Integer.MAX_VALUE;
                 int s = 0;
+                // 枚举所有分割方案，取最小值
                 for (int l = j - 1; l >= i - 1; l--) {
                     s ^= nums[l];
+                    // 对于单个分割方案，子数组异或和需要取最大值
                     res = Math.min(res, Math.max(f[i - 1][l], s));
                 }
                 f[i][j] = res;
@@ -87,8 +115,10 @@ public:
             // 前后每个子数组长度至少是 1，预留空间给这些子数组
             for (int j = i; j <= n - (k - i); j++) {
                 int s = 0;
+                // 枚举所有分割方案，取最小值
                 for (int l = j - 1; l >= i - 1; l--) {
                     s ^= nums[l];
+                    // 对于单个分割方案，子数组异或和需要取最大值
                     f[i][j] = min(f[i][j], max(f[i - 1][l], s));
                 }
             }
@@ -113,8 +143,10 @@ func minXor(nums []int, k int) int {
 		for j := i; j <= n-(k-i); j++ {
 			res := math.MaxInt
 			s := 0
+			// 枚举所有分割方案，取最小值
 			for l := j - 1; l >= i-1; l-- {
 				s ^= nums[l]
+				// 对于单个分割方案，子数组异或和需要取最大值
 				res = min(res, max(f[i-1][l], s))
 			}
 			f[i][j] = res
@@ -126,7 +158,7 @@ func minXor(nums []int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(k(n-k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(k(n-k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。求导可知，当 $k=\dfrac{n}{3}$ 时取到最大值 $\dfrac{4n^3}{27}$。
 - 空间复杂度：$\mathcal{O}(kn)$。
 
 ## 空间优化
@@ -134,7 +166,7 @@ func minXor(nums []int, k int) int {
 和 0-1 背包一样，把第一维去掉，内层循环倒着计算，避免状态被覆盖。原理见 [0-1 背包 完全背包【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
 ```py [sol-Python3]
-# 手写 min max 更快
+# 另见【Python3 更快写法】，避免函数调用和赋值更快
 min = lambda a, b: b if b < a else a
 max = lambda a, b: b if b > a else a
 
@@ -149,6 +181,24 @@ class Solution:
                 for l in range(j - 1, i - 2, -1):
                     s ^= nums[l]
                     res = min(res, max(f[l], s))
+                f[j] = res
+        return f[n]
+```
+
+```py [sol-Python3 更快写法]
+class Solution:
+    def minXor(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        f = [0] + [inf] * n
+        for i in range(1, k + 1):
+            for j in range(n - (k - i), i - 1, -1):
+                res = inf
+                s = 0
+                for l in range(j - 1, i - 2, -1):
+                    s ^= nums[l]
+                    v = f[l]
+                    if s > v: v = s
+                    if v < res: res = v
                 f[j] = res
         return f[n]
 ```
@@ -223,7 +273,7 @@ func minXor(nums []int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(k(n-k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(k(n-k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。求导可知，当 $k=\dfrac{n}{3}$ 时取到最大值 $\dfrac{4n^3}{27}$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练

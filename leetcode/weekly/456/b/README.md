@@ -14,7 +14,7 @@
 
 代码实现时，计算前缀的循环可以和计算答案的循环合并。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1j6gZzqEdc/?t=10m6s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -154,7 +154,7 @@ func longestCommonPrefix(words []string) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(L)$，其中 $L\le 10^5$ 是 $\textit{words}[i]$ 的长度之和。
+- 时间复杂度：$\mathcal{O}(L)$，其中 $L\le 10^5$ 是 $\textit{words}[i]$ 的长度之和。每个 $\textit{words}[i]$ 至多参与 $6$ 次（线性时间的）LCP 的计算。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练
