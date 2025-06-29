@@ -93,6 +93,50 @@ func maxStability(n int, edges [][]int, k int) int {
 	return ans
 }
 
-//
+func maxStability1(n int, edges [][]int, k int) int {
+	mustUf := newUnionFind(n) // 必选边并查集
+	allUf := newUnionFind(n)  // 全图并查集
+	minS, maxS := math.MaxInt, 0
+	for _, e := range edges {
+		x, y, s, must := e[0], e[1], e[2], e[3]
+		if must > 0 && !mustUf.merge(x, y) { // 必选边成环
+			return -1
+		}
+		allUf.merge(x, y)
+		minS = min(minS, s)
+		maxS = max(maxS, s)
+	}
 
+	if allUf.cc > 1 { // 图不连通
+		return -1
+	}
 
+	left, right := minS, maxS*2
+	ans := left + sort.Search(right-left, func(low int) bool {
+		low += left
+		low++ // 二分最小的不满足要求的 low+1，那么答案就是最大的满足要求的 low
+		u := newUnionFind(n)
+		for _, e := range edges {
+			x, y, s, must := e[0], e[1], e[2], e[3]
+			if must > 0 && s < low { // 必选边的边权太小
+				return true
+			}
+			if must > 0 || s >= low {
+				u.merge(x, y)
+			}
+		}
+
+		leftK := k
+		for _, e := range edges {
+			if leftK == 0 || u.cc == 1 {
+				break
+			}
+			x, y, s, must := e[0], e[1], e[2], e[3]
+			if must == 0 && s < low && s*2 >= low && u.merge(x, y) {
+				leftK--
+			}
+		}
+		return u.cc > 1
+	})
+	return ans
+}
