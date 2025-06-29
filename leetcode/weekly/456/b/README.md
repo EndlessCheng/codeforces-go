@@ -190,7 +190,7 @@ class Solution:
             return ans
 
         mx1 = mx2 = mx3 = 0
-        i1 = i2 = -1
+        i1 = i2 = -2
         for i in range(n - 1):
             l = lcp(words[i], words[i + 1])
             if l > mx1:
@@ -224,7 +224,7 @@ class Solution {
         }
 
         int mx1 = 0, mx2 = 0, mx3 = 0;
-        int i1 = -1, i2 = -1;
+        int i1 = -2, i2 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
             if (l > mx1) {
@@ -286,7 +286,7 @@ public:
         }
 
         int mx1 = 0, mx2 = 0, mx3 = 0;
-        int i1 = -1, i2 = -1;
+        int i1 = -2, i2 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
             if (l > mx1) {
@@ -336,7 +336,7 @@ func longestCommonPrefix(words []string) []int {
 	}
 
 	mx1, mx2, mx3 := 0, 0, 0
-	i1, i2 := -1, -1
+	i1, i2 := -2, -2
 	for i := range n - 1 {
 		l := lcp(words[i], words[i+1])
 		if l > mx1 {
@@ -362,6 +362,202 @@ func longestCommonPrefix(words []string) []int {
 			ans[i] = max(mx2, l)
 		} else { // 只能是第三大 LCP
 			ans[i] = max(mx3, l)
+		}
+	}
+	return ans
+}
+```
+
+## 方法三：维护前二大 LCP
+
+实际上，我们不需要维护第三大 LCP。
+
+如果上面程序进入计算 $\max(\textit{mx}_3,\ell)$ 的分支，只可能是如下情况：
+
+- 最大 LCP 和次大 LCP 是重叠的，即 $i_1+1 = i_2$ 或者 $i_2+1 = i_1$，且此时 $i$ 正好处在构成最大 LCP 和次大 LCP 的三个字符串的中间。
+
+设这三个字符串分别为 $A,B,C$。删除 $B$ 后，我们计算的是 $\text{LCP}(A,C)$。
+
+**定理**：$\text{LCP}(A,C)\ge \textit{mx}_2$。
+
+**证明**：不失一般性，假设 $\textit{mx}_1 = \text{LCP}(A,B)$，$\textit{mx}_2 = \text{LCP}(B,C)$。这意味着 $B$ 和 $C$ 的前 $\textit{mx}_2$ 个字母是一样的，$A$ 和 $B$ 的前 $\textit{mx}_1$ 个字母是一样的，由于 $\textit{mx}_1\ge \textit{mx}_2$，所以 $A$ 和 $B$ 的前 $\textit{mx}_2$ 个字母也是一样的。所以 $A$ 和 $C$ 的前 $\textit{mx}_2$ 个字母是一样的，也就是说，$\text{LCP}(A,C)$ 至少是 $\textit{mx}_2$。证毕。
+
+由于 $\textit{mx}_2 \ge \textit{mx}_3$，所以当程序进入计算 $\max(\textit{mx}_3,\ell)$ 的分支时，$\max(\textit{mx}_3,\ell)$ 的计算结果一定等于 $\ell$，这意味着我们无需维护第三大 LCP 的长度。
+
+```py [sol-Python3]
+@cache  # 不加就是 O(1) 空间，但测试发现，加这个更快（可能有些测试数据有很多重复的字符串）
+def lcp(s: str, t: str) -> int:
+    cnt = 0
+    for x, y in zip(s, t):
+        if x != y:
+            break
+        cnt += 1
+    return cnt
+
+class Solution:
+    def longestCommonPrefix(self, words: List[str]) -> List[int]:
+        n = len(words)
+        ans = [0] * n
+        if n == 1:
+            return ans
+
+        mx1 = mx2 = 0
+        i1 = i2 = -2
+        for i in range(n - 1):
+            l = lcp(words[i], words[i + 1])
+            if l > mx1:
+                mx2, i2 = mx1, i1
+                mx1, i1 = l, i
+            elif l > mx2:
+                mx2, i2 = l, i
+
+        for i in range(n):
+            l = lcp(words[i - 1], words[i + 1]) if 0 < i < n - 1 else 0
+            if i != i1 and i != i1 + 1:  # 最大 LCP 没被破坏
+                ans[i] = max(mx1, l)
+            elif i != i2 and i != i2 + 1:  # 次大 LCP 没被破坏
+                ans[i] = max(mx2, l)
+            else:
+                ans[i] = l
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] longestCommonPrefix(String[] words) {
+        int n = words.length;
+        int[] ans = new int[n];
+        if (n == 1) {
+            return ans;
+        }
+
+        int mx1 = 0, mx2 = 0;
+        int i1 = -2, i2 = -2;
+        for (int i = 0; i < n - 1; i++) {
+            int l = lcp(words[i], words[i + 1]);
+            if (l > mx1) {
+                mx2 = mx1;
+                mx1 = l;
+                i2 = i1;
+                i1 = i;
+            } else if (l > mx2) {
+                mx2 = l;
+                i2 = i;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
+            if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
+                ans[i] = Math.max(mx1, l);
+            } else if (i != i2 && i != i2 + 1) { // 次大 LCP 没被破坏
+                ans[i] = Math.max(mx2, l);
+            } else {
+                ans[i] = l;
+            }
+        }
+        return ans;
+    }
+
+    private int lcp(String s, String t) {
+        int n = Math.min(s.length(), t.length());
+        int cnt = 0;
+        for (int i = 0; i < n && s.charAt(i) == t.charAt(i); i++) {
+            cnt++;
+        }
+        return cnt;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    int lcp(const string& s, const string& t) {
+        int n = min(s.size(), t.size());
+        int cnt = 0;
+        for (int i = 0; i < n && s[i] == t[i]; i++) {
+            cnt++;
+        }
+        return cnt;
+    }
+
+public:
+    vector<int> longestCommonPrefix(vector<string>& words) {
+        int n = words.size();
+        vector<int> ans(n);
+        if (n == 1) {
+            return ans;
+        }
+
+        int mx1 = 0, mx2 = 0;
+        int i1 = -2, i2 = -2;
+        for (int i = 0; i < n - 1; i++) {
+            int l = lcp(words[i], words[i + 1]);
+            if (l > mx1) {
+                mx2 = mx1;
+                mx1 = l;
+                i2 = i1;
+                i1 = i;
+            } else if (l > mx2) {
+                mx2 = l;
+                i2 = i;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
+            if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
+                ans[i] = max(mx1, l);
+            } else if (i != i2 && i != i2 + 1) { // 次大 LCP 没被破坏
+                ans[i] = max(mx2, l);
+            } else {
+                ans[i] = l;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func lcp(s, t string) (cnt int) {
+	n := min(len(s), len(t))
+	for i := 0; i < n && s[i] == t[i]; i++ {
+		cnt++
+	}
+	return
+}
+
+func longestCommonPrefix(words []string) []int {
+	n := len(words)
+	ans := make([]int, n)
+	if n == 1 {
+		return ans
+	}
+
+	mx1, mx2 := 0, 0
+	i1, i2 := -2, -2
+	for i := range n - 1 {
+		l := lcp(words[i], words[i+1])
+		if l > mx1 {
+			mx2, i2 = mx1, i1
+			mx1, i1 = l, i
+		} else if l > mx2 {
+			mx2, i2 = l, i
+		}
+	}
+
+	for i := range n {
+		l := 0
+		if 0 < i && i < n-1 {
+			l = lcp(words[i-1], words[i+1])
+		}
+		if i != i1 && i != i1+1 { // 最大 LCP 没被破坏
+			ans[i] = max(mx1, l)
+		} else if i != i2 && i != i2+1 { // 次大 LCP 没被破坏
+			ans[i] = max(mx2, l)
+		} else {
+			ans[i] = l
 		}
 	}
 	return ans
