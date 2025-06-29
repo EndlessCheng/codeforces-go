@@ -87,6 +87,7 @@ https://atcoder.jp/contests/abc367/tasks/abc367_d
 https://atcoder.jp/contests/abc146/tasks/abc146_e 1762
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 https://codeforces.com/problemset/problem/1915/E 1300 交错前缀和
+https://codeforces.com/problemset/problem/1005/E1 1800
 https://codeforces.com/problemset/problem/1592/E 2400
 https://codeforces.com/problemset/problem/1446/D1 2600 转换
 https://www.luogu.com.cn/problem/AT_joisc2014_h 三个字母映射到一些大整数上，从而区分开
@@ -359,7 +360,8 @@ https://atcoder.jp/contests/abc173/tasks/abc173_e 1607=CF1926 k 个数的最大�
 有两种证明方法，见 https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/
 【思考题】插入一个数再选定一个 x，每次操作 +x/-x，计算最小操作次数
 https://codeforces.com/problemset/problem/710/B 1400
-中位数相关 https://codeforces.com/problemset/problem/166/C 1500 *可以做到对不同的 x 用 O(log n) 时间回答
+https://codeforces.com/problemset/problem/2098/B 1400
+https://codeforces.com/problemset/problem/166/C 1500 中位数相关  *可以做到对不同的 x 用 O(log n) 时间回答
 
 排序不等式
 https://codeforces.com/problemset/problem/2065/D 1200
@@ -526,7 +528,9 @@ https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
+https://codeforces.com/problemset/problem/1244/G  2400
 https://codeforces.com/problemset/problem/1761/E  2400
+https://codeforces.com/problemset/problem/1474/E  2500
 https://codeforces.com/problemset/problem/1689/E  2500 脑筋急转弯
 https://codeforces.com/problemset/problem/1227/G  2600 证明是亮点
 https://codeforces.com/problemset/problem/1521/E  2700 二维相邻不同
@@ -1207,10 +1211,10 @@ func _() {
 			return s1 + s2
 		}
 
-		// LC2968 https://leetcode.cn/problems/apply-operations-to-maximize-frequency-score/
-		// LC3086 https://leetcode.cn/problems/minimum-moves-to-pick-k-ones/ 2673
 		// 返回下标在左闭右开区间 [left,right) 内的所有 a[i] 到 target 的距离之和
 		// ！需要保证 a 是有序的
+		// LC2968 https://leetcode.cn/problems/apply-operations-to-maximize-frequency-score/
+		// LC3086 https://leetcode.cn/problems/minimum-moves-to-pick-k-ones/
 		distanceSumRange := func(left, right, target int) int {
 			i := sort.SearchInts(arr, target)
 			if i <= left { // target <= a[i] <= a[left]
@@ -1236,7 +1240,7 @@ func _() {
 
 		// +1 操作执行 maxOp 次，最大化最小值   fill
 		// ！需要保证 a 是有序的
-		// - [3081. 替换字符串中的问号使分数最小](https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/) 1905
+		// LC3081 https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/
 		maxLow := func(maxOp int) int {
 			i := sort.Search(len(arr), func(i int) bool { return arr[i]*i-sum[i] > maxOp })
 			// low * i - sum[i] <= maxOp, i=n 时也适用
@@ -1359,19 +1363,18 @@ func _() {
 	}
 
 	// 二维前缀和 sum2d
-	// - [304. 二维区域和检索 - 矩阵不可变](https://leetcode.cn/problems/range-sum-query-2d-immutable/) 模板题
-	// - [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) 也可以 DP
-	//     - https://codeforces.com/problemset/problem/1301/E 2500
-	//     - 思考：如果是菱形怎么 DP
+	// LC304 https://leetcode.cn/problems/range-sum-query-2d-immutable/ 模板题
 	// https://www.luogu.com.cn/problem/P2004 模板题
-	// 自加写法 https://codeforces.com/contest/835/submission/120031673
-	// https://codeforces.com/contest/1107/problem/D
-	// https://codeforces.com/problemset/problem/1731/D
-	// https://codeforces.com/problemset/problem/611/C
-	// 二维带权前缀和 https://codeforces.com/problemset/problem/2044/H
-	// 分类讨论 https://www.luogu.com.cn/problem/P3625
+	// https://codeforces.com/problemset/problem/611/C 1500
+	// https://codeforces.com/problemset/problem/835/C 1600
+	// https://codeforces.com/problemset/problem/1731/D 1700
+	// https://codeforces.com/problemset/problem/2113/C 1700
+	// https://codeforces.com/problemset/problem/1107/D 1800
+	// https://codeforces.com/problemset/problem/2044/H 2100 二维带权前缀和 
+	// https://codeforces.com/problemset/problem/1301/E 2500 扩展思考：如果是菱形怎么做
+	// https://www.luogu.com.cn/problem/P3625 分类讨论
 	// - https://atcoder.jp/contests/abc347/tasks/abc347_f
-	// https://atcoder.jp/contests/agc015/tasks/agc015_c 2241=CF2406 转换
+	// https://atcoder.jp/contests/agc015/tasks/agc015_c 2241=CF2406
 	matrixSum2D := func(a [][]int) {
 		n, m := len(a), len(a[0])
 		// sum 第一行和第一列都是 0
