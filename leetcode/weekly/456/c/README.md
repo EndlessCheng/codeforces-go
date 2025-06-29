@@ -276,6 +276,49 @@ func minXor(nums []int, k int) int {
 - 时间复杂度：$\mathcal{O}(k(n-k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。求导可知，当 $k=\dfrac{n}{3}$ 时取到最大值 $\dfrac{4n^3}{27}$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 附：二分做法
+
+设 $\textit{nums}$ 的前缀异或和数组为 $s$。
+
+二分子数组异或和的上界 $\textit{upper}$，转化成一个 DAG 上的恰好移动 $k$ 步问题：
+
+- 如果 $s[i]\oplus s[j]\le \textit{upper}$，连一条从 $i$ 到 $j$ 的有向边。
+- 问：是否存在一条从 $n$ 到 $0$ 的路径，恰好有 $k$ 条边？
+
+DP，定义 $\textit{dfs}(i)$ 表示从 $i$ 到 $0$ 的移动步数集合。
+
+如果可以从 $i$ 移动到 $j$，那么把 $\textit{dfs}(j)$ 中的每个数加一，合并到 $\textit{dfs}(i)$ 中。
+
+递归边界：$\textit{dfs}(0)=\{0\}$。
+
+递归入口：$\textit{dfs}(n)$。如果 $k$ 在集合 $\textit{dfs}(n)$ 中，则说明存在一条从 $n$ 到 $0$ 的路径，恰好有 $k$ 条边。
+
+```py [sol-Python3]
+class Solution:
+    def minXor(self, nums: List[int], k: int) -> int:
+        s = list(accumulate(nums, xor, initial=0))  # 异或前缀和
+
+        def check(upper: int) -> bool:
+            @cache
+            def dfs(i: int) -> int:
+                if i == 0:
+                    return 1
+                res = 0
+                for j in range(i):
+                    if s[i] ^ s[j] <= upper:
+                        res |= dfs(j) << 1  # 走一步
+                return res
+            return dfs(len(nums)) >> k & 1 > 0  # 可以走恰好 k 步
+
+        m = max(nums).bit_length()
+        return bisect_left(range((1 << m) - 1), True, key=check)
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\frac{n^3}{w}\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$w=32$ 或 $64$，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(\frac{n^2}{w})$。
+
 ## 专题训练
 
 见下面动态规划题单的「**§5.3 约束划分个数**」。
