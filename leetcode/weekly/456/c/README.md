@@ -280,18 +280,20 @@ func minXor(nums []int, k int) int {
 
 设 $\textit{nums}$ 的前缀异或和数组为 $s$。
 
-二分子数组异或和的上界 $\textit{upper}$，转化成一个 DAG 上的恰好移动 $k$ 步问题：
+二分子数组异或和的上界 $\textit{upper}$，转化成一个有向无环图（DAG）上的恰好移动 $k$ 步问题：
 
 - 如果 $s[i]\oplus s[j]\le \textit{upper}$，连一条从 $i$ 到 $j$ 的有向边。
 - 问：是否存在一条从 $n$ 到 $0$ 的路径，恰好有 $k$ 条边？
 
-DP，定义 $\textit{dfs}(i)$ 表示从 $i$ 到 $0$ 的移动步数集合。
+DP，定义 $\textit{dfs}(i)$ 表示从 $i$ 到 $0$ 的移动步数**集合**。比如从 $5$ 到 $0$ 可以移动 $1,3,4$ 步，那么 $\textit{dfs}(5) = \{1,3,4\}$。
 
 如果可以从 $i$ 移动到 $j$，那么把 $\textit{dfs}(j)$ 中的每个数加一，合并到 $\textit{dfs}(i)$ 中。
 
 递归边界：$\textit{dfs}(0)=\{0\}$。
 
 递归入口：$\textit{dfs}(n)$。如果 $k$ 在集合 $\textit{dfs}(n)$ 中，则说明存在一条从 $n$ 到 $0$ 的路径，恰好有 $k$ 条边。
+
+代码实现时，集合用二进制表示，集合的运算用位运算表示，具体请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
 ```py [sol-Python3]
 class Solution:
