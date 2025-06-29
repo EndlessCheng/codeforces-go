@@ -368,6 +368,8 @@ func longestCommonPrefix(words []string) []int {
 
 当程序进入计算 $\max(\textit{mx}_3,\ell)$ 的分支时，由于 $\ell = \text{LCP}(A,C) \ge \textit{mx}_2 \ge \textit{mx}_3$，所以 $\max(\textit{mx}_3,\ell) = \ell$，这意味着我们无需维护第三大 LCP 的长度 $\textit{mx}_3$。
 
+此外，根据上面的分析，计算 $\max(\textit{mx}_3,\ell)$ 的分支可以合并到计算 $\max(\textit{mx}_2,\ell)$ 的分支中。所以 $i_2$ 也无需维护。
+
 ```py [sol-Python3]
 @cache  # 不加就是 O(1) 空间，但测试发现，加这个更快（可能有些测试数据有很多重复的字符串）
 def lcp(s: str, t: str) -> int:
@@ -381,24 +383,22 @@ def lcp(s: str, t: str) -> int:
 class Solution:
     def longestCommonPrefix(self, words: List[str]) -> List[int]:
         n = len(words)
-        mx1 = mx2 = i1 = i2 = -2
+        mx1 = mx2 = i1 = -2
         for i in range(n - 1):
             l = lcp(words[i], words[i + 1])
             if l > mx1:
-                mx2, i2 = mx1, i1
+                mx2 = mx1
                 mx1, i1 = l, i
             elif l > mx2:
-                mx2, i2 = l, i
+                mx2 = l
 
         ans = [0] * n
         for i in range(n):
             l = lcp(words[i - 1], words[i + 1]) if 0 < i < n - 1 else 0
             if i != i1 and i != i1 + 1:  # 最大 LCP 没被破坏
                 ans[i] = max(mx1, l)
-            elif i != i2 and i != i2 + 1:  # 次大 LCP 没被破坏
-                ans[i] = max(mx2, l)
             else:
-                ans[i] = l
+                ans[i] = max(mx2, l)
         return ans
 ```
 
@@ -406,18 +406,15 @@ class Solution:
 class Solution {
     public int[] longestCommonPrefix(String[] words) {
         int n = words.length;
-        int mx1 = -1, mx2 = -1;
-        int i1 = -2, i2 = -2;
+        int mx1 = -1, mx2 = -1, i1 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
             if (l > mx1) {
                 mx2 = mx1;
                 mx1 = l;
-                i2 = i1;
                 i1 = i;
             } else if (l > mx2) {
                 mx2 = l;
-                i2 = i;
             }
         }
 
@@ -426,10 +423,8 @@ class Solution {
             int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
             if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
                 ans[i] = Math.max(mx1, l);
-            } else if (i != i2 && i != i2 + 1) { // 次大 LCP 没被破坏
-                ans[i] = Math.max(mx2, l);
             } else {
-                ans[i] = l;
+                ans[i] = Math.max(mx2, l);
             }
         }
         return ans;
@@ -460,18 +455,15 @@ class Solution {
 public:
     vector<int> longestCommonPrefix(vector<string>& words) {
         int n = words.size();
-        int mx1 = -1, mx2 = -1;
-        int i1 = -2, i2 = -2;
+        int mx1 = -1, mx2 = -1, i1 = -2;
         for (int i = 0; i < n - 1; i++) {
             int l = lcp(words[i], words[i + 1]);
             if (l > mx1) {
                 mx2 = mx1;
                 mx1 = l;
-                i2 = i1;
                 i1 = i;
             } else if (l > mx2) {
                 mx2 = l;
-                i2 = i;
             }
         }
 
@@ -480,10 +472,8 @@ public:
             int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
             if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
                 ans[i] = max(mx1, l);
-            } else if (i != i2 && i != i2 + 1) { // 次大 LCP 没被破坏
-                ans[i] = max(mx2, l);
             } else {
-                ans[i] = l;
+                ans[i] = max(mx2, l);
             }
         }
         return ans;
@@ -502,15 +492,14 @@ func lcp(s, t string) (cnt int) {
 
 func longestCommonPrefix(words []string) []int {
 	n := len(words)
-	mx1, mx2 := -1, -1
-	i1, i2 := -2, -2
+	mx1, mx2, i1 := -1, -1, -2
 	for i := range n - 1 {
 		l := lcp(words[i], words[i+1])
 		if l > mx1 {
-			mx2, i2 = mx1, i1
+			mx2 = mx1
 			mx1, i1 = l, i
 		} else if l > mx2 {
-			mx2, i2 = l, i
+			mx2 = l
 		}
 	}
 
@@ -522,10 +511,8 @@ func longestCommonPrefix(words []string) []int {
 		}
 		if i != i1 && i != i1+1 { // 最大 LCP 没被破坏
 			ans[i] = max(mx1, l)
-		} else if i != i2 && i != i2+1 { // 次大 LCP 没被破坏
-			ans[i] = max(mx2, l)
 		} else {
-			ans[i] = l
+			ans[i] = max(mx2, l)
 		}
 	}
 	return ans

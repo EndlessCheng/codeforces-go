@@ -11,15 +11,14 @@ func lcp(s, t string) (cnt int) {
 
 func longestCommonPrefix(words []string) []int {
 	n := len(words)
-	mx1, mx2 := -1, -1
-	i1, i2 := -2, -2
+	mx1, mx2, i1 := -1, -1, -2
 	for i := range n - 1 {
 		l := lcp(words[i], words[i+1])
 		if l > mx1 {
-			mx2, i2 = mx1, i1
+			mx2 = mx1
 			mx1, i1 = l, i
 		} else if l > mx2 {
-			mx2, i2 = l, i
+			mx2 = l
 		}
 	}
 
@@ -31,10 +30,8 @@ func longestCommonPrefix(words []string) []int {
 		}
 		if i != i1 && i != i1+1 { // 最大 LCP 没被破坏
 			ans[i] = max(mx1, l)
-		} else if i != i2 && i != i2+1 { // 次大 LCP 没被破坏
-			ans[i] = max(mx2, l)
 		} else {
-			ans[i] = l
+			ans[i] = max(mx2, l)
 		}
 	}
 	return ans
