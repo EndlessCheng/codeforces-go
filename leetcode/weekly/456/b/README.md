@@ -1,3 +1,5 @@
+## 方法一：前后缀分解
+
 下文把最长公共前缀记作 LCP。
 
 类似 [238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/)，移除 $\textit{words}[i]$ 后，问题变成：
@@ -17,15 +19,16 @@
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1j6gZzqEdc/?t=10m6s)，欢迎点赞关注~
 
 ```py [sol-Python3]
-class Solution:
-    def lcp(self, s: str, t: str) -> int:
-        cnt = 0
-        for x, y in zip(s, t):
-            if x != y:
-                break
-            cnt += 1
-        return cnt
+@cache  # 避免重复计算
+def lcp(s: str, t: str) -> int:
+    cnt = 0
+    for x, y in zip(s, t):
+        if x != y:
+            break
+        cnt += 1
+    return cnt
 
+class Solution:
     def longestCommonPrefix(self, words: List[str]) -> List[int]:
         n = len(words)
         ans = [0] * n
@@ -35,13 +38,13 @@ class Solution:
         # 后缀 [i,n-1] 中的相邻 LCP 长度的最大值
         suf_max = [0] * n
         for i in range(n - 2, 0, -1):
-            suf_max[i] = max(suf_max[i + 1], self.lcp(words[i], words[i + 1]))
+            suf_max[i] = max(suf_max[i + 1], lcp(words[i], words[i + 1]))
 
         ans[0] = suf_max[1]
         pre_max = 0  # 前缀 [0,i-1] 中的相邻 LCP 长度的最大值
         for i in range(1, n - 1):
-            ans[i] = max(pre_max, self.lcp(words[i - 1], words[i + 1]), suf_max[i + 1])
-            pre_max = max(pre_max, self.lcp(words[i - 1], words[i]))  # 为下一轮循环做准备
+            ans[i] = max(pre_max, lcp(words[i - 1], words[i + 1]), suf_max[i + 1])
+            pre_max = max(pre_max, lcp(words[i - 1], words[i]))  # 为下一轮循环做准备
         ans[-1] = pre_max
         return ans
 ```
@@ -156,6 +159,219 @@ func longestCommonPrefix(words []string) []int {
 
 - 时间复杂度：$\mathcal{O}(L)$，其中 $L\le 10^5$ 是 $\textit{words}[i]$ 的长度之和。每个 $\textit{words}[i]$ 至多参与 $6$ 次（线性时间的）LCP 的计算。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：维护前三大 LCP
+
+遍历所有相邻字符串对，计算 LCP，维护前三大 LCP 长度以及下标（下标取相邻字符串的左边那个）。
+
+然后计算 $\textit{ans}[i]$。设 $\ell$ 为 $\textit{words}[i-1]$ 与 $\textit{words}[i+1]$ 的 LCP 长度。
+
+分类讨论：
+
+- 设最大 LCP 的长度为 $\textit{mx}_1$，下标为 $(i_1,i_1+1)$。如果 $i\ne i_1$ 且 $i\ne i_1+1$，说明最大 LCP 没被破坏，答案为 $\max(\textit{mx}_1,\ell)$。
+- 设次大 LCP 的长度为 $\textit{mx}_2$，下标为 $(i_2,i_2+1)$。如果 $i\ne i_2$ 且 $i\ne i_2+1$，说明次大 LCP 没被破坏，答案为 $\max(\textit{mx}_2,\ell)$。
+- 否则第三大 LCP 一定没被破坏，答案为 $\max(\textit{mx}_3,\ell)$，其中 $\textit{mx}_3$ 为第三大的 LCP 的长度。
+
+```py [sol-Python3]
+@cache  # 不加就是 O(1) 空间，但测试发现，加这个更快（可能有些测试数据有很多重复的字符串）
+def lcp(s: str, t: str) -> int:
+    cnt = 0
+    for x, y in zip(s, t):
+        if x != y:
+            break
+        cnt += 1
+    return cnt
+
+class Solution:
+    def longestCommonPrefix(self, words: List[str]) -> List[int]:
+        n = len(words)
+        ans = [0] * n
+        if n == 1:
+            return ans
+
+        mx1 = mx2 = mx3 = 0
+        i1 = i2 = -1
+        for i in range(n - 1):
+            l = lcp(words[i], words[i + 1])
+            if l > mx1:
+                mx3 = mx2
+                mx2, i2 = mx1, i1
+                mx1, i1 = l, i
+            elif l > mx2:
+                mx3 = mx2
+                mx2, i2 = l, i
+            elif l > mx3:
+                mx3 = l
+
+        for i in range(n):
+            l = lcp(words[i - 1], words[i + 1]) if 0 < i < n - 1 else 0
+            if i != i1 and i != i1 + 1:  # 最大 LCP 没被破坏
+                ans[i] = max(mx1, l)
+            elif i != i2 and i != i2 + 1:  # 次大 LCP 没被破坏
+                ans[i] = max(mx2, l)
+            else:  # 只能是第三大 LCP
+                ans[i] = max(mx3, l)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] longestCommonPrefix(String[] words) {
+        int n = words.length;
+        int[] ans = new int[n];
+        if (n == 1) {
+            return ans;
+        }
+
+        int mx1 = 0, mx2 = 0, mx3 = 0;
+        int i1 = -1, i2 = -1;
+        for (int i = 0; i < n - 1; i++) {
+            int l = lcp(words[i], words[i + 1]);
+            if (l > mx1) {
+                mx3 = mx2;
+                mx2 = mx1;
+                mx1 = l;
+                i2 = i1;
+                i1 = i;
+            } else if (l > mx2) {
+                mx3 = mx2;
+                mx2 = l;
+                i2 = i;
+            } else if (l > mx3) {
+                mx3 = l;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
+            if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
+                ans[i] = Math.max(mx1, l);
+            } else if (i != i2 && i != i2 + 1) { // 次大 LCP 没被破坏
+                ans[i] = Math.max(mx2, l);
+            } else { // 只能是第三大 LCP
+                ans[i] = Math.max(mx3, l);
+            }
+        }
+        return ans;
+    }
+
+    private int lcp(String s, String t) {
+        int n = Math.min(s.length(), t.length());
+        int cnt = 0;
+        for (int i = 0; i < n && s.charAt(i) == t.charAt(i); i++) {
+            cnt++;
+        }
+        return cnt;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    int lcp(const string& s, const string& t) {
+        int n = min(s.size(), t.size());
+        int cnt = 0;
+        for (int i = 0; i < n && s[i] == t[i]; i++) {
+            cnt++;
+        }
+        return cnt;
+    }
+
+public:
+    vector<int> longestCommonPrefix(vector<string>& words) {
+        int n = words.size();
+        vector<int> ans(n);
+        if (n == 1) {
+            return ans;
+        }
+
+        int mx1 = 0, mx2 = 0, mx3 = 0;
+        int i1 = -1, i2 = -1;
+        for (int i = 0; i < n - 1; i++) {
+            int l = lcp(words[i], words[i + 1]);
+            if (l > mx1) {
+                mx3 = mx2;
+                mx2 = mx1;
+                mx1 = l;
+                i2 = i1;
+                i1 = i;
+            } else if (l > mx2) {
+                mx3 = mx2;
+                mx2 = l;
+                i2 = i;
+            } else if (l > mx3) {
+                mx3 = l;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            int l = 0 < i && i < n - 1 ? lcp(words[i - 1], words[i + 1]) : 0;
+            if (i != i1 && i != i1 + 1) { // 最大 LCP 没被破坏
+                ans[i] = max(mx1, l);
+            } else if (i != i2 && i != i2 + 1) { // 次大 LCP 没被破坏
+                ans[i] = max(mx2, l);
+            } else { // 只能是第三大 LCP
+                ans[i] = max(mx3, l);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func lcp(s, t string) (cnt int) {
+	n := min(len(s), len(t))
+	for i := 0; i < n && s[i] == t[i]; i++ {
+		cnt++
+	}
+	return
+}
+
+func longestCommonPrefix(words []string) []int {
+	n := len(words)
+	ans := make([]int, n)
+	if n == 1 {
+		return ans
+	}
+
+	mx1, mx2, mx3 := 0, 0, 0
+	i1, i2 := -1, -1
+	for i := range n - 1 {
+		l := lcp(words[i], words[i+1])
+		if l > mx1 {
+			mx3 = mx2
+			mx2, i2 = mx1, i1
+			mx1, i1 = l, i
+		} else if l > mx2 {
+			mx3 = mx2
+			mx2, i2 = l, i
+		} else if l > mx3 {
+			mx3 = l
+		}
+	}
+
+	for i := range n {
+		l := 0
+		if 0 < i && i < n-1 {
+			l = lcp(words[i-1], words[i+1])
+		}
+		if i != i1 && i != i1+1 { // 最大 LCP 没被破坏
+			ans[i] = max(mx1, l)
+		} else if i != i2 && i != i2+1 { // 次大 LCP 没被破坏
+			ans[i] = max(mx2, l)
+		} else { // 只能是第三大 LCP
+			ans[i] = max(mx3, l)
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(L)$，其中 $L\le 10^5$ 是 $\textit{words}[i]$ 的长度之和。每个 $\textit{words}[i]$ 至多参与 $4$ 次（线性时间的）LCP 的计算。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
 
 ## 专题训练
 

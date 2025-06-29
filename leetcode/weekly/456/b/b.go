@@ -16,6 +16,45 @@ func longestCommonPrefix(words []string) []int {
 		return ans
 	}
 
+	mx1, mx2, mx3 := 0, 0, 0
+	i1, i2 := -1, -1
+	for i := range n - 1 {
+		l := lcp(words[i], words[i+1])
+		if l > mx1 {
+			mx3 = mx2
+			mx2, i2 = mx1, i1
+			mx1, i1 = l, i
+		} else if l > mx2 {
+			mx3 = mx2
+			mx2, i2 = l, i
+		} else if l > mx3 {
+			mx3 = l
+		}
+	}
+
+	for i := range n {
+		l := 0
+		if 0 < i && i < n-1 {
+			l = lcp(words[i-1], words[i+1])
+		}
+		if i != i1 && i != i1+1 { // 最大 LCP 没被破坏
+			ans[i] = max(mx1, l)
+		} else if i != i2 && i != i2+1 { // 次大 LCP 没被破坏
+			ans[i] = max(mx2, l)
+		} else { // 只能是第三大 LCP
+			ans[i] = max(mx3, l)
+		}
+	}
+	return ans
+}
+
+func longestCommonPrefix1(words []string) []int {
+	n := len(words)
+	ans := make([]int, n)
+	if n == 1 {
+		return ans
+	}
+
 	// 后缀 [i,n-1] 中的相邻 LCP 长度的最大值
 	sufMax := make([]int, n)
 	for i := n - 2; i > 0; i-- {
