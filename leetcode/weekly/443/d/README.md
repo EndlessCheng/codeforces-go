@@ -4,7 +4,7 @@
 
 把所有数都变成数组的**中位数**是最优的。
 
-[两种证明方法](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)。
+[证明](https://zhuanlan.zhihu.com/p/1922938031687595039)。
 
 ## 滑动窗口中位数
 

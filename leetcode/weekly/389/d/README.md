@@ -35,7 +35,7 @@
 
 示例 1 的 $k=3$，我们可以枚举 $\textit{pos}$ 的所有长为 $3$ 的子数组，例如 $[0,1,5]$，就好比在坐标轴上的 $0,1,5$ 位置上有 $3$ 个生产商品的工厂，我们要建造一个货仓存放商品，把货仓建在哪里，可以使所有工厂到货仓的距离之和最小？
 
-这个问题叫做「货仓选址」。根据 [中位数贪心及其证明](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)，最优解是把货仓建在工厂位置的**中位数**上。例如 $[0,1,5]$ 中的 $1$，此时距离和等于 $|0-1|+|1-1|+|5-1| = 5$。
+这个问题叫做「货仓选址」。根据 [中位数贪心及其证明](https://zhuanlan.zhihu.com/p/1922938031687595039)，最优解是把货仓建在工厂位置的**中位数**上。例如 $[0,1,5]$ 中的 $1$，此时距离和等于 $|0-1|+|1-1|+|5-1| = 5$。
 
 利用前缀和，可以 $\mathcal{O}(1)$ 地算出子数组元素到其中位数的距离之和，原理请看 [图解](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/)。
 
@@ -236,18 +236,20 @@ func minimumMoves(nums []int, k, maxChanges int) int64 {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
