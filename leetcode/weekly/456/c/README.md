@@ -72,6 +72,8 @@ class Solution:
             # 前面还有 i-1 个子数组，每个子数组长度至少是 1，所以至少留 i-1 个元素给前面
             for l in range(j, i - 2, -1):
                 s ^= nums[l]
+                if s >= res:
+                    continue  # 最优性剪枝：res 不可能变小
                 # 对于单个分割方案，子数组异或和需要取最大值
                 res = min(res, max(dfs(i - 1, l - 1), s))
             return res
@@ -166,7 +168,7 @@ func minXor(nums []int, k int) int {
 和 0-1 背包一样，把第一维去掉，内层循环倒着计算，避免状态被覆盖。原理见 [0-1 背包 完全背包【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
 ```py [sol-Python3]
-# 另见【Python3 更快写法】，避免函数调用和赋值更快
+# 另见【Python3 更快写法】，避免函数调用，减少赋值次数
 min = lambda a, b: b if b < a else a
 max = lambda a, b: b if b > a else a
 
@@ -298,7 +300,7 @@ DP，定义 $\textit{dfs}(i)$ 表示从 $i$ 到 $0$ 的移动步数**集合**。
 ```py [sol-Python3]
 class Solution:
     def minXor(self, nums: List[int], k: int) -> int:
-        s = list(accumulate(nums, xor, initial=0))  # 异或前缀和
+        s = list(accumulate(nums, xor, initial=0))  # 前缀异或和
 
         def check(upper: int) -> bool:
             @cache
@@ -320,6 +322,41 @@ class Solution:
 
 - 时间复杂度：$\mathcal{O}(\frac{n^3}{w}\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$w=32$ 或 $64$，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(\frac{n^2}{w})$。
+
+## 附：Dijkstra 做法
+
+计算从 $(n,k)$ 到 $(0,0)$ 的最短路，建图方式同上，边权为子数组异或和。
+
+这里的「最短路」不是基于加法，而是基于 $\max$ 计算。
+
+```py [sol-Python3]
+max = lambda a, b: b if b > a else a
+
+class Solution:
+    def minXor(self, nums: List[int], k: int) -> int:
+        s = list(accumulate(nums, xor, initial=0))  # 前缀异或和
+
+        h = [(0, len(nums), k)]
+        dis = [[inf] * (k + 1) for _ in s]
+        while True:
+            d, i, k = heappop(h)
+            if d > dis[i][k]:
+                continue
+            if k == 0:
+                if i == 0:
+                    return d
+                continue
+            for j in range(i):
+                new_d = max(d, s[i] ^ s[j])
+                if new_d < dis[j][k - 1]:
+                    dis[j][k - 1] = new_d
+                    heappush(h, (new_d, j, k - 1))
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(M\log M)$，其中 $M=n^2k$。
+- 空间复杂度：$\mathcal{O}(M)$。
 
 ## 专题训练
 
