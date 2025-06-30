@@ -555,7 +555,7 @@ func maxStability(n int, edges [][]int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)\log n\log U)$，其中 $m$ 是 $\textit{edges}$ 的长度，$U=\max(s_i) - \min(s_i)$（常数系数可以忽略）。
+- 时间复杂度：$\mathcal{O}((n+m\log n)\log U)$，其中 $m$ 是 $\textit{edges}$ 的长度，$U=\max(s_i) - \min(s_i)$（常数系数可以忽略）。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 **注**：如果改成建图 + DFS，可以做到 $\mathcal{O}((n+m)\log U)$。
@@ -894,7 +894,7 @@ func maxStability(n int, edges [][]int, k int) int {
 
 ### 写法二
 
-也可以去掉数组 $a$，在 Kruskal 算法的过程中计算答案的最小值
+可以去掉数组 $a$，在 Kruskal 算法的过程中计算答案的最小值。
 
 ```py [sol-Python3]
 class UnionFind:
@@ -1204,7 +1204,7 @@ func maxStability(n int, edges [][]int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(m\log m + (n+m)\log n)$，其中 $m$ 是 $\textit{edges}$ 的长度。瓶颈在排序上。
+- 时间复杂度：$\mathcal{O}(m\log m + n+m\log n)$，其中 $m$ 是 $\textit{edges}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练
