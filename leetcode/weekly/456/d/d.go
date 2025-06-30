@@ -45,10 +45,6 @@ func (u *unionFind) merge(from, to int) bool {
 }
 
 func maxStability(n int, edges [][]int, k int) int {
-	if len(edges) < n-1 { // 图不连通
-		return -1
-	}
-
 	uf := newUnionFind(n)
 	allUf := newUnionFind(n)
 	minS1 := math.MaxInt
@@ -67,28 +63,27 @@ func maxStability(n int, edges [][]int, k int) int {
 		return -1
 	}
 
-	if uf.cc == 1 { // 只需选必选边
+	left := uf.cc - 1
+	if left == 0 { // 只需选必选边
 		return minS1
 	}
 
+	ans := minS1
 	// Kruskal 算法求最大生成树
 	slices.SortFunc(edges, func(a, b []int) int { return b[2] - a[2] })
-	a := []int{}
 	for _, e := range edges {
 		x, y, s, must := e[0], e[1], e[2], e[3]
 		if must == 0 && uf.merge(x, y) {
-			a = append(a, s)
+			if left > k {
+				ans = min(ans, s)
+			} else {
+				ans = min(ans, s*2)
+			}
+			left--
+			if left == 0 { // 已经得到生成树了
+				break
+			}
 		}
-	}
-
-	// 答案为如下三者的最小值：
-	// 1. must = 1 中的最小值
-	// 2. a 中最小边权 * 2
-	// 3. a 中第 k+1 小边权
-	m := len(a)
-	ans := min(minS1, a[m-1]*2)
-	if k < m {
-		ans = min(ans, a[m-1-k])
 	}
 	return ans
 }

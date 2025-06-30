@@ -572,6 +572,8 @@ func maxStability(n int, edges [][]int, k int) int {
 2. 非必选边中的最小边权乘以 $2$。前提条件是 $k>0$，但实际无需判断，因为 $k=0$ 的时候第三种情况更小。
 3. 非必选边中的第 $k+1$ 小边权。
 
+### 写法一
+
 ```py [sol-Python3]
 class UnionFind:
     def __init__(self, n: int):
@@ -885,6 +887,316 @@ func maxStability(n int, edges [][]int, k int) int {
 	ans := min(minS1, a[m-1]*2)
 	if k < m {
 		ans = min(ans, a[m-1-k])
+	}
+	return ans
+}
+```
+
+### 写法二
+
+也可以去掉数组 $a$，在 Kruskal 算法的过程中计算答案的最小值
+
+```py [sol-Python3]
+class UnionFind:
+    def __init__(self, n: int):
+        # 一开始有 n 个集合 {0}, {1}, ..., {n-1}
+        # 集合 i 的代表元是自己
+        self._fa = list(range(n))  # 代表元
+        self.cc = n  # 连通块个数
+
+    # 返回 x 所在集合的代表元
+    # 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+    def find(self, x: int) -> int:
+        # 如果 fa[x] == x，则表示 x 是代表元
+        if self._fa[x] != x:
+            self._fa[x] = self.find(self._fa[x])  # fa 改成代表元
+        return self._fa[x]
+
+    # 把 from 所在集合合并到 to 所在集合中
+    # 返回是否合并成功
+    def merge(self, from_: int, to: int) -> bool:
+        x, y = self.find(from_), self.find(to)
+        if x == y:  # from 和 to 在同一个集合，不做合并
+            return False
+        self._fa[x] = y  # 合并集合。修改后就可以认为 from 和 to 在同一个集合了
+        self.cc -= 1  # 成功合并，连通块个数减一
+        return True
+
+
+class Solution:
+    def maxStability(self, n: int, edges: List[List[int]], k: int) -> int:
+        uf = UnionFind(n)
+        all_uf = UnionFind(n)
+        min_s1 = inf
+        for x, y, s, must in edges:
+            if must:
+                if not uf.merge(x, y):  # 必选边成环
+                    return -1
+                min_s1 = min(min_s1, s)
+            all_uf.merge(x, y)
+
+        if all_uf.cc > 1:  # 图不连通
+            return -1
+
+        left = uf.cc - 1
+        if left == 0:  # 只需选必选边
+            return min_s1
+
+        ans = min_s1
+        # Kruskal 求最大生成树
+        edges.sort(key=lambda e: -e[2])
+        a = []
+        for x, y, s, must in edges:
+            if not must and uf.merge(x, y):
+                ans = min(ans, s if left > k else s * 2)
+                left -= 1
+                if left == 0:  # 已经得到生成树了
+                    break
+        return ans
+```
+
+```java [sol-Java]
+class UnionFind {
+    private final int[] fa; // 代表元
+    public int cc; // 连通块个数
+
+    UnionFind(int n) {
+        // 一开始有 n 个集合 {0}, {1}, ..., {n-1}
+        // 集合 i 的代表元是自己
+        fa = new int[n];
+        for (int i = 0; i < n; i++) {
+            fa[i] = i;
+        }
+        cc = n;
+    }
+
+    // 返回 x 所在集合的代表元
+    // 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+    public int find(int x) {
+        // 如果 fa[x] == x，则表示 x 是代表元
+        if (fa[x] != x) {
+            fa[x] = find(fa[x]); // fa 改成代表元
+        }
+        return fa[x];
+    }
+
+    // 把 from 所在集合合并到 to 所在集合中
+    // 返回是否合并成功
+    public boolean merge(int from, int to) {
+        int x = find(from);
+        int y = find(to);
+        if (x == y) { // from 和 to 在同一个集合，不做合并
+            return false;
+        }
+        fa[x] = y; // 合并集合。修改后就可以认为 from 和 to 在同一个集合了
+        cc--; // 成功合并，连通块个数减一
+        return true;
+    }
+}
+
+class Solution {
+    public int maxStability(int n, int[][] edges, int k) {
+        UnionFind uf = new UnionFind(n);
+        UnionFind allUf = new UnionFind(n);
+        int minS1 = Integer.MAX_VALUE;
+        for (int[] e : edges) {
+            int x = e[0], y = e[1], s = e[2], must = e[3];
+            if (must > 0) {
+                if (!uf.merge(x, y)) { // 必选边成环
+                    return -1;
+                }
+                minS1 = Math.min(minS1, s);
+            }
+            allUf.merge(x, y);
+        }
+
+        if (allUf.cc > 1) { // 图不连通
+            return -1;
+        }
+
+        int left = uf.cc - 1;
+        if (left == 0) { // 只需选必选边
+            return minS1;
+        }
+
+        int ans = minS1;
+        // Kruskal 求最大生成树
+        Arrays.sort(edges, (a, b) -> b[2] - a[2]);
+        List<Integer> a = new ArrayList<>();
+        for (int[] e : edges) {
+            int x = e[0], y = e[1], s = e[2], must = e[3];
+            if (must == 0 && uf.merge(x, y)) {
+                ans = Math.min(ans, left > k ? s : s * 2);
+                left--;
+                if (left == 0) { // 已经得到生成树了
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class UnionFind {
+    vector<int> fa; // 代表元
+
+public:
+    int cc; // 连通块个数
+
+    UnionFind(int n) : fa(n), cc(n) {
+        // 一开始有 n 个集合 {0}, {1}, ..., {n-1}
+        // 集合 i 的代表元是自己
+        ranges::iota(fa, 0);
+    }
+
+    // 返回 x 所在集合的代表元
+    // 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+    int find(int x) {
+        // 如果 fa[x] == x，则表示 x 是代表元
+        if (fa[x] != x) {
+            fa[x] = find(fa[x]); // fa 改成代表元
+        }
+        return fa[x];
+    }
+
+    // 把 from 所在集合合并到 to 所在集合中
+    // 返回是否合并成功
+    bool merge(int from, int to) {
+        int x = find(from), y = find(to);
+        if (x == y) { // from 和 to 在同一个集合，不做合并
+            return false;
+        }
+        fa[x] = y; // 合并集合。修改后就可以认为 from 和 to 在同一个集合了
+        cc--; // 成功合并，连通块个数减一
+        return true;
+    }
+};
+
+class Solution {
+public:
+    int maxStability(int n, vector<vector<int>>& edges, int k) {
+        UnionFind uf(n);
+        UnionFind all_uf(n);
+        int min_s1 = INT_MAX;
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], s = e[2], must = e[3];
+            if (must) {
+                if (!uf.merge(x, y)) { // 必选边成环
+                    return -1;
+                }
+                min_s1 = min(min_s1, s);
+            }
+            all_uf.merge(x, y);
+        }
+
+        if (all_uf.cc > 1) { // 图不连通
+            return -1;
+        }
+
+        int left = uf.cc - 1;
+        if (left == 0) { // 只需选必选边
+            return min_s1;
+        }
+
+        int ans = min_s1;
+        // Kruskal 求最大生成树
+        ranges::sort(edges, {}, [](auto& e) { return -e[2]; });
+        vector<int> a;
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], s = e[2], must = e[3];
+            if (!must && uf.merge(x, y)) {
+                ans = min(ans, left > k ? s : s * 2);
+                left--;
+                if (left == 0) { // 已经得到生成树了
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+type unionFind struct {
+	fa []int // 代表元
+	cc int   // 连通块个数
+}
+
+func newUnionFind(n int) unionFind {
+	fa := make([]int, n)
+	// 一开始有 n 个集合 {0}, {1}, ..., {n-1}
+	// 集合 i 的代表元是自己
+	for i := range fa {
+		fa[i] = i
+	}
+	return unionFind{fa, n}
+}
+
+// 返回 x 所在集合的代表元
+// 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+func (u unionFind) find(x int) int {
+	// 如果 fa[x] == x，则表示 x 是代表元
+	if u.fa[x] != x {
+		u.fa[x] = u.find(u.fa[x]) // fa 改成代表元
+	}
+	return u.fa[x]
+}
+
+// 把 from 所在集合合并到 to 所在集合中
+// 返回是否合并成功
+func (u *unionFind) merge(from, to int) bool {
+	x, y := u.find(from), u.find(to)
+	if x == y { // from 和 to 在同一个集合，不做合并
+		return false
+	}
+	u.fa[x] = y // 合并集合。修改后就可以认为 from 和 to 在同一个集合了
+	u.cc--      // 成功合并，连通块个数减一
+	return true
+}
+
+func maxStability(n int, edges [][]int, k int) int {
+	uf := newUnionFind(n)
+	allUf := newUnionFind(n)
+	minS1 := math.MaxInt
+	for _, e := range edges {
+		x, y, s, must := e[0], e[1], e[2], e[3]
+		if must > 0 {
+			if !uf.merge(x, y) { // 必选边成环
+				return -1
+			}
+			minS1 = min(minS1, s)
+		}
+		allUf.merge(x, y)
+	}
+
+	if allUf.cc > 1 { // 图不连通
+		return -1
+	}
+
+	left := uf.cc - 1
+	if left == 0 { // 只需选必选边
+		return minS1
+	}
+
+	ans := minS1
+	// Kruskal 算法求最大生成树
+	slices.SortFunc(edges, func(a, b []int) int { return b[2] - a[2] })
+	for _, e := range edges {
+		x, y, s, must := e[0], e[1], e[2], e[3]
+		if must == 0 && uf.merge(x, y) {
+			if left > k {
+				ans = min(ans, s)
+			} else {
+				ans = min(ans, s*2)
+			}
+			left--
+			if left == 0 { // 已经得到生成树了
+				break
+			}
+		}
 	}
 	return ans
 }
