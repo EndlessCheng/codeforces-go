@@ -376,7 +376,7 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 枚举第一个子串的长度 $3,4,5$：
 
-- 长为 $3$ 的子串，设其中字母分别为 $a,b,c$，不妨设 $a\le b\le c$，根据 [中位数贪心及其证明](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)，把所有数变成中位数 $b$ 是最优的，最小操作次数为 $(c-b)+(b-a)=c-a$。
+- 长为 $3$ 的子串，设其中字母分别为 $a,b,c$，不妨设 $a\le b\le c$，根据 [中位数贪心及其证明](https://zhuanlan.zhihu.com/p/1922938031687595039)，把所有数变成中位数 $b$ 是最优的，最小操作次数为 $(c-b)+(b-a)=c-a$。
 - 长为 $4$ 的子串，设其中字母分别为 $a,b,c,d$，不妨设 $a\le b\le c\le d$，同理可得最小操作次数为 $c+d-a-b$，都变成 $b$。注意变成 $b$ 到 $c$ 中的字母操作次数都是最小的，由于本题要求答案字典序最小，所以变成 $b$。
 - 长为 $5$ 的子串，设其中字母分别为 $a,b,c,d,e$，不妨设 $a\le b\le c\le d\le e$，同理可得最小操作次数为 $d+e-a-b$，都变成 $c$。
 
@@ -961,7 +961,7 @@ func minCostGoodCaption(s string) string {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。这个算法也可以理解成是一个 $\mathcal{O}(nk^2)$ 或者 $\mathcal{O}(nk^2\log k)$ 的算法，其中 $k=3$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-更多相似题目，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**五、状态机 DP**」「**§6.2 最优划分**」「**§7.5 多维 DP**」和「**专题：输出具体方案**」。
+更多相似题目，见下面动态规划题单中的「**六、状态机 DP**」「**§5.2 最优划分**」「**§7.6 多维 DP**」和「**专题：输出具体方案**」。
 
 ## 分类题单
 
@@ -972,8 +972,8 @@ func minCostGoodCaption(s string) string {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
