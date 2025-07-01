@@ -1,11 +1,13 @@
 package copypasta
 
 import (
+	"cmp"
 	"fmt"
 	"io"
 	"math"
 	"math/big"
 	"math/rand"
+	"slices"
 	"sort"
 )
 
@@ -1006,17 +1008,19 @@ func _(abs func(int) int) {
 	// https://en.wikipedia.org/wiki/Convex_hull_algorithms
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的整点凸多边形的顶点数为 O(M^(2/3)) 个
-	// 模板题 https://www.luogu.com.cn/problem/P2742 
+	//
+	// https://www.luogu.com.cn/problem/P2742 模板题
 	// - LC587 https://leetcode.cn/problems/erect-the-fence/
 	// LC3494 https://leetcode.cn/problems/find-the-minimum-amount-of-time-to-brew-potions/
+	// https://codeforces.com/problemset/problem/1017/E 2400
+	// https://codeforces.com/problemset/problem/1142/C 2400
+	// https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A 限制区间长度的区间最大均值问题
+	// https://atcoder.jp/contests/abc275/tasks/abc275_g 转换（求二维完全背包极限 lim_{maxW->∞} dp[maxW]/maxW）
 	// 构造 LCP15 https://leetcode.cn/problems/you-le-yuan-de-mi-gong/
-	// 转换 https://codeforces.com/problemset/problem/1142/C
-	// 限制区间长度的区间最大均值问题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
-	// 转换（求二维完全背包极限 lim_{maxW->∞} dp[maxW]/maxW）https://atcoder.jp/contests/abc275/tasks/abc275_g
 	// todo poj 2187 1113 1912 3608 2079 3246 3689
 	convexHull := func(ps []vec) (q []vec) {
-		//slices.SortFunc(ps, func(a, b vec) int { return cmp.Or(a.x-b.x, a.y-b.y) })
-		sort.Slice(ps, func(i, j int) bool { return ps[i].less(ps[j]) })
+		slices.SortFunc(ps, func(a, b vec) int { return cmp.Or(a.x-b.x, a.y-b.y) })
+		//sort.Slice(ps, func(i, j int) bool { return ps[i].less(ps[j]) })
 		// 下凸包（从左到右）
 		for _, p := range ps {
 			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
@@ -1051,6 +1055,20 @@ func _(abs func(int) int) {
 			q = append(q, p)
 		}
 		return
+	}
+
+	// 凸包的本质
+	// 边长 - 夹角 - 边长 - 夹角 - 边长 - ……   最后一个边长可以省略，无需连成环
+	// https://codeforces.com/problemset/problem/1017/E 2400
+	convexHullHash := func(a []vec) []int {
+		// 输入的 a 必须是凸包，且至少有两个点
+		res := make([]int, 1, len(a)*2-3)
+		res[0] = a[1].sub(a[0]).len2()
+		for i := 2; i < len(a); i++ {
+			v := a[i].sub(a[i-1])
+			res = append(res, a[i-1].sub(a[i-2]).det(v), v.len2())
+		}
+		return res
 	}
 
 	// 动态凸包
@@ -1368,7 +1386,7 @@ func _(abs func(int) int) {
 	_ = []any{
 		readVec, leftMostVec, rightMostVec,
 		readPolygon, polygonArea,
-		convexHull, convexHull2, dynamicConvexHull,
+		convexHull, convexHull2, convexHullHash, dynamicConvexHull,
 		rotatingCalipers, convexHullPerimeter,
 		halfPlanesIntersection,
 		inTriangle, inConvexPolygon, inAnyPolygon,
