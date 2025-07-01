@@ -161,7 +161,7 @@ func longestCommonPrefix(words []string) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(L)$，其中 $L\le 10^5$ 是 $\textit{words}[i]$ 的长度之和。每个 $\textit{words}[i]$ 至多参与 $6$ 次（线性时间的）LCP 的计算。
+- 时间复杂度：$\mathcal{O}(L)$，其中 $L\le 10^5$ 是 $\textit{words}[i]$ 的长度之和。每个 $\textit{words}[i]$ 至多参与 $6$ 次（线性时间的）LCP 的计算。（Python 用了 `@cache`，至多 $4$ 次）
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 方法二：维护前三大 LCP
@@ -359,6 +359,11 @@ func longestCommonPrefix(words []string) []int {
 	return ans
 }
 ```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(L)$，其中 $L\le 10^5$ 是 $\textit{words}[i]$ 的长度之和。每个 $\textit{words}[i]$ 至多参与 $4$ 次（线性时间的）LCP 的计算。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
 
 ## 方法三：维护前二大 LCP
 
