@@ -13,7 +13,7 @@ func newMinStack() minStack {
 	return minStack{{0, math.MaxInt}} // 栈底哨兵
 }
 
-func (st minStack) getMin() int {
+func (st minStack) min() int {
 	return st[len(st)-1].preMin
 }
 
@@ -22,7 +22,7 @@ func (st minStack) empty() bool {
 }
 
 func (st *minStack) push(v int) {
-	*st = append(*st, minStPair{v, min(st.getMin(), v)})
+	*st = append(*st, minStPair{v, min(st.min(), v)})
 }
 
 func (st *minStack) pop() int {
@@ -68,7 +68,7 @@ func (q *minDeque) rebalance() {
 
 // 如果 q 是空的，返回 math.MaxInt
 func (q minDeque) getMin() int {
-	return min(q.l.getMin(), q.r.getMin())
+	return min(q.l.min(), q.r.min())
 }
 
 func (q minDeque) empty() bool {
