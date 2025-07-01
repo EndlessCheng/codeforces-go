@@ -245,33 +245,35 @@ func _() {
 	//       LC1392 https://leetcode.cn/problems/longest-happy-prefix/
 	//       LC3036 https://leetcode.cn/problems/number-of-subarrays-that-match-a-pattern-ii/ 
 	//       LC3037 https://leetcode.cn/problems/find-pattern-in-infinite-stream-ii/
-	// LC3008 https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ 2016 *二分/双指针找最近下标
+	// LC3008 https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ *二分/双指针找最近下标
 	// LC686 https://leetcode.cn/problems/repeated-string-match/
 	// - a 复制 k 或 k+1 份，k=(len(b)-1)/len(a)+1
-	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
-	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/ 1837
+	// LC214 https://leetcode.cn/problems/shortest-palindrome/ 最长回文前缀
+	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
 	// https://codeforces.com/problemset/problem/1137/B 1600 构造
 	// https://codeforces.com/problemset/problem/126/B 1700
 	// https://codeforces.com/problemset/problem/471/D 1800
 	// https://codeforces.com/problemset/problem/1269/B ~1800 做到 O(nlogn)
-	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B 2000
-	// 与计数 DP 结合 https://codeforces.com/problemset/problem/494/B 2000
+	// https://codeforces.com/problemset/problem/346/B 2000 与 LCS 结合
+	// https://codeforces.com/problemset/problem/494/B 2000 与计数 DP 结合
 	// https://codeforces.com/problemset/problem/1200/E 2000
-	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C 2000
-	// 与 DP 结合 https://codeforces.com/problemset/problem/1163/D 2100
+	// https://codeforces.com/problemset/problem/615/C 2000 最大匹配个数
+	// https://codeforces.com/problemset/problem/1163/D 2100 与 DP 结合
 	// https://codeforces.com/problemset/problem/526/D 2200
 	// https://codeforces.com/problemset/problem/954/I 2200
 	// https://codeforces.com/problemset/problem/1003/F 2200
-	// 构造 t+"#"+s https://codeforces.com/problemset/problem/25/E 2200
+	// https://codeforces.com/problemset/problem/25/E 2200 构造 t+"#"+s
 	// - 不加 # 的话会面临 "cabc"+"abca" 这样的例子，算出的 border 是 "cabca"
-	// - LC2800 https://leetcode.cn/problems/shortest-string-that-contains-three-strings/ 1856
-	// todo 与 DP 结合 https://codeforces.com/problemset/problem/808/G 2300
-	// LC1397 与数位 DP 结合 https://leetcode.cn/problems/find-all-good-strings/ 2667
+	// - LC2800 https://leetcode.cn/problems/shortest-string-that-contains-three-strings/
+	// https://codeforces.com/problemset/problem/808/G 2300 与 DP 结合 
+	// https://codeforces.com/problemset/problem/1017/E 2400 在循环同构字符串 s 中查找 t，等价于在 s+(s[:n-1]) 中查找 t 
+	// - 特别地，如果要判断两个字符串是否循环同构，可以用最小表示法，做到 O(1) 额外空间
+	// - LC2851 https://leetcode.cn/problems/string-transformation/
+	// LC1397 https://leetcode.cn/problems/find-all-good-strings/ 与数位 DP 结合
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
-	// - https://oj.socoding.cn/p/1446 
+	// - https://oj.socoding.cn/p/1446
 	// - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
-	// 在循环同构字符串 s 中查找 t，等价于在 s+(s[:n-1]) 中查找 t 
-	// - LC2851 https://leetcode.cn/problems/string-transformation/ 2858
+
 	// https://www.lanqiao.cn/problems/5132/learning/?contest_id=144
 	// todo https://www.luogu.com.cn/problem/P4391
 	//  https://www.luogu.com.cn/problem/UVA10298
@@ -491,9 +493,13 @@ func _() {
 	// 找到位置 i，从这个位置输出即得到字典序最小的串
 	// https://oi-wiki.org/string/minimal-string/
 	// 其他方法 https://codeforces.com/blog/entry/90035
+	//
 	// 模板题 https://www.luogu.com.cn/problem/P1368 http://poj.org/problem?id=1509 https://codeforces.com/gym/103585/problem/K
-	// https://codeforces.com/problemset/problem/496/B
-	// LC1163 非循环的情况 https://leetcode.cn/problems/last-substring-in-lexicographical-order/
+	// https://codeforces.com/problemset/problem/496/B 非暴力做法
+	// 应用：判断两个字符串是否循环同构
+	// - 都转成最小表示，看是否一样
+	// https://codeforces.com/problemset/problem/1017/E 2400
+	// LC1163 https://leetcode.cn/problems/last-substring-in-lexicographical-order/ 非循环的情况
 	smallestRepresentation := func(s string) string {
 		n := len(s)
 		s += s
