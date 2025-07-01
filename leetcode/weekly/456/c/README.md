@@ -1,4 +1,4 @@
-⚠**注意**：本题看上去可以二分答案，但由于异或和没有单调性，二分答案仍然要写 DP，那还不如直接写 DP 呢。
+⚠**注意**：本题可以二分答案，但由于异或和没有单调性，二分答案仍然要写 DP，那还不如直接写 DP 呢。
 
 和 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**§5.3 约束划分个数**」是一个套路：
 
@@ -49,7 +49,7 @@ class Solution:
                 # 枚举所有分割方案，取最小值
                 for l in range(j - 1, i - 2, -1):
                     s ^= nums[l]
-                    # 对于单个分割方案，子数组异或和需要取最大值
+                    # 对于单个分割方案，子数组异或和要取最大值
                     f[i][j] = min(f[i][j], max(f[i - 1][l], s))
         return f[k][n]
 ```
@@ -74,7 +74,7 @@ class Solution:
                 s ^= nums[l]
                 if s >= res:
                     continue  # 最优性剪枝：res 不可能变小
-                # 对于单个分割方案，子数组异或和需要取最大值
+                # 对于单个分割方案，子数组异或和要取最大值
                 res = min(res, max(dfs(i - 1, l - 1), s))
             return res
         return dfs(k, len(nums) - 1)
@@ -95,7 +95,7 @@ class Solution {
                 // 枚举所有分割方案，取最小值
                 for (int l = j - 1; l >= i - 1; l--) {
                     s ^= nums[l];
-                    // 对于单个分割方案，子数组异或和需要取最大值
+                    // 对于单个分割方案，子数组异或和要取最大值
                     res = Math.min(res, Math.max(f[i - 1][l], s));
                 }
                 f[i][j] = res;
@@ -120,7 +120,7 @@ public:
                 // 枚举所有分割方案，取最小值
                 for (int l = j - 1; l >= i - 1; l--) {
                     s ^= nums[l];
-                    // 对于单个分割方案，子数组异或和需要取最大值
+                    // 对于单个分割方案，子数组异或和要取最大值
                     f[i][j] = min(f[i][j], max(f[i - 1][l], s));
                 }
             }
@@ -148,7 +148,7 @@ func minXor(nums []int, k int) int {
 			// 枚举所有分割方案，取最小值
 			for l := j - 1; l >= i-1; l-- {
 				s ^= nums[l]
-				// 对于单个分割方案，子数组异或和需要取最大值
+				// 对于单个分割方案，子数组异或和要取最大值
 				res = min(res, max(f[i-1][l], s))
 			}
 			f[i][j] = res
@@ -289,7 +289,7 @@ func minXor(nums []int, k int) int {
 
 DP，定义 $\textit{dfs}(i)$ 表示从 $i$ 到 $0$ 的移动步数**集合**。比如从 $5$ 到 $0$ 可以移动 $1,3,4$ 步，那么 $\textit{dfs}(5) = \{1,3,4\}$。
 
-如果可以从 $i$ 移动到 $j$，那么把 $\textit{dfs}(j)$ 中的每个数加一，合并到 $\textit{dfs}(i)$ 中。
+如果可以从 $i$ 移动到 $j$，那么把 $\textit{dfs}(j)$ 中的每个数加一，并到 $\textit{dfs}(i)$ 中。
 
 递归边界：$\textit{dfs}(0)=\{0\}$。
 
