@@ -61,13 +61,13 @@ public:
 ```go [sol-Go]
 func partitionString(s string) (ans []string) {
 	vis := map[string]bool{}
-	t := ""
-	for _, c := range s {
-		t += string(c)
+	left := 0
+	for i := range s {
+		t := s[left : i+1]
 		if !vis[t] {
 			vis[t] = true
 			ans = append(ans, t)
-			t = ""
+			left = i + 1
 		}
 	}
 	return
@@ -87,14 +87,13 @@ func partitionString(s string) (ans []string) {
 class Solution:
     def partitionString(self, s: str) -> List[str]:
         ans = []
-        t = []
         cur = root = {}
-        for c in s:
-            t.append(c)
+        left = 0
+        for i, c in enumerate(s):
             if c not in cur:  # 无路可走？
                 cur[c] = {}  # 那就造路！
-                ans.append(''.join(t))
-                t.clear()  # 重置
+                ans.append(s[left: i + 1])
+                left = i + 1
                 cur = root  # 重置
             else:
                 cur = cur[c]
@@ -109,16 +108,15 @@ class Solution {
         }
 
         List<String> ans = new ArrayList<>();
-        StringBuilder t = new StringBuilder();
         Node root = new Node();
         Node cur = root;
-        for (char c : s.toCharArray()) {
-            t.append(c);
-            c -= 'a';
+        int left = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int c = s.charAt(i) - 'a';
             if (cur.son[c] == null) { // 无路可走？
                 cur.son[c] = new Node(); // 那就造路！
-                ans.add(t.toString());
-                t.setLength(0); // 重置
+                ans.add(s.substring(left, i + 1));
+                left = i + 1;
                 cur = root; // 重置
             } else {
                 cur = cur.son[c];
@@ -138,16 +136,15 @@ class Solution {
 public:
     vector<string> partitionString(string s) {
         vector<string> ans;
-        string t;
         Node* root = new Node();
         Node* cur = root;
-        for (char c : s) {
-            t += c;
-            c -= 'a';
+        int left = 0;
+        for (int i = 0; i < s.size(); i++) {
+            int c = s[i] - 'a';
             if (cur->son[c] == nullptr) { // 无路可走？
                 cur->son[c] = new Node(); // 那就造路！
-                ans.push_back(t);
-                t.clear(); // 重置
+                ans.push_back(s.substr(left, i - left + 1));
+                left = i + 1;
                 cur = root; // 重置
             } else {
                 cur = cur->son[c];
@@ -163,14 +160,13 @@ func partitionString(s string) (ans []string) {
 	type node struct{ son [26]*node }
 	root := &node{}
 	cur := root
-	t := []byte{}
-	for _, c := range s {
-		t = append(t, byte(c))
+	left := 0
+	for i, c := range s {
 		c -= 'a'
 		if cur.son[c] == nil { // 无路可走？
 			cur.son[c] = &node{} // 那就造路！
-			ans = append(ans, string(t))
-			t = t[:0]  // 重置
+			ans = append(ans, s[left:i+1])
+			left = i + 1
 			cur = root // 重置
 		} else {
 			cur = cur.son[c]
