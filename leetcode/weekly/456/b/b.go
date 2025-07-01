@@ -1,12 +1,14 @@
 package main
 
 // https://space.bilibili.com/206214
-func lcp(s, t string) (cnt int) {
+func lcp(s, t string) int {
 	n := min(len(s), len(t))
-	for i := 0; i < n && s[i] == t[i]; i++ {
-		cnt++
+	for i := range n {
+		if s[i] != t[i] {
+			return i
+		}
 	}
-	return
+	return n
 }
 
 func longestCommonPrefix(words []string) []int {

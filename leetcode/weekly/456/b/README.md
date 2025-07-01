@@ -76,11 +76,12 @@ class Solution {
 
     private int lcp(String s, String t) {
         int n = Math.min(s.length(), t.length());
-        int cnt = 0;
-        for (int i = 0; i < n && s.charAt(i) == t.charAt(i); i++) {
-            cnt++;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                return i;
+            }
         }
-        return cnt;
+        return n;
     }
 }
 ```
@@ -89,11 +90,12 @@ class Solution {
 class Solution {
     int lcp(const string& s, const string& t) {
         int n = min(s.size(), t.size());
-        int cnt = 0;
-        for (int i = 0; i < n && s[i] == t[i]; i++) {
-            cnt++;
+        for (int i = 0; i < n; i++) {
+            if (s[i] != t[i]) {
+                return i;
+            }
         }
-        return cnt;
+        return n;
     }
 
 public:
@@ -123,12 +125,14 @@ public:
 ```
 
 ```go [sol-Go]
-func lcp(s, t string) (cnt int) {
+func lcp(s, t string) int {
 	n := min(len(s), len(t))
-	for i := 0; i < n && s[i] == t[i]; i++ {
-		cnt++
+	for i := range n {
+		if s[i] != t[i] {
+			return i
+		}
 	}
-	return
+	return n
 }
 
 func longestCommonPrefix(words []string) []int {
@@ -249,11 +253,12 @@ class Solution {
 
     private int lcp(String s, String t) {
         int n = Math.min(s.length(), t.length());
-        int cnt = 0;
-        for (int i = 0; i < n && s.charAt(i) == t.charAt(i); i++) {
-            cnt++;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                return i;
+            }
         }
-        return cnt;
+        return n;
     }
 }
 ```
@@ -262,11 +267,12 @@ class Solution {
 class Solution {
     int lcp(const string& s, const string& t) {
         int n = min(s.size(), t.size());
-        int cnt = 0;
-        for (int i = 0; i < n && s[i] == t[i]; i++) {
-            cnt++;
+        for (int i = 0; i < n; i++) {
+            if (s[i] != t[i]) {
+                return i;
+            }
         }
-        return cnt;
+        return n;
     }
 
 public:
@@ -308,12 +314,14 @@ public:
 ```
 
 ```go [sol-Go]
-func lcp(s, t string) (cnt int) {
+func lcp(s, t string) int {
 	n := min(len(s), len(t))
-	for i := 0; i < n && s[i] == t[i]; i++ {
-		cnt++
+	for i := range n {
+		if s[i] != t[i] {
+			return i
+		}
 	}
-	return
+	return n
 }
 
 func longestCommonPrefix(words []string) []int {
@@ -432,11 +440,12 @@ class Solution {
 
     private int lcp(String s, String t) {
         int n = Math.min(s.length(), t.length());
-        int cnt = 0;
-        for (int i = 0; i < n && s.charAt(i) == t.charAt(i); i++) {
-            cnt++;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                return i;
+            }
         }
-        return cnt;
+        return n;
     }
 }
 ```
@@ -445,11 +454,12 @@ class Solution {
 class Solution {
     int lcp(const string& s, const string& t) {
         int n = min(s.size(), t.size());
-        int cnt = 0;
-        for (int i = 0; i < n && s[i] == t[i]; i++) {
-            cnt++;
+        for (int i = 0; i < n; i++) {
+            if (s[i] != t[i]) {
+                return i;
+            }
         }
-        return cnt;
+        return n;
     }
 
 public:
@@ -482,12 +492,14 @@ public:
 ```
 
 ```go [sol-Go]
-func lcp(s, t string) (cnt int) {
+func lcp(s, t string) int {
 	n := min(len(s), len(t))
-	for i := 0; i < n && s[i] == t[i]; i++ {
-		cnt++
+	for i := range n {
+		if s[i] != t[i] {
+			return i
+		}
 	}
-	return
+	return n
 }
 
 func longestCommonPrefix(words []string) []int {
