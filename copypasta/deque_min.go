@@ -37,13 +37,17 @@ func (st minStack) top() int {
 
 // 最小双端队列
 // 用两个最小栈底对底
-// 时间复杂度：均摊 O(1)，见 https://codeforces.com/blog/entry/122003
 type minDeque struct{ l, r minStack }
 
 func newMinDeque() minDeque {
 	return minDeque{newMinStack(), newMinStack()}
 }
 
+// 时间复杂度：均摊 O(1)    
+// 定义势能函数为 abs(l.size() - r.size())
+// 一开始势能是 0
+// 左右入队最多把势能增大 1
+// 而 rebalance 会把势能减少至 0 或者 1
 func (q *minDeque) rebalance() {
 	if q.r.empty() {
 		q.l, q.r = q.r, q.l
