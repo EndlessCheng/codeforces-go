@@ -558,7 +558,7 @@ func maxStability(n int, edges [][]int, k int) int {
 - 时间复杂度：$\mathcal{O}((n+m\log n)\log U)$，其中 $m$ 是 $\textit{edges}$ 的长度，$U=\max(s_i) - \min(s_i)$（常数系数可以忽略）。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-**注**：如果改成建图 + DFS，可以做到 $\mathcal{O}((n+m)\log U)$。
+**注**：缩点建图 + DFS/BFS 判断是否连通，可以做到 $\mathcal{O}((n+m)\log U)$。
 
 ## 方法二：Kruskal 算法
 
