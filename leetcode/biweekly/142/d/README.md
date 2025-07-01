@@ -37,11 +37,13 @@ $$
 
 我们至多选 $k-1$ 个物品（$<k$ 即 $\le k-1$），其中每组都提前选了 $1$ 个物品，最终，我们需要计算的是：至多选 $(k-1)-m$ 个物品的方案数。
 
-根据「寻找子问题」中的讨论，定义 $f[i][j]$ 表示从前 $i$ 种物品中选**恰好** $j$ 个物品的方案数。
+根据「寻找子问题」中的讨论，定义 $f[i][j]$ 表示从前 $i$ 种物品中选**至多** $j$ 个物品的方案数。
 
-初始值 $f[0][0]=1$，什么也不选，算一种方案。在示例 1 中，这对应字符串 $\texttt{abcd}$。
+初始值 $f[0][j]=1$，只能什么也不选，算一种方案。在示例 1 中，这对应字符串 $\texttt{abcd}$。
 
-假设第 $i$ 种物品有 $c$ 个，枚举选 $L=0,1,2,\ldots,c$ 个物品，问题变成从前 $i-1$ 种物品中选恰好 $j-L$ 个物品的方案数，即 $f[i-1][j-L]$。
+答案为 $f[m][k-1-m]$。
+
+假设第 $i$ 种物品有 $c$ 个，枚举选 $L=0,1,2,\ldots,c$ 个物品，问题变成从前 $i-1$ 种物品中选至多 $j-L$ 个物品的方案数，即 $f[i-1][j-L]$。
 
 累加得
 
@@ -55,21 +57,19 @@ $$
 f[i][j] = \sum_{p=\max(j-c, 0)}^{j} f[i-1][p]
 $$
 
-### 前缀和优化
-
-定义 $f[i-1]$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组为 $s$，上式等价于
+和式是 $f[i-1]$ 的子数组和。定义 $f[i-1]$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组为 $s$，上式简化为
 
 $$
 f[i][j] = s[j+1] - s[\max(j-c, 0)]
 $$
 
-设一共有 $m$ 组，那么至多选 $k-1-m$ 个物品的方案总数为 $\sum\limits_{j=0}^{k-1-m}f[m][j]$。
+### 细节
 
-特别地，如果 $n<k$（$n$ 为 $\textit{word}$ 的长度），无法满足要求，直接返回 $0$。
+如果 $n<k$（$n$ 为 $\textit{word}$ 的长度），无法满足「长度至少为 $k$」的要求，直接返回 $0$。
 
-特别地，如果 $m\ge k$，那么长度小于 $k$ 的原串个数为 $0$，直接返回各组长度的乘积。
+如果 $m\ge k$，那么长度小于 $k$ 的原串个数为 $0$，直接返回「不考虑 $k$ 的原串个数」。
 
-实现时 $i=0$ 表示第 $1$ 组，$i=1$ 表示第 $2$ 组，依此类推，$f$ 第一维的下标要加一。
+注意计算 DP 时，下标 $i$ 是从 $0$ 开始的，状态定义中的 $i$ 是从 $1$ 开始的。$i=0$ 表示第 $1$ 组，$i=1$ 表示第 $2$ 组，依此类推。所以 $f$ 第一维的下标要加一，实际计算的是 $f[i+1][j]$。
 
 代码中用到了一些取模的细节，原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
@@ -101,14 +101,14 @@ class Solution:
             return ans
 
         f = [[0] * k for _ in range(len(cnts) + 1)]
-        f[0][0] = 1
+        f[0] = [1] * k
         for i, c in enumerate(cnts):
             # 计算 f[i] 的前缀和数组 s
             s = list(accumulate(f[i], initial=0))
             # 计算子数组和
             for j in range(k):
                 f[i + 1][j] = (s[j + 1] - s[max(j - c, 0)]) % MOD
-        return (ans - sum(f[-1])) % MOD
+        return (ans - f[-1][-1]) % MOD
 ```
 
 ```java [sol-Java]
@@ -144,7 +144,7 @@ class Solution {
 
         int m = cnts.size();
         int[][] f = new int[m + 1][k];
-        f[0][0] = 1;
+        Arrays.fill(f[0], 1);
         int[] s = new int[k + 1];
         for (int i = 0; i < m; i++) {
             // 计算 f[i] 的前缀和数组 s
@@ -158,10 +158,7 @@ class Solution {
             }
         }
 
-        for (int x : f[m]) {
-            ans -= x;
-        }
-        return (int) ((ans % MOD + MOD) % MOD); // 保证结果非负
+        return (int) ((ans - f[m][k - 1] + MOD) % MOD); // 保证结果非负
     }
 }
 ```
@@ -200,7 +197,7 @@ public:
 
         int m = cnts.size();
         vector f(m + 1, vector<int>(k));
-        f[0][0] = 1;
+        ranges::fill(f[0], 1);
         vector<int> s(k + 1);
         for (int i = 0; i < m; i++) {
             // 计算 f[i] 的前缀和数组 s
@@ -213,8 +210,7 @@ public:
             }
         }
 
-        ans -= reduce(f[m].begin(), f[m].end(), 0LL);
-        return (ans % MOD + MOD) % MOD; // 保证结果非负
+        return (ans - f[m][k - 1] + MOD) % MOD; // 保证结果非负
     }
 };
 ```
@@ -253,23 +249,23 @@ func possibleStringCount(word string, k int) int {
 	for i := range f {
 		f[i] = make([]int, k)
 	}
-	f[0][0] = 1
+	for i := range f[0] {
+		f[0][i] = 1
+	}
+
 	s := make([]int, k+1)
 	for i, c := range cnts {
 		// 计算 f[i] 的前缀和数组 s
 		for j, v := range f[i] {
-			s[j+1] = (s[j] + v) % mod
+			s[j+1] = s[j] + v
 		}
 		// 计算子数组和
 		for j := range f[i+1] {
-			f[i+1][j] = s[j+1] - s[max(j-c, 0)]
+			f[i+1][j] = (s[j+1] - s[max(j-c, 0)]) % mod
 		}
 	}
 
-	for _, v := range f[m] {
-		ans -= v
-	}
-	return (ans%mod + mod) % mod // 保证结果非负
+	return (ans - f[m][k-1] + mod) % mod // 保证结果非负
 }
 ```
 
@@ -311,8 +307,7 @@ class Solution:
         if k <= 0:
             return ans
 
-        f = [0] * k
-        f[0] = 1
+        f = [1] * k
         for c in cnts:
             # 原地计算 f 的前缀和
             for j in range(1, k):
@@ -320,7 +315,7 @@ class Solution:
             # 计算子数组和
             for j in range(k - 1, c, -1):
                 f[j] -= f[j - c - 1]
-        return (ans - sum(f)) % MOD
+        return (ans - f[-1]) % MOD
 ```
 
 ```java [sol-Java]
@@ -355,7 +350,7 @@ class Solution {
         }
 
         int[] f = new int[k];
-        f[0] = 1;
+        Arrays.fill(f, 1);
         for (int c : cnts) {
             // 原地计算 f 的前缀和
             for (int j = 1; j < k; j++) {
@@ -367,10 +362,7 @@ class Solution {
             }
         }
 
-        for (int x : f) {
-            ans -= x;
-        }
-        return (int) ((ans % MOD + MOD) % MOD); // 保证结果非负
+        return (int) ((ans - f[k - 1] + MOD) % MOD); // 保证结果非负
     }
 }
 ```
@@ -407,8 +399,7 @@ public:
             return ans;
         }
 
-        vector<int> f(k);
-        f[0] = 1;
+        vector<int> f(k, 1);
         for (int c : cnts) {
             // 原地计算 f 的前缀和
             for (int j = 1; j < k; j++) {
@@ -420,8 +411,7 @@ public:
             }
         }
 
-        ans -= reduce(f.begin(), f.end(), 0LL);
-        return (ans % MOD + MOD) % MOD; // 保证结果非负
+        return (ans - f[k - 1] + MOD) % MOD; // 保证结果非负
     }
 };
 ```
@@ -456,7 +446,9 @@ func possibleStringCount(word string, k int) int {
 	}
 
 	f := make([]int, k)
-	f[0] = 1
+	for i := range f {
+		f[i] = 1
+	}
 	for _, c := range cnts {
 		// 原地计算 f 的前缀和
 		for j := 1; j < k; j++ {
@@ -468,10 +460,7 @@ func possibleStringCount(word string, k int) int {
 		}
 	}
 
-	for _, x := range f {
-		ans -= x
-	}
-	return (ans%mod + mod) % mod // 保证结果非负
+	return (ans - f[k-1] + mod*2) % mod // 保证结果非负
 }
 ```
 

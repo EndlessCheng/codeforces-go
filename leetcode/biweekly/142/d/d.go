@@ -30,7 +30,9 @@ func possibleStringCount(word string, k int) int {
 	}
 
 	f := make([]int, k)
-	f[0] = 1
+	for i := range f {
+		f[i] = 1
+	}
 	for _, c := range cnts {
 		// 原地计算 f 的前缀和
 		for j := 1; j < k; j++ {
@@ -42,13 +44,10 @@ func possibleStringCount(word string, k int) int {
 		}
 	}
 
-	for _, x := range f {
-		ans -= x
-	}
-	return (ans%mod + mod) % mod // 保证结果非负
+	return (ans - f[k-1] + mod*2) % mod // 保证结果非负
 }
 
-func possibleStringCount2(word string, k int) int {
+func possibleStringCount1(word string, k int) int {
 	if len(word) < k { // 无法满足要求
 		return 0
 	}
@@ -81,21 +80,21 @@ func possibleStringCount2(word string, k int) int {
 	for i := range f {
 		f[i] = make([]int, k)
 	}
-	f[0][0] = 1
+	for i := range f[0] {
+		f[0][i] = 1
+	}
+
 	s := make([]int, k+1)
 	for i, c := range cnts {
 		// 计算 f[i] 的前缀和数组 s
 		for j, v := range f[i] {
-			s[j+1] = (s[j] + v) % mod
+			s[j+1] = s[j] + v
 		}
 		// 计算子数组和
 		for j := range f[i+1] {
-			f[i+1][j] = s[j+1] - s[max(j-c, 0)]
+			f[i+1][j] = (s[j+1] - s[max(j-c, 0)]) % mod
 		}
 	}
 
-	for _, v := range f[m] {
-		ans -= v
-	}
-	return (ans%mod + mod) % mod // 保证结果非负
+	return (ans - f[m][k-1] + mod) % mod // 保证结果非负
 }
