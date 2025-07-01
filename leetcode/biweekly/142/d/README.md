@@ -1,26 +1,28 @@
 ## 总体思路
 
-把一开始可能想要输入字符串叫做初始字符串。注意这里定义的初始字符串**长度没有限制**。
+把一开始想要输入的字符串叫做**原串**。
 
-1. 计算不考虑 $k$ 的情况下，有多少个初始字符串。
-2. 计算长度小于 $k$ 的初始字符串个数。
-3. 二者相减，即为长度大于等于 $k$ 的初始字符串个数。
+1. 计算不考虑 $k$ 的情况下，有多少个原串。
+2. 计算长度小于 $k$ 的原串个数。
+3. 二者相减，即为长度大于等于 $k$ 的原串个数。
 
-## 不考虑 k 的初始字符串个数
+## 不考虑 k 的原串个数
 
-示例 1 的字符串，可以分为 $4$ 组（每组内的字母都相同）：$\texttt{aa},\texttt{bb},\texttt{cc},\texttt{dd}$，长度分别为 $2,2,2,2$。
+比如 $\textit{word}=\texttt{aabcccdd}$，分成 $4$ 段连续相同子串：$\texttt{aa},\texttt{b},\texttt{ccc},\texttt{dd}$，长度分别为 $2,1,3,2$。
 
-在初始字符串中，每组的长度可以从 $1$ 到 $2$ 不等，根据乘法原理，个数为
+在原串中，比如 $\texttt{ccc}$ 这一段可能是 $\texttt{c}$、$\texttt{cc}$ 或 $\texttt{ccc}$，有 $3$ 种可能。每一段的可能情况数，等于这一段的长度。由于每一段的长度互相独立，根据乘法原理，原串个数为
 
 $$
-2\times 2\times 2\times 2 = 16
+2\times 1\times 3\times 2 = 12
 $$
 
-## 长度小于 k 的初始字符串个数
+**注**：本题与 [3330. 找到初始输入字符串 I](https://leetcode.cn/problems/find-the-original-typed-string-i/) 是不同的，那题至多犯错一次，本题每一段都可能会犯错。
+
+## 长度小于 k 的原串个数
 
 ### 寻找子问题
 
-假设字符串分为 $4$ 组，当前要用这 $4$ 组构造的初始字符串的长度是 $6$。
+假设字符串分为 $4$ 组，要用这 $4$ 组构造的原串的长度是 $6$。
 
 由于每组的长度至少是 $1$，为方便计算，先从每组各选 $1$ 个字母，问题转换成从 $4$ 组中额外再选 $6-4=2$ 个字母的方案数。
 
@@ -31,13 +33,13 @@ $$
 
 ### 状态定义与状态转移方程
 
-这是一个**多重背包**问题。相当于有 $m=4$ 种物品，第 $i$ 种物品有「第 $i$ 组的大小减一」个，计算至多选 $k-m-1$ 个物品的方案数。
+这是一个**多重背包方案数**问题。相当于有 $m=4$ 种物品（下标分别为 $0,1,2,3$），第 $i$ 种物品有「第 $i$ 组的大小减一」个，计算至多选 $k-m-1$ 个物品的方案数。
 
-根据上面的讨论，定义 $f[i+1][j]$ 表示从前 $i$ 种物品中选**恰好** $j$ 个物品的方案数。
+根据上面的讨论，定义 $f[i+1][j]$ 表示从下标在 $[0,i]$ 的物品中选**恰好** $j$ 个物品的方案数。
 
 初始值 $f[0][0]=1$，不选算一种方案（在示例 1 中，这对应字符串 $\texttt{abcd}$）。
 
-假设第 $i$ 种物品有 $c$ 个，枚举选 $L=0,1,2,\cdots,c$ 个物品，问题变成从前 $i-1$ 种物品中选恰好 $j-L$ 个物品的方案数，即 $f[i][j-L]$。
+假设第 $i$ 种物品有 $c$ 个，枚举选 $L=0,1,2,\ldots,c$ 个物品，问题变成从前 $i-1$ 种物品中选恰好 $j-L$ 个物品的方案数，即 $f[i][j-L]$。
 
 累加得
 
@@ -45,7 +47,7 @@ $$
 f[i+1][j] = \sum_{L=0}^{c} f[i][j-L]
 $$
 
-注意要保证 $j-L\ge 0$。上式等价于
+注意要保证 $j-L\ge 0$。用 $p$ 替换 $j-L$，上式为
 
 $$
 f[i+1][j] = \sum_{p=\max(j-c, 0)}^{j} f[i][p]
@@ -53,7 +55,7 @@ $$
 
 ### 前缀和优化
 
-定义 $f[i]$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组为 $s$，那么上式等价于
+定义 $f[i]$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组为 $s$，上式等价于
 
 $$
 f[i+1][j] = s[j+1] - s[\max(j-c, 0)]
@@ -61,9 +63,9 @@ $$
 
 设一共有 $m$ 组，那么至多选 $k-m-1$ 个物品的方案总数为 $\sum\limits_{j=0}^{k-m-1}f[m][j]$。
 
-特别地，如果 $n<k$（$n$ 为 $\textit{word}$ 的长度），那么无法满足要求，直接返回 $0$。
+特别地，如果 $n<k$（$n$ 为 $\textit{word}$ 的长度），无法满足要求，直接返回 $0$。
 
-特别地，如果 $m\ge k$，那么长度小于 $k$ 的初始字符串个数为 $0$，直接返回各组长度的乘积。
+特别地，如果 $m\ge k$，那么长度小于 $k$ 的原串个数为 $0$，直接返回各组长度的乘积。
 
 代码中用到了一些取模的细节，原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
@@ -164,7 +166,7 @@ class Solution {
 class Solution {
 public:
     int possibleStringCount(string word, int k) {
-        int n = word.length();
+        int n = word.size();
         if (n < k) { // 无法满足要求
             return 0;
         }
@@ -193,7 +195,7 @@ public:
         }
 
         int m = cnts.size();
-        vector<vector<int>> f(m + 1, vector<int>(k));
+        vector f(m + 1, vector<int>(k));
         f[0][0] = 1;
         vector<int> s(k + 1);
         for (int i = 0; i < m; i++) {
@@ -278,7 +280,7 @@ func possibleStringCount(word string, k int) int {
 
 前缀和直接计算到 $f$ 数组中。
 
-然后和 0-1 背包一样，倒序计算 $f[j] = s[j] - s[j-c-1]$。减一是因为原来前缀和中的 $s[0]=0$ 去掉了，$s$ 的长度不是 $k+1$ 而是 $k$。
+然后和 [0-1 背包](https://www.bilibili.com/video/BV16Y411v7Y6/) 一样，倒序计算 $f[j] = s[j] - s[j-c-1]$。减一是因为原来前缀和中的 $s[0]=0$ 去掉了，$s$ 的长度不是 $k+1$ 而是 $k$。
 
 ```py [sol-Python3]
 class Solution:
@@ -373,7 +375,7 @@ class Solution {
 class Solution {
 public:
     int possibleStringCount(string word, int k) {
-        int n = word.length();
+        int n = word.size();
         if (n < k) { // 无法满足要求
             return 0;
         }
