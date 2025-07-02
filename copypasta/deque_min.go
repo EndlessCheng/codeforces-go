@@ -9,16 +9,12 @@ type minStPair struct{ val, preMin int }
 type minStack []minStPair
 
 func newMinStack() minStack {
-	// 这里的 0 用不到
-	return minStack{{0, math.MaxInt}} // 栈底哨兵
+	return minStack{{preMin: math.MaxInt}} // 栈底哨兵
 }
 
+// 如果 st 是空的，返回 math.MaxInt
 func (st minStack) min() int {
 	return st[len(st)-1].preMin
-}
-
-func (st minStack) empty() bool {
-	return len(st) == 1
 }
 
 func (st *minStack) push(v int) {
@@ -35,12 +31,21 @@ func (st minStack) top() int {
 	return st[len(st)-1].val
 }
 
+func (st minStack) empty() bool {
+	return len(st) == 1
+}
+
 // 最小双端队列
 // 用两个最小栈底对底
 type minDeque struct{ l, r minStack }
 
 func newMinDeque() minDeque {
 	return minDeque{newMinStack(), newMinStack()}
+}
+
+// 如果 q 是空的，返回 math.MaxInt
+func (q minDeque) min() int {
+	return min(q.l.min(), q.r.min())
 }
 
 // 时间复杂度：均摊 O(1)    
@@ -64,19 +69,6 @@ func (q *minDeque) rebalance() {
 	for _, p := range t {
 		q.r.push(p.val)
 	}
-}
-
-// 如果 q 是空的，返回 math.MaxInt
-func (q minDeque) min() int {
-	return min(q.l.min(), q.r.min())
-}
-
-func (q minDeque) empty() bool {
-	return q.l.empty() && q.r.empty()
-}
-
-func (q minDeque) size() int {
-	return len(q.l) + len(q.r) - 2 // 减去栈底哨兵
 }
 
 func (q *minDeque) pushFront(v int) {
@@ -113,4 +105,12 @@ func (q *minDeque) back() int {
 		q.rebalance()
 	}
 	return q.r.top()
+}
+
+func (q minDeque) empty() bool {
+	return q.l.empty() && q.r.empty()
+}
+
+func (q minDeque) size() int {
+	return len(q.l) + len(q.r) - 2 // 减去栈底哨兵
 }
