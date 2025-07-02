@@ -1,4 +1,4 @@
-本题相当于周赛第四题所有 $\textit{operations}[i]=1$ 的版本，做法是一样的，请先看 [我的题解](https://leetcode.cn/problems/find-the-k-th-character-in-string-game-ii/solutions/2934284/liang-chong-zuo-fa-di-gui-die-dai-python-5f6z/)。
+本题相当于 [3307. 找出第 K 个字符 II](https://leetcode.cn/problems/find-the-k-th-character-in-string-game-ii/) 所有 $\textit{operations}[i]=1$ 的版本，做法是一样的，见 [我的题解](https://leetcode.cn/problems/find-the-k-th-character-in-string-game-ii/solutions/2934284/liang-chong-zuo-fa-di-gui-die-dai-python-5f6z/)。
 
 ## 优化前
 
