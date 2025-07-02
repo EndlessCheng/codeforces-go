@@ -37,6 +37,7 @@ func (st minStack) empty() bool {
 
 // 最小双端队列
 // 用两个最小栈底对底
+// https://codeforces.com/problemset/problem/2026/F 2700 离线可持久化
 type minDeque struct{ l, r minStack }
 
 func newMinDeque() minDeque {
