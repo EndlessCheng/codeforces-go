@@ -1,82 +1,10 @@
 本题相当于 [3307. 找出第 K 个字符 II](https://leetcode.cn/problems/find-the-k-th-character-in-string-game-ii/) 所有 $\textit{operations}[i]=1$ 的版本，做法是一样的，见 [我的题解](https://leetcode.cn/problems/find-the-k-th-character-in-string-game-ii/solutions/2934284/liang-chong-zuo-fa-di-gui-die-dai-python-5f6z/)。
 
-## 优化前
+根据迭代写法二，我们相当于在遍历 $k-1$ 二进制的每个比特 $1$，累加 $1$ 对应的 $\textit{operations}[i]$。由于本题 $\textit{operations}[i]=1$，所以我们计算的是 $k-1$ 二进制中的 $1$ 的个数。
 
-为了方便大家看出怎么优化，代码中先把 $k$ 减一。
+最终答案为 $\texttt{a}$ 加上 $k-1$ 二进制中的 $1$ 的个数。
 
-```py [sol-Python3]
-class Solution:
-    def kthCharacter(self, k: int) -> str:
-        k -= 1
-        m = k.bit_length()
-        inc = 0
-        for i in range(m - 1, -1, -1):
-            if k >= 1 << i:  # k 在右半边
-                inc += 1
-                k -= 1 << i
-        return ascii_lowercase[inc]
-```
-
-```java [sol-Java]
-class Solution {
-    public char kthCharacter(int k) {
-        k--;
-        char ans = 'a';
-        for (int i = 31 - Integer.numberOfLeadingZeros(k); i >= 0; i--) {
-            if (k >= (1 << i)) { // k 在右半边
-                ans++;
-                k -= 1 << i;
-            }
-        }
-        return ans;
-    }
-}
-```
-
-```cpp [sol-C++]
-class Solution {
-public:
-    char kthCharacter(int k) {
-        k--;
-        int m = bit_width((uint32_t) k);
-        char ans = 'a';
-        for (int i = m - 1; i >= 0; i--) {
-            if (k >= (1 << i)) { // k 在右半边
-                ans++;
-                k -= 1 << i;
-            }
-        }
-        return ans;
-    }
-};
-```
-
-```go [sol-Go]
-func kthCharacter(k int) byte {
-	k--
-	ans := byte('a')
-	for i := bits.Len(uint(k)) - 1; i >= 0; i-- {
-		if k >= 1<<i { // k 在右半边
-			ans++
-			k -= 1 << i
-		}
-	}
-	return ans
-}
-```
-
-#### 复杂度分析
-
-- 时间复杂度：$\mathcal{O}(\log k)$。
-- 空间复杂度：$\mathcal{O}(1)$。
-
-## 优化
-
-上面的代码相当于，每次遇到 $k-1$ 二进制中的 $1$，就把答案加一。
-
-所以答案为 $\texttt{a}$ 加上 $k-1$ 二进制中的 $1$ 的个数。
-
-注意在本题的数据范围下，无需和 $26$ 取模。
+由于数据范围保证 $k\le 500$，二进制中的 $1$ 的个数至多为 $8$，无需与 $26$ 取模。
 
 ```py [sol-Python3]
 class Solution:
