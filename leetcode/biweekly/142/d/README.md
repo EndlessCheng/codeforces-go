@@ -73,8 +73,6 @@ $$
 
 代码中用到了一些取模的细节，原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV13J1MYwEGM/?t=21m4s)，欢迎点赞关注~
-
 ```py [sol-Python3]
 class Solution:
     def possibleStringCount(self, word: str, k: int) -> int:
