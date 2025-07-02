@@ -67,7 +67,7 @@ func (q *minDeque) rebalance() {
 }
 
 // 如果 q 是空的，返回 math.MaxInt
-func (q minDeque) getMin() int {
+func (q minDeque) min() int {
 	return min(q.l.min(), q.r.min())
 }
 
