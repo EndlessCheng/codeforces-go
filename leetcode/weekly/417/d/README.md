@@ -11,7 +11,7 @@
 
 递归边界：如果 $n=0$，没有操作，返回 Alice 最初的字符 $\texttt{a}$。 
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1TqxCeZEmb/) 第四题，欢迎点赞关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1TqxCeZEmb/?t=14m29s) 第四题，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
