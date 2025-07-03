@@ -32,6 +32,7 @@ Precedence    Operator
      或者说 2^(bits.Len(x)-1) <= x < 2^bits.Len(x)    x>0
 
 ### 基础题
+https://codeforces.com/problemset/problem/2074/C 1100
 https://atcoder.jp/contests/arc161/tasks/arc161_b 563=CF1137
 https://codeforces.com/problemset/problem/1909/B 1200
 
@@ -61,12 +62,14 @@ https://codeforces.com/problemset/problem/2036/F 1900
 https://codeforces.com/problemset/problem/1088/D 2000 交互
 https://codeforces.com/problemset/problem/1934/D1 2100
 https://codeforces.com/problemset/problem/835/E 2400 交互
+https://codeforces.com/problemset/problem/1710/C 2500 三角形三边
 ones(x ^ y) % 2 = (ones(x) + ones(y)) % 2
 
-XOR + AND
+XOR with AND
 https://codeforces.com/problemset/problem/1420/B 1200
+https://codeforces.com/problemset/problem/1592/E 2400
 
-XOR + OR
+XOR with OR
 https://codeforces.com/problemset/problem/1946/D 1900
 
 ### 利用 lowbit
@@ -95,7 +98,9 @@ https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
 所有子序列的所有子数组的 + 的 + 的 + https://yukicoder.me/problems/no/2717
 https://ac.nowcoder.com/acm/contest/78807/F 拆位+贡献的好题！
 https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
+https://codeforces.com/problemset/problem/2094/E 1200
 https://codeforces.com/problemset/problem/1601/A 1300
+https://codeforces.com/problemset/problem/2118/C 1300
 https://codeforces.com/problemset/problem/1362/C 1400
 https://codeforces.com/problemset/problem/1513/B 1400
 https://codeforces.com/problemset/problem/1879/D 1700 sum(子数组异或和*子数组长度)
@@ -146,16 +151,18 @@ a^b = a+b - (a&b)*2  注：这个结论可以用于字符串匹配，见 math_ff
 (a^b) & (a&b) = 0 恒成立
 ones(x^y) % 2 = (ones(x) + ones(y)) % 2
 ones(x^y^z) % 2 = (ones(x) + ones(y) + ones(z)) % 2
+https://atcoder.jp/contests/abc238/tasks/abc238_d
 https://codeforces.com/problemset/problem/1790/E 1400
 https://codeforces.com/problemset/problem/76/D 1700
 https://codeforces.com/problemset/problem/627/A 1700
 https://codeforces.com/problemset/problem/1325/D 1700
 https://codeforces.com/problemset/problem/1368/D 1700
 https://codeforces.com/problemset/problem/1556/D 1800
-https://atcoder.jp/contests/abc050/tasks/arc066_b
-a|b = (^a)&b + a
-+ 与 ^ https://codeforces.com/problemset/problem/1732/C2 2100
-进位的本质 https://atcoder.jp/contests/arc158/tasks/arc158_c
+https://codeforces.com/problemset/problem/1732/C2 2100 + 与 ^
+https://atcoder.jp/contests/arc158/tasks/arc158_c 1875=CF2129 进位的本质
+https://codeforces.com/problemset/problem/1815/D 2600
+https://atcoder.jp/contests/abc050/tasks/arc066_b 2606=CF2682 a|b = (^a)&b + a
+
 max(a,b) = (a + b + abs(a-b)) / 2
 min(a,b) = (a + b - abs(a-b)) / 2
 
@@ -682,29 +689,29 @@ func _(x int) {
 		cnt := map[int]int{}
 		// 视情况，r 可以省略
 		// 或者把 l 和 r 换掉，改成维护 r-l
-		type result struct{ v, l, r int } // [l,r)
-		curRes := []result{}
+		type interval struct{ v, l, r int } // [l,r)
+		curRes := []interval{}
 		for i, v := range a {
 			// 计算的相当于是在 i 结束的 suf op
 			for j, p := range curRes {
 				curRes[j].v = op(p.v, v)
 			}
-			curRes = append(curRes, result{v, i, i + 1})
+			curRes = append(curRes, interval{v, i, i + 1})
 
-			// 去重（合并 v 相同的 result）
-			j := 1
-			for k := 1; k < len(curRes); k++ {
-				if curRes[k].v != curRes[k-1].v {
-					curRes[j] = curRes[k]
-					j++
+			// 去重（合并 v 相同的区间）
+			idx := 1
+			for j := 1; j < len(curRes); j++ {
+				if curRes[j].v != curRes[j-1].v {
+					curRes[idx] = curRes[j]
+					idx++
 				} else {
-					curRes[j-1].r = curRes[k].r // 如果省略 r 的话，这行可以去掉
+					curRes[idx-1].r = curRes[j].r // 如果省略 r 的话，这行可以去掉
 				}
 			}
-			curRes = curRes[:j]
+			curRes = curRes[:idx]
 
-			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
-			// 对于任意 p∈set，任意 j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
+			// 此时我们将区间 [0,i] 划分成了 len(curRes) 个左闭右开区间
+			// 对于任意 p∈curRes，任意 j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
 			for _, p := range curRes {
 				// do p...     [l,r)
 				cnt[p.v] += p.r - p.l
@@ -747,25 +754,25 @@ func _(x int) {
 		// 每个前缀和互不相同
 		posS := map[int]int{0: 0}
 		sum := 0
-		type result struct{ v, l, r int }
-		muls := []result{}
+		type interval struct{ v, l, r int }
+		muls := []interval{}
 		for i, v := range a {
 			sum += v
 			for j := range muls {
 				muls[j].v *= v
 			}
-			muls = append(muls, result{v, i, i + 1})
+			muls = append(muls, interval{v, i, i + 1})
 			// 去重
-			j := 0
+			idx := 0
 			for _, q := range muls[1:] {
-				if muls[j].v != q.v {
-					j++
-					muls[j] = q
+				if muls[idx].v != q.v {
+					idx++
+					muls[idx] = q
 				} else {
-					muls[j].r = q.r
+					muls[idx].r = q.r
 				}
 			}
-			muls = muls[:j+1]
+			muls = muls[:idx+1]
 			// 去掉超过 tot 的，从而保证 muls 中至多有 O(log(tot)) 个元素
 			for muls[0].v > tot {
 				muls = muls[1:]
@@ -898,6 +905,7 @@ func _(x int) {
 	// O(1) 计算任意非负整数的十进制长度
 	// 0 的十进制长度是 1
 	// LC179 https://leetcode.cn/problems/largest-number/
+	// https://leetcode.cn/problems/find-numbers-with-even-number-of-digits/
 	fastNumLength := func() {
 		const mx = 32
 		lenPow2 := [mx]int{}
@@ -962,18 +970,82 @@ func _(x int) {
 
 // https://halfrost.com/go_s2_de_bruijn/
 
-// LC137 https://leetcode.cn/problems/single-number-ii/
-// 除了某个元素只出现一次以外，其余每个元素均出现了三次。返回只出现了一次的元素
-// 		定义两个集合 ones 和 twos，初始为空
-// 		第一次出现就放在 ones 中
-//		第二次出现就在 ones 中删除并放在 twos
-//		第三次出现就从 twos 中删除
-//		这样最终 ones 中就留下了最后的结果
-func singleNumber(a []int) int {
-	ones, twos := 0, 0
-	for _, v := range a {
-		ones = (ones ^ v) &^ twos
-		twos = (twos ^ v) &^ ones
-	}
-	return ones
+// 返回 n xor x, x <= n 的取值范围（由若干区间组成）
+func (binary) allXorIntervals(n uint) (ans [][2]uint) {
+	panic(-1)
 }
+
+// https://atcoder.jp/contests/agc015/tasks/agc015_d
+
+/*
+
+todo 思考题 https://leetcode.cn/problems/find-missing-and-repeated-values/solutions/2569783/mo-ni-pythonjavacgo-by-endlesscheng-mexz/
+
+impl Solution {
+    pub fn find_missing_and_repeated_values(grid: Vec<Vec<i32>>) -> Vec<i32> {
+        let n = grid.len() as i32;
+        let nn = n * n;
+        let mut xor_all = 0;
+        for row in &grid {
+            for &x in row {
+                xor_all ^= x;
+            }
+        }
+        xor_all ^= if n % 2 > 0 { 1 } else { nn };
+        let shift = xor_all.trailing_zeros();
+
+        let mut ans = vec![0, 0];
+
+        let xor_n = |n| match n % 4 {
+            0 => n,
+            1 => 1,
+            2 => n + 1,
+            _ => 0,
+        };
+        // let xor_operation = |n: i32, start: i32| -> i32 {
+        //     let a = start / 2;
+        //     let b = n & start & 1; // 都为奇数才是 1
+        //     (xor_n(a + n - 1) ^ xor_n(a - 1)) * 2 + b
+        // };
+        // shift >= 2 => 1 << shift == 4k => (1 << shift) - 1 == 4k + 3 => mod = 0, len % 2 = 0
+        // shift == 1 => 1 << shift == 4k + 2 => (1 << shift) - 1 = 4k + 1 => mod = 1, len % 2 = 0
+        // shift == 0 => (1 << shift) - 1 == 0 => len = 1
+        // ---
+        // 0 1 10 ... 0'1111 => mod
+        // 1'0000 ... 1'1111 => mod
+        // xx'0000 .. xx'yyyy => mod = xor_n(xx'0000 - 1) ^ xor(xx'yyyy)
+        // = xor_n((n*n >> shift << shift) - 1) ^ xor(n * n)
+        //
+        let nn_shift = nn >> shift;
+        let nn_trim = nn_shift << shift;
+        if shift == 0 {
+            // ans[0] = xor_operation((nn + 2) / 2, 0);
+            // ans[1] = xor_operation((nn + 1) / 2, 1);
+            ans[0] = xor_n((nn + 2) / 2 - 1) * 2;
+            ans[1] = xor_n((nn + 1) / 2 - 1) * 2 + (nn + 1) / 2 % 2;
+        } else {
+            if shift == 1 {
+                ans[0] ^= (nn_shift + 1) / 2 % 2;
+                ans[1] ^= nn_shift / 2 % 2;
+            }
+            ans[(nn_shift & 1) as usize] ^= xor_n(nn_trim - 1) ^ xor_n(n*n);
+        }
+        // for x in 1..=nn {
+        //     ans[(x >> shift & 1) as usize] ^= x;
+        // }
+        for row in &grid {
+            for &x in row {
+                ans[(x >> shift & 1) as usize] ^= x;
+            }
+        }
+
+        for row in grid {
+            if row.contains(&ans[0]) {
+                return ans;
+            }
+        }
+        vec![ans[1], ans[0]]
+    }
+}
+
+*/
