@@ -1,32 +1,30 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-type FindSumPairs struct{}
+type FindSumPairs struct {
+	nums1 []int
+	nums2 []int
+	cnt   map[int]int
+}
 
-var (
-	x, y []int
-	cnt  map[int]int
-)
-
-func Constructor(nums1, nums2 []int) (_ FindSumPairs) {
-	cnt = map[int]int{}
-	for _, v := range nums2 {
-		cnt[v]++
+func Constructor(nums1, nums2 []int) FindSumPairs {
+	cnt := map[int]int{}
+	for _, x := range nums2 {
+		cnt[x]++
 	}
-	x, y = nums1, nums2
-	return
+	return FindSumPairs{nums1, nums2, cnt}
 }
 
-func (FindSumPairs) Add(i, val int) {
-	cur := y[i]
-	cnt[cur]--
-	cnt[cur+val]++
-	y[i] += val
+func (p *FindSumPairs) Add(index int, val int) {
+	// 维护 nums2 每个元素的出现次数
+	p.cnt[p.nums2[index]]--
+	p.nums2[index] += val
+	p.cnt[p.nums2[index]]++
 }
 
-func (FindSumPairs) Count(tot int) (ans int) {
-	for _, v := range x {
-		ans += cnt[tot-v]
+func (p *FindSumPairs) Count(tot int) (ans int) {
+	for _, x := range p.nums1 {
+		ans += p.cnt[tot-x]
 	}
 	return
 }
