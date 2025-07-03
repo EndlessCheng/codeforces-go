@@ -1,14 +1,16 @@
 package main
 
-func findLucky(arr []int) (ans int) {
-	cnts := [501]int{}
-	for _, v := range arr {
-		cnts[v]++
+func findLucky(arr []int) int {
+	cnt := map[int]int{}
+	for _, x := range arr {
+		cnt[x]++
 	}
-	for i := 500; i > 0; i-- {
-		if cnts[i] == i {
-			return i
+
+	ans := -1
+	for x, c := range cnt {
+		if x == c {
+			ans = max(ans, x)
 		}
 	}
-	return -1
+	return ans
 }
