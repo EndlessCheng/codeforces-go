@@ -25,7 +25,7 @@ func cf2051E(in io.Reader, out io.Writer) {
 
 		ans, customer, neg := 0, n, 0
 		for i, p := range es {
-			if (i == n*2-1 || p.v != es[i+1].v) && neg <= k {
+			if (i == 0 || p.v != es[i-1].v) && neg <= k {
 				ans = max(ans, p.v*customer)
 			}
 			neg += p.d
