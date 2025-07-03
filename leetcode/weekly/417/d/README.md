@@ -224,6 +224,10 @@ func kthCharacter(k int64, operations []int) byte {
 
 ### 写法三
 
+当「$k-1$ 第 $i$ 位是 $1$」和「$\textit{operations}[i]=1$」两个条件同时满足时，才把 $\textit{inc}$ 加一。
+
+这两个条件可以合并为：把 $k-1$ 右移 $i$ 位，与 $\textit{operations}[i]$ 计算 AND，如果结果是 $1$，把 $\textit{inc}$ 加一。也可以直接把结果加到 $\textit{inc}$ 中。
+
 ```py [sol-Python3]
 class Solution:
     def kthCharacter(self, k: int, operations: List[int]) -> str:
