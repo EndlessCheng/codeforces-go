@@ -21,9 +21,9 @@ class Solution:
         op = operations.pop()
         # 注意 pop 之后 operations 的长度减少了 1，所以下面写的是 1<<n 而不是 1<<(n-1)
         m = 1 << len(operations)
-        if k <= m:  # k 在左半边
+        if k <= m:  # k 在左半段
             return self.kthCharacter(k, operations)
-        # k 在右半边
+        # k 在右半段
         ans = self.kthCharacter(k - m, operations)
         return ascii_lowercase[(ord(ans) - ord('a') + op) % 26]
 ```
@@ -40,10 +40,10 @@ class Solution {
             return 'a';
         }
         int op = operations[i];
-        if (k <= (1L << i)) { // k 在左半边
+        if (k <= (1L << i)) { // k 在左半段
             return f(k, operations, i - 1);
         }
-        // k 在右半边
+        // k 在右半段
         char ans = f(k - (1L << i), operations, i - 1);
         return (char) ('a' + (ans - 'a' + op) % 26);
     }
@@ -60,10 +60,10 @@ public:
         int op = operations.back();
         operations.pop_back();
         int n = operations.size(); // 注意这里是减一后的 n
-        if (n >= 63 || k <= (1LL << n)) { // k 在左半边
+        if (n >= 63 || k <= (1LL << n)) { // k 在左半段
             return kthCharacter(k, operations);
         }
-        // k 在右半边
+        // k 在右半段
         char ans = kthCharacter(k - (1LL << n), operations);
         return 'a' + (ans - 'a' + op) % 26;
     }
@@ -79,10 +79,10 @@ func kthCharacter(k int64, operations []int) byte {
 	n-- // 注意这里减一了
 	op := operations[n]
 	operations = operations[:n]
-	if n >= 63 || k <= 1<<n { // k 在左半边
+	if n >= 63 || k <= 1<<n { // k 在左半段
 		return kthCharacter(k, operations)
 	}
-	// k 在右半边
+	// k 在右半段
 	ans := kthCharacter(k-1<<n, operations)
 	return 'a' + (ans-'a'+byte(op))%26
 }
@@ -93,7 +93,7 @@ func kthCharacter(k int64, operations []int) byte {
 写出上面的递归代码后，可以发现：
 
 1. 本质上，我们在计算 $\texttt{a}$ 需要增加的次数，这可以用一个变量 $\textit{inc}$ 记录。
-2. 我们在倒序遍历 $\textit{operations}$。当 $k$ 在字符串的右半边，也就是 $k > 2^i$ 时，我们会把 $\textit{inc}$ 增加 $\textit{operations}[i]$。 
+2. 我们在倒序遍历 $\textit{operations}$。当 $k$ 在字符串的右半段，也就是 $k > 2^i$ 时，我们会把 $\textit{inc}$ 增加 $\textit{operations}[i]$。 
 
 由于 $k > 2^i$ 等价于 $k-1\ge 2^i$，解得
 
@@ -113,7 +113,7 @@ class Solution:
         m = (k - 1).bit_length()
         inc = 0
         for i in range(m - 1, -1, -1):
-            if k > 1 << i:  # k 在右半边
+            if k > 1 << i:  # k 在右半段
                 inc += operations[i]
                 k -= 1 << i
         return ascii_lowercase[inc % 26]
@@ -124,7 +124,7 @@ class Solution {
     public char kthCharacter(long k, int[] operations) {
         int inc = 0;
         for (int i = 63 - Long.numberOfLeadingZeros(k - 1); i >= 0; i--) {
-            if (k > (1L << i)) { // k 在右半边
+            if (k > (1L << i)) { // k 在右半段
                 inc += operations[i];
                 k -= 1L << i;
             }
@@ -141,7 +141,7 @@ public:
         int m = bit_width((uint64_t) k - 1);
         int inc = 0;
         for (int i = m - 1; i >= 0; i--) {
-            if (k > (1LL << i)) { // k 在右半边
+            if (k > (1LL << i)) { // k 在右半段
                 inc += operations[i];
                 k -= 1LL << i;
             }
@@ -155,7 +155,7 @@ public:
 func kthCharacter(k int64, operations []int) byte {
 	inc := 0
 	for i := bits.Len(uint(k-1)) - 1; i >= 0; i-- {
-		if k > 1<<i { // k 在右半边
+		if k > 1<<i { // k 在右半段
 			inc += operations[i]
 			k -= 1 << i
 		}
