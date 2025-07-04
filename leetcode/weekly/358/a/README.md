@@ -120,7 +120,7 @@ var maxSum = function(nums) {
 impl Solution {
     pub fn max_sum(nums: Vec<i32>) -> i32 {
         let mut ans = -1;
-        let mut max_val = [-i32::MAX; 10]; // 表示不存在最大值
+        let mut max_val = [i32::MIN; 10]; // 表示不存在最大值
         for v in nums {
             let mut max_d = 0;
             let mut x = v;
