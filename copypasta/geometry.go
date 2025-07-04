@@ -261,8 +261,8 @@ func (a vec) mul(k int) vec       { return vec{a.x * k, a.y * k} }
 func (a vecF) div(k float64) vecF { return vecF{a.x / k, a.y / k} }
 func (a vec) len2() int           { return a.x*a.x + a.y*a.y }                     // 模长的平方
 func (a vec) len() float64        { return math.Sqrt(float64(a.x*a.x + a.y*a.y)) } // 模长
-func (a vec) dis2(b vec) int      { return a.sub(b).len2() }
-func (a vec) dis(b vec) float64   { return a.sub(b).len() }
+func (a vec) dis2(b vec) int      { return b.sub(a).len2() }
+func (a vec) dis(b vec) float64   { return b.sub(a).len() }
 
 func (a *vec) adds(b vec)      { a.x += b.x; a.y += b.y }
 func (a *vec) subs(b vec)      { a.x -= b.x; a.y -= b.y }
@@ -1057,18 +1057,25 @@ func _(abs func(int) int) {
 		return
 	}
 
-	// 凸包的本质
-	// 边长 - 夹角 - 边长 - 夹角 - 边长 - ……   最后一个边长可以省略，无需连成环
+	// 凸包哈希，用于判断两个凸包是否相等
+	// 边长 - 夹角 - 边长 - 夹角 - 边长 - …… 绕一圈，必须有 n 个边长和 n 个夹角
 	// https://codeforces.com/problemset/problem/1017/E 2400
 	convexHullHash := func(a []vec) []int {
-		// 输入的 a 必须是凸包，且至少有两个点
-		res := make([]int, 1, len(a)*2-3)
-		res[0] = a[1].sub(a[0]).len2()
+		// ！输入的 a 必须是凸包，且至少有两个点
+
+		// 首尾是同一个点，方便计算
+		a = append(a, a[0])
+
+		res := make([]int, 1, len(a)*2-2)
+		res[0] = a[0].dis2(a[1])
 		for i := 2; i < len(a); i++ {
-			v := a[i].sub(a[i-1])
-			res = append(res, a[i-1].sub(a[i-2]).det(v), v.len2())
+			// 用斜边长代替夹角（SSS 全等），避免浮点数
+			// +math.MaxInt/2 是为了区分边长与斜边长
+			res = append(res, a[i-2].dis2(a[i])+math.MaxInt/2, a[i-1].dis2(a[i]))
 		}
-		return res
+		res = append(res, a[len(a)-2].dis2(a[1])+math.MaxInt/2)
+
+		return res // 然后计算 smallestRepresentation(res)，见 strings.go
 	}
 
 	// 动态凸包
