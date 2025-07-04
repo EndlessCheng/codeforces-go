@@ -1070,10 +1070,10 @@ func _(abs func(int) int) {
 		res[0] = a[0].dis2(a[1])
 		for i := 2; i < len(a); i++ {
 			// 用斜边长代替夹角（SSS 全等），避免浮点数
-			// +math.MaxInt/2 是为了区分边长与斜边长
-			res = append(res, a[i-2].dis2(a[i])+math.MaxInt/2, a[i-1].dis2(a[i]))
+			// 取负号是为了区分边长与斜边长
+			res = append(res, -a[i-2].dis2(a[i]), a[i-1].dis2(a[i]))
 		}
-		res = append(res, a[len(a)-2].dis2(a[1])+math.MaxInt/2)
+		res = append(res, -a[len(a)-2].dis2(a[1]))
 
 		return res // 然后计算 smallestRepresentation(res)，见 strings.go
 	}
