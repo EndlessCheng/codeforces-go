@@ -6,10 +6,10 @@
 
 分类讨论：
 
-- 如果 $k \le 2^{n-1}$，那么第 $k$ 个字符在 $S$ 的左半边，不会受到 $\textit{operations}[n-1]$ 的影响，所以原问题等价于去掉 $\textit{operations}[n-1]$ 的子问题。
-- 如果 $k > 2^{n-1}$，那么第 $k$ 个字符在 $S$ 的右半边，原问题等价于去掉 $\textit{operations}[n-1]$，$k$ 变成 $k-2^{n-1}$ 的子问题。如果 $\textit{operations}[n-1]=1$，那么子问题返回的字母需要增加 $1$。也相当于子问题返回的字母需要增加 $\textit{operations}[n-1]$。
+- 如果 $k \le 2^{n-1}$，那么第 $k$ 个字母在 $S$ 的左半段，不会受到 $\textit{operations}[n-1]$ 的影响，问题等价于去掉 $\textit{operations}[n-1]$ 的子问题。
+- 如果 $k > 2^{n-1}$，那么第 $k$ 个字母在 $S$ 的右半段，问题等价于去掉 $\textit{operations}[n-1]$，计算右半段的第 $k-2^{n-1}$ 个字母的子问题。如果 $\textit{operations}[n-1]=1$，那么子问题返回的字母需要加 $1$（变成下一个字母），否则不变。也相当于子问题返回的字母需要增加 $\textit{operations}[n-1]$。
 
-递归边界：如果 $n=0$，没有操作，返回 Alice 最初的字符 $\texttt{a}$。 
+递归边界：如果 $n=0$，没有操作，返回 Alice 最初的字母 $\texttt{a}$。 
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1TqxCeZEmb/?t=14m29s) 第四题，欢迎点赞关注~
 
