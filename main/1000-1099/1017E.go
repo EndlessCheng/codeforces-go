@@ -59,12 +59,13 @@ func cf1017E(in io.Reader, out io.Writer) {
 			q = append(q, p)
 		}
 
-		s := make([]int, 1, len(q)*4-4)
+		m = len(q)
+		s := make([]int, 1, m*4-4)
 		s[0] = q[0].dis2(q[1])
-		for i := 2; i < len(q); i++ {
-			s = append(s, q[i-2].dis2(q[i])+1e18, q[i-1].dis2(q[i]))
+		for i := 2; i < m; i++ {
+			s = append(s, -q[i-2].dis2(q[i]), q[i-1].dis2(q[i]))
 		}
-		s = append(s, q[len(q)-2].dis2(q[1])+1e18)
+		s = append(s, -q[m-2].dis2(q[1]))
 
 		return smallestRepresentation(s)
 	}
