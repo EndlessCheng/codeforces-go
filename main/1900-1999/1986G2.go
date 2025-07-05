@@ -25,8 +25,8 @@ func cf1986G2(in io.Reader, out io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		ans := 0
-		p2i := make([][]int, n+1)
-		i2p := make([][]int, n+1)
+		p2i := make([][]uint32, n+1)
+		i2p := make([][]uint32, n+1)
 		for i := 1; i <= n; i++ {
 			Fscan(in, &v)
 			g := gcd(v, i)
@@ -34,10 +34,10 @@ func cf1986G2(in io.Reader, out io.Writer) {
 			if i == 1 {
 				ans--
 			}
-			p2i[p] = append(p2i[p], i)
-			i2p[i] = append(i2p[i], p)
+			p2i[p] = append(p2i[p], uint32(i))
+			i2p[i] = append(i2p[i], uint32(p))
 		}
-		cnt := make([]int, n+1)
+		cnt := make([]uint32, n+1)
 		for i := 1; i <= n; i++ {
 			for pj := i; pj <= n; pj += i {
 				for _, j := range p2i[pj] {
@@ -46,7 +46,7 @@ func cf1986G2(in io.Reader, out io.Writer) {
 			}
 			for _, pi := range i2p[i] {
 				for _, j := range ds[pi] {
-					ans += cnt[j]
+					ans += int(cnt[j])
 				}
 			}
 			for pj := i; pj <= n; pj += i {
