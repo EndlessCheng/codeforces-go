@@ -323,7 +323,7 @@ class Solution {
 
         int[] belong = new int[c + 1];
         Arrays.fill(belong, -1);
-        int cc = 0;
+        int cc = 0; // 连通块编号
         for (int i = 1; i <= c; i++) {
             if (belong[i] < 0) {
                 dfs(i, g, belong, cc);
@@ -399,7 +399,7 @@ public:
         }
 
         vector<int> belong(c + 1, -1);
-        int cc = 0;
+        int cc = 0; // 连通块编号
         auto dfs = [&](this auto&& dfs, int x) -> void {
             belong[x] = cc; // 记录节点 x 在哪个连通块
             for (int y : g[x]) {
@@ -469,7 +469,7 @@ func processQueries(c int, connections [][]int, queries [][]int) []int {
 	for i := range belong {
 		belong[i] = -1
 	}
-	cc := 0
+	cc := 0 // 连通块编号
 
 	var dfs func(int)
 	dfs = func(x int) {

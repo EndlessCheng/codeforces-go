@@ -123,14 +123,14 @@ func isValid(s string) bool {
 			return false
 		}
 	}
-	return s != ""
+	return true
 }
 
 func validateCoupons(code []string, businessLine []string, isActive []bool) (ans []string) {
 	groups := [4][]string{}
 	for i, s := range code {
 		category, ok := businessLineToCategory[businessLine[i]]
-		if ok && isActive[i] && isValid(s) {
+		if s != "" && ok && isActive[i] && isValid(s) {
 			groups[category] = append(groups[category], s) // 相同类别的优惠码分到同一组
 		}
 	}
