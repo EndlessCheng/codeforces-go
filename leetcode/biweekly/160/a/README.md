@@ -1,3 +1,5 @@
+不用库函数的思路见 [视频讲解](https://www.bilibili.com/video/BV1DE3eztEGy/)。
+
 ```py [sol-Python3]
 import numpy as np
 

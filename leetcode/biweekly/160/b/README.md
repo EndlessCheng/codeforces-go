@@ -1,12 +1,10 @@
 推荐先完成本题的简单版本 [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)，[我的题解](https://leetcode.cn/problems/minimum-path-sum/solutions/3045828/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-zfb2/)。
 
-本题需要遵循交替模式。由于我们从奇数秒（第 $1$ 秒）开始，所以下一步一定进入相邻单元格，且处于偶数秒，必须等待。等待 $1$ 秒后变成奇数秒，继续移动。
+本题需要遵循交替模式。由于我们从奇数秒（第 $1$ 秒）开始，所以下一步一定进入相邻单元格，且处于偶数秒，必须等待。等待 $1$ 秒后变成奇数秒，必须移动。
 
-所以本质上来说，题意相当于每个单元格的值为 $\textit{waitCost}[i][j] + (i+1)\cdot (j+1)$，在此基础上求最小路径和。这样就转化成 64 题了。
+所以问题相当于每个单元格的值为 $\textit{waitCost}[i][j] + (i+1)\cdot (j+1)$，在此基础上求最小路径和。这样就转化成 64 题了。
 
 ⚠**注意**：起点和终点无需等待，只需计算进入成本。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
 
 ## 一、记忆化搜索
 
@@ -311,3 +309,5 @@ func minCost(m, n int, f [][]int) int64 {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

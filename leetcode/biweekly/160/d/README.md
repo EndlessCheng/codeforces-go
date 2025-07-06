@@ -52,8 +52,6 @@ $$
 \left\lceil\dfrac{n-\textit{maxC}}{\textit{maxC}+1}\right\rceil = \left\lfloor\dfrac{n}{\textit{maxC}+1}\right\rfloor
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
-
 ## 优化前
 
 ```py [sol-Python3]
@@ -273,7 +271,7 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 
 ## 优化（写法一）
 
-每次二分都要算 logTrick 有点慢，其实我们只需要知道，对于每个 $i$，以 $i$ 为右端点的子数组 GCD $\ge 2$ 时，子数组的左端点的最小值，记作 $\textit{leftMin}[i]$。如果没有 GCD $\ge 2$ 的子数组，则 $\textit{leftMin}[i]=n$。这可以在二分之前用 logTrick 预处理出来。
+每次二分都要算 logTrick，有点慢。其实我们只需要计算，对于每个 $i$，以 $i$ 为右端点的子数组 GCD $\ge 2$ 时，子数组的左端点的最小值，记作 $\textit{leftMin}[i]$。如果没有 GCD $\ge 2$ 的子数组，则 $\textit{leftMin}[i]=n$（或者任意大于 $i$ 的数）。这可以在二分之前用 logTrick 预处理出来。
 
 然后二分。从第一个可能会修改的右端点 $i= \textit{upper}$ 开始，如果 $i-\textit{leftMin}[i]+1 > \textit{upper}$，那么修改 $i$，跳到下一个可能会修改的右端点 $i+\textit{upper}+1$，否则不修改，把 $i$ 加一。
 
@@ -584,7 +582,7 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 
 ## 优化（写法二）
 
-也可以用 [3171. 找到按位或最接近 K 的子数组](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/) 介绍的栈 + 滑动窗口解决。
+也可以用 [3171. 找到按位或最接近 K 的子数组](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/) 介绍的栈 + 滑动窗口预处理 $\textit{leftMin}$。
 
 ```py [sol-Python3]
 class Solution:
@@ -781,7 +779,7 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U + n\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$M=n/\textit{maxC}$。见 3171 题的分析。
+- 时间复杂度：$\mathcal{O}(n\log U + n\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$M=n/\textit{maxC}$。见 3171 题我题解中的分析。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练

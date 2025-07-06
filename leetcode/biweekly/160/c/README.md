@@ -2,6 +2,10 @@
 
 设起点到 $x$ 的最短时间为 $d_x$。我们从 $x$ 出发，移动到其邻居 $y$。出发时间为 $\max(d_x, \textit{start}_i)$，必须 $\le \textit{end}_i$。到达 $y$ 的时间为 $\max(d_x, \textit{start}_i)+1$。
 
+**问**：本题的边权是什么？
+
+**答**：边权是动态计算的，即 $\max(d_x, \textit{start}_i) + 1 - d_x$。这个式子意味着，到达一个节点的时间早，边权就大；到达一个节点的时间晚，边权就小，最小是 $1$。注意边权始终非负，所以可以用 Dijkstra 算法解决。
+
 ```py [sol-Python3]
 class Solution:
     def minTime(self, n: int, edges: List[List[int]]) -> int:
@@ -176,3 +180,5 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
