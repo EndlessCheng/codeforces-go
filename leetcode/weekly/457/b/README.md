@@ -1,3 +1,5 @@
+## 方法一：懒删除堆
+
 首先，建图 + DFS，把每个连通块中的节点加到各自的最小堆中。每个最小堆维护对应连通块的节点编号。
 
 然后处理询问。
@@ -11,7 +13,7 @@
 
 为了找到 $x$ 所属的堆，还需要一个数组 $\textit{belong}$ 记录每个节点在哪个堆中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1GF3qzMEni/?t=5m42s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -249,10 +251,300 @@ func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:le
 - 时间复杂度：$\mathcal{O}(c\log c+n + q\log c)$ 或者 $\mathcal{O}(c+n + q\log c)$，取决于实现，其中 $n$ 是 $\textit{connections}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(c+n)$。返回值不计入。
 
+## 方法二：倒序处理 + 维护最小值
+
+倒序处理询问，离线变成在线，删除变成添加，每个连通块只需要一个 $\texttt{int}$ 变量就可以维护最小值。
+
+注意可能存在同一个节点多次离线的情况，我们需要记录节点离线的最早时间（询问的下标）。对于倒序处理来说，离线的最早时间才是真正的在线时间。
+
+```py [sol-Python3]
+class Solution:
+    def processQueries(self, c: int, connections: List[List[int]], queries: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(c + 1)]
+        for x, y in connections:
+            g[x].append(y)
+            g[y].append(x)
+
+        belong = [-1] * (c + 1)
+        cc = 0  # 连通块编号
+
+        def dfs(x: int) -> None:
+            belong[x] = cc  # 记录节点 x 在哪个连通块
+            for y in g[x]:
+                if belong[y] < 0:
+                    dfs(y)
+
+        for i in range(1, c + 1):
+            if belong[i] < 0:
+                dfs(i)
+                cc += 1
+
+        # 记录每个节点的离线时间，初始为无穷大（始终在线）
+        offline_time = [inf] * (c + 1)
+        for i in range(len(queries) - 1, -1, -1):
+            t, x = queries[i]
+            if t == 2:
+                offline_time[x] = i  # 记录离线时间
+
+        # 每个连通块中仍在线的电站的最小编号
+        mn = [inf] * cc
+        for i in range(1, c + 1):
+            if offline_time[i] == inf:  # 最终仍在线
+                j = belong[i]
+                mn[j] = min(mn[j], i)
+
+        ans = []
+        for i in range(len(queries) - 1, -1, -1):
+            t, x = queries[i]
+            j = belong[x]
+            if t == 2:
+                if offline_time[x] == i:
+                    mn[j] = min(mn[j], x)  # 变回在线
+            elif i < offline_time[x]:  # 已经在线（写 < 或者 <= 都可以）
+                ans.append(x)
+            elif mn[j] != inf:
+                ans.append(mn[j])
+            else:
+                ans.append(-1)
+        ans.reverse()
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] processQueries(int c, int[][] connections, int[][] queries) {
+        List<Integer>[] g = new ArrayList[c + 1];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] e : connections) {
+            int x = e[0], y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+
+        int[] belong = new int[c + 1];
+        Arrays.fill(belong, -1);
+        int cc = 0;
+        for (int i = 1; i <= c; i++) {
+            if (belong[i] < 0) {
+                dfs(i, g, belong, cc);
+                cc++;
+            }
+        }
+
+        int[] offlineTime = new int[c + 1];
+        Arrays.fill(offlineTime, Integer.MAX_VALUE);
+        int q1 = 0;
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int[] q = queries[i];
+            if (q[0] == 2) {
+                offlineTime[q[1]] = i; // 记录最早离线时间
+            } else {
+                q1++;
+            }
+        }
+
+        // 维护每个连通块的在线电站的最小编号
+        int[] mn = new int[cc];
+        Arrays.fill(mn, Integer.MAX_VALUE);
+        for (int i = 1; i <= c; i++) {
+            if (offlineTime[i] == Integer.MAX_VALUE) { // 最终仍然在线
+                int j = belong[i];
+                mn[j] = Math.min(mn[j], i);
+            }
+        }
+
+        int[] ans = new int[q1];
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int[] q = queries[i];
+            int x = q[1];
+            int j = belong[x];
+            if (q[0] == 2) {
+                if (offlineTime[x] == i) { // 变回在线
+                    mn[j] = Math.min(mn[j], x);
+                }
+            } else {
+                q1--;
+                if (i < offlineTime[x]) { // 已经在线（写 < 或者 <= 都可以）
+                    ans[q1] = x;
+                } else if (mn[j] != Integer.MAX_VALUE) {
+                    ans[q1] = mn[j];
+                } else {
+                    ans[q1] = -1;
+                }
+            }
+        }
+        return ans;
+    }
+
+    private void dfs(int x, List<Integer>[] g, int[] belong, int compId) {
+        belong[x] = compId;
+        for (int y : g[x]) {
+            if (belong[y] < 0) {
+                dfs(y, g, belong, compId);
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> processQueries(int c, vector<vector<int>>& connections, vector<vector<int>>& queries) {
+        vector<vector<int>> g(c + 1);
+        for (auto& e : connections) {
+            int x = e[0], y = e[1];
+            g[x].push_back(y);
+            g[y].push_back(x);
+        }
+
+        vector<int> belong(c + 1, -1);
+        int cc = 0;
+        auto dfs = [&](this auto&& dfs, int x) -> void {
+            belong[x] = cc; // 记录节点 x 在哪个连通块
+            for (int y : g[x]) {
+                if (belong[y] < 0) {
+                    dfs(y);
+                }
+            }
+        };
+
+        for (int i = 1; i <= c; i++) {
+            if (belong[i] < 0) {
+                dfs(i);
+                cc++;
+            }
+        }
+
+        vector<int> offline_time(c + 1, INT_MAX);
+        for (int i = queries.size() - 1; i >= 0; i--) {
+            auto& q = queries[i];
+            if (q[0] == 2) {
+                offline_time[q[1]] = i; // 记录最早离线时间
+            }
+        }
+
+        // 维护每个连通块的在线电站的最小编号
+        vector<int> mn(cc, INT_MAX);
+        for (int i = 1; i <= c; i++) {
+            if (offline_time[i] == INT_MAX) { // 最终仍然在线
+                int j = belong[i];
+                mn[j] = min(mn[j], i);
+            }
+        }
+
+        vector<int> ans;
+        for (int i = queries.size() - 1; i >= 0; i--) {
+            auto& q = queries[i];
+            int x = q[1];
+            int j = belong[x];
+            if (q[0] == 2) {
+                if (offline_time[x] == i) { // 变回在线
+                    mn[j] = min(mn[j], x);
+                }
+            } else if (i < offline_time[x]) { // 已经在线（写 < 或者 <= 都可以）
+                ans.push_back(x);
+            } else if (mn[j] != INT_MAX) {
+                ans.push_back(mn[j]);
+            } else {
+                ans.push_back(-1);
+            }
+        }
+        ranges::reverse(ans);
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func processQueries(c int, connections [][]int, queries [][]int) []int {
+	g := make([][]int, c+1)
+	for _, e := range connections {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+
+	belong := make([]int, c+1)
+	for i := range belong {
+		belong[i] = -1
+	}
+	cc := 0
+
+	var dfs func(int)
+	dfs = func(x int) {
+		belong[x] = cc // 记录节点 x 在哪个连通块
+		for _, y := range g[x] {
+			if belong[y] < 0 {
+				dfs(y)
+			}
+		}
+	}
+	for i := 1; i <= c; i++ {
+		if belong[i] < 0 {
+			dfs(i)
+			cc++
+		}
+	}
+
+	offlineTime := make([]int, c+1)
+	for i := range offlineTime {
+		offlineTime[i] = math.MaxInt
+	}
+	q1 := 0
+	for i, q := range slices.Backward(queries) {
+		if q[0] == 2 {
+			offlineTime[q[1]] = i // 记录最早离线时间
+		} else {
+			q1++
+		}
+	}
+
+	// 维护每个连通块的在线电站的最小编号
+	mn := make([]int, cc)
+	for i := range mn {
+		mn[i] = math.MaxInt
+	}
+	for i := 1; i <= c; i++ {
+		if offlineTime[i] == math.MaxInt { // 最终仍然在线
+			j := belong[i]
+			mn[j] = min(mn[j], i)
+		}
+	}
+
+	ans := make([]int, q1)
+	for i, q := range slices.Backward(queries) {
+		x := q[1]
+		j := belong[x]
+		if q[0] == 2 {
+			if offlineTime[x] == i { // 变回在线
+				mn[j] = min(mn[j], x)
+			}
+		} else {
+			q1--
+			if i < offlineTime[x] { // 已经在线（写 < 或者 <= 都可以）
+				ans[q1] = x
+			} else if mn[j] != math.MaxInt {
+				ans[q1] = mn[j]
+			} else {
+				ans[q1] = -1
+			}
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(c+n + q)$，其中 $n$ 是 $\textit{connections}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 空间复杂度：$\mathcal{O}(c+n)$。返回值不计入。
+
 ## 专题训练
 
 1. 图论题单的「**§1.1 DFS 基础**」。
 2. 数据结构题单的「**§5.6 懒删除堆**」。
+3. 数据结构题单的「**专题：离线算法**」。
 
 ## 分类题单
 

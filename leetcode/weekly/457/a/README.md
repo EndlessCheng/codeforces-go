@@ -1,7 +1,12 @@
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+技巧：
+
+1. 用一个哈希表保存类别到类别编号（$0,1,2,3$）的映射，方便把答案分组，顺带可以判断类别是否合法（是否在哈希表中）。
+2. 创建四个列表，把相同类别的优惠码加到同一个列表中，这样我们只需对列表中的优惠码排序。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1GF3qzMEni/)，欢迎点赞关注~
 
 ```py [sol-Python3]
-business_line_to_category = {
+BUSINESS_LINE_TO_CATEGORY = {
     "electronics": 0,
     "grocery": 1,
     "pharmacy": 2,
@@ -12,14 +17,14 @@ class Solution:
     def validateCoupons(self, code: List[str], businessLine: List[str], isActive: List[bool]) -> List[str]:
         groups = [[] for _ in range(4)]
         for s, bus, active in zip(code, businessLine, isActive):
-            category = business_line_to_category.get(bus, -1)
+            category = BUSINESS_LINE_TO_CATEGORY.get(bus, -1)
             if s and category >= 0 and active and \
                all(c == '_' or c.isalnum() for c in s):
-                groups[category].append(s)
+                groups[category].append(s)  # 相同类别的优惠码分到同一组
 
         ans = []
         for g in groups:
-            g.sort()
+            g.sort()  # 每一组内部排序
             ans += g
         return ans
 ```
@@ -40,13 +45,13 @@ class Solution {
             String s = code[i];
             Integer category = BUSINESS_LINE_TO_CATEGORY.get(businessLine[i]);
             if (!s.isEmpty() && category != null && isActive[i] && isValid(s)) {
-                groups[category].add(s);
+                groups[category].add(s); // 相同类别的优惠码分到同一组
             }
         }
 
         List<String> ans = new ArrayList<>();
         for (List<String> g : groups) {
-            Collections.sort(g);
+            Collections.sort(g); // 每一组内部排序
             ans.addAll(g);
         }
         return ans;
@@ -90,13 +95,13 @@ public:
             string& s = code[i];
             auto it = BUSINESS_LINE_TO_CATEGORY.find(businessLine[i]);
             if (!s.empty() && it != BUSINESS_LINE_TO_CATEGORY.end() && isActive[i] && is_valid(s)) {
-                groups[it->second].push_back(s);
+                groups[it->second].push_back(s); // 相同类别的优惠码分到同一组
             }
         }
 
         vector<string> ans;
         for (auto& g : groups) {
-            ranges::sort(g);
+            ranges::sort(g); // 每一组内部排序
             ans.insert(ans.end(), g.begin(), g.end());
         }
         return ans;
@@ -126,12 +131,12 @@ func validateCoupons(code []string, businessLine []string, isActive []bool) (ans
 	for i, s := range code {
 		category, ok := businessLineToCategory[businessLine[i]]
 		if ok && isActive[i] && isValid(s) {
-			groups[category] = append(groups[category], s)
+			groups[category] = append(groups[category], s) // 相同类别的优惠码分到同一组
 		}
 	}
 
 	for _, g := range groups {
-		slices.Sort(g)
+		slices.Sort(g) // 每一组内部排序
 		ans = append(ans, g...)
 	}
 	return
@@ -140,8 +145,8 @@ func validateCoupons(code []string, businessLine []string, isActive []bool) (ans
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(L + n\log L)$，其中 $n$ 是 $\textit{code}$ 的长度，$L$ 是 $\textit{code}[i]$ 的长度之和。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(L\log n)$，其中 $n$ 是 $\textit{code}$ 的长度，$L$ 是 $\textit{code}[i]$ 的长度之和。瓶颈在排序上。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(L)$，取决于编程语言保存的是字符串的引用还是拷贝。
 
 ## 分类题单
 
