@@ -271,7 +271,7 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 - 时间复杂度：$\mathcal{O}(n\log U\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$M=n/\textit{maxC}$。每次二分是 $\mathcal{O}(n\log U)$。外层循环每次会增加一个区间，这个区间在整个算法过程中，要么合并到其他区间中（消失啦），要么其 GCD 一共减少 $\mathcal{O}(\log U)$ 次，所以每个区间的 GCD 的计算过程会贡献 $\mathcal{O}(\log U)$ 个循环次数，所以每次二分的循环次数是 $\mathcal{O}(n\log U)$。
 - 空间复杂度：$\mathcal{O}(\log U)$。$\textit{intervals}$ 的长度为 $\mathcal{O}(\log U)$。
 
-## 优化
+## 优化（写法一）
 
 每次二分都要算 logTrick 有点慢，其实我们只需要知道，对于每个 $i$，以 $i$ 为右端点的子数组 GCD $\ge 2$ 时，子数组的左端点的最小值，记作 $\textit{leftMin}[i]$。如果没有 GCD $\ge 2$ 的子数组，则 $\textit{leftMin}[i]=n$。这可以在二分之前用 logTrick 预处理出来。
 
@@ -580,6 +580,208 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log U + n\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$M=n/\textit{maxC}$。计算 logTrick 时，外层循环每次会增加一个区间，这个区间在整个算法过程中，要么合并到其他区间中（消失啦），要么其 GCD 一共减少 $\mathcal{O}(\log U)$ 次，所以每个区间的 GCD 的计算过程会贡献 $\mathcal{O}(\log U)$ 个循环次数，所以 logTrick 的循环次数是 $\mathcal{O}(n\log U)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 优化（写法二）
+
+也可以用 [3171. 找到按位或最接近 K 的子数组](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/) 介绍的栈 + 滑动窗口解决。
+
+```py [sol-Python3]
+class Solution:
+    def minStable(self, nums: List[int], maxC: int) -> int:
+        n = len(nums)
+        left_min = [0] * n
+        left = bottom = right_gcd = 0
+        for i, x in enumerate(nums):
+            right_gcd = gcd(right_gcd, x)
+            while left <= i and gcd(nums[left], right_gcd) == 1:
+                if bottom <= left:
+                    # 重新构建一个栈
+                    # 由于 left 即将移出窗口，只需计算到 left+1
+                    for j in range(i - 1, left, -1):
+                        nums[j] = gcd(nums[j], nums[j + 1])
+                    bottom = i
+                    right_gcd = 0
+                left += 1
+            left_min[i] = left
+
+        def check(upper: int) -> bool:
+            c = maxC
+            i = upper
+            while i < n:
+                if i - left_min[i] + 1 > upper:
+                    if c == 0:
+                        return False
+                    c -= 1
+                    i += upper + 1
+                else:
+                    i += 1
+            return True
+
+        return bisect_left(range(len(nums) // (maxC + 1)), True, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minStable(int[] nums, int maxC) {
+        int n = nums.length;
+        int[] leftMin = new int[n];
+        int left = 0, bottom = 0, rightGcd = 0;
+        for (int i = 0; i < n; i++) {
+            rightGcd = gcd(rightGcd, nums[i]);
+            while (left <= i && gcd(nums[left], rightGcd) == 1) {
+                if (bottom <= left) {
+                    // 重新构建一个栈
+                    // 由于 left 即将移出窗口，只需计算到 left+1
+                    for (int j = i - 1; j > left; j--) {
+                        nums[j] = gcd(nums[j], nums[j + 1]);
+                    }
+                    bottom = i;
+                    rightGcd = 0;
+                }
+                left++;
+            }
+            leftMin[i] = left;
+        }
+
+        left = -1;
+        int right = n / (maxC + 1);
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (check(leftMin, maxC, mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(int[] leftMin, int maxC, int upper) {
+        int i = upper;
+        while (i < leftMin.length) {
+            if (i - leftMin[i] + 1 > upper) {
+                if (maxC == 0) {
+                    return false;
+                }
+                maxC--;
+                i += upper + 1;
+            } else {
+                i++;
+            }
+        }
+        return true;
+    }
+
+    private int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minStable(vector<int>& nums, int maxC) {
+        int n = nums.size();
+        vector<int> left_min(n);
+        int bottom = 0, right_gcd = 0;
+        for (int i = 0, left = 0; i < n; i++) {
+            right_gcd = gcd(right_gcd, nums[i]);
+            while (left <= i && gcd(nums[left], right_gcd) == 1) {
+                if (bottom <= left) {
+                    // 重新构建一个栈
+                    // 由于 left 即将移出窗口，只需计算到 left+1
+                    for (int j = i - 1; j > left; j--) {
+                        nums[j] = gcd(nums[j], nums[j + 1]);
+                    }
+                    bottom = i;
+                    right_gcd = 0;
+                }
+                left++;
+            }
+            left_min[i] = left;
+        }
+
+        auto check = [&](int upper) -> bool {
+            int c = maxC;
+            int i = upper;
+            while (i < n) {
+                if (i - left_min[i] + 1 > upper) {
+                    if (c == 0) {
+                        return false;
+                    }
+                    c--;
+                    i += upper + 1;
+                } else {
+                    i++;
+                }
+            }
+            return true;
+        };
+
+        int left = -1, right = n / (maxC + 1);
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? right : left) = mid;
+        }
+        return right;
+    }
+};
+```
+
+```go [sol-Go]
+func minStable(nums []int, maxC int) int {
+	n := len(nums)
+	leftMin := make([]int, n)
+	var left, bottom, rightGcd int
+	for i, x := range nums {
+		rightGcd = gcd(rightGcd, x)
+		for left <= i && gcd(nums[left], rightGcd) == 1 {
+			if bottom <= left {
+				// 重新构建一个栈
+				// 由于 left 即将移出窗口，只需计算到 left+1
+				for j := i - 1; j > left; j-- {
+					nums[j] = gcd(nums[j], nums[j+1])
+				}
+				bottom = i
+				rightGcd = 0
+			}
+			left++
+		}
+		leftMin[i] = left
+	}
+
+	ans := sort.Search(n/(maxC+1), func(upper int) bool {
+		c := maxC
+		i := upper
+		for i < n {
+			if i-leftMin[i]+1 > upper {
+				if c == 0 {
+					return false
+				}
+				c--
+				i += upper + 1
+			} else {
+				i++
+			}
+		}
+		return true
+	})
+	return ans
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log U + n\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$M=n/\textit{maxC}$。见 3171 题的分析。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练

@@ -1,16 +1,15 @@
 package main
 
 import (
-	"slices"
 	"sort"
 )
 
 // https://space.bilibili.com/206214
-func minStable(nums []int, maxC int) int {
+func minStable1(nums []int, maxC int) int {
 	n := len(nums)
 	leftMin := make([]int, n)
 	type interval struct{ gcd, l int } // 子数组 GCD，最小左端点
-	intervals := []interval{{1, 0}} // 哨兵
+	intervals := []interval{{1, 0}}    // 哨兵
 	for i, x := range nums {
 		// 计算以 i 为右端点的子数组 GCD
 		for j, p := range intervals {
@@ -56,39 +55,44 @@ func minStable(nums []int, maxC int) int {
 	return ans
 }
 
-func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
-
-func minStable2(nums []int, maxC int) int {
-	ans := sort.Search(len(nums)/(maxC+1), func(upper int) bool {
-		nums := slices.Clone(nums)
-		maxC := maxC
-		var left, bottom, rightGcd int
-		for right, x := range nums {
-			rightGcd = gcd(rightGcd, x)
-			for left <= right && gcd(nums[left], rightGcd) == 1 {
-				if bottom <= left {
-					// 重新构建一个栈
-					// 由于 left 即将移出窗口，只需计算到 left+1
-					for i := right - 1; i > left; i-- {
-						nums[i] = gcd(nums[i], nums[i+1])
-					}
-					bottom = right
-					rightGcd = 0
+func minStable(nums []int, maxC int) int {
+	n := len(nums)
+	leftMin := make([]int, n)
+	var left, bottom, rightGcd int
+	for i, x := range nums {
+		rightGcd = gcd(rightGcd, x)
+		for left <= i && gcd(nums[left], rightGcd) == 1 {
+			if bottom <= left {
+				// 重新构建一个栈
+				// 由于 left 即将移出窗口，只需计算到 left+1
+				for j := i - 1; j > left; j-- {
+					nums[j] = gcd(nums[j], nums[j+1])
 				}
-				left++
+				bottom = i
+				rightGcd = 0
 			}
-			if right-left+1 > upper {
-				if maxC == 0 {
+			left++
+		}
+		leftMin[i] = left
+	}
+
+	ans := sort.Search(n/(maxC+1), func(upper int) bool {
+		c := maxC
+		i := upper
+		for i < n {
+			if i-leftMin[i]+1 > upper {
+				if c == 0 {
 					return false
 				}
-				maxC--
-				// 重置
-				left = right + 1
-				bottom = right + 1
-				rightGcd = 0
+				c--
+				i += upper + 1
+			} else {
+				i++
 			}
 		}
 		return true
 	})
 	return ans
 }
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
