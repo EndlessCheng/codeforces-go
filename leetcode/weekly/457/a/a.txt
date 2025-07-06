@@ -1,0 +1,12 @@
+["SAVE20","","PHARMA5","SAVE@20"]
+["restaurant","grocery","pharmacy","restaurant"]
+[true,true,true,true]
+["PHARMA5","SAVE20"]
+
+["GROCERY15","ELECTRONICS_50","DISCOUNT10"]
+["grocery","electronics","invalid"]
+[false,true,true]
+["ELECTRONICS_50"]
+
+
+
