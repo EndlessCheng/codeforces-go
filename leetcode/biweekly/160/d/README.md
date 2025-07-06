@@ -54,12 +54,14 @@ $$
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minStable(self, nums: List[int], maxC: int) -> int:
         def check(upper: int) -> bool:
             intervals = []  # (子数组 GCD，最小左端点)
-            left = maxC
+            c = maxC
             for i, x in enumerate(nums):
                 # 计算以 i 为右端点的子数组 GCD
                 for p in intervals:
@@ -83,9 +85,9 @@ class Solution:
 
                 # intervals[0] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
                 if intervals and i - intervals[0][1] + 1 > upper:
-                    if left == 0:
+                    if c == 0:
                         return False
-                    left -= 1
+                    c -= 1
                     intervals.clear()  # 修改后 GCD 均为 1，直接清空
             return True
 
@@ -110,7 +112,6 @@ class Solution {
 
     private boolean check(int[] nums, int maxC, int upper) {
         List<int[]> intervals = new ArrayList<>(); // 每个元素是 (子数组 GCD，最小左端点)
-        int left = maxC;
         for (int i = 0; i < nums.length; i++) {
             int x = nums[i];
 
@@ -140,10 +141,10 @@ class Solution {
 
             // intervals[0] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
             if (!intervals.isEmpty() && i - intervals.get(0)[1] + 1 > upper) {
-                if (left == 0) {
+                if (maxC == 0) {
                     return false;
                 }
-                left--;
+                maxC--;
                 intervals.clear(); // 修改后 GCD 均为 1，直接清空
             }
         }
@@ -169,7 +170,7 @@ public:
 
         auto check = [&](int upper) -> bool {
             vector<pair<int, int>> intervals; // pair{子数组 GCD，最小左端点}
-            int left = maxC;
+            int c = maxC;
             for (int i = 0; i < n; i++) {
                 int x = nums[i];
                 // 计算以 i 为右端点的子数组 GCD
@@ -197,10 +198,10 @@ public:
 
                 // intervals[0] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
                 if (!intervals.empty() && i - intervals[0].second + 1 > upper) {
-                    if (left == 0) {
+                    if (c == 0) {
                         return false;
                     }
-                    left--;
+                    c--;
                     intervals.clear(); // 修改后 GCD 均为 1，直接清空
                 }
             }
@@ -222,7 +223,7 @@ func minStable(nums []int, maxC int) int {
 	ans := sort.Search(len(nums)/(maxC+1), func(upper int) bool {
 		type interval struct{ gcd, l int } // 子数组 GCD，最小左端点
 		intervals := []interval{}
-		left := maxC
+		c := maxC
 		for i, x := range nums {
 			// 计算以 i 为右端点的子数组 GCD
 			for j, p := range intervals {
@@ -250,10 +251,10 @@ func minStable(nums []int, maxC int) int {
 
 			// intervals[0] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
 			if len(intervals) > 0 && i-intervals[0].l+1 > upper { // 必须修改 nums[i]=1
-				if left == 0 {
+				if c == 0 {
 					return false
 				}
-				left--
+				c--
 				intervals = intervals[:0] // 修改后 GCD 均为 1，直接清空
 			}
 		}
@@ -268,7 +269,318 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log U\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$M=n/\textit{maxC}$。每次二分是 $\mathcal{O}(n\log U)$。外层循环每次会增加一个区间，这个区间在整个算法过程中，要么合并到其他区间中（消失啦），要么其 GCD 一共减少 $\mathcal{O}(\log U)$ 次，所以每个区间的 GCD 的计算过程会贡献 $\mathcal{O}(\log U)$ 个循环次数，所以每次二分的循环次数是 $\mathcal{O}(n\log U)$。
-- 空间复杂度：$\mathcal{O}(\log U)$。有 $\mathcal{O}(\log U)$ 个不同的区间。
+- 空间复杂度：$\mathcal{O}(\log U)$。$\textit{intervals}$ 的长度为 $\mathcal{O}(\log U)$。
+
+## 优化
+
+每次二分都要算 logTrick 有点慢，其实我们只需要知道，对于每个 $i$，以 $i$ 为右端点的子数组 GCD $\ge 2$ 时，子数组的左端点的最小值，记作 $\textit{leftMin}[i]$。如果没有 GCD $\ge 2$ 的子数组，则 $\textit{leftMin}[i]=n$。这可以在二分之前用 logTrick 预处理出来。
+
+然后二分。从第一个可能会修改的右端点 $i= \textit{upper}$ 开始，如果 $i-\textit{leftMin}[i]+1 > \textit{upper}$，那么修改 $i$，跳到下一个可能会修改的右端点 $i+\textit{upper}+1$，否则不修改，把 $i$ 加一。
+
+```py [sol-Python3]
+class Solution:
+    def minStable(self, nums: List[int], maxC: int) -> int:
+        n = len(nums)
+        left_min = [n] * n
+        intervals = [[1, 0]]  # 哨兵
+        for i, x in enumerate(nums):
+            # 计算以 i 为右端点的子数组 GCD
+            for p in intervals:
+                p[0] = gcd(p[0], x)
+            # nums[i] 单独一个数作为子数组
+            intervals.append([x, i])
+
+            # 去重（合并 GCD 相同的区间）
+            idx = 1
+            for j in range(1, len(intervals)):
+                if intervals[j][0] != intervals[j - 1][0]:
+                    intervals[idx] = intervals[j]
+                    idx += 1
+            del intervals[idx:]
+
+            # 由于我们添加了哨兵，intervals[1] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
+            if len(intervals) > 1:
+                left_min[i] = intervals[1][1]
+
+        def check(upper: int) -> bool:
+            c = maxC
+            i = upper
+            while i < n:
+                if i - left_min[i] + 1 > upper:
+                    if c == 0:
+                        return False
+                    c -= 1
+                    i += upper + 1
+                else:
+                    i += 1
+            return True
+
+        return bisect_left(range(len(nums) // (maxC + 1)), True, key=check)
+```
+
+```java [sol-Java]
+// 更快的写法见【Java 数组】
+class Solution {
+    public int minStable(int[] nums, int maxC) {
+        int n = nums.length;
+        int[] leftMin = new int[n];
+        List<int[]> intervals = new ArrayList<>(); // 每个元素是 (子数组 GCD，最小左端点)
+        intervals.add(new int[]{1, 0}); // 哨兵
+
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+
+            // 计算以 i 为右端点的子数组 GCD
+            for (int[] interval : intervals) {
+                interval[0] = gcd(interval[0], x);
+            }
+            // nums[i] 单独一个数作为子数组
+            intervals.add(new int[]{x, i});
+
+            // 去重（合并 GCD 相同的区间）
+            int idx = 1;
+            for (int j = 1; j < intervals.size(); j++) {
+                if (intervals.get(j)[0] != intervals.get(j - 1)[0]) {
+                    intervals.set(idx, intervals.get(j));
+                    idx++;
+                }
+            }
+            intervals.subList(idx, intervals.size()).clear();
+
+            // 由于我们添加了哨兵，intervals[1] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
+            leftMin[i] = intervals.size() > 1 ? intervals.get(1)[1] : n;
+        }
+
+        int left = -1;
+        int right = n / (maxC + 1);
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (check(leftMin, maxC, mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(int[] leftMin, int maxC, int upper) {
+        int i = upper;
+        while (i < leftMin.length) {
+            if (i - leftMin[i] + 1 > upper) {
+                if (maxC == 0) {
+                    return false;
+                }
+                maxC--;
+                i += upper + 1;
+            } else {
+                i++;
+            }
+        }
+        return true;
+    }
+
+    private int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public int minStable(int[] nums, int maxC) {
+        int n = nums.length;
+        int[] leftMin = new int[n];
+        int[][] intervals = new int[31][2];
+        intervals[0][0] = 1; // 哨兵
+        int size = 1;
+
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+
+            // 计算以 i 为右端点的子数组 GCD
+            for (int j = 1; j < size; j++) {
+                intervals[j][0] = gcd(intervals[j][0], x);
+            }
+            // nums[i] 单独一个数作为子数组
+            intervals[size][0] = x;
+            intervals[size][1] = i;
+            size++;
+
+            // 去重（合并 GCD 相同的区间）
+            int idx = 1;
+            for (int j = 1; j < size; j++) {
+                if (intervals[j][0] != intervals[j - 1][0]) {
+                    intervals[idx][0] = intervals[j][0];
+                    intervals[idx][1] = intervals[j][1];
+                    idx++;
+                }
+            }
+            size = idx;
+
+            leftMin[i] = size > 1 ? intervals[1][1] : n;
+        }
+
+        int left = -1;
+        int right = n / (maxC + 1);
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (check(leftMin, maxC, mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(int[] leftMin, int maxC, int upper) {
+        int i = upper;
+        while (i < leftMin.length) {
+            if (i - leftMin[i] + 1 > upper) {
+                if (maxC == 0) {
+                    return false;
+                }
+                maxC--;
+                i += upper + 1;
+            } else {
+                i++;
+            }
+        }
+        return true;
+    }
+
+    private int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minStable(vector<int>& nums, int maxC) {
+        int n = nums.size();
+        vector<int> left_min(n);
+        vector<pair<int, int>> intervals = {{1, 0}}; // 哨兵
+
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            // 计算以 i 为右端点的子数组 GCD
+            for (auto& [g, _] : intervals) {
+                g = gcd(g, x);
+            }
+            // nums[i] 单独一个数作为子数组
+            intervals.emplace_back(x, i);
+
+            // 去重（合并 GCD 相同的区间）
+            int idx = 1;
+            for (int j = 1; j < intervals.size(); j++) {
+                if (intervals[j].first != intervals[j - 1].first) {
+                    intervals[idx++] = intervals[j];
+                }
+            }
+            intervals.resize(idx);
+
+            // 由于我们添加了哨兵，intervals[1] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
+            left_min[i] = intervals.size() > 1 ? intervals[0].second : n;
+        }
+
+        auto check = [&](int upper) -> bool {
+            int c = maxC;
+            int i = upper;
+            while (i < n) {
+                if (i - left_min[i] + 1 > upper) {
+                    if (c == 0) {
+                        return false;
+                    }
+                    c--;
+                    i += upper + 1;
+                } else {
+                    i++;
+                }
+            }
+            return true;
+        };
+
+        int left = -1, right = n / (maxC + 1);
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? right : left) = mid;
+        }
+        return right;
+    }
+};
+```
+
+```go [sol-Go]
+func minStable(nums []int, maxC int) int {
+	n := len(nums)
+	leftMin := make([]int, n)
+	type interval struct{ gcd, l int } // 子数组 GCD，最小左端点
+	intervals := []interval{{1, 0}} // 哨兵
+	for i, x := range nums {
+		// 计算以 i 为右端点的子数组 GCD
+		for j, p := range intervals {
+			intervals[j].gcd = gcd(p.gcd, x)
+		}
+		// nums[i] 单独一个数作为子数组
+		intervals = append(intervals, interval{x, i})
+
+		// 去重（合并 GCD 相同的区间）
+		idx := 1
+		for j := 1; j < len(intervals); j++ {
+			if intervals[j].gcd != intervals[j-1].gcd {
+				intervals[idx] = intervals[j]
+				idx++
+			}
+		}
+		intervals = intervals[:idx]
+
+		// 由于我们添加了哨兵，intervals[1] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
+		if len(intervals) > 1 {
+			leftMin[i] = intervals[1].l
+		} else {
+			leftMin[i] = n
+		}
+	}
+
+	ans := sort.Search(n/(maxC+1), func(upper int) bool {
+		c := maxC
+		i := upper
+		for i < n {
+			if i-leftMin[i]+1 > upper {
+				if c == 0 {
+					return false
+				}
+				c--
+				i += upper + 1
+			} else {
+				i++
+			}
+		}
+		return true
+	})
+	return ans
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log U + n\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$M=n/\textit{maxC}$。计算 logTrick 时，外层循环每次会增加一个区间，这个区间在整个算法过程中，要么合并到其他区间中（消失啦），要么其 GCD 一共减少 $\mathcal{O}(\log U)$ 次，所以每个区间的 GCD 的计算过程会贡献 $\mathcal{O}(\log U)$ 个循环次数，所以 logTrick 的循环次数是 $\mathcal{O}(n\log U)$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练
 
