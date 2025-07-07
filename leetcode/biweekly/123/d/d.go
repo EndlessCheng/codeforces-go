@@ -1,18 +1,14 @@
 package main
 
 import (
+	"cmp"
 	"math"
 	"slices"
 )
 
 // https://space.bilibili.com/206214
 func numberOfPairs(points [][]int) (ans int) {
-	slices.SortFunc(points, func(p, q []int) int {
-		if p[0] != q[0] {
-			return p[0] - q[0]
-		}
-		return q[1] - p[1]
-	})
+	slices.SortFunc(points, func(a, b []int) int { return cmp.Or(a[0]-b[0], b[1]-a[1]) })
 	for i, p := range points {
 		y0 := p[1]
 		maxY := math.MinInt
