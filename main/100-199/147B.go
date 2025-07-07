@@ -25,6 +25,10 @@ func cf147B(in io.Reader, out io.Writer) {
 	for i := range f {
 		f[i] = mat()
 	}
+	// 至多 vs 恰好，初始化 f[0][i][0] = 0 是至多 2^k 条边，不写就是恰好 2^k 条边
+	for v, r := range f[0] {
+		r[v] = 0
+	}
 	for range m {
 		var v, w, wt, wt2 int
 		Fscan(in, &v, &w, &wt, &wt2)

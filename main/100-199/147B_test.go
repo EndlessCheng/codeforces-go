@@ -19,19 +19,11 @@ func Test_cf147B(t *testing.T) {
 			`4`,
 		},
 		{
-			`2 1
-1 2 -1 -1`,
-			`0`,
-		},
-		{
-			`2 1
-1 2 -1 2`,
-			`2`,
-		},
-		{
-			`2 1
-1 2 2 -1`,
-			`2`,
+			`3 3
+1 2 -10 3
+1 3 1 -10
+2 3 -10 -1`,
+			`3`,
 		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf147B)
