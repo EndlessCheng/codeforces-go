@@ -540,6 +540,10 @@ func processQueries(c int, connections [][]int, queries [][]int) []int {
 - 时间复杂度：$\mathcal{O}(c+n + q)$，其中 $n$ 是 $\textit{connections}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(c+n)$。返回值不计入。
 
+## 相似题目
+
+[3108. 带权图里旅途的最小代价](https://leetcode.cn/problems/minimum-cost-walk-in-weighted-graph/)
+
 ## 专题训练
 
 1. 图论题单的「**§1.1 DFS 基础**」。
