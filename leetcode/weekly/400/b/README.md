@@ -76,6 +76,10 @@ func countDays(days int, meetings [][]int) int {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{meetings}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
+## 相似题目
+
+见下面贪心题单的「**§2.5 合并区间**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
