@@ -7,39 +7,43 @@ import (
 )
 
 // https://github.com/EndlessCheng
-type tuple struct {
-	w, v int
-	f    [2001]int
+var mem26 [90002][2001]int32 // todo 最多需要多少空间？
+var cur26 = 1
+
+type tuple26 struct {
+	w, v, fi int
 }
 
-type stack []tuple
+type stack26 []tuple26
 
-func (st stack) res(w int) int {
-	return st[len(st)-1].f[w]
+func (st stack26) res(w int) int32 {
+	return mem26[st[len(st)-1].fi][w]
 }
 
-func (st *stack) push(w, v int) {
-	f := (*st)[len(*st)-1].f
+func (st *stack26) push(w, v int) {
+	cur26++
+	f := mem26[cur26][:]
+	copy(f, mem26[(*st)[len(*st)-1].fi][:])
 	for i := len(f) - 1; i >= w; i-- {
-		f[i] = max(f[i], f[i-w]+v)
+		f[i] = max(f[i], f[i-w]+int32(v))
 	}
-	*st = append(*st, tuple{w, v, f})
+	*st = append(*st, tuple26{w, v, cur26})
 }
 
-func (st *stack) pop() (w, v int) {
+func (st *stack26) pop() (w, v int) {
 	n := len(*st) - 1
 	w, v = (*st)[n].w, (*st)[n].v
 	*st = (*st)[:n]
 	return
 }
 
-func (st stack) empty() bool {
+func (st stack26) empty() bool {
 	return len(st) == 1
 }
 
-type deque struct{ l, r stack }
+type deque26 struct{ l, r stack26 }
 
-func (q *deque) rebalance() {
+func (q *deque26) rebalance() {
 	if q.r.empty() {
 		q.l, q.r = q.r, q.l
 		defer func() { q.l, q.r = q.r, q.l }()
@@ -55,29 +59,29 @@ func (q *deque) rebalance() {
 	}
 }
 
-func (q deque) res(w int) (mx int) {
+func (q deque26) res(w int) (mx int32) {
 	for i := range w + 1 {
 		mx = max(mx, q.l.res(i)+q.r.res(w-i))
 	}
 	return
 }
 
-func (q *deque) pushFront(w, v int) {
+func (q *deque26) pushFront(w, v int) {
 	q.l.push(w, v)
 }
 
-func (q *deque) pushBack(w, v int) {
+func (q *deque26) pushBack(w, v int) {
 	q.r.push(w, v)
 }
 
-func (q *deque) popFront() (w, v int) {
+func (q *deque26) popFront() (w, v int) {
 	if q.l.empty() {
 		q.rebalance()
 	}
 	return q.l.pop()
 }
 
-func (q *deque) popBack() {
+func (q *deque26) popBack() {
 	if q.r.empty() {
 		q.rebalance()
 	}
@@ -107,8 +111,8 @@ func cf2026F(in io.Reader, _w io.Writer) {
 		}
 	}
 
-	ans := make([]int, q)
-	dq := deque{stack{{}}, stack{{}}}
+	ans := make([]int32, q)
+	dq := deque26{stack26{{}}, stack26{{fi: 1}}}
 	var dfs func(int)
 	dfs = func(v int) {
 		for _, e := range g[v] {
