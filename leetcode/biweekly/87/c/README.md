@@ -1,14 +1,16 @@
-[视频讲解](https://www.bilibili.com/video/BV1MT411u7fW) 已出炉，包括本题的末尾列出的部分题目，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
-
----
-
 ## 方法一：利用或运算的性质
+
+首先，我们有如下 $O(n^2)$ 的暴力算法：
+
+> 从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$，更新 $\textit{nums}[j]=\textit{nums}[j]\ |\ x$，如果 $\textit{nums}[j]$ 变大，则更新 $\textit{ans}[j]=i-j+1$。
+
+下面来优化该算法。
 
 我们可以把二进制数看成集合，二进制数第 $i$ 位为 $1$ 表示 $i$ 在集合中。两个二进制数的或，就可以看成是两个集合的**并集**。
 
 对于两个二进制数 $a$ 和 $b$，如果 $a\ |\ b=a$，从集合的角度上看，$b$ 对应的集合是 $a$ 对应的集合的**子集**。
 
-据此我们可以提出如下算法：
+据此我们可以提出如下改进后的算法：
 
 从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$：
 - 如果 $\textit{nums}[j]\ |\ x\ne\textit{nums}[j]$，说明 $\textit{nums}[j]$ 可以变大（集合元素增多），更新 $\textit{nums}[j]=\textit{nums}[j]\ |\ x$；
@@ -81,7 +83,7 @@ func smallestSubarrays(nums []int) []int {
 #### 复杂度分析
 
 - 时间复杂度：$O(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=max(\textit{nums})$。由于 $2^{29}-1<10^9<2^{30}-1$，二进制数对应集合的大小不会超过 $29$，因此在或运算下，每个数字至多可以增大 $29$ 次。总体上看，二重循环的次数等于每个数字可以增大的次数之和，即 $O(n\log U)$。
-- 空间复杂度：$O(1)$。
+- 空间复杂度：$O(1)$。返回值不计入。
 
 ## 方法二：更加通用的模板
 
@@ -94,15 +96,15 @@ func smallestSubarrays(nums []int) []int {
 
 思考：对于起始位置为 $i$ 的子数组的按位或，至多有多少种不同的结果？
 
-根据或运算的性质，我们可以从 $x=\textit{nums}[i]$ 开始，不断往右扩展子数组，按位或的结果要么使 $x$ 不变，要么让 $x$ 的某些比特位的值由 $0$ 变 $1$。最坏情况下从 $x=0$ 出发，每次改变一个比特位，最终得到 $2^{29}-1<10^9$，因此至多有 $30$ 种不同的结果。
+我们可以从 $x=\textit{nums}[i]$ 开始（子数组左端点是 $i$），不断往右增大子数组的长度。根据或运算的性质，按位或的结果要么使 $x$ 不变，要么让 $x$ 的某些比特位的值由 $0$ 变 $1$。最坏情况下从 $x=0$ 开始，每次只改变一个比特位，最终得到 $2^{29}-1<10^9$，因此至多有 $30$ 种不同的按位或结果。这样就可以暴力了。
 
-另一个结论是，相同的按位或对应的子数组右端点会形成一个连续的区间，这可以用来统计按位或结果及其对应的子数组的个数。
+另一个结论是，相同的按位或对应的子数组右端点会形成一个连续的区间，从而保证代码去重逻辑的正确性（这一性质还可以用来统计按位或结果及其对应的子数组的个数）。
 
-据此，我们可以倒着遍历 $\textit{nums}$，在遍历的同时，用一个数组 $\textit{ors}$ 维护从 $\textit{nums}[i]$ 开始的子数组的按位或的结果，及其对应的子数组右端点的最小值。继续遍历到 $\textit{nums}[i-1]$ 时，我们可以把 $\textit{nums}[i-1]$ 和 $\textit{ors}$ 中的每个值按位或，合并值相同的结果。
+据此，我们可以倒着遍历 $\textit{nums}$，在遍历的同时，用一个数组 $\textit{ors}$ 维护以 $i$ 为左端点的子数组的按位或的结果，及其对应的子数组右端点的最小值。继续遍历到 $\textit{nums}[i-1]$ 时，我们可以把 $\textit{nums}[i-1]$ 和 $\textit{ors}$ 中的每个值按位或，合并值相同的结果。
 
 这样在遍历时，$\textit{ors}$ 中值最大的元素对应的子数组右端点的最小值，就是要求的最短子数组的右端点。
 
-注：下面代码用到了**原地去重**的技巧，如果你对此并不熟悉，可以先做做 [26. 删除有序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)。
+**注**：下面代码用到了**原地去重**的技巧，如果你对此并不熟悉，可以先做做 [26. 删除有序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)。
 
 ```py [sol1-Python3]
 class Solution:
@@ -114,6 +116,7 @@ class Solution:
             num = nums[i]
             ors.append([0, i])
             k = 0
+            # 每个元素或上 num，同时去重
             for p in ors:
                 p[0] |= num
                 if ors[k][0] == p[0]:
@@ -133,9 +136,10 @@ class Solution {
         var n = nums.length;
         var ans = new int[n];
         var ors = new ArrayList<int[]>(); // 按位或的值 + 对应子数组的右端点的最小值
-        for (int i = n - 1; i >= 0; --i) {
+        for (int i = n - 1; i >= 0; i--) {
             ors.add(new int[]{0, i});
             var k = 0;
+            // 每个元素或上 nums[i]，同时去重
             for (var or : ors) {
                 or[0] |= nums[i];
                 if (ors.get(k)[0] == or[0])
@@ -158,11 +162,12 @@ public:
         int n = nums.size();
         vector<int> ans(n);
         vector<pair<int, int>> ors; // 按位或的值 + 对应子数组的右端点的最小值
-        for (int i = n - 1; i >= 0; --i) {
+        for (int i = n - 1; i >= 0; i--) {
             ors.emplace_back(0, i);
             ors[0].first |= nums[i];
             int k = 0;
-            for (int j = 1; j < ors.size(); ++j) {
+            // 每个元素或上 nums[i]，同时去重
+            for (int j = 1; j < ors.size(); j++) {
                 ors[j].first |= nums[i];
                 if (ors[k].first == ors[j].first)
                     ors[k].second = ors[j].second; // 合并相同值，下标取最小的
@@ -188,6 +193,7 @@ func smallestSubarrays(nums []int) []int {
 		ors = append(ors, pair{0, i})
 		ors[0].or |= num
 		k := 0
+		// 每个元素或上 num，同时去重
 		for _, p := range ors[1:] {
 			p.or |= num
 			if ors[k].or == p.or {
@@ -208,7 +214,7 @@ func smallestSubarrays(nums []int) []int {
 #### 复杂度分析
 
 - 时间复杂度：$O(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=max(\textit{nums})$。
-- 空间复杂度：$O(\log U)$。
+- 空间复杂度：$O(\log U)$。返回值不计入。
 
 #### 可以用模板秒杀的题目
 
