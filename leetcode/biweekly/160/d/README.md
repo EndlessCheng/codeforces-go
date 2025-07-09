@@ -491,7 +491,7 @@ public:
             intervals.resize(idx);
 
             // 由于我们添加了哨兵，intervals[1] 的 GCD >= 2 且最长，取其区间左端点作为子数组的最小左端点
-            left_min[i] = intervals.size() > 1 ? intervals[0].second : n;
+            left_min[i] = intervals.size() > 1 ? intervals[1].second : n;
         }
 
         auto check = [&](int upper) -> bool {
