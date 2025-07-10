@@ -69,7 +69,9 @@ func earliestAndLatest(n, first, second int) []int {
 	calcEarliest := func(n int) int {
 		earliest := 1 // 初始回合
 
-		// AB 太靠左了（靠左的定义见情况 xx）
+		// todo 检查 n 是奇数的情况，各个情况是否成立！！
+
+		// AB 太靠左了
 		if first+second <= (n+1)/2 {
 			for first+second <= (n+1)/2 {
 				earliest++
@@ -77,18 +79,18 @@ func earliestAndLatest(n, first, second int) []int {
 			}
 
 			// 情况 xx，AB 不相邻
-			// 总是可以调整为情况 xx 或者情况 xx，只需一回合就能相遇
+			// 在上面循环的最后一回合，总是可以把局面调整为情况 xx 或者情况 xx，使 AB 下回合就能相遇
 			if second-first > 1 {
 				return earliest + 1
 			}
 		}
 
-		// 情况 xx，AB 相邻（由于 AB 不相遇，所以 B 不可能在中轴线右侧）
+		// 情况 1：AB 相邻（由于 AB 不相遇，B 不可能在中轴线右侧。注意上面保证 A 左边人数比 B 右边人数少）
 		if second-first == 1 {
 			// 先过一回合
 			earliest++
 			n = (n + 1) / 2
-			// 在相邻的情况下，当且仅当 n 是偶数的时候相遇（推导过程见图）
+			// 在 AB 相邻的情况下，当且仅当 n 是偶数的时候相遇（推导过程见图）
 			for n%2 > 0 {
 				earliest++
 				n = (n + 1) / 2
@@ -96,17 +98,15 @@ func earliestAndLatest(n, first, second int) []int {
 			return earliest
 		}
 
-		// 下面讨论 AB 不相邻且 first+second > ceil(n/2) 的情况
-
-		// 情况 xx，B 在中轴线或中轴线左侧     todo
+		// 情况 2：B 在中轴线或中轴线左侧
 		if second <= (n+1)/2 {
-			// 下回合就能相遇（构造方式见图）
+			// 可以让 AB 左右人数一样多（构造方式见图），下回合就能相遇
 			return earliest + 1
 		}
 
-		// 情况 xx，B 在中轴线右侧，且两人隔了一个人
-		if second-first == 2 { 
-			// 由于 B 右侧不能凭空赢一个，所以下回合 AB 必定相邻，变成情况 xx
+		// 情况 3：AB 之间恰有一个人
+		if second-first == 2 {
+			// 下回合 AB 必定相邻，变成情况 1
 			earliest++
 			n = (n + 1) / 2
 			for n%2 > 0 {
@@ -116,12 +116,14 @@ func earliestAndLatest(n, first, second int) []int {
 			return earliest
 		}
 
-		// A 左侧有奇数个人，且 B 与 A' 相邻
+		// 情况 4c：A 左侧有奇数个人，且 B 与 A' 相邻
 		if first%2 == 0 && first+second == n {
-			// 一回合后，总是可以转化为情况 xx   todo
+			// 一回合后，转化为情况 4a
 			earliest++
 		}
 
+		// 情况 4a：A 左侧有偶数个人
+		// 情况 4b：A 左侧有奇数个人，且 B 与 A' 不相邻
 		// 下回合就能相遇
 		return earliest + 1
 	}
