@@ -15,15 +15,6 @@ var g5 [][]pair5
 
 type seg5 []struct{ l, r, min int }
 
-func (t seg5) set(o int) {
-	i := t[o].l
-	if len(g5[i]) > 0 {
-		t[o].min = g5[i][0].b
-	} else {
-		t[o].min = 2e9
-	}
-}
-
 func (t seg5) maintain(o int) {
 	t[o].min = min(t[o<<1].min, t[o<<1|1].min)
 }
@@ -31,7 +22,7 @@ func (t seg5) maintain(o int) {
 func (t seg5) build(o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		t.set(o)
+		t[o].min = g5[l][0].b
 		return
 	}
 	m := (l + r) >> 1
@@ -40,18 +31,18 @@ func (t seg5) build(o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg5) delete(o, qr, upper int, f func(int)) {
+func (t seg5) delete(o, qr, maxY int, f func(int)) {
 	l := t[o].l
-	if l >= qr || t[o].min > upper {
+	if l >= qr || t[o].min > maxY {
 		return
 	}
 	if l == t[o].r {
 		f(l)
-		t.set(o)
+		t[o].min = g5[l][0].b
 		return
 	}
-	t.delete(o<<1|1, qr, upper, f)
-	t.delete(o<<1, qr, upper, f)
+	t.delete(o<<1|1, qr, maxY, f)
+	t.delete(o<<1, qr, maxY, f)
 	t.maintain(o)
 }
 
@@ -75,8 +66,9 @@ func cf605D(in io.Reader, _w io.Writer) {
 		x := sort.SearchInts(xs, a[i].a)
 		g5[x] = append(g5[x], pair5{a[i].b, i})
 	}
-	for _, ps := range g5 {
+	for i, ps := range g5 {
 		slices.SortFunc(ps, func(a, b pair5) int { return a.b - b.b })
+		g5[i] = append(ps, pair5{2e9, 0}) // 哨兵
 	}
 	t := make(seg5, 2<<bits.Len(uint(m-1)))
 	t.build(1, 0, m-1)
@@ -87,22 +79,24 @@ func cf605D(in io.Reader, _w io.Writer) {
 		i := q[0]
 		q = q[1:]
 		if i == n {
-			ans := []any{}
+			ans := []int{}
 			for ; i > 0; i = pre[i] {
 				ans = append(ans, i)
 			}
-			slices.Reverse(ans)
 			Fprintln(out, len(ans))
-			Fprintln(out, ans...)
+			for i := len(ans) - 1; i >= 0; i-- {
+				Fprint(out, ans[i], " ")
+			}
+			Fprintln(out)
 			return
 		}
-		upper := a[i].d
-		t.delete(1, sort.SearchInts(xs, a[i].c+1), upper, func(l int) {
+
+		maxY := a[i].d
+		t.delete(1, sort.SearchInts(xs, a[i].c+1), maxY, func(l int) {
 			ps := g5[l]
-			for len(ps) > 0 && ps[0].b <= upper {
-				j := ps[0].i
-				pre[j] = i
-				q = append(q, j)
+			for ps[0].b <= maxY {
+				pre[ps[0].i] = i
+				q = append(q, ps[0].i)
 				ps = ps[1:]
 			}
 			g5[l] = ps
