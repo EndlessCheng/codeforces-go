@@ -7,24 +7,29 @@ import (
 )
 
 func Test(t *testing.T) {
-	t.Log("Current test is [d]")
 	examples := [][]string{
 		{
-			`11`, `2`, `4`, 
+			`11`, `2`, `4`,
 			`[3,4]`,
 		},
 		{
-			`5`, `1`, `5`, 
+			`5`, `1`, `5`,
 			`[1,1]`,
 		},
-		// TODO 测试入参最小的情况
 		{
-			`5`,`1`,`4`,
+			`5`, `1`, `4`,
 			`[2,2]`,
 		},
+		{
+			`14`, `2`, `5`,
+			`[3,4]`,
+		},
+		{
+			`8`, `3`, `7`,
+			`[3,3]`,
+		},
 	}
-	targetCaseNum := -1
-	if err := testutil.RunLeetCodeFuncWithExamples(t, earliestAndLatest, examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, earliestAndLatest, examples, 0); err != nil {
 		t.Fatal(err)
 	}
 }
