@@ -75,6 +75,7 @@ todo 最长前缀查询 https://www.luogu.com.cn/problem/P5231
  https://www.luogu.com.cn/problem/P5840
  二进制分组 https://codeforces.com/problemset/problem/710/F 2400
  https://codeforces.com/problemset/problem/1202/E 2400
+ https://codeforces.com/problemset/problem/86/C 2500
  https://codeforces.com/problemset/problem/696/D 2500
  https://codeforces.com/problemset/problem/963/D 2500
  https://codeforces.com/problemset/problem/1437/G 2600
