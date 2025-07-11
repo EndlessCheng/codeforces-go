@@ -11,14 +11,14 @@ import (
 // 另一种做法是通过交换空列到第 n 列，以及交换一个含有 1 的行到第 n 行，从而归纳到 n-1 方阵的情况
 
 // github.com/EndlessCheng/codeforces-go
-type data struct {
+type data66 struct {
 	a     [][]byte
 	tp    int
 	swaps *[][3]int
 }
 
-func (d data) Len() int { return len(d.a) }
-func (d data) Less(i, j int) bool {
+func (d data66) Len() int { return len(d.a) }
+func (d data66) Less(i, j int) bool {
 	if d.tp == 1 {
 		return bytes.Count(d.a[i], []byte{1}) < bytes.Count(d.a[j], []byte{1})
 	}
@@ -29,7 +29,7 @@ func (d data) Less(i, j int) bool {
 	}
 	return false
 }
-func (d data) Swap(i, j int) {
+func (d data66) Swap(i, j int) {
 	if i == j {
 		return
 	}
@@ -50,7 +50,7 @@ func CF266C(_r io.Reader, _w io.Writer) {
 
 	var n, x, y int
 	Fscan(in, &n)
-	d := data{make([][]byte, n), 1, &[][3]int{}}
+	d := data66{make([][]byte, n), 1, &[][3]int{}}
 	for i := range d.a {
 		d.a[i] = make([]byte, n)
 	}
