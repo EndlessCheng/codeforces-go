@@ -22,8 +22,9 @@ func cf607C(in io.Reader, out io.Writer) {
 	t = append(t, '#')
 	t = append(t, s...)
 
-	pi := make([]int, len(t))
-	for i := 1; i < len(pi); i++ {
+	m := len(t)
+	pi := make([]int, m)
+	for i := 1; i < m; i++ {
 		b := t[i]
 		for c > 0 && t[c] != b {
 			c = pi[c-1]
@@ -33,10 +34,10 @@ func cf607C(in io.Reader, out io.Writer) {
 		}
 		pi[i] = c
 	}
-	if pi[len(pi)-1] > 0 {
-		Fprintln(out, "NO")
+	if pi[m-1] > 0 {
+		Fprint(out, "NO")
 	} else {
-		Fprintln(out, "YES")
+		Fprint(out, "YES")
 	}
 }
 
