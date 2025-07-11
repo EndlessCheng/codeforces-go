@@ -31,6 +31,9 @@ Precedence    Operator
      bits.Len(x) 相当于 ceil(log2(x+1))，即代码 int(math.Ceil(math.Log2(float64(x+1))))
      或者说 2^(bits.Len(x)-1) <= x < 2^bits.Len(x)    x>0
 
+floor(log2(x)) = bits.Len(x) - 1
+ ceil(log2(x)) = bits.Len(x-1)
+
 ### 基础题
 https://codeforces.com/problemset/problem/2074/C 1100
 https://atcoder.jp/contests/arc161/tasks/arc161_b 563=CF1137
@@ -692,10 +695,11 @@ func _(x int) {
 		type interval struct{ v, l, r int } // [l,r)
 		curRes := []interval{}
 		for i, v := range a {
-			// 计算的相当于是在 i 结束的 suf op
+			// 计算以 i 为右端点的子数组 op
 			for j, p := range curRes {
 				curRes[j].v = op(p.v, v)
 			}
+			// a[i] 单独一个数作为子数组
 			curRes = append(curRes, interval{v, i, i + 1})
 
 			// 去重（合并 v 相同的区间）
