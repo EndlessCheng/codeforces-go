@@ -86,9 +86,9 @@ func matchPlayersAndTrainers(players, trainers []int) int {
 
 也可以遍历训练师 $\textit{trainers}$，去找对应的运动员 $\textit{players}$：
 
-- 初始化 $j=0$。
-- 如果 $\textit{trainers}[i] < \textit{players}[j]$，不匹配，继续循环。
-- 如果 $\textit{trainers}[i] \ge  \textit{players}[j]$，匹配，把 $j$ 加一，继续循环。
+- 初始化 $i=0$，$j=0$。
+- 如果 $\textit{trainers}[i] < \textit{players}[j]$，不匹配，把 $i$ 加一，考虑下一个训练师能否匹配（训练能力值更大）。
+- 如果 $\textit{trainers}[i] \ge  \textit{players}[j]$，匹配，把 $i$ 和 $j$ 都加一。
 
 **注**：把 $\textit{players}$ 视作子序列，这个做法类似在 $\textit{trainers}$ 中寻找子序列 $\textit{players}$。读者可以对比下面的代码和 [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/) 的代码。
 
