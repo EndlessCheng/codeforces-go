@@ -20,6 +20,7 @@ func cf2039C2(in io.Reader, out io.Writer) {
 			}
 		}
 		if m > mask {
+			// 最多循环两次
 			for k := (m | mask) / x; ; k-- {
 				y := k*x ^ x
 				if y>>l < m>>l {
