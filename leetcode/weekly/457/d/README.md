@@ -44,12 +44,12 @@ class Solution:
         while x != sx or y != sy:
             if x < sx or y < sy:
                 return -1
+            ans += 1
             if x == y:
                 if sy > 0:
                     x = 0
                 else:
                     y = 0
-                ans += 1
                 continue
             # 保证 x > y
             if x < y:
@@ -61,7 +61,6 @@ class Solution:
                 x //= 2
             else:
                 x -= y
-            ans += 1
         return ans
 ```
 
@@ -175,7 +174,7 @@ func minMoves(sx, sy, x, y int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(\log(\textit{tx}+\textit{ty}))$。$x>2y$ 时把 $x$ 减半，$x\le 2y$ 时把 $x$ 减去 $y$，减去的 $y \ge x/2$。所以 $x$ 至少减半。
+- 时间复杂度：$\mathcal{O}(\log(\textit{tx}+\textit{ty}))$。$x>2y$ 时把 $x$ 减半；$x\le 2y$ 时把 $x$ 减去 $y$，减去的 $y \ge x/2$。所以 $x$ 至少减半。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 相似题目
