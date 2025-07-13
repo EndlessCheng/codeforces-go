@@ -30,7 +30,9 @@ $$
 
 代码实现时，用二进制表示集合，用位运算实现集合操作，具体请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
-**优化**：我们计算的是从 $x$ 和 $y$ 出发继续扩展的节点个数，根据对称性，$\textit{dfs}(x,y,S)$ 计算出的结果和 $\textit{dfs}(y,x,S)$ 计算出的结果是一样的，没必要算两次。所以递归时，可以人为规定递归参数必须满足 $x\le y$，从而减少状态个数和计算量。如果 $x>y$ 则交换。
+**优化 1**：我们计算的是从 $x$ 和 $y$ 出发继续扩展的节点个数，根据对称性，$\textit{dfs}(x,y,S)$ 计算出的结果和 $\textit{dfs}(y,x,S)$ 计算出的结果是一样的，没必要算两次。所以递归时，可以人为规定递归参数必须满足 $x\le y$，从而减少状态个数和计算量。如果 $x>y$ 则交换。
+
+**优化 2**：递归结束后，如果 $\textit{ans} = n$，可以直接返回 $n$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1xSuFzHEa1/?t=28m51s)，欢迎点赞关注~
 
@@ -64,11 +66,15 @@ class Solution:
         for x, to in enumerate(g):
             # 奇回文串，x 作为回文中心
             ans = max(ans, dfs(x, x, 1 << x) + 1)
+            if ans == n:
+                return n
             # 偶回文串，x 和 x 的邻居 y 作为回文中心
             for y in to:
                 # 保证递归参数 x < y，减少状态个数和计算量
                 if x < y and label[x] == label[y]:
                     ans = max(ans, dfs(x, y, 1 << x | 1 << y) + 2)
+                    if ans == n:
+                        return n
         return ans
 ```
 
@@ -96,11 +102,17 @@ class Solution {
         for (int x = 0; x < n; x++) {
             // 奇回文串，x 作为回文中心
             ans = Math.max(ans, dfs(x, x, 1 << x, g, s, memo) + 1);
+            if (ans == n) {
+                return n;
+            }
             // 偶回文串，x 和 x 的邻居 y 作为回文中心
             for (int y : g[x]) {
                 // 保证 x < y，减少状态个数和计算量
                 if (x < y && s[x] == s[y]) {
                     ans = Math.max(ans, dfs(x, y, 1 << x | 1 << y, g, s, memo) + 2);
+                    if (ans == n) {
+                        return n;
+                    }
                 }
             }
         }
@@ -168,11 +180,17 @@ public:
         for (int x = 0; x < n; x++) {
             // 奇回文串，x 作为回文中心
             ans = max(ans, dfs(x, x, 1 << x) + 1);
+            if (ans == n) {
+                return n;
+            }
             // 偶回文串，x 和 x 的邻居 y 作为回文中心
             for (int y : g[x]) {
                 // 保证 x < y，减少状态个数和计算量
                 if (x < y && label[x] == label[y]) {
                     ans = max(ans, dfs(x, y, 1 << x | 1 << y) + 2);
+                    if (ans == n) {
+                        return n;
+                    }
                 }
             }
         }
@@ -183,59 +201,65 @@ public:
 
 ```go [sol-Go]
 func maxLen(n int, edges [][]int, label string) (ans int) {
-	g := make([][]int, n)
-	for _, e := range edges {
-		x, y := e[0], e[1]
-		g[x] = append(g[x], y)
-		g[y] = append(g[y], x)
-	}
+    g := make([][]int, n)
+    for _, e := range edges {
+        x, y := e[0], e[1]
+        g[x] = append(g[x], y)
+        g[y] = append(g[y], x)
+    }
 
-	memo := make([][][]int, n)
-	for i := range memo {
-		memo[i] = make([][]int, n)
-		for j := range memo[i] {
-			memo[i][j] = make([]int, 1<<n)
-			for p := range memo[i][j] {
-				memo[i][j][p] = -1
-			}
-		}
-	}
+    memo := make([][][]int, n)
+    for i := range memo {
+        memo[i] = make([][]int, n)
+        for j := range memo[i] {
+            memo[i][j] = make([]int, 1<<n)
+            for p := range memo[i][j] {
+                memo[i][j][p] = -1
+            }
+        }
+    }
 
-	// 计算从 x 和 y 向两侧扩展，最多还能访问多少个节点（不算 x 和 y）
-	var dfs func(int, int, int) int
-	dfs = func(x, y, vis int) (res int) {
-		p := &memo[x][y][vis]
-		if *p >= 0 { // 之前计算过
-			return *p
-		}
-		for _, v := range g[x] {
-			if vis>>v&1 > 0 { // v 在路径中
-				continue
-			}
-			for _, w := range g[y] {
-				if vis>>w&1 == 0 && w != v && label[w] == label[v] {
-					// 保证 v < w，减少状态个数和计算量
-					r := dfs(min(v, w), max(v, w), vis|1<<v|1<<w)
-					res = max(res, r+2)
-				}
-			}
-		}
-		*p = res // 记忆化
-		return
-	}
+    // 计算从 x 和 y 向两侧扩展，最多还能访问多少个节点（不算 x 和 y）
+    var dfs func(int, int, int) int
+    dfs = func(x, y, vis int) (res int) {
+        p := &memo[x][y][vis]
+        if *p >= 0 { // 之前计算过
+            return *p
+        }
+        for _, v := range g[x] {
+            if vis>>v&1 > 0 { // v 在路径中
+                continue
+            }
+            for _, w := range g[y] {
+                if vis>>w&1 == 0 && w != v && label[w] == label[v] {
+                    // 保证 v < w，减少状态个数和计算量
+                    r := dfs(min(v, w), max(v, w), vis|1<<v|1<<w)
+                    res = max(res, r+2)
+                }
+            }
+        }
+        *p = res // 记忆化
+        return
+    }
 
-	for x, to := range g {
-		// 奇回文串，x 作为回文中心
-		ans = max(ans, dfs(x, x, 1<<x)+1)
-		// 偶回文串，x 和 x 的邻居 y 作为回文中心
-		for _, y := range to {
-			// 保证 x < y，减少状态个数和计算量
-			if x < y && label[x] == label[y] {
-				ans = max(ans, dfs(x, y, 1<<x|1<<y)+2)
-			}
-		}
-	}
-	return
+    for x, to := range g {
+        // 奇回文串，x 作为回文中心
+        ans = max(ans, dfs(x, x, 1<<x)+1)
+        if ans == n {
+            return n
+        }
+        // 偶回文串，x 和 x 的邻居 y 作为回文中心
+        for _, y := range to {
+            // 保证 x < y，减少状态个数和计算量
+            if x < y && label[x] == label[y] {
+                ans = max(ans, dfs(x, y, 1<<x|1<<y)+2)
+                if ans == n {
+                    return n
+                }
+            }
+        }
+    }
+    return
 }
 ```
 

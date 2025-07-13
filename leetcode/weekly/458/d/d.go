@@ -51,11 +51,17 @@ func maxLen(n int, edges [][]int, label string) (ans int) {
 	for x, to := range g {
 		// 奇回文串，x 作为回文中心
 		ans = max(ans, dfs(x, x, 1<<x)+1)
+		if ans == n {
+			return n
+		}
 		// 偶回文串，x 和 x 的邻居 y 作为回文中心
 		for _, y := range to {
 			// 保证 x < y，减少状态个数
 			if x < y && label[x] == label[y] {
 				ans = max(ans, dfs(x, y, 1<<x|1<<y)+2)
+				if ans == n {
+					return n
+				}
 			}
 		}
 	}
