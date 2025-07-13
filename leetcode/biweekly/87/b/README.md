@@ -1,8 +1,12 @@
 ## 运动员的视角
 
-考虑能力值最小的运动员 $\textit{player}[i]$，他应当匹配训练能力值大于等于 $\textit{player}[i]$ 且最接近 $\textit{player}[i]$ 的训练师（如果选了一个训练能力值更大的，可能会导致能力值更大的运动员无法匹配）。
+对于任意一种匹配方案，总是可以把其中的运动员改成能力值更小的没有匹配的运动员，仍然满足题目要求。
 
-对 $\textit{players}$ 和 $\textit{trainers}$ 从小到大排序，用双指针找训练能力值大于等于 $\textit{player}[i]$ 的训练师。
+所以可以只考虑 $\textit{players}$ 中的能力值最小的一部分人。
+
+为方便计算，把 $\textit{players}$ 和 $\textit{trainers}$ 从小到大排序。参与匹配的运动员是 $\textit{players}$ 的前缀。
+
+从能力值最小的运动员 $\textit{player}[0]$ 开始思考，他应当匹配训练能力值大于等于 $\textit{player}[0]$ 且最接近 $\textit{player}[0]$ 的训练师（如果选了一个训练能力值更大的，可能会导致能力值更大的运动员无法匹配）。找到训练师 $\textit{trainers}[j]$ 后，下一个与 $\textit{players}[1]$ 匹配的训练师在 $j$ 右边，所以我们可以用双指针做。
 
 ```py [sol-Python3]
 class Solution:
