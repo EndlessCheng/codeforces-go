@@ -30,6 +30,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1xSuFzHEa1/?t=6m41s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def processStr(self, s: str, k: int) -> str:
@@ -184,6 +186,169 @@ func processStr(s string, k int64) byte {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 优化
+
+$\textit{size}$ 数组可以去掉，只需要 $\textit{sz}$ 变量。在第二个循环中，我们可以倒推还原 $\textit{sz}$。
+
+你可能会问：`sz = max(sz - 1, 0)` 这一步怎么倒推？
+
+事实上，倒推的过程中不会出现 $\textit{sz}=0$ 的情况。如果出现，说明我们把前面的字母全部删掉了，那么前面不可能找到答案，矛盾。换句话说，我们要么返回 $\texttt{.}$ 号，要么一定会在 $\textit{sz}=0$ 之前就找到答案。
+
+```py [sol-Python3]
+class Solution:
+    def processStr(self, s: str, k: int) -> str:
+        sz = 0
+        for c in s:
+            if c == '*':
+                sz = max(sz - 1, 0)
+            elif c == '#':
+                sz *= 2
+            elif c != '%':
+                sz += 1
+
+        if k >= sz:
+            return '.'
+
+        for c in reversed(s):
+            if c == '*':
+                sz += 1
+            elif c == '#':
+                sz //= 2
+                if k >= sz:
+                    k -= sz
+            elif c == '%':
+                k = sz - 1 - k
+            else:
+                sz -= 1
+                if k == sz:
+                    return c
+```
+
+```java [sol-Java]
+class Solution {
+    char processStr(String S, long k) {
+        char[] s = S.toCharArray();
+        long sz = 0;
+        for (char c : s) {
+            if (c == '*') {
+                sz = Math.max(sz - 1, 0);
+            } else if (c == '#') {
+                sz *= 2;
+            } else if (c != '%') {
+                sz++;
+            }
+        }
+
+        if (k >= sz) {
+            return '.';
+        }
+
+        for (int i = s.length - 1; ; i--) {
+            char c = s[i];
+            if (c == '*') {
+                sz++;
+            } else if (c == '#') {
+                sz /= 2;
+                if (k >= sz) {
+                    k -= sz;
+                }
+            } else if (c == '%') {
+                k = sz - 1 - k;
+            } else {
+                sz--;
+                if (k == sz) {
+                    return c;
+                }
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    char processStr(string s, long long k) {
+        long long sz = 0;
+        for (char c : s) {
+            if (c == '*') {
+                sz = max(sz - 1, 0LL);
+            } else if (c == '#') {
+                sz *= 2;
+            } else if (c != '%') {
+                sz++;
+            }
+        }
+
+        if (k >= sz) {
+            return '.';
+        }
+
+        for (int i = s.size() - 1; ; i--) {
+            char c = s[i];
+            if (c == '*') {
+                sz++;
+            } else if (c == '#') {
+                sz /= 2;
+                if (k >= sz) {
+                    k -= sz;
+                }
+            } else if (c == '%') {
+                k = sz - 1 - k;
+            } else {
+                sz--;
+                if (k == sz) {
+                    return c;
+                }
+            }
+        }
+    }
+};
+```
+
+```go [sol-Go]
+func processStr(s string, k int64) byte {
+	sz := int64(0)
+	for _, c := range s {
+		if c == '*' {
+			sz = max(sz-1, 0)
+		} else if c == '#' {
+			sz *= 2
+		} else if c != '%' {
+			sz++
+		}
+	}
+
+	if k >= sz {
+		return '.'
+	}
+
+	for i := len(s) - 1; ; i-- {
+		c := s[i]
+		if c == '*' {
+			sz++
+		} else if c == '#' {
+			sz /= 2
+			if k >= sz {
+				k -= sz
+			}
+		} else if c == '%' {
+			k = sz - 1 - k
+		} else {
+			sz--
+			if k == sz {
+				return c
+			}
+		}
+	}
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 相似题目
 
