@@ -39,7 +39,7 @@ class Solution:
         u = UnionFind(n)
         for x, y, w in edges:
             u.merge(x, y)
-            if u.cc <= k:
+            if u.cc == k:
                 return w
 ```
 
@@ -91,7 +91,7 @@ class Solution {
         UnionFind u = new UnionFind(n);
         for (int[] e : edges) {
             u.merge(e[0], e[1]);
-            if (u.cc <= k) {
+            if (u.cc == k) {
                 return e[2];
             }
         }
@@ -146,7 +146,7 @@ public:
         UnionFind u(n);
         for (auto& e : edges) {
             u.merge(e[0], e[1]);
-            if (u.cc <= k) {
+            if (u.cc == k) {
                 return e[2];
             }
         }
@@ -201,7 +201,7 @@ func minCost(n int, edges [][]int, k int) int {
 	u := newUnionFind(n)
 	for _, e := range edges {
 		u.merge(e[0], e[1])
-		if u.cc <= k {
+		if u.cc == k {
 			return e[2]
 		}
 	}
@@ -211,7 +211,7 @@ func minCost(n int, edges [][]int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(m\log m + m\log n)$，其中 $m$ 是 $\textit{edges}$ 的长度。
+- 时间复杂度：$\mathcal{O}(m\log m + m\log n)$，其中 $m$ 是 $\textit{edges}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$。忽略排序的栈开销。
 
 ## 专题训练
