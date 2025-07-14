@@ -32,6 +32,8 @@ $$
 
 **优化 2**：递归结束后，如果 $\textit{ans} = n$，可以直接返回 $n$。
 
+**优化 3**：特判完全图的情况，此时路径可以是任意节点的排列，问题等价于重排 $\textit{label}$ 中的字母可以得到的最长回文串。比如 $3$ 个 $\texttt{a}$ 和 $5$ 个 $\texttt{b}$，可以选 $2$ 个 $\texttt{a}$ 一左一右，$4$ 个 $\texttt{b}$ 左右各放 $2$ 个，多出的字母只能选一个放正中间。比如回文串为 $\texttt{abbabba}$。（谢谢 [@观铃 🔔](/u/kamio_misuzu) 补充）
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1xSuFzHEa1/?t=28m51s)，欢迎点赞关注~
 
 ```py [sol-Python3]
@@ -40,6 +42,13 @@ max = lambda a, b: b if b > a else a
 
 class Solution:
     def maxLen(self, n: int, edges: List[List[int]], label: str) -> int:
+        if len(edges) == n * (n - 1) // 2:  # 完全图
+            ans = odd = 0
+            for c in Counter(label).values():
+                ans += c - c % 2
+                odd |= c % 2
+            return ans + odd
+
         g = [[] for _ in range(n)]
         for x, y in edges:
             g[x].append(y)
@@ -79,6 +88,20 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxLen(int n, int[][] edges, String label) {
+        char[] s = label.toCharArray();
+        if (edges.length == n * (n - 1) / 2) { // 完全图
+            int[] cnt = new int[26];
+            for (char ch : s) {
+                cnt[ch - 'a']++;
+            }
+            int ans = 0, odd = 0;
+            for (int c : cnt) {
+                ans += c - c % 2;
+                odd |= c % 2;
+            }
+            return ans + odd;
+        }
+
         List<Integer>[] g = new ArrayList[n];
         Arrays.setAll(g, _ -> new ArrayList<>());
         for (int[] e : edges) {
@@ -95,7 +118,6 @@ class Solution {
             }
         }
 
-        char[] s = label.toCharArray();
         int ans = 0;
         for (int x = 0; x < n; x++) {
             // 奇回文串，x 作为回文中心
@@ -144,6 +166,19 @@ class Solution {
 class Solution {
 public:
     int maxLen(int n, vector<vector<int>>& edges, string label) {
+        if (edges.size() == n * (n - 1) / 2) { // 完全图
+            int cnt[26]{};
+            for (char ch : label) {
+                cnt[ch - 'a']++;
+            }
+            int ans = 0, odd = 0;
+            for (int c : cnt) {
+                ans += c - c % 2;
+                odd |= c % 2;
+            }
+            return ans + odd;
+        }
+
         vector<vector<int>> g(n);
         for (auto& e : edges) {
             int x = e[0], y = e[1];
@@ -199,65 +234,78 @@ public:
 
 ```go [sol-Go]
 func maxLen(n int, edges [][]int, label string) (ans int) {
-    g := make([][]int, n)
-    for _, e := range edges {
-        x, y := e[0], e[1]
-        g[x] = append(g[x], y)
-        g[y] = append(g[y], x)
-    }
+	if len(edges) == n*(n-1)/2 { // 完全图
+		cnt := [26]int{}
+		for _, ch := range label {
+			cnt[ch-'a']++
+		}
+		odd := 0
+		for _, c := range cnt {
+			ans += c - c%2
+			odd |= c % 2
+		}
+		return ans + odd
+	}
 
-    memo := make([][][]int, n)
-    for i := range memo {
-        memo[i] = make([][]int, n)
-        for j := range memo[i] {
-            memo[i][j] = make([]int, 1<<n)
-            for p := range memo[i][j] {
-                memo[i][j][p] = -1
-            }
-        }
-    }
+	g := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
 
-    // 计算从 x 和 y 向两侧扩展，最多还能访问多少个节点（不算 x 和 y）
-    var dfs func(int, int, int) int
-    dfs = func(x, y, vis int) (res int) {
-        p := &memo[x][y][vis]
-        if *p >= 0 { // 之前计算过
-            return *p
-        }
-        for _, v := range g[x] {
-            if vis>>v&1 > 0 { // v 在路径中
-                continue
-            }
-            for _, w := range g[y] {
-                if vis>>w&1 == 0 && w != v && label[w] == label[v] {
-                    // 保证 v < w，减少状态个数和计算量
-                    r := dfs(min(v, w), max(v, w), vis|1<<v|1<<w)
-                    res = max(res, r+2)
-                }
-            }
-        }
-        *p = res // 记忆化
-        return
-    }
+	memo := make([][][]int, n)
+	for i := range memo {
+		memo[i] = make([][]int, n)
+		for j := range memo[i] {
+			memo[i][j] = make([]int, 1<<n)
+			for p := range memo[i][j] {
+				memo[i][j][p] = -1
+			}
+		}
+	}
 
-    for x, to := range g {
-        // 奇回文串，x 作为回文中心
-        ans = max(ans, dfs(x, x, 1<<x)+1)
-        if ans == n {
-            return
-        }
-        // 偶回文串，x 和 x 的邻居 y 作为回文中心
-        for _, y := range to {
-            // 保证 x < y，减少状态个数和计算量
-            if x < y && label[x] == label[y] {
-                ans = max(ans, dfs(x, y, 1<<x|1<<y)+2)
-                if ans == n {
-                    return
-                }
-            }
-        }
-    }
-    return
+	// 计算从 x 和 y 向两侧扩展，最多还能访问多少个节点（不算 x 和 y）
+	var dfs func(int, int, int) int
+	dfs = func(x, y, vis int) (res int) {
+		p := &memo[x][y][vis]
+		if *p >= 0 { // 之前计算过
+			return *p
+		}
+		for _, v := range g[x] {
+			if vis>>v&1 > 0 { // v 在路径中
+				continue
+			}
+			for _, w := range g[y] {
+				if vis>>w&1 == 0 && w != v && label[w] == label[v] {
+					// 保证 v < w，减少状态个数和计算量
+					r := dfs(min(v, w), max(v, w), vis|1<<v|1<<w)
+					res = max(res, r+2)
+				}
+			}
+		}
+		*p = res // 记忆化
+		return
+	}
+
+	for x, to := range g {
+		// 奇回文串，x 作为回文中心
+		ans = max(ans, dfs(x, x, 1<<x)+1)
+		if ans == n {
+			return
+		}
+		// 偶回文串，x 和 x 的邻居 y 作为回文中心
+		for _, y := range to {
+			// 保证 x < y，减少状态个数和计算量
+			if x < y && label[x] == label[y] {
+				ans = max(ans, dfs(x, y, 1<<x|1<<y)+2)
+				if ans == n {
+					return
+				}
+			}
+		}
+	}
+	return
 }
 ```
 
