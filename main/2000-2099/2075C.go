@@ -15,7 +15,8 @@ func cf2075C(in io.Reader, out io.Writer) {
 		s := 0
 		for i := range a {
 			Fscan(in, &a[i])
-			s += min(a[i]+1, u)
+			a[i] = min(a[i], u-1)
+			s += a[i]
 		}
 		slices.Sort(a)
 
@@ -23,11 +24,11 @@ func cf2075C(in io.Reader, out io.Writer) {
 		l, r := 0, n-1
 		for l < r {
 			if a[l]+a[r] < u {
-				s -= a[l] + 1
+				s -= a[l]
 				l++
 			} else {
-				s -= min(a[r]+1, u)
-				ans += s - (r-l)*max(u-a[r], 1)
+				s -= a[r]
+				ans += s - (r-l)*(u-1-a[r])
 				r--
 			}
 		}
