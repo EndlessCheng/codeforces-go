@@ -330,20 +330,20 @@ func (r *RG) BinaryTree(n, st int) (children [][2]int) {
 // 更严格的随机树见 https://mivik.blog.luogu.org/the-art-of-randomness
 // 叶子节点个数：期望 n/2 个
 // On the number of leaves in a random recursive tree https://projecteuclid.org/journals/brazilian-journal-of-probability-and-statistics/volume-29/issue-4/On-the-number-of-leaves-in-a-random-recursive-tree/10.1214/14-BJPS252.pdf
-func (r *RG) treeEdges(n, st int) (edges [][2]int) {
-	edges = make([][2]int, 0, n-1)
+func (r *RG) treeEdges(n, st int) (edges [][]int) {
+	edges = make([][]int, 0, n-1)
 	for i := 1; i < n; i++ {
 		// v < w
 		v := st + rand.Intn(i)
 		w := st + i
-		edges = append(edges, [2]int{v, w})
+		edges = append(edges, []int{v, w})
 	}
 	return
 }
 
 // TreeEdges generates a tree with n nodes, st-index, and v<w for each edge v-w.
 // TODO: support set max degree limit
-func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
+func (r *RG) TreeEdges(n, st int) (edges [][]int) {
 	edges = r.treeEdges(n, st)
 	for _, e := range edges {
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1]))
@@ -363,7 +363,7 @@ func (r *RG) TreeWeightedEdges(n, st, minWeight, maxWeight int) (edges [][3]int)
 }
 
 // todo https://codeforces.com/blog/entry/77970
-func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
+func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][]int) {
 	//if m < n-1 {
 	//	panic("m is too small")
 	//}
@@ -395,7 +395,7 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
 					has[v][w] = true
 					v += st
 					w += st
-					edges = append(edges, [2]int{v, w})
+					edges = append(edges, []int{v, w})
 					break
 				}
 			}
@@ -413,9 +413,9 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
 	return
 }
 
-// TreeEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges
+// GraphEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges
 // TIPS: pass directed=false to generate a DAG.
-func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][2]int) {
+func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][]int) {
 	edges = r.graphEdges(n, m, st, directed)
 	for _, e := range edges {
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1]))
@@ -423,14 +423,14 @@ func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][2]int) {
 	return
 }
 
-// TreeEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
+// GraphWeightedEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
 // TIPS: pass directed=false to generate a DAG.
-func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed bool) (edges [][3]int) {
-	edges = make([][3]int, m)
+func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed bool) (edges [][]int) {
+	edges = make([][]int, m)
 	for i, e := range r.graphEdges(n, m, st, directed) {
 		weight := r._int(minWeight, maxWeight)
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
-		edges[i] = [3]int{e[0], e[1], weight}
+		edges[i] = []int{e[0], e[1], weight}
 	}
 	return
 }
