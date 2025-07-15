@@ -126,6 +126,7 @@ https://codeforces.com/problemset/problem/1706/C 1400
 https://codeforces.com/problemset/problem/1980/D 1400 pairwise 的前后缀分解
 https://codeforces.com/problemset/problem/1492/C 1500
 https://codeforces.com/problemset/problem/2008/E 1500
+https://codeforces.com/problemset/problem/2106/D 1500
 https://codeforces.com/problemset/problem/2107/C 1500
 https://codeforces.com/problemset/problem/1029/C 1600
 https://codeforces.com/problemset/problem/2028/C 1600
@@ -200,41 +201,39 @@ LC2972 https://leetcode.cn/problems/count-the-number-of-incremovable-subarrays-i
 https://codeforces.com/problemset/problem/2032/C 1400
 https://codeforces.com/problemset/problem/1166/C 1500
 
-双序列双指针
-https://codeforces.com/contest/489/problem/B 1200
-https://atcoder.jp/contests/abc312/tasks/abc312_f
-另见 strings.go 中的 isSubseq
-
 相向双指针
 https://codeforces.com/problemset/problem/1006/C 1200
-题单 https://leetcode.cn/leetbook/read/sliding-window-and-two-pointers/odt2yh/
-LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
-LC923 https://leetcode.cn/problems/3sum-with-multiplicity/
+https://codeforces.com/problemset/problem/2075/C 1500 a[i] + a[j] <= target
 https://www.facebook.com/codingcompetitions/hacker-cup/2023/practice-round/problems/C
 
 同时用到同向双指针和相向双指针的题
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 - 相似题目 https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/
 
-a[i] + b[j] <= target 的方案数
+双序列双指针
+https://codeforces.com/contest/489/problem/B 1200
+https://atcoder.jp/contests/abc312/tasks/abc312_f
+另见 strings.go 中的 isSubseq
+
+a[i] + b[j] <= target
 - 相向双指针
 - LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
 - LC1498 https://leetcode.cn/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/
 - https://codeforces.com/problemset/problem/1538/C 1300
 - https://atcoder.jp/contests/abc366/tasks/abc366_e
 - https://leetcode.cn/problems/3sum-smaller/
-a[i] + b[j] >= target 的方案数
+a[i] + b[j] >= target
 - 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
 - https://atcoder.jp/contests/abc353/tasks/abc353_c
-a[i] - b[j] <= target 的方案数
+a[i] - b[j] <= target
 - 同向双指针
 - 另一种思路：把 b 数组取反再 reverse，就变成 a[i] + (-b[j]) <= target 了
 - 一个数组 https://www.luogu.com.cn/problem/P1102
-a[i] - b[j] >= target 的方案数
+a[i] - b[j] >= target
 - 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
-子数组元素和 = < > target 的方案数
+子数组元素和 = < > target
 - 用前缀和，转换成上面 a[i] - b[j] 的形式（= 可以转换成 <=t 减去 <=t-1）
-子序列元素和 = < > target 的方案数
+子序列元素和 = < > target
 - 0-1 背包恰好/至多/至少，见 https://www.bilibili.com/video/BV16Y411v7Y6/ 末尾的总结
 
 分组循环
@@ -278,7 +277,7 @@ https://codeforces.com/problemset/problem/1181/C 1900
 https://codeforces.com/problemset/problem/1626/D 2100
 https://codeforces.com/problemset/problem/339/E 2700
 
-贪心及其证明
+贪心
 - [881. 救生艇](https://leetcode.cn/problems/boats-to-save-people/)
     - https://codeforces.com/problemset/problem/1690/E 1500
     - https://codeforces.com/problemset/problem/1765/D 1700
@@ -322,6 +321,7 @@ https://codeforces.com/problemset/problem/1873/G 1500
 https://codeforces.com/problemset/problem/1924/A 1500
 https://codeforces.com/problemset/problem/913/C 1600
 https://codeforces.com/problemset/problem/1707/A 1600 倒序思维
+https://codeforces.com/problemset/problem/2082/B 1600
 https://codeforces.com/problemset/problem/1157/C2 1700
 https://codeforces.com/problemset/problem/1661/C 1700 奇数天+1 偶数天 +2
 https://codeforces.com/problemset/problem/1995/B2 1700
@@ -357,11 +357,12 @@ https://atcoder.jp/contests/abc173/tasks/abc173_e 1607=CF1926 k 个数的最大�
 删除一个数后，最小化 k 个数的最大乘积
 
 中位数贪心（右边数字为难度分） // 注：算长度用左闭右开区间思考，算中间值用闭区间思考    两个中位数分别是 a[(n-1)/2] 和 a[n/2]
-有两种证明方法，见 https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/
+有两种证明方法，见 https://zhuanlan.zhihu.com/p/1922938031687595039
 【思考题】插入一个数再选定一个 x，每次操作 +x/-x，计算最小操作次数
 https://codeforces.com/problemset/problem/710/B 1400
 https://codeforces.com/problemset/problem/2098/B 1400
 https://codeforces.com/problemset/problem/166/C 1500 中位数相关  *可以做到对不同的 x 用 O(log n) 时间回答
+https://codeforces.com/problemset/problem/1030/F 2500 带权中位数 + 单点修改 + 区间查询
 
 排序不等式
 https://codeforces.com/problemset/problem/2065/D 1200
@@ -498,16 +499,19 @@ https://codeforces.com/problemset/problem/1844/D  1400
 https://codeforces.com/problemset/problem/1863/D  1400 棋盘+多米诺染色
 https://codeforces.com/problemset/problem/1896/C  1400
 https://codeforces.com/problemset/problem/1974/D  1400
+https://codeforces.com/problemset/problem/2120/C  1400
 https://codeforces.com/problemset/problem/1630/A  1500
 https://codeforces.com/problemset/problem/1710/A  1500
 https://codeforces.com/problemset/problem/1722/G  1500
 https://codeforces.com/problemset/problem/1809/C  1500
+https://codeforces.com/problemset/problem/2077/A  1500
 https://codeforces.com/problemset/problem/2107/C  1500 经典 DP 的构造版本
 https://codeforces.com/problemset/problem/1968/E  1600
 https://codeforces.com/problemset/problem/201/A   1700
 https://codeforces.com/problemset/problem/584/C   1700 分类讨论
 https://codeforces.com/problemset/problem/1332/D  1700 给你一个错误代码，构造 hack 数据
 https://codeforces.com/problemset/problem/1893/B  1700
+https://codeforces.com/problemset/problem/2112/D  1700 树
 https://codeforces.com/problemset/problem/142/B   1800 棋盘放最多的马
 https://codeforces.com/problemset/problem/847/C   1800
 https://codeforces.com/problemset/problem/1156/B  1800 相邻字母在字母表中不相邻
@@ -614,6 +618,7 @@ https://codeforces.com/problemset/problem/1736/C2 2400
 https://codeforces.com/problemset/problem/1761/E 2400
 https://codeforces.com/problemset/problem/1832/D2 2400
 https://codeforces.com/problemset/problem/501/E 2500
+- https://codeforces.com/problemset/problem/2069/D
 https://codeforces.com/problemset/problem/599/E 2600
 https://codeforces.com/problemset/problem/1016/F 2600
 https://codeforces.com/problemset/problem/1422/E 2700 LCS
@@ -636,6 +641,7 @@ https://codeforces.com/problemset/problem/356/C 2100
 https://codeforces.com/problemset/problem/460/D 2300
 https://codeforces.com/problemset/problem/1527/D 2400
 https://codeforces.com/problemset/problem/1374/E2 2500
+https://leetcode.cn/problems/the-earliest-and-latest-rounds-where-players-compete/description/ 做到 O(logn) 或者 O(1)
 https://atcoder.jp/contests/arc153/tasks/arc153_c +构造
 https://atcoder.jp/contests/agc015/tasks/agc015_d
 https://atcoder.jp/contests/abc164/tasks/abc164_f
@@ -856,6 +862,7 @@ Golang 卡常技巧（注：关于 IO 的加速见 io.go）
 对于可以回收的情况（如 append 在超过 cap 时），使用 debug.SetGCPercent(-1) 虽然会减少些许耗时，但若有大量内存没被回收，会有 MLE 的风险
 其他情况下使用 debug.SetGCPercent(-1) 对耗时和内存使用无明显影响
 对于多组数据的情况，若禁用 GC 会 MLE，可在每组数据的开头或末尾调用 runtime.GC() 或 debug.FreeOSMemory() 手动 GC
+还可以用一个全局 mem 数组当作内存池，避免动态扩容浪费额外空间，例如 https://codeforces.com/problemset/submission/2026/328011070
 参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
     https://zhuanlan.zhihu.com/p/77943973
 
@@ -1000,6 +1007,7 @@ func _() {
 	// LC2967 https://leetcode.cn/problems/minimum-cost-to-make-array-equalindromic/
 	// LC906 https://leetcode.cn/problems/super-palindromes/
 	// LC2081 https://leetcode.cn/problems/sum-of-k-mirror-numbers/
+	// - https://atcoder.jp/contests/abc414/tasks/abc414_c
 	// LC3272 https://leetcode.cn/problems/find-the-count-of-good-integers/
 	// EXTRA: 单个数字的情况 LC564 https://leetcode.cn/problems/find-the-closest-palindrome/
 	// https://codeforces.com/problemset/problem/897/B 1300
@@ -1008,7 +1016,7 @@ func _() {
 		pal := []int{}
 
 		// 哨兵。根据题目来定，也可以设置成 -2e9 等
-		pal = append(pal, 0)
+		pal = append(pal, 0) // 0 也是回文数
 
 	outer:
 		for base := 1; ; base *= 10 {
@@ -1036,7 +1044,7 @@ func _() {
 			}
 		}
 
-		// 哨兵。根据 mx 调整，如果 mx 是 2e9 的话要写成 mx+2
+		// 哨兵。根据 mx 调整，如果 mx 是 2e9 的话要写成 mx+2（回文数）
 		pal = append(pal, mx+1)
 	}
 
@@ -2285,19 +2293,21 @@ func _() {
 	// 常与树状数组、线段树、平衡树等数据结构结合
 	// https://en.wikipedia.org/wiki/Sweep_line_algorithm
 	// https://cses.fi/book/book.pdf 30.1
-	// 窗口的星星 https://www.luogu.com.cn/problem/P1502
-	// 矩形周长 https://www.luogu.com.cn/problem/P1856
-	// 天际线问题 LC218 https://leetcode.cn/problems/the-skyline-problem/
-	// 矩形面积并 LC850 https://leetcode.cn/problems/rectangle-area-ii/
-	// 矩形周长并 http://poj.org/problem?id=1177
-	// 经典题 https://codeforces.com/problemset/problem/1000/C
-	// https://codeforces.com/problemset/problem/1379/D
-	// 转换求解目标 https://codeforces.com/problemset/problem/1285/E
-	// 线段相交统计（栈）https://codeforces.com/problemset/problem/1278/D
-	// 统计水平方向的线段与垂直方向的线段的交点个数 https://codeforces.com/problemset/problem/610/D
+	//
+	// https://www.luogu.com.cn/problem/P1502 窗口的星星
+	// https://www.luogu.com.cn/problem/P1856 矩形周长
+	// LC218 https://leetcode.cn/problems/the-skyline-problem/ 天际线问题
+	// LC850 https://leetcode.cn/problems/rectangle-area-ii/ 矩形面积并
+	// https://codeforces.com/problemset/problem/2051/E 1600
+	// https://codeforces.com/problemset/problem/1000/C 1700 经典题
+	// https://codeforces.com/problemset/problem/1278/D 2100 线段相交统计（栈）
+	// https://codeforces.com/problemset/problem/610/D 2300 统计水平方向的线段与垂直方向的线段的交点个数 
+	// https://codeforces.com/problemset/problem/1285/E 2300 转换求解目标 
+	// https://codeforces.com/problemset/problem/1379/D 2300
+	// https://atcoder.jp/contests/arc068/tasks/arc068_c 转换
 	// 力扣套题 https://leetcode.cn/tag/line-sweep/
+	// http://poj.org/problem?id=1177 矩形周长并
 	// http://poj.org/problem?id=2932
-	// 转换 https://atcoder.jp/contests/arc068/tasks/arc068_c
 	sweepLine := func(ranges [][]int) {
 		n := len(ranges)
 		type event struct{ pos, delta int }
@@ -2539,9 +2549,11 @@ func _() {
 	}
 
 	// 滑动窗口还可以维护没有逆运算的运算（但是有单调性），例如 OR AND GCD LCM
-	// 时间复杂度 O(n)，考虑每个元素入栈出栈各至多一次
-	// 以 LC3171 为例 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/
+	// 循环次数 O(n)，考虑每个元素入栈出栈各至多一次
+	// 讲解 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/
 	// 如果有二分的需求，可以对从 bottom+1 到 right 的这段单独开个栈（右栈）
+	// https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/
+	// https://leetcode.cn/problems/minimum-stability-factor-of-array/
 	slidingWindowWithStack := func(a []int, k int) int {
 		ans := math.MaxInt
 		var left, bottom, rightOr int
