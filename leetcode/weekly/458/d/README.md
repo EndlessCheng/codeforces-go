@@ -43,11 +43,8 @@ max = lambda a, b: b if b > a else a
 class Solution:
     def maxLen(self, n: int, edges: List[List[int]], label: str) -> int:
         # 计算理论最大值
-        theoretical_max = odd = 0
-        for c in Counter(label).values():
-            theoretical_max += c - c % 2
-            odd |= c % 2
-        theoretical_max += odd
+        odd = sum(c % 2 for c in Counter(label).values()) 
+        theoretical_max = n - max(odd - 1, 0)  # 奇数选一个放正中心，其余全弃
 
         if len(edges) == n * (n - 1) // 2:  # 完全图，可以达到理论最大值
             return theoretical_max
@@ -97,12 +94,11 @@ class Solution {
         for (char ch : s) {
             cnt[ch - 'a']++;
         }
-        int theoreticalMax = 0, odd = 0;
+        int odd = 0;
         for (int c : cnt) {
-            theoreticalMax += c - c % 2;
-            odd |= c % 2;
+            odd += c % 2;
         }
-        theoreticalMax += odd;
+        int theoreticalMax = n - Math.max(odd - 1, 0); // 奇数选一个放正中心，其余全弃
 
         if (edges.length == n * (n - 1) / 2) { // 完全图，可以达到理论最大值
             return theoreticalMax;
@@ -177,12 +173,11 @@ public:
         for (char ch : label) {
             cnt[ch - 'a']++;
         }
-        int theoretical_max = 0, odd = 0;
+        int odd = 0;
         for (int c : cnt) {
-            theoretical_max += c - c % 2;
-            odd |= c % 2;
+            odd += c % 2;
         }
-        theoretical_max += odd;
+        int theoretical_max = n - max(odd - 1, 0); // 奇数选一个放正中心，其余全弃
 
         if (edges.size() == n * (n - 1) / 2) { // 完全图，可以达到理论最大值
             return theoretical_max;
@@ -248,12 +243,11 @@ func maxLen(n int, edges [][]int, label string) (ans int) {
 	for _, ch := range label {
 		cnt[ch-'a']++
 	}
-	theoreticalMax, odd := 0, 0
+	odd := 0
 	for _, c := range cnt {
-		theoreticalMax += c - c%2
-		odd |= c % 2
+		odd += c % 2
 	}
-	theoreticalMax += odd
+	theoreticalMax := n - max(odd-1, 0) // 奇数选一个放正中心，其余全弃
 
 	if len(edges) == n*(n-1)/2 { // 完全图，可以达到理论最大值
 		return theoreticalMax
