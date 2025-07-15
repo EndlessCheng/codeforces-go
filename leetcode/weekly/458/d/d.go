@@ -1,13 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"math/bits"
-	"strings"
 )
 
 // https://space.bilibili.com/206214
-func maxLen1(n int, edges [][]int, label string) (ans int) {
+func maxLen(n int, edges [][]int, label string) (ans int) {
+	// 计算理论最大值
+	cnt := [26]int{}
+	for _, ch := range label {
+		cnt[ch-'a']++
+	}
+	odd := 0
+	for _, c := range cnt {
+		odd += c % 2
+	}
+	theoreticalMax := n - max(odd-1, 0) // 奇数选一个放正中心，其余全弃
+
+	if len(edges) == n*(n-1)/2 { // 完全图，可以达到理论最大值
+		return theoreticalMax
+	}
+
 	g := make([][]int, n)
 	for _, e := range edges {
 		x, y := e[0], e[1]
@@ -52,7 +65,7 @@ func maxLen1(n int, edges [][]int, label string) (ans int) {
 	for x, to := range g {
 		// 奇回文串，x 作为回文中心
 		ans = max(ans, dfs(x, x, 1<<x)+1)
-		if ans == n {
+		if ans == theoreticalMax {
 			return
 		}
 		// 偶回文串，x 和 x 的邻居 y 作为回文中心
@@ -60,7 +73,7 @@ func maxLen1(n int, edges [][]int, label string) (ans int) {
 			// 保证 x < y，减少状态个数和计算量
 			if x < y && label[x] == label[y] {
 				ans = max(ans, dfs(x, y, 1<<x|1<<y)+2)
-				if ans == n {
+				if ans == theoreticalMax {
 					return
 				}
 			}
@@ -69,7 +82,7 @@ func maxLen1(n int, edges [][]int, label string) (ans int) {
 	return
 }
 
-func maxLen(n int, edges [][]int, label string) (ans int) {
+func maxLenGroupByLabel(n int, edges [][]int, label string) (ans int) {
 	g := make([][]int, n)
 	labelG := make([][26][]int, n)
 	for _, e := range edges {
@@ -187,15 +200,4 @@ func maxLenBFS(n int, edges [][]int, label string) int {
 		}
 	}
 	return bits.OnesCount(uint(t.vis))
-}
-
-func main() {
-	n := 14
-	es := [][]int{}
-	for i := 0; i < n; i++ {
-		for j := i + 1; j < n; j++ {
-			es = append(es, []int{i, j})
-		}
-	}
-	fmt.Println(maxLen(n, es, strings.Repeat("a", n)))
 }

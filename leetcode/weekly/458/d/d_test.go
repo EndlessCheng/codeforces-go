@@ -13,3 +13,18 @@ func Test_d(t *testing.T) {
 }
 // https://leetcode.cn/contest/weekly-contest-458/problems/longest-palindromic-path-in-graph/
 // https://leetcode.cn/problems/longest-palindromic-path-in-graph/
+
+//func TestCompareInf(_t *testing.T) {
+//	//return
+//	testutil.DebugTLE = 0
+//	rg := testutil2.NewRandGenerator()
+//	inputGenerator := func() (n int, es [][]int, label string) {
+//		//return
+//		rg.Clear()
+//		n = rg.Int(1, 10)
+//		es = rg.GraphEdges(n, rg.Int(n-1, n*(n-1)/2), 0, false)
+//		label = rg.Str(n, n, 'a', 'b')
+//		return
+//	}
+//	testutil.CompareInf(_t, inputGenerator, maxLenAC, maxLen)
+//}
