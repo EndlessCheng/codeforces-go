@@ -16,9 +16,9 @@ https://en.wikipedia.org/wiki/Fenwick_tree
 
 可视化 https://visualgo.net/zh/fenwicktree
 
-todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-shuo-zu-zong-ru-men-dao-ru-fen
- 浅谈树状数组的优化及扩展 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
- 浅谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
+todo 从0到inf，超详细的树状数组详解 https://www.luogu.com.cn/article/6ewhbfs5
+ 浅谈树状数组的优化及扩展 https://www.luogu.com.cn/article/790vjft4
+ 浅谈树状数组套权值树 https://www.luogu.com.cn/article/8uekknpx
 https://oi-wiki.org/ds/bit/
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
@@ -39,7 +39,8 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 静态区间种类 - 离线做法
     https://www.luogu.com.cn/problem/P1972
     https://atcoder.jp/contests/abc174/tasks/abc174_f
-    https://codeforces.com/problemset/problem/246/E
+    https://codeforces.com/problemset/problem/246/E 2400
+    https://codeforces.com/problemset/problem/594/D 2500
 置换 LC2179 https://leetcode.cn/problems/count-good-triplets-in-an-array/
 - 同样的置换思想 LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/
 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
@@ -72,10 +73,12 @@ https://codeforces.com/problemset/problem/369/E 2200 区间统计技巧
 https://codeforces.com/problemset/problem/762/E 2200 离散化
 - https://codeforces.com/problemset/problem/1045/G 2200 同 762E
 https://codeforces.com/problemset/problem/1194/E 2200 多变量统计
+https://codeforces.com/problemset/problem/2065/H 2200
 https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
 https://codeforces.com/problemset/problem/12/D 2400 三维偏序
 https://codeforces.com/problemset/problem/246/E 2400
+https://codeforces.com/problemset/problem/594/D 2500
 https://codeforces.com/problemset/problem/1334/F 2500
 https://codeforces.com/problemset/problem/1635/F 2800
 https://codeforces.com/problemset/problem/1446/F 3200
@@ -414,14 +417,16 @@ func _(n int) {
 	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
-	// 求权值树状数组第 k 小的数（k > 0）
-	// 这里 tree[i] 表示 i 的个数
+	// 求权值树状数组第 k 小的数（k 从 1 开始）
+	// 这里每个叶子 tree[i] 表示 i 的个数
 	// 返回最小的 x 满足 ∑i=[1..x] tree[i] >= k
-	// 思路类似倍增的查询，不断寻找 ∑<k 的数，最后 +1 就是答案
+	// 思路类似倍增的查询，不断寻找 ∑<k 的数（位置），最后 +1 就是答案
+	// 如果第 k 小的数不存在，返回 len(tree)
 	// https://oi-wiki.org/ds/fenwick/#tricks
 	//
 	// https://codeforces.com/blog/entry/61364
 	// https://codeforces.com/problemset/problem/1404/C
+	// https://codeforces.com/problemset/problem/1030/F
 	// todo https://codeforces.com/contest/992/problem/E
 	// https://atcoder.jp/contests/abc287/tasks/abc287_g
 	// 二分 https://www.luogu.com.cn/problem/P4137
@@ -429,9 +434,9 @@ func _(n int) {
 	kth := func(k int) (res int) {
 		const log = 17 // bits.Len(uint(n))
 		for b := 1 << (log - 1); b > 0; b >>= 1 {
-			if next := res | b; next < len(tree) && k > tree[next] {
-				k -= tree[next]
-				res = next
+			if nxt := res | b; nxt < len(tree) && tree[nxt] < k {
+				k -= tree[nxt]
+				res = nxt
 			}
 		}
 		return res + 1
