@@ -1,17 +1,26 @@
 注意题目的这个要求：
 
-- 用计算机 $j$ 解锁计算机 $i$ 的前提是 $j<i$，且计算机 $i$ 的 $\textit{complexity}[i]$ 更大。
+- 用计算机 $j$ 解锁计算机 $i$ 的前提是 $j<i$，且计算机 $i$ 的密码复杂度 $\textit{complexity}[i]$ 更大。
 
-这意味着我们只能用左边的计算机，解锁右边的计算机，且右边的计算机的 $\textit{complexity}[i]$ 更大。
+这意味着我们只能用左边的计算机，解锁右边的计算机，且右边的计算机的密码复杂度更大。
 
-由于一开始就解锁的计算机有且仅有一台：计算机 $0$，所以：
+- 一开始就解锁的只有计算机 $0$。
+- 第一轮，被 $0$ 解锁的计算机（记作集合 $A$），密码复杂度比 $\textit{complexity}[0]$ 大。
+- 第二轮，被集合 $A$ 中的计算机解锁的计算机（记作集合 $B$），密码复杂度更大，所以也比 $\textit{complexity}[0]$ 大。
+- 第三轮，被集合 $B$ 中的计算机解锁的计算机（记作集合 $C$），密码复杂度更大，所以也比 $\textit{complexity}[0]$ 大。
+- 依此类推，所有被解锁的计算机的密码复杂度都要比 $\textit{complexity}[0]$ 大。
 
-- 如果 $[1,n-1]$ 中存在 $i$ 满足 $\textit{complexity}[i]\le \textit{complexity}[0]$，那么计算机 $i$ 无法被解锁，方案数为 $0$。反证法：如果计算机  $i$ 可以被解锁，说明存在密码复杂度小于 $\textit{complexity}[i]$ 的计算机，但这个计算机的密码复杂度又比 $\textit{complexity}[0]$ 还小，不可能被解锁，矛盾，故原命题成立。
-- 否则，用计算机 $0$ 可以解锁任意计算机，**解锁顺序随意**，所以方案数为 $n-1$ 个数的全排列个数，即 $(n-1)!$。
+反过来，如果有计算机 $\textit{complexity}[i] \le \textit{complexity}[0]$，那么我们需要在这个计算机的左边找比 $\textit{complexity}[i]$ 更小的计算机。不断往左找，计算机的密码复杂度只会更小，直到找到一台被计算机 $0$ 解锁的计算机 $X$。$X$ 的密码复杂度比 $\textit{complexity}[0]$ 大，但为了解锁 $\textit{complexity}[i]$ 又需要 $< \textit{complexity}[i] \le \textit{complexity}[0]$，所以 $X$ 的密码复杂度又比 $\textit{complexity}[0]$ 小，矛盾。
+
+所以，**当且仅当**计算机 $0$ 右边的所有计算机的密码复杂度都比 $\textit{complexity}[0]$ 大，才能解锁所有计算机。
+
+此时计算机 $0$ 可以解锁其余所有计算机，且可以按照任意顺序解锁。所以方案数为 $n-1$ 个数的全排列个数，即 
+
+$$
+(n-1)!
+$$
 
 注意取模。关于模运算的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV113T9zFEjQ/?t=7m8s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -97,3 +106,5 @@ func countPermutations(complexity []int) int {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
