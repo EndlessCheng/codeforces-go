@@ -44,11 +44,12 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
-https://atcoder.jp/contests/arc189/tasks/arc189_d 2006=CF2228
-https://atcoder.jp/contests/agc029/tasks/agc029_c 2103=CF2302
+https://codeforces.com/problemset/problem/1117/G 2500
 https://codeforces.com/problemset/problem/1827/C 2600 Manacher DP
 https://codeforces.com/problemset/problem/2064/F 2600
 https://codeforces.com/problemset/problem/1422/E 2700
+https://atcoder.jp/contests/arc189/tasks/arc189_d 2006=CF2228
+https://atcoder.jp/contests/agc029/tasks/agc029_c 2103=CF2302
 https://www.luogu.com.cn/problem/P7167 倍增
 https://www.luogu.com.cn/problem/P9290
 
@@ -61,7 +62,7 @@ https://codeforces.com/problemset/problem/2009/G2 2200
 
 字典序最小
 - [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) ~1800
-   - 402 变形：不允许自动去掉前导零 https://codeforces.com/problemset/problem/1765/N
+   - 变形：不允许自动去掉前导零 https://codeforces.com/problemset/problem/1765/N 1500
 https://codeforces.com/problemset/problem/1076/A 1200 只能删一个
 https://codeforces.com/problemset/problem/1730/C 1200
 https://codeforces.com/problemset/problem/1905/C 1400
@@ -96,15 +97,10 @@ LC42 接雨水 https://leetcode.cn/problems/trapping-rain-water/
      单调栈视频讲解见 https://www.bilibili.com/video/BV1VN411J7S7/
      本质上是两种计算策略：1. 竖着累加：假设每个下标都有个水桶
                        2. 横着累加：见单调栈的做法（找上一个更大元素，在找的过程中填坑）
-LC84 柱状图中最大的矩形 https://leetcode.cn/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
-LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode.cn/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
-LC1504 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode.cn/problems/count-submatrices-with-all-ones/
-LC768 https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/
 LC2735 https://leetcode.cn/problems/collecting-chocolates/solutions/2305119/xian-xing-zuo-fa-by-heltion-ypdx/
-LC2736 https://leetcode.cn/problems/maximum-sum-queries/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
-与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
-已知部分 right 还原全部 right；已知 right 还原 a https://codeforces.com/problemset/problem/1158/C
+已知部分 right 还原全部 right；已知 right 还原 a https://codeforces.com/problemset/problem/1158/C 2100
+与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D 2200
 https://www.luogu.com.cn/problem/P5788
 https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
@@ -344,98 +340,6 @@ func permLR(perm []int) ([]int, []int) {
 	return left, right
 }
 
-// 最大全 1 矩形
-// LC85 https://leetcode.cn/problems/maximal-rectangle/
-func maximalRectangleArea(mat [][]int) (ans int) {
-	const target = 1
-	n, m := len(mat), len(mat[0])
-	heights := make([][]int, n) // heights[i][j] 表示从 (i,j) 往上看的高度（连续 1 的长度），mat[i][j] = 0 时为 0
-	for i, row := range mat {
-		heights[i] = make([]int, m)
-		for j, v := range row {
-			if v == target {
-				if i == 0 {
-					heights[i][j] = 1
-				} else {
-					heights[i][j] = heights[i-1][j] + 1
-				}
-			}
-		}
-	}
-
-	// 然后枚举每一行，就变成 LC84 这题了
-	type pair struct{ h, i int }
-	for _, hs := range heights {
-		left := make([]int, m)
-		st := []pair{{-1, -1}}
-		for j, h := range hs {
-			for {
-				if top := st[len(st)-1]; top.h < h {
-					left[j] = top.i
-					break
-				}
-				st = st[:len(st)-1]
-			}
-			st = append(st, pair{h, j})
-		}
-
-		right := make([]int, m)
-		st = []pair{{-1, m}}
-		for j, h := range slices.Backward(hs) {
-			for {
-				if top := st[len(st)-1]; top.h < h {
-					right[j] = top.i
-					break
-				}
-				st = st[:len(st)-1]
-			}
-			st = append(st, pair{h, j})
-		}
-
-		for j, h := range hs {
-			if area := (right[j] - left[j] - 1) * h; area > ans {
-				ans = area
-			}
-		}
-	}
-	return
-}
-
-// 全 1 矩形个数
-// LC1504 https://leetcode.cn/problems/count-submatrices-with-all-ones/
-// 参考 https://leetcode.com/problems/count-submatrices-with-all-ones/discuss/720265/Java-Detailed-Explanation-From-O(MNM)-to-O(MN)-by-using-Stack
-func numSubmat(mat [][]int) (ans int) {
-	m := len(mat[0])
-	heights := make([]int, m)
-	for _, row := range mat {
-		sum := make([]int, m)
-		type pair struct{ h, j int }
-		st := []pair{{-1, -1}}
-		for j, v := range row {
-			if v == 0 {
-				heights[j] = 0
-			} else {
-				heights[j]++
-			}
-			h := heights[j]
-			for {
-				if top := st[len(st)-1]; top.h < h {
-					if pre := top.j; pre < 0 {
-						sum[j] = (j + 1) * h
-					} else {
-						sum[j] = sum[pre] + (j-pre)*h
-					}
-					ans += sum[j]
-					break
-				}
-				st = st[:len(st)-1]
-			}
-			st = append(st, pair{h, j})
-		}
-	}
-	return
-}
-
 // 字典序最小的无重复字符的子序列，包含原串所有字符
 // LC316 https://leetcode.cn/problems/remove-duplicate-letters/
 //       https://atcoder.jp/contests/abc299/tasks/abc299_g
@@ -498,7 +402,7 @@ func longestSubarrayWithLowerSum(a []int, lowerSum int) (int, int) {
 	return l, r
 }
 
-// 静态区间最值
+// 静态区间最值（不用 ST 表）
 // https://ac.nowcoder.com/acm/contest/86034/F
 func rangeMaxWithSt(a []int, queries []struct{ l, r int }) []int {
 	// 离线询问
