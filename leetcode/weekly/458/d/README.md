@@ -30,9 +30,9 @@ $$
 
 **优化 1**：我们计算的是从 $x$ 和 $y$ 出发继续扩展的节点个数，根据对称性，$\textit{dfs}(x,y,S)$ 计算出的结果和 $\textit{dfs}(y,x,S)$ 计算出的结果是一样的，没必要算两次。所以递归时，可以人为规定递归参数必须满足 $x\le y$，从而减少状态个数和计算量。如果 $x>y$ 则交换。
 
-**优化 2**：递归结束后，如果 $\textit{ans} = n$，可以直接返回 $n$。
+**优化 2**：特判完全图的情况，此时路径可以是任意节点的排列，问题等价于重排 $\textit{label}$ 中的字母可以得到的最长回文串。比如 $3$ 个 $\texttt{a}$ 和 $5$ 个 $\texttt{b}$，可以选 $2$ 个 $\texttt{a}$ 一左一右，$4$ 个 $\texttt{b}$ 左右各放 $2$ 个，多出的字母只能选一个放正中间。比如回文串为 $\texttt{abbabba}$。（谢谢 [@观铃 🔔](/u/kamio_misuzu) 补充）
 
-**优化 3**：特判完全图的情况，此时路径可以是任意节点的排列，问题等价于重排 $\textit{label}$ 中的字母可以得到的最长回文串。比如 $3$ 个 $\texttt{a}$ 和 $5$ 个 $\texttt{b}$，可以选 $2$ 个 $\texttt{a}$ 一左一右，$4$ 个 $\texttt{b}$ 左右各放 $2$ 个，多出的字母只能选一个放正中间。比如回文串为 $\texttt{abbabba}$。（谢谢 [@观铃 🔔](/u/kamio_misuzu) 补充）
+**优化 3**：递归结束后，如果 $\textit{ans} = n$，可以直接返回 $n$。进一步地，利用优化 2 的想法，计算出理论最大值，如果 $\textit{ans}$ 等于理论最大值，返回 $\textit{ans}$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1xSuFzHEa1/?t=28m51s)，欢迎点赞关注~
 
@@ -42,12 +42,15 @@ max = lambda a, b: b if b > a else a
 
 class Solution:
     def maxLen(self, n: int, edges: List[List[int]], label: str) -> int:
-        if len(edges) == n * (n - 1) // 2:  # 完全图
-            ans = odd = 0
-            for c in Counter(label).values():
-                ans += c - c % 2
-                odd |= c % 2
-            return ans + odd
+        # 计算理论最大值
+        theoretical_max = odd = 0
+        for c in Counter(label).values():
+            theoretical_max += c - c % 2
+            odd |= c % 2
+        theoretical_max += odd
+
+        if len(edges) == n * (n - 1) // 2:  # 完全图，可以达到理论最大值
+            return theoretical_max
 
         g = [[] for _ in range(n)]
         for x, y in edges:
@@ -73,15 +76,15 @@ class Solution:
         for x, to in enumerate(g):
             # 奇回文串，x 作为回文中心
             ans = max(ans, dfs(x, x, 1 << x) + 1)
-            if ans == n:
-                return n
+            if ans == theoretical_max:
+                return ans
             # 偶回文串，x 和 x 的邻居 y 作为回文中心
             for y in to:
                 # 保证递归参数 x < y，减少状态个数和计算量
                 if x < y and label[x] == label[y]:
                     ans = max(ans, dfs(x, y, 1 << x | 1 << y) + 2)
-                    if ans == n:
-                        return n
+                    if ans == theoretical_max:
+                        return ans
         return ans
 ```
 
@@ -89,17 +92,20 @@ class Solution:
 class Solution {
     public int maxLen(int n, int[][] edges, String label) {
         char[] s = label.toCharArray();
-        if (edges.length == n * (n - 1) / 2) { // 完全图
-            int[] cnt = new int[26];
-            for (char ch : s) {
-                cnt[ch - 'a']++;
-            }
-            int ans = 0, odd = 0;
-            for (int c : cnt) {
-                ans += c - c % 2;
-                odd |= c % 2;
-            }
-            return ans + odd;
+        // 计算理论最大值
+        int[] cnt = new int[26];
+        for (char ch : s) {
+            cnt[ch - 'a']++;
+        }
+        int theoreticalMax = 0, odd = 0;
+        for (int c : cnt) {
+            theoreticalMax += c - c % 2;
+            odd |= c % 2;
+        }
+        theoreticalMax += odd;
+
+        if (edges.length == n * (n - 1) / 2) { // 完全图，可以达到理论最大值
+            return theoreticalMax;
         }
 
         List<Integer>[] g = new ArrayList[n];
@@ -122,16 +128,16 @@ class Solution {
         for (int x = 0; x < n; x++) {
             // 奇回文串，x 作为回文中心
             ans = Math.max(ans, dfs(x, x, 1 << x, g, s, memo) + 1);
-            if (ans == n) {
-                return n;
+            if (ans == theoreticalMax) {
+                return ans;
             }
             // 偶回文串，x 和 x 的邻居 y 作为回文中心
             for (int y : g[x]) {
                 // 保证 x < y，减少状态个数和计算量
                 if (x < y && s[x] == s[y]) {
                     ans = Math.max(ans, dfs(x, y, 1 << x | 1 << y, g, s, memo) + 2);
-                    if (ans == n) {
-                        return n;
+                    if (ans == theoreticalMax) {
+                        return ans;
                     }
                 }
             }
@@ -166,17 +172,20 @@ class Solution {
 class Solution {
 public:
     int maxLen(int n, vector<vector<int>>& edges, string label) {
-        if (edges.size() == n * (n - 1) / 2) { // 完全图
-            int cnt[26]{};
-            for (char ch : label) {
-                cnt[ch - 'a']++;
-            }
-            int ans = 0, odd = 0;
-            for (int c : cnt) {
-                ans += c - c % 2;
-                odd |= c % 2;
-            }
-            return ans + odd;
+        // 计算理论最大值
+        int cnt[26]{};
+        for (char ch : label) {
+            cnt[ch - 'a']++;
+        }
+        int theoretical_max = 0, odd = 0;
+        for (int c : cnt) {
+            theoretical_max += c - c % 2;
+            odd |= c % 2;
+        }
+        theoretical_max += odd;
+
+        if (edges.size() == n * (n - 1) / 2) { // 完全图，可以达到理论最大值
+            return theoretical_max;
         }
 
         vector<vector<int>> g(n);
@@ -213,16 +222,16 @@ public:
         for (int x = 0; x < n; x++) {
             // 奇回文串，x 作为回文中心
             ans = max(ans, dfs(x, x, 1 << x) + 1);
-            if (ans == n) {
-                return n;
+            if (ans == theoretical_max) {
+                return ans;
             }
             // 偶回文串，x 和 x 的邻居 y 作为回文中心
             for (int y : g[x]) {
                 // 保证 x < y，减少状态个数和计算量
                 if (x < y && label[x] == label[y]) {
                     ans = max(ans, dfs(x, y, 1 << x | 1 << y) + 2);
-                    if (ans == n) {
-                        return n;
+                    if (ans == theoretical_max) {
+                        return ans;
                     }
                 }
             }
@@ -234,17 +243,20 @@ public:
 
 ```go [sol-Go]
 func maxLen(n int, edges [][]int, label string) (ans int) {
-	if len(edges) == n*(n-1)/2 { // 完全图
-		cnt := [26]int{}
-		for _, ch := range label {
-			cnt[ch-'a']++
-		}
-		odd := 0
-		for _, c := range cnt {
-			ans += c - c%2
-			odd |= c % 2
-		}
-		return ans + odd
+	// 计算理论最大值
+	cnt := [26]int{}
+	for _, ch := range label {
+		cnt[ch-'a']++
+	}
+	theoreticalMax, odd := 0, 0
+	for _, c := range cnt {
+		theoreticalMax += c - c%2
+		odd |= c % 2
+	}
+	theoreticalMax += odd
+
+	if len(edges) == n*(n-1)/2 { // 完全图，可以达到理论最大值
+		return theoreticalMax
 	}
 
 	g := make([][]int, n)
@@ -291,7 +303,7 @@ func maxLen(n int, edges [][]int, label string) (ans int) {
 	for x, to := range g {
 		// 奇回文串，x 作为回文中心
 		ans = max(ans, dfs(x, x, 1<<x)+1)
-		if ans == n {
+		if ans == theoreticalMax {
 			return
 		}
 		// 偶回文串，x 和 x 的邻居 y 作为回文中心
@@ -299,7 +311,7 @@ func maxLen(n int, edges [][]int, label string) (ans int) {
 			// 保证 x < y，减少状态个数和计算量
 			if x < y && label[x] == label[y] {
 				ans = max(ans, dfs(x, y, 1<<x|1<<y)+2)
-				if ans == n {
+				if ans == theoreticalMax {
 					return
 				}
 			}
