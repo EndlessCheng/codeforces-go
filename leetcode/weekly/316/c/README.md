@@ -1,5 +1,3 @@
-[视频讲解](https://www.bilibili.com/video/BV1ne4y1e7nu) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
-
 ## 方法一：枚举 + 考察变化量
 
 将 $\textit{nums}$ 和 $\textit{cost}$ 绑在一起排序。
@@ -18,6 +16,8 @@ $$
 $$
 
 按照这个公式模拟后续 $\textit{nums}[i]$，取所有 $\textit{total}$ 最小值为答案。
+
+[视频讲解](https://www.bilibili.com/video/BV1ne4y1e7nu)
 
 ```py [sol-Python3]
 class Solution:
@@ -69,7 +69,7 @@ func minCost(nums, cost []int) int64 {
 
 代码实现时，仍然按照方法一那样排序，然后不断累加 $\textit{cost}[i]$，首次累加到 $\ge\dfrac{\textit{sumCost}}{2}$ 时就找到了中位数。
 
-由于 $\textit{sumCost}$ 可能是奇数，所以要上取整，即首次累加到 $\ge\left\lceil\dfrac{\textit{sumCost}}{2}\right\rceil$ 时就找到了中位数。
+由于 $\dfrac{\textit{sumCost}}{2}$ 可能不是整数，要上取整，即首次累加到 $\ge\left\lceil\dfrac{\textit{sumCost}}{2}\right\rceil$ 时就找到了中位数。
 
 ```py [sol-Python3]
 class Solution:
