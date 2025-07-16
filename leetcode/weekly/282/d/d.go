@@ -6,7 +6,7 @@ import "math"
 func minimumFinishTime(tires [][]int, changeTime, numLaps int) int {
 	minSec := [18]int{}
 	for i := range minSec {
-		minSec[i] = math.MaxInt32 / 2
+		minSec[i] = math.MaxInt / 2
 	}
 	for _, tire := range tires {
 		f, r := tire[0], tire[1]
@@ -20,7 +20,7 @@ func minimumFinishTime(tires [][]int, changeTime, numLaps int) int {
 	f := make([]int, numLaps+1)
 	f[0] = -changeTime
 	for i := 1; i <= numLaps; i++ {
-		f[i] = math.MaxInt32
+		f[i] = math.MaxInt
 		for j := 1; j <= 17 && j <= i; j++ {
 			f[i] = min(f[i], f[i-j]+minSec[j])
 		}
@@ -28,5 +28,3 @@ func minimumFinishTime(tires [][]int, changeTime, numLaps int) int {
 	}
 	return f[numLaps]
 }
-
-func min(a, b int) int { if a > b { return b }; return a }
