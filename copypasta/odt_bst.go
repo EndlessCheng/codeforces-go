@@ -9,11 +9,11 @@ package copypasta
 // 模板题 LC715 https://leetcode.cn/problems/range-module/
 // LC699 https://leetcode.cn/problems/falling-squares/
 // https://atcoder.jp/contests/abl/tasks/abl_e 代码【比较全面】https://atcoder.jp/contests/abl/submissions/36147029
-// https://codeforces.com/problemset/problem/292/E 代码 https://codeforces.com/contest/292/submission/173666674
-// https://codeforces.com/problemset/problem/558/E 代码 https://codeforces.com/problemset/submission/558/117163317
-// https://codeforces.com/problemset/problem/915/E 代码【比较全面】https://codeforces.com/problemset/submission/915/117158161
-// https://codeforces.com/problemset/problem/817/F（数据水）代码 https://codeforces.com/contest/817/submission/118365591
-// https://codeforces.com/problemset/problem/981/G
+// https://codeforces.com/problemset/problem/292/E 1900 代码 https://codeforces.com/contest/292/submission/173666674
+// https://codeforces.com/problemset/problem/558/E 2300 代码 https://codeforces.com/problemset/submission/558/117163317
+// https://codeforces.com/problemset/problem/817/F 2300（数据水）代码 https://codeforces.com/contest/817/submission/118365591
+// https://codeforces.com/problemset/problem/915/E 2300 代码【比较全面】https://codeforces.com/problemset/submission/915/117158161
+// https://codeforces.com/problemset/problem/981/G 2500
 // todo https://codeforces.com/problemset/problem/1638/E
 // todo https://www.luogu.com.cn/problem/P5350
 //      https://www.luogu.com.cn/problem/P5586
