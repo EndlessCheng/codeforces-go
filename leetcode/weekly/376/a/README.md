@@ -384,6 +384,7 @@ $$
 class Solution:
     def findMissingAndRepeatedValues(self, grid: List[List[int]]) -> List[int]:
         m = len(grid) ** 2
+        # 注：两次遍历可以合并为一次遍历，这里只是为了方便实现用了两次遍历
         d1 = sum(x for row in grid for x in row) - m * (m + 1) // 2
         d2 = sum(x * x for row in grid for x in row) - m * (m + 1) * (m * 2 + 1) // 6
         return [(d2 // d1 + d1) // 2, (d2 // d1 - d1) // 2]
