@@ -87,6 +87,7 @@ import "math/bits"
 // - 也可以用树状数组 https://www.luogu.com.cn/blog/Atalod/ti-xie-p4137-post
 // - 反向构造题 https://www.luogu.com.cn/problem/P6852
 // https://codeforces.com/problemset/problem/1609/E 2400 单点修改 + 不含子序列 abc
+// https://codeforces.com/problemset/problem/295/E 2500 难度虚高
 // https://codeforces.com/problemset/problem/1665/E 2500 区间最小的 31 个数
 // https://codeforces.com/problemset/problem/2042/F 2600 两段最大子段和
 // https://codeforces.com/problemset/problem/19/D 2800
@@ -114,6 +115,7 @@ import "math/bits"
 // 线段树二分
 // LC2286 https://leetcode.cn/problems/booking-concert-tickets-in-groups/
 // LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
+// https://codeforces.com/problemset/problem/605/D 2500
 
 // EXTRA: 权值线段树 值域线段树
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
@@ -377,6 +379,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/2009/G3 2700
 // https://codeforces.com/problemset/problem/794/F   2800 数位修改 考察对懒标记的理解 
 // https://codeforces.com/problemset/problem/1209/G2 3200 todo
+// https://www.luogu.com.cn/problem/P1502 窗口的星星
 //
 // 线段树二分
 // https://atcoder.jp/contests/abc389/tasks/abc389_f 
@@ -567,6 +570,11 @@ func (t lazySeg) spreadAll(o int) {
 
 // 动态开点线段树·其一·单点修改
 // 注：如果 TLE 可以使用 func init() { debug.SetGCPercent(-1) } 加速
+// 基于 295E 的性能测试：
+// 动态开点           1374ms  https://codeforces.com/problemset/submission/295/328591887
+// 动态开点＋关闭 GC   1030ms  https://codeforces.com/problemset/submission/295/328591917
+// 普通线段树＋离散化   624ms  https://codeforces.com/problemset/submission/295/328591269
+//
 // LC327 https://leetcode.cn/problems/count-of-range-sum/
 // LC2770 https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/ 1533
 // LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533

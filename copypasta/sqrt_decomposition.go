@@ -93,6 +93,7 @@ https://codeforces.com/problemset/problem/1207/F 2100
 https://codeforces.com/problemset/problem/551/E 2500
 https://codeforces.com/problemset/problem/13/E 2700
 https://codeforces.com/problemset/problem/455/D 2700
+https://codeforces.com/problemset/problem/2043/G 3000
 https://www.luogu.com.cn/problem/P3203 [HN10] 弹飞绵羊
 https://www.nowcoder.com/discuss/353159150542725120 K 题 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=50861318
 */

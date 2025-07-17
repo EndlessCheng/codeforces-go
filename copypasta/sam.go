@@ -46,6 +46,7 @@ https://www.luogu.com.cn/problem/P6292 区间本质不同子串个数（与 LCT 
 SPOJ NSUBSTR2 https://www.luogu.com.cn/problem/SP8747 动态子串出现次数（与 LCT 结合）
 todo https://codeforces.com/problemset/problem/235/C 2700 循环同构（也可以用后缀数组做）
 todo LC2730 变形：相邻字符改成相邻子串（连续重复子串） https://leetcode.cn/problems/find-the-longest-semi-repetitive-substring/
+https://codeforces.com/problemset/problem/452/E 2400
 */
 
 // 如果超时/超内存，改用预分配内存池 + func init() { debug.SetGCPercent(-1) } 的写法（如下）
