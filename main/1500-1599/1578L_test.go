@@ -27,3 +27,21 @@ func Test_cf1578L(t *testing.T) {
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf1578L)
 }
+
+//func TestCompare_cf1578L(_t *testing.T) {
+//	//return
+//	testutil.DebugTLE = 0
+//	rg := testutil.NewRandGenerator()
+//	inputGenerator := func() string {
+//		//return ``
+//		rg.Clear()
+//		n := rg.Int(2, 9)
+//		m := rg.Int(n-1, n*(n-1)/2)
+//		rg.NewLine()
+//		rg.IntSlice(n,1, 99)
+//		rg.GraphWeightedEdges(n, m, 1, 1, 99, false)
+//		return rg.String()
+//	}
+//
+//	testutil.AssertEqualRunResultsInf(_t, inputGenerator, cf1578L, cf1578L2)
+//}

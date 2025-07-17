@@ -10,8 +10,8 @@ import (
 func cf1578L(in io.Reader, out io.Writer) {
 	var n, m int
 	Fscan(in, &n, &m)
-	sum := make([]int, n*2)
-	f := make([]int, n*2)
+	sum := make([]int, n+1)
+	f := make([]int, n+1)
 	for i := 1; i <= n; i++ {
 		Fscan(in, &sum[i])
 		f[i] = 1e18
@@ -23,7 +23,7 @@ func cf1578L(in io.Reader, out io.Writer) {
 	}
 	slices.SortFunc(es, func(a, b edge) int { return b.wt - a.wt })
 
-	pa := make([]int, n*2)
+	pa := make([]int, n+1)
 	for i := range pa {
 		pa[i] = i
 	}
@@ -38,23 +38,21 @@ func cf1578L(in io.Reader, out io.Writer) {
 		return rt
 	}
 
-	k := n
 	for _, e := range es {
 		x, y := find(e.v), find(e.w)
 		if x == y {
 			continue
 		}
-		k++
-		pa[x] = k
-		pa[y] = k
-		f[k] = max(min(f[y], e.wt)-sum[x], min(f[x], e.wt)-sum[y])
-		sum[k] = sum[x] + sum[y]
+		f[y] = max(min(f[y], e.wt)-sum[x], min(f[x], e.wt)-sum[y])
+		sum[y] += sum[x]
+		pa[x] = y
 	}
-	if f[k] > 0 {
-		Fprint(out, f[k])
-	} else {
-		Fprint(out, -1)
+
+	ans := f[find(1)]
+	if ans <= 0 {
+		ans = -1
 	}
+	Fprint(out, ans)
 }
 
 //func main() { cf1578L(bufio.NewReader(os.Stdin), os.Stdout) }
