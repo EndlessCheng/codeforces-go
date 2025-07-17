@@ -63,7 +63,7 @@ https://codeforces.com/problemset/problem/2077/C 2300
 https://codeforces.com/problemset/problem/26/D 2400 类似卡特兰数的镜像反射技巧
 https://codeforces.com/problemset/problem/1109/D 2400 Prufer 序列
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
-https://codeforces.com/problemset/problem/1526/E 2400
+https://codeforces.com/problemset/problem/1526/E 2400 后缀数组
 https://codeforces.com/problemset/problem/1608/D 2400
 https://codeforces.com/problemset/problem/156/D 2500 Prufer 序列 n^(cc-2)
 https://codeforces.com/problemset/problem/348/D 2500 不相交路径
