@@ -72,6 +72,7 @@ https://codeforces.com/problemset/problem/1534/D 1800
 https://codeforces.com/problemset/problem/1044/B 1900
 https://codeforces.com/problemset/problem/1305/D 1900 LCA 排除法 拓扑排序
 https://codeforces.com/problemset/problem/1174/F 2400
+https://codeforces.com/problemset/problem/1370/F2 2700
 
 ## 图
 
