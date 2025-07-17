@@ -1,16 +1,20 @@
-将 $\textit{nums}$ 拆分成两部分，左半部分的最小和（前缀最小和）减右半部分的最大和（后缀最大和）即为两部分和的最小差值，枚举拆分位置（保证左右两部分至少有 $n$ 个元素），所有差值的最小值就是答案。
+**题意**：把 $\textit{nums}$ 分割成两部分，第一部分选 $n$ 个数求和，记作 $s_1$，第二部分选 $n$ 个数求和，记作 $s_2$。计算 $s_1-s_2$ 的最小值。
+
+由于 $s_1$ 和 $s_2$ 互相独立，为了让 $s_1-s_2$ 尽量小，那么 $s_1$ 越小越好，$s_2$ 越大越好。
+
+**枚举**分割位置，保证两部分都至少有 $n$ 个数。对于每个分割位置，计算最小 $s_1$ 和最大 $s_2$，所有 $s_1-s_2$ 的最小值就是答案。
 
 一个 $n=4$ 的例子：
 
 ![](https://pic.leetcode-cn.com/1644495549-IzYFpw-LC2163.drawio.png)
 
-我们需要计算出 $\textit{nums}$ 的前缀最小和 $\textit{preMin}[i]$，即前 $i$ 个元素中的最小的 $n$ 个元素之和；以及后缀最大和 $\textit{sufMax}[i]$，即后 $i$ 个元素中的最大的 $n$ 个元素之和。答案即为 $\textit{preMin}[i]-\textit{sufMax}[i+1]$ 中的最小值。
+具体地，我们需要计算出 $\textit{nums}$ 的前缀最小和 $\textit{preMin}[i]$，即 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 中最小的 $n$ 个元素之和；以及后缀最大和 $\textit{sufMax}[i]$，即 $\textit{nums}[i]$ 到 $\textit{nums}[3n-1]$ 中最大的 $n$ 个元素之和。答案为 $\textit{preMin}[i]-\textit{sufMax}[i+1]$ 中的最小值。
 
-计算前缀最小和时，可以维护一个包含 $n$ 个元素的最大堆，我们不断向右遍历 $\textit{nums}$ 中的元素 $v$，计算前缀最小和，若 $v$ 比堆顶元素小，则弹出堆顶元素，并将 $v$ 入堆。
+对于后缀最大和，可以从右往左遍历 $\textit{nums}$ 计算，思路同经典题 [703. 数据流中的第 K 大元素](https://leetcode.cn/problems/kth-largest-element-in-a-stream/)（Top K），维护一个包含 $n$ 个元素的**最小堆**（及其元素和）。不断向左遍历 $\textit{nums}$ 中的元素 $v$，若 $v$ 比堆顶元素大，则弹出堆顶，并将 $v$ 入堆，这可以让堆中元素和更大。
 
-计算后缀最大和，则需要维护一个包含 $n$ 个元素的最小堆，我们不断向左遍历 $\textit{nums}$ 中的元素 $v$，计算后缀最大和，若 $v$ 比堆顶元素大，则弹出堆顶元素，并将 $v$ 入堆。
+同理，对于前缀最小和，则需要维护一个包含 $n$ 个元素的**最大堆**（及其元素和）。不断向右遍历 $\textit{nums}$ 中的元素 $v$，若 $v$ 比堆顶元素小，则弹出堆顶，并将 $v$ 入堆，这可以让堆中元素和更小。
 
-代码实现时，可以先计算出后缀最大和，然后在计算前缀最小和的同时计算出答案。
+代码实现时，可以在计算前缀最小和的同时计算答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -21,16 +25,15 @@ class Solution:
         heapify(min_h)
 
         suf_max = [0] * (m - n + 1)  # 后缀最大和
-        suf_max[-1] = s = sum(min_h)
+        suf_max[-1] = sum(min_h)
         for i in range(m - n - 1, n - 1, -1):
-            s += nums[i] - heappushpop(min_h, nums[i])
-            suf_max[i] = s
+            suf_max[i] = suf_max[i + 1] + nums[i] - heappushpop(min_h, nums[i])
 
         max_h = [-x for x in nums[:n]]  # 所有元素取反，表示最大堆
         heapify(max_h)
 
         pre_min = -sum(max_h)  # 前缀最小和
-        ans = pre_min - suf_max[n]
+        ans = pre_min - suf_max[n]  # i=n-1 时的答案
         for i in range(n, m - n):
             pre_min += nums[i] + heappushpop(max_h, -nums[i])
             ans = min(ans, pre_min - suf_max[i + 1])
@@ -44,7 +47,7 @@ class Solution {
         int n = m / 3;
         PriorityQueue<Integer> minPQ = new PriorityQueue<>();
         long sum = 0;
-        for (int i = m - n; i < m; i++) {
+        for (int i = m - 1; i >= m - n; i--) {
             minPQ.offer(nums[i]);
             sum += nums[i];
         }
@@ -52,22 +55,28 @@ class Solution {
         long[] sufMax = new long[m - n + 1]; // 后缀最大和
         sufMax[m - n] = sum;
         for (int i = m - n - 1; i >= n; i--) {
-            minPQ.offer(nums[i]);
-            sum += nums[i] - minPQ.poll();
+            int v = nums[i];
+            if (v > minPQ.peek()) {
+                sum += v - minPQ.poll();
+                minPQ.offer(v);
+            }
             sufMax[i] = sum;
         }
 
-        PriorityQueue<Integer> maxPQ = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> maxPQ = new PriorityQueue<>((a, b) -> b - a);
         long preMin = 0; // 前缀最小和
         for (int i = 0; i < n; ++i) {
             maxPQ.offer(nums[i]);
             preMin += nums[i];
         }
 
-        long ans = preMin - sufMax[n];
+        long ans = preMin - sufMax[n]; // i=n-1 时的答案
         for (int i = n; i < m - n; i++) {
-            maxPQ.offer(nums[i]);
-            preMin += nums[i] - maxPQ.poll();
+            int v = nums[i];
+            if (v < maxPQ.peek()) {
+                preMin += v - maxPQ.poll();
+                maxPQ.offer(v);
+            }
             ans = Math.min(ans, preMin - sufMax[i + 1]);
         }
         return ans;
@@ -80,34 +89,33 @@ class Solution {
 public:
     long long minimumDifference(vector<int>& nums) {
         int m = nums.size(), n = m / 3;
-        priority_queue<int, vector<int>, greater<>> min_pq;
-        long long sum = 0;
-        for (int i = m - n; i < m; i++) {
-            min_pq.push(nums[i]);
-            sum += nums[i];
-        }
+
+        priority_queue<int, vector<int>, greater<>> min_pq(nums.begin() + n * 2, nums.end());
+        long long sum = reduce(nums.begin() + n * 2, nums.end(), 0LL);
 
         vector<long long> suf_max(m - n + 1); // 后缀最大和
         suf_max[m - n] = sum;
         for (int i = m - n - 1; i >= n; i--) {
-            min_pq.push(nums[i]);
-            sum += nums[i] - min_pq.top();
-            min_pq.pop();
+            int v = nums[i];
+            if (v > min_pq.top()) {
+                sum += v - min_pq.top();
+                min_pq.pop();
+                min_pq.push(v);
+            }
             suf_max[i] = sum;
         }
 
-        priority_queue<int> max_pq;
-        long long pre_min = 0; // 前缀最小和
-        for (int i = 0; i < n; i++) {
-            max_pq.push(nums[i]);
-            pre_min += nums[i];
-        }
+        priority_queue<int> max_pq(nums.begin(), nums.begin() + n);
+        long long pre_min = reduce(nums.begin(), nums.begin() + n, 0LL); // 前缀最小和
 
-        long long ans = pre_min - suf_max[n];
+        long long ans = pre_min - suf_max[n]; // i=n-1 时的答案
         for (int i = n; i < m - n; i++) {
-            max_pq.push(nums[i]);
-            pre_min += nums[i] - max_pq.top();
-            max_pq.pop();
+            int v = nums[i];
+            if (v < max_pq.top()) {
+                pre_min += v - max_pq.top();
+                max_pq.pop();
+                max_pq.push(v);
+            }
             ans = min(ans, pre_min - suf_max[i + 1]);
         }
         return ans;
@@ -119,8 +127,8 @@ public:
 func minimumDifference(nums []int) int64 {
 	m := len(nums)
 	n := m / 3
-	minPQ := minHeap{nums[m-n:]}
-	heap.Init(&minPQ)
+	minH := minHeap{nums[m-n:]}
+	heap.Init(&minH)
 	sum := 0
 	for _, v := range nums[m-n:] {
 		sum += v
@@ -129,27 +137,27 @@ func minimumDifference(nums []int) int64 {
 	sufMax := make([]int, m-n+1) // 后缀最大和
 	sufMax[m-n] = sum
 	for i := m - n - 1; i >= n; i-- {
-		if v := nums[i]; v > minPQ.IntSlice[0] {
-			sum += v - minPQ.IntSlice[0]
-			minPQ.IntSlice[0] = v
-			heap.Fix(&minPQ, 0)
+		if v := nums[i]; v > minH.IntSlice[0] {
+			sum += v - minH.IntSlice[0]
+			minH.IntSlice[0] = v
+			heap.Fix(&minH, 0)
 		}
 		sufMax[i] = sum
 	}
 
-	maxPQ := maxHeap{nums[:n]}
-	heap.Init(&maxPQ)
+	maxH := maxHeap{nums[:n]}
+	heap.Init(&maxH)
 	preMin := 0 // 前缀最小和
 	for _, v := range nums[:n] {
 		preMin += v
 	}
 
 	ans := preMin - sufMax[n]
-	for i := n; i < m-n; i++ {
-		if v := nums[i]; v < maxPQ.IntSlice[0] {
-			preMin += v - maxPQ.IntSlice[0]
-			maxPQ.IntSlice[0] = v
-			heap.Fix(&maxPQ, 0)
+	for i := n; i < m-n; i++ { // i=n-1 时的答案
+		if v := nums[i]; v < maxH.IntSlice[0] {
+			preMin += v - maxH.IntSlice[0]
+			maxH.IntSlice[0] = v
+			heap.Fix(&maxH, 0)
 		}
 		ans = min(ans, preMin-sufMax[i+1])
 	}
