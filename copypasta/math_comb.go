@@ -60,15 +60,21 @@ https://codeforces.com/problemset/problem/1946/E 2200 排列
 https://codeforces.com/problemset/problem/1204/E 2300 推荐
 https://codeforces.com/problemset/problem/1342/E 2300
 https://codeforces.com/problemset/problem/2077/C 2300
+https://codeforces.com/problemset/problem/26/D 2400 类似卡特兰数的镜像反射技巧
 https://codeforces.com/problemset/problem/1109/D 2400 Prufer 序列
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
+https://codeforces.com/problemset/problem/1526/E 2400
 https://codeforces.com/problemset/problem/1608/D 2400
-https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
+https://codeforces.com/problemset/problem/156/D 2500 Prufer 序列 n^(cc-2)
 https://codeforces.com/problemset/problem/348/D 2500 不相交路径
 加强版 https://codeforces.com/contest/1838/problem/E 2500
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 https://codeforces.com/problemset/problem/140/E 2600 推荐
+https://codeforces.com/problemset/problem/1437/F 2600
+https://codeforces.com/problemset/problem/1924/D 2700 证明方式类似卡特兰数
+https://codeforces.com/problemset/problem/425/E 更快的做法 https://chatgpt.com/c/684b7418-ff80-8011-bd87-3a664dfcbb97
+https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 https://atcoder.jp/contests/abc290/tasks/abc290_f
 https://atcoder.jp/contests/abc160/tasks/abc160_f 2048
 todo https://www.luogu.com.cn/problem/P6017
@@ -461,6 +467,7 @@ func solveInclusionExclusion(a []int) int {
 本质是容斥
 https://www.bilibili.com/video/BV1Q24y1h7W9/
 反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
+https://codeforces.com/problemset/problem/285/E 2600
 
 min-max 反演
 https://www.luogu.com.cn/blog/meizhuhe/min-max-fan-yan-xue-xi-bi-ji
