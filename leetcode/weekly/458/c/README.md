@@ -353,6 +353,7 @@ func processStr(s string, k int64) byte {
 ## 相似题目
 
 - [3307. 找出第 K 个字符 II](https://leetcode.cn/problems/find-the-k-th-character-in-string-game-ii/) 2232
+- [880. 索引处的解码字符串](https://leetcode.cn/problems/decoded-string-at-index/)
 - [1545. 找出第 N 个二进制字符串中的第 K 位](https://leetcode.cn/problems/find-kth-bit-in-nth-binary-string/) 做到 $\mathcal{O}(n)$
 
 ## 分类题单
