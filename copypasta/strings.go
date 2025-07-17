@@ -245,7 +245,6 @@ func _() {
 	//       LC1392 https://leetcode.cn/problems/longest-happy-prefix/
 	//       LC3036 https://leetcode.cn/problems/number-of-subarrays-that-match-a-pattern-ii/ 
 	//       LC3037 https://leetcode.cn/problems/find-pattern-in-infinite-stream-ii/
-	// LC3008 https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ *二分/双指针找最近下标
 	// LC686 https://leetcode.cn/problems/repeated-string-match/
 	// - a 复制 k 或 k+1 份，k=(len(b)-1)/len(a)+1
 	// LC214 https://leetcode.cn/problems/shortest-palindrome/ 最长回文前缀
@@ -269,6 +268,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/1017/E 2400 在循环同构字符串 s 中查找 t，等价于在 s+(s[:n-1]) 中查找 t 
 	// - 特别地，如果要判断两个字符串是否循环同构，可以用最小表示法，做到 O(1) 额外空间
 	// - LC2851 https://leetcode.cn/problems/string-transformation/
+	// https://codeforces.com/problemset/problem/607/C 2500
 	// LC1397 https://leetcode.cn/problems/find-all-good-strings/ 与数位 DP 结合
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	// - https://oj.socoding.cn/p/1446
@@ -1016,7 +1016,7 @@ func _() {
 			拼接所有串（模式+文本，# 隔开），对每个模式 p 找其左右范围，满足该范围内 height[i] >= len(p)，这可以用 ST+二分或线段树二分求出，然后统计区间内的属于文本串的后缀
 		不在其它字符串中出现的最短字典序最小子串 https://leetcode.cn/problems/shortest-uncommon-substring-in-an-array/
 	反向问题
-		todo 根据 sa 反推有多少个能生成 sa 的字符串 https://codeforces.com/problemset/problem/1526/E
+		根据 sa 反推有多少个能生成 sa 的字符串 https://codeforces.com/problemset/problem/1526/E 2400
 	todo 待整理 http://poj.org/problem?id=3581
 	 https://www.luogu.com.cn/problem/P5546
 	 https://www.luogu.com.cn/problem/P2048
@@ -1027,7 +1027,7 @@ func _() {
 	*/
 	suffixArray := func(s string) {
 		// 后缀数组 sa（后缀序）
-		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
+		// sa[i] 表示后缀字典序中的第 i 个字符串（的首字母）在 s 中的位置
 		// 特别地，后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
 		type _tp struct {
 			_  []byte
