@@ -90,8 +90,8 @@ public:
     long long minimumDifference(vector<int>& nums) {
         int m = nums.size(), n = m / 3;
 
-        priority_queue<int, vector<int>, greater<>> min_pq(nums.begin() + n * 2, nums.end());
-        long long sum = reduce(nums.begin() + n * 2, nums.end(), 0LL);
+        priority_queue<int, vector<int>, greater<>> min_pq(nums.end() - n, nums.end());
+        long long sum = reduce(nums.end() - n, nums.end(), 0LL);
 
         vector<long long> suf_max(m - n + 1); // 后缀最大和
         suf_max[m - n] = sum;
