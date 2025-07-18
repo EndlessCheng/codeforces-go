@@ -21,7 +21,7 @@
 
 代码实现时，可以先把 $\textit{time}$ 从小到大**稳定排序**，这样下标越大的工人效率越低，只看下标就能比较工人的效率。
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def findCrossingTime(self, n: int, k: int, time: List[List[int]]) -> int:
         time.sort(key=lambda t: t[0] + t[2])  # 稳定排序
@@ -59,7 +59,7 @@ class Solution:
         return cur  # 最后一个过桥的时间
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public int findCrossingTime(int n, int k, int[][] time) {
         Arrays.sort(time, (a, b) -> a[0] + a[2] - b[0] - b[2]); // 稳定排序
@@ -100,7 +100,7 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     int findCrossingTime(int n, int k, vector<vector<int>> &time) {
@@ -151,7 +151,7 @@ public:
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func findCrossingTime(n, k int, time [][]int) (cur int) {
 	sort.SliceStable(time, func(i, j int) bool {
 		a, b := time[i], time[j]
@@ -201,59 +201,59 @@ type hp []pair
 func (h hp) Len() int            { return len(h) }
 func (h hp) Less(i, j int) bool  { return h[i].i > h[j].i }
 func (h hp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v interface{}) { *h = append(*h, v.(pair)) }
-func (h *hp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *hp) Push(v any)         { *h = append(*h, v.(pair)) }
+func (h *hp) Pop() any           { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 
 type hp2 []pair
 func (h hp2) Len() int            { return len(h) }
 func (h hp2) Less(i, j int) bool  { return h[i].t < h[j].t }
 func (h hp2) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
-func (h *hp2) Push(v interface{}) { *h = append(*h, v.(pair)) }
-func (h *hp2) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
+func (h *hp2) Push(v any)         { *h = append(*h, v.(pair)) }
+func (h *hp2) Pop() any           { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 ```
 
-```js [sol1-JavaScript]
-var findCrossingTime = function (n, k, time) {
+```js [sol-JavaScript]
+var findCrossingTime = function(n, k, time) {
     time.sort((a, b) => (a[0] + a[2]) - (b[0] + b[2])); // 稳定排序
 
-    let workL = new MinPriorityQueue({priority: (e) => e[1]});
-    let workR = new MinPriorityQueue({priority: (e) => e[1]});
-    let waitL = new MaxPriorityQueue({priority: (e) => e[0]});
-    let waitR = new MaxPriorityQueue({priority: (e) => e[0]});
-    for (let i = k - 1; i >= 0; i--)
+    const workL = new MinPriorityQueue(e => e[1]);
+    const workR = new MinPriorityQueue(e => e[1]);
+    const waitL = new MaxPriorityQueue(e => e[0]);
+    const waitR = new MaxPriorityQueue(e => e[0]);
+    for (let i = k - 1; i >= 0; i--) {
         waitL.enqueue([i, 0]); // 下标越大效率越低
+    }
 
     let cur = 0;
     while (n) {
-        while (!workL.isEmpty() && workL.front().element[1] <= cur)
-            waitL.enqueue(workL.dequeue().element); // 左边完成放箱
-        while (!workR.isEmpty() && workR.front().element[1] <= cur)
-            waitR.enqueue(workR.dequeue().element); // 右边完成搬箱
+        while (!workL.isEmpty() && workL.front()[1] <= cur) {
+            waitL.enqueue(workL.dequeue()); // 左边完成放箱
+        }
+        while (!workR.isEmpty() && workR.front()[1] <= cur) {
+            waitR.enqueue(workR.dequeue()); // 右边完成搬箱
+        }
         if (!waitR.isEmpty()) { // 右边过桥，注意加到 waitR 中的都是 <= cur 的（下同）
-            let p = waitR.dequeue().element;
+            const p = waitR.dequeue();
             cur += time[p[0]][2];
             p[1] = cur + time[p[0]][3];
             workL.enqueue(p); // 放箱
         } else if (!waitL.isEmpty()) { // 左边过桥
-            let p = waitL.dequeue().element;
+            const p = waitL.dequeue();
             cur += time[p[0]][0];
             p[1] = cur + time[p[0]][1];
             workR.enqueue(p); // 搬箱
             n--;
         } else if (workL.isEmpty()) { // cur 过小，下面找个最小的放箱/搬箱完成时间来更新 cur
-            cur = workR.front().element[1];
+            cur = workR.front()[1];
         } else if (workR.isEmpty()) {
-            cur = workL.front().element[1];
+            cur = workL.front()[1];
         } else {
-            cur = Math.min(workL.front().element[1], workR.front().element[1]);
+            cur = Math.min(workL.front()[1], workR.front()[1]);
         }
     }
 
     while (!workR.isEmpty()) {
-        const [i, t] = workR.dequeue().element; // 右边完成搬箱
+        const [i, t] = workR.dequeue(); // 右边完成搬箱
         // 如果没有排队，直接过桥；否则由于无论谁先过桥，最终完成时间都一样，所以也可以直接计算
         cur = Math.max(t, cur) + time[i][2];
     }
@@ -266,6 +266,23 @@ var findCrossingTime = function (n, k, time) {
 - 时间复杂度：$\mathcal{O}(n\log k)$。
 - 空间复杂度：$\mathcal{O}(k)$。
 
----
+## 分类题单
 
-[往期每日一题题解（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
