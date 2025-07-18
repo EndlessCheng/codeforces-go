@@ -75,15 +75,15 @@ func (h *hp) Pop() any { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(
 
 ```js [sol-JavaScript]
 var minOperations = function(nums, k) {
-    const pq = new MinPriorityQueue(); // datastructures-js/priority-queue@5.4.0
+    const pq = new MinPriorityQueue();
     for (const x of nums) {
         pq.enqueue(x);
     }
 
     let ans = 0;
-    while (pq.front().element < k) {
-        const x = pq.dequeue().element;
-        const y = pq.dequeue().element;
+    while (pq.front() < k) {
+        const x = pq.dequeue();
+        const y = pq.dequeue();
         pq.enqueue(x * 2 + y);
         ans++;
     }

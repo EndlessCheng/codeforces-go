@@ -422,10 +422,10 @@ var kSum = function(nums, k) {
     }
     nums.sort((a, b) => a - b);
 
-    const pq = new MinPriorityQueue({priority: e => e[0]});
+    const pq = new MinPriorityQueue(p => p[0]);
     pq.enqueue([0, 0]); // 空子序列
     while (--k) {
-        const [s, i] = pq.dequeue().element;
+        const [s, i] = pq.dequeue();
         if (i < nums.length) {
             // 在子序列的末尾添加 nums[i]
             pq.enqueue([s + nums[i], i + 1]); // 下一个添加/替换的元素下标为 i+1
@@ -434,7 +434,7 @@ var kSum = function(nums, k) {
             }
         }
     }
-    return sum - pq.front().element[0];
+    return sum - pq.front()[0];
 };
 ```
 

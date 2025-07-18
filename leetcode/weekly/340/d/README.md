@@ -29,7 +29,7 @@ $$
 
 由于有「区间查询」和「单点更新」，我们可以用线段树来优化。
 
-但其实不需要线段树，有更轻量级的做法。
+但其实不需要线段树，有更轻量的做法。
 
 对于 $\min\limits_{k=j+1}^{j+g} f[i][k]$，在倒序枚举 $j$ 时，$k$ 的左边界 $j+1$ 是在单调减小的，但右边界没有单调性。联想到滑动窗口最小值的做法，我们用一个 $f$ 值底小顶大的**单调栈**来维护 $f[i][j]$ 及其下标 $j$。由于 $j$ 是倒序枚举，单调栈中的下标是底大顶小的，从那么在单调栈上**二分查找**最大的不超过 $j+g$ 的下标 $k$，对应的 $f[i][k]$ 就是要计算的最小值。
 
@@ -488,25 +488,25 @@ func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; 
 ```
 
 ```js [sol-JavaScript]
-var minimumVisitedCells = function (grid) {
+var minimumVisitedCells = function(grid) {
     const m = grid.length, n = grid[0].length;
-    const colHeaps = Array.from({length: n}, () => new MinPriorityQueue({priority: (p) => p[0]})); // 每一列的最小堆
-    const rowH = new MinPriorityQueue({priority: (p) => p[0]}); // 行最小堆
+    const colHeaps = Array.from({length: n}, () => new MinPriorityQueue(p => p[0])); // 每一列的最小堆
+    const rowH = new MinPriorityQueue(p => p[0]); // 行最小堆
     let f;
     for (let i = 0; i < m; i++) {
         rowH.clear();
         for (let j = 0; j < n; j++) {
-            while (!rowH.isEmpty() && rowH.front().element[1] < j) { // 无法到达第 j 列
+            while (!rowH.isEmpty() && rowH.front()[1] < j) { // 无法到达第 j 列
                 rowH.dequeue(); // 弹出无用数据
             }
             const colH = colHeaps[j];
-            while (!colH.isEmpty() && colH.front().element[1] < i) { // 无法到达第 i 行
+            while (!colH.isEmpty() && colH.front()[1] < i) { // 无法到达第 i 行
                 colH.dequeue(); // 弹出无用数据
             }
 
             f = i || j ? Infinity : 1; // 起点算 1 个格子
-            if (!rowH.isEmpty()) f = rowH.front().element[0] + 1; // 从左边跳过来
-            if (!colH.isEmpty()) f = Math.min(f, colH.front().element[0] + 1); // 从上边跳过来
+            if (!rowH.isEmpty()) f = rowH.front()[0] + 1; // 从左边跳过来
+            if (!colH.isEmpty()) f = Math.min(f, colH.front()[0] + 1); // 从上边跳过来
 
             const g = grid[i][j]
             if (g && f < Infinity) {
@@ -573,8 +573,8 @@ impl Solution {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
