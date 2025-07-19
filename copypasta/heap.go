@@ -86,6 +86,7 @@ https://atcoder.jp/contests/aising2020/tasks/aising2020_e 2133=CF2324 洛谷 P29
 https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/1852/C 2400 差分思想
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
+https://codeforces.com/problemset/problem/436/E 2600
 https://www.cnblogs.com/nth-element/p/11768155.html
 另见 dp.go 中的 slopeTrick
 

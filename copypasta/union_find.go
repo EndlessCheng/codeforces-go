@@ -34,21 +34,24 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://www.luogu.com.cn/problem/P1111
 // https://www.luogu.com.cn/problem/P3367
 // https://www.luogu.com.cn/problem/P1967 启发式合并
-// https://atcoder.jp/contests/arc097/tasks/arc097_b
 // https://codeforces.com/problemset/problem/755/C 1300
 // https://codeforces.com/problemset/problem/1167/C 1400
 // https://codeforces.com/problemset/problem/2060/E 1500
 // https://codeforces.com/problemset/problem/1209/D 1700
 // https://codeforces.com/problemset/problem/1411/C 1700
 // https://codeforces.com/problemset/problem/371/D 1800
+// https://codeforces.com/problemset/problem/2117/G 1900 枚举大，维护小
+// https://codeforces.com/problemset/problem/1726/D 2000 处理图上的环
+// https://codeforces.com/problemset/problem/1851/G 2000 离线
 // https://codeforces.com/problemset/problem/87/D 2300
+// https://codeforces.com/problemset/problem/1253/F 2500 启发式合并
+// https://codeforces.com/problemset/problem/1876/D 2500
 // https://atcoder.jp/contests/abc304/tasks/abc304_e 转换
 // https://atcoder.jp/contests/abc238/tasks/abc238_e 转换
 // https://atcoder.jp/contests/abc279/tasks/abc279_f merge 后 from 还有用 
-// https://codeforces.com/problemset/problem/1726/D 2000 处理图上的环
-// https://codeforces.com/problemset/problem/1851/G 2000 离线
 // https://atcoder.jp/contests/abc383/tasks/abc383_e
 // https://atcoder.jp/contests/abc392/tasks/abc392_e
+// https://atcoder.jp/contests/arc097/tasks/arc097_b
 // 并查集+置换 LC2459 https://leetcode.cn/problems/sort-array-by-moving-items-to-empty-space/
 // 对偶图 LC3235 https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
 //
@@ -60,6 +63,9 @@ https://zhuanlan.zhihu.com/p/553192435
 // - [952. 按公因数计算最大组件大小](https://leetcode.cn/problems/largest-component-size-by-common-factor/) 2272
 //       下标距离有上界 https://codeforces.com/contest/1978/problem/F
 // - [1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/) 2429
+//
+// 用来求 <= x 的最大剩余元素
+// https://codeforces.com/problemset/problem/2101/C 2200
 //
 // 数组标记/区间合并相关
 // - 经典模型是一维区间覆盖染色，通过倒序+并查集解决
