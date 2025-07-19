@@ -26,8 +26,6 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 LC307 https://leetcode.cn/problems/range-sum-query-mutable/
 https://www.luogu.com.cn/problem/P3374
 
-关于逆序对，见下面的 cntInversions
-
 问：给一堆区间，计算有多少对区间相交。
 答：按右端点从小到大排序，这样之前遍历过的区间一定在左边。
    然后查询 [l,r] 中有多少个之前遍历过的区间的右端点，即为在 [l,r] 左边的与 [l,r] 相交的区间个数。
@@ -92,6 +90,9 @@ https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 https://codeforces.com/gym/101649 I 题
 http://poj.org/problem?id=2155
 http://poj.org/problem?id=2886
+
+有关【逆序对】的题目，见下面的 cntInversions
+
 */
 
 const fenwickInitVal = 0 // -1e18
@@ -112,30 +113,55 @@ func (fenwick) op(a, b int) int {
 
 // a[i] 增加 val
 // 1<=i<=n
-func (f fenwick) update(i, val int) {
-	for ; i < len(f); i += i & -i {
-		f[i] = f.op(f[i], val)
+func (t fenwick) update(i int, val int) {
+	for ; i < len(t); i += i & -i {
+		t[i] = t.op(t[i], val)
 	}
 }
 
 // 求前缀和 a[1] + ... + a[i]
 // 1<=i<=n
-func (f fenwick) pre(i int) int {
+func (t fenwick) pre(i int) int {
 	res := fenwickInitVal
-	i = min(i, len(f)-1)
+	i = min(i, len(t)-1)
 	for ; i > 0; i &= i - 1 {
-		res = f.op(res, f[i])
+		res = t.op(res, t[i])
 	}
 	return res
 }
 
 // 求区间和 a[l] + ... + a[r]
 // 1<=l<=r<=n
-func (f fenwick) query(l, r int) int {
+func (t fenwick) query(l, r int) int {
 	if r < l {
 		return 0
 	}
-	return f.pre(r) - f.pre(l-1)
+	return t.pre(r) - t.pre(l-1)
+}
+
+// 求权值树状数组第 k 小的数（k 从 1 开始）
+// 这里每个叶子 t[i] 表示 i 的个数
+// 返回最小的 x 满足 ∑i=[1..x] t[i] >= k
+// 思路类似【倍增】的查询，不断寻找 ∑<k 的数（位置），最后 +1 就是答案
+// 如果第 k 小的数不存在，返回 len(t)
+// https://oi-wiki.org/ds/fenwick/#%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9%E6%9F%A5%E8%AF%A2%E5%85%A8%E5%B1%80%E7%AC%AC-k-%E5%B0%8F
+// https://codeforces.com/blog/entry/61364
+//
+// https://codeforces.com/problemset/problem/1404/C 2300
+// https://codeforces.com/problemset/problem/992/E 2500
+// https://codeforces.com/problemset/problem/1030/F 2500
+// https://atcoder.jp/contests/abc287/tasks/abc287_g
+// https://www.luogu.com.cn/problem/P4137 二分
+// - 代码见本页面的 rangeMex
+func (t fenwick) kth(k int) (res int) {
+	const height = 17 // bits.Len(uint(n))
+	for b := 1 << (height - 1); b > 0; b >>= 1 {
+		if nxt := res | b; nxt < len(t) && t[nxt] < k {
+			k -= t[nxt]
+			res = nxt
+		}
+	}
+	return res + 1
 }
 
 // 静态二维数点
@@ -417,31 +443,6 @@ func _(n int) {
 	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
-	// 求权值树状数组第 k 小的数（k 从 1 开始）
-	// 这里每个叶子 tree[i] 表示 i 的个数
-	// 返回最小的 x 满足 ∑i=[1..x] tree[i] >= k
-	// 思路类似倍增的查询，不断寻找 ∑<k 的数（位置），最后 +1 就是答案
-	// 如果第 k 小的数不存在，返回 len(tree)
-	// https://oi-wiki.org/ds/fenwick/#tricks
-	//
-	// https://codeforces.com/blog/entry/61364
-	// https://codeforces.com/problemset/problem/1404/C
-	// https://codeforces.com/problemset/problem/1030/F
-	// todo https://codeforces.com/contest/992/problem/E
-	// https://atcoder.jp/contests/abc287/tasks/abc287_g
-	// 二分 https://www.luogu.com.cn/problem/P4137
-	// - 代码见下面的 rangeMex
-	kth := func(k int) (res int) {
-		const log = 17 // bits.Len(uint(n))
-		for b := 1 << (log - 1); b > 0; b >>= 1 {
-			if nxt := res | b; nxt < len(tree) && tree[nxt] < k {
-				k -= tree[nxt]
-				res = nxt
-			}
-		}
-		return res + 1
-	}
-
 	// 输出权值树状数组的 mex（这里的定义是第一个没出现的正数）
 	// 注意不能有重复元素
 	mex := func() (res int) {
@@ -536,6 +537,7 @@ func _(n int) {
 	// https://codeforces.com/problemset/problem/1585/D 1900
 	// https://codeforces.com/problemset/problem/540/E 2100 1e9 范围逆序对
 	// https://codeforces.com/problemset/problem/1096/F 2300 扩展：某些位置上的数待定时的逆序对的期望值 
+	// https://codeforces.com/problemset/problem/220/E 2400
 	// https://codeforces.com/problemset/problem/749/E 2400 期望 贡献
 	// https://atcoder.jp/contests/abc296/tasks/abc296_f
 	// https://atcoder.jp/contests/arc136/tasks/arc136_b
@@ -603,7 +605,10 @@ func _(n int) {
 		return
 	}
 
-	_ = []interface{}{add, sum, query, addRange, kth, mex, init, initFrom, cntInversions, minSwap}
+	_ = []interface{}{
+		add, sum, query,
+		addRange, mex, init, initFrom, cntInversions, minSwap,
+	}
 }
 
 // 给一个数组 a 和一些询问 qs，对每个询问计算 mex(a[l..r])
