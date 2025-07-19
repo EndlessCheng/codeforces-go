@@ -690,6 +690,7 @@ func backtracking() {
 	// http://poj.org/problem?id=2248
 
 	// 折半枚举/双向搜索 Meet in the middle
+	// https://codeforces.com/problemset/problem/525/E 2100
 	// https://codeforces.com/problemset/problem/1006/F 2100
 	// https://codeforces.com/problemset/problem/327/E 2300
 	// https://codeforces.com/problemset/problem/31/E 2400 也可以 DP
@@ -704,6 +705,7 @@ func backtracking() {
 	// https://www.luogu.com.cn/problem/P4799
 	// https://leetcode.cn/problems/count-almost-equal-pairs-ii/solutions/2892259/on-log2-ufen-lei-tao-lun-meet-in-the-mid-ysyy/
 	// https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
+	meetInTheMiddle := func() {}
 
 	// 折半枚举 - 超大背包问题
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
@@ -830,6 +832,7 @@ func backtracking() {
 		combinations, combinationsWithRepetition,
 		permutations, permuteAll, nextPermutation, rankPermutation, kthPermutation,
 		partitionSet, partitionSet2,
+		meetInTheMiddle,
 		bigKnapsack, bigKnapsack2,
 	}
 }
