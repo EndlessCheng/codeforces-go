@@ -33,12 +33,18 @@ $$
 
 ## 细节
 
+### 1)
+
 下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的，喜欢哪种写法就用哪种。
 
 - 开区间左端点初始值：$-1$。人为规定 $-1$ 一定满足要求。如果二分结果为 $-1$，那么返回 $-1$。
 - 开区间右端点初始值：边权的最大值加一。一定不满足要求。注意本题 $n\ge 2$，至少要走一条边。
 
 对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
+
+### 2)
+
+建图的时候，如果两端点都在线才连边。这样可以减少图的边数，也无需在 DP 过程中判断节点是否在线。
 
 ## 答疑
 
@@ -55,8 +61,9 @@ class Solution:
         g = [[] for _ in range(n)]
         max_wt = 0
         for x, y, wt in edges:
-            g[x].append((y, wt))
-            max_wt = max(max_wt, wt)
+            if online[x] and online[y]:
+                g[x].append((y, wt))
+                max_wt = max(max_wt, wt)
 
         def check(lower: int) -> bool:
             @cache
@@ -65,7 +72,7 @@ class Solution:
                     return 0
                 res = inf
                 for y, wt in g[x]:
-                    if wt >= lower and online[y]:
+                    if wt >= lower:
                         res = min(res, dfs(y) + wt)
                 return res
             return dfs(0) <= k
@@ -87,8 +94,9 @@ class Solution:
         g = [[] for _ in range(n)]
         max_wt = 0
         for x, y, wt in edges:
-            g[x].append((y, wt))
-            max_wt = max(max_wt, wt)
+            if online[x] and online[y]:
+                g[x].append((y, wt))
+                max_wt = max(max_wt, wt)
 
         def check(lower: int) -> bool:
             @cache
@@ -97,7 +105,7 @@ class Solution:
                     return 0
                 res = inf
                 for y, wt in g[x]:
-                    if wt >= lower and online[y]:
+                    if wt >= lower:
                         res = min(res, dfs(y) + wt)
                 return res
             return dfs(0) > k  # 取反
@@ -115,8 +123,10 @@ class Solution {
         int maxWt = 0;
         for (int[] e : edges) {
             int x = e[0], y = e[1], wt = e[2];
-            g[x].add(new int[]{y, wt});
-            maxWt = Math.max(maxWt, wt);
+            if (online[x] && online[y]) {
+                g[x].add(new int[]{y, wt});
+                maxWt = Math.max(maxWt, wt);
+            }
         }
 
         long[] memo = new long[n];
@@ -124,7 +134,7 @@ class Solution {
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             Arrays.fill(memo, -1L); // -1 表示没有计算过
-            if (dfs(0, mid, g, online, memo) <= k) {
+            if (dfs(0, mid, g, memo) <= k) {
                 left = mid;
             } else {
                 right = mid;
@@ -133,7 +143,7 @@ class Solution {
         return left;
     }
 
-    private long dfs(int x, int lower, List<int[]>[] g, boolean[] online, long[] memo) {
+    private long dfs(int x, int lower, List<int[]>[] g, long[] memo) {
         if (x == g.length - 1) { // 到达终点
             return 0;
         }
@@ -143,8 +153,8 @@ class Solution {
         long res = Long.MAX_VALUE / 2; // 防止加法溢出
         for (int[] e : g[x]) {
             int y = e[0], wt = e[1];
-            if (wt >= lower && online[y]) {
-                res = Math.min(res, dfs(y, lower, g, online, memo) + wt);
+            if (wt >= lower) {
+                res = Math.min(res, dfs(y, lower, g, memo) + wt);
             }
         }
         return memo[x] = res; // 记忆化
@@ -161,8 +171,10 @@ public:
         int max_wt = 0;
         for (auto& e : edges) {
             int x = e[0], y = e[1], wt = e[2];
-            g[x].emplace_back(y, wt);
-            max_wt = max(max_wt, wt);
+            if (online[x] && online[y]) {
+                g[x].emplace_back(y, wt);
+                max_wt = max(max_wt, wt);
+            }
         }
 
         vector<long long> memo(n);
@@ -170,7 +182,7 @@ public:
             ranges::fill(memo, -1); // -1 表示没有计算过
 
             auto dfs = [&](this auto&& dfs, int x) -> long long {
-                if (x == n - 1) {  // 到达终点
+                if (x == n - 1) { // 到达终点
                     return 0;
                 }
                 auto& res = memo[x]; // 注意这里是引用
@@ -179,7 +191,7 @@ public:
                 }
                 res = LLONG_MAX / 2; // 防止加法溢出
                 for (auto& [y, wt] : g[x]) {
-                    if (wt >= lower && online[y]) {
+                    if (wt >= lower) {
                         res = min(res, dfs(y) + wt);
                     }
                 }
@@ -207,8 +219,10 @@ func findMaxPathScore(edges [][]int, online []bool, k int64) int {
 	maxWt := 0
 	for _, e := range edges {
 		x, y, wt := e[0], e[1], e[2]
-		g[x] = append(g[x], edge{y, wt})
-		maxWt = max(maxWt, wt)
+		if online[x] && online[y] {
+			g[x] = append(g[x], edge{y, wt})
+			maxWt = max(maxWt, wt)
+		}
 	}
 
 	memo := make([]int, n)
@@ -229,7 +243,7 @@ func findMaxPathScore(edges [][]int, online []bool, k int64) int {
 			res := math.MaxInt / 2 // 防止加法溢出
 			for _, e := range g[x] {
 				y := e.to
-				if e.wt >= lower && online[y] {
+				if e.wt >= lower {
 					res = min(res, dfs(y)+e.wt)
 				}
 			}
