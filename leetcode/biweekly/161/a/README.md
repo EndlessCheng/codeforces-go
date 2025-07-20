@@ -2,7 +2,7 @@
 
 累加质数下标的元素，减去非质数下标的元素，取绝对值，即为答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+关于埃氏筛的原理，请看 [视频讲解](https://www.bilibili.com/video/BV1R5g8zDEGY/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 100_000

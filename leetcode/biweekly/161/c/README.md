@@ -19,7 +19,7 @@
 
 由于题目保证图是一个 DAG（有向无环图），计算 DP 无后效性，可以用 DAG DP 解决。
 
-定义 $\textit{dfs}(x)$ 表示从 $x$ 到 $n-1$ 的有效路径的总恢复成本的最小值。
+定义 $\textit{dfs}(x)$ 表示从 $x$ 到 $n-1$ 的有效路径的总恢复成本的最小值，即 $x$ 到 $n-1$ 的最短路长度。
 
 枚举 $x$ 的邻居 $y$，如果 $y$ 在线且边权 $\textit{wt}  \ge \textit{lower}$，那么问题变成从 $y$ 到 $n-1$ 的有效路径的总恢复成本的最小值，即 $\textit{dfs}(y)$，加上边权 $\textit{wt}$，更新 $\textit{dfs}(x)$ 的最小值，即
 
@@ -30,6 +30,8 @@ $$
 递归边界：$\textit{dfs}(n-1)=0$。
 
 递归入口：$\textit{dfs}(0)$。
+
+> **注**：也可以用 Dijkstra 算法解决，但那样做时间复杂度要多乘以一个 $\log m$，可能会超时。
 
 ## 细节
 
@@ -52,7 +54,7 @@ $$
 
 **答**：反证法。假设 $\textit{ans}$ 不等于某条边的边权，这意味着下界加一后，仍然存在有效路径。换句话说，$\text{check}(\textit{ans}+1)=\texttt{true}$。但根据循环不变量，二分结束后 $\text{check}(\textit{ans}+1)=\texttt{false}$，矛盾。故原命题成立。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1R5g8zDEGY/?t=9m32s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

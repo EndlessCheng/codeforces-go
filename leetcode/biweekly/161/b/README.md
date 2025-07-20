@@ -2,7 +2,7 @@
 
 如果岛屿元素和是 $k$ 的倍数，那么把答案加一。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+如何理解网格图 DFS，请看 [视频讲解](https://www.bilibili.com/video/BV1R5g8zDEGY/?t=4m46s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
