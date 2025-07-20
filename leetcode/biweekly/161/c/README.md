@@ -264,7 +264,7 @@ func findMaxPathScore(edges [][]int, online []bool, k int64) int {
 
 拓扑排序相当于记忆化搜索的 1:1 翻译版本。严格地翻译需要把每条边反向，再跑拓扑排序。
 
-但也可以从起点开始正着计算，即刷表法。需要注意的是，为了能让我们把入度为 $0$ 的点入队，在拓扑排序之前，先清理那些无法到达的边，比如 $2\to 0$ 这样的边。
+但也可以从起点开始正着计算，即刷表法。需要注意的是，为了能让我们把入度为 $0$ 的点入队，在拓扑排序之前，先清理那些无法到达的边，比如在 $0\to 1$ 的情况下，需要去掉 $2\to 1$ 这样无法到达的边。
 
 ```py [sol-Python3]
 class Solution:
@@ -279,7 +279,7 @@ class Solution:
                 deg[y] += 1
                 max_wt = max(max_wt, wt)
 
-        # 先清理无法从 0 到达的边，比如 2 -> 0 
+        # 先清理无法从 0 到达的边
         q = deque(i for i in range(1, n) if deg[i] == 0)
         while q:
             x = q.popleft()
@@ -327,7 +327,7 @@ class Solution {
             }
         }
 
-        // 先清理无法从 0 到达的边，比如 2 -> 0
+        // 先清理无法从 0 到达的边
         Queue<Integer> q = new ArrayDeque<>();
         for (int i = 1; i < n; i++) {
             if (deg[i] == 0) {
@@ -399,7 +399,7 @@ public:
             }
         }
 
-        // 先清理无法从 0 到达的边，比如 2 -> 0
+        // 先清理无法从 0 到达的边
         queue<int> q;
         for (int i = 1; i < n; i++) {
             if (deg[i] == 0) {
@@ -468,7 +468,7 @@ func findMaxPathScore(edges [][]int, online []bool, k int64) int {
 		}
 	}
 
-	// 先清理无法从 0 到达的边，比如 2 -> 0 
+	// 先清理无法从 0 到达的边
 	q := []int{}
 	for i := 1; i < n; i++ {
 		if deg[i] == 0 {
