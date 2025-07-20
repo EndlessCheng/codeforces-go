@@ -56,6 +56,8 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1R5g8zDEGY/?t=9m32s)，欢迎点赞关注~
 
+## 写法一：记忆化搜索
+
 ```py [sol-Python3]
 class Solution:
     def findMaxPathScore(self, edges: List[List[int]], online: List[bool], k: int) -> int:
@@ -253,6 +255,265 @@ func findMaxPathScore(edges [][]int, online []bool, k int64) int {
 			return res
 		}
 		return dfs(0) > int(k)
+	}) - 1
+	return ans
+}
+```
+
+## 写法二：拓扑排序
+
+拓扑排序相当于记忆化搜索的 1:1 翻译版本。严格地翻译需要把每条边反向，再跑拓扑排序。
+
+但也可以从起点开始正着计算，即刷表法。需要注意的是，为了能让我们把入度为 $0$ 的点入队，在拓扑排序之前，先清理那些无法到达的边，比如 $2\to 0$ 这样的边。
+
+```py [sol-Python3]
+class Solution:
+    def findMaxPathScore(self, edges: List[List[int]], online: List[bool], k: int) -> int:
+        n = len(online)
+        g = [[] for _ in range(n)]
+        deg = [0] * n
+        max_wt = 0
+        for x, y, wt in edges:
+            if online[x] and online[y]:
+                g[x].append((y, wt))
+                deg[y] += 1
+                max_wt = max(max_wt, wt)
+
+        # 先清理无法从 0 到达的边，比如 2 -> 0 
+        q = deque(i for i in range(1, n) if deg[i] == 0)
+        while q:
+            x = q.popleft()
+            for y, _ in g[x]:
+                deg[y] -= 1
+                if y and deg[y] == 0:
+                    q.append(y)
+
+        def check(lower: int) -> bool:
+            deg_copy = deg.copy()
+            f = [inf] * n
+            f[0] = 0
+
+            q = deque([0])
+            while q:
+                x = q.popleft()
+                if x == n - 1:
+                    return f[x] > k
+                for y, wt in g[x]:
+                    if wt >= lower:
+                        f[y] = min(f[y], f[x] + wt)
+                    deg_copy[y] -= 1
+                    if deg_copy[y] == 0:
+                        q.append(y)
+            return True
+
+        # 二分无法到达 n-1 的最小 lower，那么减一后，就是可以到达 n-1 的最大 lower
+        return bisect_left(range(max_wt + 1), True, key=check) - 1
+```
+
+```java [sol-Java]
+class Solution {
+    public int findMaxPathScore(int[][] edges, boolean[] online, long k) {
+        int n = online.length;
+        List<int[]>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
+        int[] deg = new int[n];
+        int maxWt = 0;
+        for (int[] e : edges) {
+            int x = e[0], y = e[1], wt = e[2];
+            if (online[x] && online[y]) {
+                g[x].add(new int[]{y, wt});
+                deg[y]++;
+                maxWt = Math.max(maxWt, wt);
+            }
+        }
+
+        // 先清理无法从 0 到达的边，比如 2 -> 0
+        Queue<Integer> q = new ArrayDeque<>();
+        for (int i = 1; i < n; i++) {
+            if (deg[i] == 0) {
+                q.offer(i);
+            }
+        }
+        while (!q.isEmpty()) {
+            int x = q.poll();
+            for (int[] e : g[x]) {
+                int y = e[0];
+                if (--deg[y] == 0 && y > 0) {
+                    q.offer(y);
+                }
+            }
+        }
+
+        long f[] = new long[n];
+        int left = -1, right = maxWt + 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (check(mid, g, deg.clone(), f, k)) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    private boolean check(int lower, List<int[]>[] g, int[] deg, long f[], long k) {
+        Arrays.fill(f, Long.MAX_VALUE / 2); // 除 2 防止加法溢出
+        f[0] = 0;
+        Queue<Integer> q = new ArrayDeque<>();
+        q.offer(0);
+        while (!q.isEmpty()) {
+            int x = q.poll();
+            if (x == g.length - 1) {
+                return f[x] <= k;
+            }
+            for (int[] e : g[x]) {
+                int y = e[0], wt = e[1];
+                if (wt >= lower) {
+                    f[y] = Math.min(f[y], f[x] + wt);
+                }
+                if (--deg[y] == 0) {
+                    q.offer(y);
+                }
+            }
+        }
+        return false; // 无法到达 n-1
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int findMaxPathScore(vector<vector<int>>& edges, vector<bool>& online, long long k) {
+        int n = online.size();
+        vector<vector<pair<int, int>>> g(n);
+        vector<int> deg(n);
+        int max_wt = 0;
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], wt = e[2];
+            if (online[x] && online[y]) {
+                g[x].emplace_back(y, wt);
+                deg[y]++;
+                max_wt = max(max_wt, wt);
+            }
+        }
+
+        // 先清理无法从 0 到达的边，比如 2 -> 0
+        queue<int> q;
+        for (int i = 1; i < n; i++) {
+            if (deg[i] == 0) {
+                q.push(i);
+            }
+        }
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            for (auto& [y, _] : g[x]) {
+                if (--deg[y] == 0 && y) {
+                    q.push(y);
+                }
+            }
+        }
+
+        vector<long long> f(n);
+        auto check = [&](int lower) -> bool {
+            auto deg_copy = deg;
+            ranges::fill(f, LLONG_MAX / 2); // 除 2 防止加法溢出
+            f[0] = 0;
+
+            queue<int> q;
+            q.push(0);
+            while (!q.empty()) {
+                int x = q.front();
+                q.pop();
+                if (x == n - 1) {
+                    return f[x] <= k;
+                }
+                for (auto& [y, wt] : g[x]) {
+                    if (wt >= lower) {
+                        f[y] = min(f[y], f[x] + wt);
+                    }
+                    if (--deg_copy[y] == 0) {
+                        q.push(y);
+                    }
+                }
+            }
+            return false; // 无法到达 n-1
+        };
+
+        int left = -1, right = max_wt + 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? left : right) = mid;
+        }
+        return left;
+    }
+};
+```
+
+```go [sol-Go]
+func findMaxPathScore(edges [][]int, online []bool, k int64) int {
+	n := len(online)
+	type edge struct{ to, wt int }
+	g := make([][]edge, n)
+	deg := make([]int, n)
+	maxWt := 0
+	for _, e := range edges {
+		x, y, wt := e[0], e[1], e[2]
+		if online[x] && online[y] {
+			g[x] = append(g[x], edge{y, wt})
+			deg[y]++
+			maxWt = max(maxWt, wt)
+		}
+	}
+
+	// 先清理无法从 0 到达的边，比如 2 -> 0 
+	q := []int{}
+	for i := 1; i < n; i++ {
+		if deg[i] == 0 {
+			q = append(q, i)
+		}
+	}
+	for len(q) > 0 {
+		x := q[0]
+		q = q[1:]
+		for _, e := range g[x] {
+			y := e.to
+			deg[y]--
+			if deg[y] == 0 && y > 0 {
+				q = append(q, y)
+			}
+		}
+	}
+
+	f := make([]int, n)
+	ans := sort.Search(maxWt+1, func(lower int) bool {
+		deg := slices.Clone(deg)
+		for i := 1; i < n; i++ {
+			f[i] = math.MaxInt / 2 // 除 2 防止加法溢出
+		}
+
+		q := []int{0}
+		for len(q) > 0 {
+			x := q[0]
+			if x == n-1 {
+				return f[x] > int(k)
+			}
+			q = q[1:]
+			for _, e := range g[x] {
+				y := e.to
+				wt := e.wt
+				if wt >= lower {
+					f[y] = min(f[y], f[x]+wt)
+				}
+				deg[y]--
+				if deg[y] == 0 {
+					q = append(q, y)
+				}
+			}
+		}
+		return true
 	}) - 1
 	return ans
 }
