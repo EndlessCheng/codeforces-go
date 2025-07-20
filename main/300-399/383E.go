@@ -13,13 +13,13 @@ func cf383E(in io.Reader, out io.Writer) {
 	Fscan(in, &n)
 	for range n {
 		Fscan(in, &s)
-		f[1<<(s[0]-'a')|1<<(s[1]-'a')|1<<(s[2]-'a')] = 1
+		f[1<<(s[0]-'a')|1<<(s[1]-'a')|1<<(s[2]-'a')]++
 	}
 
 	for i := range mx {
-		for s := 0; s < 1<<mx; s++ {
-			s |= 1 << i
-			f[s] += f[s^1<<i]
+		for j := 0; j < 1<<mx; j++ {
+			j |= 1 << i
+			f[j] += f[j^1<<i]
 		}
 	}
 
