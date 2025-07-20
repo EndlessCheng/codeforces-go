@@ -4,9 +4,9 @@ import "math"
 
 // https://space.bilibili.com/206214
 func countTrapezoids(points [][]int) (ans int) {
-	cnt := map[float32]map[float32]int{}
+	groups := map[float64][]float64{} // 斜率 -> 截距
 	type pair struct{ x, y int }
-	cnt2 := map[pair]map[float32]int{}
+	groups2 := map[pair][]float64{} // 中点 -> 斜率
 
 	for i, p := range points {
 		x, y := p[0], p[1]
@@ -14,38 +14,45 @@ func countTrapezoids(points [][]int) (ans int) {
 			x2, y2 := q[0], q[1]
 			dy := y - y2
 			dx := x - x2
-			k := float32(math.MaxFloat32)
-			b := float32(x)
+			k := math.MaxFloat64
+			b := float64(x)
 			if dx != 0 {
-				k = float32(dy) / float32(dx)
-				b = float32(y*dx-dy*x) / float32(dx)
+				k = float64(dy) / float64(dx)
+				b = float64(y*dx-dy*x) / float64(dx)
 			}
 
-			if _, ok := cnt[k]; !ok {
-				cnt[k] = map[float32]int{}
-			}
-			cnt[k][b]++ // 按照斜率和截距分组
-
+			groups[k] = append(groups[k], b)
 			mid := pair{x + x2, y + y2}
-			if _, ok := cnt2[mid]; !ok {
-				cnt2[mid] = map[float32]int{}
-			}
-			cnt2[mid][k]++ // 按照中点和斜率分组
+			groups2[mid] = append(groups2[mid], k)
 		}
 	}
 
-	for _, ct := range cnt {
+	for _, g := range groups {
+		if len(g) == 1 {
+			continue
+		}
+		cnt := map[float64]int{}
+		for _, b := range g {
+			cnt[b]++
+		}
 		s := 0
-		for _, c := range ct {
+		for _, c := range cnt {
 			ans += s * c
 			s += c
 		}
 	}
 
-	for _, ct := range cnt2 {
+	for _, g := range groups2 {
+		if len(g) == 1 {
+			continue
+		}
+		cnt := map[float64]int{}
+		for _, k := range g {
+			cnt[k]++
+		}
 		s := 0
-		for _, c := range ct {
-			ans -= s * c
+		for _, c := range cnt {
+			ans -= s * c // 平行四边形会统计两次，减去多统计的一次
 			s += c
 		}
 	}

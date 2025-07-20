@@ -74,6 +74,8 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1tbg8z3EaP/?t=34m29s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def countTrapezoids(self, points: List[List[int]]) -> int:
@@ -90,15 +92,15 @@ class Solution:
                 cnt2[(x + x2, y + y2)][k] += 1  # 按照中点和斜率分组
 
         ans = 0
-        for ct in cnt.values():
+        for m in cnt.values():
             s = 0
-            for c in ct.values():
+            for c in m.values():
                 ans += s * c
                 s += c
 
-        for ct in cnt2.values():
+        for m in cnt2.values():
             s = 0
-            for c in ct.values():
+            for c in m.values():
                 ans -= s * c  # 平行四边形会统计两次，减去多统计的一次
                 s += c
 
@@ -237,17 +239,246 @@ func countTrapezoids(points [][]int) (ans int) {
 		}
 	}
 
-	for _, ct := range cnt {
+	for _, m := range cnt {
 		s := 0
-		for _, c := range ct {
+		for _, c := range m {
 			ans += s * c
 			s += c
 		}
 	}
 
-	for _, ct := range cnt2 {
+	for _, m := range cnt2 {
 		s := 0
-		for _, c := range ct {
+		for _, c := range m {
+			ans -= s * c // 平行四边形会统计两次，减去多统计的一次
+			s += c
+		}
+	}
+	return
+}
+```
+
+## 优化
+
+上面做法最坏会创建 $\mathcal{O}(n^2)$ 个哈希表。这其实就是导致代码变慢的根源。
+
+减少创建的哈希表个数，就能省下大量时间。
+
+在随机数据下，对于相同的斜率 $k$，大概率只有一条线段，无法组成梯形。这些数据根本就不需要创建哈希表！
+
+所以，先不创建内部的哈希表，而是先把数据保存到更轻量的**列表**中。在计算答案的时候，再去创建哈希表。对于大小为 $1$ 的列表，我们直接跳过，不创建哈希表。
+
+> 注：这个优化得看语言，Java 不是很明显。
+
+```py [sol-Python3]
+class Solution:
+    def countTrapezoids(self, points: List[List[int]]) -> int:
+        groups = defaultdict(list)  # 斜率 -> 截距
+        groups2 = defaultdict(list)  # 中点 -> 斜率
+
+        for i, (x, y) in enumerate(points):
+            for x2, y2 in points[:i]:
+                dy = y - y2
+                dx = x - x2
+                k = dy / dx if dx else inf
+                b = (y * dx - x * dy) / dx if dx else x
+                groups[k].append(b)
+                groups2[(x + x2, y + y2)].append(k)
+
+        ans = 0
+        for g in groups.values():
+            if len(g) == 1:
+                continue
+            s = 0
+            for c in Counter(g).values():
+                ans += s * c
+                s += c
+
+        for g in groups2.values():
+            if len(g) == 1:
+                continue
+            s = 0
+            for c in Counter(g).values():
+                ans -= s * c  # 平行四边形会统计两次，减去多统计的一次
+                s += c
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int countTrapezoids(int[][] points) {
+        Map<Double, List<Double>> groups = new HashMap<>(); // 斜率 -> 截距
+        Map<Integer, List<Double>> groups2 = new HashMap<>(); // 中点 -> 斜率
+
+        int n = points.length;
+        for (int i = 0; i < n; i++) {
+            int x = points[i][0], y = points[i][1];
+            for (int j = 0; j < i; j++) {
+                int x2 = points[j][0], y2 = points[j][1];
+                int dy = y - y2;
+                int dx = x - x2;
+                double k = dx != 0 ? 1.0 * dy / dx : Double.MAX_VALUE;
+                if (k == -0.0) {
+                    k = 0.0;
+                }
+                double b = dx != 0 ? 1.0 * (y * dx - x * dy) / dx : x;
+
+                groups.computeIfAbsent(k, _ -> new ArrayList<>()).add(b);
+                int mid = (x + x2 + 2000) << 16 | (y + y2 + 2000); // 把二维坐标压缩成一个 int
+                groups2.computeIfAbsent(mid, _ -> new ArrayList<>()).add(k);
+            }
+        }
+
+        int ans = 0;
+        Map<Double, Integer> cnt = new HashMap<>();
+        for (List<Double> g : groups.values()) {
+            if (g.size() == 1) {
+                continue;
+            }
+            cnt.clear();
+            for (double b : g) {
+                if (b == -0.0) {
+                    b = 0.0;
+                }
+                cnt.merge(b, 1, Integer::sum);
+            }
+            int s = 0;
+            for (int c : cnt.values()) {
+                ans += s * c;
+                s += c;
+            }
+        }
+
+        for (List<Double> g : groups2.values()) {
+            if (g.size() == 1) {
+                continue;
+            }
+            cnt.clear();
+            for (double k : g) {
+                cnt.merge(k, 1, Integer::sum);
+            }
+            int s = 0;
+            for (int c : cnt.values()) {
+                ans -= s * c; // 平行四边形会统计两次，减去多统计的一次
+                s += c;
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countTrapezoids(vector<vector<int>>& points) {
+        unordered_map<double, vector<double>> groups; // 斜率 -> 截距
+        unordered_map<int, vector<double>> groups2; // 中点 -> 斜率
+
+        int n = points.size();
+        for (int i = 0; i < n; i++) {
+            int x = points[i][0], y = points[i][1];
+            for (int j = 0; j < i; j++) {
+                int x2 = points[j][0], y2 = points[j][1];
+                int dy = y - y2;
+                int dx = x - x2;
+                double k = dx ? 1.0 * dy / dx : DBL_MAX;
+                double b = dx ? 1.0 * (y * dx - x * dy) / dx : x;
+                groups[k].push_back(b);
+                int mid = (x + x2 + 2000) << 16 | (y + y2 + 2000); // 把二维坐标压缩成一个 int
+                groups2[mid].push_back(k);
+            }
+        }
+
+        int ans = 0;
+        for (auto& [_, g] : groups) {
+            if (g.size() == 1) {
+                continue;
+            }
+            // 对于本题的数据，map 比哈希表快
+            map<double, int> cnt;
+            for (double b : g) {
+                cnt[b]++;
+            }
+            int s = 0;
+            for (auto& [_, c] : cnt) {
+                ans += s * c;
+                s += c;
+            }
+        }
+
+        for (auto& [_, g] : groups2) {
+            if (g.size() == 1) {
+                continue;
+            }
+            map<double, int> cnt;
+            for (double k : g) {
+                cnt[k]++;
+            }
+            int s = 0;
+            for (auto& [_, c] : cnt) {
+                ans -= s * c; // 平行四边形会统计两次，减去多统计的一次
+                s += c;
+            }
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countTrapezoids(points [][]int) (ans int) {
+	groups := map[float64][]float64{} // 斜率 -> 截距
+	type pair struct{ x, y int }
+	groups2 := map[pair][]float64{} // 中点 -> 斜率
+
+	for i, p := range points {
+		x, y := p[0], p[1]
+		for _, q := range points[:i] {
+			x2, y2 := q[0], q[1]
+			dy := y - y2
+			dx := x - x2
+			k := math.MaxFloat64
+			b := float64(x)
+			if dx != 0 {
+				k = float64(dy) / float64(dx)
+				b = float64(y*dx-dy*x) / float64(dx)
+			}
+
+			groups[k] = append(groups[k], b)
+			mid := pair{x + x2, y + y2}
+			groups2[mid] = append(groups2[mid], k)
+		}
+	}
+
+	for _, g := range groups {
+		if len(g) == 1 {
+			continue
+		}
+		cnt := map[float64]int{}
+		for _, b := range g {
+			cnt[b]++
+		}
+		s := 0
+		for _, c := range cnt {
+			ans += s * c
+			s += c
+		}
+	}
+
+	for _, g := range groups2 {
+		if len(g) == 1 {
+			continue
+		}
+		cnt := map[float64]int{}
+		for _, k := range g {
+			cnt[k]++
+		}
+		s := 0
+		for _, c := range cnt {
 			ans -= s * c // 平行四边形会统计两次，减去多统计的一次
 			s += c
 		}
