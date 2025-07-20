@@ -85,7 +85,7 @@ class Solution:
                 dy = y - y2
                 dx = x - x2
                 k = dy / dx if dx else inf
-                b = (y * dx - x * dy) / dx if dx else float(x)
+                b = (y * dx - x * dy) / dx if dx else x
                 cnt[k][b] += 1  # 按照斜率和截距分组
                 cnt2[(x + x2, y + y2)][k] += 1  # 按照中点和斜率分组
 
@@ -133,7 +133,7 @@ class Solution {
                 cnt.computeIfAbsent(k, _ -> new HashMap<>()).merge(b, 1, Integer::sum);
 
                 int mid = (x + x2 + 2000) << 16 | (y + y2 + 2000); // 把二维坐标压缩成一个 int
-                // 按照中点和斜率分组 cnt2[mask][k]++
+                // 按照中点和斜率分组 cnt2[mid][k]++
                 cnt2.computeIfAbsent(mid, _ -> new HashMap<>()).merge(k, 1, Integer::sum);
             }
         }
@@ -164,8 +164,9 @@ class Solution {
 class Solution {
 public:
     int countTrapezoids(vector<vector<int>>& points) {
-        unordered_map<double, unordered_map<double, int>> cnt; // 斜率 -> 截距 -> 个数
-        unordered_map<int, unordered_map<double, int>> cnt2; // 中点 -> 斜率 -> 个数
+        // 经测试，哈希表套 map 比哈希表套哈希表更快（分组后，每一组的数据量比较小，在小数据下 map 比哈希表快）
+        unordered_map<double, map<double, int>> cnt; // 斜率 -> 截距 -> 个数
+        unordered_map<int, map<double, int>> cnt2; // 中点 -> 斜率 -> 个数
 
         int n = points.size();
         for (int i = 0; i < n; i++) {
