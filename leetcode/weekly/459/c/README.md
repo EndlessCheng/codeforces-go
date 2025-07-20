@@ -1,8 +1,15 @@
+**前置知识**：[带你发明树状数组！附数学证明](https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/)
+
 由于 $0\le k \le 5$，用 $6$ 棵树状数组维护。
 
-比如 $k=2$ 的树状数组维护的是一个 $0\text{-}1$ 数组 $a$ 的前缀和，其中 $a[i] = 0$ 表示 $\textit{nums}[i]$ 的 popcount-depth 值不等于 $k$，$a[i] = 1$ 表示 $\textit{nums}[i]$ 的 popcount-depth 值等于 $k$。
+比如 $k=3$ 的树状数组维护的是一个 $0\text{-}1$ 数组 $a$ 的前缀和，其中：
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+- $a[i] = 0$ 表示 $\textit{nums}[i]$ 的 popcount-depth 值不等于 $3$。
+- $a[i] = 1$ 表示 $\textit{nums}[i]$ 的 popcount-depth 值等于 $3$。
+
+注：在本题的数据范围下，popcount-depth 值 $\le 4$，所以无需判断 popcount-depth 值是否下标越界。也可以用 $5$ 棵树状数组。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1tbg8z3EaP/?t=23m26s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class FenwickTree:
@@ -35,25 +42,25 @@ class FenwickTree:
             return 0
         return self.pre(r) - self.pre(l - 1)
 
-# 不写记忆化
+# 不写记忆化，直接迭代
 def pop_depth(x: int) -> int:
-    if x == 1:
-        return 0
-    return pop_depth(x.bit_count()) + 1
-
+    res = 0
+    while x > 1:
+        res += 1
+        x = x.bit_count()
+    return res
 
 class Solution:
     def popcountDepth(self, nums: List[int], queries: List[List[int]]) -> List[int]:
         n = len(nums)
         f = [FenwickTree(n + 1) for _ in range(6)]
 
-        def update(i: int, x: int, delta: int) -> None:
-            d = pop_depth(x)
-            if d <= 5:
-                f[d].update(i + 1, delta)
+        def update(i: int, delta: int) -> None:
+            d = pop_depth(nums[i])
+            f[d].update(i + 1, delta)
 
-        for i, x in enumerate(nums):
-            update(i, x, 1)
+        for i in range(n):
+            update(i, 1)  # 添加
 
         ans = []
         for q in queries:
@@ -61,9 +68,9 @@ class Solution:
                 ans.append(f[q[3]].query(q[1] + 1, q[2] + 1))
             else:
                 i = q[1]
-                update(i, nums[i], -1)  # 撤销旧的
+                update(i, -1)  # 撤销旧的
                 nums[i] = q[2]
-                update(i, nums[i], 1)  # 添加新的
+                update(i, 1)  # 添加新的
         return ans
 ```
 
@@ -113,7 +120,7 @@ class Solution {
         Arrays.setAll(f, _ -> new FenwickTree(n + 1));
 
         for (int i = 0; i < n; i++) {
-            update(i, nums[i], 1, f);
+            update(i, nums[i], 1, f); // 添加
         }
 
         int ansSize = 0;
@@ -136,18 +143,19 @@ class Solution {
         return ans;
     }
 
+    // 不写记忆化，直接迭代
     private int popDepth(long x) {
-        if (x == 1) {
-            return 0;
+        int res = 0;
+        while (x > 1) {
+            res++;
+            x = Long.bitCount(x);
         }
-        return popDepth(Long.bitCount(x)) + 1;
+        return res;
     }
 
     private void update(int i, long x, int delta, FenwickTree[] f) {
         int d = popDepth(x);
-        if (d <= 5) {
-            f[d].update(i + 1, delta);
-        }
+        f[d].update(i + 1, delta);
     }
 }
 ```
@@ -193,26 +201,27 @@ public:
 };
 
 class Solution {
-public:
+    // 不写记忆化，直接迭代
     int pop_depth(uint64_t x) {
-        if (x == 1) {
-            return 0;
+        int res = 0;
+        while (x > 1) {
+            res++;
+            x = popcount(x);
         }
-        return pop_depth(popcount(x)) + 1;
+        return res;
     }
 
+public:
     vector<int> popcountDepth(vector<long long>& nums, vector<vector<long long>>& queries) {
         int n = nums.size();
         vector f(6, FenwickTree<int>(n + 1));
-        auto update = [&](int i, long long x, int delta) -> void {
-            int d = pop_depth(x);
-            if (d <= 5) {
-                f[d].update(i + 1, delta);
-            }
+        auto update = [&](int i, int delta) -> void {
+            int d = pop_depth(nums[i]);
+            f[d].update(i + 1, delta);
         };
 
         for (int i = 0; i < n; i++) {
-            update(i, nums[i], 1);
+            update(i, 1); // 添加
         }
 
         vector<int> ans;
@@ -221,9 +230,9 @@ public:
                 ans.push_back(f[q[3]].query(q[1] + 1, q[2] + 1));
             } else {
                 int i = q[1];
-                update(i, nums[i], -1); // 撤销旧的
+                update(i, -1); // 撤销旧的
                 nums[i] = q[2];
-                update(i, nums[i], 1); // 添加新的
+                update(i, 1); // 添加新的
             }
         }
         return ans;
@@ -253,12 +262,13 @@ func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
-// 不写记忆化更快
-func popDepth(x uint64) int {
-	if x == 1 {
-		return 0
+// 不写记忆化更快，直接迭代
+func popDepth(x uint64) (res int) {
+	for x > 1 {
+		res++
+		x = uint64(bits.OnesCount64(x))
 	}
-	return popDepth(uint64(bits.OnesCount64(x))) + 1
+	return
 }
 
 func popcountDepth(nums []int64, queries [][]int64) (ans []int) {
@@ -267,15 +277,13 @@ func popcountDepth(nums []int64, queries [][]int64) (ans []int) {
 	for i := range f {
 		f[i] = make(fenwick, n+1)
 	}
-	update := func(i int, x int64, delta int) {
-		d := popDepth(uint64(x))
-		if d <= 5 {
-			f[d].update(i+1, delta)
-		}
+	update := func(i, delta int) {
+		d := popDepth(uint64(nums[i]))
+		f[d].update(i+1, delta)
 	}
 
-	for i, x := range nums {
-		update(i, x, 1)
+	for i := range n {
+		update(i, 1) // 添加
 	}
 
 	for _, q := range queries {
@@ -283,9 +291,9 @@ func popcountDepth(nums []int64, queries [][]int64) (ans []int) {
 			ans = append(ans, f[q[3]].query(int(q[1])+1, int(q[2])+1))
 		} else {
 			i := int(q[1])
-			update(i, nums[i], -1) // 撤销旧的
+			update(i, -1) // 撤销旧的
 			nums[i] = q[2]
-			update(i, nums[i], 1) // 添加新的
+			update(i, 1) // 添加新的
 		}
 	}
 	return
@@ -294,10 +302,12 @@ func popcountDepth(nums []int64, queries [][]int64) (ans []int) {
 
 #### 复杂度分析
 
-$\texttt{popDepth}$ 的记忆化可以加也可以不加，这里把 $\texttt{popDepth}$ 视作 $\mathcal{O}(1)$ 的。
+把 $\texttt{popDepth}$ 视作 $\mathcal{O}(1)$。
 
 - 时间复杂度：$\mathcal{O}(nK + (n+q)\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度，$K=6$。
 - 空间复杂度：$\mathcal{O}(nK)$。返回值不计入。
+
+**注**：可以用 $\mathcal{O}(n)$ 初始化树状数组的技巧，做到 $\mathcal{O}(nK + q\log n)$ 时间。
 
 ## 专题训练
 

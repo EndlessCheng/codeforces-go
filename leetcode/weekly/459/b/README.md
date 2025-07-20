@@ -12,13 +12,13 @@ $$
 
 记得取模。关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1tbg8z3EaP/?t=3m40s) 详细介绍了本题的计算过程和注意事项，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def countTrapezoids(self, points: List[List[int]]) -> int:
         MOD = 1_000_000_007
-        cnt = Counter(p[1] for p in points)
+        cnt = Counter(p[1] for p in points)  # 统计每一行（水平线）有多少个点
         ans = s = 0
         for c in cnt.values():
             k = c * (c - 1) // 2
@@ -34,7 +34,7 @@ class Solution {
     public int countTrapezoids(int[][] points) {
         Map<Integer, Integer> cnt = new HashMap<>();
         for (int[] p : points) {
-            cnt.merge(p[1], 1, Integer::sum);
+            cnt.merge(p[1], 1, Integer::sum); // 统计每一行（水平线）有多少个点
         }
 
         long ans = 0, s = 0;
@@ -55,7 +55,7 @@ public:
         const int MOD = 1'000'000'007;
         unordered_map<int, int> cnt;
         for (auto& p : points) {
-            cnt[p[1]]++;
+            cnt[p[1]]++; // 统计每一行（水平线）有多少个点
         }
 
         long long ans = 0, s = 0;
@@ -74,7 +74,7 @@ func countTrapezoids(points [][]int) (ans int) {
 	const mod = 1_000_000_007
 	cnt := map[int]int{}
 	for _, p := range points {
-		cnt[p[1]]++
+		cnt[p[1]]++ // 统计每一行（水平线）有多少个点
 	}
 
 	s := 0

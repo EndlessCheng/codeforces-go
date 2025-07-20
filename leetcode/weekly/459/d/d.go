@@ -4,9 +4,9 @@ import "math"
 
 // https://space.bilibili.com/206214
 func countTrapezoids(points [][]int) (ans int) {
-	cnt := map[float64]map[float64]int{}
+	cnt := map[float32]map[float32]int{}
 	type pair struct{ x, y int }
-	cnt2 := map[pair]map[float64]int{}
+	cnt2 := map[pair]map[float32]int{}
 
 	for i, p := range points {
 		x, y := p[0], p[1]
@@ -14,23 +14,23 @@ func countTrapezoids(points [][]int) (ans int) {
 			x2, y2 := q[0], q[1]
 			dy := y - y2
 			dx := x - x2
-			k := math.MaxFloat64
-			b := float64(x)
+			k := float32(math.MaxFloat32)
+			b := float32(x)
 			if dx != 0 {
-				k = float64(dy) / float64(dx)
-				b = float64(y*dx-dy*x) / float64(dx)
+				k = float32(dy) / float32(dx)
+				b = float32(y*dx-dy*x) / float32(dx)
 			}
 
 			if _, ok := cnt[k]; !ok {
-				cnt[k] = map[float64]int{}
+				cnt[k] = map[float32]int{}
 			}
-			cnt[k][b]++ // 按照截距和斜率分组
+			cnt[k][b]++ // 按照斜率和截距分组
 
-			t := pair{x + x2, y + y2}
-			if _, ok := cnt2[t]; !ok {
-				cnt2[t] = map[float64]int{}
+			mid := pair{x + x2, y + y2}
+			if _, ok := cnt2[mid]; !ok {
+				cnt2[mid] = map[float32]int{}
 			}
-			cnt2[t][k]++ // 按照中点和斜率分组
+			cnt2[mid][k]++ // 按照中点和斜率分组
 		}
 	}
 

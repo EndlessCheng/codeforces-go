@@ -2,7 +2,7 @@
 
 1. 本题 $n\le 500$，我们可以 $\mathcal{O}(n^2)$ 枚举所有点对组成的直线，计算直线的斜率和截距。
 2. 把斜率相同的直线放在同一组，可以从中选择一对平行边，作为梯形的顶边和底边。⚠**注意**：不能选两条重合的边，所以还要按照截距分组，同一组内的边不能选。
-3. 第二步把平行四边形重复统计了一次，所以我们还需要去掉任意四点组成的平行四边形的个数。
+3. 第二步把平行四边形重复统计了一次，所以还要减去任意不共线四点组成的平行四边形的个数。
 
 ## 具体思路
 
@@ -20,35 +20,31 @@ k =
 \end{cases}
 $$
 
-设直线为 $Y = k\cdot X + b$，把 $(x,y)$ 代入，解得
+当 $\textit{dx} \ne 0$ 时，设直线为 $Y = k\cdot X + b$，把 $(x,y)$ 代入，解得截距
 
 $$
-b =
-\begin{cases}
-\dfrac{y\cdot \textit{dx}-x\cdot \textit{dy}}{\textit{dx}}, & \textit{dx}\ne 0     \\
-x, & \textit{dx} = 0    \\
-\end{cases}
+b = y - k\cdot x = \dfrac{y\cdot \textit{dx}-x\cdot \textit{dy}}{\textit{dx}}
 $$
 
-人为规定 $\textit{dx} = 0$ 时 $b=x$。
+当 $\textit{dx} = 0$ 时，直线平行于 $y$ 轴，人为规定 $b=x$，用来区分不同的平行线。
 
 ### 2) 选择一对平行边的方案数
 
-把斜率相同的直线放在同一组，可以从中选择一对平行边，作为梯形的顶边和底边。
+把斜率相同的直线放在同一组，可以从中选择一对平行线，作为梯形的顶边和底边。
 
-⚠**注意**：不能选两条重合的边，所以斜率相同的组内，还要再按照截距分组，相同斜率和截距的边不能同时选。
+⚠**注意**：不能选两条共线的线段，所以斜率相同的组内，还要再按照截距分组，相同斜率和截距的边不能同时选。
 
 用哈希表套哈希表统计。
 
-统计完后，对于每一组，用「枚举右，维护左」的思想（类似周赛第二题），计算选一对平行边的方案数。
+统计完后，对于每一组，用「枚举右，维护左」的思想（见周赛第二题 [3623. 统计梯形的数目 I](https://leetcode.cn/problems/count-number-of-trapezoids-i/)），计算选一对平行边的方案数。本题由于哈希表统计的就是线段个数，所以不需要计算 $\dfrac{c(c-1)}{2}$。
 
 ### 3) 平行四边形的个数
 
-第二步把平行四边形重复统计了一次，所以我们还需要去掉任意四点组成的平行四边形的个数。
+第二步把平行四边形重复统计了一次，所以还要减去任意不共线四点组成的平行四边形的个数。
 
 怎么计算平行四边形的个数？
 
-对于平行四边形，其**两条对角线的中点是重合的**，可以利用这一性质，按照对角线的中点分组统计。
+对于平行四边形，其**两条对角线的中点是重合的**。利用这一性质，按照对角线的中点分组统计。
 
 具体地，两个点 $(x,y)$ 和 $(x_2,y_2)$ 的中点为
 
@@ -62,21 +58,21 @@ $$
 (x+x_2, y+y_2)
 $$
 
-其作为哈希表的 key。
+用其作为哈希表的 key。
 
-同样地，我们不能选两条重合的边，所以中点相同的组内，还要再按照斜率分组，相同斜率的边不能同时选。
+同样地，我们不能选两条共线的线段，所以中点相同的组内，还要再按照斜率分组，相同斜率的边不能同时选。所以同样地，用哈希表套哈希表统计。
 
-同样地，用哈希表套哈希表统计。
+统计完后，对于每一组，用「枚举右，维护左」的思想（见周赛第二题），计算选一对中点相同的线段的方案数。
 
-统计完后，对于每一组，用「枚举右，维护左」的思想（类似周赛第二题），计算选一对中点相同的边的方案数。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+> 注意计算梯形个数我们用的是顶边和底边，计算平行四边形个数我们用的是对角线。
 
 ## 答疑
 
 **问**：什么情况下用浮点数是错的？
 
 **答**：取两个接近 $1$ 但不相同的分数 $\dfrac{a}{a+1}$ 和 $\dfrac{a-1}{a}$，根据 IEEE 754，在使用双精度浮点数的情况下，如果这两个数的绝对差 $\dfrac{1}{a(a+1)}$ 比 $2^{-52}$ 还小，那么计算机可能会把这两个数舍入到同一个附近的浮点数上。所以当 $a$ 达到 $2^{26}\approx 6.7\cdot 10^7$ 的时候，用浮点数就不一定对了。本题数据范围只有 $2\cdot 10^3$，可以放心地使用浮点数除法。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1tbg8z3EaP/?t=34m29s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -88,12 +84,8 @@ class Solution:
             for x2, y2 in points[:i]:
                 dy = y - y2
                 dx = x - x2
-                if dx == 0:
-                    k = inf
-                    b = float(x)
-                else:
-                    k = dy / dx
-                    b = (y * dx - dy * x) / dx
+                k = dy / dx if dx else inf
+                b = (y * dx - x * dy) / dx if dx else float(x)
                 cnt[k][b] += 1  # 按照斜率和截距分组
                 cnt2[(x + x2, y + y2)][k] += 1  # 按照中点和斜率分组
 
@@ -107,7 +99,7 @@ class Solution:
         for ct in cnt2.values():
             s = 0
             for c in ct.values():
-                ans -= s * c
+                ans -= s * c  # 平行四边形会统计两次，减去多统计的一次
                 s += c
 
         return ans
@@ -127,7 +119,7 @@ class Solution {
                 int dy = y - y2;
                 int dx = x - x2;
                 double k = dx != 0 ? 1.0 * dy / dx : Double.MAX_VALUE;
-                double b = dx != 0 ? 1.0 * (y * dx - dy * x) / dx : x;
+                double b = dx != 0 ? 1.0 * (y * dx - x * dy) / dx : x;
 
                 // 归一化 -0.0 为 0.0
                 if (k == -0.0) {
@@ -137,12 +129,12 @@ class Solution {
                     b = 0.0;
                 }
 
-                // cnt[k][b]++
+                // 按照斜率和截距分组 cnt[k][b]++
                 cnt.computeIfAbsent(k, _ -> new HashMap<>()).merge(b, 1, Integer::sum);
 
-                int mask = (x + x2 + 2000) << 16 | (y + y2 + 2000); // 把 pair 压缩成一个 int
-                // cnt2[mask][k]++
-                cnt2.computeIfAbsent(mask, _ -> new HashMap<>()).merge(k, 1, Integer::sum);
+                int mid = (x + x2 + 2000) << 16 | (y + y2 + 2000); // 把二维坐标压缩成一个 int
+                // 按照中点和斜率分组 cnt2[mask][k]++
+                cnt2.computeIfAbsent(mid, _ -> new HashMap<>()).merge(k, 1, Integer::sum);
             }
         }
 
@@ -158,7 +150,7 @@ class Solution {
         for (Map<Double, Integer> m : cnt2.values()) {
             int s = 0;
             for (int c : m.values()) {
-                ans -= s * c;
+                ans -= s * c; // 平行四边形会统计两次，减去多统计的一次
                 s += c;
             }
         }
@@ -183,10 +175,10 @@ public:
                 int dy = y - y2;
                 int dx = x - x2;
                 double k = dx ? 1.0 * dy / dx : DBL_MAX;
-                double b = dx ? 1.0 * (y * dx - dy * x) / dx : x;
+                double b = dx ? 1.0 * (y * dx - x * dy) / dx : x;
                 cnt[k][b]++; // 按照斜率和截距分组
-                int mask = (x + x2 + 2000) << 16 | (y + y2 + 2000); // 把 pair 压缩成一个 int
-                cnt2[mask][k]++; // 按照中点和斜率分组
+                int mid = (x + x2 + 2000) << 16 | (y + y2 + 2000); // 把二维坐标压缩成一个 int
+                cnt2[mid][k]++; // 按照中点和斜率分组
             }
         }
 
@@ -202,7 +194,7 @@ public:
         for (auto& [_, m] : cnt2) {
             int s = 0;
             for (auto& [_, c] : m) {
-                ans -= s * c;
+                ans -= s * c; // 平行四边形会统计两次，减去多统计的一次
                 s += c;
             }
         }
@@ -214,9 +206,9 @@ public:
 
 ```go [sol-Go]
 func countTrapezoids(points [][]int) (ans int) {
-	cnt := map[float64]map[float64]int{}
+	cnt := map[float64]map[float64]int{} // 斜率 -> 截距 -> 个数
 	type pair struct{ x, y int }
-	cnt2 := map[pair]map[float64]int{}
+	cnt2 := map[pair]map[float64]int{} // 中点 -> 斜率 -> 个数
 
 	for i, p := range points {
 		x, y := p[0], p[1]
@@ -234,13 +226,13 @@ func countTrapezoids(points [][]int) (ans int) {
 			if _, ok := cnt[k]; !ok {
 				cnt[k] = map[float64]int{}
 			}
-			cnt[k][b]++ // 按照截距和斜率分组
+			cnt[k][b]++ // 按照斜率和截距分组
 
-			t := pair{x + x2, y + y2}
-			if _, ok := cnt2[t]; !ok {
-				cnt2[t] = map[float64]int{}
+			mid := pair{x + x2, y + y2}
+			if _, ok := cnt2[mid]; !ok {
+				cnt2[mid] = map[float64]int{}
 			}
-			cnt2[t][k]++ // 按照中点和斜率分组
+			cnt2[mid][k]++ // 按照中点和斜率分组
 		}
 	}
 
@@ -255,7 +247,7 @@ func countTrapezoids(points [][]int) (ans int) {
 	for _, ct := range cnt2 {
 		s := 0
 		for _, c := range ct {
-			ans -= s * c
+			ans -= s * c // 平行四边形会统计两次，减去多统计的一次
 			s += c
 		}
 	}

@@ -24,12 +24,13 @@ func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
-// 不写记忆化更快
-func popDepth(x uint64) int {
-	if x == 1 {
-		return 0
+// 不写记忆化更快，直接迭代
+func popDepth(x uint64) (res int) {
+	for x > 1 {
+		res++
+		x = uint64(bits.OnesCount64(x))
 	}
-	return popDepth(uint64(bits.OnesCount64(x))) + 1
+	return
 }
 
 func popcountDepth(nums []int64, queries [][]int64) (ans []int) {
@@ -40,9 +41,7 @@ func popcountDepth(nums []int64, queries [][]int64) (ans []int) {
 	}
 	update := func(i int, x int64, delta int) {
 		d := popDepth(uint64(x))
-		if d <= 5 {
-			f[d].update(i+1, delta)
-		}
+		f[d].update(i+1, delta)
 	}
 
 	for i, x := range nums {

@@ -11,7 +11,7 @@
 
 在这个过程中，计算数位和 $s$ 和数位乘积 $m$。最后判断 $n$ 是否为 $s+m$ 的倍数。注意 $n>0$，所以 $s>0$，所以不会发生除 $0$ 异常。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1tbg8z3EaP/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
