@@ -38,8 +38,6 @@ class FenwickTree:
     # 1 <= l <= r <= n
     # 时间复杂度 O(log n)
     def query(self, l: int, r: int) -> int:
-        if r < l:
-            return 0
         return self.pre(r) - self.pre(l - 1)
 
 # 不写记忆化，直接迭代
@@ -106,9 +104,6 @@ class FenwickTree {
     // 1 <= l <= r <= n
     // 时间复杂度 O(log n)
     public int query(int l, int r) {
-        if (r < l) {
-            return 0;
-        }
         return pre(r) - pre(l - 1);
     }
 }
@@ -143,6 +138,11 @@ class Solution {
         return ans;
     }
 
+    private void update(int i, long x, int delta, FenwickTree[] f) {
+        int d = popDepth(x);
+        f[d].update(i + 1, delta);
+    }
+
     // 不写记忆化，直接迭代
     private int popDepth(long x) {
         int res = 0;
@@ -151,11 +151,6 @@ class Solution {
             x = Long.bitCount(x);
         }
         return res;
-    }
-
-    private void update(int i, long x, int delta, FenwickTree[] f) {
-        int d = popDepth(x);
-        f[d].update(i + 1, delta);
     }
 }
 ```
@@ -193,9 +188,6 @@ public:
     // 1 <= l <= r <= n
     // 时间复杂度 O(log n)
     T query(int l, int r) const {
-        if (r < l) {
-            return 0;
-        }
         return pre(r) - pre(l - 1);
     }
 };
@@ -243,23 +235,34 @@ public:
 ```go [sol-Go]
 type fenwick []int
 
-func (f fenwick) update(i, val int) {
-	for ; i < len(f); i += i & -i {
-		f[i] += val
-	}
+func newFenwickTree(n int) fenwick {
+    return make(fenwick, n+1) // 使用下标 1 到 n
 }
 
-// 从 1 开始
+// a[i] 增加 val
+// 1 <= i <= n
+// 时间复杂度 O(log n)
+func (f fenwick) update(i int, val int) {
+    for ; i < len(f); i += i & -i {
+        f[i] += val
+    }
+}
+
+// 求前缀和 a[1] + ... + a[i]
+// 1 <= i <= n
+// 时间复杂度 O(log n)
 func (f fenwick) pre(i int) (res int) {
-	for ; i > 0; i &= i - 1 {
-		res += f[i]
-	}
-	return
+    for ; i > 0; i &= i - 1 {
+        res += f[i]
+    }
+    return
 }
 
-// 从 1 开始
+// 求区间和 a[l] + ... + a[r]
+// 1 <= l <= r <= n
+// 时间复杂度 O(log n)
 func (f fenwick) query(l, r int) int {
-	return f.pre(r) - f.pre(l-1)
+    return f.pre(r) - f.pre(l-1)
 }
 
 // 不写记忆化更快，直接迭代
@@ -275,7 +278,7 @@ func popcountDepth(nums []int64, queries [][]int64) (ans []int) {
 	n := len(nums)
 	f := [6]fenwick{}
 	for i := range f {
-		f[i] = make(fenwick, n+1)
+		f[i] = newFenwickTree(n)
 	}
 	update := func(i, delta int) {
 		d := popDepth(uint64(nums[i]))
