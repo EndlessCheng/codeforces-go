@@ -17,9 +17,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int[] findThePrefixCommonArray(int[] a, int[] b) {
-        int n = a.length;
         long p = 0, q = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < a.length; i++) {
             p |= 1L << a[i];
             q |= 1L << b[i];
             a[i] = Long.bitCount(p & q);
@@ -33,9 +32,8 @@ class Solution {
 class Solution {
 public:
     vector<int> findThePrefixCommonArray(vector<int>& a, vector<int>& b) {
-        int n = a.size();
         uint64_t p = 0, q = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < a.size(); i++) {
             p |= 1LL << a[i];
             q |= 1LL << b[i];
             a[i] = popcount(p & q);
