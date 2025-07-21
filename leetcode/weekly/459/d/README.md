@@ -273,8 +273,8 @@ func countTrapezoids(points [][]int) (ans int) {
 ```py [sol-Python3]
 class Solution:
     def countTrapezoids(self, points: List[List[int]]) -> int:
-        groups = defaultdict(list)  # 斜率 -> 截距
-        groups2 = defaultdict(list)  # 中点 -> 斜率
+        groups = defaultdict(list)  # 斜率 -> [截距]
+        groups2 = defaultdict(list)  # 中点 -> [斜率]
 
         for i, (x, y) in enumerate(points):
             for x2, y2 in points[:i]:
@@ -308,8 +308,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int countTrapezoids(int[][] points) {
-        Map<Double, List<Double>> groups = new HashMap<>(); // 斜率 -> 截距
-        Map<Integer, List<Double>> groups2 = new HashMap<>(); // 中点 -> 斜率
+        Map<Double, List<Double>> groups = new HashMap<>(); // 斜率 -> [截距]
+        Map<Integer, List<Double>> groups2 = new HashMap<>(); // 中点 -> [斜率]
 
         int n = points.length;
         for (int i = 0; i < n; i++) {
@@ -374,8 +374,8 @@ class Solution {
 class Solution {
 public:
     int countTrapezoids(vector<vector<int>>& points) {
-        unordered_map<double, vector<double>> groups; // 斜率 -> 截距
-        unordered_map<int, vector<double>> groups2; // 中点 -> 斜率
+        unordered_map<double, vector<double>> groups; // 斜率 -> [截距]
+        unordered_map<int, vector<double>> groups2; // 中点 -> [斜率]
 
         int n = points.size();
         for (int i = 0; i < n; i++) {
@@ -431,9 +431,9 @@ public:
 
 ```go [sol-Go]
 func countTrapezoids(points [][]int) (ans int) {
-	groups := map[float64][]float64{} // 斜率 -> 截距
+	groups := map[float64][]float64{} // 斜率 -> [截距]
 	type pair struct{ x, y int }
-	groups2 := map[pair][]float64{} // 中点 -> 斜率
+	groups2 := map[pair][]float64{} // 中点 -> [斜率]
 
 	for i, p := range points {
 		x, y := p[0], p[1]
@@ -491,6 +491,16 @@ func countTrapezoids(points [][]int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{points}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n^2)$。
+
+## 思考题
+
+1. 梯形改成等腰梯形怎么做？
+2. 梯形改成直角梯形怎么做？
+3. 梯形改成菱形怎么做？
+4. 梯形改成正方形怎么做？
+5. 梯形改成矩形怎么做？
+
+欢迎在评论区分享你的思路/代码。
 
 ## 分类题单
 
