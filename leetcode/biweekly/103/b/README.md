@@ -35,7 +35,7 @@ public:
     vector<int> findThePrefixCommonArray(vector<int>& a, vector<int>& b) {
         int n = a.size();
         uint64_t p = 0, q = 0;
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             p |= 1LL << a[i];
             q |= 1LL << b[i];
             a[i] = popcount(p & q);
