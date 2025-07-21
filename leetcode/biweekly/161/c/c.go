@@ -11,12 +11,14 @@ func findMaxPathScore1(edges [][]int, online []bool, k int64) int {
 	n := len(online)
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
-	maxWt := 0
+	maxWt := -1
 	for _, e := range edges {
 		x, y, wt := e[0], e[1], e[2]
 		if online[x] && online[y] {
 			g[x] = append(g[x], edge{y, wt})
-			maxWt = max(maxWt, wt)
+			if x == 0 {
+				maxWt = max(maxWt, wt)
+			}
 		}
 	}
 

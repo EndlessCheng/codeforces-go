@@ -41,6 +41,7 @@ $$
 
 - 开区间左端点初始值：$-1$。人为规定 $-1$ 一定满足要求。如果二分结果为 $-1$，那么返回 $-1$。
 - 开区间右端点初始值：边权的最大值加一。一定不满足要求。注意本题 $n\ge 2$，至少要走一条边。
+- 开区间右端点初始值（优化）：$0$ 的出边边权的最大值加一。此时无法从 $0$ 走出去，一定不满足要求。
 
 对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
 
@@ -63,11 +64,12 @@ class Solution:
     def findMaxPathScore(self, edges: List[List[int]], online: List[bool], k: int) -> int:
         n = len(online)
         g = [[] for _ in range(n)]
-        max_wt = 0
+        max_wt = -1
         for x, y, wt in edges:
             if online[x] and online[y]:
                 g[x].append((y, wt))
-                max_wt = max(max_wt, wt)
+                if x == 0:
+                    max_wt = max(max_wt, wt)
 
         def check(lower: int) -> bool:
             @cache
@@ -96,11 +98,12 @@ class Solution:
     def findMaxPathScore(self, edges: List[List[int]], online: List[bool], k: int) -> int:
         n = len(online)
         g = [[] for _ in range(n)]
-        max_wt = 0
+        max_wt = -1
         for x, y, wt in edges:
             if online[x] and online[y]:
                 g[x].append((y, wt))
-                max_wt = max(max_wt, wt)
+                if x == 0:
+                    max_wt = max(max_wt, wt)
 
         def check(lower: int) -> bool:
             @cache
@@ -124,12 +127,14 @@ class Solution {
         int n = online.length;
         List<int[]>[] g = new ArrayList[n];
         Arrays.setAll(g, _ -> new ArrayList<>());
-        int maxWt = 0;
+        int maxWt = -1;
         for (int[] e : edges) {
             int x = e[0], y = e[1], wt = e[2];
             if (online[x] && online[y]) {
                 g[x].add(new int[]{y, wt});
-                maxWt = Math.max(maxWt, wt);
+                if (x == 0) {
+                    maxWt = Math.max(maxWt, wt);
+                }
             }
         }
 
@@ -172,12 +177,14 @@ public:
     int findMaxPathScore(vector<vector<int>>& edges, vector<bool>& online, long long k) {
         int n = online.size();
         vector<vector<pair<int, int>>> g(n);
-        int max_wt = 0;
+        int max_wt = -1;
         for (auto& e : edges) {
             int x = e[0], y = e[1], wt = e[2];
             if (online[x] && online[y]) {
                 g[x].emplace_back(y, wt);
-                max_wt = max(max_wt, wt);
+                if (x == 0) {
+                    max_wt = max(max_wt, wt);
+                }
             }
         }
 
@@ -220,12 +227,14 @@ func findMaxPathScore(edges [][]int, online []bool, k int64) int {
 	n := len(online)
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
-	maxWt := 0
+	maxWt := -1
 	for _, e := range edges {
 		x, y, wt := e[0], e[1], e[2]
 		if online[x] && online[y] {
 			g[x] = append(g[x], edge{y, wt})
-			maxWt = max(maxWt, wt)
+			if x == 0 {
+				maxWt = max(maxWt, wt)
+			}
 		}
 	}
 
@@ -272,12 +281,13 @@ class Solution:
         n = len(online)
         g = [[] for _ in range(n)]
         deg = [0] * n
-        max_wt = 0
+        max_wt = -1
         for x, y, wt in edges:
             if online[x] and online[y]:
                 g[x].append((y, wt))
                 deg[y] += 1
-                max_wt = max(max_wt, wt)
+                if x == 0:
+                    max_wt = max(max_wt, wt)
 
         # 先清理无法从 0 到达的边
         q = deque(i for i in range(1, n) if deg[i] == 0)
@@ -317,13 +327,15 @@ class Solution {
         List<int[]>[] g = new ArrayList[n];
         Arrays.setAll(g, _ -> new ArrayList<>());
         int[] deg = new int[n];
-        int maxWt = 0;
+        int maxWt = -1;
         for (int[] e : edges) {
             int x = e[0], y = e[1], wt = e[2];
             if (online[x] && online[y]) {
                 g[x].add(new int[]{y, wt});
                 deg[y]++;
-                maxWt = Math.max(maxWt, wt);
+                if (x == 0) {
+                    maxWt = Math.max(maxWt, wt);
+                }
             }
         }
 
@@ -389,13 +401,15 @@ public:
         int n = online.size();
         vector<vector<pair<int, int>>> g(n);
         vector<int> deg(n);
-        int max_wt = 0;
+        int max_wt = -1;
         for (auto& e : edges) {
             int x = e[0], y = e[1], wt = e[2];
             if (online[x] && online[y]) {
                 g[x].emplace_back(y, wt);
                 deg[y]++;
-                max_wt = max(max_wt, wt);
+                if (x == 0) {
+                    max_wt = max(max_wt, wt);
+                }
             }
         }
 
@@ -458,13 +472,15 @@ func findMaxPathScore(edges [][]int, online []bool, k int64) int {
 	type edge struct{ to, wt int }
 	g := make([][]edge, n)
 	deg := make([]int, n)
-	maxWt := 0
+	maxWt := -1
 	for _, e := range edges {
 		x, y, wt := e[0], e[1], e[2]
 		if online[x] && online[y] {
 			g[x] = append(g[x], edge{y, wt})
 			deg[y]++
-			maxWt = max(maxWt, wt)
+			if x == 0 {
+				maxWt = max(maxWt, wt)
+			}
 		}
 	}
 
