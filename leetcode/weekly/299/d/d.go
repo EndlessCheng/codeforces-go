@@ -20,36 +20,39 @@ func minimumScore(nums []int, edges [][]int) int {
 	dfs = func(x, fa int) {
 		clock++
 		in[x] = clock
-		xor[x] = nums[x]
+		xor[x] = nums[x] // 递
 		for _, y := range g[x] {
 			if y != fa {
 				dfs(y, x)
 				xor[x] ^= xor[y]
 			}
 		}
-		out[x] = clock
+		out[x] = clock // 归
 	}
 	dfs(0, -1)
 
-	ans := math.MaxInt32
-	for i := 2; i < n; i++ {
-		for j := 1; j < i; j++ {
-			var x, y, z int
-			if in[i] < in[j] && in[j] <= out[i] { // i 是 j 的祖先节点
-				x, y, z = xor[j], xor[i]^xor[j], xor[0]^xor[i]
-			} else if in[j] < in[i] && in[i] <= out[j] { // j 是 i 的祖先节点
-				x, y, z = xor[i], xor[i]^xor[j], xor[0]^xor[j]
-			} else { // 删除的两条边分别属于两棵不相交的子树
-				x, y, z = xor[i], xor[j], xor[0]^xor[i]^xor[j]
+	// 判断 x 是否为 y 的祖先
+	isAncestor := func(x, y int) bool {
+		return in[x] < in[y] && in[y] <= out[x]
+	}
+
+	ans := math.MaxInt
+	// 枚举：删除 x 与 x 父节点之间的边，删除 y 与 y 父节点之间的边
+	for x := 2; x < n; x++ {
+		for y := 1; y < x; y++ {
+			var a, b, c int
+			if isAncestor(x, y) { // x 是 y 的祖先
+				a, b, c = xor[y], xor[x]^xor[y], xor[0]^xor[x]
+			} else if isAncestor(y, x) { // y 是 x 的祖先
+				a, b, c = xor[x], xor[x]^xor[y], xor[0]^xor[y]
+			} else { // x 和 y 分别属于两棵不相交的子树
+				a, b, c = xor[x], xor[y], xor[0]^xor[x]^xor[y]
 			}
-			ans = min(ans, max(max(x, y), z)-min(min(x, y), z))
-			if ans == 0 {
-				return 0 // 提前退出
+			ans = min(ans, max(a, b, c)-min(a, b, c))
+			if ans == 0 { // 不可能变小
+				return 0 // 提前返回
 			}
 		}
 	}
 	return ans
 }
-
-func min(a, b int) int { if a > b { return b }; return a }
-func max(a, b int) int { if a < b { return b }; return a }
