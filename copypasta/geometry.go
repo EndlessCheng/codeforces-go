@@ -46,16 +46,19 @@ dot (dot product，数量积，点积，内积)
 https://en.wikipedia.org/wiki/Dot_product
 https://en.wikipedia.org/wiki/Inner_product_space
 中学课本是用力的做功引入数量积的（物体在力 F 的作用下产生位移 s，力 F 所做的功等于 |F||s|cosθ）
-据此课本上定义 a·b = |a||b|cosθ，然后证明了其等于 x1x2+y1y2
-注意当 π/2<θ<π 时，上式是负数，可以用来判断两个向量是同向还是异向
+据此课本上定义 dot(a,b) = a·b = |a||b|cosθ，然后证明了其等于 x1x2+y1y2
+a·b > 0：夹角为 [0°,90°)
+a·b = 0：夹角为 90°
+a·b < 0：夹角为 (90°,180°]
+可以用来判断两个向量是同向还是垂直还是异向
 
 det (determinant，行列式，平行四边形的有向面积，二维向量叉积的 z 分量的值)
 https://en.wikipedia.org/wiki/Determinant#Geometric_meaning
 a×b 的 z 分量的值 = |a||b|sinθ = x1y2-y1x2，其中 θ 是 a 到 b 的夹角
-考虑 x1y2-y1x2 的值：
-正：b 在 a 左侧
-负：b 在 a 右侧
-零：a 和 b 平行或重合（共基线）
+考虑 det(a,b) = x1y2-y1x2 的值：
+> 0：b 在 a 左侧
+< 0：b 在 a 右侧
+= 0：a 和 b 平行或重合（共基线）
 关于有向面积 https://cp-algorithms.com/geometry/oriented-triangle-area.html
 https://codeforces.com/gym/105139/problem/B
 
@@ -131,6 +134,10 @@ LC1131 三维 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
 
 曼哈顿最近点对
 LC2613 https://leetcode.cn/problems/beautiful-pairs/
+
+梯形个数
+https://leetcode.cn/problems/count-number-of-trapezoids-ii/
+思路有些类似 https://codeforces.com/problemset/problem/1163/C2
 
 https://oeis.org/A053411 Circle numbers
 a(n)= number of points (i,j), i,j integers, contained in a circle of diameter n, centered at the origin
@@ -1004,6 +1011,7 @@ func _(abs func(int) int) {
 	// 使用单调栈，保存的向量是有极角序的
 	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是下一个点的位置在绳子前进方向的左侧，如果某个点会导致绳子向右走，那么就需要出栈
 	// 求上凸包就从倒数第二个点开始继续求
+	// 允许 ps 里面有重复的点，算法会去重
 	// https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 	// https://en.wikipedia.org/wiki/Convex_hull_algorithms
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
