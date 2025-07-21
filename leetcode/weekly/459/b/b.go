@@ -5,14 +5,14 @@ func countTrapezoids(points [][]int) (ans int) {
 	const mod = 1_000_000_007
 	cnt := map[int]int{}
 	for _, p := range points {
-		cnt[p[1]]++
+		cnt[p[1]]++ // 统计每一行（水平线）有多少个点
 	}
 
 	s := 0
 	for _, c := range cnt {
-		k := c * (c - 1) / 2 % mod
-		ans = (ans + s*k) % mod
-		s = (s + k) % mod
+		k := c * (c - 1) / 2
+		ans += s * k
+		s += k
 	}
-	return
+	return ans % mod
 }

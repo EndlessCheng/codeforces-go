@@ -10,7 +10,7 @@ $$
 
 ⚠**注意**：另外一条边不能是其余所有行，这会导致重复计算。
 
-记得取模。关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+在最坏情况下，有两行，每行 $\dfrac{n}{2}$ 个点，答案约为 $\dfrac{n^4}{16} = 6.25\cdot 10^{18}$，不超过 $64$ 位整数最大值，所以无需在循环中取模。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1tbg8z3EaP/?t=3m40s) 详细介绍了本题的计算过程和注意事项，欢迎点赞关注~
 
@@ -39,11 +39,11 @@ class Solution {
 
         long ans = 0, s = 0;
         for (int c : cnt.values()) {
-            long k = (long) c * (c - 1) / 2 % MOD;
-            ans = (ans + s * k) % MOD;
-            s = (s + k) % MOD;
+            long k = (long) c * (c - 1) / 2;
+            ans += s * k;
+            s += k;
         }
-        return (int) ans;
+        return (int) (ans % MOD);
     }
 }
 ```
@@ -60,11 +60,11 @@ public:
 
         long long ans = 0, s = 0;
         for (auto& [_, c] : cnt) {
-            long long k = 1LL * c * (c - 1) / 2 % MOD;
-            ans = (ans + s * k) % MOD;
-            s = (s + k) % MOD;
+            long long k = 1LL * c * (c - 1) / 2;
+            ans += s * k;
+            s += k;
         }
-        return ans;
+        return ans % MOD;
     }
 };
 ```
@@ -79,11 +79,11 @@ func countTrapezoids(points [][]int) (ans int) {
 
 	s := 0
 	for _, c := range cnt {
-		k := c * (c - 1) / 2 % mod
-		ans = (ans + s*k) % mod
-		s = (s + k) % mod
+		k := c * (c - 1) / 2
+		ans += s * k
+		s += k
 	}
-	return
+	return ans % mod
 }
 ```
 
