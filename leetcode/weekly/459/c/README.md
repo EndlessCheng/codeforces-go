@@ -340,7 +340,7 @@ class FenwickTree:
 
 
 pop_depth_list = [0] * 51
-for i in range(2, 51):
+for i in range(2, len(pop_depth_list)):
     pop_depth_list[i] = pop_depth_list[i.bit_count()] + 1
 
 def pop_depth(x: int) -> int:
