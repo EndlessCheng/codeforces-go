@@ -120,7 +120,7 @@ func countIslands(grid [][]int, k int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
-- 空间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(mn)$。最坏情况下，对于之字形岛屿，递归深度为 $\mathcal{O}(mn)$，需要 $\mathcal{O}(mn)$ 的栈空间。
 
 ## 专题训练
 
