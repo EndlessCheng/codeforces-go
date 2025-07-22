@@ -107,6 +107,7 @@
 ||[216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)|[代码](https://leetcode.cn/problems/combination-sum-iii/solutions/2071013/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-feme/)|两种写法|
 ||[22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)|[代码](https://leetcode.cn/problems/generate-parentheses/solutions/2071015/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-wcdw/)|两种写法|
 ||[39. 组合总和](https://leetcode.cn/problems/combination-sum/)|[代码](https://leetcode.cn/problems/combination-sum/solution/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/)|*课后作业|
+||[93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)|[代码](https://leetcode.cn/problems/restore-ip-addresses/solution/liang-chong-fang-fa-san-zhong-xun-huan-h-hxak/)|*课后作业|
 |[回溯 - 排列型](https://www.bilibili.com/video/BV1mY411D7f6/)|[46. 全排列](https://leetcode.cn/problems/permutations/)|[代码](https://leetcode.cn/problems/permutations/solutions/2079585/hui-su-bu-hui-xie-tao-lu-zai-ci-jing-que-6hrh/)|精确计算搜索树的节点个数|
 ||[51. N 皇后](https://leetcode.cn/problems/n-queens/)|[代码](https://leetcode.cn/problems/n-queens/solutions/2079586/hui-su-tao-lu-miao-sha-nhuang-hou-shi-pi-mljv/)||
 ||[52. N 皇后 II](https://leetcode.cn/problems/n-queens-ii/)|[代码](https://leetcode.cn/problems/n-queens-ii/solution/hui-su-miao-sha-nhuang-hou-yi-ge-shi-pin-l41l)||
