@@ -291,7 +291,7 @@ func minimumScore(nums []int, edges [][]int) int {
 
 ## 专题训练
 
-见下面树题单的「§3.7 DFS 时间戳」。
+见下面树题单的「**§3.7 DFS 时间戳**」。
 
 ## 分类题单
 
