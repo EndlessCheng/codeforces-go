@@ -153,8 +153,8 @@ class Solution {
     private int clock = 0;
 
     private void dfs(int x, int fa, List<Integer>[] g, int[] nums, int[] xor, int[] in, int[] out) {
-        in[x] = ++clock;
-        xor[x] = nums[x]; // 递
+        in[x] = ++clock; // 递
+        xor[x] = nums[x];
         for (int y : g[x]) {
             if (y != fa) {
                 dfs(y, x, g, nums, xor, in, out);
@@ -186,8 +186,8 @@ public:
         vector<int> xr(n), in(n), out(n);
         int clock = 0;
         auto dfs = [&](this auto&& dfs, int x, int fa) -> void {
-            in[x] = ++clock;
-            xr[x] = nums[x]; // 递
+            in[x] = ++clock; // 递
+            xr[x] = nums[x];
             for (int y : g[x]) {
                 if (y != fa) {
                     dfs(y, x);
@@ -243,8 +243,8 @@ func minimumScore(nums []int, edges [][]int) int {
 	var dfs func(int, int)
 	dfs = func(x, fa int) {
 		clock++
-		in[x] = clock
-		xor[x] = nums[x] // 递
+		in[x] = clock // 递
+		xor[x] = nums[x]
 		for _, y := range g[x] {
 			if y != fa {
 				dfs(y, x)
