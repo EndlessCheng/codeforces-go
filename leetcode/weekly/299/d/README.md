@@ -62,6 +62,8 @@ $$
 
 代码实现时，由于不知道 $\textit{edges}[i]$ 两个端点的父子关系，枚举边的写法需要额外的判断。我们规定 $0$ 是树的根（没有父节点），枚举不是 $0$ 的两个节点，删除这两个节点到其父节点的边，这样写更简单。
 
+对于子树异或和 $\textit{xor}[x]$ 的计算，类似计算子树元素和，把问题拆解为 $x$ 的所有儿子子树的异或和，再异或 $\textit{nums}[x]$，即为 $\textit{xor}[x]$。
+
 ```py [sol-Python3]
 class Solution:
     def minimumScore(self, nums: List[int], edges: List[List[int]]) -> int:
