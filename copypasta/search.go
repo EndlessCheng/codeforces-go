@@ -602,10 +602,10 @@ func backtracking() {
 	// LC60 https://leetcode.cn/problems/permutation-sequence/
 	// https://codeforces.com/problemset/problem/1443/E 2400
 	kthPermutation := func(n, k int) []int {
-		F := make([]int, n)
-		F[0] = 1
+		fac := make([]int, n)
+		fac[0] = 1
 		for i := 1; i < n; i++ {
-			F[i] = F[i-1] * i
+			fac[i] = fac[i-1] * i
 		}
 
 		k-- // 如果输入是从 1 开始的，改成从 0 开始
@@ -615,8 +615,8 @@ func backtracking() {
 			valid[i] = 1
 		}
 		for i := 1; i <= n; i++ {
-			order := k/F[n-i] + 1
-			k %= F[n-i]
+			order := k/fac[n-i] + 1
+			k %= fac[n-i]
 			for j := 1; j <= n; j++ { // 从 1 开始的排列    TODO 用线段树优化
 				order -= valid[j]
 				if order == 0 {
