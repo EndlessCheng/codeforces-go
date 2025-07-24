@@ -598,9 +598,9 @@ func backtracking() {
 	}
 
 	// 逆康托展开 Inverse Cantor Expansion
-	// 返回字典序第 k 小的排列，元素范围为 [1,n]
+	// 返回 [1,2,...,n] 的字典序第 k 小的排列，k 从 1 开始
 	// LC60 https://leetcode.cn/problems/permutation-sequence/
-	// https://codeforces.com/problemset/problem/1443/E
+	// https://codeforces.com/problemset/problem/1443/E 2400
 	kthPermutation := func(n, k int) []int {
 		F := make([]int, n)
 		F[0] = 1
@@ -616,15 +616,15 @@ func backtracking() {
 		}
 		for i := 1; i <= n; i++ {
 			order := k/F[n-i] + 1
+			k %= F[n-i]
 			for j := 1; j <= n; j++ { // 从 1 开始的排列    TODO 用线段树优化
 				order -= valid[j]
 				if order == 0 {
-					perm = append(perm, j)
+					perm[i-1] = j
 					valid[j] = 0
 					break
 				}
 			}
-			k %= F[n-i]
 		}
 		return perm
 	}
