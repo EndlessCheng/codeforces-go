@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -57,4 +56,4 @@ func cf1443E(in io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { cf1443E(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf1443E(bufio.NewReader(os.Stdin), os.Stdout) }
