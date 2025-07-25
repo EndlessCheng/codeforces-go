@@ -1,9 +1,48 @@
 package main
 
-import "slices"
-
 // https://space.bilibili.com/206214
 func maxSubarrays(n int, conflictingPairs [][]int) int64 {
+	groups := make([][2]int, n+1) // [][2]int 比 [][]int 快
+	for i := range groups {
+		groups[i] = [2]int{n + 1, n + 1}
+	}
+	for _, p := range conflictingPairs {
+		a, b := p[0], p[1]
+		if a > b {
+			a, b = b, a
+		}
+		g := &groups[a]
+		if b < g[0] {
+			g[0], g[1] = b, g[0]
+		} else if b < g[1] {
+			g[1] = b
+		}
+	}
+
+	var ans, maxExtra, extra int
+	b0, b1 := n+1, n+1
+	for i := n; i > 0; i-- {
+		preB0 := b0
+		for _, b := range groups[i] {
+			if b < b0 {
+				b0, b1 = b, b0
+			} else if b < b1 {
+				b1 = b
+			}
+		}
+
+		ans += b0 - i
+		if b0 != preB0 { // 重新统计连续相同 b0 的 extra
+			extra = 0
+		}
+		extra += b1 - b0
+		maxExtra = max(maxExtra, extra)
+	}
+
+	return int64(ans + maxExtra)
+}
+
+func maxSubarrays2(n int, conflictingPairs [][]int) int64 {
 	groups := make([][2]int, n+1)
 	for i := range groups {
 		groups[i] = [2]int{n + 1, n + 1}
@@ -23,16 +62,20 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 
 	var ans, extra, maxExtra int
 	b0, b1 := n+1, n+1
-	for a := n; a > 0; a-- {
+	for i := n; i > 0; i-- {
 		preB0 := b0
-		for _, b := range groups[a] {
-			if b < b0 {
-				b0, b1 = b, b0
-			} else if b < b1 {
-				b1 = b
-			}
+
+		b, c := groups[i][0], groups[i][1]
+		if b < b0 {
+			b1 = min(b0, c)
+			b0 = b
+		} else if b < b1 {
+			b1 = b
+		} else if c < b1 {
+			b1 = c
 		}
-		ans += b0 - a
+
+		ans += b0 - i
 		if b0 != preB0 {
 			extra = 0
 		}
@@ -41,28 +84,4 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 	}
 
 	return int64(ans + maxExtra)
-}
-
-func maxSubarrays1(n int, conflictingPairs [][]int) int64 {
-	groups := make([][]int, n+1)
-	for _, p := range conflictingPairs {
-		a, b := p[0], p[1]
-		if a > b {
-			a, b = b, a
-		}
-		groups[a] = append(groups[a], b)
-	}
-
-	ans := 0
-	extra := make([]int, n+2)
-	b := []int{n + 1, n + 1} // 维护最小 b 和次小 b
-	for a := n; a > 0; a-- {
-		b = append(b, groups[a]...)
-		slices.Sort(b)
-		b = b[:2]
-		ans += b[0] - a
-		extra[b[0]] += b[1] - b[0]
-	}
-
-	return int64(ans + slices.Max(extra))
 }

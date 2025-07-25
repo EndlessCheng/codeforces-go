@@ -1,78 +1,76 @@
 ## 不删除冲突对
 
-先考虑不删除冲突对，要怎么做。
+先考虑不删除冲突对，要怎么做。也就是统计合法子数组的个数，对于任意冲突对 $(a,b)$，$a$ 和 $b$ 不能都在子数组中。
 
-既然是统计子数组数量，我们可以**枚举子数组左端点，看看有多少个合法的右端点**。（当然，你想枚举右端点也可以）
+既然是统计子数组个数，我们可以**枚举子数组左端点，统计有多少个合法的右端点**。（注：枚举左端点仅仅是为了方便写代码求前二小，枚举右端点也是可以的。）
 
-下面假设冲突对中的 $a\le b$（如果 $a>b$ 则交换 $a$ 和 $b$）。
+设冲突对中的 $a\le b$。如果 $a>b$ 则交换 $a$ 和 $b$。
 
-例如子数组左端点为 $i=2$，满足 $a\ge i$ 的冲突对有 $[2,6],[3,5],[4,7]$，那么子数组的右端点可以是 $2,3,4$。右端点不能比 $4$ 大，因为这会导致子数组包含冲突对 $[3,5]$。
+举个例子。现在枚举到子数组左端点为 $i=2$，如果满足 $a\ge i$ 的冲突对有 $(2,6),(3,5),(4,7)$，那么子数组的右端点可以是 $2,3,4$，我们找到了 $3$ 个合法子数组。注意子数组的右端点不能比 $4$ 大，因为这会导致子数组包含冲突对 $(3,5)$。
 
-从这个例子可以发现，我们需要维护满足 $a\ge i$ 的冲突对中的 $b$ 的最小值，记作 $b_0$。
+![lc3480-c.png](https://pic.leetcode.cn/1753405055-svTqwA-lc3480-c.png){:width=600px}
 
-那么子数组左端点**固定**为 $i$ 的时候，右端点可以是
+从这个例子可以发现，我们需要知道满足 $a\ge i$ 的冲突对中的 $b$ 的**最小值**，记作 $b_0$。（注：无需考虑 $a<i$ 的冲突对，左端点为 $i$ 的子数组一定不包含这些冲突对。）
+
+那么当子数组的左端点**固定**为 $i$ 时，子数组的右端点可以是
 
 $$
 i,i+1,i+2,\ldots,b_0 - 1
 $$
 
-所以有
+这一共有
 
 $$
 b_0 - i
 $$
 
-个左端点在 $i$ 的合法子数组。
+个。也就是左端点为 $i$ 时，我们找到了 $b_0 - i$ 个合法子数组。
 
-累加上式，即为不删除冲突对时的答案。
+枚举 $i$，维护 $b_0$，累加 $b_0 - i$，即为不删除冲突对时的答案。
 
 如何维护 $b_0$？
 
-把所有冲突对按照 $a$ 分组，得到 $n$ 个列表，第 $a$ 个列表就保存着相同的 $a$ 对应的所有 $b$。
+把所有冲突对按照 $a$ 分组，得到 $n$ 个列表，第 $i$ 个列表保存着相同的 $a=i$ 对应的所有 $b$。
 
-倒着枚举 $a=n,n-1,n-2,\ldots,1$。用第 $a$ 个列表中的最小的 $b$，更新 $b_0$ 的最小值。
+倒着枚举 $i=n,n-1,n-2,\ldots,1$，用第 $i$ 个列表中的最小的 $b$，更新 $b_0$ 的最小值。此时 $b_0$ 就是满足 $a\ge i$ 的冲突对中的 $b$ 的最小值。（注：$a$ 的范围是 $[i,n]$，这是个后缀，我们要计算后缀中的最小 $b$，所以要倒着枚举 $i$。）
 
 ## 删除一个冲突对
 
-讨论删除冲突对 $[a,b]$ 时，会产生什么影响。
+讨论删除冲突对 $(a,b)$ 会产生什么影响。
 
-如果 $b$ 恰好等于 $b_0$，那么我们需要知道在 $i$ 右边的**第二小**的 $b$，记作 $b_1$。
+枚举子数组左端点为 $i$，如果删除的是 $a<i$ 或者 $b>b_0$ 的冲突对，不影响答案。
 
-那么子数组左端点**固定**为 $i$ 的时候，右端点可以是
+如果删除的是 $b = b_0$ 的冲突对呢？
 
-$$
-i,i+1,i+2,\ldots,b_1 - 1
-$$
+![lc3480-1-c.png](https://pic.leetcode.cn/1753405453-dVzDyd-lc3480-1-c.png){:width=600px}
 
-所以有
+设满足 $a\ge i$ 的冲突对中的 $b$ 的**次小值**为 $b_1$。删除 $b = b_0$ 的冲突对后，满足 $a\ge i$ 的冲突对中的 $b$ 的最小值就变成 $b_1$ 了。（注：如果有多个 $b$ 都等于 $b_0$，那么 $b_1=b_0$。）
 
-$$
-b_1 - i
-$$
+上文中的式子 $b_0 - i$ 改成 $b_1 - i$。
 
-个左端点在 $i$ 的合法子数组。
-
-换句话说，删除冲突对 $[a,b]$ 会**额外增加**
+换句话说，删除冲突对 $(a,b)$ 会**额外增加**
 
 $$
 (b_1 - i) - (b_0 - i) = b_1 - b_0
 $$
 
-个左端点在 $i$ 的合法子数组。
+个左端点为 $i$ 的合法子数组。特别地，如果 $b_1 = b_0$，删除冲突对不会额外增加合法子数组。
 
-把这个增量累加到 $\textit{extra}[b_0]$ 中。注意：对于多个不同的左端点 $i$，如果对应的 $b_0$ 都相同，那么把增量 $b_1-b_0$ 都累加到 $\textit{extra}[b_0]$ 中，表示删除 $b=b_0$ 的冲突对会让这些左端点都受益。
+**删除哪个冲突对最优？看谁带来的额外增量最大。**
+
+不删除冲突对时的答案，加上删除一个冲突对带来的最大额外增量，就是最终答案。
+
+那么，额外增量的最大值，就是 $b_1 - b_0$ 的最大值吗？
+
+没这么简单。对于多个不同的左端点 $i$，如果这些 $i$ 对应的 $b_0$ 都相同，那么删除 $b=b_0$ 的冲突对会让这些左端点**都受益**。所以我们还得累加 $b_1-b_0$。
+
+具体地，把 $b_0$ 相同的增量，累加到一起。创建一个数组 $\textit{extra}$，把 增量 $b_1-b_0$ 累加到 $\textit{extra}[b_0]$ 中。
 
 最终答案就是不删除冲突对时的合法子数组个数，加上 $\max(\textit{extra})$。
 
-代码实现时，可以初始化 $b_0=b_1=n+1$，这样在右边没有冲突对的时候，我们也能用上述公式计算合法子数组个数。
+代码实现时，一开始没有冲突对，我们初始化 $b_0=b_1=n+1$，这样也能用上述公式计算合法子数组个数。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV15gRaYZE5o/?t=44m20s)，欢迎点赞关注~
-
-### 答疑
-
-**问**：如果有多个相同的冲突对，代码能算出正确答案吗？
-
-**答**：如果要删除多个相同的冲突对中的一个，因为有多个相同的 $b$，导致最小和次小的 $b$ 相等，所以 $b_1-b_0 = 0$，说明删不删都一样，这符合删除多个相同的冲突对中的一个的情况。
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -85,16 +83,16 @@ class Solution:
 
         ans = 0
         extra = [0] * (n + 2)
-        b = [n + 1, n + 1]  # 维护最小 b 和次小 b
-        for a in range(n, 0, -1):
-            b = sorted(b + groups[a])[:2]
-            ans += b[0] - a
+        b = [n + 1, n + 1]
+        for i in range(n, 0, -1):
+            b = sorted(b + groups[i])[:2]  # 维护最小 b 和次小 b
+            ans += b[0] - i
             extra[b[0]] += b[1] - b[0]
 
         return ans + max(extra)
 ```
 
-```py [sol-Python3 更快写法]
+```py [sol-Python3 写法二]
 class Solution:
     def maxSubarrays(self, n: int, conflictingPairs: List[List[int]]) -> int:
         groups = [[] for _ in range(n + 1)]
@@ -105,14 +103,14 @@ class Solution:
 
         ans = 0
         extra = [0] * (n + 2)
-        b = [n + 1, n + 1]  # 维护最小 b 和次小 b
-        for a in range(n, 0, -1):
-            list_b = groups[a]
-            if list_b:
-                b.extend(list_b)
+        b = [n + 1, n + 1]
+        for i in range(n, 0, -1):
+            # 维护最小 b 和次小 b
+            if groups[i]:
+                b += groups[i]
                 b.sort()
                 b = b[:2]
-            ans += b[0] - a
+            ans += b[0] - i
             extra[b[0]] += b[1] - b[0]
 
         return ans + max(extra)
@@ -122,7 +120,7 @@ class Solution:
 class Solution {
     public long maxSubarrays(int n, int[][] conflictingPairs) {
         List<Integer>[] groups = new ArrayList[n + 1];
-        Arrays.setAll(groups, i -> new ArrayList<>());
+        Arrays.setAll(groups, _ -> new ArrayList<>());
         for (int[] p : conflictingPairs) {
             int a = p[0];
             int b = p[1];
@@ -130,22 +128,21 @@ class Solution {
         }
 
         long ans = 0;
-        long[] extra = new long[n + 2];
         long maxExtra = 0;
-        // 维护最小 b 和次小 b
-        int b0 = n + 1;
-        int b1 = n + 1;
-        for (int a = n; a > 0; a--) {
-            for (int b : groups[a]) {
-                if (b < b0) {
-                    b1 = b0;
-                    b0 = b;
-                } else if (b < b1) {
-                    b1 = b;
-                }
-            }
-            ans += b0 - a;
-            extra[b0] += b1 - b0;
+        long[] extra = new long[n + 2];
+        List<Integer> b = new ArrayList<>();
+        b.add(n + 1);
+        b.add(n + 1);
+
+        for (int i = n; i > 0; i--) {
+            // 维护最小 b 和次小 b
+            b.addAll(groups[i]);
+            Collections.sort(b);
+            b.subList(2, b.size()).clear();
+
+            int b0 = b.get(0);
+            ans += b0 - i;
+            extra[b0] += b.get(1) - b0;
             maxExtra = Math.max(maxExtra, extra[b0]);
         }
 
@@ -169,13 +166,15 @@ public:
 
         long long ans = 0;
         vector<long long> extra(n + 2);
-        vector<int> b = {n + 1, n + 1}; // 维护最小 b 和次小 b
-        for (int a = n; a > 0; a--) {
-            auto& list_b = groups[a];
-            b.insert(b.end(), list_b.begin(), list_b.end());
+        vector<int> b = {n + 1, n + 1}; 
+
+        for (int i = n; i > 0; i--) {
+            // 维护最小 b 和次小 b
+            b.insert(b.end(), groups[i].begin(), groups[i].end());
             ranges::sort(b);
             b.resize(2);
-            ans += b[0] - a;
+
+            ans += b[0] - i;
             extra[b[0]] += b[1] - b[0];
         }
 
@@ -198,11 +197,12 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 	ans := 0
 	extra := make([]int, n+2)
 	b := []int{n + 1, n + 1} // 维护最小 b 和次小 b
-	for a := n; a > 0; a-- {
-		b = append(b, groups[a]...)
+
+	for i := n; i > 0; i-- {
+		b = append(b, groups[i]...)
 		slices.Sort(b)
 		b = b[:2]
-		ans += b[0] - a
+		ans += b[0] - i
 		extra[b[0]] += b[1] - b[0]
 	}
 
@@ -212,40 +212,77 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n\log n)$。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$。
-
-时间复杂度的瓶颈在排序上，下面来优化。
 
 ## 优化
 
-把排序替换成维护前二小，这样时间复杂度就是 $\mathcal{O}(n)$ 了。
+去掉排序，改用 $\texttt{if-else}$ 维护前二小。
 
-此外，$\textit{extra}$ 数组可以优化掉，因为 $b_0$ 只会减少，不会增加，所以相同的 $b_0$ 必定是连续的，我们只需要一个变量维护连续相同 $b_0$ 对应的 $b_1-b_0$ 之和，同时用另一个变量 $\textit{maxExtra}$ 维护 $\textit{extra}$ 的最大值。
+此外，$\textit{extra}$ 数组可以优化成一个变量。在枚举 $i$ 的过程中，$b_0$ 要么不变，要么减少，所以相同的 $b_0$ 是连续出现的，只需用一个变量 $\textit{extra}$ 维护连续相同 $b_0$ 对应的 $b_1-b_0$ 之和，同时用另一个变量 $\textit{maxExtra}$ 维护 $\textit{extra}$ 的最大值。
 
 ```py [sol-Python3]
 class Solution:
     def maxSubarrays(self, n: int, conflictingPairs: List[List[int]]) -> int:
+        # 更快写法见【Python3 写法二】
         groups = [[] for _ in range(n + 1)]
         for a, b in conflictingPairs:
             if a > b:
                 a, b = b, a
             groups[a].append(b)
 
-        ans = extra = max_extra = 0
+        ans = max_extra = extra = 0
         b0 = b1 = n + 1
-        for a in range(n, 0, -1):
+        for i in range(n, 0, -1):
             pre_b0 = b0
-            for b in groups[a]:
+            for b in groups[i]:
                 if b < b0:
                     b0, b1 = b, b0
                 elif b < b1:
                     b1 = b
-            ans += b0 - a
-            if b0 != pre_b0:
+
+            ans += b0 - i
+            if b0 != pre_b0:  # 重新统计连续相同 b0 的 extra
                 extra = 0
             extra += b1 - b0
-            max_extra = max(max_extra, extra)  # 这里改成手动 if 会快不少
+            max_extra = max(max_extra, extra)
+
+        return ans + max_extra
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def maxSubarrays(self, n: int, conflictingPairs: List[List[int]]) -> int:
+        g0 = [n + 1] * (n + 1)
+        g1 = [n + 1] * (n + 1)
+        for a, b in conflictingPairs:
+            if a > b:
+                a, b = b, a
+            if b < g0[a]:
+                g1[a] = g0[a]
+                g0[a] = b
+            elif b < g1[a]:
+                g1[a] = b
+
+        ans = max_extra = extra = 0
+        b0 = b1 = n + 1
+        for i in range(n, 0, -1):
+            pre_b0 = b0
+
+            b, c = g0[i], g1[i]
+            if b < b0:
+                b1 = min(b0, c)
+                b0 = b
+            elif b < b1:
+                b1 = b
+            elif c < b1:
+                b1 = c
+
+            ans += b0 - i
+            if b0 != pre_b0:  # 重新统计连续相同 b0 的 extra
+                extra = 0
+            extra += b1 - b0
+            max_extra = max(max_extra, extra)
 
         return ans + max_extra
 ```
@@ -253,8 +290,9 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long maxSubarrays(int n, int[][] conflictingPairs) {
+        // 更快的写法见【Java 写法二】
         List<Integer>[] groups = new ArrayList[n + 1];
-        Arrays.setAll(groups, i -> new ArrayList<>());
+        Arrays.setAll(groups, _ -> new ArrayList<>());
         for (int[] p : conflictingPairs) {
             int a = p[0];
             int b = p[1];
@@ -262,13 +300,14 @@ class Solution {
         }
 
         long ans = 0;
-        long extra = 0;
         long maxExtra = 0;
+        long extra = 0;
         int b0 = n + 1;
         int b1 = n + 1;
-        for (int a = n; a > 0; a--) {
+
+        for (int i = n; i > 0; i--) {
             int preB0 = b0;
-            for (int b : groups[a]) {
+            for (int b : groups[i]) {
                 if (b < b0) {
                     b1 = b0;
                     b0 = b;
@@ -276,8 +315,66 @@ class Solution {
                     b1 = b;
                 }
             }
-            ans += b0 - a;
-            if (b0 != preB0) {
+
+            ans += b0 - i;
+            if (b0 != preB0) { // 重新统计连续相同 b0 的 extra
+                extra = 0;
+            }
+            extra += b1 - b0;
+            maxExtra = Math.max(maxExtra, extra);
+        }
+
+        return ans + maxExtra;
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    public long maxSubarrays(int n, int[][] conflictingPairs) {
+        int[] g0 = new int[n + 1];
+        int[] g1 = new int[n + 1];
+        Arrays.fill(g0, n + 1);
+        Arrays.fill(g1, n + 1);
+
+        for (int[] p : conflictingPairs) {
+            int a = p[0];
+            int b = p[1];
+            if (a > b) {
+                int tmp = a;
+                a = b;
+                b = tmp;
+            }
+            if (b < g0[a]) {
+                g1[a] = g0[a];
+                g0[a] = b;
+            } else if (b < g1[a]) {
+                g1[a] = b;
+            }
+        }
+
+        long ans = 0;
+        long maxExtra = 0;
+        long extra = 0;
+        int b0 = n + 1;
+        int b1 = n + 1;
+
+        for (int i = n; i > 0; i--) {
+            int preB0 = b0;
+
+            int b = g0[i];
+            int c = g1[i];
+            if (b < b0) {
+                b1 = Math.min(b0, c);
+                b0 = b;
+            } else if (b < b1) {
+                b1 = b;
+            } else if (c < b1) {
+                b1 = c;
+            }
+
+            ans += b0 - i;
+            if (b0 != preB0) { // 重新统计连续相同 b0 的 extra
                 extra = 0;
             }
             extra += b1 - b0;
@@ -293,7 +390,7 @@ class Solution {
 class Solution {
 public:
     long long maxSubarrays(int n, vector<vector<int>>& conflictingPairs) {
-        // vector<array<int, 2>> 比 vector<vector<int>> 快很多
+        // vector<array<int, 2>> 比 vector<vector<int>> 快
         vector<array<int, 2>> groups(n + 1, {n + 1, n + 1});
         for (auto& p : conflictingPairs) {
             int a = p[0], b = p[1];
@@ -309,11 +406,12 @@ public:
             }
         }
 
-        long long ans = 0, extra = 0, max_extra = 0;
+        long long ans = 0, max_extra = 0, extra = 0;
         int b0 = n + 1, b1 = n + 1;
-        for (int a = n; a > 0; a--) {
+
+        for (int i = n; i > 0; i--) {
             int pre_b0 = b0;
-            for (int b : groups[a]) {
+            for (int b : groups[i]) {
                 if (b < b0) {
                     b1 = b0;
                     b0 = b;
@@ -321,8 +419,9 @@ public:
                     b1 = b;
                 }
             }
-            ans += b0 - a;
-            if (b0 != pre_b0) {
+
+            ans += b0 - i;
+            if (b0 != pre_b0) { // 重新统计连续相同 b0 的 extra
                 extra = 0;
             }
             extra += b1 - b0;
@@ -336,7 +435,7 @@ public:
 
 ```go [sol-Go]
 func maxSubarrays(n int, conflictingPairs [][]int) int64 {
-	groups := make([][2]int, n+1) // [][2]int 比 [][]int 快很多
+	groups := make([][2]int, n+1) // [][2]int 比 [][]int 快
 	for i := range groups {
 		groups[i] = [2]int{n + 1, n + 1}
 	}
@@ -353,19 +452,20 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 		}
 	}
 
-	var ans, extra, maxExtra int
+	var ans, maxExtra, extra int
 	b0, b1 := n+1, n+1
-	for a := n; a > 0; a-- {
+	for i := n; i > 0; i-- {
 		preB0 := b0
-		for _, b := range groups[a] {
+		for _, b := range groups[i] {
 			if b < b0 {
 				b0, b1 = b, b0
 			} else if b < b1 {
 				b1 = b
 			}
 		}
-		ans += b0 - a
-		if b0 != preB0 {
+
+		ans += b0 - i
+		if b0 != preB0 { // 重新统计连续相同 b0 的 extra
 			extra = 0
 		}
 		extra += b1 - b0
@@ -383,7 +483,9 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 
 ## 思考题
 
-如果可以删两个呢？
+如果可以删除两个冲突对呢？
+
+欢迎在评论区分享你的思路/代码。
 
 ## 分类题单
 
@@ -394,8 +496,8 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
@@ -403,3 +505,5 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
