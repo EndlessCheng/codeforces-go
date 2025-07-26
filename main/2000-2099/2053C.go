@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
 // https://github.com/EndlessCheng
@@ -18,12 +19,14 @@ func cf2053C(in io.Reader, _w io.Writer) {
 		if n&1 > 0 {
 			ans = m / 2
 		}
+
 		n /= 2
-		for c := 0; n >= k; n /= 2 {
-			if n&1 > 0 {
-				ans += m << c
+		if n >= k {
+			d := bits.Len(uint(n)) - bits.Len(uint(k))
+			if n>>d >= k {
+				d++
 			}
-			c++
+			ans += n & (1<<d - 1) * m
 		}
 		Fprintln(out, ans)
 	}
