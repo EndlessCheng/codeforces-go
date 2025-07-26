@@ -136,6 +136,10 @@ func minimumOperations(nums, target []int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 相似题目
+
+[灯光调整](https://leetcode.cn/contest/2025_pudong_ai/problems/MWmcf7/)
+
 更多相似题目，见下面数据结构题单中的「**§2.1 一维差分**」。
 
 ## 分类题单
