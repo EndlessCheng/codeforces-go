@@ -2,7 +2,7 @@ package main
 
 import (
 	"math"
-	"sort"
+	"slices"
 )
 
 // https://space.bilibili.com/206214
@@ -13,18 +13,20 @@ func minCost(basket1, basket2 []int) (ans int64) {
 		cnt[basket2[i]]--
 	}
 
-	mn, a := math.MaxInt, []int{}
+	a := []int{}
+	mn := math.MaxInt
 	for x, c := range cnt {
 		if c%2 != 0 {
 			return -1
 		}
 		mn = min(mn, x)
-		for c = abs(c) / 2; c > 0; c-- {
+		for range abs(c) / 2 {
 			a = append(a, x)
 		}
 	}
 
-	sort.Ints(a)
+	slices.Sort(a)
+
 	for _, x := range a[:len(a)/2] {
 		ans += int64(min(x, mn*2))
 	}
@@ -32,4 +34,3 @@ func minCost(basket1, basket2 []int) (ans int64) {
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }
-func min(a, b int) int { if b < a { return b }; return a }
