@@ -23,15 +23,15 @@ func TestCompareInf(_t *testing.T) {
 		//return
 		rg.Clear()
 		n := rg.Int(2, 5)
-		es = rg.GraphWeightedEdges(n, min(10, n*(n-1)/2), 0, 0, 9,true)
+		es = rg.GraphWeightedDagEdges(n, min(10, n*(n-1)/2), 0, 0, 9)
 		online = make([]bool, n)
 		for i := range online {
 			online[i] = true
 		}
-		k = int64(rg.Int(0,9))
+		k = int64(rg.Int(0, 9))
 		return
 	}
-	
+
 	testutil.CompareInf(_t, inputGenerator, findMaxPathScore1, findMaxPathScoreHack)
 }
 
@@ -87,4 +87,3 @@ out:
 	}
 	return r
 }
-
