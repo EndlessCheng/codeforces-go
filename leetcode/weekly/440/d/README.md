@@ -273,14 +273,12 @@ class Solution:
         for i in range(n, 0, -1):
             pre_b0 = b0
 
-            b, c = g0[i], g1[i]
+            b = g0[i]
             if b < b0:
-                b1 = min(b0, c)
+                b1 = min(b0, g1[i])
                 b0 = b
             elif b < b1:
                 b1 = b
-            elif c < b1:
-                b1 = c
 
             ans += b0 - i
             if b0 != pre_b0:  # 重新统计连续相同 b0 的 extra
@@ -367,14 +365,11 @@ class Solution {
             int preB0 = b0;
 
             int b = g0[i];
-            int c = g1[i];
             if (b < b0) {
-                b1 = Math.min(b0, c);
+                b1 = Math.min(b0, g1[i]);
                 b0 = b;
             } else if (b < b1) {
                 b1 = b;
-            } else if (c < b1) {
-                b1 = c;
             }
 
             ans += b0 - i;
