@@ -363,7 +363,7 @@ func (r *RG) TreeWeightedEdges(n, st, minWeight, maxWeight int) (edges [][3]int)
 }
 
 // todo https://codeforces.com/blog/entry/77970
-func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][]int) {
+func (r *RG) graphEdges(n, m, st int, directed bool, dag bool) (edges [][]int) {
 	//if m < n-1 {
 	//	panic("m is too small")
 	//}
@@ -402,7 +402,8 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][]int) {
 		}
 	}
 
-	if directed {
+	// 不 swap 就是 DAG
+	if directed && !dag {
 		for i := range edges {
 			if rand.Intn(2) == 0 {
 				edges[i][0], edges[i][1] = edges[i][1], edges[i][0]
@@ -416,7 +417,15 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][]int) {
 // GraphEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges
 // TIPS: pass directed=false to generate a DAG.
 func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][]int) {
-	edges = r.graphEdges(n, m, st, directed)
+	edges = r.graphEdges(n, m, st, directed, false)
+	for _, e := range edges {
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1]))
+	}
+	return
+}
+
+func (r *RG) GraphDagEdges(n, m, st int) (edges [][]int) {
+	edges = r.graphEdges(n, m, st, true, true)
 	for _, e := range edges {
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1]))
 	}
@@ -427,7 +436,17 @@ func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][]int) {
 // TIPS: pass directed=false to generate a DAG.
 func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed bool) (edges [][]int) {
 	edges = make([][]int, m)
-	for i, e := range r.graphEdges(n, m, st, directed) {
+	for i, e := range r.graphEdges(n, m, st, directed, false) {
+		weight := r._int(minWeight, maxWeight)
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
+		edges[i] = []int{e[0], e[1], weight}
+	}
+	return
+}
+
+func (r *RG) GraphWeightedDagEdges(n, m, st, minWeight, maxWeight int) (edges [][]int) {
+	edges = make([][]int, m)
+	for i, e := range r.graphEdges(n, m, st, true, true) {
 		weight := r._int(minWeight, maxWeight)
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
 		edges[i] = []int{e[0], e[1], weight}
@@ -438,7 +457,7 @@ func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed boo
 func (r *RG) GraphMatrix(n int, directed bool) (g [][]byte) {
 	upper := n * (n - 1) / 2
 	m := r._int(0, upper)
-	edges := r.graphEdges(n, m, 0, directed)
+	edges := r.graphEdges(n, m, 0, directed, false)
 	g = make([][]byte, n)
 	for i := range g {
 		g[i] = bytes.Repeat([]byte{'0'}, n)
