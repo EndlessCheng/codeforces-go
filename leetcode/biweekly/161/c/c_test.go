@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,77 @@ func Test_c(t *testing.T) {
 }
 // https://leetcode.cn/contest/biweekly-contest-161/problems/network-recovery-pathways/
 // https://leetcode.cn/problems/network-recovery-pathways/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (es [][]int, online []bool, k int64) {
+		//return
+		rg.Clear()
+		n := rg.Int(2, 5)
+		es = rg.GraphWeightedEdges(n, min(10, n*(n-1)/2), 0, 0, 9,true)
+		online = make([]bool, n)
+		for i := range online {
+			online[i] = true
+		}
+		k = int64(rg.Int(0,9))
+		return
+	}
+	
+	testutil.CompareInf(_t, inputGenerator, findMaxPathScore1, findMaxPathScoreHack)
+}
+
+func findMaxPathScoreHack(edges [][]int, online []bool, k int64) int {
+	n := len(online)
+	l, r := 0, 0
+	lists := make([][][]int, n)
+	for i := range lists {
+		lists[i] = [][]int{}
+	}
+	for _, ints := range edges {
+		if !online[ints[0]] || !online[ints[1]] {
+			continue
+		}
+		lists[ints[0]] = append(lists[ints[0]], ints)
+		if ints[2] > r {
+			r = ints[2]
+		}
+	}
+
+out:
+	for l <= r {
+		m := (l + r) / 2
+		temp := []int{0}
+		dp := make([]int64, n)
+		for i := range dp {
+			dp[i] = 1<<63 - 1
+		}
+		flag := make([]bool, n)
+		dp[0] = 0
+
+		for len(temp) > 0 {
+			i := temp[0]
+			temp = temp[1:]
+			if flag[i] {
+				continue
+			}
+			flag[i] = true
+			for _, ints := range lists[i] {
+				zzz := dp[i] + int64(ints[2])
+				if ints[2] < m || zzz > k || dp[ints[1]] <= zzz {
+					continue
+				}
+				if ints[1] == n-1 {
+					l = m + 1
+					continue out
+				}
+				temp = append(temp, ints[1])
+				dp[ints[1]] = zzz
+			}
+		}
+		r = m - 1
+	}
+	return r
+}
+
