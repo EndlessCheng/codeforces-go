@@ -304,7 +304,7 @@ class Solution:
         for x, c in cnt.items():
             if c % 2:
                 return -1
-            a.extend([x] * (abs(c) // 2))  # 剩余元素全部加到 a 中
+            a.extend([x] * (abs(c) // 2))
 
         a.sort()
         mn = min(cnt)
