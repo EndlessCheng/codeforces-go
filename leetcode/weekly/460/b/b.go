@@ -27,7 +27,7 @@ func numDistinct(s, t string) int {
 // 计算插入 T 产生的额外 LCT 子序列个数的最大值
 func calcInsertT(s string) (res int) {
 	cntT := strings.Count(s, "T") // s[i+1] 到 s[n-1] 的 'T' 的个数
-	cntL := 0 // s[0] 到 s[i] 的 'L' 的个数
+	cntL := 0                     // s[0] 到 s[i] 的 'L' 的个数
 	for _, c := range s {
 		if c == 'T' {
 			cntT--
@@ -40,7 +40,26 @@ func calcInsertT(s string) (res int) {
 	return
 }
 
-func numOfSubsequences(s string) int64 {
+func numOfSubsequences1(s string) int64 {
 	extra := max(numDistinct(s, "CT"), numDistinct(s, "LC"), calcInsertT(s))
 	return int64(numDistinct(s, "LCT") + extra)
+}
+
+func numOfSubsequences(s string) int64 {
+	t := strings.Count(s, "T")
+	var l, lc, lct, c, ct, lt int
+	for _, b := range s {
+		if b == 'L' {
+			l++
+		} else if b == 'C' {
+			lc += l
+			c++
+		} else if b == 'T' {
+			lct += lc
+			ct += c
+			t--
+		}
+		lt = max(lt, l*t)
+	}
+	return int64(lct + max(ct, lc, lt))
 }

@@ -1,11 +1,13 @@
-先计算不插入字母时的 $\texttt{LCT}$ 子序列个数，然后加上插入字母所产生的**额外** $\texttt{LCT}$ 子序列个数。
+## 方法一：115 题 + 前后缀分解
+
+先计算不插入字母时的 $\texttt{LCT}$ 子序列个数，然后加上插入字母**额外**产生的 $\texttt{LCT}$ 子序列个数。
 
 不插入字母，问题就是 [115. 不同的子序列](https://leetcode.cn/problems/distinct-subsequences/)，请看 [我的题解](https://leetcode.cn/problems/distinct-subsequences/solutions/3060706/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-9va6/)。
 
 插入字母，分类讨论：
 
-- 插入 $\texttt{L}$，贪心地，插在 $s$ 的最左边，产生的额外 $\texttt{LCT}$ 子序列个数就是 $s$ 中的 $\texttt{CT}$ 子序列个数。复用 115 题代码即可。
-- 插入 $\texttt{T}$，贪心地，插在 $s$ 的最右边，产生的额外 $\texttt{LCT}$ 子序列个数就是 $s$ 中的 $\texttt{LC}$ 子序列个数。复用 115 题代码即可。
+- 插入 $\texttt{L}$，插在 $s$ 的最左边最优，额外产生的 $\texttt{LCT}$ 子序列个数就是 $s$ 中的 $\texttt{CT}$ 子序列个数。复用 115 题代码即可。
+- 插入 $\texttt{T}$，插在 $s$ 的最右边最优，额外产生的 $\texttt{LCT}$ 子序列个数就是 $s$ 中的 $\texttt{LC}$ 子序列个数。复用 115 题代码即可。
 - 插入 $\texttt{C}$，我们枚举插在 $s[i]$ 和 $s[i+1]$ 之间，根据乘法原理，产生的额外 $\texttt{LCT}$ 子序列个数，等于 $s[0]$ 到 $s[i]$ 中的 $\texttt{L}$ 的个数，乘以 $s[i+1]$ 到 $s[n-1]$ 中的 $\texttt{T}$ 的个数。取所有插入位置的最大值。
 
 三种情况取最大值，即为插入字母所产生的额外 $\texttt{LCT}$ 子序列个数。
@@ -27,7 +29,7 @@ class Solution:
                     f[j + 1] += f[j]
         return f[m]
 
-    # 计算插入 C 产生的额外 LCT 子序列个数的最大值
+    # 计算插入 C 额外产生的 LCT 子序列个数的最大值
     def calcInsertC(self, s: str) -> int:
         cnt_t = s.count('T')  # s[i+1] 到 s[n-1] 的 'T' 的个数
         cnt_l = 0  # s[0] 到 s[i] 的 'L' 的个数
@@ -74,7 +76,7 @@ class Solution {
         return f[m];
     }
 
-    // 计算插入 C 产生的额外 LCT 子序列个数的最大值
+    // 计算插入 C 额外产生的 LCT 子序列个数的最大值
     private long calcInsertC(char[] s) {
         int cntT = 0;
         for (char c : s) {
@@ -120,7 +122,7 @@ class Solution {
         return f[m];
     }
 
-    // 计算插入 C 产生的额外 LCT 子序列个数的最大值
+    // 计算插入 C 额外产生的 LCT 子序列个数的最大值
     long long calcInsertC(string s) {
         int cnt_t = ranges::count(s, 'T'); // s[i+1] 到 s[n-1] 的 'T' 的个数
         int cnt_l = 0; // s[0] 到 s[i] 的 'L' 的个数
@@ -165,7 +167,7 @@ func numDistinct(s, t string) int {
 	return f[m]
 }
 
-// 计算插入 C 产生的额外 LCT 子序列个数的最大值
+// 计算插入 C 额外产生的 LCT 子序列个数的最大值
 func calcInsertC(s string) (res int) {
 	cntT := strings.Count(s, "T") // s[i+1] 到 s[n-1] 的 'T' 的个数
 	cntL := 0 // s[0] 到 s[i] 的 'L' 的个数
@@ -192,9 +194,141 @@ func numOfSubsequences(s string) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 方法二：状态机 DP + 前后缀分解
+
+方法一计算子序列个数的那三个 DP，可以合并到同一个循环中。
+
+对于 $\texttt{LCT}$ 子序列的个数，计算方式如下：
+
+- 定义 $\textit{l}$ 表示遍历过的 $\texttt{L}$ 的个数。每次遍历到 $\texttt{L}$ 的时候，就把 $\textit{l}$ 增加 $1$。
+- 定义 $\textit{lc}$ 表示遍历过的 $\texttt{LC}$ 子序列的个数。每次遍历到 $\texttt{C}$ 的时候，就把 $\textit{lc}$ 增加 $\textit{l}$。
+- 定义 $\textit{lct}$ 表示遍历过的 $\texttt{LCT}$ 子序列的个数。每次遍历到 $\texttt{T}$ 的时候，就把 $\textit{lct}$ 增加 $\textit{lc}$。
+
+对于 $\texttt{LC}$ 和 $\texttt{CT}$ 的计算方法同理。
+
+```py [sol-Python3]
+class Solution:
+    def numOfSubsequences(self, s: str) -> int:
+        t = s.count('T')
+        l = lc = lct = c = ct = lt = 0
+        for b in s:
+            if b == 'L':
+                l += 1
+            elif b == 'C':
+                lc += l
+                c += 1
+            elif b == 'T':
+                lct += lc
+                ct += c
+                t -= 1
+            lt = max(lt, l * t)
+        return lct + max(ct, lc, lt)
+```
+
+```py [sol-Python3 手写 max]
+class Solution:
+    def numOfSubsequences(self, s: str) -> int:
+        t = s.count('T')
+        l = lc = lct = c = ct = lt = 0
+        for b in s:
+            if b == 'L':
+                l += 1
+            elif b == 'C':
+                lc += l
+                c += 1
+            elif b == 'T':
+                lct += lc
+                ct += c
+                t -= 1
+            v = l * t
+            if v > lt:
+                lt = v
+        return lct + max(ct, lc, lt)
+```
+
+```java [sol-Java]
+class Solution {
+    public long numOfSubsequences(String S) {
+        char[] s = S.toCharArray();
+        int t = 0;
+        for (char c : s) {
+            if (c == 'T') {
+                t++;
+            }
+        }
+
+        long l = 0, lc = 0, lct = 0, c = 0, ct = 0, lt = 0;
+        for (char b : s) {
+            if (b == 'L') {
+                l++;
+            } else if (b == 'C') {
+                lc += l;
+                c++;
+            } else if (b == 'T') {
+                lct += lc;
+                ct += c;
+                t--;
+            }
+            lt = Math.max(lt, l * t);
+        }
+        return lct + Math.max(Math.max(ct, lc), lt);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long numOfSubsequences(string s) {
+        int t = ranges::count(s, 'T');
+        long long l = 0, lc = 0, lct = 0, c = 0, ct = 0, lt = 0;
+        for (char b : s) {
+            if (b == 'L') {
+                l++;
+            } else if (b == 'C') {
+                lc += l;
+                c++;
+            } else if (b == 'T') {
+                lct += lc;
+                ct += c;
+                t--;
+            }
+            lt = max(lt, l * t);
+        }
+        return lct + max({ct, lc, lt});
+    }
+};
+```
+
+```go [sol-Go]
+func numOfSubsequences(s string) int64 {
+	t := strings.Count(s, "T")
+	var l, lc, lct, c, ct, lt int
+	for _, b := range s {
+		if b == 'L' {
+			l++
+		} else if b == 'C' {
+			lc += l
+			c++
+		} else if b == 'T' {
+			lct += lc
+			ct += c
+			t--
+		}
+		lt = max(lt, l*t)
+	}
+	return int64(lct + max(ct, lc, lt))
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
 ## 专题训练
 
-见下面动态规划题单的「**§4.1 最长公共子序列（LCS）**」和「**专题：前后缀分解**」。
+见下面动态规划题单的「**§4.1 最长公共子序列（LCS）**」「**六、状态机 DP**」和「**专题：前后缀分解**」。
 
 ## 分类题单
 
