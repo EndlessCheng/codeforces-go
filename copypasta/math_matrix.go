@@ -4,7 +4,6 @@ import (
 	. "fmt"
 	"io"
 	"math"
-	"math/bits"
 	"slices"
 )
 
@@ -491,10 +490,14 @@ func newXorBasis(a []int) *xorBasis {
 }
 
 // 尝试插入 v，看能否找到一个新的线性无关基
+// 针对稀疏二进制的写法 https://leetcode.cn/problems/partition-array-for-maximum-xor-and-and/solution/shi-zi-bian-xing-xian-xing-ji-pythonjava-3e80/
 func (b *xorBasis) insert(v int) bool {
 	b.or |= v
-	for v > 0 {
-		i := bits.Len(uint(v)) - 1
+	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
+	for i := len(b.b) - 1; i >= 0; i-- {
+		if v>>i&1 == 0 {
+			continue
+		}
 		if b.b[i] == 0 { // x 和之前的基是线性无关的
 			b.b[i] = v // 新增一个基，最高位为 i
 			b.num++
@@ -599,7 +602,7 @@ func (b *xorBasis) initOnce() {
 	if b.basis != nil {
 		return
 	}
-	tmp := append([]int{}, b.b...)
+	tmp := slices.Clone(b.b)
 	for i := range tmp {
 		if tmp[i] == 0 {
 			continue
