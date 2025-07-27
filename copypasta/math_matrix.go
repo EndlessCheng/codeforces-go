@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io"
 	"math"
+	"math/bits"
 	"slices"
 )
 
@@ -450,17 +451,19 @@ func (a matrix) determinant(mod int) int {
 // 线性基求交 https://www.cnblogs.com/BakaCirno/p/11298102.html
 // https://zhuanlan.zhihu.com/p/139074556
 //
-// 模板题 https://loj.ac/p/113 https://www.luogu.com.cn/problem/P3812
+// 模板题 https://www.luogu.com.cn/problem/P3812 https://loj.ac/p/113
 // 题单 https://www.luogu.com.cn/training/11251
 // https://codeforces.com/problemset/problem/895/C 2000
 // - 加强版 https://loj.ac/p/2978
 // https://codeforces.com/problemset/problem/845/G 2300 异或最短路/最长路
 // - https://www.luogu.com.cn/problem/P4151
 // https://codeforces.com/problemset/problem/1101/G 2300
+// https://codeforces.com/problemset/problem/662/A 2400 博弈
 // https://codeforces.com/problemset/problem/959/F 2400
 // https://codeforces.com/problemset/problem/1902/F 2400
 // https://codeforces.com/problemset/problem/1427/E 2500 构造
 // https://codeforces.com/problemset/problem/724/G 2600 图上线性基
+// https://codeforces.com/problemset/problem/251/D 2700
 // https://codeforces.com/problemset/problem/19/E 2900 图上线性基
 // https://atcoder.jp/contests/abc141/tasks/abc141_f
 // https://www.luogu.com.cn/problem/P3857
@@ -490,19 +493,17 @@ func newXorBasis(a []int) *xorBasis {
 // 尝试插入 v，看能否找到一个新的线性无关基
 func (b *xorBasis) insert(v int) bool {
 	b.or |= v
-	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
-	for i := len(b.b) - 1; i >= 0; i-- {
-		if v>>i&1 == 0 {
-			continue
-		}
-		if b.b[i] == 0 { // 线性无关
-			b.b[i] = v
+	for v > 0 {
+		i := bits.Len(uint(v)) - 1
+		if b.b[i] == 0 { // x 和之前的基是线性无关的
+			b.b[i] = v // 新增一个基，最高位为 i
 			b.num++
 			return true
 		}
-		v ^= b.b[i]
+		v ^= b.b[i] // 保证参与 maxXor 的基的最高位是互不相同的，方便我们贪心
 	}
-	b.canBeZero = true // 没有找到，但这说明了可以选一些数使得异或和为 0
+	// 正常循环结束，此时 x=0，说明一开始的 x 可以被已有基表出，不是一个线性无关基
+	b.canBeZero = true
 	return false
 }
 
@@ -549,13 +550,14 @@ func (b *xorBasis) decompose(v int) bool {
 	return true
 }
 
+// 返回能被线性基表出的最大值
+// 如果线性基为空，返回 0
 // https://www.luogu.com.cn/problem/P3812
 // https://loj.ac/p/113
-func (b *xorBasis) maxXor() (xor int) {
+// https://leetcode.cn/problems/partition-array-for-maximum-xor-and-and/solutions/3734850/shi-zi-bian-xing-xian-xing-ji-pythonjava-3e80/
+func (b *xorBasis) maxXor() (res int) {
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if xor^b.b[i] > xor {
-			xor ^= b.b[i]
-		}
+		res = max(res, res^b.b[i])
 	}
 	return
 }
