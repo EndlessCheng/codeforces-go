@@ -1,8 +1,6 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV12w411B7ia/) 第四题。
+## 前置知识：动态规划入门
 
-## 前置知识
-
-[动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
+请看视频：[动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)
 
 ## 预处理
 
@@ -31,8 +29,10 @@ $$
 
 递归入口：$\textit{dfs}(k-1,n-1)$，即为答案。
 
+[视频讲解](https://www.bilibili.com/video/BV12w411B7ia/) 第四题。
+
 ```py [sol-Python3]
-# 预处理每个数的真因子，时间复杂度 O(MX*logMX)
+# 预处理每个数的真因子
 MX = 201
 divisors = [[] for _ in range(MX)]
 for i in range(1, MX):
@@ -70,12 +70,13 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    public int minimumChanges(String s, int k) {
-        int n = s.length();
+    public int minimumChanges(String S, int k) {
+        char[] s = S.toCharArray();
+        int n = s.length;
         int[][] modify = new int[n - 1][n];
         for (int left = 0; left < n - 1; left++) {
             for (int right = left + 1; right < n; right++) {
-                modify[left][right] = getModify(s.substring(left, right + 1));
+                modify[left][right] = getModify(s, left, right - left + 1);
             }
         }
 
@@ -90,7 +91,7 @@ class Solution {
     private static final List<Integer>[] divisors = new ArrayList[MX];
 
     static {
-        // 预处理每个数的真因子，时间复杂度 O(MX*logMX)
+        // 预处理每个数的真因子
         Arrays.setAll(divisors, k -> new ArrayList<>());
         for (int i = 1; i < MX; i++) {
             for (int j = i * 2; j < MX; j += i) {
@@ -99,15 +100,13 @@ class Solution {
         }
     }
 
-    private int getModify(String S) {
-        char[] s = S.toCharArray();
-        int n = s.length;
+    private int getModify(char[] s, int begin, int n) {
         int res = n;
         for (int d : divisors[n]) {
             int cnt = 0;
             for (int i0 = 0; i0 < d; i0++) {
                 for (int i = i0, j = n - d + i0; i < j; i += d, j -= d) {
-                    if (s[i] != s[j]) {
+                    if (s[begin + i] != s[begin + j]) {
                         cnt++;
                     }
                 }
@@ -134,9 +133,10 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-// 预处理每个数的真因子，时间复杂度 O(MX*logMX)
+// 预处理每个数的真因子
 const int MX = 201;
-vector<vector<int>> divisors(MX);
+vector<int> divisors[MX];
+
 int init = [] {
     for (int i = 1; i < MX; i++) {
         for (int j = i * 2; j < MX; j += i) {
@@ -147,7 +147,7 @@ int init = [] {
 }();
 
 class Solution {
-    int get_modify(string s) {
+    int get_modify(const string& s) {
         int n = s.length();
         int res = n;
         for (int d: divisors[n]) {
@@ -165,19 +165,19 @@ class Solution {
 public:
     int minimumChanges(string s, int k) {
         int n = s.length();
-        vector<vector<int>> modify(n - 1, vector<int>(n));
+        vector modify(n - 1, vector<int>(n));
         for (int left = 0; left < n - 1; left++) {
             for (int right = left + 1; right < n; right++) {
                 modify[left][right] = get_modify(s.substr(left, right - left + 1));
             }
         }
 
-        vector<vector<int>> memo(k, vector<int>(n, n + 1)); // n+1 表示没有计算过
-        function<int(int, int)> dfs = [&](int i, int j) -> int {
+        vector memo(k, vector<int>(n, n + 1)); // n+1 表示没有计算过
+        auto dfs = [&](this auto&& dfs, int i, int j) -> int {
             if (i == 0) {
                 return modify[0][j];
             }
-            int &res = memo[i][j]; // 注意这里是引用
+            int& res = memo[i][j]; // 注意这里是引用
             if (res <= n) { // 之前计算过
                 return res;
             }
@@ -192,9 +192,10 @@ public:
 ```
 
 ```go [sol-Go]
-// 预处理每个数的真因子，时间复杂度 O(mx*log(mx))
+// 预处理每个数的真因子
 const mx = 200
 var divisors [mx + 1][]int
+
 func init() {
 	for i := 1; i <= mx; i++ {
 		for j := i * 2; j <= mx; j += i {
@@ -255,8 +256,6 @@ func minimumChanges(s string, k int) (ans int) {
 	}
 	return dfs(k-1, n-1)
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
 ```
 
 ## 1:1 翻译成递推
@@ -322,12 +321,13 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    public int minimumChanges(String s, int k) {
-        int n = s.length();
+    public int minimumChanges(String S, int k) {
+        char[] s = S.toCharArray();
+        int n = s.length;
         int[][] modify = new int[n - 1][n];
         for (int left = 0; left < n - 1; left++) {
             for (int right = left + 1; right < n; right++) {
-                modify[left][right] = getModify(s.substring(left, right + 1));
+                modify[left][right] = getModify(s, left, right - left + 1);
             }
         }
 
@@ -355,15 +355,13 @@ class Solution {
         }
     }
 
-    private int getModify(String S) {
-        char[] s = S.toCharArray();
-        int n = s.length;
+    private int getModify(char[] s, int begin, int n) {
         int res = n;
         for (int d : divisors[n]) {
             int cnt = 0;
             for (int i0 = 0; i0 < d; i0++) {
                 for (int i = i0, j = n - d + i0; i < j; i += d, j -= d) {
-                    if (s[i] != s[j]) {
+                    if (s[begin + i] != s[begin + j]) {
                         cnt++;
                     }
                 }
@@ -377,7 +375,8 @@ class Solution {
 
 ```cpp [sol-C++]
 const int MX = 201;
-vector<vector<int>> divisors(MX);
+vector<int> divisors[MX];
+
 int init = [] {
     for (int i = 1; i < MX; i++) {
         for (int j = i * 2; j < MX; j += i) {
@@ -388,13 +387,13 @@ int init = [] {
 }();
 
 class Solution {
-    int get_modify(string s) {
-        int n = s.length();
+    int get_modify(const string &s, int begin, int end) {
+        int n = end - begin;
         int res = n;
         for (int d: divisors[n]) {
             int cnt = 0;
             for (int i0 = 0; i0 < d; i0++) {
-                for (int i = i0, j = n - d + i0; i < j; i += d, j -= d) {
+                for (int i = begin + i0, j = end - d + i0; i < j; i += d, j -= d) {
                     cnt += s[i] != s[j];
                 }
             }
@@ -409,7 +408,7 @@ public:
         vector<vector<int>> modify(n - 1, vector<int>(n));
         for (int left = 0; left < n - 1; left++) {
             for (int right = left + 1; right < n; right++) {
-                modify[left][right] = get_modify(s.substr(left, right - left + 1));
+                modify[left][right] = get_modify(s, left, right + 1);
             }
         }
 
@@ -430,6 +429,7 @@ public:
 ```go [sol-Go]
 const mx = 200
 var divisors [mx + 1][]int
+
 func init() {
 	for i := 1; i <= mx; i++ {
 		for j := i * 2; j <= mx; j += i {
@@ -476,11 +476,30 @@ func minimumChanges(s string, k int) (ans int) {
 	}
 	return f[n-1]
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^3\log n)$，其中 $n$ 为 $s$ 的长度。时间主要在预处理上，有 $\mathcal{O}(n^2)$ 个子串，平均每个子串有 $\mathcal{O}(\log n)$ 个因子，每个因子需要 $\mathcal{O}(n)$ 的时间计算修改次数。
 - 空间复杂度：$\mathcal{O}(n^2)$。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
