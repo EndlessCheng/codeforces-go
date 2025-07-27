@@ -12,7 +12,7 @@ type xorBasis []int
 func (b xorBasis) insert(x int) {
 	for x > 0 {
 		i := bits.Len(uint(x)) - 1 // x 的最高位
-		if b[i] == 0 { // x 和之前的基是线性无关的
+		if b[i] == 0 {             // x 和之前的基是线性无关的
 			b[i] = x // 新增一个基，最高位为 i
 			return
 		}
@@ -25,23 +25,20 @@ func (b xorBasis) maxXor() (res int) {
 	// 从高到低贪心：越高的位，越必须是 1
 	// 由于每个位的基至多一个，所以每个位只需考虑异或一个基，若能变大，则异或之
 	for i := len(b) - 1; i >= 0; i-- {
-		if res^b[i] > res {
-			res ^= b[i]
-		}
+		res = max(res, res^b[i])
 	}
 	return
 }
 
 func maximizeXorAndXor(nums []int) int64 {
 	n := len(nums)
-	// 预处理所有子集的 AND 和 XOR（刷表法）
-	type pair struct{ and, xor int }
+	type pair struct{ and, xor, or int } // 多算一个子集 OR，用于剪枝
 	subSum := make([]pair, 1<<n)
 	subSum[0].and = -1
 	for i, x := range nums {
 		highBit := 1 << i
 		for mask, p := range subSum[:highBit] {
-			subSum[highBit|mask] = pair{p.and & x, p.xor ^ x}
+			subSum[highBit|mask] = pair{p.and & x, p.xor ^ x, p.or | x}
 		}
 	}
 	subSum[0].and = 0
@@ -61,7 +58,9 @@ func maximizeXorAndXor(nums []int) int64 {
 	ans := 0
 	u := 1<<n - 1
 	for i, p := range subSum {
-		ans = max(ans, p.and+maxXor2(uint(u^i)))
+		if p.and+subSum[u^i].or*2 > ans { // 有机会让 ans 变得更大
+			ans = max(ans, p.and+maxXor2(uint(u^i)))
+		}
 	}
 	return int64(ans)
 }

@@ -243,6 +243,10 @@ func minJumps(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。循环次数取决于下标列表的总长度（这决定了 BFS 的循环次数）。在最坏情况下，构造这样一个 $\textit{nums}$ 数组，它含有 $\mathcal{O}(\log U)$ 个不同的质数，以及 $\mathcal{O}(n-\log U)$ 个有 $\mathcal{O}(\log U)$ 个质数的数。此时下标列表的总长度为 $\mathcal{O}(n\log U)$，且 BFS 的循环次数也为 $\mathcal{O}(n\log U)$。
 - 空间复杂度：$\mathcal{O}(n\log U)$。
 
+## 专题训练
+
+见数学题单的「**§1.3 质因数分解**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)

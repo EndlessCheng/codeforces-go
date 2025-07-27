@@ -326,6 +326,10 @@ func numOfSubsequences(s string) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 相似题目
+
+[2222. 选择建筑的方案数](https://leetcode.cn/problems/number-of-ways-to-select-buildings/)
+
 ## 专题训练
 
 见下面动态规划题单的「**§4.1 最长公共子序列（LCS）**」「**六、状态机 DP**」和「**专题：前后缀分解**」。
