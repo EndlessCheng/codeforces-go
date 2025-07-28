@@ -20,7 +20,7 @@
 class Solution:
     def minimumDifference(self, nums: List[int], k: int) -> int:
         ans = inf
-        for i, x in enumerate(nums):
+        for i, x in enumerate(nums):  # 计算右端点为 i 的子数组的 OR
             ans = min(ans, abs(x - k))  # 单个元素也算子数组
             for j in range(i - 1, -1, -1):
                 nums[j] |= x  # 现在 nums[j] = 原数组 nums[j] 到 nums[i] 的 OR
@@ -33,7 +33,7 @@ class Solution:
 class Solution {
     public int minimumDifference(int[] nums, int k) {
         int ans = Integer.MAX_VALUE;
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < nums.length; i++) { // 计算右端点为 i 的子数组的 OR
             int x = nums[i];
             ans = Math.min(ans, Math.abs(x - k)); // 单个元素也算子数组
             for (int j = i - 1; j >= 0; j--) {
@@ -52,7 +52,7 @@ class Solution {
 public:
     int minimumDifference(vector<int>& nums, int k) {
         int ans = INT_MAX;
-        for (int i = 0; i < nums.size(); i++) {
+        for (int i = 0; i < nums.size(); i++) { // 计算右端点为 i 的子数组的 OR
             int x = nums[i];
             ans = min(ans, abs(x - k)); // 单个元素也算子数组
             for (int j = i - 1; j >= 0; j--) {
@@ -71,7 +71,7 @@ public:
 
 int minimumDifference(int* nums, int numsSize, int k) {
     int ans = INT_MAX;
-    for (int i = 0; i < numsSize; i++) {
+    for (int i = 0; i < numsSize; i++) { // 计算右端点为 i 的子数组的 OR
         int x = nums[i];
         ans = MIN(ans, abs(x - k)); // 单个元素也算子数组
         for (int j = i - 1; j >= 0; j--) {
@@ -87,7 +87,7 @@ int minimumDifference(int* nums, int numsSize, int k) {
 // 暴力算法，会超时
 func minimumDifference(nums []int, k int) int {
     ans := math.MaxInt
-    for i, x := range nums {
+    for i, x := range nums { // 计算右端点为 i 的子数组的 OR
         ans = min(ans, abs(x-k)) // 单个元素也算子数组
         for j := i - 1; j >= 0; j-- {
             nums[j] |= x // 现在 nums[j] = 原数组 nums[j] 到 nums[i] 的 OR
@@ -104,7 +104,7 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 // 暴力算法，会超时
 var minimumDifference = function(nums, k) {
     let ans = Infinity;
-    for (let i = 0; i < nums.length; i++) {
+    for (let i = 0; i < nums.length; i++) { // 计算右端点为 i 的子数组的 OR
         const x = nums[i];
         ans = Math.min(ans, Math.abs(x - k)); // 单个元素也算子数组
         for (let j = i - 1; j >= 0; j--) {
@@ -121,7 +121,7 @@ var minimumDifference = function(nums, k) {
 impl Solution {
     pub fn minimum_difference(mut nums: Vec<i32>, k: i32) -> i32 {
         let mut ans = i32::MAX;
-        for i in 0..nums.len() {
+        for i in 0..nums.len() { // 计算右端点为 i 的子数组的 OR
             let x = nums[i];
             ans = ans.min((x - k).abs()); // 单个元素也算子数组
             for j in (0..i).rev() {
@@ -150,9 +150,7 @@ impl Solution {
 
 想一想，如果 $A_i$ 是 $A_j$ 的子集，那么内层循环还需要继续跑吗？
 
-不需要。如果 $A_i$ 已经是 $A_j$ 的子集，那么 $A_i$ 必然也是更左边的 $A_0,A_1,A_2,\cdots,A_{j-1}$ 的子集。既然 $A_i$ 都已经是这些集合的子集了，那么并入操作不会改变这些集合。
-
-所以当我们发现 $A_i$ 是 $A_j$ 的子集时，就可以退出内层循环了。
+不需要。如果 $A_i$ 已经是 $A_j$ 的子集，那么 $A_i$ 必然也是更左边的 $A_0,A_1,A_2,\cdots,A_{j-1}$ 的子集。既然 $A_i$ 都已经是这些集合的子集了，那么**并入操作不会改变这些集合**，暴力算法做了很多无用功。所以当我们发现 $A_i$ 是 $A_j$ 的子集时，就可以退出内层循环了。
 
 具体到代码，对于两个二进制数 $a$ 和 $b$，如果 $a\ \vert\ b = a$，那么 $b$ 对应的集合是 $a$ 对应的集合的子集。
 
@@ -164,12 +162,12 @@ class Solution:
         ans = inf
         for i, x in enumerate(nums):
             ans = min(ans, abs(x - k))
-            j = i - 1
-            # 如果 x 是 nums[j] 的子集，就退出循环
-            while j >= 0 and nums[j] | x != nums[j]:
+            for j in range(i - 1, -1, -1):
+                # 只需增加一个判断条件：如果 x 是 nums[j] 的子集，退出循环
+                if nums[j] | x == nums[j]:
+                    break
                 nums[j] |= x
                 ans = min(ans, abs(nums[j] - k))
-                j -= 1
         return ans
 ```
 
@@ -180,7 +178,7 @@ class Solution {
         for (int i = 0; i < nums.length; i++) {
             int x = nums[i];
             ans = Math.min(ans, Math.abs(x - k));
-            // 如果 x 是 nums[j] 的子集，就退出循环
+            // 只需增加一个判断条件：如果 x 是 nums[j] 的子集，退出循环
             for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
                 nums[j] |= x;
                 ans = Math.min(ans, Math.abs(nums[j] - k));
@@ -199,7 +197,7 @@ public:
         for (int i = 0; i < nums.size(); i++) {
             int x = nums[i];
             ans = min(ans, abs(x - k));
-            // 如果 x 是 nums[j] 的子集，就退出循环
+            // 只需增加一个判断条件：如果 x 是 nums[j] 的子集，退出循环
             for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
                 nums[j] |= x;
                 ans = min(ans, abs(nums[j] - k));
@@ -218,7 +216,7 @@ int minimumDifference(int* nums, int numsSize, int k) {
     for (int i = 0; i < numsSize; i++) {
         int x = nums[i];
         ans = MIN(ans, abs(x - k));
-        // 如果 x 是 nums[j] 的子集，就退出循环
+        // 只需增加一个判断条件：如果 x 是 nums[j] 的子集，退出循环
         for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
             nums[j] |= x;
             ans = MIN(ans, abs(nums[j] - k));
@@ -234,7 +232,7 @@ func minimumDifference(nums []int, k int) int {
     ans := math.MaxInt
     for i, x := range nums {
         ans = min(ans, abs(x-k))
-        // 如果 x 是 nums[j] 的子集，就退出循环
+        // 只需增加一个判断条件：如果 x 是 nums[j] 的子集，退出循环
         for j := i - 1; j >= 0 && nums[j]|x != nums[j]; j-- {
             nums[j] |= x
             ans = min(ans, abs(nums[j]-k))
@@ -252,7 +250,7 @@ var minimumDifference = function(nums, k) {
     for (let i = 0; i < nums.length; i++) {
         const x = nums[i];
         ans = Math.min(ans, Math.abs(x - k));
-        // 如果 x 是 nums[j] 的子集，就退出循环
+        // 只需增加一个判断条件：如果 x 是 nums[j] 的子集，退出循环
         for (let j = i - 1; j >= 0 && (nums[j] | x) !== nums[j]; j--) {
             nums[j] |= x;
             ans = Math.min(ans, Math.abs(nums[j] - k));
@@ -269,12 +267,13 @@ impl Solution {
         for i in 0..nums.len() {
             let x = nums[i];
             ans = ans.min((x - k).abs());
-            let mut j = i - 1;
-            // 如果 x 是 nums[j] 的子集，就退出循环
-            while j < nums.len() && (nums[j] | x) != nums[j] {
+            for j in (0..i).rev() {
+                // 只需增加一个判断条件：如果 x 是 nums[j] 的子集，退出循环
+                if (nums[j] | x) == nums[j] {
+                    break;
+                }
                 nums[j] |= x;
                 ans = ans.min((nums[j] - k).abs());
-                j -= 1;
             }
         }
         ans

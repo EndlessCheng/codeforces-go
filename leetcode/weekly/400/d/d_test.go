@@ -11,5 +11,5 @@ func Test_d(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-// https://leetcode.cn/contest/weekly-contest-400/problems/find-subarray-with-bitwise-and-closest-to-k/
-// https://leetcode.cn/problems/find-subarray-with-bitwise-and-closest-to-k/
+// https://leetcode.cn/contest/weekly-contest-400/problems/find-subarray-with-bitwise-or-closest-to-k/
+// https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/
