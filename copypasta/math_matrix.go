@@ -493,9 +493,9 @@ func newXorBasis(a []int) *xorBasis {
 // 针对稀疏二进制的写法 https://leetcode.cn/problems/partition-array-for-maximum-xor-and-and/solution/shi-zi-bian-xing-xian-xing-ji-pythonjava-3e80/
 func (b *xorBasis) insert(v int) bool {
 	b.or |= v
-	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
+	// 从高到低遍历，保证计算 maxXor 的时候，参与 XOR 的基的最高位（或者说二进制长度）是互不相同的
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if v>>i&1 == 0 {
+		if v>>i == 0 { // 由于大于 i 的位都被我们异或成了 0，所以 v>>i 的结果只能是 0 或 1
 			continue
 		}
 		if b.b[i] == 0 { // x 和之前的基是线性无关的
@@ -503,7 +503,7 @@ func (b *xorBasis) insert(v int) bool {
 			b.num++
 			return true
 		}
-		v ^= b.b[i] // 保证参与 maxXor 的基的最高位是互不相同的，方便我们贪心
+		v ^= b.b[i] // 保证每个基的二进制长度互不相同
 	}
 	// 正常循环结束，此时 x=0，说明一开始的 x 可以被已有基表出，不是一个线性无关基
 	b.canBeZero = true
