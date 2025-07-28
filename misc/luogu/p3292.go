@@ -75,6 +75,7 @@ func p3292(in io.Reader, _w io.Writer) {
 	xb := make([]xorBasis3292, n)
 	var dfs func(int, int)
 	dfs = func(v, p int) {
+		xb[v].insert(a[v], dep[v])
 		pa[v][0] = p
 		for _, w := range g[v] {
 			if w == p {
@@ -82,11 +83,9 @@ func p3292(in io.Reader, _w io.Writer) {
 			}
 			dep[w] = dep[v] + 1
 			xb[w] = xb[v]
-			xb[w].insert(a[w], dep[w])
 			dfs(w, v)
 		}
 	}
-	xb[0].insert(a[0], 0)
 	dfs(0, -1)
 	for i := 0; i < mx-1; i++ {
 		for v := range pa {
