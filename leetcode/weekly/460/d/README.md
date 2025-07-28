@@ -143,7 +143,8 @@ class Solution {
 
         long ans = 0;
         for (int i = 0; i < u; i++) {
-            ans = Math.max(ans, subAnd[(u - 1) ^ i] + maxXor2(i, subXor[i], nums, sz));
+            int j = (u - 1) ^ i;
+            ans = Math.max(ans, subAnd[i] + maxXor2(j, subXor[j], nums, sz));
         }
         return ans;
     }
@@ -295,7 +296,21 @@ func maximizeXorAndXor(nums []int) int64 {
 
 ## 优化
 
-最优性剪枝：$\text{XOR}(A)$ 和 $\text{XOR}(C)$ 的理论最大值是 $\text{OR}(\complement_UB)$，如果 $\text{AND}(B) + 2\cdot \text{OR}(\complement_UB) \le \textit{ans}$，那么答案不可能变大，直接计算下一个子集。
+最优性剪枝：$\text{XOR}(A)$ 和 $\text{XOR}(C)$ 的理论最大值是 $\text{OR}(\complement_UB)$，如果 
+
+$$
+\text{AND}(B) + 2\cdot \text{OR}(\complement_UB) \le \textit{ans}
+$$
+
+那么答案不可能变大，直接计算下一个子集。
+
+进一步地，前文分析过，对于 $\text{XOR}(\complement_UB)$ 中的等于 $1$ 的比特位，$\text{XOR}(A) + \text{XOR}(C)$ 在这些比特位上恒为 $1$，不可能是 $2$。所以更精细的剪枝条件是
+
+$$
+\text{AND}(B) + 2\cdot \text{OR}(\complement_UB) - \text{XOR}(\complement_UB) \le \textit{ans}
+$$
+
+若不满足则跳过线性基的计算。
 
 ```py [sol-Python3]
 # 线性基模板
@@ -353,8 +368,9 @@ class Solution:
 
         ans = 0
         for i in range(u):
-            if sub_and[i] + sub_or[(u - 1) ^ i] * 2 > ans:  # 有机会让 ans 变得更大
-                ans = max(ans, sub_and[i] + max_xor2((u - 1) ^ i))
+            j = (u - 1) ^ i
+            if sub_and[i] + sub_or[j] * 2 - sub_xor[j] > ans:  # 有机会让 ans 变得更大
+                ans = max(ans, sub_and[i] + max_xor2(j))
         return ans
 ```
 
@@ -415,8 +431,9 @@ class Solution {
 
         long ans = 0;
         for (int i = 0; i < u; i++) {
-            if (subAnd[(u - 1) ^ i] + subOr[i] * 2L > ans) { // 有机会让 ans 变得更大
-                ans = Math.max(ans, subAnd[(u - 1) ^ i] + maxXor2(i, subXor[i], nums, sz));
+            int j = (u - 1) ^ i;
+            if (subAnd[i] + subOr[j] * 2L - subXor[j] > ans) { // 有机会让 ans 变得更大
+                ans = Math.max(ans, subAnd[i] + maxXor2(j, subXor[j], nums, sz));
             }
         }
         return ans;
@@ -499,8 +516,9 @@ public:
 
         long long ans = 0;
         for (int i = 0; i < u; i++) {
-            if (sub_and[i] + sub_or[(u - 1) ^ i] * 2LL > ans) { // 有机会让 ans 变得更大
-                ans = max(ans, sub_and[i] + max_xor2((u - 1) ^ i));
+            int j = (u - 1) ^ i;
+            if (sub_and[i] + sub_or[j] * 2LL - sub_xor[j] > ans) { // 有机会让 ans 变得更大
+                ans = max(ans, sub_and[i] + max_xor2(j));
             }
         }
         return ans;
@@ -561,8 +579,9 @@ func maximizeXorAndXor(nums []int) int64 {
 	ans := 0
 	u := 1<<n - 1
 	for i, p := range subSum {
-		if p.and+subSum[u^i].or*2 > ans { // 有机会让 ans 变得更大
-			ans = max(ans, p.and+maxXor2(uint(u^i)))
+		j := u ^ i
+		if p.and+subSum[j].or*2-subSum[j].xor > ans { // 有机会让 ans 变得更大
+			ans = max(ans, p.and+maxXor2(uint(j)))
 		}
 	}
 	return int64(ans)

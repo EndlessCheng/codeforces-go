@@ -58,8 +58,9 @@ func maximizeXorAndXor(nums []int) int64 {
 	ans := 0
 	u := 1<<n - 1
 	for i, p := range subSum {
-		if p.and+subSum[u^i].or*2 > ans { // 有机会让 ans 变得更大
-			ans = max(ans, p.and+maxXor2(uint(u^i)))
+		j := u ^ i
+		if p.and+subSum[j].or*2-subSum[j].xor > ans { // 有机会让 ans 变得更大
+			ans = max(ans, p.and+maxXor2(uint(j)))
 		}
 	}
 	return int64(ans)
