@@ -1,6 +1,4 @@
-去年十月的每日一题，出过一道类似的 [3171. 找到按位或最接近 K 的子数组](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/)。
-
-由于思路是一样的，本文只留代码，具体原理请看 [我的题解](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/)。
+本题和 [3171. 找到按位或最接近 K 的子数组](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/) 思路是一样的，[我的题解](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/) 详细解释了两个方法的原理。本文只留代码。
 
 ## 方法一：LogTrick
 
@@ -11,12 +9,12 @@ class Solution:
         for i, x in enumerate(nums):
             if x >= k:
                 return 1
-            j = i - 1
-            while j >= 0 and nums[j] | x != nums[j]:
+            for j in range(i - 1, -1, -1):
+                if nums[j] | x == nums[j]:
+                    break
                 nums[j] |= x
                 if nums[j] >= k:
                     ans = min(ans, i - j + 1)
-                j -= 1
         return ans if ans < inf else -1
 ```
 
@@ -133,13 +131,14 @@ impl Solution {
             if x >= k {
                 return 1;
             }
-            let mut j = i - 1;
-            while j < nums.len() && (nums[j] | x) != nums[j] {
+            for j in (0..i).rev() {
+                if (nums[j] | x) == nums[j] {
+                    break;
+                }
                 nums[j] |= x;
                 if nums[j] >= k {
                     ans = ans.min(i - j + 1);
                 }
-                j -= 1;
             }
         }
         if ans == usize::MAX { -1 } else { ans as _ }
@@ -149,7 +148,7 @@ impl Solution {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于 $2^{29}-1<10^9<2^{30}-1$，二进制数对应集合的大小不会超过 $29$，因此在 OR 运算下，每个数字至多可以增大 $29$ 次。**总体上看**，二重循环的总循环次数等于每个数字可以增大的次数之和，即 $O(n\log U)$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于 $10^9<2^{30}$，二进制数对应集合的大小不会超过 $30$，因此在 OR 运算下，每个数字至多可以增大 $30$ 次（从空集增大到有 $30$ 个元素）。**总体上看**，二重循环的总循环次数等于每个数字可以增大的次数之和，即 $O(n\log U)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 方法二：滑动窗口+栈
@@ -329,13 +328,13 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然我们写了个三重循环，但每个元素至多入栈出栈各一次，所以三重循环的**总**循环次数是 $\mathcal{O}(n)$ 的，所以时间复杂度是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-更多相似题目，见位运算题单中的「**LogTrick**」。
-
 ## 思考题
 
 如果把 OR 改成 XOR，要怎么做？
 
 提示：前缀异或和 + [1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/)。
+
+更多相似题目，见位运算题单的「**LogTrick**」。
 
 ## 分类题单
 
@@ -345,9 +344,9 @@ impl Solution {
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. 【本题相关】[位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
