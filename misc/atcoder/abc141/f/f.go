@@ -4,21 +4,22 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"math/bits"
 	"os"
 )
 
 // https://github.com/EndlessCheng
 type xorBasis []int
 
-func (b xorBasis) insert(x int) {
-	for x > 0 {
-		i := bits.Len(uint(x)) - 1
+func (b xorBasis) insert(v int) {
+	for i := len(b) - 1; i >= 0; i-- {
+		if v>>i == 0 {
+			continue
+		}
 		if b[i] == 0 {
-			b[i] = x
+			b[i] = v
 			return
 		}
-		x ^= b[i]
+		v ^= b[i]
 	}
 }
 
