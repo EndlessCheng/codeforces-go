@@ -466,6 +466,7 @@ func (a matrix) determinant(mod int) int {
 // https://codeforces.com/problemset/problem/1778/E 2500
 // https://codeforces.com/problemset/problem/724/G 2600 图上线性基
 // https://codeforces.com/problemset/problem/251/D 2700
+// - https://atcoder.jp/contests/abc141/tasks/abc141_f 简单版本
 // https://codeforces.com/problemset/problem/19/E 2900 图上线性基
 // https://atcoder.jp/contests/abc141/tasks/abc141_f
 // https://www.luogu.com.cn/problem/P3857
@@ -548,6 +549,7 @@ func (b *xorBasis) decompose(v int) bool {
 		if v>>i == 0 {
 			continue
 		}
+		// 配合 insertRightMost
 		// b.b[i] == 0 || b.rightMost[i] < lowerIndex
 		if b.b[i] == 0 {
 			return false
@@ -577,6 +579,7 @@ func (b *xorBasis) maxXorWithVal(val int) int {
 	return res
 }
 
+// 配合 insertRightMost
 func (b *xorBasis) maxXorWithLowerIndex(lowerIndex int) (res int) {
 	for i := len(b.b) - 1; i >= 0; i-- {
 		if res>>i&1 == 0 && b.rightMost[i] >= lowerIndex {
