@@ -1,7 +1,3 @@
-## 本题视频讲解
-
-见[【周赛 342】](https://www.bilibili.com/video/BV1Bs4y1A7Wa/)第四题。
-
 ## 方法一：计算最短的 GCD 等于 1 的子数组
 
 ### 提示 1
@@ -40,7 +36,9 @@ $$
 (\textit{minSize}-1) + (n-1) = \textit{minSize}+n-2
 $$
 
-```py [sol1-Python3]
+[本题视频讲解](https://www.bilibili.com/video/BV1Bs4y1A7Wa/)（第四题）
+
+```py [sol-Python3]
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
         if gcd(*nums) > 1:
@@ -62,7 +60,7 @@ class Solution:
         return min_size + n - 1
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public int minOperations(int[] nums) {
         int n = nums.length, gcdAll = 0, cnt1 = 0;
@@ -74,9 +72,9 @@ class Solution {
         if (cnt1 > 0) return n - cnt1;
 
         int minSize = n;
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             int g = 0;
-            for (int j = i; j < n; ++j) {
+            for (int j = i; j < n; j++) {
                 g = gcd(g, nums[j]);
                 if (g == 1) {
                     // 这里本来是 j-i+1，把 +1 提出来合并到 return 中
@@ -99,12 +97,12 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int minOperations(vector<int> &nums) {
+    int minOperations(vector<int>& nums) {
         int n = nums.size(), gcd_all = 0, cnt1 = 0;
-        for (int x: nums) {
+        for (int x : nums) {
             gcd_all = gcd(gcd_all, x);
             cnt1 += x == 1;
         }
@@ -112,9 +110,9 @@ public:
         if (cnt1) return n - cnt1;
 
         int min_size = n;
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             int g = 0;
-            for (int j = i; j < n; ++j) {
+            for (int j = i; j < n; j++) {
                 g = gcd(g, nums[j]);
                 if (g == 1) {
                     // 这里本来是 j-i+1，把 +1 提出来合并到 return 中
@@ -128,7 +126,7 @@ public:
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func minOperations(nums []int) int {
 	n, gcdAll, cnt1 := len(nums), 0, 0
 	for _, x := range nums {
@@ -165,27 +163,20 @@ func gcd(a, b int) int {
 	}
 	return b
 }
-
-func min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
-}
 ```
 
 ### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n(n+\log U))$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。外层循环时，单看 $g=\textit{nums}[i]$，它因为求 GCD 减半的次数是 $\mathcal{O}(\log U)$ 次，因此内层循环的时间复杂度为 $\mathcal{O}(n+\log U)$，所以总的时间复杂度为 $\mathcal{O}(n(n+\log U))$。
-- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 方法二：利用 GCD 的性质
 
-如果 $n=10^5$ 要怎么做？
+**前置知识**：[LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
 
-原理见我之前写的 [这篇题解的方法二](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/)，或者看开头贴的视频链接。
+这个做法可以解决 $n=10^5$ 的情况。
 
-```py [sol2-Python3]
+```py [sol-Python3]
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
         if gcd(*nums) > 1:
@@ -217,7 +208,7 @@ class Solution:
         return min_size + n - 1
 ```
 
-```java [sol2-Java]
+```java [sol-Java]
 class Solution {
     public int minOperations(int[] nums) {
         int n = nums.length, gcdAll = 0, cnt1 = 0;
@@ -230,7 +221,7 @@ class Solution {
 
         int minSize = n;
         var g = new ArrayList<int[]>(); // [GCD，相同 GCD 闭区间的右端点]
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             g.add(new int[]{nums[i], i});
             // 原地去重，因为相同的 GCD 都相邻在一起
             var j = 0;
@@ -259,12 +250,12 @@ class Solution {
 }
 ```
 
-```cpp [sol2-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int minOperations(vector<int> &nums) {
+    int minOperations(vector<int>& nums) {
         int n = nums.size(), gcd_all = 0, cnt1 = 0;
-        for (int x: nums) {
+        for (int x : nums) {
             gcd_all = gcd(gcd_all, x);
             cnt1 += x == 1;
         }
@@ -273,11 +264,11 @@ public:
 
         int min_size = n;
         vector<pair<int, int>> g; // {GCD，相同 GCD 闭区间的右端点}
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             g.emplace_back(nums[i], i);
             // 原地去重，因为相同的 GCD 都相邻在一起
             int j = 0;
-            for (auto &p: g) {
+            for (auto& p : g) {
                 p.first = gcd(p.first, nums[i]);
                 if (g[j].first == p.first)
                     g[j].second = p.second;
@@ -293,7 +284,7 @@ public:
 };
 ```
 
-```go [sol2-Go]
+```go [sol-Go]
 func minOperations(nums []int) int {
 	n, gcdAll, cnt1 := len(nums), 0, 0
 	for _, x := range nums {
@@ -344,13 +335,6 @@ func gcd(a, b int) int {
 	}
 	return b
 }
-
-func min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
-}
 ```
 
 ### 复杂度分析
@@ -360,21 +344,35 @@ func min(a, b int) int {
 
 > 注：由于本题数据范围小，这两种做法的运行时间区别并不明显。
 
-### 可以用该模板秒杀的题目
+## 可以用该模板秒杀的题目
 
-按位或：
+见下面位运算题单的「**LogTrick**」。
 
-- [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/)
+补充：
 
-按位与：
+- GCD：
+    - [Codeforces 475D. CGCDSSQ](https://codeforces.com/problemset/problem/475/D)
+    - [Codeforces 1632D. New Year Concert](https://codeforces.com/problemset/problem/1632/D)
+- 乘法：
+    - [蓝桥杯 2021 年第十二届国赛真题 - 和与乘积](https://www.dotcpp.com/oj/problem2622.html)
 
-- [1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)
+## 分类题单
 
-GCD：
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-- [Codeforces 475D. CGCDSSQ](https://codeforces.com/problemset/problem/475/D)
-- [Codeforces 1632D. New Year Concert](https://codeforces.com/problemset/problem/1632/D)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
-乘法：
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
-- [蓝桥杯 2021 年第十二届国赛真题 - 和与乘积](https://www.dotcpp.com/oj/problem2622.html)
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

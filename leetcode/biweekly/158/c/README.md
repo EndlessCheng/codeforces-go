@@ -141,11 +141,11 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 - 时间复杂度：$\mathcal{O}(n(n+\log U))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。注意这里是加不是乘，因为 GCD 在循环中不会增加只会减少，每次要么不变，要么至少减半，减半次数就是 GCD 的循环次数之和，即 $\mathcal{O}(\log U)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 方法二：logTrick
+## 方法二：LogTrick
 
-**前置知识**：[讲解（方法二）](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/)。
+**前置知识**：[LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
 
-根据 logTrick，固定右端点 $i$ 时，只有 $\mathcal{O}(\log U)$ 种不同的 GCD，其中 $U=\max(\textit{nums})$。并且，相同的 GCD 对应的左端点是连续的，也就是说左端点组成了一个区间。
+根据 LogTrick，固定右端点 $i$ 时，只有 $\mathcal{O}(\log U)$ 种不同的 GCD，其中 $U=\max(\textit{nums})$。并且，相同的 GCD 对应的左端点是连续的，也就是说左端点组成了一个区间。
 
 设左端点 $j$ 在左开右闭区间 $(l,r]$ 中时，GCD 等于 $g$。
 

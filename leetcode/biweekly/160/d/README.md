@@ -12,7 +12,7 @@
 
 ## 思路
 
-**前置知识**：[logTrick](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/)。
+**前置知识**：[LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
 
 遍历 $\textit{nums}$，遍历到 $\textit{nums}[i]$ 时，计算以 $i$ 为右端点的所有子数组的最大公因数（GCD）。对于 GCD $\ge 2$ 的以 $i$ 为右端点的最长子数组，如果其长度 $> \textit{upper}$，那么必须修改。
 

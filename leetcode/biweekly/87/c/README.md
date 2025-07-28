@@ -1,46 +1,30 @@
-## 方法一：利用或运算的性质
+**详细讲解**：[LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
 
-首先，我们有如下 $O(n^2)$ 的暴力算法：
-
-> 从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$，更新 $\textit{nums}[j]=\textit{nums}[j]\ |\ x$，如果 $\textit{nums}[j]$ 变大，则更新 $\textit{ans}[j]=i-j+1$。
-
-下面来优化该算法。
-
-我们可以把二进制数看成集合，二进制数第 $i$ 位为 $1$ 表示 $i$ 在集合中。两个二进制数的或，就可以看成是两个集合的**并集**。
-
-对于两个二进制数 $a$ 和 $b$，如果 $a\ |\ b=a$，从集合的角度上看，$b$ 对应的集合是 $a$ 对应的集合的**子集**。
-
-据此我们可以提出如下改进后的算法：
-
-从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$：
-- 如果 $\textit{nums}[j]\ |\ x\ne\textit{nums}[j]$，说明 $\textit{nums}[j]$ 可以变大（集合元素增多），更新 $\textit{nums}[j]=\textit{nums}[j]\ |\ x$；
-- 如果 $\textit{nums}[j]\ |\ x=\textit{nums}[j]$，从集合的角度看，此时 $x$ 不仅是 $\textit{nums}[j]$ 的子集，同时也是 $\textit{nums}[k]\ (k<j)$ 的子集（因为循环保证了每个集合都是其左侧相邻集合的子集），那么后续的循环都无法让元素变大，退出循环；
-- 在循环中，如果 $\textit{nums}[j]$ 可以变大，则更新 $\textit{ans}[j]=i-j+1$。
-
-```py [sol11-Python3]
+```py [sol-Python3]
 class Solution:
     def smallestSubarrays(self, nums: List[int]) -> List[int]:
-        ans = [0] * len(nums)
-        for i, x in enumerate(nums):
-            ans[i] = 1
+        ans = [1] * len(nums)  # 子数组的长度至少是 1
+        for i, x in enumerate(nums):  # 计算右端点为 i 的子数组的或值
             for j in range(i - 1, -1, -1):
-                if (nums[j] | x) == nums[j]:
+                if (nums[j] | x) == nums[j]:  # nums[j] 及其左边元素无法增大
                     break
-                nums[j] |= x
-                ans[j] = i - j + 1
+                nums[j] |= x  # nums[j] 增大，现在 nums[j] = 原数组 nums[j] 到 nums[i] 的或值
+                ans[j] = i - j + 1  # nums[j] 最后一次增大时的子数组长度就是答案
         return ans
 ```
 
-```java [sol11-Java]
+```java [sol-Java]
 class Solution {
     public int[] smallestSubarrays(int[] nums) {
-        var n = nums.length;
-        var ans = new int[n];
-        for (var i = 0; i < n; ++i) {
-            ans[i] = 1;
-            for (var j = i - 1; j >= 0 && (nums[j] | nums[i]) != nums[j]; --j) {
-                nums[j] |= nums[i];
-                ans[j] = i - j + 1;
+        int n = nums.length;
+        int[] ans = new int[n];
+        for (int i = 0; i < n; i++) { // 计算右端点为 i 的子数组的或值
+            int x = nums[i];
+            ans[i] = 1; // 子数组的长度至少是 1
+            // 循环直到 nums[j] 无法增大，其左侧元素也无法增大
+            for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
+                nums[j] |= x; // nums[j] 增大，现在 nums[j] = 原数组 nums[j] 到 nums[i] 的或值
+                ans[j] = i - j + 1; // nums[j] 最后一次增大时的子数组长度就是答案
             }
         }
         return ans;
@@ -48,17 +32,19 @@ class Solution {
 }
 ```
 
-```cpp [sol11-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    vector<int> smallestSubarrays(vector<int> &nums) {
+    vector<int> smallestSubarrays(vector<int>& nums) {
         int n = nums.size();
         vector<int> ans(n);
-        for (int i = 0; i < n; ++i) {
-            ans[i] = 1;
-            for (int j = i - 1; j >= 0 && (nums[j] | nums[i]) != nums[j]; --j) {
-                nums[j] |= nums[i];
-                ans[j] = i - j + 1;
+        for (int i = 0; i < n; i++) { // 计算右端点为 i 的子数组的或值
+            int x = nums[i];
+            ans[i] = 1; // 子数组的长度至少是 1
+            // 循环直到 nums[j] 无法增大，其左侧元素也无法增大
+            for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
+                nums[j] |= x; // nums[j] 增大，现在 nums[j] = 原数组 nums[j] 到 nums[i] 的或值
+                ans[j] = i - j + 1; // nums[j] 最后一次增大时的子数组长度就是答案
             }
         }
         return ans;
@@ -66,177 +52,109 @@ public:
 };
 ```
 
-```go [sol11-Go]
-func smallestSubarrays(nums []int) []int {
-    ans := make([]int, len(nums))
-    for i, x := range nums {
-        ans[i] = 1
-        for j := i - 1; j >= 0 && nums[j]|x != nums[j]; j-- {
-            nums[j] |= x
-            ans[j] = i - j + 1
+```c [sol-C]
+int* smallestSubarrays(int* nums, int numsSize, int* returnSize) {
+    int* ans = malloc(numsSize * sizeof(int));
+    *returnSize = numsSize;
+
+    for (int i = 0; i < numsSize; i++) { // 计算右端点为 i 的子数组的或值
+        int x = nums[i];
+        ans[i] = 1; // 子数组的长度至少是 1
+        // 循环直到 nums[j] 无法增大，其左侧元素也无法增大
+        for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
+            nums[j] |= x; // nums[j] 增大，现在 nums[j] = 原数组 nums[j] 到 nums[i] 的或值
+            ans[j] = i - j + 1; // nums[j] 最后一次增大时的子数组长度就是答案
         }
     }
-    return ans
+
+    return ans;
 }
 ```
 
-#### 复杂度分析
-
-- 时间复杂度：$O(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=max(\textit{nums})$。由于 $2^{29}-1<10^9<2^{30}-1$，二进制数对应集合的大小不会超过 $29$，因此在或运算下，每个数字至多可以增大 $29$ 次。总体上看，二重循环的次数等于每个数字可以增大的次数之和，即 $O(n\log U)$。
-- 空间复杂度：$O(1)$。返回值不计入。
-
-## 方法二：更加通用的模板
-
-该模板可以做到
-
-1. 求出**所有**子数组的按位或的结果，以及值等于该结果的子数组的个数。
-2. 求按位或结果等于**任意给定数字**的子数组的最短长度/最长长度。
-
-末尾列出了一些题目，均可以用该模板秒杀。
-
-思考：对于起始位置为 $i$ 的子数组的按位或，至多有多少种不同的结果？
-
-我们可以从 $x=\textit{nums}[i]$ 开始（子数组左端点是 $i$），不断往右增大子数组的长度。根据或运算的性质，按位或的结果要么使 $x$ 不变，要么让 $x$ 的某些比特位的值由 $0$ 变 $1$。最坏情况下从 $x=0$ 开始，每次只改变一个比特位，最终得到 $2^{29}-1<10^9$，因此至多有 $30$ 种不同的按位或结果。这样就可以暴力了。
-
-另一个结论是，相同的按位或对应的子数组右端点会形成一个连续的区间，从而保证代码去重逻辑的正确性（这一性质还可以用来统计按位或结果及其对应的子数组的个数）。
-
-据此，我们可以倒着遍历 $\textit{nums}$，在遍历的同时，用一个数组 $\textit{ors}$ 维护以 $i$ 为左端点的子数组的按位或的结果，及其对应的子数组右端点的最小值。继续遍历到 $\textit{nums}[i-1]$ 时，我们可以把 $\textit{nums}[i-1]$ 和 $\textit{ors}$ 中的每个值按位或，合并值相同的结果。
-
-这样在遍历时，$\textit{ors}$ 中值最大的元素对应的子数组右端点的最小值，就是要求的最短子数组的右端点。
-
-**注**：下面代码用到了**原地去重**的技巧，如果你对此并不熟悉，可以先做做 [26. 删除有序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)。
-
-```py [sol1-Python3]
-class Solution:
-    def smallestSubarrays(self, nums: List[int]) -> List[int]:
-        n = len(nums)
-        ans = [0] * n
-        ors = []  # 按位或的值 + 对应子数组的右端点的最小值
-        for i in range(n - 1, -1, -1):
-            num = nums[i]
-            ors.append([0, i])
-            k = 0
-            # 每个元素或上 num，同时去重
-            for p in ors:
-                p[0] |= num
-                if ors[k][0] == p[0]:
-                    ors[k][1] = p[1]  # 合并相同值，下标取最小的
-                else:
-                    k += 1
-                    ors[k] = p
-            del ors[k + 1:]
-            # 本题只用到了 ors[0]，如果题目改成任意给定数值，可以在 ors 中查找
-            ans[i] = ors[0][1] - i + 1
-        return ans
-```
-
-```java [sol1-Java]
-class Solution {
-    public int[] smallestSubarrays(int[] nums) {
-        var n = nums.length;
-        var ans = new int[n];
-        var ors = new ArrayList<int[]>(); // 按位或的值 + 对应子数组的右端点的最小值
-        for (int i = n - 1; i >= 0; i--) {
-            ors.add(new int[]{0, i});
-            var k = 0;
-            // 每个元素或上 nums[i]，同时去重
-            for (var or : ors) {
-                or[0] |= nums[i];
-                if (ors.get(k)[0] == or[0])
-                    ors.get(k)[1] = or[1]; // 合并相同值，下标取最小的
-                else ors.set(++k, or);
-            }
-            ors.subList(k + 1, ors.size()).clear();
-            // 本题只用到了 ors[0]，如果题目改成任意给定数值，可以在 ors 中查找
-            ans[i] = ors.get(0)[1] - i + 1;
-        }
-        return ans;
-    }
-}
-```
-
-```cpp [sol1-C++]
-class Solution {
-public:
-    vector<int> smallestSubarrays(vector<int> &nums) {
-        int n = nums.size();
-        vector<int> ans(n);
-        vector<pair<int, int>> ors; // 按位或的值 + 对应子数组的右端点的最小值
-        for (int i = n - 1; i >= 0; i--) {
-            ors.emplace_back(0, i);
-            ors[0].first |= nums[i];
-            int k = 0;
-            // 每个元素或上 nums[i]，同时去重
-            for (int j = 1; j < ors.size(); j++) {
-                ors[j].first |= nums[i];
-                if (ors[k].first == ors[j].first)
-                    ors[k].second = ors[j].second; // 合并相同值，下标取最小的
-                else ors[++k] = ors[j];
-            }
-            ors.resize(k + 1);
-            // 本题只用到了 ors[0]，如果题目改成任意给定数字，可以在 ors 中查找
-            ans[i] = ors[0].second - i + 1;
-        }
-        return ans;
-    }
-};
-```
-
-```go [sol1-Go]
+```go [sol-Go]
 func smallestSubarrays(nums []int) []int {
-	n := len(nums)
-	ans := make([]int, n)
-	type pair struct{ or, i int }
-	ors := []pair{} // 按位或的值 + 对应子数组的右端点的最小值
-	for i := n - 1; i >= 0; i-- {
-		num := nums[i]
-		ors = append(ors, pair{0, i})
-		ors[0].or |= num
-		k := 0
-		// 每个元素或上 num，同时去重
-		for _, p := range ors[1:] {
-			p.or |= num
-			if ors[k].or == p.or {
-				ors[k].i = p.i // 合并相同值，下标取最小的
-			} else {
-				k++
-				ors[k] = p
-			}
+	ans := make([]int, len(nums))
+	for i, x := range nums { // 计算右端点为 i 的子数组的或值
+		ans[i] = 1 // 子数组的长度至少是 1
+		// 循环直到 nums[j] 无法增大，其左侧元素也无法增大
+		for j := i - 1; j >= 0 && nums[j]|x != nums[j]; j-- {
+			nums[j] |= x // nums[j] 增大，现在 nums[j] = 原数组 nums[j] 到 nums[i] 的或值
+			ans[j] = i - j + 1 // nums[j] 最后一次增大时的子数组长度就是答案
 		}
-		ors = ors[:k+1]
-        // 本题只用到了 ors[0]，如果题目改成任意给定数字，可以在 ors 中查找
-		ans[i] = ors[0].i - i + 1
 	}
 	return ans
 }
 ```
 
+```js [sol-JavaScript]
+var smallestSubarrays = function(nums) {
+    const n = nums.length;
+    const ans = Array(n).fill(1); // 子数组的长度至少是 1
+    for (let i = 0; i < n; i++) { // 计算右端点为 i 的子数组的或值
+        let x = nums[i];
+        // 循环直到 nums[j] 无法增大，其左侧元素也无法增大
+        for (let j = i - 1; j >= 0 && (nums[j] | x) !== nums[j]; j--) {
+            nums[j] |= x; // nums[j] 增大，现在 nums[j] = 原数组 nums[j] 到 nums[i] 的或值
+            ans[j] = i - j + 1; // nums[j] 最后一次增大时的子数组长度就是答案
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn smallest_subarrays(mut nums: Vec<i32>) -> Vec<i32> {
+        let n = nums.len();
+        let mut ans = vec![0; n];
+        for i in 0..n { // 计算右端点为 i 的子数组的或值
+            let x = nums[i];
+            ans[i] = 1; // 子数组的长度至少是 1
+            for j in (0..i).rev() {
+                if (nums[j] | x) == nums[j] { // nums[j] 及其左边元素无法增大
+                    break;
+                }
+                nums[j] |= x; // nums[j] 增大，现在 nums[j] = 原数组 nums[j] 到 nums[i] 的或值
+                ans[j] = (i - j + 1) as i32; // nums[j] 最后一次增大时的子数组长度就是答案
+            }
+        }
+        ans
+    }
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$O(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=max(\textit{nums})$。
-- 空间复杂度：$O(\log U)$。返回值不计入。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})\le 10^9$。由于 $10^9<2^{30}$，二进制数对应集合的大小不会超过 $30$，因此在或运算下，每个数字至多可以增大 $30$ 次（从空集增大到有 $30$ 个元素）。**总体上看**，二重循环的总循环次数等于每个数字可以增大的次数之和，即 $O(n\log U)$。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
 
-#### 可以用模板秒杀的题目
+## 思考题
 
-按位或：
+把「或」改成「异或」，其余不变，要怎么做？
 
-- [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/)
+欢迎在评论区分享你的思路/代码。
 
-按位与：
+## 专题训练
 
-- [1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)
+见下面位运算题单的「**LogTrick**」。
 
-最大公因数（GCD）：
+## 分类题单
 
-- [Codeforces 475D. CGCDSSQ](https://codeforces.com/problemset/problem/475/D)
-- [Codeforces 1632D. New Year Concert](https://codeforces.com/problemset/problem/1632/D)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-乘法：
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
-- [蓝桥杯2021年第十二届国赛真题-和与乘积](https://www.dotcpp.com/oj/problem2622.html)
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
-#### 思考题
-
-如果是**异或**要怎么做？
-
-依然是倒序遍历，求后缀异或和，然后可以用 [421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/) 的字典树方法，需要额外存后缀异或和对应的下标，如果有多个相同的，存下标最小的。
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
