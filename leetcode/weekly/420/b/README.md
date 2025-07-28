@@ -2,7 +2,7 @@
 
 从小到大枚举子串右端点 $\textit{right}$，如果子串符合要求，则右移左端点 $\textit{left}$。
 
-滑动窗口的内层循环结束时，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子串都是合法的，这一共有 $\textit{left}$ 个，加入答案。
+滑动窗口的内层循环结束时，虽然子串 $[\textit{left},\textit{right}]$ 是不合法的，但循环结束前的子串 $[\textit{left}-1,\textit{right}]$ 是合法的。由于子串越长越合法，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子串都是合法的，这一共有 $\textit{left}$ 个，加入答案。
 
 ## 答疑
 
