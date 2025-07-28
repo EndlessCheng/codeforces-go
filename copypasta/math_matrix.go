@@ -459,8 +459,11 @@ func (a matrix) determinant(mod int) int {
 // https://codeforces.com/problemset/problem/1101/G 2300
 // https://codeforces.com/problemset/problem/662/A 2400 博弈
 // https://codeforces.com/problemset/problem/959/F 2400
-// https://codeforces.com/problemset/problem/1902/F 2400
+// https://codeforces.com/problemset/problem/1902/F 2400 LCA
+// - https://www.luogu.com.cn/problem/P3292 [SCOI2016] 幸运数字
+// https://codeforces.com/problemset/problem/1100/F 2500
 // https://codeforces.com/problemset/problem/1427/E 2500 构造
+// https://codeforces.com/problemset/problem/1778/E 2500
 // https://codeforces.com/problemset/problem/724/G 2600 图上线性基
 // https://codeforces.com/problemset/problem/251/D 2700
 // https://codeforces.com/problemset/problem/19/E 2900 图上线性基
@@ -510,7 +513,7 @@ func (b *xorBasis) insert(v int) bool {
 	return false
 }
 
-// EXTRA: 如果遇到线性相关的基，保留位置最靠右的
+// EXTRA: 从高到低，对于二进制长度相同的基，选更靠右的
 // https://atcoder.jp/contests/abc223/tasks/abc223_h
 // https://codeforces.com/problemset/problem/1902/F 2400
 // https://codeforces.com/problemset/problem/1100/F 2500
@@ -518,7 +521,7 @@ func (b *xorBasis) insert(v int) bool {
 func (b *xorBasis) insertRightMost(idx, v int) bool {
 	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if v>>i&1 == 0 {
+		if v>>i == 0 {
 			continue
 		}
 		if b.b[i] == 0 { // 线性无关
@@ -527,7 +530,8 @@ func (b *xorBasis) insertRightMost(idx, v int) bool {
 			b.num++
 			return true
 		}
-		if idx >= b.rightMost[i] { // 注意 b.rightMost[i] 的初始值为 0
+		// 如果有多个下标，把下标大的分给二进制长度更长的基，下标小的分给二进制长度更短的基
+		if idx > b.rightMost[i] {
 			idx, b.rightMost[i] = b.rightMost[i], idx // 换个旧的 idx
 			v, b.b[i] = b.b[i], v                     // 继续插入之前的基
 		}
@@ -541,7 +545,7 @@ func (b *xorBasis) insertRightMost(idx, v int) bool {
 // v 能否被线性基表出
 func (b *xorBasis) decompose(v int) bool {
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if v>>i&1 == 0 {
+		if v>>i == 0 {
 			continue
 		}
 		// b.b[i] == 0 || b.rightMost[i] < lowerIndex
@@ -566,19 +570,17 @@ func (b *xorBasis) maxXor() (res int) {
 }
 
 func (b *xorBasis) maxXorWithVal(val int) int {
-	xor := val
+	res := val
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if xor^b.b[i] > xor {
-			xor ^= b.b[i]
-		}
+		res = max(res, res^b.b[i])
 	}
-	return xor
+	return res
 }
 
-func (b *xorBasis) maxXorWithLowerIndex(lowerIndex int) (xor int) {
+func (b *xorBasis) maxXorWithLowerIndex(lowerIndex int) (res int) {
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if xor>>i&1 == 0 && b.rightMost[i] >= lowerIndex && xor^b.b[i] > xor {
-			xor ^= b.b[i]
+		if res>>i&1 == 0 && b.rightMost[i] >= lowerIndex {
+			res = max(res, res^b.b[i])
 		}
 	}
 	return
@@ -643,9 +645,9 @@ func (b *xorBasis) rank(xor int) (k int) {
 // https://codeforces.com/problemset/problem/1902/F
 func (b *xorBasis) merge(other *xorBasis) {
 	for i := len(other.b) - 1; i >= 0; i-- {
-		x := other.b[i]
-		if x > 0 {
-			b.insert(x)
+		v := other.b[i]
+		if v > 0 {
+			b.insert(v)
 		}
 	}
 }
