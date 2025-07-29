@@ -13,6 +13,7 @@ func cf1101G(in io.Reader, out io.Writer) {
 	for range n {
 		Fscan(in, &v)
 		xor ^= v
+		//v = xor // 注意前缀和也可以可以由基表出的，所以可以不写
 		for i := len(b) - 1; i >= 0; i-- {
 			if v>>i == 0 {
 				continue
