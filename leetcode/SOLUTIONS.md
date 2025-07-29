@@ -4,7 +4,7 @@
 
 相同知识点的题目，按照 [难度分](https://huxulm.github.io/lc-rating/zen) 排序。
 
-❗完整题单和刷题路线请看 [如何科学刷题](https://leetcode.cn/circle/discuss/RvFUtj/)。
+❗**注意**：本文不是题单。完整题单和刷题路线请看 [如何科学刷题](https://leetcode.cn/circle/discuss/RvFUtj/)。
 
 |知识点|题目|题解|难度|
 |---|---|---|---|
