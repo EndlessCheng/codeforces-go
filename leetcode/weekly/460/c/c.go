@@ -51,7 +51,7 @@ func minJumps(nums []int) (ans int) {
 						q = append(q, j)
 					}
 				}
-				groups[p] = nil // 避免重复访问下标列表
+				delete(groups, p) // 避免重复访问下标列表
 			}
 		}
 		ans++
