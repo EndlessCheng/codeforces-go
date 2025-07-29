@@ -465,7 +465,7 @@ func (a matrix) determinant(mod int) int {
 // https://codeforces.com/problemset/problem/1427/E 2500 构造
 // https://codeforces.com/problemset/problem/1778/E 2500
 // https://codeforces.com/problemset/problem/724/G 2600 图上线性基
-// https://codeforces.com/problemset/problem/251/D 2700
+// https://codeforces.com/problemset/problem/251/D 2700 输出具体方案
 // - https://atcoder.jp/contests/abc141/tasks/abc141_f 简单版本
 // https://codeforces.com/problemset/problem/19/E 2900 图上线性基
 // https://atcoder.jp/contests/abc141/tasks/abc141_f
@@ -510,7 +510,7 @@ func (b *xorBasis) insert(v int) bool {
 		v ^= b.b[i] // 保证每个基的二进制长度互不相同
 	}
 	// 正常循环结束，此时 x=0，说明一开始的 x 可以被已有基表出，不是一个线性无关基
-	b.canBeZero = true
+	b.canBeZero = true // 说明存在非空集合，异或和为 0
 	return false
 }
 
@@ -520,21 +520,21 @@ func (b *xorBasis) insert(v int) bool {
 // https://codeforces.com/problemset/problem/1100/F 2500
 // https://codeforces.com/problemset/problem/1778/E 2500
 func (b *xorBasis) insertRightMost(idx, v int) bool {
-	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
 	for i := len(b.b) - 1; i >= 0; i-- {
 		if v>>i == 0 {
 			continue
 		}
-		if b.b[i] == 0 { // 线性无关
+		if b.b[i] == 0 {
 			b.b[i] = v
 			b.rightMost[i] = idx
 			b.num++
 			return true
 		}
-		// 如果有多个下标，把下标大的分给二进制长度更长的基，下标小的分给二进制长度更短的基
+		// 替换掉之前的基，尽量保证基的下标都是最新的
+		// 替换后，可能插入新的基，也可能淘汰掉旧的基
 		if idx > b.rightMost[i] {
-			idx, b.rightMost[i] = b.rightMost[i], idx // 换个旧的 idx
-			v, b.b[i] = b.b[i], v                     // 继续插入之前的基
+			idx, b.rightMost[i] = b.rightMost[i], idx
+			v, b.b[i] = b.b[i], v
 		}
 		v ^= b.b[i]
 	}
