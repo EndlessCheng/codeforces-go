@@ -55,6 +55,7 @@ https://atcoder.jp/contests/abc342/tasks/abc342_d 944=CF1425
 https://codeforces.com/problemset/problem/159/D 1500 回文子串
 https://codeforces.com/problemset/problem/873/B 1500
 https://codeforces.com/problemset/problem/1879/D 1700 子数组长度
+https://codeforces.com/problemset/problem/2065/G 1700 质因子 分类讨论
 https://codeforces.com/problemset/problem/1800/F 1900 异或
 https://codeforces.com/problemset/problem/1592/E 2400
 
@@ -292,6 +293,7 @@ https://codeforces.com/problemset/problem/1920/B 1100
 https://codeforces.com/problemset/problem/1993/B 1100
 https://codeforces.com/problemset/problem/2047/B O(n) 做法约 1200
 https://codeforces.com/problemset/problem/2117/C 1200
+https://codeforces.com/problemset/problem/2126/D 1200 区间贪心
 https://codeforces.com/problemset/problem/545/D 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1498/B 1300 从大到小贪心
@@ -333,6 +335,7 @@ https://codeforces.com/problemset/problem/1804/D 2000
 https://codeforces.com/problemset/problem/1029/E 2100 树
 https://codeforces.com/problemset/problem/1479/B2 2100 https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
 https://codeforces.com/problemset/problem/2101/C 2200 式子变形
+https://codeforces.com/problemset/problem/853/D 2400
 https://codeforces.com/problemset/problem/442/C 2500
 - 如果 x>=y<=z，那么删除 y 最优
 - 结束后剩下一个长为 m 的 /\ 形状的序列，由于无法取到最大值和次大值，那么加上剩下最小的 m-2 个数
@@ -356,7 +359,7 @@ https://codeforces.com/problemset/problem/934/A 1400
 https://atcoder.jp/contests/abc173/tasks/abc173_e 1607=CF1926 k 个数的最大乘积
 删除一个数后，最小化 k 个数的最大乘积
 
-中位数贪心（右边数字为难度分） // 注：算长度用左闭右开区间思考，算中间值用闭区间思考    两个中位数分别是 a[(n-1)/2] 和 a[n/2]
+中位数贪心（右边数字为难度分）    注：算长度用左闭右开区间思考，算中间值用闭区间思考    两个中位数分别是 a[(n-1)/2] 和 a[n/2]
 有两种证明方法，见 https://zhuanlan.zhihu.com/p/1922938031687595039
 【思考题】插入一个数再选定一个 x，每次操作 +x/-x，计算最小操作次数
 https://codeforces.com/problemset/problem/710/B 1400
@@ -370,10 +373,12 @@ https://codeforces.com/problemset/problem/276/C 1500
 https://codeforces.com/problemset/problem/1165/E 1600
 
 相邻不同
-每次取两个数减一，最后剩下的数最小 / 操作次数最多 https://cs.stackexchange.com/a/145450
-- [1953. 你可以工作的最大周数](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/) 1804
-   - https://codeforces.com/problemset/problem/1579/D 1400
+每次取两个数减一，最后剩下的数最小 / 操作次数最多
+证明 https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/solution/tan-xin-ju-ti-gou-zao-fang-an-pythonjava-3xyq/
+输出具体构造 https://leetcode.cn/problems/reorganize-string/solution/tan-xin-gou-zao-pai-xu-bu-pai-xu-liang-c-h9jg/
 https://codeforces.com/problemset/problem/296/A 1100
+https://codeforces.com/problemset/problem/1579/D 1400
+- LC1953 https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/
 https://codeforces.com/problemset/problem/1521/E 2700 二维+对角不同
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
@@ -384,7 +389,7 @@ https://codeforces.com/problemset/problem/448/C
 https://codeforces.com/blog/entry/63533
 https://www.luogu.com.cn/problem/P1842 [USACO05NOV] 奶牛玩杂技
 https://www.luogu.com.cn/problem/P1080 [NOIP2012 提高] 国王游戏
-LC1665 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/ 1901
+LC1665 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
 - https://www.luogu.com.cn/problem/P3619
 https://codeforces.com/problemset/problem/246/A 900
 https://codeforces.com/problemset/problem/1638/B 1100
@@ -396,12 +401,12 @@ https://atcoder.jp/contests/dp/tasks/dp_x 0-1 背包
 https://ac.nowcoder.com/acm/contest/65259/C 相邻两数之差的绝对值为 1
 
 非邻项交换（最小代价排序/字典序最小）
-LC1202 https://leetcode.cn/problems/smallest-string-with-swaps/ 1855
-LC2948 https://leetcode.cn/problems/make-lexicographically-smallest-array-by-swapping-elements/ 2047
 https://codeforces.com/contest/252/problem/B 1800
 https://codeforces.com/problemset/problem/1768/D 1800
 https://codeforces.com/contest/1907/problem/F 1800 shift+reverse
 https://codeforces.com/contest/109/problem/D 2000
+LC1202 https://leetcode.cn/problems/smallest-string-with-swaps/
+LC2948 https://leetcode.cn/problems/make-lexicographically-smallest-array-by-swapping-elements/
 
 区间与点的最大匹配/覆盖问题
 https://www.luogu.com.cn/problem/P2887
@@ -413,8 +418,6 @@ LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
 - 加强版 https://www.luogu.com.cn/problem/P9715  ?contestId=126251
 
 思维：观察、结论
-- [2498. 青蛙过河 II](https://leetcode.cn/problems/frog-jump-ii/) 1759
-- [782. 变为棋盘](https://leetcode.cn/problems/transform-to-chessboard/) 2430
 https://codeforces.com/problemset/problem/1811/C 1100
 https://codeforces.com/problemset/problem/1822/D 1200
 https://codeforces.com/problemset/problem/1077/C 1300
@@ -423,15 +426,19 @@ https://codeforces.com/problemset/problem/1844/C 1300 假设答案是某些数�
 https://codeforces.com/problemset/problem/1765/K 1500
 https://codeforces.com/problemset/problem/1990/C 1500
 https://codeforces.com/problemset/problem/1608/C 1700
+https://codeforces.com/problemset/problem/2124/D 1700
 https://codeforces.com/problemset/problem/1442/A 1800
 https://codeforces.com/problemset/problem/558/C  1900
 https://codeforces.com/problemset/problem/1744/F 2000
 https://codeforces.com/problemset/problem/1610/E 2300
 https://codeforces.com/problemset/problem/2004/F 2600
+LC2498 https://leetcode.cn/problems/frog-jump-ii/
+LC782 https://leetcode.cn/problems/transform-to-chessboard/
 
 思维：脑筋急转弯
 https://codeforces.com/problemset/problem/2049/A 800
 https://codeforces.com/problemset/problem/1632/B 1000 位运算 XOR
+https://codeforces.com/problemset/problem/1637/B 1100
 https://codeforces.com/problemset/problem/1708/B 1100
 https://codeforces.com/problemset/problem/2044/D 1100
 https://codeforces.com/problemset/problem/1257/C 1200
@@ -443,7 +450,9 @@ https://codeforces.com/problemset/problem/1012/A 1500
 https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/500/C 1600
 https://codeforces.com/problemset/problem/601/A 1600
+https://codeforces.com/problemset/problem/2065/F 1700
 https://codeforces.com/problemset/problem/1763/C 2000
+https://codeforces.com/problemset/problem/1443/E 2400 唬人
 https://codeforces.com/problemset/problem/825/G 2500 树
 https://atcoder.jp/contests/abc194/tasks/abc194_e
 https://atcoder.jp/contests/abc196/tasks/abc196_e
@@ -472,7 +481,7 @@ LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-a
 枚举答案
 https://codeforces.com/contest/1977/problem/C
 
-构造
+构造 constructive algorithms 
 https://codeforces.com/problemset/problem/1927/B   900
 https://codeforces.com/problemset/problem/1772/C  1000
 https://codeforces.com/problemset/problem/1998/B  1000
@@ -500,17 +509,21 @@ https://codeforces.com/problemset/problem/1863/D  1400 棋盘+多米诺染色
 https://codeforces.com/problemset/problem/1896/C  1400
 https://codeforces.com/problemset/problem/1974/D  1400
 https://codeforces.com/problemset/problem/2120/C  1400
+https://codeforces.com/problemset/problem/2126/E  1400 前后缀 GCD
 https://codeforces.com/problemset/problem/1630/A  1500
 https://codeforces.com/problemset/problem/1710/A  1500
 https://codeforces.com/problemset/problem/1722/G  1500
 https://codeforces.com/problemset/problem/1809/C  1500
+https://codeforces.com/problemset/problem/2057/C  1500 XOR 可以做到 O(1)
 https://codeforces.com/problemset/problem/2077/A  1500
 https://codeforces.com/problemset/problem/2107/C  1500 经典 DP 的构造版本
 https://codeforces.com/problemset/problem/1968/E  1600
+https://codeforces.com/problemset/problem/2084/D  1600
 https://codeforces.com/problemset/problem/201/A   1700
 https://codeforces.com/problemset/problem/584/C   1700 分类讨论
 https://codeforces.com/problemset/problem/1332/D  1700 给你一个错误代码，构造 hack 数据
 https://codeforces.com/problemset/problem/1893/B  1700
+https://codeforces.com/problemset/problem/2071/C  1700 树 排列
 https://codeforces.com/problemset/problem/2112/D  1700 树
 https://codeforces.com/problemset/problem/142/B   1800 棋盘放最多的马
 https://codeforces.com/problemset/problem/847/C   1800
@@ -532,8 +545,11 @@ https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
+https://codeforces.com/problemset/problem/1028/E  2400
 https://codeforces.com/problemset/problem/1244/G  2400
 https://codeforces.com/problemset/problem/1761/E  2400
+https://codeforces.com/problemset/problem/297/D   2500
+https://codeforces.com/problemset/problem/976/D   2500
 https://codeforces.com/problemset/problem/1474/E  2500
 https://codeforces.com/problemset/problem/1689/E  2500 脑筋急转弯
 https://codeforces.com/problemset/problem/1227/G  2600 证明是亮点
@@ -570,6 +586,7 @@ https://codeforces.com/problemset/problem/262/B 1200
 https://codeforces.com/problemset/problem/1364/A 1200
 https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
+https://codeforces.com/problemset/problem/2065/C2 1300
 https://codeforces.com/problemset/problem/30/A 1400
 https://codeforces.com/problemset/problem/45/I 1400
 https://codeforces.com/problemset/problem/489/C 1400
@@ -635,6 +652,7 @@ https://leetcode.cn/problems/count-the-number-of-houses-at-a-certain-distance-ii
 
 大量分类讨论
 https://codeforces.com/problemset/problem/2045/A 1700 做到 O(n)
+https://codeforces.com/problemset/problem/2065/G 1700
 https://codeforces.com/problemset/problem/796/C 1900
 https://codeforces.com/problemset/problem/1647/D 1900
 https://codeforces.com/problemset/problem/356/C 2100
@@ -666,10 +684,8 @@ https://codeforces.com/problemset/problem/1789/C 1500 好题！
 https://codeforces.com/problemset/problem/383/A 1600 好题
 https://codeforces.com/problemset/problem/1165/E 1600
 https://codeforces.com/problemset/problem/1715/C 1700 也可以用增量法
-https://atcoder.jp/contests/abc356/tasks/abc356_e 1506=CF1700
 https://codeforces.com/problemset/problem/1777/D 1900 树
 https://codeforces.com/problemset/problem/1788/D 2000 好题！
-https://atcoder.jp/contests/abc390/tasks/abc390_f 1801=CF2073
 https://codeforces.com/problemset/problem/912/D 2100
 https://codeforces.com/problemset/problem/1808/D 2100
 https://codeforces.com/problemset/problem/520/E 2200
@@ -678,7 +694,10 @@ https://codeforces.com/problemset/problem/294/E 2300
 https://codeforces.com/problemset/problem/2063/E 2300
 https://codeforces.com/problemset/problem/749/E 2400
 https://codeforces.com/problemset/problem/915/F 2400
+https://codeforces.com/problemset/problem/1673/E 2500
 https://codeforces.com/problemset/problem/2004/F 2600
+https://atcoder.jp/contests/abc356/tasks/abc356_e 1506=CF1700
+https://atcoder.jp/contests/abc390/tasks/abc390_f 1801=CF2073
 https://atcoder.jp/contests/abc290/tasks/abc290_e 好题！
 https://atcoder.jp/contests/abc159/tasks/abc159_f 与 0-1 背包结合
 ^+ https://atcoder.jp/contests/abc201/tasks/abc201_e
@@ -812,6 +831,7 @@ https://codeforces.com/problemset/problem/1638/D 2000
 https://codeforces.com/problemset/problem/571/A 2100
 https://codeforces.com/problemset/problem/1919/D 2100
 https://codeforces.com/problemset/problem/369/E 2200
+https://codeforces.com/problemset/problem/1677/D 2500
 
 删除变添加
 https://codeforces.com/problemset/problem/295/B
@@ -2553,6 +2573,7 @@ func _() {
 	// 讲解 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/
 	// 如果有二分的需求，可以对从 bottom+1 到 right 的这段单独开个栈（右栈）
 	// https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/
+	// https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/ 比较特殊，需要用窗口外的数据来判断是否要滑
 	// https://leetcode.cn/problems/minimum-stability-factor-of-array/
 	slidingWindowWithStack := func(a []int, k int) int {
 		ans := math.MaxInt
@@ -2561,16 +2582,16 @@ func _() {
 			rightOr |= x
 			for left <= right && a[left]|rightOr > k {
 				ans = min(ans, (a[left]|rightOr)-k)
-				if bottom <= left {
-					// 重新构建一个栈
-					// 由于 left 即将移出窗口，只需计算到 left+1
-					for i := right - 1; i > left; i-- {
+				left++
+				// bottom 离开窗口，栈为空
+				if bottom < left {
+					// 重新构建一个栈，栈顶为 left，栈底为 bottom
+					for i := right - 1; i >= left; i-- {
 						a[i] |= a[i+1]
 					}
 					bottom = right
 					rightOr = 0
 				}
-				left++
 			}
 			if left <= right {
 				ans = min(ans, k-(a[left]|rightOr))
