@@ -452,13 +452,12 @@ func (a matrix) determinant(mod int) int {
 //
 // 模板题 https://www.luogu.com.cn/problem/P3812 https://loj.ac/p/113
 // 题单 https://www.luogu.com.cn/training/11251
-// https://codeforces.com/problemset/problem/895/C 2000
-// - 加强版 https://loj.ac/p/2978
 // https://codeforces.com/problemset/problem/845/G 2300 异或最短路/最长路
 // - https://www.luogu.com.cn/problem/P4151
 // https://codeforces.com/problemset/problem/1101/G 2300
 // https://codeforces.com/problemset/problem/662/A 2400 博弈
 // https://codeforces.com/problemset/problem/959/F 2400
+// https://codeforces.com/problemset/problem/1163/E 2400
 // https://codeforces.com/problemset/problem/1902/F 2400 LCA
 // - https://www.luogu.com.cn/problem/P3292 [SCOI2016] 幸运数字
 // https://codeforces.com/problemset/problem/1100/F 2500
@@ -468,19 +467,24 @@ func (a matrix) determinant(mod int) int {
 // https://codeforces.com/problemset/problem/251/D 2700 输出具体方案
 // - https://atcoder.jp/contests/abc141/tasks/abc141_f 简单版本
 // https://codeforces.com/problemset/problem/19/E 2900 图上线性基
+// https://codeforces.com/problemset/problem/587/E 2900
+// - https://www.luogu.com.cn/problem/P5607
+// https://codeforces.com/problemset/problem/1336/E2 3500
 // https://atcoder.jp/contests/abc141/tasks/abc141_f
 // https://www.luogu.com.cn/problem/P3857
+// https://loj.ac/p/2978
+// - https://codeforces.com/problemset/problem/895/C
 type xorBasis struct {
 	b []int // 核心就这一个
+
+	rightMost     []int
+	rightMostZero int
 
 	num int
 	or  int
 
 	canBeZero bool  // 见 minXor 和 kthXor
 	basis     []int // 见 initOnce
-
-	rightMost     []int
-	rightMostZero int
 }
 
 func newXorBasis(a []int) *xorBasis {
