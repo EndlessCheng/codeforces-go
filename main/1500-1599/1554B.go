@@ -23,8 +23,8 @@ func cf1554B(in io.Reader, out io.Writer) {
 				s |= 1 << i
 				p, q := f[s], f[s^1<<i]
 				if q.mx > p.mx {
+					p.m2 = max(p.mx, q.m2)
 					p.mx = q.mx
-					p.m2 = max(p.m2, q.m2)
 				} else if q.mx > p.m2 {
 					p.m2 = q.mx
 				}
