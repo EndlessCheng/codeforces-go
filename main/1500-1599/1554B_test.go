@@ -25,5 +25,5 @@ outputCopy
 -4
 3
 12`
-	testutil.AssertEqualCase(t, rawText, 0, CF1554B)
+	testutil.AssertEqualCase(t, rawText, 0, cf1554B)
 }
