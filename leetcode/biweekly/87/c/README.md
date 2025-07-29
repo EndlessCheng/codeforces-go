@@ -132,7 +132,9 @@ impl Solution {
 
 ## 方法二：滑动窗口+栈
 
-[原理讲解](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/)
+[原理讲解（方法二）](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/)
+
+### 写法一
 
 本题由于要获知的信息都在 $\textit{nums}[i]$ 的右侧，所以要倒着滑窗。外层循环枚举左端点 $\textit{left}$，内层循环缩小右端点 $\textit{right}$。当我们发现子数组 $[\textit{left},\textit{right}]$ 的或值等于子数组 $[\textit{left},\textit{right}-1]$ 的或值时，说明窗口右端点可以缩小。
 
@@ -368,6 +370,211 @@ impl Solution {
                 }
             }
             ans[left] = (right - left + 1) as i32;
+        }
+        ans
+    }
+}
+```
+
+### 写法二
+
+额外维护 $\textit{nums}$ 的后缀或值 $\textit{sufOr}$，如果窗口或值等于后缀或值，说明窗口右端点可以缩小。这样就无需保证栈中至少有两个数了。
+
+```py [sol-Python3]
+class Solution:
+    def smallestSubarrays(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        ans = [0] * n
+        left_or = suf_or = 0
+        right = bottom = n - 1
+        for left in range(n - 1, -1, -1):
+            suf_or |= nums[left]
+            left_or |= nums[left]
+            while right >= left and (left_or | nums[right]) == suf_or:
+                right -= 1
+                # 栈为空
+                if bottom > right:
+                    # 重新构建一个栈，栈底为 left，栈顶为 right
+                    for i in range(left + 1, right + 1):
+                        nums[i] |= nums[i - 1]
+                    bottom = left
+                    left_or = 0
+            # 循环结束后 [left,right] 不满足要求，但 [left,right+1] 满足要求
+            ans[left] = right - left + 2
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] smallestSubarrays(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+        int leftOr = 0, sufOr = 0;
+        int right = n - 1, bottom = n - 1;
+        for (int left = n - 1; left >= 0; left--) {
+            sufOr |= nums[left];
+            leftOr |= nums[left];
+            while (right >= left && (leftOr | nums[right]) == sufOr) {
+                right--;
+                // 栈为空
+                if (bottom > right) {
+                    // 重新构建一个栈，栈底为 left，栈顶为 right
+                    for (int i = left + 1; i <= right; i++) {
+                        nums[i] |= nums[i - 1];
+                    }
+                    bottom = left;
+                    leftOr = 0;
+                }
+            }
+            // 循环结束后 [left,right] 不满足要求，但 [left,right+1] 满足要求
+            ans[left] = right - left + 2;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> smallestSubarrays(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> ans(n);
+        int left_or = 0, suf_or = 0;
+        int right = n - 1, bottom = n - 1;
+        for (int left = n - 1; left >= 0; left--) {
+            suf_or |= nums[left];
+            left_or |= nums[left];
+            while (right >= left && (left_or | nums[right]) == suf_or) {
+                right--;
+                // 栈为空
+                if (bottom > right) {
+                    // 重新构建一个栈，栈底为 left，栈顶为 right
+                    for (int i = left + 1; i <= right; i++) {
+                        nums[i] |= nums[i - 1];
+                    }
+                    bottom = left;
+                    left_or = 0;
+                }
+            }
+            // 循环结束后 [left,right] 不满足要求，但 [left,right+1] 满足要求
+            ans[left] = right - left + 2;
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+int* smallestSubarrays(int* nums, int n, int* returnSize) {
+    int* ans = malloc(n * sizeof(int));
+    *returnSize = n;
+    int left_or = 0, suf_or = 0;
+    int right = n - 1, bottom = n - 1;
+    for (int left = n - 1; left >= 0; left--) {
+        suf_or |= nums[left];
+        left_or |= nums[left];
+        while (right >= left && (left_or | nums[right]) == suf_or) {
+            right--;
+            // 栈为空
+            if (bottom > right) {
+                // 重新构建一个栈，栈底为 left，栈顶为 right
+                for (int i = left + 1; i <= right; i++) {
+                    nums[i] |= nums[i - 1];
+                }
+                bottom = left;
+                left_or = 0;
+            }
+        }
+        // 循环结束后 [left,right] 不满足要求，但 [left,right+1] 满足要求
+        ans[left] = right - left + 2;
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func smallestSubarrays(nums []int) []int {
+	n := len(nums)
+	ans := make([]int, n)
+	leftOr, sufOr := 0, 0
+	right, bottom := n-1, n-1
+	for left, x := range slices.Backward(nums) {
+		sufOr |= x
+		leftOr |= x
+		for right >= left && leftOr|nums[right] == sufOr {
+			right--
+			// 栈为空
+			if bottom > right {
+				// 重新构建一个栈，栈底为 left，栈顶为 right
+				for i := left + 1; i <= right; i++ {
+					nums[i] |= nums[i-1]
+				}
+				bottom = left
+				leftOr = 0
+			}
+		}
+		// 循环结束后 [left,right] 不满足要求，但 [left,right+1] 满足要求
+		ans[left] = right - left + 2
+	}
+	return ans
+}
+```
+
+```js [sol-JavaScript]
+var smallestSubarrays = function(nums) {
+    const n = nums.length;
+    const ans = new Array(n).fill(0);
+    let leftOr = 0, sufOr = 0;
+    let right = n - 1, bottom = n - 1;
+    for (let left = n - 1; left >= 0; left--) {
+        sufOr |= nums[left];
+        leftOr |= nums[left];
+        while (right >= left && (leftOr | nums[right]) === sufOr) {
+            right--;
+            // 栈为空
+            if (bottom > right) {
+                // 重新构建一个栈，栈底为 left，栈顶为 right
+                for (let i = left + 1; i <= right; i++) {
+                    nums[i] |= nums[i - 1];
+                }
+                bottom = left;
+                leftOr = 0;
+            }
+        }
+        // 循环结束后 [left,right] 不满足要求，但 [left,right+1] 满足要求
+        ans[left] = right - left + 2;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn smallest_subarrays(mut nums: Vec<i32>) -> Vec<i32> {
+        let n = nums.len();
+        let mut ans = vec![0; n];
+        let mut left_or = 0;
+        let mut suf_or = 0;
+        let mut right = n - 1;
+        let mut bottom = n  - 1;
+        for left in (0..n).rev() {
+            suf_or |= nums[left];
+            left_or |= nums[left];
+            while right < n && right >= left && (left_or | nums[right]) == suf_or {
+                // 栈为空
+                if bottom >= right {
+                    // 重新构建一个栈，栈底为 left，栈顶为 right-1
+                    for i in left + 1..right {
+                        nums[i] |= nums[i - 1];
+                    }
+                    bottom = left;
+                    left_or = 0;
+                }
+                right -= 1;
+            }
+            // 循环结束后 [left,right] 不满足要求，但 [left,right+1] 满足要求
+            ans[left] = (right - left + 2) as i32;
         }
         ans
     }
