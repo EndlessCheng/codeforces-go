@@ -13,27 +13,28 @@ func cf1612G(in io.Reader, out io.Writer) {
 	fac := make([]int, n+1)
 	fac[0] = 1
 	const mx int = 1e6
-	cnt := [mx + 1]int{}
+	cc := [mx + 1]int{}
 	for i := 1; i <= n; i++ {
 		fac[i] = fac[i-1] * i % mod
 		Fscan(in, &c)
-		cnt[c]++
+		cc[c]++
 		tot += c
 	}
 
 	ans := 0
 	ways := 1
 	for i := mx; i > 1; i-- {
-		cc := cnt[i]
-		if cc == 0 {
+		k := cc[i]
+		if k == 0 {
 			continue
 		}
-		ans = (ans + (tot-cc)%mod*cc%mod*(i-1)) % mod
-		ways = ways * fac[cc] % mod * fac[cc] % mod
-		tot -= cc * 2
-		cnt[i-2] += cc
+		// k 种元素，每种选两个一左一右，剩余的放入 cc[i-2]
+		ans = (ans + (tot-k)%mod*k%mod*(i-1)) % mod
+		ways = ways * fac[k] % mod * fac[k] % mod
+		tot -= k * 2
+		cc[i-2] += k
 	}
-	ways = ways * fac[cnt[1]] % mod
+	ways = ways * fac[cc[1]] % mod // 1 个数无贡献，只有全排列
 	Fprint(out, (ans+mod)%mod, ways)
 }
 
