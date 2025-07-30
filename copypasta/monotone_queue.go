@@ -9,7 +9,7 @@ https://www.bilibili.com/video/BV1bM411X72E/
 https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/solution/liang-zhang-tu-miao-dong-dan-diao-dui-li-9fvh/
 
 需要不断维护队列的单调性，时刻保证队列元素从大到小或从小到大
-前置知识：双指针
+单调队列 = 滑动窗口 + 单调栈
 以固定窗口大小的区间最大值为例（此时维护的是一个从大到小的单调队列）：
 每次向右移动一格左指针，在移动前，如果左指针指向的元素在队首左侧，说明左指针指向的元素小于队首，移动左指针不会改变区间最大值，直接移动左指针即可；
 如果左指针指向的就是队首，那么移动左指针会使区间最大值变小（变为单调队列队首之后的那个元素），我们要弹出队首。
@@ -25,13 +25,6 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 - 否则，次小值为 last
 - 注意 last 的位置在队首左边，需要注意是否小于左边界（或者保证区间长度至少为 2）
 
-单调队列优化 DP
-一般用来维护区间最值
-0. 前提：区间右端点变大时，左端点也在变大（同滑动窗口）
-1. 转移前，去掉队首无用数据
-2. 计算转移（直接从队首转移）
-3. 把 f[i] 插入队尾前，去掉队尾无用数据，然后插入 f[i]
-
 - [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 O(n^2)
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
 - [2945. 找到最大非递减数组的长度](https://leetcode.cn/problems/find-maximum-non-decreasing-array-length/) 2943
@@ -46,6 +39,7 @@ https://codeforces.com/problemset/problem/1237/D 2000
 https://codeforces.com/problemset/problem/1077/F2 2100
 https://codeforces.com/problemset/problem/1216/F 2100
 https://codeforces.com/problemset/problem/939/F 2400 状态设计
+https://codeforces.com/problemset/problem/1107/G 2400
 https://codeforces.com/problemset/problem/797/F 2600
 https://codeforces.com/problemset/problem/377/E 2800
 https://www.luogu.com.cn/problem/P3572
