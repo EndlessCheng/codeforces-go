@@ -27,10 +27,14 @@ class Solution:
                 return fruits[i][j]
             return max(dfs(i - 1, j - 1), dfs(i - 1, j), dfs(i - 1, j + 1)) + fruits[i][j]
 
+        # 从 (0, 0) 出发的小朋友
         ans = sum(row[i] for i, row in enumerate(fruits))
+
+        # 从 (0, n - 1) 出发的小朋友（倒着走）
         ans += dfs(n - 2, n - 1)  # 从下往上走，方便 1:1 翻译成递推
         dfs.cache_clear()
 
+        # 从 (n - 1, 0) 出发的小朋友（按照主对角线翻转，然后倒着走）
         fruits = list(zip(*fruits))  # 按照主对角线翻转
         return ans + dfs(n - 2, n - 1)
 ```
@@ -45,22 +49,24 @@ class Solution {
         }
 
         int ans = 0;
+        // 从 (0, 0) 出发的小朋友
         for (int i = 0; i < n; i++) {
             ans += fruits[i][i];
         }
 
+        // 从 (0, n - 1) 出发的小朋友（倒着走）
         // 从下往上走，方便 1:1 翻译成递推
         ans += dfs(n - 2, n - 1, fruits, memo);
 
+        // 从 (n - 1, 0) 出发的小朋友（按照主对角线翻转，然后倒着走）
         // 把下三角形中的数据填到上三角形中
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++) {
                 fruits[j][i] = fruits[i][j];
             }
         }
-
         for (int[] row : memo) {
-            Arrays.fill(row, -1);
+            Arrays.fill(row, -1); // -1 表示没有计算过
         }
         return ans + dfs(n - 2, n - 1, fruits, memo);
     }
@@ -106,12 +112,15 @@ public:
         };
 
         int ans = 0;
+        // 从 (0, 0) 出发的小朋友
         for (int i = 0; i < n; i++) {
             ans += fruits[i][i];
         }
 
+        // 从 (0, n - 1) 出发的小朋友（倒着走）
         ans += dfs(n - 2, n - 1); // 从下往上走，方便 1:1 翻译成递推
 
+        // 从 (n - 1, 0) 出发的小朋友（按照主对角线翻转，然后倒着走）
         // 把下三角形中的数据填到上三角形中
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++) {
@@ -150,12 +159,15 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 		return *p
 	}
 
+	// 从 (0, 0) 出发的小朋友
 	for i, row := range fruits {
 		ans += row[i]
 	}
 
+	// 从 (0, n-1) 出发的小朋友（倒着走）
 	ans += dfs(n-2, n-1) // 从下往上走，方便 1:1 翻译成递推
 
+	// 从 (n-1, 0) 出发的小朋友（按照主对角线翻转，然后倒着走）
 	// 把下三角形中的数据填到上三角形中
 	for i := range fruits {
 		for j := range i {
@@ -164,7 +176,7 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 	}
 	for i := range memo {
 		for j := range memo[i] {
-			memo[i][j] = -1
+			memo[i][j] = -1 // -1 表示没有计算过
 		}
 	}
 	return ans + dfs(n-2, n-1)
@@ -201,7 +213,9 @@ class Solution:
                 for j in range(max(n - 1 - i, i + 1), n):
                     f[i][j] = max(f[i - 1][j - 1], f[i - 1][j], f[i - 1][j + 1]) + fruits[i][j]
             return f[-1][n - 1]
-        return sum(row[i] for i, row in enumerate(fruits)) + dp(fruits) + dp(list(zip(*fruits)))
+
+        ans = sum(row[i] for i, row in enumerate(fruits))
+        return ans + dp(fruits) + dp(list(zip(*fruits)))
 ```
 
 ```java [sol-Java]
@@ -209,10 +223,15 @@ class Solution {
     public int maxCollectedFruits(int[][] fruits) {
         int n = fruits.length;
         int ans = 0;
+        // 从 (0, 0) 出发的小朋友
         for (int i = 0; i < n; i++) {
             ans += fruits[i][i];
         }
+
+        // 从 (0, n - 1) 出发的小朋友
         ans += dp(fruits);
+
+        // 从 (n - 1, 0) 出发的小朋友（按照主对角线翻转）
         // 把下三角形中的数据填到上三角形中
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++) {
@@ -256,10 +275,15 @@ public:
         };
 
         int ans = 0;
+        // 从 (0, 0) 出发的小朋友
         for (int i = 0; i < n; i++) {
             ans += fruits[i][i];
         }
+
+        // 从 (0, n - 1) 出发的小朋友
         ans += dp();
+
+        // 从 (n - 1, 0) 出发的小朋友（按照主对角线翻转）
         // 把下三角形中的数据填到上三角形中
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++) {
@@ -293,10 +317,15 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 		return f[n-2][n-1]
 	}
 
+	// 从 (0, 0) 出发的小朋友
 	for i, row := range fruits {
 		ans += row[i]
 	}
+
+	// 从 (0, n - 1) 出发的小朋友
 	ans += dp()
+
+	// 从 (n - 1, 0) 出发的小朋友（按照主对角线翻转）
 	// 把下三角形中的数据填到上三角形中
 	for i := range fruits {
 		for j := range i {
