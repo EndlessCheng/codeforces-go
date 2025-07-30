@@ -1,18 +1,18 @@
-由于从左上角出发的小朋友只能移动 $n-1$ 次，所以他的走法有且仅有一种：主对角线。
+由于从左上角出发的小朋友只能移动 $n-1$ 次，所以他的走法有且仅有一种：主对角线。其余走法一定会超过 $n-1$ 步。
 
-对于从右上角出发的小朋友，由于他不能穿过主对角线走到另一侧（不然就没法走到右下角），且同一个格子的水果不能重复收集，问题变成：
+对于从右上角出发的小朋友，他不能穿过主对角线走到另一侧（不然就没法走到右下角），且同一个格子的水果不能重复收集。于是问题变成：
 
 - 从右上角 $(0,n-1)$ 出发，在不访问主对角线的情况下，走到 $(n-2,n-1)$，也就是右下角的上面那个格子，所能收集到的水果总数的最大值。
 
-做法类似 [931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)，请看 [我的题解](https://leetcode.cn/problems/minimum-falling-path-sum/solutions/2341851/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-2cwkb/)。
+这类似 [931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)，[我的题解](https://leetcode.cn/problems/minimum-falling-path-sum/solutions/2341851/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-2cwkb/)。
 
-对于从左下角出发的小朋友，我们可以把矩阵按照主对角线翻转，就可以复用同一套逻辑了。
+对于从左下角出发的小朋友，我们可以把矩阵按照主对角线翻转，就可以复用同一套代码逻辑了。
 
-注意：如果从 $(0,n-1)$ 出发，即使每一步都往左下走，$i+j$ 也不会低于 $n-1$，所以在递归的过程中要满足 $j\ge n-1-i$。
+代码实现时，由于我们是倒着走的（为了方便翻译成递推），小朋友不能一直往左上走，不然没法走到右上角。所以要限制小朋友不能太靠左，即保证 $j\ge n-1-i$。这是因为从 $(0,n-1)$ 往左下的这条线满足 $i+j=n-1$，不能越过这条线，即 $i+j\ge n-1$，也就是 $j\ge n-1-i$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1uzBxYoEJC/?t=13m12s)，欢迎点赞关注~
 
-### 写法一：记忆化搜索
+## 一、记忆化搜索
 
 ```py [sol-Python3]
 class Solution:
@@ -30,6 +30,7 @@ class Solution:
         ans = sum(row[i] for i, row in enumerate(fruits))
         ans += dfs(n - 2, n - 1)  # 从下往上走，方便 1:1 翻译成递推
         dfs.cache_clear()
+
         fruits = list(zip(*fruits))  # 按照主对角线翻转
         return ans + dfs(n - 2, n - 1)
 ```
@@ -40,7 +41,7 @@ class Solution {
         int n = fruits.length;
         int[][] memo = new int[n][n];
         for (int[] row : memo) {
-            Arrays.fill(row, -1);
+            Arrays.fill(row, -1); // -1 表示没有计算过
         }
 
         int ans = 0;
@@ -72,12 +73,14 @@ class Solution {
         if (i == 0) {
             return fruits[i][j];
         }
-        if (memo[i][j] != -1) {
+        if (memo[i][j] != -1) { // 之前计算过
             return memo[i][j];
         }
-        return memo[i][j] = Math.max(Math.max(dfs(i - 1, j - 1, fruits, memo),
-                            dfs(i - 1, j, fruits, memo)),
-                            dfs(i - 1, j + 1, fruits, memo)) + fruits[i][j];
+        int res1 = dfs(i - 1, j - 1, fruits, memo);
+        int res2 = dfs(i - 1, j, fruits, memo);
+        int res3 = dfs(i - 1, j + 1, fruits, memo);
+        int res = Math.max(Math.max(res1, res2), res3) + fruits[i][j];
+        return memo[i][j] = res; // 记忆化
     }
 }
 ```
@@ -87,19 +90,19 @@ class Solution {
 public:
     int maxCollectedFruits(vector<vector<int>>& fruits) {
         int n = fruits.size();
-        vector<vector<int>> memo(n, vector<int>(n, -1));
-        auto dfs = [&](auto&& dfs, int i, int j) -> int {
+        vector memo(n, vector<int>(n, -1)); // -1 表示没有计算过
+        auto dfs = [&](this auto&& dfs, int i, int j) -> int {
             if (j < n - 1 - i || j >= n) {
                 return INT_MIN;
             }
             if (i == 0) {
                 return fruits[i][j];
             }
-            int& res = memo[i][j];
-            if (res != -1) {
+            int& res = memo[i][j]; // 注意这里是引用
+            if (res != -1) { // 之前计算过
                 return res;
             }
-            return res = max({dfs(dfs, i - 1, j - 1), dfs(dfs, i - 1, j), dfs(dfs, i - 1, j + 1)}) + fruits[i][j];
+            return res = max({dfs(i - 1, j - 1), dfs(i - 1, j), dfs(i - 1, j + 1)}) + fruits[i][j];
         };
 
         int ans = 0;
@@ -107,7 +110,7 @@ public:
             ans += fruits[i][i];
         }
 
-        ans += dfs(dfs, n - 2, n - 1); // 从下往上走，方便 1:1 翻译成递推
+        ans += dfs(n - 2, n - 1); // 从下往上走，方便 1:1 翻译成递推
 
         // 把下三角形中的数据填到上三角形中
         for (int i = 0; i < n; i++) {
@@ -115,8 +118,8 @@ public:
                 fruits[j][i] = fruits[i][j];
             }
         }
-        ranges::fill(memo, vector<int>(n, -1));
-        return ans + dfs(dfs, n - 2, n - 1);
+        ranges::fill(memo, vector(n, -1));
+        return ans + dfs(n - 2, n - 1);
     }
 };
 ```
@@ -128,7 +131,7 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 	for i := range memo {
 		memo[i] = make([]int, n)
 		for j := range memo[i] {
-			memo[i][j] = -1
+			memo[i][j] = -1 // -1 表示没有计算过
 		}
 	}
 
@@ -141,7 +144,7 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 			return fruits[i][j]
 		}
 		p := &memo[i][j]
-		if *p < 0 {
+		if *p < 0 { // 没有计算过
 			*p = max(dfs(i-1, j-1), dfs(i-1, j), dfs(i-1, j+1)) + fruits[i][j]
 		}
 		return *p
@@ -173,7 +176,7 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{fruits}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n^2)$。
 
-### 写法二：递推
+## 二、1:1 翻译成递推
 
 由于起点是 $(0,n-1)$，即使每一步都往左下走，$i+j$ 也不会低于 $n-1$，所以 $j\ge n-1-i$。
 
@@ -242,7 +245,7 @@ public:
     int maxCollectedFruits(vector<vector<int>>& fruits) {
         int n = fruits.size();
         auto dp = [&]() {
-            vector<vector<int>> f(n - 1, vector<int>(n + 1, INT_MIN));
+            vector f(n - 1, vector<int>(n + 1, INT_MIN));
             f[0][n - 1] = fruits[0][n - 1];
             for (int i = 1; i < n - 1; i++) {
                 for (int j = max(n - 1 - i, i + 1); j < n; j++) {
