@@ -26,24 +26,26 @@ todo 取石子游戏总结 https://www.luogu.com.cn/blog/Wolfycz/qian-tan-suan-f
 mex = minimum excluded
 https://en.wikipedia.org/wiki/Mex_(mathematics)
 
+https://atcoder.jp/contests/dp/tasks/dp_k
 https://codeforces.com/problemset/problem/197/A 1600 入门
 https://codeforces.com/problemset/problem/1033/C 1600 三定理的模板题
-https://codeforces.com/problemset/problem/1194/D 1700 1-2-K Game 我的题解 https://www.acwing.com/file_system/file/content/whole/index/content/3179098/
-https://atcoder.jp/contests/dp/tasks/dp_k
+https://codeforces.com/problemset/problem/1194/D 1700 1-2-K Game     我的题解 https://www.acwing.com/file_system/file/content/whole/index/content/3179098/
 https://codeforces.com/problemset/problem/78/C 2000 分类讨论
-LC2868 https://leetcode.cn/problems/the-wording-game/
-TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 https://codeforces.com/problemset/problem/936/B 2100 一道不错的有向图博弈
-todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
-阶梯博弈 https://codeforces.com/problemset/problem/812/E 2300
-todo 阶梯博弈 移动金币 https://www.luogu.com.cn/problem/P5363
-todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
+https://codeforces.com/problemset/problem/812/E 2300 阶梯博弈
+https://codeforces.com/problemset/problem/995/D 2500
+https://codeforces.com/problemset/problem/1312/F 2500
 todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
-对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode.cn/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
-通过必败态去筛必胜态 https://ac.nowcoder.com/acm/contest/11166/A
-两端取数问题 https://atcoder.jp/contests/dp/tasks/dp_l
+todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
+题单 https://blog.csdn.net/ACM_cxlove/article/details/7854526
+https://www.luogu.com.cn/problem/P5363 阶梯博弈 移动金币
+https://www.luogu.com.cn/problem/P2252 威佐夫博弈
+https://ac.nowcoder.com/acm/contest/11166/A 通过必败态去筛必胜态
+https://atcoder.jp/contests/dp/tasks/dp_l 两端取数问题
 - LC486 https://leetcode.cn/problems/predict-the-winner/
 - LC877 https://leetcode.cn/problems/stone-game/
+LC2868 https://leetcode.cn/problems/the-wording-game/
+对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode.cn/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
 
 交互+博弈
 https://codeforces.com/problemset/problem/1934/D2 2400
@@ -137,7 +139,8 @@ func _() {
 	// 为什么可以模仿对手？因为无论对手如何操作，都会得到一个异或和不为 0 的局面，我们可以用同样的方法，构造出一个异或和为 0 的局面。
 	// https://blog.csdn.net/weixin_44023181/article/details/85619512
 	// 模板题 https://www.luogu.com.cn/problem/P2197
-	// https://codeforces.com/problemset/problem/15/C
+	// https://codeforces.com/problemset/problem/15/C 2000
+	// https://codeforces.com/problemset/problem/662/A 2400
 	// https://atcoder.jp/contests/abc368/tasks/abc368_f
 	// LC1908 https://leetcode.cn/problems/game-of-nim/
 	nim := func(a []int) (firstWin bool) {
