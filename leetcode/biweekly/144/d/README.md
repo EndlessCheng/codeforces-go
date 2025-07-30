@@ -263,7 +263,7 @@ class Solution {
 public:
     int maxCollectedFruits(vector<vector<int>>& fruits) {
         int n = fruits.size();
-        auto dp = [&]() {
+        auto dp = [&]() -> int {
             vector f(n - 1, vector<int>(n + 1, INT_MIN));
             f[0][n - 1] = fruits[0][n - 1];
             for (int i = 1; i < n - 1; i++) {
