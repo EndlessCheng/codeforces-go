@@ -1,49 +1,35 @@
-## 前置知识：异或运算的性质
-
-$a\oplus a = 0$。一个数异或两次等于 $0$。
-
-$a\oplus b = c$ 两边同时异或 $a$，即 $a\oplus a \oplus b = c \oplus a$，化简得 $b = c\oplus a$。相当于把 $a$ 移到了等式右侧。
-
-## 思路
-
-根据前置知识，把题目中的式子
+题目说，$\textit{derived}$ 与 $\textit{original}$ 的关系为
 
 $$
-\textit{derived}[i] = \textit{original}[i] \oplus \textit{original}[i+1]
+\textit{derived}[i] =
+\begin{cases}
+\textit{original}[i] \oplus \textit{original}[i+1], & i<n-1     \\
+\textit{original}[n-1] \oplus \textit{original}[0], & i = n-1     \\
+\end{cases}
 $$
 
-变形得
-
-$$
-\textit{original}[i+1] = \textit{original}[i]\oplus \textit{derived}[i]
-$$
-
-那么有
+把式子一个个列出来，即
 
 $$
 \begin{aligned}
-    & \textit{original}[n-1]      \\
-={} & \textit{original}[n-2]\oplus \textit{derived}[n-2]        \\
-={} & \textit{original}[n-3]\oplus \textit{derived}[n-3]\oplus \textit{derived}[n-2]        \\
-={} & \textit{original}[n-4]\oplus \textit{derived}[n-4]\oplus \textit{derived}[n-3]\oplus \textit{derived}[n-2]        \\
-\vdots \\
-={} & \textit{original}[0] \oplus \textit{derived}[0] \oplus \textit{derived}[1]\oplus \cdots \oplus \textit{derived}[n-2]
+\textit{derived}[0] &= \textit{original}[0] \oplus \textit{original}[1]     \\
+\textit{derived}[1] &= \textit{original}[1] \oplus \textit{original}[2]     \\
+\textit{derived}[2] &= \textit{original}[2] \oplus \textit{original}[3]     \\
+&\ \ \vdots      \\
+\textit{derived}[n-2] &= \textit{original}[n-2] \oplus \textit{original}[n-1]     \\
+\textit{derived}[n-1] &= \textit{original}[n-1] \oplus \textit{original}[0]     \\
 \end{aligned}
 $$
 
-联立题目的式子
+左右两边同时计算异或和，左边所有数的异或和为
 
 $$
-\textit{original}[0] \oplus \textit{original}[n-1] = \textit{derived}[n-1]
+\textit{derived}[0] \oplus \textit{derived}[1] \oplus\cdots \oplus \textit{derived}[n-1]
 $$
 
-得
+右边中的每个 $\textit{original}[i]$ 都出现了两次（$\textit{original}[0]$ 首尾各出现一次），由于一个数异或两次等于 $0$，所以右边所有数的异或和为 $0$。
 
-$$
-\textit{original}[0] \oplus (\textit{original}[0] \oplus \textit{derived}[0] \oplus \textit{derived}[1]\oplus \cdots \oplus \textit{derived}[n-2]) = \textit{derived}[n-1]
-$$
-
-两边同时异或 $\textit{derived}[n-1]$，化简得
+即
 
 $$
 \textit{derived}[0] \oplus \textit{derived}[1] \oplus\cdots \oplus \textit{derived}[n-1] = 0
