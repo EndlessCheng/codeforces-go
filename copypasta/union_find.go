@@ -44,6 +44,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://codeforces.com/problemset/problem/1726/D 2000 处理图上的环
 // https://codeforces.com/problemset/problem/1851/G 2000 离线
 // https://codeforces.com/problemset/problem/87/D 2300
+// https://codeforces.com/problemset/problem/1166/F 2400
 // https://codeforces.com/problemset/problem/1253/F 2500 启发式合并
 // https://codeforces.com/problemset/problem/1876/D 2500
 // https://atcoder.jp/contests/abc304/tasks/abc304_e 转换
@@ -76,6 +77,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://codeforces.com/problemset/problem/1157/E 1700
 // https://codeforces.com/problemset/problem/724/D 1900
 // https://codeforces.com/problemset/problem/2018/D 2200
+// https://codeforces.com/problemset/problem/827/D 2700
 // https://www.codechef.com/problems/REMSUBARR
 //
 // 树+点权/边权的顺序
@@ -245,12 +247,14 @@ func _(n int) {
 	// https://codeforces.com/problemset/problem/371/D 1800 经典题
 	// https://codeforces.com/problemset/problem/2020/D 1800
 	// https://codeforces.com/problemset/problem/724/D 1900
-	mergeRangeTo := func(l, r, to int) { 
-		// 常用：to = r + 1，这时建议用左闭右开表示区间
-		// 或者 to = find(r)
-		// l = max(l, 1)
-		// r = min(r, n)
-		for i := find(l); i <= r; i = find(i + 1) { // initFa 需要开 n+1 空间（或者 n+2，如果下标从 1 开始）
+	// https://codeforces.com/problemset/problem/827/D 2700
+	markRange := func(l, r int) { 
+		// 闭区间 [l,r]
+		// uf 需要开 n+1 空间（或者 n+2，如果下标从 1 开始）
+		// 注意起点一定要 i := find(l)
+		to := find(r + 1)
+		for i := find(l); i <= r; i = find(i + 1) { 
+			// mark i ...
 			fa[i] = to
 		}
 	}
@@ -333,7 +337,7 @@ func _(n int) {
 		_ = merge
 	}
 
-	_ = []interface{}{merge, same, mergeBig, mergeRangeTo, getRoots, countRoots, getComps, sortCC}
+	_ = []interface{}{merge, same, mergeBig, markRange, getRoots, countRoots, getComps, sortCC}
 }
 
 // 用并查集实现有序集合的删除、查找前驱和查找后继
