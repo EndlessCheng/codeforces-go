@@ -34,10 +34,16 @@ $$
 联立题目的式子
 
 $$
-\textit{original}[0]\oplus \textit{original}[n-1] =\textit{derived}[n-1]
+\textit{original}[0] \oplus \textit{original}[n-1] = \textit{derived}[n-1]
 $$
 
 得
+
+$$
+\textit{original}[0] \oplus (\textit{original}[0] \oplus \textit{derived}[0] \oplus \textit{derived}[1]\oplus \cdots \oplus \textit{derived}[n-2]) = \textit{derived}[n-1]
+$$
+
+两边同时异或 $\textit{derived}[n-1]$，化简得
 
 $$
 \textit{derived}[0] \oplus \textit{derived}[1] \oplus\cdots \oplus \textit{derived}[n-1] = 0
