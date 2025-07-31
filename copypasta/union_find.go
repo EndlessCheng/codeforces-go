@@ -110,6 +110,7 @@ https://zhuanlan.zhihu.com/p/553192435
 
 // 轻量级模板
 // 采用非递归写法，效率更好
+// 注：非递归和递归都是两次遍历
 func _(n int) {
 	fa := make([]int, n)
 	for i := range fa {
