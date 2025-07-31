@@ -440,6 +440,7 @@ func (a matrix) determinant(mod int) int {
 // 可以用来解决「子序列异或和」相关问题
 // https://oi-wiki.org/math/basis/
 // https://en.wikipedia.org/wiki/Basis_(linear_algebra)
+// https://usaco.guide/adv/xor-basis
 // 【推荐】https://www.luogu.com.cn/blog/Marser/solution-p3812
 // 线性基学习笔记 https://oi.men.ci/linear-basis-notes/
 // XOR basis without linear algebra https://codeforces.com/blog/entry/100066
@@ -469,8 +470,11 @@ func (a matrix) determinant(mod int) int {
 // https://codeforces.com/problemset/problem/19/E 2900 图上线性基
 // https://codeforces.com/problemset/problem/587/E 2900
 // - https://www.luogu.com.cn/problem/P5607
+// https://codeforces.com/problemset/problem/1299/D 3000
 // https://codeforces.com/problemset/problem/1336/E2 3500
-// https://atcoder.jp/contests/abc141/tasks/abc141_f
+// https://codeforces.com/gym/102331/problem/E
+// https://atcoder.jp/contests/agc045/tasks/agc045_a
+// https://atcoder.jp/contests/cf16-exhibition-final/tasks/cf16_exhibition_final_h
 // https://www.luogu.com.cn/problem/P3857
 // https://loj.ac/p/2978
 // - https://codeforces.com/problemset/problem/895/C
@@ -607,6 +611,7 @@ func (b *xorBasis) minXor() int {
 	}
 }
 
+// 保证每列只有一个 1
 func (b *xorBasis) initOnce() {
 	if b.basis != nil {
 		return
@@ -625,11 +630,11 @@ func (b *xorBasis) initOnce() {
 	}
 }
 
-// 线性基能表出的所有不同元素中的第 k 小值（不允许空）
+// 线性基能表出的所有不同元素中的第 k 小值（不允许空集）
 // k 从 1 开始
 // https://loj.ac/p/114 http://acm.hdu.edu.cn/showproblem.php?pid=3949
 func (b *xorBasis) kthXor(k int) (xor int) {
-	b.initOnce()
+	b.initOnce() // 只会初始化一次
 	if b.canBeZero { // 0 是最小的
 		k-- // 占用了一个数
 	}
