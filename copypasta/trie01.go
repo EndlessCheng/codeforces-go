@@ -17,10 +17,12 @@ import (
 // https://codeforces.com/problemset/problem/1446/C 2100
 // https://codeforces.com/problemset/problem/282/E 2200 数组前缀异或数组后缀的最大值（前后缀不重叠，但这要求可以无视）
 // https://codeforces.com/problemset/problem/1777/F 2400 启发式合并
+// https://codeforces.com/problemset/problem/1616/H 3000
 // todo https://codeforces.com/problemset/problem/1055/F
 //  转换 https://codeforces.com/contest/1720/problem/D2
-//  异或和 ≥k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
 //  https://codeforces.com/problemset/problem/1849/F
+//  https://www.luogu.com.cn/problem/P10218
+//  异或和 ≥k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
 
 // 指针写法关闭 GC 可以得到明显加速
 func init() { debug.SetGCPercent(-1) }
@@ -130,7 +132,8 @@ func xorMST(a []int) (ans int) {
 // 模板题 LC421 https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/
 // 加约束 LC2935 https://leetcode.cn/problems/maximum-strong-pair-xor-ii/
 // 离线 LC1707 https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/ 注：可以通过记录子树最小值来在线查询
-// https://codeforces.com/problemset/problem/1847/C
+// https://codeforces.com/problemset/problem/1847/C 1400
+// https://codeforces.com/problemset/problem/2093/G 1900
 // todo 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
 func (t *trie01) maxXor(v int) (ans int) {
 	o := t.root
@@ -148,7 +151,8 @@ func (t *trie01) maxXor(v int) (ans int) {
 // 返回 v 与 trie 上所有数的第 k 大异或值
 // k 从 1 开始
 // 如果 k 超过 trie 中元素个数，返回 0
-// [十二省联考 2019] 异或粽子 https://www.luogu.com.cn/problem/P5283
+// https://www.luogu.com.cn/problem/P5283 [十二省联考 2019] 异或粽子
+// https://atcoder.jp/contests/abc252/tasks/abc252_h
 func (t *trie01) maxXorKth(v, k int) (ans int) {
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
@@ -193,7 +197,7 @@ func findMaximumXOR(a []int) (ans int) {
 
 // v 与 trie 上所有不超过 limit 的数的最大异或值
 // 不存在时返回 -1
-// https://codeforces.com/problemset/problem/979/D
+// https://codeforces.com/problemset/problem/979/D 2200
 // LC1707 https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/
 func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 	o := t.root
@@ -212,12 +216,17 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 	return
 }
 
-// 求与 v 异或值不超过 limit 的元素个数
+// 求与 v 异或值 <= limit 的元素个数
 // 核心原理是，当 limit+1 的某一位是 1 的时候，若该位异或值取 0，则后面的位是可以取任意数字的
-// 如果在 limit 上而不是 limit+1 上讨论，就要单独处理走到叶子的情况了（恰好等于 limit）
+// 为什么要这样写呢？如果在 limit 而不是 limit+1 上讨论，就要单独处理走到叶子的情况了（恰好等于 limit）
+// 如果求的是 >= limit，那就用 trie 中元素中个数，减去 < limit 的个数
 // LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
 // https://codeforces.com/problemset/problem/817/E 2000
-// https://codeforces.com/problemset/problem/665/E 2100 补集
+// https://codeforces.com/problemset/problem/665/E 2100
+// - LC3632 https://leetcode.cn/problems/subarrays-with-xor-at-least-k/ （会员题）
+// https://codeforces.com/problemset/problem/1983/F 2500
+// https://codeforces.com/problemset/problem/241/B 2700 求个数以及和
+// 另见 maxXorKth
 func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
 	limit++ // 改成 limit+1（求与 v 异或值小于 limit 的元素个数）
 	o := t.root
@@ -238,23 +247,51 @@ func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
 }
 
 // 上面也可以用哈希表做
+// 图解 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/solutions/2045560/bu-hui-zi-dian-shu-zhi-yong-ha-xi-biao-y-p2pu/
 func countLimitXOR(a []int, limit int) int {
 	cnt := map[int]int{}
 	for _, v := range a {
 		cnt[v]++
 	}
+
 	ans := 0
-	for ; limit > 0; limit >>= 1 {
+	for limit++; limit > 0; limit /= 2 {
 		tmp := cnt
 		cnt = map[int]int{}
 		for v, c := range tmp {
-			cnt[v>>1] += c
 			if limit&1 > 0 {
 				ans += c * tmp[(limit-1)^v]
 			}
+			cnt[v>>1] += c
 		}
 	}
-	return ans >> 1
+	return ans / 2
+}
+
+// 写法二
+// 跳过 limit+1 中的 0
+func countLimitXOR2(a []int, limit int) int {
+	limit++
+	p := bits.TrailingZeros(uint(limit))
+	cnt := map[int]int{}
+	for _, x := range a {
+		cnt[x>>p]++
+	}
+	limit >>= p
+
+	ans := 0
+	for limit > 0 {
+		limit--
+		p := bits.TrailingZeros(uint(limit))
+		nxt := map[int]int{}
+		for x, c := range cnt {
+			ans += c * cnt[x^limit]
+			nxt[x>>p] += c
+		}
+		cnt = nxt
+		limit >>= p
+	}
+	return ans / 2
 }
 
 // v 与 trie 上所有数异或不超过 limit 的最大异或值
