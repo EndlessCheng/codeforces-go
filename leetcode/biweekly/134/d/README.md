@@ -280,6 +280,8 @@ func countSubarrays(nums []int, k int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+**注**：可以用恰好型滑动窗口+栈做到 $\mathcal{O}(n)$。见 [原理讲解（方法二）](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/)。
+
 更多相似题目，见位运算题单中的「**LogTrick**」。
 
 ## 分类题单
