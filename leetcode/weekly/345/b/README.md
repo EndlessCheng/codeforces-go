@@ -67,6 +67,12 @@ class Solution:
         return reduce(xor, derived) == 0
 ```
 
+```py [sol-Python3 写法二]
+class Solution:
+    def doesValidArrayExist(self, derived: List[int]) -> bool:
+        return sum(derived) % 2 == 0
+```
+
 ```java [sol-Java]
 class Solution {
     public boolean doesValidArrayExist(int[] derived) {
