@@ -39,9 +39,9 @@ $$
 \left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1
 $$
 
-讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
+证明见 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1ekN2ebEHx/?t=50m34s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ekN2ebEHx/?t=50m34s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

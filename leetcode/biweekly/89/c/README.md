@@ -14,7 +14,7 @@
 
 开区间二分上界：$\max(\textit{nums})$，一定可以操作。
 
-附：[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 第三题。
+[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 第三题。
 
 ```py [sol-Python3]
 class Solution:
@@ -94,7 +94,7 @@ func minimizeArrayValue(nums []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
-- 空间复杂度：$\mathcal{O}(1)$，仅用到若干变量。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 方法二：分类讨论
 
@@ -112,7 +112,7 @@ $$
 \left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a+b-1}{b}\right\rfloor
 $$
 
-讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
+证明见 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)。
 
 所以平均值的计算公式为
 
@@ -168,7 +168,7 @@ func minimizeArrayValue(nums []int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$，仅用到若干变量。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
 
@@ -179,8 +179,8 @@ func minimizeArrayValue(nums []int) (ans int) {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
