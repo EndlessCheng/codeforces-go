@@ -14,13 +14,15 @@
   - 虽然有多种结果，但有一样东西是不变的：$\text{XOR}(A)$ 在这一位上的异或和 = $\text{XOR}(C)$ 在这一位上的异或和。
   - 只考虑有偶数个 $1$ 的比特位（称其为特殊比特位），把 $S$ 中每个数的非特殊比特位改成 $0$，得到一个新的集合 $S'$。然后把 $S'$ 划分为 $A'$ 和 $C'$，由于 $\text{XOR}(A')=\text{XOR}(C')$，得 $\text{XOR}(A') + \text{XOR}(C') = 2\cdot \text{XOR}(A')$。
 
-所以 $\text{XOR}(A) + \text{XOR}(C)$ 的最大值就是
+所以有
 
 $$
-\text{XOR}(S) + 2\cdot \text{XOR}(A')
+\begin{aligned}
+    & \text{XOR}(A) + \text{XOR}(C)      \\
+={} & \text{XOR}(S) + \text{XOR}(A') + \text{XOR}(C')        \\
+={} & \text{XOR}(S) + 2\cdot \text{XOR}(A')        \\
+\end{aligned}
 $$
-
-的最大值。
 
 由于 $\text{XOR}(S)$ 是个定值，问题变成计算 $\text{XOR}(A')$ 的最大值，即
 
