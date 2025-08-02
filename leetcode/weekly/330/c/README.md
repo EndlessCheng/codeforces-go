@@ -12,13 +12,13 @@ $\textit{weights}[0]$ 和 $\textit{weights}[n-1]$ 一定在分数中，最大分
 
 把所有 $n-1$ 个 $\textit{weights}[i]+\textit{weights}[i+1]$ 算出来，排序，那么最大的 $k-1$ 个数和最小的 $k-1$ 个数相减，即为答案。
 
-附：[视频讲解](https://www.bilibili.com/video/BV1mD4y1E7QK/)
+[视频讲解](https://www.bilibili.com/video/BV1mD4y1E7QK/)
 
 ```py [sol-Python3]
 class Solution:
     def putMarbles(self, weights: List[int], k: int) -> int:
         for i in range(len(weights) - 1):
-            weights[i] += weights[i + 1]
+            weights[i] += weights[i + 1]  # 原地求前缀和
         weights.pop()
         weights.sort()
         return sum(weights[len(weights) - k + 1:]) - sum(weights[:k - 1])
