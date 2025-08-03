@@ -14,8 +14,6 @@ $$
 
 最终答案为 $n - \textit{maxSave}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def minRemoval(self, nums: List[int], k: int) -> int:
@@ -103,3 +101,5 @@ func minRemoval(nums []int, k int) int {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
