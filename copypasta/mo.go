@@ -23,6 +23,7 @@ import (
 // https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 
 // 普通莫队（没有修改操作）
+// 视频讲解 https://www.bilibili.com/video/BV1p3h3zYEbc/
 // 本质是通过巧妙地改变回答询问的顺序，使区间左右端点移动的次数由 O(nm) 降至 O(n√m)，其中 n 是数组长度，m 是询问个数
 // 对于每个块，右端点在 [1,n] 中一直向右或者一直向左，而左端点只在块内「抖动」
 // 对于每个块，右端点的最坏移动次数是 n，平均移动次数是 n/2，总移动次数是 O(n * 块个数) = O(n^2 / 块大小)，系数为 1/2 ~ 1
@@ -56,6 +57,7 @@ import (
 func normalMo(a []int, queries [][]int) []int {
 	n := len(a)
 	nq := len(queries)
+	// 注：由于每个块右端点平均总移动 n^/(2B) 次，左端点总移动次数为 2qB，两个 2 抵消了
 	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(nq))))
 	type moQuery struct{ bid, l, r, qid int } // [l,r)
 	qs := make([]moQuery, nq)
@@ -225,10 +227,13 @@ func moWithUpdate(in io.Reader) []int {
 
 // 回滚莫队
 // 复杂度同普通莫队
+// 视频讲解 https://www.bilibili.com/video/BV1p3h3zYEbc/
 // https://oi-wiki.org/misc/rollback-mo-algo/
 // 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
 // todo 回滚莫队及其简单运用 https://www.cnblogs.com/Parsnip/p/10969989.html
-// 模板题 历史研究 https://www.luogu.com.cn/problem/AT1219 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_c
+// 模板题 https://leetcode.cn/problems/threshold-majority-queries/
+// 历史研究 https://www.luogu.com.cn/problem/AT1219 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_c
+// https://loj.ac/p/6285
 // todo https://www.luogu.com.cn/problem/P5906
 // todo https://www.luogu.com.cn/problem/P5386
 // todo https://www.luogu.com.cn/problem/P6072
@@ -239,20 +244,22 @@ func moWithRollback(in io.Reader) []int {
 	for i := 1; i <= n; i++ {
 		Fscan(in, &a[i])
 	}
+
 	ans := make([]int, q)
-	B := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
-	type query struct{ lb, l, r, qid int }
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
+	type query struct{ bid, l, r, qid int } // [l,r)
 	qs := []query{}
 	cnt := make([]int, n+1)
-	for i := 0; i < q; i++ {
+	for i := range ans {
 		var l, r int
 		Fscan(in, &l, &r)
-		r++
-		if r-l > B {
-			qs = append(qs, query{l / B, l, r, i})
+		r++ // 左闭右开
+		// 大区间离线
+		if r-l > blockSize {
+			qs = append(qs, query{l / blockSize, l, r, i})
 			continue
 		}
-		// 小区间暴力计算
+		// 小区间暴力
 		res := 0
 		for _, v := range a[l:r] {
 			cnt[v]++
@@ -264,15 +271,13 @@ func moWithRollback(in io.Reader) []int {
 			cnt[v] = 0
 		}
 	}
-	sort.Slice(qs, func(i, j int) bool {
-		a, b := qs[i], qs[j]
-		if a.lb != b.lb {
-			return a.lb < b.lb
+	slices.SortFunc(qs, func(a, b query) int {
+		if a.bid != b.bid {
+			return a.bid - b.bid
 		}
-		return a.r < b.r
+		return a.r - b.r
 	})
 
-	var l, r int
 	var res int
 	add := func(i int) {
 		v := a[i]
@@ -283,24 +288,31 @@ func moWithRollback(in io.Reader) []int {
 		// ...
 		return res
 	}
+
+	l, r := 0, 0
 	for i, q := range qs {
-		l0 := (q.lb + 1) * B
-		if i == 0 || q.lb > qs[i-1].lb {
+		l0 := (q.bid + 1) * blockSize
+		if i == 0 || q.bid > qs[i-1].bid {
 			l, r = l0, l0
 			// 重置数据 ...
 			res = 0
 			clear(cnt)
 		}
+
 		for ; r < q.r; r++ {
 			add(r)
 		}
-		tmp := res
+		tmp := res // 其他的如最值等，也在这里 tmp 记录一下
+		// 由于下面回滚了，每次 l 都是从 l0 开始的
+		// 遍历区间 [q.l, l0)
 		for l > q.l {
 			l--
 			add(l)
 		}
 		ans[q.qid] = getAns(q)
-		res = tmp
+		res = tmp // 同理，恢复其他记录的值
+
+		// 回滚，始终保持 l 在 l0 的位置
 		for ; l < l0; l++ {
 			// 回滚 ...
 			cnt[a[l]]--
