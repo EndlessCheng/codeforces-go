@@ -18,7 +18,7 @@
 2. 从第一段的倒数第三个数（下标 $\textit{peak}-2$）开始，往左的最大元素和。如果不存在则为 $0$。
 3. 从第三段的第三个数（下标 $\textit{bottom}+2$）开始，往右的最大元素和。如果不存在则为 $0$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1BEh3zZEoM/?t=37m15s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

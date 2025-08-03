@@ -1,8 +1,6 @@
 三段式子数组必须满足「严格递增 - 严格递减 - 严格递增」，一共三段，每一段**至少要有两个数**。
 
-每一段分别用一个循环寻找，具体见代码。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+每一段分别用一个循环寻找，具体请看 [视频讲解](https://www.bilibili.com/video/BV1BEh3zZEoM/) 中的图，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

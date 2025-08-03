@@ -35,7 +35,7 @@ $$
 下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的，喜欢哪种写法就用哪种。
 
 - 开区间左端点初始值：$-1$。没有星号，一定无法满足要求。
-- 开区间右端点初始值：$n$。一定满足要求。注意在二分之前，我们特判了全部改成星号的情况。
+- 开区间右端点初始值：$n-1$。一定满足要求。注意在二分之前，我们特判了全部改成星号的情况。
 
 对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
 
@@ -47,7 +47,7 @@ $$
 
 为避免在二分内部反复创建/初始化数组，可以改成整数数组，记录二分的 $\textit{m}$ 值，如果 $\textit{star}[i]=m$ 则表示标记成星号。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1BEh3zZEoM/?t=16m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -72,7 +72,7 @@ class Solution:
                     return True
             return False
 
-        left, right = -1, n
+        left, right = -1, n - 1
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -105,7 +105,7 @@ class Solution:
                     return True
             return False
 
-        return bisect_left(range(n), True, key=check)
+        return bisect_left(range(n - 1), True, key=check)
 ```
 
 ```java [sol-Java]
@@ -118,7 +118,7 @@ class Solution {
 
         int[] star = new int[n]; // 避免在二分内部反复创建/初始化列表
         int left = -1;
-        int right = n;
+        int right = n - 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             if (check(mid, k, order, star)) {
@@ -181,7 +181,7 @@ public:
             return false;
         };
 
-        int left = -1, right = n;
+        int left = -1, right = n - 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             (check(mid) ? right : left) = mid;
@@ -199,7 +199,7 @@ func minTime(s string, order []int, k int) int {
 	}
 
 	star := make([]int, n) // 避免在二分内部反复创建/初始化列表
-	ans := sort.Search(len(order), func(m int) bool {
+	ans := sort.Search(n-1, func(m int) bool {
 		m++
 		for _, j := range order[:m] {
 			star[j] = m
@@ -228,6 +228,8 @@ func minTime(s string, order []int, k int) int {
 
 ## 方法二：逆向思维+双向链表
 
+> **注**：直接正向思维也可以做，但需要用有序集合，方便找左右最近星号位置，不如逆向思维的做法。
+
 我们从全为星号的情况开始，倒着遍历 $\textit{order}$，把星号还原回字母。
 
 一开始有 $\textit{cnt}=\dfrac{n(n+1)}{2}$ 个有效子串。
@@ -244,7 +246,7 @@ $$
 
 如果减去后 $\textit{cnt}<k$，那么答案就是当前时刻。
 
-代码实现时，用数组模拟双向链表，以及链表的节点删除操作，从而快速知道上文中的 $L$ 和 $R$ 的值。
+代码实现时，用数组模拟双向链表，以及链表的节点删除操作，从而快速知道上文中的 $L$ 和 $R$ 的值。可以参考 [图解 LRU](https://leetcode.cn/problems/lru-cache/solutions/2456294/tu-jie-yi-zhang-tu-miao-dong-lrupythonja-czgt/) 中的图。
 
 ```py [sol-Python3]
 class Solution:

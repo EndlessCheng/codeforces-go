@@ -1,8 +1,6 @@
 package main
 
-import (
-	"sort"
-)
+import "sort"
 
 // https://space.bilibili.com/206214
 func minTime1(s string, order []int, k int) int {
@@ -12,7 +10,7 @@ func minTime1(s string, order []int, k int) int {
 	}
 
 	star := make([]int, n) // 避免在二分内部反复创建/初始化列表
-	ans := sort.Search(len(order), func(m int) bool {
+	ans := sort.Search(n-1, func(m int) bool {
 		m++
 		for _, j := range order[:m] {
 			star[j] = m

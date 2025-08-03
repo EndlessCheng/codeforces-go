@@ -1,18 +1,10 @@
-题目相当于把 $\textit{weight}$ 分割成若干段，对于每一段，其最大值必须严格大于该段的最后一个数。
+题目说，每个包裹都是连续子数组。对于每个子数组，其最大值必须严格大于其最后一个数。所以每个子数组**至少要有两个数**。（如果只有一个数，那么最大值等于最后一个数）
 
-所以每一段**至少要有两个数**。（如果只有一个数，那么最大值等于最后一个数）
+注意题干括号中的这句话：**部分包裹可以不被装运**。
 
-什么情况下可以分割呢？
+如果两个相邻元素左边的大于右边的，那么这两个数就可以形成一个子数组。贪心地，子数组的元素个数越少，我们能得到的子数组的个数就越多。所以子数组只需包含这两个数，包含更多元素是没有意义的。
 
-如果段是递增的，那么最大值就是最后一个数，不符合要求。
-
-而如果发现段的倒数第二个数大于段的最后一个数，贪心地，立刻分割。这等价于：
-
-- 如果 $\textit{weight}[i-1] > \textit{weight}[i]$，那么 $\textit{weight}[i]$ 就是这一段的最后一个数。
-
-最后还需要证明一下这个贪心的正确性。上述结论意味着，发现 $\textit{weight}[i-1] > \textit{weight}[i]$ 就可能把答案加一（需要保证每个数只在一个段中）。那么第一段越短，后面的 $\textit{weight}[i-1] > \textit{weight}[i]$ 的个数就越多，所以第一段越短越好。即如果发现段的倒数第二个数大于最后一个数，就可以立刻分割。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+证明一下这个贪心的正确性。如果发现 $\textit{weight}[i-1] > \textit{weight}[i]$，就能形成一个新的子数组。考虑第一个子数组，它越靠左，留给右边的 $\textit{weight}[i-1] > \textit{weight}[i]$ 的个数就越多，答案就能越大。所以从左到右遍历，只要发现 $\textit{weight}[i-1] > \textit{weight}[i]$，就立刻形成一个子数组，把答案加一。
 
 ```py [sol-Python3]
 class Solution:
@@ -22,7 +14,7 @@ class Solution:
         while i < len(weight):
             if weight[i - 1] > weight[i]:
                 ans += 1
-                i += 2  # 每个装运至少要有两个包裹
+                i += 2  # 下个子数组至少要有两个数
             else:
                 i += 1
         return ans
@@ -35,7 +27,7 @@ class Solution {
         for (int i = 1; i < weight.length; i++) {
             if (weight[i - 1] > weight[i]) {
                 ans++;
-                i++; // 每个装运至少要有两个包裹
+                i++; // 下个子数组至少要有两个数
             }
         }
         return ans;
@@ -51,7 +43,7 @@ public:
         for (int i = 1; i < weight.size(); i++) {
             if (weight[i - 1] > weight[i]) {
                 ans++;
-                i++; // 每个装运至少要有两个包裹
+                i++; // 下个子数组至少要有两个数
             }
         }
         return ans;
@@ -64,7 +56,7 @@ func maxBalancedShipments(weight []int) (ans int) {
 	for i := 1; i < len(weight); i++ {
 		if weight[i-1] > weight[i] {
 			ans++
-			i++ // 每个装运至少要有两个包裹
+			i++ // 下个子数组至少要有两个数
 		}
 	}
 	return
