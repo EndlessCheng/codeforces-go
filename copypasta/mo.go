@@ -24,12 +24,13 @@ import (
 
 // 普通莫队（没有修改操作）
 // 视频讲解 https://www.bilibili.com/video/BV1p3h3zYEbc/
+// 文字讲解 https://leetcode.cn/problems/threshold-majority-queries/solutions/3740919/mo-dui-suan-fa-hui-gun-mo-dui-pythonjava-x7yw/
 // 本质是通过巧妙地改变回答询问的顺序，使区间左右端点移动的次数由 O(nm) 降至 O(n√m)，其中 n 是数组长度，m 是询问个数
 // 对于每个块，右端点在 [1,n] 中一直向右或者一直向左，而左端点只在块内「抖动」
 // 对于每个块，右端点的最坏移动次数是 n，平均移动次数是 n/2，总移动次数是 O(n * 块个数) = O(n^2 / 块大小)，系数为 1/2 ~ 1
 // 对于每个询问，左端点移动次数是 O(块大小)，总移动次数是 O(m * 块大小)
 // n^2 / 块大小 = m * 块大小 => 块大小取 n/√m 时，总移动次数最优，为 O(n√m)。
-// 在随机数据下，块大小取 n/√(2m) 更好。
+// 在随机数据下，块大小取 n/√(2m) 更好。见 https://zhuanlan.zhihu.com/p/1920472309522740969
 // 注 1：如果块大小取 √n，那么移动次数约为 (n+m)√n >= 2n√m，当且仅当 n=m 时取等号（基本不等式），其中不等式右侧为块大小取 n/√m 时的移动次数
 // 注 2：为防止块大小为 0，代码中要取 ceil(n/√m)
 //
@@ -228,10 +229,12 @@ func moWithUpdate(in io.Reader) []int {
 // 回滚莫队
 // 复杂度同普通莫队
 // 视频讲解 https://www.bilibili.com/video/BV1p3h3zYEbc/
+// 文字讲解 https://leetcode.cn/problems/threshold-majority-queries/solutions/3740919/mo-dui-suan-fa-hui-gun-mo-dui-pythonjava-x7yw/
 // https://oi-wiki.org/misc/rollback-mo-algo/
 // 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
 // todo 回滚莫队及其简单运用 https://www.cnblogs.com/Parsnip/p/10969989.html
 // 模板题 https://leetcode.cn/problems/threshold-majority-queries/
+// - https://ac.nowcoder.com/acm/contest/103151/F
 // 历史研究 https://www.luogu.com.cn/problem/AT1219 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_c
 // https://loj.ac/p/6285
 // todo https://www.luogu.com.cn/problem/P5906
