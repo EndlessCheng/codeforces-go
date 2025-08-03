@@ -4,6 +4,26 @@ import "math"
 
 // https://space.bilibili.com/206214
 func maxSumTrionic(nums []int) int64 {
+	const negInf = math.MinInt / 2 // 除 2 防止下面加法（和负数相加）溢出
+	ans, f1, f2, f3 := negInf, negInf, negInf, negInf
+	for i := 1; i < len(nums); i++ {
+		x, y := nums[i-1], nums[i]
+		if x < y { // 第一段或者第三段
+			f3 = max(f3, f2) + y
+			ans = max(ans, f3)
+			f2 = negInf
+			f1 = max(f1, x) + y
+		} else if x > y { // 第二段
+			f2 = max(f2, f1) + y
+			f1, f3 = negInf, negInf
+		} else {
+			f1, f2, f3 = negInf, negInf, negInf
+		}
+	}
+	return int64(ans)
+}
+
+func maxSumTrionic1(nums []int) int64 {
 	n := len(nums)
 	ans := math.MinInt
 	for i := 0; i < n; {
