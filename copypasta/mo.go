@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"cmp"
 	. "fmt"
 	"io"
 	"math"
@@ -278,12 +279,8 @@ func moWithRollback(a []int, queries [][]int) []int {
 		}
 		sum = 0
 	}
-	slices.SortFunc(qs, func(a, b query) int {
-		if a.bid != b.bid {
-			return a.bid - b.bid
-		}
-		return a.r - b.r
-	})
+
+	slices.SortFunc(qs, func(a, b query) int { return cmp.Or(a.bid-b.bid, a.r-b.r) })
 
 	l, r := 0, 0
 	for i, q := range qs {
