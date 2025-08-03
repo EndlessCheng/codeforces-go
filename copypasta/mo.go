@@ -236,9 +236,8 @@ func moWithUpdate(in io.Reader) []int {
 // 模板题：最小众数 https://loj.ac/p/6285
 // - https://leetcode.cn/problems/threshold-majority-queries/
 // - https://ac.nowcoder.com/acm/contest/103151/F
+// 模板题 https://www.luogu.com.cn/problem/P5906
 // 历史研究 https://www.luogu.com.cn/problem/AT1219 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_c
-// https://loj.ac/p/6285
-// todo https://www.luogu.com.cn/problem/P5906
 // todo https://www.luogu.com.cn/problem/P5386
 // todo https://www.luogu.com.cn/problem/P6072
 func moWithRollback(a []int, queries [][]int) []int {
@@ -301,7 +300,11 @@ func moWithRollback(a []int, queries [][]int) []int {
 			add(r)
 		}
 
-		tmp := sum // 其他的如最值等，也在这里 tmp 记录一下
+		// 其他的如最值等，也在这里 tmp 记录一下
+		tmp := sum
+		// 如果是数组的话，可以这样记录
+		// for j := q.l; j < l0; j++ { v := a[j]; tmpPos[v] = pos[v] }
+
 		// 由于下面回滚了，每次 l 都是从 l0 开始的
 		// 遍历区间 [q.l, l0)
 		for l > q.l {
@@ -314,7 +317,9 @@ func moWithRollback(a []int, queries [][]int) []int {
 		// 回滚，始终保持 l 在 l0 的位置
 		for ; l < l0; l++ {
 			// 回滚 ...
-			cnt[a[l]]--
+			v := a[l]
+			// pos[v] = tmpPos[v]
+			cnt[v]--
 		}
 	}
 	return ans
