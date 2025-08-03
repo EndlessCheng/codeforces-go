@@ -8,6 +8,12 @@
 
 由于本题求的是点的个数，所以答案为最长路径的长度加一。
 
+## 答疑
+
+**问**：如何理解代码中的 $\textit{maxLen} + \textit{len}$？为什么这一定可以遇到最大值+次大值的组合？
+
+**答**：分类讨论。如果我们先遍历到最大值，再遍历到次大值，那么当 $\textit{len}$ 是次大值的时候，$\textit{maxLen} + \textit{len}$ 就是最大值+次大值；如果我们先遍历到次大值，再遍历到最大值，那么当 $\textit{len}$ 是最大值的时候，$\textit{maxLen}$ 是次大值，$\textit{maxLen} + \textit{len}$ 就是次大值+最大值。所以无论谁先谁后，一定可以遇到最大值+次大值的组合。
+
 ```py [sol-Python3]
 class Solution:
     def longestPath(self, parent: List[int], s: str) -> int:
