@@ -44,7 +44,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
-https://codeforces.com/problemset/problem/1117/G 2500
+https://codeforces.com/problemset/problem/1117/G 2500 最大子数组和
 https://codeforces.com/problemset/problem/1827/C 2600 Manacher DP
 https://codeforces.com/problemset/problem/2064/F 2600
 https://codeforces.com/problemset/problem/1422/E 2700
@@ -308,6 +308,7 @@ func next2Greater(a []int) ([]int, []int) {
 // 为避免判断下标越界，传入的 perm 虽然下标是从 0 开始的，但视作从 1 开始（不存在时表示为 0 或 n+1）
 // https://codeforces.com/contest/1156/problem/E
 // https://atcoder.jp/contests/abc140/tasks/abc140_e
+// https://leetcode.cn/problems/minimum-time-to-activate-string/
 func permLR(perm []int) ([]int, []int) {
 	// 注：无脑的写法是用有序集合维护「剩余未被删除的下标」，或者并查集（适用场景更多）
 	n := len(perm)
