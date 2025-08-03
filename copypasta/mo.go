@@ -240,22 +240,27 @@ func moWithUpdate(in io.Reader) []int {
 // todo https://www.luogu.com.cn/problem/P5906
 // todo https://www.luogu.com.cn/problem/P5386
 // todo https://www.luogu.com.cn/problem/P6072
-func moWithRollback(in io.Reader) []int {
-	var n, q int
-	Fscan(in, &n, &q)
-	a := make([]int, n+1)
-	for i := 1; i <= n; i++ {
-		Fscan(in, &a[i])
+func moWithRollback(a []int, queries []struct{ l, r int }) []int {
+	n, m := len(a), len(queries)
+
+	cnt := make([]int, n+1)
+	var sum int
+	add := func(i int) {
+		v := a[i]
+		cnt[v]++
+		// ...
+	}
+	getAns := func() int {
+		// ...
+		return sum
 	}
 
-	ans := make([]int, q)
-	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
+	ans := make([]int, m)
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m))))
 	type query struct{ bid, l, r, qid int } // [l,r)
 	qs := []query{}
-	cnt := make([]int, n+1)
-	for i := range ans {
-		var l, r int
-		Fscan(in, &l, &r)
+	for i, q := range queries {
+		l, r := q.l, q.r
 		r++ // 左闭右开
 		// 大区间离线
 		if r-l > blockSize {
@@ -263,16 +268,15 @@ func moWithRollback(in io.Reader) []int {
 			continue
 		}
 		// 小区间暴力
-		res := 0
-		for _, v := range a[l:r] {
-			cnt[v]++
-			// ...
+		for j := l; j < r; j++ {
+			add(j)
 		}
-		ans[i] = res
+		ans[i] = getAns()
 		// 重置数据 ...
 		for _, v := range a[l:r] {
 			cnt[v] = 0
 		}
+		sum = 0
 	}
 	slices.SortFunc(qs, func(a, b query) int {
 		if a.bid != b.bid {
@@ -281,40 +285,31 @@ func moWithRollback(in io.Reader) []int {
 		return a.r - b.r
 	})
 
-	var res int
-	add := func(i int) {
-		v := a[i]
-		cnt[v]++
-		// ...
-	}
-	getAns := func(q query) int {
-		// ...
-		return res
-	}
-
 	l, r := 0, 0
 	for i, q := range qs {
 		l0 := (q.bid + 1) * blockSize
 		if i == 0 || q.bid > qs[i-1].bid {
 			l, r = l0, l0
 			// 重置数据 ...
-			res = 0
 			clear(cnt)
+			sum = 0
 		}
 
+		// 右端点只往右
 		for ; r < q.r; r++ {
 			add(r)
 		}
-		tmp := res // 其他的如最值等，也在这里 tmp 记录一下
+
+		tmp := sum // 其他的如最值等，也在这里 tmp 记录一下
 		// 由于下面回滚了，每次 l 都是从 l0 开始的
 		// 遍历区间 [q.l, l0)
 		for l > q.l {
 			l--
 			add(l)
 		}
-		ans[q.qid] = getAns(q)
-		res = tmp // 同理，恢复其他记录的值
+		ans[q.qid] = getAns()
 
+		sum = tmp // 回滚
 		// 回滚，始终保持 l 在 l0 的位置
 		for ; l < l0; l++ {
 			// 回滚 ...
