@@ -240,7 +240,7 @@ func moWithUpdate(in io.Reader) []int {
 // todo https://www.luogu.com.cn/problem/P5906
 // todo https://www.luogu.com.cn/problem/P5386
 // todo https://www.luogu.com.cn/problem/P6072
-func moWithRollback(a []int, queries []struct{ l, r int }) []int {
+func moWithRollback(a []int, queries [][]int) []int {
 	n, m := len(a), len(queries)
 
 	cnt := make([]int, n+1)
@@ -260,7 +260,7 @@ func moWithRollback(a []int, queries []struct{ l, r int }) []int {
 	type query struct{ bid, l, r, qid int } // [l,r)
 	qs := []query{}
 	for i, q := range queries {
-		l, r := q.l, q.r
+		l, r := q[0], q[1]
 		r++ // 左闭右开
 		// 大区间离线
 		if r-l > blockSize {
