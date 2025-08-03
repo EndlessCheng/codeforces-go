@@ -28,42 +28,41 @@ class Solution:
         i = 0
         while i < n:
             # 第一段
+            start = i
             i += 1
-            if nums[i - 1] >= nums[i]:  # 第一段至少要有两个数，前两个数必须严格递增
-                continue
-            start = i - 1
             while i < n and nums[i - 1] < nums[i]:
                 i += 1
+            if i == start + 1:  # 第一段至少要有两个数
+                continue
 
             # 第二段
-            if i == n or nums[i - 1] <= nums[i]:  # 第二段至少要有两个数，前两个数必须严格递减
-                continue
             peak = i - 1
             res = nums[peak - 1] + nums[peak]  # 第一段的最后两个数必选
             while i < n and nums[i - 1] > nums[i]:
                 res += nums[i]  # 第二段的所有元素必选
                 i += 1
+            if i == peak + 1 or i == n:  # 第二段至少要有两个数，第三段至少要有两个数
+                continue
 
             # 第三段
-            if i == n or nums[i - 1] >= nums[i]:  # 第三段至少要有两个数，前两个数必须严格递增
-                continue
             bottom = i - 1
             res += nums[i]  # 第三段的前两个数必选（第一个数在上面的循环中加了）
+            # 从第三段的第三个数往右，计算最大元素和
+            max_s = s = 0
+            i += 1
             while i < n and nums[i - 1] < nums[i]:
-                i += 1
-
-            # 从第一段的倒数第三个数往左，计算最大元素和
-            max_s, s = 0, 0
-            for j in range(peak - 2, start - 1, -1):
-                s += nums[j]
+                s += nums[i]
                 max_s = max(max_s, s)
+                i += 1
             res += max_s
 
-            # 从第三段的第三个数往右，计算最大元素和
-            max_s, s = 0, 0
-            for j in range(bottom + 2, i):
+            # 从第一段的倒数第三个数往左，计算最大元素和
+            max_s = s = 0
+            j = peak - 2
+            while j >= start:
                 s += nums[j]
                 max_s = max(max_s, s)
+                j -= 1
             res += max_s
             ans = max(ans, res)
 
@@ -76,55 +75,44 @@ class Solution {
     public long maxSumTrionic(int[] nums) {
         int n = nums.length;
         long ans = Long.MIN_VALUE;
-        for (int i = 0; i < n; ) {
+        for (int i = 0; i < n;) {
             // 第一段
-            i++;
-            if (nums[i - 1] >= nums[i]) { // 第一段至少要有两个数，前两个数必须严格递增
+            int start = i;
+            for (i++; i < n && nums[i - 1] < nums[i]; i++);
+            if (i == start + 1) { // 第一段至少要有两个数
                 continue;
-            }
-            int start = i - 1;
-            while (i < n && nums[i - 1] < nums[i]) {
-                i++;
             }
 
             // 第二段
-            if (i == n || nums[i - 1] <= nums[i]) { // 第二段至少要有两个数，前两个数必须严格递减
-                continue;
-            }
             int peak = i - 1;
             long res = nums[peak - 1] + nums[peak]; // 第一段的最后两个数必选
-            while (i < n && nums[i - 1] > nums[i]) {
+            for (; i < n && nums[i - 1] > nums[i]; i++) {
                 res += nums[i]; // 第二段的所有元素必选
-                i++;
+            }
+            if (i == peak + 1 || i == n) { // 第二段至少要有两个数，第三段至少要有两个数
+                continue;
             }
 
             // 第三段
-            if (i == n || nums[i - 1] >= nums[i]) { // 第三段至少要有两个数，前两个数必须严格递增
-                continue;
-            }
             int bottom = i - 1;
             res += nums[i]; // 第三段的前两个数必选（第一个数在上面的循环中加了）
-            while (i < n && nums[i - 1] < nums[i]) {
-                i++;
+            // 从第三段的第三个数往右，计算最大元素和
+            long maxS = 0;
+            long s = 0;
+            for (i++; i < n && nums[i - 1] < nums[i]; i++) {
+                s += nums[i];
+                maxS = Math.max(maxS, s);
             }
+            res += maxS;
 
             // 从第一段的倒数第三个数往左，计算最大元素和
-            long max_s = 0;
-            long s = 0;
+            maxS = 0;
+            s = 0;
             for (int j = peak - 2; j >= start; j--) {
                 s += nums[j];
-                max_s = Math.max(max_s, s);
+                maxS = Math.max(maxS, s);
             }
-            res += max_s;
-
-            // 从第三段的第三个数往右，计算最大元素和
-            max_s = 0;
-            s = 0;
-            for (int j = bottom + 2; j < i; j++) {
-                s += nums[j];
-                max_s = Math.max(max_s, s);
-            }
-            res += max_s;
+            res += maxS;
             ans = Math.max(ans, res);
 
             i = bottom; // 第三段的起点也是下一个极大三段式子数组的第一段的起点
@@ -142,45 +130,36 @@ public:
         long long ans = LLONG_MIN;
         for (int i = 0; i < n;) {
             // 第一段
-            i++;
-            if (nums[i - 1] >= nums[i]) { // 第一段至少要有两个数，前两个数必须严格递增
+            int start = i;
+            for (i++; i < n && nums[i - 1] < nums[i]; i++);
+            if (i == start + 1) { // 第一段至少要有两个数
                 continue;
-            }
-            int start = i - 1;
-            for (; i < n && nums[i - 1] < nums[i]; i++) {
             }
 
             // 第二段
-            if (i == n || nums[i - 1] <= nums[i]) { // 第二段至少要有两个数，前两个数必须严格递减
-                continue;
-            }
             int peak = i - 1;
             long long res = nums[peak - 1] + nums[peak]; // 第一段的最后两个数必选
             for (; i < n && nums[i - 1] > nums[i]; i++) {
                 res += nums[i]; // 第二段的所有元素必选
             }
-
-            // 第三段
-            if (i == n || nums[i - 1] >= nums[i]) { // 第三段至少要有两个数，前两个数必须严格递增
+            if (i == peak + 1 || i == n) { // 第二段至少要有两个数，第三段至少要有两个数
                 continue;
             }
+
+            // 第三段
             int bottom = i - 1;
             res += nums[i]; // 第三段的前两个数必选（第一个数在上面的循环中加了）
-            for (; i < n && nums[i - 1] < nums[i]; i++) {
-            }
-
-            // 从第一段的倒数第三个数往左，计算最大元素和
+            // 从第三段的第三个数往右，计算最大元素和
             long long max_s = 0, s = 0;
-            for (int j = peak - 2; j >= start; j--) {
-                s += nums[j];
+            for (i++; i < n && nums[i - 1] < nums[i]; i++) {
+                s += nums[i];
                 max_s = max(max_s, s);
             }
             res += max_s;
 
-            // 从第三段的第三个数往右，计算最大元素和
-            max_s = 0;
-            s = 0;
-            for (int j = bottom + 2; j < i; j++) {
+            // 从第一段的倒数第三个数往左，计算最大元素和
+            max_s = 0; s = 0;
+            for (int j = peak - 2; j >= start; j--) {
                 s += nums[j];
                 max_s = max(max_s, s);
             }
@@ -200,44 +179,37 @@ func maxSumTrionic(nums []int) int64 {
 	ans := math.MinInt
 	for i := 0; i < n; {
 		// 第一段
-		i++
-		if nums[i-1] >= nums[i] { // 第一段至少要有两个数，前两个数必须严格递增
-			continue
+		start := i
+		for i++; i < n && nums[i-1] < nums[i]; i++ {
 		}
-		start := i - 1
-		for ; i < n && nums[i-1] < nums[i]; i++ {
+		if i == start+1 { // 第一段至少要有两个数
+			continue
 		}
 
 		// 第二段
-		if i == n || nums[i-1] <= nums[i] { // 第二段至少要有两个数，前两个数必须严格递减
-			continue
-		}
 		peak := i - 1
 		res := nums[peak-1] + nums[peak] // 第一段的最后两个数必选
 		for ; i < n && nums[i-1] > nums[i]; i++ {
 			res += nums[i] // 第二段的所有元素必选
 		}
-
-		// 第三段
-		if i == n || nums[i-1] >= nums[i] { // 第三段至少要有两个数，前两个数必须严格递增
+		if i == peak+1 || i == n { // 第二段至少要有两个数，第三段至少要有两个数
 			continue
 		}
+
+		// 第三段
 		bottom := i - 1
 		res += nums[i] // 第三段的前两个数必选（第一个数在上面的循环中加了）
-		for ; i < n && nums[i-1] < nums[i]; i++ {
-		}
-
-		// 从第一段的倒数第三个数往左，计算最大元素和
+		// 从第三段的第三个数往右，计算最大元素和
 		maxS, s := 0, 0
-		for j := peak - 2; j >= start; j-- {
-			s += nums[j]
+		for i++; i < n && nums[i-1] < nums[i]; i++ {
+			s += nums[i]
 			maxS = max(maxS, s)
 		}
 		res += maxS
 
-		// 从第三段的第三个数往右，计算最大元素和
+		// 从第一段的倒数第三个数往左，计算最大元素和
 		maxS, s = 0, 0
-		for j := bottom + 2; j < i; j++ {
+		for j := peak - 2; j >= start; j-- {
 			s += nums[j]
 			maxS = max(maxS, s)
 		}
