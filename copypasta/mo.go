@@ -233,7 +233,8 @@ func moWithUpdate(in io.Reader) []int {
 // https://oi-wiki.org/misc/rollback-mo-algo/
 // 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
 // todo 回滚莫队及其简单运用 https://www.cnblogs.com/Parsnip/p/10969989.html
-// 模板题 https://leetcode.cn/problems/threshold-majority-queries/
+// 模板题：最小众数 https://loj.ac/p/6285
+// - https://leetcode.cn/problems/threshold-majority-queries/
 // - https://ac.nowcoder.com/acm/contest/103151/F
 // 历史研究 https://www.luogu.com.cn/problem/AT1219 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_c
 // https://loj.ac/p/6285
