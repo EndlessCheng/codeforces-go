@@ -8,7 +8,7 @@
 
 - 第一段的范围为 $[\textit{start},\textit{peak}]$。
 - 第二段的范围为 $[\textit{peak},\textit{bottom}]$。
-- 第三段的范围为 $[\textit{bottom},i-1]$。
+- 第三段从 $\textit{bottom}$ 开始。
 
 ⚠**注意**：第一二段之间的峰顶 $\textit{peak}$ 是第一二段共享的，第二三段之间的谷底 $\textit{bottom}$ 是第二三段共享的。
 
