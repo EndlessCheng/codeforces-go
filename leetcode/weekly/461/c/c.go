@@ -1,9 +1,11 @@
 package main
 
-import "sort"
+import (
+	"sort"
+)
 
 // https://space.bilibili.com/206214
-func minTime(s string, order []int, k int) int {
+func minTime1(s string, order []int, k int) int {
 	n := len(s)
 	if n*(n+1)/2 < k { // 全改成星号也无法满足要求
 		return -1
@@ -29,4 +31,34 @@ func minTime(s string, order []int, k int) int {
 		return false
 	})
 	return ans
+}
+
+func minTime(s string, order []int, k int) int {
+	n := len(s)
+	cnt := n * (n + 1) / 2
+	if cnt < k { // 全改成星号也无法满足要求
+		return -1
+	}
+
+	// 数组模拟双向链表
+	prev := make([]int, n+1)
+	next := make([]int, n)
+	for i := range n {
+		prev[i] = i - 1
+		next[i] = i + 1
+	}
+
+	for t := n - 1; ; t-- {
+		i := order[t]
+		l, r := prev[i], next[i]
+		cnt -= (i - l) * (r - i)
+		if cnt < k {
+			return t
+		}
+		// 删除链表中的 i
+		if l >= 0 {
+			next[l] = r
+		}
+		prev[r] = l
+	}
 }
