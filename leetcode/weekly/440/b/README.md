@@ -190,7 +190,7 @@ class Solution:
         for i, (x, y, idx) in enumerate(a):
             ans[idx] = ans[a[i - 1][2]] if i and x == a[i - 1][0] else s
             s += y
-            if len(h) < k:
+            if i < k:
                 heappush(h, y)
             else:
                 s -= heappushpop(h, y)
