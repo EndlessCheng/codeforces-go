@@ -13,6 +13,8 @@
 
 否则，把对应的位置改成 $-1$，表示不能放水果。
 
+> 完整的线段树模板见 [数据结构题单](https://leetcode.cn/circle/discuss/mOr1u6/)。
+
 ```py [sol-Python3]
 class SegmentTree:
     def __init__(self, a: List[int]):
@@ -46,6 +48,7 @@ class SegmentTree:
             i = self.find_first_and_update(o * 2 + 1, m + 1, r, x)  # 再递归右子树
         self.maintain(o)
         return i
+
 
 class Solution:
     def numOfUnplacedFruits(self, fruits: List[int], baskets: List[int]) -> int:
