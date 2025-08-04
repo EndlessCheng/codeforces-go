@@ -10,11 +10,13 @@ func cf2014D(in io.Reader, out io.Writer) {
 	var T, n, d, k, l, r int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &d, &k)
-		diff := make([]int, n+d+1)
+		diff := make([]int, n+1)
 		for range k {
 			Fscan(in, &l, &r)
 			diff[l]++
-			diff[r+d]--
+			if r+d <= n {
+				diff[r+d]--
+			}
 		}
 
 		mx, mxI := -1, 0
