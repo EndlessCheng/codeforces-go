@@ -2,6 +2,22 @@ package main
 
 // https://space.bilibili.com/206214
 func isTrionic(nums []int) bool {
+	if nums[0] >= nums[1] { // 一开始必须是递增的
+		return false
+	}
+	cnt := 1
+	for i := 2; i < len(nums); i++ {
+		if nums[i-1] == nums[i] {
+			return false
+		}
+		if (nums[i-2] < nums[i-1]) != (nums[i-1] < nums[i]) {
+			cnt++
+		}
+	}
+	return cnt == 3 // 一定是增减增
+}
+
+func isTrionic1(nums []int) bool {
 	n := len(nums)
 	// 第一段
 	i := 1

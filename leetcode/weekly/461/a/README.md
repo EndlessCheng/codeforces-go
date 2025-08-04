@@ -1,3 +1,5 @@
+## 写法一：三个循环
+
 三段式子数组必须满足「严格递增 - 严格递减 - 严格递增」，一共三段，每一段**至少要有两个数**。
 
 每一段分别用一个循环寻找，具体请看 [视频讲解](https://www.bilibili.com/video/BV1BEh3zZEoM/) 中的图，欢迎点赞关注~
@@ -115,6 +117,81 @@ func isTrionic(nums []int) bool {
 		i++
 	}
 	return i == n
+}
+```
+
+## 写法二：一个循环
+
+```py [sol-Python3]
+class Solution:
+    def isTrionic(self, nums: List[int]) -> bool:
+        if nums[0] >= nums[1]:  # 一开始必须是递增的
+            return False
+        cnt = 1
+        for i in range(2, len(nums)):
+            if nums[i - 1] == nums[i]:
+                return False
+            if (nums[i - 2] < nums[i - 1]) != (nums[i - 1] < nums[i]):
+                cnt += 1
+        return cnt == 3  # 一定是增减增
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean isTrionic(int[] nums) {
+        if (nums[0] >= nums[1]) { // 一开始必须是递增的
+            return false;
+        }
+        int cnt = 1;
+        for (int i = 2; i < nums.length; i++) {
+            if (nums[i - 1] == nums[i]) {
+                return false;
+            }
+            if ((nums[i - 2] < nums[i - 1]) != (nums[i - 1] < nums[i])) {
+                cnt++;
+            }
+        }
+        return cnt == 3; // 一定是增减增
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool isTrionic(vector<int>& nums) {
+        if (nums[0] >= nums[1]) { // 一开始必须是递增的
+            return false;
+        }
+        int cnt = 1;
+        for (int i = 2; i < nums.size(); i++) {
+            if (nums[i - 1] == nums[i]) {
+                return false;
+            }
+            if ((nums[i - 2] < nums[i - 1]) != (nums[i - 1] < nums[i])) {
+                cnt++;
+            }
+        }
+        return cnt == 3; // 一定是增减增
+    }
+};
+```
+
+```go [sol-Go]
+func isTrionic(nums []int) bool {
+	if nums[0] >= nums[1] { // 一开始必须是递增的
+		return false
+	}
+	cnt := 1
+	for i := 2; i < len(nums); i++ {
+		if nums[i-1] == nums[i] {
+			return false
+		}
+		if (nums[i-2] < nums[i-1]) != (nums[i-1] < nums[i]) {
+			cnt++
+		}
+	}
+	return cnt == 3 // 一定是增减增
 }
 ```
 
