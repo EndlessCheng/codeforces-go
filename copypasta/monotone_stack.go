@@ -347,7 +347,8 @@ func permLR(perm []int) ([]int, []int) {
 // LC316 https://leetcode.cn/problems/remove-duplicate-letters/
 //       https://atcoder.jp/contests/abc299/tasks/abc299_g
 // EXTRA: 重复个数不超过 limit https://leetcode.cn/contest/tianchi2022/problems/ev2bru/
-// https://codeforces.com/contest/1886/problem/C
+// https://codeforces.com/problemset/problem/1886/C 1600
+// https://codeforces.com/problemset/problem/2001/D 1900
 func removeDuplicateLetters(s string) string {
 	left := ['z' + 1]int{}
 	for _, c := range s {
@@ -363,7 +364,7 @@ func removeDuplicateLetters(s string) string {
 		for len(st) > 0 && c < st[len(st)-1] && left[st[len(st)-1]] > 0 {
 			top := st[len(st)-1]
 			st = st[:len(st)-1]
-			inSt[top] = false // top > c，且 top 后面还有，那么可以重新加进来
+			inSt[top] = false // top > c，且 top 后面还有，后面可以重新加进来
 		}
 		st = append(st, c)
 		inSt[c] = true
