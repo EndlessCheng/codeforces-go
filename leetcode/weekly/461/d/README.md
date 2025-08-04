@@ -261,7 +261,7 @@ $$
 \begin{aligned}
 f[i][3] &= \max(f[i-1][3], f[i-1][2]) + \textit{nums}[i]  & (\textit{nums}[i-1] < \textit{nums}[i])     \\
 f[i][2] &= \max(f[i-1][2], f[i-1][1]) + \textit{nums}[i]  & (\textit{nums}[i-1] > \textit{nums}[i])     \\
-f[i][1] &= \max(f[i-1][1], \textit{nums}[i-1]) + \textit{nums}[i]  & (\textit{nums}[i-1] > \textit{nums}[i])     \\
+f[i][1] &= \max(f[i-1][1], \textit{nums}[i-1]) + \textit{nums}[i]  & (\textit{nums}[i-1] < \textit{nums}[i])     \\
 \end{aligned}
 $$
 
