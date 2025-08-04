@@ -47,9 +47,9 @@ func cf525E(in io.Reader, out io.Writer) {
 	for x, b := range calc(a[n/2:]) {
 		if c, ok := cnt[tar-x]; ok {
 			s := 0
-			for i := k; i >= 0; i-- {
-				s += c[k-i]
-				ans += b[i] * s
+			for i, v := range b {
+				s += v
+				ans += s * c[k-i]
 			}
 		}
 	}
