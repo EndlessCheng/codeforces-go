@@ -68,6 +68,7 @@ https://codeforces.com/problemset/problem/1730/C 1200
 https://codeforces.com/problemset/problem/1905/C 1400
 https://codeforces.com/problemset/problem/2046/B 1600
 https://codeforces.com/problemset/problem/1870/D 1800
+https://codeforces.com/problemset/problem/2001/D 1900
 双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
 
 贡献法（计算所有子数组的……的和）
@@ -309,6 +310,7 @@ func next2Greater(a []int) ([]int, []int) {
 // https://codeforces.com/contest/1156/problem/E
 // https://atcoder.jp/contests/abc140/tasks/abc140_e
 // https://leetcode.cn/problems/minimum-time-to-activate-string/
+// https://leetcode.cn/problems/minimum-pair-removal-to-sort-array-ii/
 func permLR(perm []int) ([]int, []int) {
 	// 注：无脑的写法是用有序集合维护「剩余未被删除的下标」，或者并查集（适用场景更多）
 	n := len(perm)
