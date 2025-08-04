@@ -122,6 +122,10 @@ func isTrionic(nums []int) bool {
 
 ## 写法二：一个循环
 
+如果题目改成「增减增减增」，难道要写五个循环吗？
+
+改成统计拐弯的次数，可以推广到更一般的情况。
+
 ```py [sol-Python3]
 class Solution:
     def isTrionic(self, nums: List[int]) -> bool:
