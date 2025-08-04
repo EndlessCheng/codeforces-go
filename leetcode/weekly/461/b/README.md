@@ -9,9 +9,10 @@
 ```py [sol-Python3]
 class Solution:
     def maxBalancedShipments(self, weight: List[int]) -> int:
+        n = len(weight)
         ans = 0
         i = 1
-        while i < len(weight):
+        while i < n:
             if weight[i - 1] > weight[i]:
                 ans += 1
                 i += 2  # 下个子数组至少要有两个数
