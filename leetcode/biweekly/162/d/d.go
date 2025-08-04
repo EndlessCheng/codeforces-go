@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cmp"
 	"math"
 	"slices"
 	"sort"
@@ -58,12 +59,8 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 		}
 		maxCnt = 0
 	}
-	slices.SortFunc(qs, func(a, b query) int {
-		if a.bid != b.bid {
-			return a.bid - b.bid
-		}
-		return a.r - b.r
-	})
+
+	slices.SortFunc(qs, func(a, b query) int { return cmp.Or(a.bid-b.bid, a.r-b.r) })
 
 	var r int
 	for i, q := range qs {

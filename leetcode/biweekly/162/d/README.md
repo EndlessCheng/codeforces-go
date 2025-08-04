@@ -98,15 +98,18 @@ class Solution:
         qs = []  # (bid, ql, qr, threshold, qid) 其中 bid 是块号，qid 是询问的编号
         for i, (l, r, threshold) in enumerate(queries):
             r += 1  # 左闭右开
+
             # 大区间离线（保证 l 和 r 不在同一个块中）
             if r - l > block_size:
                 qs.append((l // block_size, l, r, threshold, i))
                 continue
+
             # 小区间暴力
             for x in nums[l: r]:
                 add(x)
             if max_cnt >= threshold:
                 ans[i] = min_val
+
             # 重置数据
             cnt.clear()
             max_cnt = 0
@@ -126,8 +129,9 @@ class Solution:
                 add(nums[r])
                 r += 1
 
-            # 左端点从 l0 移动到 ql（l0 不计入）
             tmp_max_cnt, tmp_min_val = max_cnt, min_val
+
+            # 左端点从 l0 移动到 ql（l0 不计入）
             for x in nums[ql: l0]:
                 add(x)
             if max_cnt >= threshold:
@@ -158,16 +162,19 @@ class Solution {
             int l = q[0];
             int r = q[1] + 1; // 左闭右开
             int threshold = q[2];
+
             // 大区间离线（保证 l 和 r 不在同一个块中）
             if (r - l > blockSize) {
                 qs.add(new Query(l / blockSize, l, r, threshold, i));
                 continue;
             }
+
             // 小区间暴力
             for (int j = l; j < r; j++) {
                 add(nums[j]);
             }
             ans[i] = maxCnt >= threshold ? minVal : -1;
+
             // 重置数据
             cnt.clear();
             maxCnt = 0;
@@ -191,9 +198,10 @@ class Solution {
                 add(nums[r]);
             }
 
-            // 左端点从 l0 移动到 q.l（l0 不计入）
             int tmpMaxCnt = maxCnt;
             int tmpMinVal = minVal;
+
+            // 左端点从 l0 移动到 q.l（l0 不计入）
             for (int j = q.l; j < l0; j++) {
                 add(nums[j]);
             }
@@ -258,11 +266,13 @@ public:
         for (int i = 0; i < m; i++) {
             auto& q = queries[i];
             int l = q[0], r = q[1] + 1, threshold = q[2]; // 左闭右开
+
             // 大区间离线（保证 l 和 r 不在同一个块中）
             if (r - l > block_size) {
                 qs.emplace_back(l / block_size, l, r, threshold, i);
                 continue;
             }
+
             // 小区间暴力
             for (int j = l; j < r; j++) {
                 add(nums[j]);
@@ -270,6 +280,7 @@ public:
             if (max_cnt >= threshold) {
                 ans[i] = min_val;
             }
+
             // 重置数据
             cnt.clear();
             max_cnt = 0;
@@ -293,8 +304,9 @@ public:
                 add(nums[r]);
             }
 
-            // 左端点从 l0 移动到 q.l（l0 不计入）
             int tmp_max_cnt = max_cnt, tmp_min_val = min_val;
+
+            // 左端点从 l0 移动到 q.l（l0 不计入）
             for (int j = q.l; j < l0; j++) {
                 add(nums[j]);
             }
@@ -337,11 +349,13 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 	qs := []query{}
 	for i, q := range queries {
 		l, r, threshold := q[0], q[1]+1, q[2] // 左闭右开
+
 		// 大区间离线（保证 l 和 r 不在同一个块中）
 		if r-l > blockSize {
 			qs = append(qs, query{l / blockSize, l, r, threshold, i})
 			continue
 		}
+
 		// 小区间暴力
 		for _, x := range nums[l:r] {
 			add(x)
@@ -351,16 +365,13 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 		} else {
 			ans[i] = -1
 		}
+
 		// 重置数据
 		clear(cnt)
 		maxCnt = 0
 	}
-	slices.SortFunc(qs, func(a, b query) int {
-		if a.bid != b.bid {
-			return a.bid - b.bid
-		}
-		return a.r - b.r
-	})
+
+	slices.SortFunc(qs, func(a, b query) int { return cmp.Or(a.bid-b.bid, a.r-b.r) })
 
 	var r int
 	for i, q := range qs {
@@ -377,8 +388,9 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 			add(nums[r])
 		}
 
-		// 左端点从 l0 移动到 q.l（l0 不计入）
 		tmpMaxCnt, tmpMinVal := maxCnt, minVal
+
+		// 左端点从 l0 移动到 q.l（l0 不计入）
 		for _, x := range nums[q.l:l0] {
 			add(x)
 		}
@@ -436,15 +448,18 @@ class Solution:
         qs = []  # (bid, ql, qr, threshold, qid) 其中 bid 是块号，qid 是询问的编号
         for i, (l, r, threshold) in enumerate(queries):
             r += 1  # 左闭右开
+
             # 大区间离线（保证 l 和 r 不在同一个块中）
             if r - l > block_size:
                 qs.append((l // block_size, l, r, threshold, i))
                 continue
+
             # 小区间暴力
             for j in range(l, r):
                 add(j)
             if max_cnt >= threshold:
                 ans[i] = min_val
+
             # 重置数据
             for v in index_to_value[l: r]:
                 cnt[v] -= 1
@@ -465,8 +480,9 @@ class Solution:
                 add(r)
                 r += 1
 
-            # 左端点从 l0 移动到 ql（l0 不计入）
             tmp_max_cnt, tmp_min_val = max_cnt, min_val
+
+            # 左端点从 l0 移动到 ql（l0 不计入）
             for j in range(ql, l0):
                 add(j)
             if max_cnt >= threshold:
@@ -489,11 +505,11 @@ class Solution {
         cnt = new int[n + 1];
 
         // 离散化
-        int[] nums2 = nums.clone();
-        Arrays.sort(nums2);
+        int[] sorted = nums.clone();
+        Arrays.sort(sorted);
         indexToValue = new int[n];
         for (int i = 0; i < n; i++) {
-            indexToValue[i] = Arrays.binarySearch(nums2, nums[i]);
+            indexToValue[i] = Arrays.binarySearch(sorted, nums[i]);
         }
 
         int[] ans = new int[m];
@@ -508,16 +524,19 @@ class Solution {
             int l = q[0];
             int r = q[1] + 1; // 左闭右开
             int threshold = q[2];
+            
             // 大区间离线（保证 l 和 r 不在同一个块中）
             if (r - l > blockSize) {
                 qs.add(new Query(l / blockSize, l, r, threshold, i));
                 continue;
             }
+
             // 小区间暴力
             for (int j = l; j < r; j++) {
                 add(j);
             }
             ans[i] = maxCnt >= threshold ? minVal : -1;
+
             // 重置数据
             for (int j = l; j < r; j++) {
                 cnt[indexToValue[j]]--;
@@ -543,9 +562,10 @@ class Solution {
                 add(r);
             }
 
-            // 左端点从 l0 移动到 q.l（l0 不计入）
             int tmpMaxCnt = maxCnt;
             int tmpMinVal = minVal;
+
+            // 左端点从 l0 移动到 q.l（l0 不计入）
             for (int j = q.l; j < l0; j++) {
                 add(j);
             }
@@ -624,11 +644,13 @@ public:
         for (int i = 0; i < m; i++) {
             auto& q = queries[i];
             int l = q[0], r = q[1] + 1, threshold = q[2]; // 左闭右开
+
             // 大区间离线（保证 l 和 r 不在同一个块中）
             if (r - l > block_size) {
                 qs.emplace_back(l / block_size, l, r, threshold, i);
                 continue;
             }
+
             // 小区间暴力
             for (int j = l; j < r; j++) {
                 add(j);
@@ -636,6 +658,7 @@ public:
             if (max_cnt >= threshold) {
                 ans[i] = min_val;
             }
+
             // 重置数据
             for (int j = l; j < r; j++) {
                 cnt[index_to_value[j]]--;
@@ -661,8 +684,9 @@ public:
                 add(r);
             }
 
-            // 左端点从 l0 移动到 q.l（l0 不计入）
             int tmp_max_cnt = max_cnt, tmp_min_val = min_val;
+
+            // 左端点从 l0 移动到 q.l（l0 不计入）
             for (int j = q.l; j < l0; j++) {
                 add(j);
             }
@@ -714,11 +738,13 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 	qs := []query{}
 	for i, q := range queries {
 		l, r, threshold := q[0], q[1]+1, q[2] // 左闭右开
+
 		// 大区间离线（保证 l 和 r 不在同一个块中）
 		if r-l > blockSize {
 			qs = append(qs, query{l / blockSize, l, r, threshold, i})
 			continue
 		}
+
 		// 小区间暴力
 		for j := l; j < r; j++ {
 			add(j)
@@ -728,18 +754,15 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 		} else {
 			ans[i] = -1
 		}
+
 		// 重置数据
 		for _, v := range indexToValue[l:r] {
 			cnt[v]--
 		}
 		maxCnt = 0
 	}
-	slices.SortFunc(qs, func(a, b query) int {
-		if a.bid != b.bid {
-			return a.bid - b.bid
-		}
-		return a.r - b.r
-	})
+
+	slices.SortFunc(qs, func(a, b query) int { return cmp.Or(a.bid-b.bid, a.r-b.r) })
 
 	var r int
 	for i, q := range qs {
@@ -756,8 +779,9 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 			add(r)
 		}
 
-		// 左端点从 l0 移动到 q.l（l0 不计入）
 		tmpMaxCnt, tmpMinVal := maxCnt, minVal
+
+		// 左端点从 l0 移动到 q.l（l0 不计入）
 		for l := q.l; l < l0; l++ {
 			add(l)
 		}
@@ -781,6 +805,8 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 
 - 时间复杂度：$\mathcal{O}(n\log n + q\log q + n\sqrt q)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n+q)$。
+
+推荐做做 [P5906 【模板】回滚莫队&不删除莫队](https://www.luogu.com.cn/problem/P5906) 加深对回滚莫队的理解。
 
 ## 分类题单
 
