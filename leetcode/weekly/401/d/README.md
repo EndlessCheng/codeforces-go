@@ -92,7 +92,7 @@ class Solution {
 public:
     int maxTotalReward(vector<int>& rewardValues) {
         ranges::sort(rewardValues);
-        rewardValues.erase(unique(rewardValues.begin(), rewardValues.end()), rewardValues.end());
+        rewardValues.erase(ranges::unique(rewardValues).begin(), rewardValues.end());
 
         bitset<100000> f{1};
         for (int v : rewardValues) {
@@ -237,7 +237,7 @@ public:
         }
 
         ranges::sort(rewardValues);
-        rewardValues.erase(unique(rewardValues.begin(), rewardValues.end()), rewardValues.end());
+        rewardValues.erase(ranges::unique(rewardValues).begin(), rewardValues.end());
         bitset<100000> f{1};
         for (int v : rewardValues) {
             int shift = f.size() - v;
@@ -417,7 +417,7 @@ public:
         }
 
         ranges::sort(rewardValues);
-        rewardValues.erase(unique(rewardValues.begin(), rewardValues.end()), rewardValues.end());
+        rewardValues.erase(ranges::unique(rewardValues).begin(), rewardValues.end());
 
         bitset<100000> f{1};
         for (int v : rewardValues) {
