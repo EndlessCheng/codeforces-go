@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"math"
 	"math/bits"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -73,7 +74,7 @@ func (b Bitset) Index1() int {
 	return len(b) * _w
 }
 
-// 返回下标 >= p 的第一个 1 的下标，若不存在则返回一个不小于 n 的位置（类似 C++ 中的 _Find_next，这里是 >=）
+// 返回下标 >= p 的第一个 1 的下标，若不存在则返回一个不小于 n 的位置（类似 C++ 中的 _Find_next，但这里是 >=）
 func (b Bitset) Next1(p int) int {
 	if i := p / _w; i < len(b) {
 		v := b[i] & (^uint(0) << (p % _w)) // mask off bits below bound
@@ -247,6 +248,8 @@ func (b Bitset) Lsh(k int) {
 }
 
 // 右移 k 位
+// https://codeforces.com/problemset/problem/914/F
+// 应用见下面的 findAllIndex
 func (b Bitset) Rsh(k int) {
 	if k == 0 {
 		return
@@ -342,4 +345,45 @@ func (b Bitset) String() string {
 		}
 	}
 	return bin.String()
+}
+
+// 对于每个 t = queries[i]，计算 t 在 s 中的所有出现位置（t[0] 在 s 中的下标）
+// 每次计算只需要 O(|s| * |t| / w) 的时间
+// https://codeforces.com/problemset/problem/963/D 2500
+// https://codeforces.com/problemset/problem/914/F 3000
+func findAllIndex(s string, queries []string) [][]int {
+	n := len(s)
+	pos := [26]Bitset{}
+	for i := range pos {
+		pos[i] = NewBitset(n)
+	}
+	for i, b := range s {
+		pos[b-'a'].Set(i)
+	}
+
+	res := make([][]int, len(queries))
+	matchMask := NewBitset(n)
+	for qid, t := range queries {
+		m := len(t)
+		if m > n {
+			continue
+		}
+
+		for i := range matchMask {
+			matchMask[i] = math.MaxUint
+		}
+		for i, b := range t {
+			p := slices.Clone(pos[b-'a'])
+			p.Rsh(i)
+			matchMask.And(p)
+		}
+
+		match := []int{}
+		for i := matchMask.Index1(); i < n; i = matchMask.Next1(i + 1) {
+			match = append(match, i)
+		}
+
+		res[qid] = match
+	}
+	return res
 }
