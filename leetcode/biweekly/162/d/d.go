@@ -34,7 +34,7 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 	}
 
 	ans := make([]int, m)
-	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m))))
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m*2))))
 	type query struct{ bid, l, r, threshold, qid int } // [l,r) 左闭右开
 	qs := []query{}
 	for i, q := range queries {

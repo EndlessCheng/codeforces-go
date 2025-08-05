@@ -16,30 +16,30 @@
 
 对于每个块，右端点的平均总移动次数约为 $\dfrac{n}{2}$。对于所有询问，右端点的总移动次数约为 $\dfrac{nk}{2} = \dfrac{n^2}{2B}$。
 
-对于每个询问，左端点由于只在块内移动，移动次数不超过 $2B$，左端点的总移动次数不超过 $2qB$。注意这里乘了 $2$，是因为本题有回滚操作，每个询问左端点都要来回移动一遍。
+对于每个询问，左端点只在块内移动，平均来回移动次数为 $B$，左端点的总移动次数为 $qB$。
 
 相加得
 
 $$
-\frac{n^2}{2B} + 2qB
+\frac{n^2}{2B} + qB
 $$
 
 由基本不等式可知，当
 
 $$
-B=\frac{n}{\sqrt q}
+B=\frac{n}{\sqrt {2q}}
 $$
 
 时取到最小值
 
 $$
-n\sqrt q
+n\sqrt {2q}
 $$
 
 为保证 $B$ 为正整数，实际取
 
 $$
-B = \left\lceil\frac{n}{\sqrt q}\right\rceil
+B = \left\lceil\frac{n}{\sqrt {2q}}\right\rceil
 $$
 
 如此一来，对于 $\textit{nums}$ 元素的总访问次数，就从暴力算法的 $\mathcal{O}(nq)$，降低至 $\mathcal{O}(n\sqrt q)$，足以通过本题。
@@ -93,7 +93,7 @@ class Solution:
                 min_val = min(min_val, x)
 
         ans = [-1] * m
-        block_size = ceil(n / sqrt(m))
+        block_size = ceil(n / sqrt(m * 2))
 
         qs = []  # (bid, ql, qr, threshold, qid) 其中 bid 是块号，qid 是询问的编号
         for i, (l, r, threshold) in enumerate(queries):
@@ -151,7 +151,7 @@ class Solution {
         int n = nums.length;
         int m = queries.length;
         int[] ans = new int[m];
-        int blockSize = (int) Math.ceil(n / Math.sqrt(m));
+        int blockSize = (int) Math.ceil(n / Math.sqrt(m * 2));
 
         record Query(int bid, int l, int r, int threshold, int qid) { // [l,r) 左闭右开
         }
@@ -256,7 +256,7 @@ public:
         };
 
         vector<int> ans(m, -1);
-        int block_size = ceil(n / sqrt(m));
+        int block_size = ceil(n / sqrt(m * 2));
 
         struct Query {
             int bid, l, r, threshold, qid; // [l,r) 左闭右开
@@ -344,7 +344,7 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 	}
 
 	ans := make([]int, m)
-	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m))))
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m*2))))
 	type query struct{ bid, l, r, threshold, qid int } // [l,r) 左闭右开
 	qs := []query{}
 	for i, q := range queries {
@@ -443,7 +443,7 @@ class Solution:
                 min_val = min(min_val, x)
 
         ans = [-1] * m
-        block_size = ceil(n / sqrt(m))
+        block_size = ceil(n / sqrt(m * 2))
 
         qs = []  # (bid, ql, qr, threshold, qid) 其中 bid 是块号，qid 是询问的编号
         for i, (l, r, threshold) in enumerate(queries):
@@ -513,7 +513,7 @@ class Solution {
         }
 
         int[] ans = new int[m];
-        int blockSize = (int) Math.ceil(n / Math.sqrt(m));
+        int blockSize = (int) Math.ceil(n / Math.sqrt(m * 2));
 
         record Query(int bid, int l, int r, int threshold, int qid) { // [l,r) 左闭右开
         }
@@ -634,7 +634,7 @@ public:
         };
 
         vector<int> ans(m, -1);
-        int block_size = ceil(n / sqrt(m));
+        int block_size = ceil(n / sqrt(m * 2));
 
         struct Query {
             int bid, l, r, threshold, qid; // [l,r) 左闭右开
@@ -733,7 +733,7 @@ func subarrayMajority(nums []int, queries [][]int) []int {
 	}
 
 	ans := make([]int, m)
-	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m))))
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m*2))))
 	type query struct{ bid, l, r, threshold, qid int } // [l,r) 左闭右开
 	qs := []query{}
 	for i, q := range queries {
