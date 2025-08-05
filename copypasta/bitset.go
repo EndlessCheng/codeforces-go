@@ -65,6 +65,7 @@ func (b Bitset) Index0() int {
 }
 
 // 返回第一个 1 的下标，若不存在则返回一个不小于 n 的位置（同 C++ 中的 _Find_first）
+// 如果要找所有的 1 的下标，见 AllIndex1，更快
 func (b Bitset) Index1() int {
 	for i, v := range b {
 		if v != 0 {
@@ -166,9 +167,31 @@ func (b Bitset) All1(l, r int) bool {
 	return ^(b[r/_w] | mask) == 0
 }
 
+// 统计 [l,r) 中的 1 的个数
+func (b Bitset) OnesCountRange(l, r int) int {
+	if l >= r {
+		return 0
+	}
+	maskL := ^uint(0) << (l % _w)
+	maskR := ^uint(0) << (r % _w)
+	i := l / _w
+	if i == r/_w {
+		return bits.OnesCount(b[i] & (maskL ^ maskR))
+	}
+	cnt1 := bits.OnesCount(b[i] & maskL)
+	for i++; i < r/_w; i++ {
+		cnt1 += bits.OnesCount(b[i])
+	}
+	cnt1 += bits.OnesCount(b[i] &^ maskR)
+	return cnt1
+}
+
 // 反转 [l,r) 范围内的比特
 // https://codeforces.com/contest/1705/problem/E
 func (b Bitset) FlipRange(l, r int) {
+	if l >= r {
+		return
+	}
 	maskL := ^uint(0) << (l % _w)
 	maskR := ^uint(0) << (r % _w)
 	i := l / _w
@@ -185,6 +208,9 @@ func (b Bitset) FlipRange(l, r int) {
 
 // 将 [l,r) 范围内的比特全部置 1
 func (b Bitset) SetRange(l, r int) {
+	if l >= r {
+		return
+	}
 	maskL := ^uint(0) << (l % _w)
 	maskR := ^uint(0) << (r % _w)
 	i := l / _w
@@ -201,6 +227,9 @@ func (b Bitset) SetRange(l, r int) {
 
 // 将 [l,r) 范围内的比特全部置 0
 func (b Bitset) ResetRange(l, r int) {
+	if l >= r {
+		return
+	}
 	maskL := ^uint(0) << (l % _w)
 	maskR := ^uint(0) << (r % _w)
 	i := l / _w
@@ -379,12 +408,12 @@ func findAllMatches(s string, queries []string) [][]int {
 			matchMask.And(p)
 		}
 
-		match := []int{}
-		for i := matchMask.Index1(); i < n; i = matchMask.Next1(i + 1) {
-			match = append(match, i)
-		}
+		// 如果只是求个数
+		// num := matchMask.OnesCount()
+		// num := matchMask.OnesCountRange(l, r)
 
-		res[qid] = match
+		// 所有出现位置
+		res[qid] = matchMask.AllIndex1()
 	}
 	return res
 }
