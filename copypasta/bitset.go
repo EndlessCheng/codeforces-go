@@ -351,7 +351,7 @@ func (b Bitset) String() string {
 // 每次计算只需要 O(|s| * |t| / w) 的时间
 // https://codeforces.com/problemset/problem/963/D 2500
 // https://codeforces.com/problemset/problem/914/F 3000
-func findAllIndex(s string, queries []string) [][]int {
+func findAllMatches(s string, queries []string) [][]int {
 	n := len(s)
 	pos := [26]Bitset{}
 	for i := range pos {
