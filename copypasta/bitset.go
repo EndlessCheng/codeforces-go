@@ -349,6 +349,7 @@ func (b Bitset) String() string {
 
 // 对于每个 t = queries[i]，计算 t 在 s 中的所有出现位置（t[0] 在 s 中的下标）
 // 每次计算只需要 O(|s| * |t| / w) 的时间
+// 且支持动态修改 s[i]
 // https://codeforces.com/problemset/problem/963/D 2500
 // https://codeforces.com/problemset/problem/914/F 3000
 func findAllMatches(s string, queries []string) [][]int {
