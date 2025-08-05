@@ -16,30 +16,6 @@ type bitset63 []uint
 
 func (b bitset63) set(p int) { b[p/w63] |= 1 << (p % w63) }
 
-func (b bitset63) index1() int {
-	for i, v := range b {
-		if v != 0 {
-			return i*w63 | bits.TrailingZeros(v)
-		}
-	}
-	return len(b) * w63
-}
-
-func (b bitset63) next1(p int) int {
-	if i := p / w63; i < len(b) {
-		v := b[i] & (^uint(0) << (p % w63))
-		if v != 0 {
-			return i*w63 | bits.TrailingZeros(v)
-		}
-		for i++; i < len(b); i++ {
-			if b[i] != 0 {
-				return i*w63 | bits.TrailingZeros(b[i])
-			}
-		}
-	}
-	return len(b) * w63
-}
-
 func (b bitset63) rsh(k int) bitset63 {
 	if k == 0 {
 		return b
@@ -85,6 +61,7 @@ func cf963D(in io.Reader, _w io.Writer) {
 	}
 
 	match := make(bitset63, (n+w63-1)/w63)
+	idx := []int{}
 	for range q {
 		Fscan(in, &k, &t)
 		m := len(t)
@@ -99,12 +76,15 @@ func cf963D(in io.Reader, _w io.Writer) {
 		for i, b := range t {
 			match.and(pos[b-'a'].rsh(i))
 		}
-		idx := []int{}
+		idx = idx[:0]
 		ans := int(1e9)
-		for i := match.index1(); i < n; i = match.next1(i + 1) {
-			idx = append(idx, i)
-			if len(idx) >= k {
-				ans = min(ans, i-idx[len(idx)-k])
+		for i, v := range match {
+			for ; v > 0; v &= v - 1 {
+				j := i*w63 | bits.TrailingZeros(v)
+				idx = append(idx, j)
+				if len(idx) >= k {
+					ans = min(ans, j-idx[len(idx)-k])
+				}
 			}
 		}
 
