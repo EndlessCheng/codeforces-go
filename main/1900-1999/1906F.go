@@ -8,11 +8,15 @@ import (
 )
 
 // https://github.com/EndlessCheng
-type info struct{ ans, tot, pre, suf int }
-type seg []struct{ l, r int; info }
+type info6 struct{ ans, tot, pre, suf int }
 
-func (t seg) mergeInfo(a, b info) info {
-	return info{
+type seg6 []struct {
+	l, r int
+	info6
+}
+
+func (t seg6) mergeInfo(a, b info6) info6 {
+	return info6{
 		max(a.ans, b.ans, a.suf+b.pre),
 		a.tot + b.tot,
 		max(a.pre, a.tot+b.pre),
@@ -20,7 +24,7 @@ func (t seg) mergeInfo(a, b info) info {
 	}
 }
 
-func (t seg) build(o, l, r int) {
+func (t seg6) build(o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		return
@@ -30,10 +34,10 @@ func (t seg) build(o, l, r int) {
 	t.build(o<<1|1, m+1, r)
 }
 
-func (t seg) update(o, i, v int) {
+func (t seg6) update(o, i, v int) {
 	if t[o].l == t[o].r {
-		v += t[o].info.tot
-		t[o].info = info{v, v, v, v}
+		v += t[o].info6.tot
+		t[o].info6 = info6{v, v, v, v}
 		return
 	}
 	if i <= (t[o].l+t[o].r)>>1 {
@@ -41,12 +45,12 @@ func (t seg) update(o, i, v int) {
 	} else {
 		t.update(o<<1|1, i, v)
 	}
-	t[o].info = t.mergeInfo(t[o<<1].info, t[o<<1|1].info)
+	t[o].info6 = t.mergeInfo(t[o<<1].info6, t[o<<1|1].info6)
 }
 
-func (t seg) query(o, l, r int) (d info) {
+func (t seg6) query(o, l, r int) (d info6) {
 	if l <= t[o].l && t[o].r <= r {
-		return t[o].info
+		return t[o].info6
 	}
 	m := (t[o].l + t[o].r) >> 1
 	if r <= m {
@@ -80,7 +84,7 @@ func cf1906F(in io.Reader, _w io.Writer) {
 	}
 
 	ans := make([]int, q)
-	t := make(seg, 2<<bits.Len(uint(m)))
+	t := make(seg6, 2<<bits.Len(uint(m)))
 	t.build(1, 1, m)
 	for i, qs := range qs {
 		for _, p := range ops[i] {
