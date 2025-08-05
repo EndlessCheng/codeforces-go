@@ -35,7 +35,7 @@
 
 设原数组 $\textit{basket}_1$ 和 $\textit{basket}_2$ 的最小值为 $\textit{mn}$。把 $\textit{mn}$ 当作中介，我们可以把 $a_i$ 和 $b_i$ 分别与 $\textit{mn}$ 交换一次，也能完成 $a_i$ 和 $b_i$ 的交换。注意 $\textit{mn}$ 一共交换了两次，在两个数组之间来回跳了一次，所以交换前后，$\textit{mn}$ 所在数组是不变的。
 
-所以，交换 $a_i$ 和 $b_i$ 的实际最小代价为
+当 $S_1\le S_2$ 时，$\min(S_1,x)\le \min(S_2,x)$ 成立（提示：分类讨论）。所以即使考虑中介，前文的猜想仍然是成立的。交换 $a_i$ 和 $b_i$ 的实际最小代价为
 
 $$
 \min(a_i, b_i, 2\cdot \textit{mn})
