@@ -2,7 +2,7 @@ package main
 
 import (
 	. "fmt"
-	"sort"
+	"slices"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -26,8 +26,8 @@ func CF1534E() {
 		tot += 2
 	}
 	for ; tot > 0; tot -= k {
-		sort.Slice(c, func(i, j int) bool { return c[i].v > c[j].v })
-		q := make([]interface{}, k)
+		slices.SortFunc(c, func(a, b pair) int { return b.v - a.v })
+		q := make([]any, k)
 		for i := range q {
 			q[i] = c[i].i
 			c[i].v--
