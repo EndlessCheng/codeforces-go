@@ -148,6 +148,7 @@ https://codeforces.com/problemset/problem/622/F 2600
 定长滑动窗口
 https://codeforces.com/problemset/problem/716/B 1300
 https://codeforces.com/problemset/problem/1955/D 1400
+https://codeforces.com/problemset/problem/2014/D 1400 有些另类，也可以用差分做
 https://codeforces.com/problemset/problem/608/B 1500
 https://codeforces.com/problemset/problem/1687/A 1600
 https://codeforces.com/problemset/problem/69/E 1800
@@ -344,6 +345,9 @@ https://www.luogu.com.cn/problem/P1016
 https://www.luogu.com.cn/problem/P2127
 https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
 
+划分型贪心
+https://codeforces.com/problemset/problem/1969/E 2400
+
 交换论证法
 https://atcoder.jp/contests/arc149/tasks/arc149_b
 https://codeforces.com/problemset/problem/437/C 1400 排序不等式
@@ -369,8 +373,10 @@ https://codeforces.com/problemset/problem/1030/F 2500 带权中位数 + 单点�
 
 排序不等式
 https://codeforces.com/problemset/problem/2065/D 1200
+https://codeforces.com/problemset/problem/437/C 1400
 https://codeforces.com/problemset/problem/276/C 1500
 https://codeforces.com/problemset/problem/1165/E 1600
+https://codeforces.com/problemset/problem/1612/G 2500
 
 相邻不同
 每次取两个数减一，最后剩下的数最小 / 操作次数最多
@@ -429,6 +435,7 @@ https://codeforces.com/problemset/problem/1608/C 1700
 https://codeforces.com/problemset/problem/2124/D 1700
 https://codeforces.com/problemset/problem/1442/A 1800
 https://codeforces.com/problemset/problem/558/C  1900
+https://codeforces.com/problemset/problem/1747/D 1900 不变量
 https://codeforces.com/problemset/problem/1744/F 2000
 https://codeforces.com/problemset/problem/1610/E 2300
 https://codeforces.com/problemset/problem/2004/F 2600
@@ -545,7 +552,8 @@ https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
-https://codeforces.com/problemset/problem/1028/E  2400
+https://codeforces.com/problemset/problem/1028/E  2400 推荐 找特殊位置
+https://codeforces.com/problemset/problem/1098/C  2400 树
 https://codeforces.com/problemset/problem/1244/G  2400
 https://codeforces.com/problemset/problem/1761/E  2400
 https://codeforces.com/problemset/problem/297/D   2500
@@ -584,6 +592,7 @@ https://codeforces.com/problemset/problem/1931/C 1000
 https://codeforces.com/problemset/problem/2039/B 1000
 https://codeforces.com/problemset/problem/262/B 1200
 https://codeforces.com/problemset/problem/1364/A 1200
+https://codeforces.com/problemset/problem/2119/B 1200
 https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
 https://codeforces.com/problemset/problem/2065/C2 1300
@@ -621,6 +630,7 @@ https://codeforces.com/problemset/problem/2117/F 1800
 https://codeforces.com/problemset/problem/796/C 1900
 https://codeforces.com/problemset/problem/1095/E 1900
 https://codeforces.com/problemset/problem/1714/F 1900 锻炼代码实现技巧的好题
+https://codeforces.com/problemset/problem/1747/D 1900 结论 不变量
 https://codeforces.com/problemset/problem/1914/F 1900
 https://codeforces.com/problemset/problem/1088/D 2000
 https://codeforces.com/problemset/problem/1763/C 2000
@@ -1799,6 +1809,7 @@ func _() {
 	/* 差分数组
 	【算法小课堂】差分数组 https://leetcode.cn/circle/discuss/FfMCgb/
 	https://codeforces.com/problemset/problem/816/B 1400
+	https://codeforces.com/problemset/problem/2014/D 1400 也可以用定长滑窗做
 	https://codeforces.com/problemset/problem/276/C 1500
 	https://codeforces.com/problemset/problem/1700/C 1700
 	https://codeforces.com/problemset/problem/1884/C 1700 结论
