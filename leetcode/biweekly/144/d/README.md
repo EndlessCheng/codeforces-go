@@ -4,11 +4,13 @@
 
 - 从右上角 $(0,n-1)$ 出发，在不访问主对角线的情况下，走到 $(n-2,n-1)$，也就是右下角的上面那个格子，所能收集到的水果总数的最大值。
 
-这类似 [931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)，[我的题解](https://leetcode.cn/problems/minimum-falling-path-sum/solutions/2341851/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-2cwkb/)。
+做法类似 [931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)，请看 [我的题解](https://leetcode.cn/problems/minimum-falling-path-sum/solutions/2341851/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-2cwkb/)。
 
 对于从左下角出发的小朋友，我们可以把矩阵按照主对角线翻转，就可以复用同一套代码逻辑了。
 
 代码实现时，由于我们是倒着走的（为了方便翻译成递推），小朋友不能一直往左上走，不然没法走到右上角。所以要限制小朋友不能太靠左，即保证 $j\ge n-1-i$。这是因为从 $(0,n-1)$ 往左下的这条线满足 $i+j=n-1$，不能越过这条线，即 $i+j\ge n-1$，也就是 $j\ge n-1-i$。
+
+本题由于元素值均非负，可以在出界时返回 $0$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1uzBxYoEJC/?t=13m12s)，欢迎点赞关注~
 
@@ -74,7 +76,7 @@ class Solution {
     private int dfs(int i, int j, int[][] fruits, int[][] memo) {
         int n = fruits.length;
         if (j < n - 1 - i || j >= n) {
-            return Integer.MIN_VALUE;
+            return 0;
         }
         if (i == 0) {
             return fruits[i][j];
@@ -99,7 +101,7 @@ public:
         vector memo(n, vector<int>(n, -1)); // -1 表示没有计算过
         auto dfs = [&](this auto&& dfs, int i, int j) -> int {
             if (j < n - 1 - i || j >= n) {
-                return INT_MIN;
+                return 0;
             }
             if (i == 0) {
                 return fruits[i][j];
@@ -147,7 +149,7 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 	var dfs func(int, int) int
 	dfs = func(i, j int) int {
 		if j < n-1-i || j >= n {
-			return math.MinInt
+			return 0
 		}
 		if i == 0 {
 			return fruits[i][j]
@@ -207,7 +209,7 @@ class Solution:
     def maxCollectedFruits(self, fruits: List[List[int]]) -> int:
         def dp(fruits: List[List[int]]) -> int:
             n = len(fruits)
-            f = [[-inf] * (n + 1) for _ in range(n - 1)]
+            f = [[0] * (n + 1) for _ in range(n - 1)]
             f[0][n - 1] = fruits[0][-1]
             for i in range(1, n - 1):
                 for j in range(max(n - 1 - i, i + 1), n):
@@ -244,9 +246,6 @@ class Solution {
     int dp(int[][] fruits) {
         int n = fruits.length;
         int[][] f = new int[n - 1][n + 1];
-        for (int[] row : f) {
-            Arrays.fill(row, Integer.MIN_VALUE);
-        }
         f[0][n - 1] = fruits[0][n - 1];
         for (int i = 1; i < n - 1; i++) {
             for (int j = Math.max(n - 1 - i, i + 1); j < n; j++) {
@@ -264,7 +263,7 @@ public:
     int maxCollectedFruits(vector<vector<int>>& fruits) {
         int n = fruits.size();
         auto dp = [&]() -> int {
-            vector f(n - 1, vector<int>(n + 1, INT_MIN));
+            vector f(n - 1, vector<int>(n + 1));
             f[0][n - 1] = fruits[0][n - 1];
             for (int i = 1; i < n - 1; i++) {
                 for (int j = max(n - 1 - i, i + 1); j < n; j++) {
@@ -303,11 +302,6 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 		f[i] = make([]int, n+1)
 	}
 	dp := func() int {
-		for i := range f {
-			for j := range f[i] {
-				f[i][j] = math.MinInt
-			}
-		}
 		f[0][n-1] = fruits[0][n-1]
 		for i := 1; i < n-1; i++ {
 			for j := max(n-1-i, i+1); j < n; j++ {
@@ -343,21 +337,27 @@ func maxCollectedFruits(fruits [][]int) (ans int) {
 
 **注**：用滚动数组可以做到 $\mathcal{O}(n)$ 的空间复杂度。也可以原地修改 $\textit{fruits}$，做到 $\mathcal{O}(1)$ 空间复杂度。
 
+## 专题训练
+
+见下面动态规划题单的「**二、网格图 DP**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
