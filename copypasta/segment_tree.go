@@ -367,9 +367,12 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/1557/D  2200 max max 离散化 
 // https://codeforces.com/problemset/problem/718/C   2300 矩阵乘法 ∑ 
 // https://codeforces.com/problemset/problem/1797/E  2300 phi*
+// https://codeforces.com/problemset/problem/121/E   2400 特殊的 update，有时候会退化成单点更新
 // https://codeforces.com/problemset/problem/145/E   2400
 // https://codeforces.com/problemset/problem/377/D   2400
+// https://codeforces.com/problemset/problem/446/C   2400 斐波那契数列 广义斐波那契数列 https://gemini.google.com/app/62b7bb3403b692db 往上翻
 // https://codeforces.com/problemset/problem/1114/F  2400
+// https://codeforces.com/problemset/problem/1969/E  2400
 // https://codeforces.com/problemset/problem/266/E   2500 k 次幂带权前缀和
 // https://codeforces.com/problemset/problem/618/E   2500 旋转 http://poj.org/problem?id=2991
 // https://codeforces.com/problemset/problem/739/C   2500
@@ -390,8 +393,9 @@ func newSegmentTree(a []int) seg {
 //
 // 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
 // todo https://www.luogu.com.cn/problem/P1471
-//  斐波那契 https://codeforces.com/problemset/problem/446/C 2400
-// 区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
+// 区间加斐波那契数列 https://codeforces.com/problemset/problem/446/C 2400 https://gemini.google.com/app/62b7bb3403b692db 往上翻
+// 区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 
+//                      https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
 //   多项式更新 Competitive Programmer’s Handbook Ch.28
 // 区间加等比数列（q 恒定）
 //   提出首项后，剩余的是固定的 1 + q^1 + q^2 + ... + q^(线段树区间长度-1)
