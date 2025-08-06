@@ -6,7 +6,7 @@
 
 借鉴 [定长滑动窗口](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/) 或者 [不定长滑动窗口](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 的思想，我们只需额外增删不在交集中的元素。
 
-莫队算法，本质是通过巧妙地改变回答询问的顺序，使访问的元素个数（区间左右端点的总移动次数）由 $\mathcal{O}(nq)$ 降至 $\mathcal{O}(n\sqrt q)$，其中 $q$ 是 $\textit{queries}$ 的长度。
+莫队算法，本质是通过巧妙地改变回答询问的顺序，让相邻询问的重叠部分尽量大，从而使访问的元素个数（区间左右端点的总移动次数）由 $\mathcal{O}(nq)$ 降至 $\mathcal{O}(n\sqrt q)$，其中 $q$ 是 $\textit{queries}$ 的长度。
 
 把数组分成若干块，每块大小为 $B$，分成 $k=\dfrac{n}{B}$ 块。最后一块的大小 $\le B$。
 
