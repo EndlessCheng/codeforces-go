@@ -592,7 +592,6 @@ https://codeforces.com/problemset/problem/1931/C 1000
 https://codeforces.com/problemset/problem/2039/B 1000
 https://codeforces.com/problemset/problem/262/B 1200
 https://codeforces.com/problemset/problem/1364/A 1200
-https://codeforces.com/problemset/problem/2119/B 1200
 https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
 https://codeforces.com/problemset/problem/2065/C2 1300
