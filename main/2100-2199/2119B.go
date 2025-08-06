@@ -17,7 +17,8 @@ func cf2119B(in io.Reader, out io.Writer) {
 			s += x
 			mx = max(mx, x)
 		}
-		if d > s*s || d < (mx*2-s)*(mx*2-s) {
+		v := mx*2 - s
+		if d > s*s || v > 0 && d < v*v {
 			Fprintln(out, "No")
 		} else {
 			Fprintln(out, "Yes")
