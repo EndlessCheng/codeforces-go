@@ -681,6 +681,7 @@ https://atcoder.jp/contests/abc323/tasks/abc323_g
 // todo https://oi-wiki.org/math/simplex/
 //      https://zhuanlan.zhihu.com/p/31644892
 //  https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearProgramming.java.html
+//  https://web.mit.edu/lpsolve/doc/Python.htm
 //
 // todo https://uoj.ac/problem/179
 //  https://codeforces.com/problemset/problem/1430/G https://codeforces.com/blog/entry/83614?#comment-709868
