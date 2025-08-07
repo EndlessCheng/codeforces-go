@@ -32,22 +32,24 @@ func cf1467E(in io.Reader, out io.Writer) {
 	dfs = func(v, fa int) {
 		inT[v] = ts
 		ts++
-		x := a[v]
-		c0 := cnt[x]
-		cnt[x]++
+		color := a[v]
+		c0 := cnt[color]
+		cnt[color]++
 		for _, w := range g[v] {
 			if w == fa {
 				continue
 			}
-			c := cnt[x]
+			c := cnt[color]
 			dfs(w, v)
-			if cnt[x] > c {
+			if cnt[color] > c { // 说明 w 中有 color，那么另一侧 v（除去 w）是坏的
+				// 除去子树 w 的其余点 +1（注意这不含 w）
 				d[0]++
 				d[inT[w]]--
 				d[ts]++
 			}
 		}
-		if cnt[x]-c0 < tot[x] {
+		// 说明子树 v 是坏的
+		if cnt[color]-c0 < tot[color] {
 			d[inT[v]]++
 			d[ts]--
 		}
