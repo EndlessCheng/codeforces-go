@@ -41,7 +41,7 @@ func maxSumTrionic1(nums []int) int64 {
 		for ; i < n && nums[i-1] > nums[i]; i++ {
 			res += nums[i] // 第二段的所有元素必选
 		}
-		if i == peak+1 || i == n { // 第二段至少要有两个数，第三段至少要有两个数
+		if i == peak+1 || i == n || nums[i-1] == nums[i] { // 第二段至少要有两个数，第三段至少要有两个数
 			continue
 		}
 

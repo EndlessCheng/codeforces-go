@@ -43,7 +43,7 @@ class Solution:
             while i < n and nums[i - 1] > nums[i]:
                 res += nums[i]  # 第二段的所有元素必选
                 i += 1
-            if i == peak + 1 or i == n:  # 第二段至少要有两个数，第三段至少要有两个数
+            if i == peak + 1 or i == n or nums[i - 1] == nums[i]:  # 第二段至少要有两个数，第三段至少要有两个数
                 continue
 
             # 第三段
@@ -89,7 +89,7 @@ class Solution {
             for (; i < n && nums[i - 1] > nums[i]; i++) {
                 res += nums[i]; // 第二段的所有元素必选
             }
-            if (i == peak + 1 || i == n) { // 第二段至少要有两个数，第三段至少要有两个数
+            if (i == peak + 1 || i == n || nums[i - 1] == nums[i]) { // 第二段至少要有两个数，第三段至少要有两个数
                 continue;
             }
 
@@ -142,7 +142,7 @@ public:
             for (; i < n && nums[i - 1] > nums[i]; i++) {
                 res += nums[i]; // 第二段的所有元素必选
             }
-            if (i == peak + 1 || i == n) { // 第二段至少要有两个数，第三段至少要有两个数
+            if (i == peak + 1 || i == n || nums[i - 1] == nums[i]) { // 第二段至少要有两个数，第三段至少要有两个数
                 continue;
             }
 
@@ -192,7 +192,7 @@ func maxSumTrionic(nums []int) int64 {
 		for ; i < n && nums[i-1] > nums[i]; i++ {
 			res += nums[i] // 第二段的所有元素必选
 		}
-		if i == peak+1 || i == n { // 第二段至少要有两个数，第三段至少要有两个数
+		if i == peak+1 || i == n || nums[i-1] == nums[i] { // 第二段至少要有两个数，第三段至少要有两个数
 			continue
 		}
 
@@ -265,7 +265,7 @@ f[i][1] &= \max(f[i-1][1], \textit{nums}[i-1]) + \textit{nums}[i]  & (\textit{nu
 \end{aligned}
 $$
 
-如果不满足括号中的要求，则 $f[i][j] = -\infty$。
+如果不满足右侧括号中的要求，则 $f[i][j] = -\infty$。
 
 初始值：$f[0][j] = -\infty$。
 
