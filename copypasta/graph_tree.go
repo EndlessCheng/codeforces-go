@@ -14,6 +14,7 @@ import (
 注：这里的代码偏向于数据结构，其余的树上统计类算法见 dp.go 中的树形 DP 部分
 
 从特殊到一般：先思考一条链的情况，然后逐渐增加分支来思考一般的情况
+树上问题怎么枚举右维护左？考虑两个节点是祖孙关系还是非祖孙关系
 
 NOTE: 对于有根树的题，可以考虑加上 g[0] = append(g[0], -1) 来简化代码
 NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的对称差，处理一些树上异或的问题可以往这个方向思考
@@ -281,8 +282,8 @@ func (*tree) depthSize(root int, g [][]int, v int) {
 // DFS 序（进出时间戳）· 其一
 // 核心思路：把树上问题（尤其是子树问题）转换成区间问题
 // 另见后面的 inOutTimestamp
-// 视频讲解 https://www.bilibili.com/video/BV1pW4y1r7xs/
 // 讲解：https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/solution/dfs-shi-jian-chuo-chu-li-shu-shang-wen-t-x1kk/
+// 视频：https://www.bilibili.com/video/BV1pW4y1r7xs/
 //
 // LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/ 2392
 // LC3327 https://leetcode.cn/problems/check-if-dfs-strings-are-palindromes/ 2454
@@ -295,6 +296,7 @@ func (*tree) depthSize(root int, g [][]int, v int) {
 // https://codeforces.com/problemset/problem/2002/D2 2300
 // https://codeforces.com/problemset/problem/258/E 2400
 // https://codeforces.com/problemset/problem/916/E 2400
+// https://codeforces.com/problemset/problem/1467/E 2500
 // https://codeforces.com/problemset/problem/372/D 2600
 // - 先把这题做了 https://www.luogu.com.cn/problem/P3320
 // https://codeforces.com/problemset/problem/1110/F 2600
@@ -509,12 +511,14 @@ func (*tree) minPathCover(g [][]int) int {
 //
 // LC1245 https://leetcode.cn/problems/tree-diameter/
 // https://codeforces.com/problemset/problem/1404/B 1900
+// https://codeforces.com/problemset/problem/337/D 2000
 // https://codeforces.com/problemset/problem/455/C 2100 两棵树连边，连边之后直径最小
 // - 简化版 LC3203 https://leetcode.cn/problems/find-minimum-diameter-after-merging-two-trees/
 // https://codeforces.com/problemset/problem/734/E 2100 转换的好题 
 // https://codeforces.com/problemset/problem/1000/E 2100 e-BCC
 // https://codeforces.com/problemset/problem/379/F 2400
 // https://codeforces.com/problemset/problem/911/F 2400 贪心
+// https://codeforces.com/problemset/problem/1004/E 2400 直径的性质
 // https://codeforces.com/problemset/problem/1819/C 2400
 // https://codeforces.com/problemset/problem/1617/E 2700 转换成求部分直径 
 // - https://oeis.org/A072339
@@ -548,7 +552,7 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	// 下标最小的直径端点 https://codeforces.com/problemset/problem/592/D
 	// 树上非严格次长距离 https://ac.nowcoder.com/acm/contest/9557/C（另一种做法见下面的 secondDiameter）
 	isEnd := make([]bool, len(g))
-	var findAllEnds func(v, fa, d int)
+	var findAllEnds func(int, int, int)
 	findAllEnds = func(v, fa, d int) {
 		if d == maxD {
 			isEnd[v] = true
@@ -572,7 +576,7 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	// EXTRA: 获取所有在直径上的点
 	// https://ac.nowcoder.com/acm/contest/9753/C
 	onDiameter := make([]bool, len(g))
-	var findVerticesOnDiameter func(v, fa, d int) bool
+	var findVerticesOnDiameter func(int, int, int) bool
 	findVerticesOnDiameter = func(v, fa, d int) bool {
 		if d == maxD {
 			onDiameter[v] = true
@@ -600,7 +604,7 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	// path[len(path)/2] 即为树的中心（之一）
 	// https://codeforces.com/problemset/problem/1819/C
 	path := []int{}
-	var findDiameterPath func(v, fa int) bool
+	var findDiameterPath func(int, int) bool
 	findDiameterPath = func(v, fa int) bool {
 		if v == dw {
 			path = append(path, v)
@@ -1134,6 +1138,8 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // https://codeforces.com/problemset/problem/1535/E 2200
 // https://codeforces.com/problemset/problem/379/F 2400
 // https://codeforces.com/problemset/problem/916/E 2400
+// https://codeforces.com/problemset/problem/1902/F 2400 线性基
+// - https://www.luogu.com.cn/problem/P3292 [SCOI2016] 幸运数字
 // https://codeforces.com/problemset/problem/372/D 2600
 // - 先把这题做了 https://www.luogu.com.cn/problem/P3320
 // https://codeforces.com/problemset/problem/176/E 3100
@@ -1149,10 +1155,11 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 //    变体 https://codeforces.com/problemset/problem/733/F 2200
 // 维护最大值（与 MST 结合）LC1697 https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/
 // 维护最大值（与 MST 结合）LC1724（上面这题的在线版）https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths-ii/
+// 维护最大值（与 MST 结合）https://codeforces.com/problemset/problem/827/D 2700 
 // 维护最大值和严格次大值（严格次小 MST）：见 graph.go 中的 strictlySecondMST
 // 维护前十大（点权）https://codeforces.com/problemset/problem/587/C 2200
-// 维护最大子段和 https://codeforces.com/contest/1843/problem/F2
-// 维护从 x 往上有几个不同的 OR https://codeforces.com/contest/1878/problem/G
+// 维护最大子段和 https://codeforces.com/problemset/problem/1843/F2 2300
+// 维护从 x 往上有几个不同的 OR https://codeforces.com/problemset/problem/1878/G 2300
 // 维护最大值 https://www.hackerearth.com/practice/algorithms/graphs/graph-representation/practice-problems/algorithm/optimal-connectivity-c6ae79ca/
 // http://acm.hdu.edu.cn/showproblem.php?pid=7345
 //
@@ -1333,6 +1340,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		// EXTRA: 倍增的时候维护其他属性，如边权最值等
 		// 下面的代码来自 https://codeforces.com/problemset/problem/609/E 2100
 		// EXTRA: 额外维护最值边的下标，见 https://codeforces.com/contest/733/submission/120955685
+		// https://codeforces.com/problemset/problem/827/D 2700
 		// 点权写法 https://codeforces.com/problemset/problem/1059/E 2400
 		type nb struct{ to, wt int }
 		var g [][]nb // read g ...
@@ -1345,24 +1353,26 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		}
 		pa := make([][mx]pair, len(g))
 		dep := make([]int, len(g))
-		var build func(v, p, d int)
-		build = func(v, p, d int) {
+		var build func(int, int)
+		build = func(v, p int) {
 			pa[v][0].p = p
-			dep[v] = d
 			for _, e := range g[v] {
-				if w := e.to; w != p {
-					pa[w][0].maxWt = data(e.wt)
-					build(w, v, d+1)
+				w := e.to
+				if w == p {
+					continue
 				}
+				pa[w][0].maxWt = data(e.wt)
+				dep[w] = dep[v] + 1
+				build(w, v)
 			}
 		}
-		build(0, -1, 0)
+		build(0, -1)
 
 		merge := func(a, b data) data {
 			return data(max(int(a), int(b)))
 		}
 
-		for i := 0; i+1 < mx; i++ {
+		for i := range mx - 1 {
 			for v := range pa {
 				if p := pa[v][i]; p.p != -1 {
 					pp := pa[p.p][i]
@@ -1386,7 +1396,8 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 			}
 			if w != v {
 				for i := mx - 1; i >= 0; i-- {
-					if pv, pw := pa[v][i], pa[w][i]; pv.p != pw.p {
+					pv, pw := pa[v][i], pa[w][i]
+					if pv.p != pw.p {
 						maxWt = merge(maxWt, merge(pv.maxWt, pw.maxWt))
 						v, w = pv.p, pw.p
 					}
