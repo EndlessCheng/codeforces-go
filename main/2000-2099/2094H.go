@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -127,4 +126,4 @@ func cf2094H(in io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { cf2094H(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf2094H(bufio.NewReader(os.Stdin), os.Stdout) }
