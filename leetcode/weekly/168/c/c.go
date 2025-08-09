@@ -1,75 +1,36 @@
 package main
 
-type trieNode struct {
-	childIdx [26]int
-	cnt      int
-}
-
-type trie struct {
-	nodes []*trieNode
-}
-
-func newTrie() *trie {
-	return &trie{
-		nodes: []*trieNode{{}},
-	}
-}
-
-func (t *trie) put(s []byte) {
-	o := t.nodes[0]
-	for _, c := range s {
-		if o.childIdx[c] == 0 {
-			o.childIdx[c] = len(t.nodes)
-			t.nodes = append(t.nodes, &trieNode{})
+func maxFreq(s string, maxLetters, minSize, _ int) (ans int) {
+	cntStr := map[string]int{}
+	cntChar := [26]int{}
+	kinds := 0
+	for i, b := range s {
+		// 1. 进入窗口
+		if cntChar[b-'a'] == 0 {
+			kinds++
 		}
-		o = t.nodes[o.childIdx[c]]
-		o.cnt++
-	}
-}
+		cntChar[b-'a']++
 
-func (t *trie) get(s []byte) int {
-	o := t.nodes[0]
-	for _, c := range s {
-		idx := o.childIdx[c]
-		if idx == 0 {
-			return 0
+		left := i - minSize + 1
+		if left < 0 { // 窗口大小不足 minSize
+			continue
 		}
-		o = t.nodes[idx]
-	}
-	return o.cnt
-}
 
-func maxFreq(ss string, maxLetters int, minSize int, maxSize int) (ans int) {
-	s := []byte(ss)
-	for i := range s {
-		s[i] -= 'a'
-	}
-
-	n := len(s)
-	t := newTrie()
-	i := 0
-	for ; i+26 <= n; i++ {
-		t.put(s[i : i+26])
-	}
-	for ; i < n; i++ {
-		t.put(s[i:n])
-	}
-
-	valid := func(substr []byte) bool {
-		mp := map[byte]bool{}
-		for _, c := range substr {
-			mp[c] = true
+		// 2. 更新统计量
+		if kinds <= maxLetters {
+			cntStr[s[left:i+1]]++
 		}
-		return len(mp) <= maxLetters
-	}
-	for subLen := minSize; subLen <= maxSize; subLen++ {
-		for i := 0; i+subLen <= n; i++ {
-			if substr := s[i : i+subLen]; valid(substr) {
-				if cnt := t.get(substr); cnt > ans {
-					ans = cnt
-				}
-			}
+
+		// 3. 离开窗口，为下一个循环做准备
+		out := s[left]
+		cntChar[out-'a']--
+		if cntChar[out-'a'] == 0 {
+			kinds--
 		}
+	}
+
+	for _, cnt := range cntStr {
+		ans = max(ans, cnt)
 	}
 	return
 }
