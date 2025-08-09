@@ -17,6 +17,7 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
    - 可以改一排或一列 https://codeforces.com/problemset/problem/1985/H1
    - 可以改一排和一列 https://codeforces.com/problemset/problem/1985/H2
 https://codeforces.com/problemset/problem/1948/C 1300
+https://codeforces.com/problemset/problem/2034/C 1400
 https://codeforces.com/problemset/problem/723/D 1600
 https://codeforces.com/problemset/problem/598/D 1700
 https://codeforces.com/problemset/problem/1365/D 1700
