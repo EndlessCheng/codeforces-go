@@ -1,6 +1,6 @@
 假设先玩陆地游乐设施。
 
-贪心地，完成陆地游乐设施的时间越早越好，最早完成时间为
+贪心地，完成陆地游乐设施的时间越早越好（这样能玩的水上设施越多，玩完的时间越早），最早完成时间为
 
 $$
 \textit{minFinish} = \min_{i=0}^{n-1} \textit{landStartTime}[i] + \textit{landDuration}[i]
