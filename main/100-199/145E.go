@@ -16,7 +16,7 @@ type seg45 []struct {
 	flip bool
 }
 
-func mergeInfo(a, b data45) (c data45) {
+func (t seg45) mergeInfo(a, b data45) (c data45) {
 	c.c0 = a.c0 + b.c0
 	c.c1 = a.c1 + b.c1
 	c.c01 = max(a.c01+b.c1, a.c0+b.c01)
@@ -41,7 +41,7 @@ func (t seg45) build(s string, o, l, r int) {
 	m := (l + r) >> 1
 	t.build(s, o<<1, l, m)
 	t.build(s, o<<1|1, m+1, r)
-	t[o].d = mergeInfo(t[o<<1].d, t[o<<1|1].d)
+	t[o].d = t.mergeInfo(t[o<<1].d, t[o<<1|1].d)
 }
 
 func (t seg45) update(o, l, r int) {
@@ -61,7 +61,7 @@ func (t seg45) update(o, l, r int) {
 	if m < r {
 		t.update(o<<1|1, l, r)
 	}
-	t[o].d = mergeInfo(t[o<<1].d, t[o<<1|1].d)
+	t[o].d = t.mergeInfo(t[o<<1].d, t[o<<1|1].d)
 }
 
 func cf145E(_r io.Reader, _w io.Writer) {
