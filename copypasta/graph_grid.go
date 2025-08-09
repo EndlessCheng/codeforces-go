@@ -9,13 +9,16 @@ import (
 网格/矩阵上的搜索
 NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 DFS 最多会占用 O(nm) 的空间
 
+题单
+https://leetcode.cn/discuss/post/YiXPXW/
+
 网格图 DFS
-- [417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)
-   - https://codeforces.com/problemset/problem/1651/D 1900
-- [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/) 1934
-   - https://codeforces.com/contest/616/problem/C 1600
-   - 可以改一排或一列 https://codeforces.com/problemset/problem/1985/H1
-   - 可以改一排和一列 https://codeforces.com/problemset/problem/1985/H2
+LC417. 太平洋大西洋水流问题 https://leetcode.cn/problems/pacific-atlantic-water-flow/
+- https://codeforces.com/problemset/problem/1651/D 1900
+LC827. 最大人工岛 https://leetcode.cn/problems/making-a-large-island/
+- https://codeforces.com/contest/616/problem/C 1600
+- 可以改一排或一列 https://codeforces.com/problemset/problem/1985/H1
+- 可以改一排和一列 https://codeforces.com/problemset/problem/1985/H2
 https://codeforces.com/problemset/problem/1948/C 1300
 https://codeforces.com/problemset/problem/2034/C 1400
 https://codeforces.com/problemset/problem/723/D 1600
@@ -35,13 +38,13 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
 另见 graph.go 中的 0-1 BFS
 
 综合
-- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
-   - https://www.luogu.com.cn/problem/UVA11624
+LC2258. 逃离火灾 https://leetcode.cn/problems/escape-the-spreading-fire/
+- https://www.luogu.com.cn/problem/UVA11624
 易错题 https://codeforces.com/problemset/problem/540/C 2000
 
 其它
-- [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
-- [59. 螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)
+LC54. 螺旋矩阵 https://leetcode.cn/problems/spiral-matrix/
+LC59. 螺旋矩阵 II https://leetcode.cn/problems/spiral-matrix-ii/
 
 */
 func _() {
