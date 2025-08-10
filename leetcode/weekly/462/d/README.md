@@ -654,6 +654,10 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 - 时间复杂度：$\mathcal{O}(\log N)$，其中 $N=2296$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 其他做法
+
+本题还有类似数位 DP 的搜索做法，见题解下面我的评论。
+
 ## 专题训练
 
 见下面回溯题单的「**§4.6 有重复元素的回溯**」。

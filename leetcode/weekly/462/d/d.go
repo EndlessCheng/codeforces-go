@@ -9,6 +9,191 @@ import (
 )
 
 // https://space.bilibili.com/206214
+func specialPalindrome(Num int64) int64 {
+	subSum := make([]int, 1<<9)
+	a := []int{1, 9, 8, 7, 6, 5, 4, 3, 2}
+	mp := [10]int{}
+	oddMask := 0
+	for i, v := range a {
+		mp[v] = i
+		if v%2 > 0 {
+			oddMask |= 1 << i
+		}
+		highBit := 1 << i
+		for mask, s := range subSum[:highBit] {
+			subSum[highBit|mask] = s + v
+		}
+	}
+	for mask := 1; mask < 1<<9; mask++ {
+		t := mask & oddMask
+		if t&(t-1) > 0 {
+			subSum[mask] = -1
+		}
+	}
+
+	num := int(Num)
+	s := strconv.Itoa(num)
+	n := len(s)
+
+	ans := 0
+	cnt := [10]int{}
+	var dfs func(int, int, int, bool) bool
+	dfs = func(i, pal, odd int, limit bool) bool {
+		if odd > 0 && n%2 == 0 {
+			return false
+		}
+
+		if i == n/2 {
+			if n%2 == 0 {
+				for j, c := range cnt {
+					if c > 0 && c != j {
+						return false
+					}
+				}
+				// 左半反转到右半
+				for v := pal; v > 0; v /= 10 {
+					pal = pal*10 + v%10
+				}
+				if pal > num {
+					ans = pal
+				}
+				return pal > num
+			} else { // else 可以省略，为了代码格式对齐保留
+				if odd == 0 {
+					odd = 1
+				}
+				cnt[odd]++
+				defer func() { cnt[odd]-- }()
+				for j, c := range cnt {
+					if c > 0 && c != j {
+						return false
+					}
+				}
+				// 左半反转到右半
+				v := pal
+				pal = pal*10 + odd
+				for ; v > 0; v /= 10 {
+					pal = pal*10 + v%10
+				}
+				if pal > num {
+					ans = pal
+				}
+				return pal > num
+			}
+		}
+
+		if !limit {
+			// 中间随便填
+			left := n - i*2
+			mask := 1<<9 - 1
+			for j, c := range cnt {
+				if c > 0 {
+					left -= j - c
+					mask ^= 1 << mp[j]
+				}
+			}
+			if left < 0 {
+				return false
+			}
+			// 枚举 mask 的子集，从大到小
+			last := -1
+			for sub, ok := mask, true; ok; ok = sub != mask {
+				if (odd == 0 || sub&oddMask == 0) && subSum[sub] == left {
+					last = sub
+					break
+				}
+				sub = (sub - 1) & mask
+			}
+			if last < 0 {
+				return false
+			}
+
+			for j := 1; j < 10; j++ {
+				need := 0
+				if last>>mp[j]&1 > 0 {
+					need = j
+				} else if cnt[j] > 0 {
+					need = j - cnt[j]
+				}
+				for range need / 2 {
+					pal = pal*10 + j
+				}
+				if need > 0 && j%2 > 0 {
+					odd = j
+				}
+			}
+
+			v := pal
+			if odd > 0 {
+				pal = pal*10 + odd
+			}
+			for ; v > 0; v /= 10 {
+				pal = pal*10 + v%10
+			}
+
+			ans = pal
+			return true
+		}
+
+		low := int(s[i] - '0')
+		for v := low; v <= 9; v++ {
+			if cnt[v]+2 > v || odd > 0 && v%2 > 0 && v != odd {
+				continue
+			}
+			newOdd := odd
+			if v%2 > 0 {
+				newOdd = v
+			}
+			cnt[v] += 2
+			if dfs(i+1, pal*10+v, newOdd, limit && v == low) {
+				return true
+			}
+			cnt[v] -= 2
+		}
+		return false
+	}
+	if dfs(0, 0, 0, true) {
+		return int64(ans)
+	}
+
+	// 没找到就取长度大于 n 的最小回文数
+	last := 0
+	for mask := 1<<9 - 1; mask > 0; mask-- {
+		if subSum[mask] == n+1 {
+			last = mask
+			break
+		}
+	}
+
+	pal := 0
+	odd := 0
+	for j := 1; j < 10; j++ {
+		need := 0
+		if last>>mp[j]&1 > 0 {
+			need = j
+		} else if cnt[j] > 0 {
+			need = j - cnt[j]
+		}
+		for range need / 2 {
+			pal = pal*10 + j
+		}
+		if need > 0 && j%2 > 0 {
+			odd = j
+		}
+	}
+
+	v := pal
+	if odd > 0 {
+		pal = pal*10 + odd
+	}
+	for ; v > 0; v /= 10 {
+		pal = pal*10 + v%10
+	}
+	return int64(pal)
+}
+
+//
+
 var specialNumbers []int
 
 func init() {
@@ -54,9 +239,10 @@ func init() {
 		})
 	}
 	slices.Sort(specialNumbers)
+	specialNumbers = slices.Compact(specialNumbers)
 }
 
-func specialPalindrome(n int64) int64 {
+func specialPalindrome2(n int64) int64 {
 	i := sort.SearchInts(specialNumbers, int(n+1))
 	return int64(specialNumbers[i])
 }
