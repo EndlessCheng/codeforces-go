@@ -168,6 +168,7 @@ func (b Bitset) All1(l, r int) bool {
 }
 
 // 统计 [l,r) 中的 1 的个数
+// https://codeforces.com/problemset/problem/914/F 3000
 func (b Bitset) OnesCountRange(l, r int) int {
 	if l >= r {
 		return 0
