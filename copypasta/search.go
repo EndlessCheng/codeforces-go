@@ -887,8 +887,8 @@ func backtracking() {
 	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
 
 	_ = []interface{}{
-		loopAny, chooseAny, chooseAtMost, subsetsUnique,
-		searchPermutations, permuteUnique,
+		loopAny, chooseAny, chooseAtMost, subsetsUnique, // 可重子集
+		searchPermutations, permuteUnique, // 可重排列
 		searchCombinations, searchMST, searchMST2,
 		genSubStrings,
 		iterWithLimits, iterWithLimitsAndSum,
