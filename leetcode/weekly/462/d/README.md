@@ -346,7 +346,7 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 
 ## 写法二：预处理
 
-预处理所有长度 $\le 16$ 的特殊数列表，这有 $110190$ 个。
+预处理所有长度 $\le 16$ 的特殊数列表，这只有 $2296$ 个。
 
 把列表排序后，在列表中**二分查找**大于 $n$ 的最小特殊数，原理见 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
@@ -385,7 +385,7 @@ for mask in range(1, 1 << D):
             v, d = divmod(v, 10)
             pal = pal * 10 + d
         special_numbers.append(pal)
-special_numbers.sort()
+special_numbers = sorted(set(special_numbers))
 
 class Solution:
     def specialPalindrome(self, n: int) -> int:
@@ -602,6 +602,7 @@ func init() {
 		})
 	}
 	slices.Sort(specialNumbers)
+	specialNumbers = slices.Compact(specialNumbers)
 }
 
 func specialPalindrome(n int64) int64 {
@@ -650,7 +651,7 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 
 不计入预处理的时间和空间。
 
-- 时间复杂度：$\mathcal{O}(\log N)$，其中 $N=110190$。
+- 时间复杂度：$\mathcal{O}(\log N)$，其中 $N=2296$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
