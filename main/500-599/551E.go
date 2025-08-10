@@ -23,7 +23,7 @@ func cf551E(in io.Reader, _w io.Writer) {
 		lp, rp     map[int]int
 	}
 	blockSize := int(math.Ceil(math.Sqrt(float64(n) / 5)))
-	blocks := make([]block, (n-1)/blockSize+1)
+	blocks := make([]*block, (n-1)/blockSize+1)
 	calc := func(l, r int) (map[int]int, map[int]int) {
 		lp := map[int]int{}
 		for j := r - 1; j >= l; j-- {
@@ -38,7 +38,7 @@ func cf551E(in io.Reader, _w io.Writer) {
 	for i := 0; i < n; i += blockSize {
 		r := min(i+blockSize, n)
 		lp, rp := calc(i, r)
-		blocks[i/blockSize] = block{i, r, 0, lp, rp}
+		blocks[i/blockSize] = &block{i, r, 0, lp, rp}
 	}
 
 	for range q {
@@ -46,8 +46,7 @@ func cf551E(in io.Reader, _w io.Writer) {
 		if op == 1 {
 			Fscan(in, &r, &v)
 			l--
-			for i := range blocks {
-				b := &blocks[i]
+			for _, b := range blocks {
 				if b.r <= l {
 					continue
 				}
@@ -80,7 +79,7 @@ func cf551E(in io.Reader, _w io.Writer) {
 				continue
 			}
 			for i := len(blocks) - 1; ; i-- {
-				b := &blocks[i]
+				b := blocks[i]
 				if j, ok := b.rp[l-b.todo]; ok {
 					Fprintln(out, j-posL)
 					break
