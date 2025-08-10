@@ -190,6 +190,103 @@ func backtracking() {
 		f(1)
 	}
 
+	// 枚举包含重复元素的 a 的所有不同子集
+	// LC90 https://leetcode.cn/problems/subsets-ii/
+	subsetsUnique := func(a []int) (ans [][]int) {
+		slices.Sort(a) // 保证 a 有序
+		n := len(a)
+		path := []int{}
+		var dfs func(int)
+		dfs = func(i int) {
+			if i == n {
+				ans = append(ans, slices.Clone(path))
+				return
+			}
+
+			// 选 x
+			x := a[i]
+			path = append(path, x)
+			dfs(i + 1)
+			path = path[:len(path)-1] // 恢复现场
+
+			// 不选 x，那么后面所有等于 x 的数都不选
+			// 如果不跳过这些数，会导致「选 x 不选 x'」和「不选 x 选 x'」这两种情况都会加到 ans 中，这就重复了
+			i++
+			for i < n && a[i] == x {
+				i++
+			}
+			dfs(i)
+		}
+		dfs(0)
+		return
+	}
+
+	// 排列（不能重复）
+	// 即有 n 个位置，从左往右地枚举每个位置上可能出现的值（值必须在 a 中且不能重复）
+	// 对比上面的子集搜索，那是对每个位置枚举是否选择（两个分支），而这里每个位置有 n 个分支
+	// https://www.luogu.com.cn/problem/P1118
+	// LC1307 https://leetcode.cn/problems/verbal-arithmetic-puzzle/
+	searchPermutations := func(a []int) bool {
+		n := len(a)
+		used := 0
+		var dfs func(p, sum int) bool
+		dfs = func(p, sum int) bool {
+			//if sum > ... { } // 剪枝
+			if p == n {
+				// do sum...
+
+				return sum == 0
+			}
+			// 对每个位置，枚举可能出现的值，跳过已经枚举的值
+			for i, v := range a {
+				if used>>i&1 > 0 {
+					continue
+				}
+				used |= 1 << i
+				// copy sum and do v...
+				s := sum
+				s += v
+				if dfs(p+1, s) {
+					//used[i] = false
+					return true
+				}
+				used ^= 1 << i
+			}
+			return false
+		}
+		return dfs(0, 0)
+	}
+
+	// 枚举包含重复元素的 a 的不同排列
+	// LC47 https://leetcode.cn/problems/permutations-ii/
+	permuteUnique := func(a []int) (ans [][]int) {
+		slices.Sort(a) // 保证 a 有序
+		n := len(a)
+		path := make([]int, n)
+		onPath := make([]bool, n) // onPath[j] 表示 a[j] 是否已经填入排列
+		var dfs func(int)
+		dfs = func(i int) { // i 表示当前要填排列的第几个数
+			if i == n {
+				ans = append(ans, slices.Clone(path))
+				return
+			}
+			// 枚举 a[j] 填入 path[i]
+			for j, on := range onPath {
+				// 如果 a[j] 已填入排列，continue
+				// 如果 a[j] 和前一个数 a[j-1] 相等，且 a[j-1] 没填入排列，continue
+				if on || j > 0 && a[j] == a[j-1] && !onPath[j-1] {
+					continue
+				}
+				path[i] = a[j]   // 填入排列
+				onPath[j] = true // a[j] 已填入排列（注意标记的是下标）
+				dfs(i + 1)
+				onPath[j] = false
+			}
+		}
+		dfs(0)
+		return
+	}
+
 	// 可重复组合
 	// 以 LC1467 为例 https://leetcode.cn/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
 	// 每个数至多可选 upper[i] 个，从中随机选择 m 个（m<=∑upper），求满足题设条件的概率
@@ -238,42 +335,6 @@ func backtracking() {
 		}
 		f(0, 0, 0, 0, 1)
 		return float64(okWays) / float64(C[2*sum][sum])
-	}
-
-	// 排列（不能重复）
-	// 即有 n 个位置，从左往右地枚举每个位置上可能出现的值（值必须在 a 中且不能重复）
-	// 对比上面的子集搜索，那是对每个位置枚举是否选择（两个分支），而这里每个位置有 n 个分支
-	// https://www.luogu.com.cn/problem/P1118
-	// LC1307 https://leetcode.cn/problems/verbal-arithmetic-puzzle/
-	searchPermutations := func(a []int) bool {
-		n := len(a)
-		used := 0
-		var f func(p, sum int) bool
-		f = func(p, sum int) bool {
-			//if sum > ... { } // 剪枝
-			if p == n {
-				// do sum...
-
-				return sum == 0
-			}
-			// 对每个位置，枚举可能出现的值，跳过已经枚举的值
-			for i, v := range a {
-				if used>>i&1 > 0 {
-					continue
-				}
-				used |= 1 << i
-				// copy sum and do v...
-				s := sum
-				s += v
-				if f(p+1, s) {
-					//used[i] = false
-					return true
-				}
-				used ^= 1 << i
-			}
-			return false
-		}
-		return f(0, 0)
 	}
 
 	// 枚举无向图的所有生成树
@@ -826,7 +887,9 @@ func backtracking() {
 	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
 
 	_ = []interface{}{
-		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations, searchMST, searchMST2,
+		loopAny, chooseAny, chooseAtMost, subsetsUnique,
+		searchPermutations, permuteUnique,
+		searchCombinations, searchMST, searchMST2,
 		genSubStrings,
 		iterWithLimits, iterWithLimitsAndSum,
 		combinations, combinationsWithRepetition,
