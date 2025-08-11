@@ -341,7 +341,7 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 
 不计入预处理的时间和空间。
 
-- 时间复杂度：$\mathcal{O}(K\cdot (m/2)!\cdot m)$ 或 $\mathcal{O}(K\cdot (m/2)!)$，其中 $K=10$，$m=\log n$。回文串长度等于 $m$ 时，能生成该回文串的子集至多有 $K$ 个，每个子集需要 $\mathcal{O}((m/2)!)$ 的时间枚举全排列。对于长度等于 $m+1$ 的子集，由于我们剪枝了，算出最小的回文数后，就立刻结束了。每个回文数需要 $\mathcal{O}(m)$ 或 $\mathcal{O}(1)$ 的时间计算。
+- 时间复杂度：$\mathcal{O}(K\cdot (m/2)!\cdot m)$，其中 $K=10$，$m=\log n$。至多有 $K$ 个子集，能生成长度恰好为 $m$ 的回文串。每个子集需要 $\mathcal{O}((m/2)!)$ 的时间枚举排列。对于长度等于 $m+1$ 的子集，算出最小的回文数后，就立刻结束了。最后，对于每个回文数，需要 $\mathcal{O}(m)$ 的时间计算（反转左半）。注：如果在回溯过程中同时计算反转后的结果，可以把 $\mathcal{O}(m)$ 优化为 $\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(m)$。
 
 ## 写法二：预处理
@@ -654,9 +654,9 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 - 时间复杂度：$\mathcal{O}(\log N)$，其中 $N=2296$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 其他做法
+## 如果数据范围更大呢？
 
-本题还有类似数位 DP 的搜索做法，见题解下面我的评论。
+有类似数位 DP 的搜索做法，见题解下面我的评论。
 
 ## 专题训练
 
