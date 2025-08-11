@@ -31,12 +31,41 @@ func specialPalindrome(Num int64) int64 {
 		}
 	}
 
+	full := func(pal, odd int) int {
+		v := pal
+		if odd > 0 {
+			pal = pal*10 + odd
+		}
+		for ; v > 0; v /= 10 {
+			pal = pal*10 + v%10
+		}
+		return pal
+	}
+
+	cnt := [10]int{}
+	extend := func(pal, mask, odd int) int {
+		for j := 1; j < 10; j++ {
+			need := 0
+			if mask>>mp[j]&1 > 0 {
+				need = j
+			} else if cnt[j] > 0 {
+				need = j - cnt[j]
+			}
+			for range need / 2 {
+				pal = pal*10 + j
+			}
+			if need > 0 && j%2 > 0 {
+				odd = j
+			}
+		}
+		return full(pal, odd)
+	}
+
 	num := int(Num)
 	s := strconv.Itoa(num)
 	n := len(s)
 
 	ans := 0
-	cnt := [10]int{}
 	var dfs func(int, int, int, bool) bool
 	dfs = func(i, pal, odd int, limit bool) bool {
 		if odd > 0 && n%2 == 0 {
@@ -51,9 +80,7 @@ func specialPalindrome(Num int64) int64 {
 					}
 				}
 				// 左半反转到右半
-				for v := pal; v > 0; v /= 10 {
-					pal = pal*10 + v%10
-				}
+				pal = full(pal, 0)
 				if pal > num {
 					ans = pal
 				}
@@ -70,11 +97,7 @@ func specialPalindrome(Num int64) int64 {
 					}
 				}
 				// 左半反转到右半
-				v := pal
-				pal = pal*10 + odd
-				for ; v > 0; v /= 10 {
-					pal = pal*10 + v%10
-				}
+				pal = full(pal, odd)
 				if pal > num {
 					ans = pal
 				}
@@ -95,44 +118,16 @@ func specialPalindrome(Num int64) int64 {
 			if left < 0 {
 				return false
 			}
+
 			// 枚举 mask 的子集，从大到小
-			last := -1
 			for sub, ok := mask, true; ok; ok = sub != mask {
 				if (odd == 0 || sub&oddMask == 0) && subSum[sub] == left {
-					last = sub
-					break
+					ans = extend(pal, sub, odd)
+					return true
 				}
 				sub = (sub - 1) & mask
 			}
-			if last < 0 {
-				return false
-			}
-
-			for j := 1; j < 10; j++ {
-				need := 0
-				if last>>mp[j]&1 > 0 {
-					need = j
-				} else if cnt[j] > 0 {
-					need = j - cnt[j]
-				}
-				for range need / 2 {
-					pal = pal*10 + j
-				}
-				if need > 0 && j%2 > 0 {
-					odd = j
-				}
-			}
-
-			v := pal
-			if odd > 0 {
-				pal = pal*10 + odd
-			}
-			for ; v > 0; v /= 10 {
-				pal = pal*10 + v%10
-			}
-
-			ans = pal
-			return true
+			return false
 		}
 
 		low := int(s[i] - '0')
@@ -152,44 +147,17 @@ func specialPalindrome(Num int64) int64 {
 		}
 		return false
 	}
+
 	if dfs(0, 0, 0, true) {
 		return int64(ans)
 	}
 
-	// 没找到就取长度大于 n 的最小回文数
-	last := 0
-	for mask := 1<<9 - 1; mask > 0; mask-- {
+	// 没找到就取长为 n+1 的最小回文数
+	for mask := 1<<9 - 1; ; mask-- {
 		if subSum[mask] == n+1 {
-			last = mask
-			break
+			return int64(extend(0, mask, 0))
 		}
 	}
-
-	pal := 0
-	odd := 0
-	for j := 1; j < 10; j++ {
-		need := 0
-		if last>>mp[j]&1 > 0 {
-			need = j
-		} else if cnt[j] > 0 {
-			need = j - cnt[j]
-		}
-		for range need / 2 {
-			pal = pal*10 + j
-		}
-		if need > 0 && j%2 > 0 {
-			odd = j
-		}
-	}
-
-	v := pal
-	if odd > 0 {
-		pal = pal*10 + odd
-	}
-	for ; v > 0; v /= 10 {
-		pal = pal*10 + v%10
-	}
-	return int64(pal)
 }
 
 //
