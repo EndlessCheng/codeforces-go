@@ -236,7 +236,7 @@ public:
 ```go [sol-Go]
 var size [512]int
 
-// 预处理 size_ 数组，详细解释见视频讲解
+// 预处理 size 数组，详细解释见视频讲解
 func init() {
 	const oddMask = 0x155
 	for mask := 1; mask < 512; mask++ {
@@ -501,7 +501,6 @@ const int D = 9;
 
 vector<long long> special_numbers;
 
-// 预处理 specialNumbers 数组，详细解释见视频讲解
 int init = []() {
     for (int mask = 1; mask < (1 << D); mask++) {
         int t = mask & ODD_MASK;
