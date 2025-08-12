@@ -11,7 +11,7 @@
   - 交换 $0$ 和 $a$，得到 $a,0,b$。
   - 交换 $0$ 和 $b$，得到 $a,b,0$。
   - 交换 $0$ 和 $a$，得到 $0,b,a$。
-  - 注意交换后，$0$ 的位置是**不变**的。
+  - 注意三次交换后，$0$ 的位置是**不变**的。
 - 因此，当 $k=0$ 的时候，一定可以排序。
 
 由于 $\textit{nums}$ 是 $0$ 到 $n-1$ 的排列，所以排序后，对于每个 $i$ 都满足 $\textit{nums}[i] = i$。
@@ -20,7 +20,7 @@
 
 首先确定答案的**上界**。
 
-对于不满足 $\textit{nums}[i] = i$ 的元素，一定要交换，这些元素一定会出现在式子 $\textit{nums}[i]\ \texttt{AND}\ \textit{nums}[j] = k$ 中。根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，$k$ 是 $\textit{nums}[i]$ 和 $\textit{nums}[j]$ 的子集，所以 $k$ 是每个不满足 $\textit{nums}[i] = i$ 的 $\textit{nums}[i]$ 的子集。在最大情况下，$k$ 是这些集合的**交集**。所以答案至多为所有不满足 $\textit{nums}[i] = i$ 的 $\textit{nums}[i]$ 的 AND，下文就用 $k$ 表示这个上界。
+对于不满足 $\textit{nums}[i] = i$ 的元素，一定要交换，这些元素一定会出现在式子 $\textit{nums}[i]\ \texttt{AND}\ \textit{nums}[j] = k$ 中。根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，$k$ 是 $\textit{nums}[i]$ 和 $\textit{nums}[j]$ 的子集，所以 $k$ 是每个不满足 $\textit{nums}[i] = i$ 的 $\textit{nums}[i]$ 的子集。$k$ 最大是这些集合的**交集**。所以答案至多为所有不满足 $\textit{nums}[i] = i$ 的 $\textit{nums}[i]$ 的 AND，下文就用 $k$ 表示这个上界。
 
 答案能等于上界 $k$ 吗？可以，方法和上面的 $0$ 是一样的：
 
@@ -88,6 +88,10 @@ func sortPermutation(nums []int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 思考题
+
+有多少个不同的 $k$，可以让数组排成有序的？（保证数组不是有序的）
 
 ## 专题训练
 
