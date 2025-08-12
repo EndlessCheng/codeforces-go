@@ -1,18 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"strconv"
+	"strings"
 )
 
 func maximum69Number1(num int) int {
-	s := []byte(strconv.Itoa(num))
-	i := bytes.IndexByte(s, '6')
-	if i < 0 {
-		return num
-	}
-	s[i] = '9'
-	ans, _ := strconv.Atoi(string(s))
+	s := strconv.Itoa(num)
+	s = strings.Replace(s, "6", "9", 1) // 替换第一个 6
+	ans, _ := strconv.Atoi(s)
 	return ans
 }
 
