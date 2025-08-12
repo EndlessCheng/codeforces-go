@@ -1,4 +1,4 @@
-把 $\textit{nums}$ 从小到大排序后，我们有如下修改方案：
+把 $\textit{nums}$ 从小到大排序后，有如下修改方案：
 
 - 修改最大的两个数为 $\textit{nums}[n-3]$，最大得分为 $\textit{nums}[n-3]-\textit{nums}[0]$。
 - 修改最小的为 $\textit{nums}[1]$，最大的为 $\textit{nums}[n-2]$，最大得分为 $\textit{nums}[n-2]-\textit{nums}[1]$。
