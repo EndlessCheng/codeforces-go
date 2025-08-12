@@ -37,9 +37,26 @@ class Solution:
 
         ans = 0
         for lim, a in groups.items():
-            # 取最大的 lim 个数
+            # 取最大的 lim 个数。更快写法见【Python3 优化】
             a.sort()
             ans += sum(a[-lim:])
+        return ans
+```
+
+```py [sol-Python3 优化]
+class Solution:
+    def maxTotal(self, value: List[int], limit: List[int]) -> int:
+        groups = defaultdict(list)
+        for lim, v in zip(limit, value):
+            groups[lim].append(v)
+
+        ans = 0
+        for lim, a in groups.items():
+            # lim >= len(a) 的情况不需要排序
+            if lim < len(a):
+                a.sort()
+                a = a[-lim:]
+            ans += sum(a)
         return ans
 ```
 
@@ -70,9 +87,9 @@ class Solution {
         long ans = 0;
         for (int lim = 1; lim <= n; lim++) {
             List<Integer> a = groups[lim];
-            // 取最大的 lim 个数
-            a.sort(Collections.reverseOrder());
-            if (a.size() > lim) {
+            if (lim < a.size()) {
+                // 只取最大的 lim 个数
+                a.sort(Collections.reverseOrder());
                 a = a.subList(0, lim);
             }
             for (int x : a) {
@@ -97,8 +114,8 @@ public:
         long long ans = 0;
         for (int lim = 1; lim <= n; lim++) {
             auto& a = groups[lim];
-            if (a.size() > lim) {
-                // 取最大的 lim 个数
+            if (lim < a.size()) {
+                // 只取最大的 lim 个数
                 ranges::nth_element(a, a.begin() + lim, greater());
                 a.resize(lim);
             }
@@ -111,16 +128,16 @@ public:
 
 ```go [sol-Go]
 func maxTotal(value, limit []int) (ans int64) {
-	n := len(value)
-	groups := make([][]int, n+1)
+	groups := make([][]int, len(value)+1)
 	for i, lim := range limit {
 		groups[lim] = append(groups[lim], value[i])
 	}
+
 	for lim, a := range groups {
-		// 取最大的 lim 个数
-		slices.SortFunc(a, func(a, b int) int { return b - a })
-		if len(a) > lim {
-			a = a[:lim]
+		if lim < len(a) {
+			// 只取最大的 lim 个数
+			slices.Sort(a)
+			a = a[len(a)-lim:]
 		}
 		for _, x := range a {
 			ans += int64(x)
