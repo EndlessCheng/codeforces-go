@@ -67,6 +67,7 @@
 ||[2487. 从链表中移除节点](https://leetcode.cn/problems/remove-nodes-from-linked-list/)|[代码](https://leetcode.cn/problems/remove-nodes-from-linked-list/solution/di-gui-jian-ji-xie-fa-by-endlesscheng-jfwi/)|*课后作业|
 |[二叉树与递归 - 深入理解](https://www.bilibili.com/video/BV1UD4y1Y769/)|[104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/maximum-depth-of-binary-tree/solution/kan-wan-zhe-ge-shi-pin-rang-ni-dui-di-gu-44uz/)|两种方法|
 ||[111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/minimum-depth-of-binary-tree/solution/liang-chong-fang-fa-zi-ding-xiang-xia-zi-0sxz/)|*课后作业|
+||[404. 左叶子之和](https://leetcode.cn/problems/sum-of-left-leaves/)|[代码](https://leetcode.cn/problems/sum-of-left-leaves/solution/jian-dan-ti-jian-dan-zuo-pythonjavaccgoj-w8st/)|*课后作业|
 ||[112. 路径总和](https://leetcode.cn/problems/path-sum/)|[代码](https://leetcode.cn/problems/path-sum/solution/jian-ji-xie-fa-pythonjavacgojsrust-by-en-icwe/)|*课后作业|
 ||[129. 求根节点到叶节点数字之和](https://leetcode.cn/problems/sum-root-to-leaf-numbers/)|[代码](https://leetcode.cn/problems/sum-root-to-leaf-numbers/solution/jian-ji-xie-fa-pythonjavacgojsrust-by-en-gbu9/)|*课后作业|
 ||[1448. 统计二叉树中好节点的数目](https://leetcode.cn/problems/count-good-nodes-in-binary-tree/)|[代码](https://leetcode.cn/problems/count-good-nodes-in-binary-tree/solution/jian-ji-xie-fa-pythonjavacgojs-by-endles-gwxt/)|*课后作业|
