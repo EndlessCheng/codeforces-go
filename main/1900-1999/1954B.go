@@ -7,22 +7,23 @@ import (
 
 // https://github.com/EndlessCheng
 func cf1954B(in io.Reader, out io.Writer) {
-	var T, n int
+	var T, n, v0, v int
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n)
-		a := make([]int, n)
-		p := []int{}
-		for i := range a {
-			Fscan(in, &a[i])
-			if a[i] != a[0] {
-				p = append(p, i)
+		Fscan(in, &n, &v0)
+		ans := n
+		pre := -1
+		for i := 1; i < n; i++ {
+			Fscan(in, &v)
+			if v != v0 {
+				ans = min(ans, i-pre-1)
+				pre = i
 			}
 		}
-		if len(p) > 0 {
-			Fprintln(out, min(p[0], n-1-p[len(p)-1]))
-		} else {
-			Fprintln(out, -1)
+		ans = min(ans, n-pre-1)
+		if ans == n {
+			ans = -1
 		}
+		Fprintln(out, ans)
 	}
 }
 
