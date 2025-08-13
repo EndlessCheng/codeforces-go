@@ -20,7 +20,7 @@
 下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的。
 
 - 开区间左端点初始值：$0$。此时我们算的是 $f(0)$，表示甜蜜度**至少**为 $0$ 时，最多能选多少类糖果。由于绝对值一定 $\ge 0$，所以所有糖果都可以选，一定可以满足要求。注意题目保证 $k\le n$。
-- 开区间右端点初始值：$\left\lfloor\dfrac{\textit{price}[n-1]-\textit{price}[0]}{k-1}\right\rfloor+1$。假设可以每隔 $d$ 就选一类糖果，那么第一个糖果和第 $k$ 个糖果的间隔至少为 $(k-1)\cdot d$，必须满足 $\textit{price}[0] + (k-1)\cdot d \le \textit{price}[n-1]$，解得 $d\le \left\lfloor\dfrac{\textit{price}[n-1]-\textit{price}[0]}{k-1}\right\rfloor$。加一就一定无法满足要求了，也就是当 $d=\left\lfloor\dfrac{\textit{price}[n-1]-\textit{price}[0]}{k-1}\right\rfloor+1$ 时，一定无法选 $k$ 类糖果。
+- 开区间右端点初始值：$\left\lfloor\dfrac{\textit{price}[n-1]-\textit{price}[0]}{k-1}\right\rfloor+1$。假设可以每隔 $d$ 就选一类糖果，那么第一个糖果和第 $k$ 个糖果的间隔至少为 $(k-1)\cdot d$，必须满足 $\textit{price}[0] + (k-1)\cdot d \le \textit{price}[n-1]$ 才可能选 $k$ 个糖果，解得 $d\le \left\lfloor\dfrac{\textit{price}[n-1]-\textit{price}[0]}{k-1}\right\rfloor$。加一就一定无法满足要求了，也就是当 $d=\left\lfloor\dfrac{\textit{price}[n-1]-\textit{price}[0]}{k-1}\right\rfloor+1$ 时，一定无法选 $k$ 类糖果。
 
 ## 答疑
 
