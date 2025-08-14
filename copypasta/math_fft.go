@@ -143,6 +143,8 @@ func polyConvFFT(a, b []int) []int {
 // https://atcoder.jp/contests/abc196/tasks/abc196_f 2274=CF2431 字符串部分匹配
 // https://codeforces.com/problemset/problem/528/D
 // https://codeforces.com/problemset/problem/827/E 2700
+// LC835 https://leetcode.cn/problems/image-overlap/
+// LC3078 https://leetcode.cn/problems/match-alphanumerical-pattern-in-matrix-i/ （会员题）
 func slidingWindowDotProduct(a, b []int) []int {
 	b = slices.Clone(b) // 避免修改原数组
 	slices.Reverse(b)
