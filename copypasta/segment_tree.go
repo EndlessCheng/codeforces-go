@@ -367,6 +367,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/1557/D  2200 max max 离散化 
 // https://codeforces.com/problemset/problem/718/C   2300 矩阵乘法 ∑ 
 // https://codeforces.com/problemset/problem/1797/E  2300 phi*
+// https://codeforces.com/problemset/problem/115/E   2400 DP
 // https://codeforces.com/problemset/problem/121/E   2400 特殊的 update，有时候会退化成单点更新
 // https://codeforces.com/problemset/problem/145/E   2400
 // https://codeforces.com/problemset/problem/377/D   2400
@@ -375,7 +376,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/1969/E  2400
 // https://codeforces.com/problemset/problem/266/E   2500 k 次幂带权前缀和
 // https://codeforces.com/problemset/problem/618/E   2500 旋转 http://poj.org/problem?id=2991
-// https://codeforces.com/problemset/problem/739/C   2500
+// https://codeforces.com/problemset/problem/739/C   2500 形状设计
 // https://codeforces.com/problemset/problem/240/F   2600
 // https://codeforces.com/problemset/problem/1439/C  2600 =max 求和的 O(log^2) 性质 
 // https://codeforces.com/problemset/problem/1614/E  2600

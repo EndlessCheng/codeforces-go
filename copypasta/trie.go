@@ -28,6 +28,8 @@ https://codeforces.com/problemset/problem/113/B 2000 满足一些条件的本质
 https://codeforces.com/problemset/problem/514/C 2000
 https://codeforces.com/problemset/problem/965/E 2200 与贪心堆结合
 https://codeforces.com/problemset/problem/557/E 2300
+https://codeforces.com/problemset/problem/778/C 2500
+https://codeforces.com/problemset/problem/1312/G 2600 注：输入就是一个 trie
 https://atcoder.jp/contests/abc273/tasks/abc273_e 深刻理解
 https://atcoder.jp/contests/abc353/tasks/abc353_e
 */

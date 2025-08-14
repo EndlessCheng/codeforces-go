@@ -19,9 +19,6 @@ https://www.luogu.com.cn/training/440704
 入门视频
 https://www.bilibili.com/video/BV1Xj411K7oF/
 
-如何用记忆化搜索打印具体方案
-https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/
-
 前缀/后缀之间的转移，例如从 f[i-1] 转移到 f[i]，或者从 f[j] 转移到 f[i]
 LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
 - 有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
@@ -73,6 +70,10 @@ https://codeforces.com/problemset/problem/93/E 2600 记忆化搜索 时间换空
 https://codeforces.com/problemset/problem/367/E 2700 状态设计
 https://atcoder.jp/contests/dp/tasks/dp_t 状态设计
 https://www.luogu.com.cn/problem/P2258
+
+记忆化搜索
+https://codeforces.com/problemset/problem/2034/C 1400
+LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
 
 合法子序列 DP
 https://www.luogu.com.cn/problem/P4933
@@ -174,9 +175,6 @@ https://codeforces.com/problemset/problem/346/D 2600
 
 常规题目
 预处理 https://codeforces.com/contest/1932/problem/F
-
-记忆化搜索
-- [1387. 将整数按权重排序](https://leetcode.cn/problems/sort-integers-by-the-power-value/) 1507
 
 状态个数优化
 https://www.luogu.com.cn/problem/P7961
@@ -2225,6 +2223,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/446/A 1600
 	https://codeforces.com/problemset/problem/2061/C 1600 也可以线性 DP
 	https://codeforces.com/problemset/problem/1826/D 1700 式子变形
+	https://codeforces.com/problemset/problem/2052/F 1700 地板镶嵌
 	https://codeforces.com/problemset/problem/2029/C 1700
 	https://codeforces.com/problemset/problem/2081/A 1800
 	https://codeforces.com/problemset/problem/404/D 1900
@@ -2755,6 +2754,7 @@ func _(abs func(int) int) {
 
 	// 高维前缀和 SOS DP (Sum over Subsets)
 	// 给一个全集 U，对 U 的所有子集 S，计算 S 的所有子集 T 之和（这个「和」不一定是加法，可以是其它的满足合并性质的统计量，例如 max 等）
+	// 特别地，对于计算个数的问题，我们可以对每个子集 S，计算有多少个子集 T 包含于 S（如 CF383E）
 	// 核心思路：把 S 的所有子集按照最高位是否为 1 分成两组，每组内部再按照次高位是否为 1 分成两组，依此类推
 	// 可以看这篇文章里面的图 https://codeforces.com/blog/entry/45223
 	// 本质理解 https://codeforces.com/blog/entry/72488 Tutorial on Zeta Transform, Mobius Transform and Subset Sum Convolution
@@ -2763,26 +2763,27 @@ func _(abs func(int) int) {
 	//
 	// LC2732 https://leetcode.cn/problems/find-a-good-subset-of-the-matrix/
 	//    最简单的 SOSDP，判断是否有两个子集满足 x&y=0 且 idx[x]>=0 且 idx[y]>=0
+	// https://codeforces.com/problemset/problem/1554/B 1700 求下标最大次大，与 k 大小无关的写法
+	// https://codeforces.com/problemset/problem/165/E 2200
 	// https://codeforces.com/problemset/problem/1234/F 2200
 	//    求满足 ai&aj=0 的 ai|aj 的二进制 1 的个数的最大值
 	//    由于 ai 的补集一定满足和 ai 的 & = 0
 	//    所以转换成求每个 ai 的补集的 SOS，维护子集二进制 1 的个数的最大值
-	// https://www.hackerearth.com/zh/problem/algorithm/special-pairs-5-3ee6b3fe-3d8a1606/
-	//    求 ai&aj=0 的 (i,j) 对数，0<=ai<=1e6
-	//    思路和上面类似，转换成求每个 ai 的补集的 SOS
-	//    注：另一种解法是求 FWT(cnt)[0]
+	// https://codeforces.com/problemset/problem/449/D 2400 容斥 
+	// https://codeforces.com/problemset/problem/1523/D 2400
+	// https://codeforces.com/problemset/problem/1679/E 2400
 	// https://codeforces.com/problemset/problem/1208/F 2600
 	//    求 ai|(aj&ak) 的最大值，其中 i<j<k
 	//    根据 a|b = (^a)&b + a
 	//    问题变成 (^ai)&aj&ak + ai 的最大值
-	// https://codeforces.com/problemset/problem/1554/B 1700 求下标最大次大，且不需要在乎 k 的上限的写法 
-	// https://codeforces.com/problemset/problem/165/E 2200
-	// https://codeforces.com/problemset/problem/449/D 2400 容斥 
-	// https://codeforces.com/problemset/problem/1523/D 2400
-	// https://codeforces.com/problemset/problem/383/E 2700
+	// https://codeforces.com/problemset/problem/383/E 2700 正难则反
 	// https://codeforces.com/problemset/problem/800/D 2700
 	// https://atcoder.jp/contests/arc100/tasks/arc100_c 最大次大 
 	// https://atcoder.jp/contests/arc136/tasks/arc136_d 十进制
+	// https://www.hackerearth.com/zh/problem/algorithm/special-pairs-5-3ee6b3fe-3d8a1606/
+	//    求 ai&aj=0 的 (i,j) 对数，0<=ai<=1e6
+	//    思路和上面类似，转换成求每个 ai 的补集的 SOS
+	//    注：另一种解法是求 FWT(cnt)[0]
 	// https://www.luogu.com.cn/problem/P6442
 	sosDP := func(a []int) []int {
 		// 从子集转移的写法
@@ -2811,20 +2812,23 @@ func _(abs func(int) int) {
 		}
 
 		{
-			// 维护集合最大次大的写法
-			type pair struct{ fi, se int }
+			// 维护集合 S 的最大次大子集 T 的写法
+			// 对于位运算的题，直接把 a[i] 当作 T
+			// https://codeforces.com/problemset/problem/1554/B
+			type pair struct{ mx, mx2 int }
 			f := make([]pair, 1<<mx)
+			// f[a[i]] = i ...
 			for i := range mx {
 				for s := 0; s < 1<<mx; s++ {
 					s |= 1 << i
 					p, q := f[s], f[s^1<<i]
-					if q.se > p.fi {
-						f[s] = q
-					} else if q.fi > p.fi {
-						f[s] = pair{q.fi, p.fi}
-					} else if q.fi > p.se {
-						f[s].se = q.fi
+					if q.mx > p.mx {
+						p.mx2 = max(p.mx, q.mx2)
+						p.mx = q.mx
+					} else if q.mx > p.mx2 {
+						p.mx2 = q.mx
 					}
+					f[s] = p
 				}
 			}
 		}
@@ -3550,7 +3554,8 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1295/E 2200
 	https://codeforces.com/problemset/problem/1788/E 2200
 	https://codeforces.com/problemset/problem/1842/E 2300
-	https://codeforces.com/problemset/problem/1609/E 2400 分治 线段树
+	https://codeforces.com/problemset/problem/115/E 2400 线段树 式子变形 划分型 DP
+	https://codeforces.com/problemset/problem/1609/E 2400 线段树 分治
 	https://atcoder.jp/contests/abc353/tasks/abc353_g 线段树 式子变形
 	https://atcoder.jp/contests/abc397/tasks/abc397_f 线段树 划分型 DP
 
@@ -3671,7 +3676,7 @@ func _(abs func(int) int) {
 		f := make([]int, len(a))
 		q := []vec{{b[0], f[0]}}      // j=0 单独算
 		for i := 1; i < len(a); i++ { // a 一般是个前缀和数组，长为 n+1
-			pi := vec{a[i], k[i]} // 和 j 相乘的 i 写这里！没有就是 1！
+			pi := vec{a[i], k[i]} // 和 i 相关的量写这里，没有就是 1
 			// ！如果是转移方程是求 max，把 < 改成 >，即第一个下坡
 			j := sort.Search(len(q)-1, func(j int) bool { return pi.dot(q[j]) < pi.dot(q[j+1]) })
 			// 如果 a[i] 是递减的，二分可以改成双指针（否则只能二分）
@@ -3864,6 +3869,8 @@ func _(abs func(int) int) {
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937 算法竞赛专题解析（10）：DP优化(1)--四边形不等式
 	//      决策单调性优化讲解 https://www.luogu.com.cn/blog/83547/zong-dong-tai-gui-hua-di-ben-zhi-kan-si-bian-xing-fou-deng-shi-you-hua
 	// 扔蛋问题 LC887 https://leetcode.cn/problems/super-egg-drop/
+	// https://codeforces.com/problemset/problem/321/E
+	// todo 看看划分型 DP 题单有没有可以优化的题目
 
 	// CDQ 分治优化 DP
 	// todo https://oi-wiki.org/misc/cdq-divide/
@@ -3922,9 +3929,11 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1292/C 2300
 	https://codeforces.com/problemset/problem/1453/E 2300 好题
 	https://codeforces.com/problemset/problem/238/C 做到 O(n) ~2400
-	https://codeforces.com/problemset/problem/288/D 2400 形状设计（枚举 acd + b），也有简单的做法     形状设计的做法 https://codeforces.com/contest/288/submission/326209476
+	https://codeforces.com/problemset/problem/288/D 2400 形状设计，两条相交路径（枚举 acd + b），也有简单的做法     形状设计的做法 https://codeforces.com/contest/288/submission/326209476
 	https://codeforces.com/problemset/problem/1059/E 2400 取往上冲的最高的点（子树）
+	https://codeforces.com/problemset/problem/1088/E 2400
 	https://codeforces.com/problemset/problem/23/E 2500
+	https://codeforces.com/problemset/problem/1146/F 2500 状态设计
 	https://codeforces.com/problemset/problem/627/D 2600 看似换根，但其实不是
 	https://codeforces.com/problemset/problem/633/F 2600 形状设计
 	https://atcoder.jp/contests/dp/tasks/dp_p
@@ -4727,6 +4736,7 @@ func _(abs func(int) int) {
 		convexHullTrick, convexHullTrick2,
 		wqs,
 
+		// 树形 DP
 		diameter, countDiameter, maxDisOfDiffColor, countPath, countVerticesOnDiameter, maxPathSum,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
 		reroot1, reroot1Cnt, reroot2, rerootPreSuf, // 换根 DP

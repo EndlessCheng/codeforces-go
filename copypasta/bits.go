@@ -34,12 +34,13 @@ Precedence    Operator
 floor(log2(x)) = bits.Len(x) - 1
  ceil(log2(x)) = bits.Len(x-1)
 
-### 基础题
+基础题
 https://codeforces.com/problemset/problem/2074/C 1100
 https://atcoder.jp/contests/arc161/tasks/arc161_b 563=CF1137
 https://codeforces.com/problemset/problem/1909/B 1200
+https://codeforces.com/problemset/problem/2053/C 1500 做到 O(1) 时间
 
-### 与或（AND/OR）的性质
+与或（AND/OR）的性质
 & 和 | 在区间求和上具有单调性（本页面搜索 logTrickCnt）
 https://codeforces.com/problemset/problem/1991/B 1100
 https://codeforces.com/problemset/problem/1420/B 1200 XOR
@@ -54,19 +55,24 @@ https://codeforces.com/problemset/problem/1665/E 2500 两数 OR 的最小值：�
 https://codeforces.com/problemset/problem/1004/F 2600
 https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
 
-### 异或（XOR）的性质
+异或（XOR）的性质
 另见 strings.go 中的 trie.maxXor
 https://atcoder.jp/contests/arc135/tasks/arc135_c 1512
-https://codeforces.com/problemset/problem/1420/B 1200 AND
+https://codeforces.com/problemset/problem/2039/C1 1200
+https://codeforces.com/problemset/problem/2057/C 1500 构造 可以做到 O(1)
 https://codeforces.com/problemset/problem/1968/F 1800
+https://codeforces.com/problemset/problem/2039/C2 1800
 https://codeforces.com/problemset/problem/1895/D 1900
 https://codeforces.com/problemset/problem/1991/D 1900
 https://codeforces.com/problemset/problem/2036/F 1900
 https://codeforces.com/problemset/problem/1088/D 2000 交互
+https://codeforces.com/problemset/problem/703/D 2100 
+- 区间元素异或和 = 区间中出现次数为【奇数】的元素异或和
+- 在此基础上 XOR 区间去重后的元素异或和 = 区间中出现次数为【偶数】的元素异或和
 https://codeforces.com/problemset/problem/1934/D1 2100
 https://codeforces.com/problemset/problem/835/E 2400 交互
 https://codeforces.com/problemset/problem/1710/C 2500 三角形三边
-ones(x ^ y) % 2 = (ones(x) + ones(y)) % 2
+ones(x XOR y) % 2 = (ones(x) + ones(y)) % 2
 
 XOR with AND
 https://codeforces.com/problemset/problem/1420/B 1200
@@ -75,13 +81,12 @@ https://codeforces.com/problemset/problem/1592/E 2400
 XOR with OR
 https://codeforces.com/problemset/problem/1946/D 1900
 
-### 利用 lowbit
+利用 lowbit
 https://codeforces.com/problemset/problem/1689/E
 交互 https://codeforces.com/problemset/problem/1780/D
 
-### 拆位 / 贡献法（部分题目排序很有用）
-《灵茶八题》完整题目列表 & 题解
-https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
+拆位 / 贡献法（部分题目排序很有用）
+《灵茶八题》完整题目列表 & 题解 https://zhuanlan.zhihu.com/p/31292765508
 + 表示元素和
 ^ 表示异或和
 所有子数组的 + 的 + https://www.luogu.com.cn/problem/U360300
@@ -123,7 +128,7 @@ https://oeis.org/A258438 Sum_{i=1..n} Sum_{j=1..n} (i OR j)
 https://oeis.org/A224923 Sum_{i=0..n} Sum_{j=0..n} (i XOR j)
 LC3344 https://leetcode.cn/problems/maximum-sized-array/
 
-### 试填法
+试填法
 https://codeforces.com/contest/1918/problem/C 1400
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 所有 a[i]+a[j] 的异或和 https://atcoder.jp/contests/abc091/tasks/arc092_b
@@ -133,7 +138,7 @@ https://codeforces.com/contest/1918/problem/C 1400
 https://ac.nowcoder.com/acm/contest/58860/G 河南省第十四届 ICPC 大学生程序设计竞赛
 https://ac.nowcoder.com/acm/contest/82957/F 牛客小白月赛 94
 
-### 恒等式
+恒等式
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
 - [1835. 所有数对按位与结果的异或和](https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/) 1825
 集合论公式的二进制等价形式：
@@ -169,12 +174,12 @@ https://atcoder.jp/contests/abc050/tasks/arc066_b 2606=CF2682 a|b = (^a)&b + a
 max(a,b) = (a + b + abs(a-b)) / 2
 min(a,b) = (a + b - abs(a-b)) / 2
 
-### 思维题（贪心、脑筋急转弯等）
+思维题（贪心、脑筋急转弯等）
 LC2835 https://leetcode.cn/problems/minimum-operations-to-form-subsequence-with-target-sum/
 - 相似题目 https://codeforces.com/problemset/problem/1918/C
 https://codeforces.com/problemset/problem/309/C 1900
 
-### 位运算与字符串
+位运算与字符串
 https://leetcode.cn/problems/count-the-number-of-special-characters-i/
 LC3121 https://leetcode.cn/problems/count-the-number-of-special-characters-ii/
 LC3019 https://leetcode.cn/problems/number-of-changing-keys/
@@ -182,7 +187,7 @@ LC3170 https://leetcode.cn/problems/lexicographically-minimum-string-after-remov
 https://codeforces.com/contest/691/problem/B
 https://codeforces.com/contest/1907/problem/B
 
-### 倍增
+倍增
 把二进制视作 01 数组，倍增计算 01 数组的前缀异或和（从左往右的前缀）
 y := x
 y ^= y >> 1
@@ -194,7 +199,7 @@ y ^= y >> 32
 此时 y 就是 x 的前缀异或和
 特别地，y 的最右边的比特就是 bits.OnesCount(x) % 2
 
-### 构造
+构造
 https://codeforces.com/contest/1722/problem/G 1500
 
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
@@ -501,8 +506,7 @@ func _(x int) {
 
 	//
 
-	// logTrick
-	// 原理讲解 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/
+	// logTrick 入门教程 https://zhuanlan.zhihu.com/p/1933215367158830792 
 
 	// logTrick 的简单版本 · 其一
 	// 例如 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
@@ -628,6 +632,8 @@ func _(x int) {
 	// 利用操作的单调性求解
 	// 时间复杂度：O(fnlogU)，其中 f 为 op(x,y) 的时间复杂度，一般是 O(1)，n=len(a)，U=max(a)
 	// 空间复杂度：O(logU)，返回值不计入
+	// logTrick 入门教程 https://zhuanlan.zhihu.com/p/1933215367158830792 
+	//
 	// |: LC898 https://leetcode.cn/problems/bitwise-ors-of-subarrays/ 2133
 	//    - 原题 https://codeforces.com/problemset/problem/243/A 1600
 	//    LC2411 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/ 1938

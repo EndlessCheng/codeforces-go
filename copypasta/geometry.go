@@ -135,6 +135,9 @@ LC1131 三维 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
 曼哈顿最近点对
 LC2613 https://leetcode.cn/problems/beautiful-pairs/
 
+其他
+https://codeforces.com/problemset/problem/2119/B 1200
+
 梯形个数
 https://leetcode.cn/problems/count-number-of-trapezoids-ii/
 思路有些类似 https://codeforces.com/problemset/problem/1163/C2

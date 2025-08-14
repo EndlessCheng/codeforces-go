@@ -70,7 +70,8 @@ https://codeforces.com/problemset/problem/2038/B 2100
 https://atcoder.jp/contests/abc389/tasks/abc389_e
 https://www.luogu.com.cn/problem/P1314
 
-### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
+### 最小化最大值（二分上界 upper，如果满足要求，例如所有元素最后都 <= upper 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
+好比用一个盖子去压住最大值，让最大值尽量小
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 https://codeforces.com/problemset/problem/1840/D 1400
 https://codeforces.com/problemset/problem/883/I 1900 DP
@@ -80,7 +81,7 @@ https://codeforces.com/problemset/problem/314/D 2500
 https://codeforces.com/problemset/problem/875/E 2600
 https://www.luogu.com.cn/problem/P2680
 
-### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
+### 最大化最小值（二分下界 low+1，如果满足要求，例如所有元素最后都 >= low+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 https://codeforces.com/problemset/problem/1623/C 1600
 https://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/2046/C 2100
@@ -639,7 +640,8 @@ func sortCollections() {
 	//
 	// 其他题目
 	// https://www.luogu.com.cn/problem/P4322
-	// https://codeforces.com/problemset/problem/489/E 与 DP 结合
+	// https://codeforces.com/problemset/problem/489/E 2300 与 DP 结合
+	// https://codeforces.com/problemset/problem/993/D 2500
 	search01 := func(ps [][2]int, k int) float64 {
 		// 必须/至少选 k 对，最大化 ∑ai/∑bi
 		// 如果是算术平均值的话，bi=1

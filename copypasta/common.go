@@ -205,6 +205,7 @@ https://codeforces.com/problemset/problem/1166/C 1500
 
 相向双指针
 https://codeforces.com/problemset/problem/1006/C 1200
+https://codeforces.com/problemset/problem/1793/C 1200
 https://codeforces.com/problemset/problem/2075/C 1500 a[i] + a[j] <= target
 https://www.facebook.com/codingcompetitions/hacker-cup/2023/practice-round/problems/C
 
@@ -298,6 +299,7 @@ https://codeforces.com/problemset/problem/2126/D 1200 区间贪心
 https://codeforces.com/problemset/problem/545/D 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1498/B 1300 从大到小贪心
+https://codeforces.com/problemset/problem/1585/C 1300
 https://codeforces.com/problemset/problem/1902/C 1300
 https://codeforces.com/problemset/problem/388/A 1400
 https://codeforces.com/problemset/problem/437/C 1400 排序不等式/交换论证法
@@ -426,6 +428,7 @@ LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
 思维：观察、结论
 https://codeforces.com/problemset/problem/1811/C 1100
 https://codeforces.com/problemset/problem/1822/D 1200
+https://codeforces.com/problemset/problem/1954/B 1200
 https://codeforces.com/problemset/problem/1077/C 1300
 https://codeforces.com/problemset/problem/1364/B 1300
 https://codeforces.com/problemset/problem/1844/C 1300 假设答案是某些数之和，经过什么样的操作可以得到这些数？
@@ -453,6 +456,7 @@ https://codeforces.com/problemset/problem/1270/B 1200
 https://codeforces.com/problemset/problem/1009/B 1400
 https://codeforces.com/problemset/problem/1883/F 1400
 https://codeforces.com/problemset/problem/1904/C 1400
+https://codeforces.com/problemset/problem/2034/C 1400
 https://codeforces.com/problemset/problem/1012/A 1500
 https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/500/C 1600
@@ -502,6 +506,7 @@ https://codeforces.com/problemset/problem/651/B   1200
 https://codeforces.com/problemset/problem/1028/B  1200
 https://codeforces.com/problemset/problem/1384/A  1200
 https://codeforces.com/problemset/problem/1713/C  1200
+https://codeforces.com/problemset/problem/1793/C  1200
 https://codeforces.com/problemset/problem/1990/B  1200
 https://codeforces.com/problemset/problem/2056/C  1200
 https://codeforces.com/problemset/problem/1717/C  1300
@@ -515,6 +520,7 @@ https://codeforces.com/problemset/problem/1844/D  1400
 https://codeforces.com/problemset/problem/1863/D  1400 棋盘+多米诺染色
 https://codeforces.com/problemset/problem/1896/C  1400
 https://codeforces.com/problemset/problem/1974/D  1400
+https://codeforces.com/problemset/problem/2034/C  1400 网格图
 https://codeforces.com/problemset/problem/2120/C  1400
 https://codeforces.com/problemset/problem/2126/E  1400 前后缀 GCD
 https://codeforces.com/problemset/problem/1630/A  1500
@@ -968,9 +974,9 @@ func _() {
 	- [3443. K 次修改后的最大曼哈顿距离](https://leetcode.cn/problems/maximum-manhattan-distance-after-k-changes/) ~1900
 	*/
 	dir4 = []struct{ x, y int }{'W': {-1, 0}, 'E': {1, 0}, 'S': {0, -1}, 'N': {0, 1}} // 西东南北（坐标系）
-	dir4 = []struct{ x, y int }{'W': {0, -1}, 'E': {0, 1}, 'S': {1, 0}, 'N': {-1, 0}} // 西东南北（网格）
+	dir4 = []struct{ x, y int }{'W': {0, -1}, 'E': {0, 1}, 'S': {1, 0}, 'N': {-1, 0}} // 西东南北（网格图、矩阵）
 	dir4 = []struct{ x, y int }{'L': {-1, 0}, 'R': {1, 0}, 'D': {0, -1}, 'U': {0, 1}} // 左右下上（坐标系）
-	dir4 = []struct{ x, y int }{'L': {0, -1}, 'R': {0, 1}, 'U': {-1, 0}, 'D': {1, 0}} // 左右下上（网格）
+	dir4 = []struct{ x, y int }{'L': {0, -1}, 'R': {0, 1}, 'U': {-1, 0}, 'D': {1, 0}} // 左右下上（网格图、矩阵）
 
 	dir8 := []struct{ x, y int }{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}  // 逆时针（坐标系）
 	dir8 = []struct{ x, y int }{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}}   // 顺时针（矩阵）
