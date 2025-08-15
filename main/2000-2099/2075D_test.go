@@ -2,7 +2,11 @@
 package main
 
 import (
+	. "fmt"
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"io"
+	"math"
+	"strings"
 	"testing"
 )
 
@@ -25,4 +29,98 @@ func Test_cf2075D(t *testing.T) {
 		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf2075D)
+}
+
+func TestCompare_cf2075D(_t *testing.T) {
+	return
+	testutil.DebugTLE = 0
+	rg := testutil.NewRandGenerator()
+	inputGenerator := func() string {
+		//return ``
+		rg.Clear()
+		rg.One()
+		rg.Int(0, 10000)
+		rg.Int(0, 10000)
+		return rg.String()
+	}
+
+	// 暴力算法
+	dp := precompute()
+	runBF := func(in io.Reader, out io.Writer) {
+		solve := func(Case int) {
+			var x, y uint64
+			Fscan(in, &x, &y)
+			Fprintln(out, get(x, y, dp))
+		}
+
+		T := 1
+		Fscan(in, &T) //
+		for Case := 1; Case <= T; Case++ {
+			solve(Case)
+		}
+
+		_leftData, _ := io.ReadAll(in)
+		if _s := strings.TrimSpace(string(_leftData)); _s != "" {
+			panic("有未读入的数据：\n" + _s)
+		}
+	}
+
+	testutil.AssertEqualRunResultsInf(_t, inputGenerator, runBF, cf2075D)
+}
+
+type Result struct {
+	cost uint64
+}
+
+const M, N = 60, 60
+const INF = uint64(math.MaxUint64 / 4)
+
+func get(x, y uint64, dp [][]uint64) uint64 {
+	best := INF
+	for a := 0; a <= M; a++ {
+		for b := 0; b <= M; b++ {
+			if x>>a == y>>b {
+				if dp[a][b] < best {
+					best = dp[a][b]
+				}
+			}
+		}
+	}
+	return best
+}
+
+func precompute() [][]uint64 {
+	dp := make([]uint64, (M+1)*(M+1))
+	for i := range dp {
+		dp[i] = INF
+	}
+	dp[0] = 0
+
+	pos := func(a, b int) int { return a*(M+1) + b }
+
+	for c := 1; c <= N; c++ {
+		cost := uint64(1) << uint64(c)
+		f := make([]uint64, len(dp))
+		copy(f, dp)
+
+		for a := 0; a <= M; a++ {
+			for b := 0; b <= M; b++ {
+				if dp[pos(a, b)] != INF {
+					if a <= M-c {
+						f[pos(a+c, b)] = min(f[pos(a+c, b)], dp[pos(a, b)]+cost)
+					}
+					if b <= M-c {
+						f[pos(a, b+c)] = min(f[pos(a, b+c)], dp[pos(a, b)]+cost)
+					}
+				}
+			}
+		}
+		dp = f
+	}
+
+	result := make([][]uint64, M+1)
+	for i := range result {
+		result[i] = dp[i*(M+1) : (i+1)*(M+1)]
+	}
+	return result
 }
