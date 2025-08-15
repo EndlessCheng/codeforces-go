@@ -7,80 +7,34 @@ import (
 	"math/bits"
 )
 
-/*
-10 = a+b+c
-5 = d+e
-1+2+3+6 = 12
-1+2+4+5 = 12
-看分解后的最大的数
-
-dfs(i,j)
-找最小的数 x，满足 1+2+...+x >= i+j
-然后取 dfs(i-x,j) 和 dfs(i,j-x) 的最小值？
-*/
-
 // https://github.com/EndlessCheng
 func cf2075D(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	dp := [60][60][60]int{}
-	var f func(int, int, int) int
-	f = func(i, j, low int) int {
-		if i == 0 && j == 0 {
-			return 0
+	const u = 58
+	var f, f2 [u][u]int
+	for i := range f {
+		for j := range f[i] {
+			f[i][j] = 8e18
+			f2[i][j] = 8e18
 		}
-		if i < 0 || j < 0 || low > max(i, j) {
-			return 8e18
-		}
-		p := &dp[i][j][low]
-		if *p > 0 {
-			return *p
-		}
-		res := min(f(i-low, j, low+1)+1<<low, f(i, j-low, low+1)+1<<low, f(i, j, low+1))
-		*p = res
-		return res
 	}
-
-	dp3 := [60][60]int{}
-	var f3 func(int, int) int
-	f3 = func(i, low int) int {
-		if i <= 0 {
-			return 0
+	f[0][0] = 0
+	f2[0][0] = 0
+	for i := 1; i < u; i++ {
+		for j := u - 1; j >= 0; j-- {
+			for k := u - 1; k >= 0; k-- {
+				// 至少装满
+				f[j][k] = min(f[j][k], f[j][max(k-i, 0)]+1<<i, f[max(j-i, 0)][k]+1<<i)
+				// 恰好装满
+				if k >= i {
+					f2[j][k] = min(f2[j][k], f2[j][k-i]+1<<i)
+				}
+				if j >= i {
+					f2[j][k] = min(f2[j][k], f2[j-i][k]+1<<i)
+				}
+			}
 		}
-		if low >= i {
-			return 1 << low
-		}
-		p := &dp3[i][low]
-		if *p > 0 {
-			return *p
-		}
-		res := min(f3(i-low, low+1)+1<<low, f3(i, low+1))
-		*p = res
-		return res
-	}
-
-	dp2 := [60][60][60]int{}
-	var f2 func(int, int, int) int
-	f2 = func(i, j, low int) int {
-		if i <= 0 && j <= 0 {
-			return 0
-		}
-		if i <= 0 {
-			return f3(j, low)
-		}
-		if j <= 0 {
-			return f3(i, low)
-		}
-		if low >= max(i, j) {
-			return 3 << low
-		}
-		p := &dp2[i][j][low]
-		if *p > 0 {
-			return *p
-		}
-		res := min(f2(i-low, j, low+1)+1<<low, f2(i, j-low, low+1)+1<<low, f2(i, j, low+1))
-		*p = res
-		return res
 	}
 
 	var T, x, y int
@@ -90,9 +44,9 @@ func cf2075D(in io.Reader, _w io.Writer) {
 			x, y = y, x
 		}
 		n, m := bits.Len(uint(x)), bits.Len(uint(y))
-		ans := f2(n, m, 1)
+		ans := f[n][m]
 		for a := bits.Len(uint(x ^ y>>(m-n))); a < n; a++ {
-			ans = min(ans, f(a, a+m-n, 1))
+			ans = min(ans, f2[a][a+m-n])
 		}
 		Fprintln(out, ans)
 	}
