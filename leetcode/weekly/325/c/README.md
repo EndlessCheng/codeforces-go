@@ -35,7 +35,7 @@ class Solution:
             cnt = 1
             pre = price[0]  # 先选一个最小的甜蜜度
             for p in price:
-                if p >= pre + d:  # 可以选
+                if p - pre >= d:  # 可以选
                     cnt += 1
                     pre = p  # 上一个选的甜蜜度
             return cnt
@@ -64,7 +64,7 @@ class Solution:
             cnt = 1
             pre = price[0]  # 先选一个最小的甜蜜度
             for p in price:
-                if p >= pre + d:  # 可以选
+                if p - pre >= d:  # 可以选
                     cnt += 1
                     pre = p  # 上一个选的甜蜜度
             return cnt < k
@@ -98,7 +98,7 @@ class Solution {
         int cnt = 1;
         int pre = price[0]; // 先选一个最小的甜蜜度
         for (int p : price) {
-            if (p >= pre + d) { // 可以选
+            if (p - pre >= d) { // 可以选
                 cnt++;
                 pre = p; // 上一个选的甜蜜度
             }
@@ -115,7 +115,7 @@ public:
         auto f = [&](int d) -> int {
             int cnt = 1, pre = price[0]; // 先选一个最小的甜蜜度
             for (int p : price) {
-                if (p >= pre + d) { // 可以选
+                if (p - pre >= d) { // 可以选
                     cnt++;
                     pre = p; // 上一个选的甜蜜度
                 }
@@ -147,7 +147,7 @@ int maximumTastiness(int* price, int priceSize, int k) {
     int f(int d) {
         int cnt = 1, pre = price[0]; // 先选一个最小的甜蜜度
         for (int i = 1; i < priceSize; i++) {
-            if (price[i] >= pre + d) { // 可以选
+            if (price[i] - pre >= d) { // 可以选
                 cnt++;
                 pre = price[i]; // 上一个选的甜蜜度
             }
@@ -180,7 +180,7 @@ func maximumTastiness(price []int, k int) int {
         d++ // 二分最小的 f(d+1) < k，从而知道最大的 f(d) >= k
         cnt, pre := 1, price[0]
         for _, p := range price[1:] {
-            if p >= pre+d {
+            if p-pre >= d {
                 cnt++
                 pre = p
             }
@@ -195,7 +195,7 @@ var maximumTastiness = function(price, k) {
     function f(d) {
         let cnt = 1, pre = price[0]; // 先选一个最小的甜蜜度
         for (const p of price) {
-            if (p >= pre + d) { // 可以选
+            if (p - pre >= d) { // 可以选
                 cnt++;
                 pre = p; // 上一个选的甜蜜度
             }
@@ -230,7 +230,7 @@ impl Solution {
             let mut cnt = 1;
             let mut pre = price[0]; // 先选一个最小的甜蜜度
             for &p in &price {
-                if p >= pre + d { // 可以选
+                if p - pre >= d { // 可以选
                     cnt += 1;
                     pre = p; // 上一个选的甜蜜度
                 }
