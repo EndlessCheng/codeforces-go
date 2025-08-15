@@ -1,5 +1,3 @@
-[视频讲解](https://www.bilibili.com/video/BV1qx421179t/) 第三题。
-
 ## 更形象的题意
 
 题意有点抽象，形象地解释一下：
@@ -14,29 +12,30 @@
 
 #### 提示 1
 
-答案越大，越能够搞定所有课程，反之越不能。
-
-有单调性，可以**二分答案**。
+答案越大，越能够搞定所有课程，反之越不能。据此，可以**二分答案**。
 
 #### 提示 2
 
 考试的时间越晚越好，这样我们能有更充足的时间复习。
 
-设二分的答案为 $\textit{mx}$。在 $\textit{mx}$ 天内，设 $\textit{i}$ 在 $\textit{changeIndices}$ 中出现的最后下标为 $\textit{lastT}[\textit{i}]$，即第 $i$ 门课程的最晚考试时间。如果 $i$ 不在 $\textit{changeIndices}$ 的前 $\textit{mx}$ 个数中，二分返回 `false`。
+设二分的答案为 $\textit{mx}$。在 $\textit{mx}$ 天内，设 $\textit{i}$ 在 $\textit{changeIndices}$ 中出现的最后下标为 $\textit{lastT}[\textit{i}]$，即第 $i$ 门课程的最晚考试时间。如果 $i$ 不在 $\textit{changeIndices}$ 的前 $\textit{mx}$ 个数中，二分返回 $\texttt{false}$。
 
 - 初始化 $\textit{cnt}=0$，遍历 $\textit{changeIndices}$ 的前 $\textit{mx}$ 个数。
 - 如果 $i\ne \textit{lastT}[i]$，这一天只能用来复习（或者什么也不做），但还不知道要复习哪一门课程，所以暂时记录一下，把 $\textit{cnt}$ 加一。
-- 如果 $i= \textit{lastT}[i]$，先从 $\textit{cnt}$ 中消耗 $\textit{nums}[i]$ 天用来复习，然后考试。如果 $\textit{cnt}<\textit{nums}[i]$ 则无法完成考试，二分返回 `false`。
+- 如果 $i= \textit{lastT}[i]$，先从 $\textit{cnt}$ 中消耗 $\textit{nums}[i]$ 天用来复习，然后考试。如果 $\textit{cnt}<\textit{nums}[i]$ 则无法完成考试，二分返回 $\texttt{false}$。
 
-如果遍历中没有返回 `false`，二分返回 `true`。
+如果遍历中没有返回 $\texttt{false}$，返回 $\texttt{true}$。
 
 下面代码用的开区间二分（其它写法也可以），原理请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+
+[视频讲解](https://www.bilibili.com/video/BV1qx421179t/) 第三题。
 
 ```py [sol-Python3]
 class Solution:
     def earliestSecondToMarkIndices(self, nums: List[int], changeIndices: List[int]) -> int:
         n, m = len(nums), len(changeIndices)
-        if n > m: return -1
+        if n > m:
+            return -1
 
         def check(mx: int) -> bool:
             last_t = [-1] * n
@@ -114,9 +113,11 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int earliestSecondToMarkIndices(vector<int> &nums, vector<int> &changeIndices) {
+    int earliestSecondToMarkIndices(vector<int>& nums, vector<int>& changeIndices) {
         int n = nums.size(), m = changeIndices.size();
-        if (n > m) return -1;
+        if (n > m) {
+            return -1;
+        }
 
         vector<int> last_t(n);
         auto check = [&](int mx) -> bool {
@@ -211,7 +212,8 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 class Solution:
     def earliestSecondToMarkIndices(self, nums: List[int], changeIndices: List[int]) -> int:
         n, m = len(nums), len(changeIndices)
-        if n > m: return -1
+        if n > m:
+            return -1
 
         done = [0] * n  # 避免反复创建和初始化数组
         def check(mx: int) -> bool:
@@ -274,9 +276,11 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int earliestSecondToMarkIndices(vector<int> &nums, vector<int> &changeIndices) {
+    int earliestSecondToMarkIndices(vector<int>& nums, vector<int>& changeIndices) {
         int n = nums.size(), m = changeIndices.size();
-        if (n > m) return -1;
+        if (n > m) {
+            return -1;
+        }
 
         vector<int> done(n); // 避免反复创建和初始化数组
         auto check = [&](int mx) -> bool {
@@ -339,8 +343,23 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 - 时间复杂度：$\mathcal{O}(m\log m)$，其中 $m$ 为 $\textit{changeIndices}$ 的长度。二分的时候保证 $n\le m$，时间复杂度以 $m$ 为主。
 - 空间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 
-#### 题单：二分答案
+## 分类题单
 
-- [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-[2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
