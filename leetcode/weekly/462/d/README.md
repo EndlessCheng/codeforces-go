@@ -657,6 +657,10 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 
 有类似数位 DP 的搜索做法，见题解下面我的评论。
 
+## 相似题目
+
+[564. 寻找最近的回文数](https://leetcode.cn/problems/find-the-closest-palindrome/)
+
 ## 专题训练
 
 见下面回溯题单的「**§4.6 有重复元素的回溯**」。
