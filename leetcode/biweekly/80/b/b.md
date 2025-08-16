@@ -73,9 +73,9 @@ class Solution {
 ```C++ [sol-C++]
 class Solution {
 public:
-    vector<int> successfulPairs(vector<int> &spells, vector<int> &potions, long long success) {
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
         ranges::sort(potions);
-        for (int &x : spells) {
+        for (int& x : spells) { // 原地修改
             long long target = (success - 1) / x;
             if (target < potions.back()) {
                 // 这样写每次二分就只用比两个 int 的大小，避免把 potions 中的元素转成 long long 比较
