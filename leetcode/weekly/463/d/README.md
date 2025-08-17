@@ -57,6 +57,8 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1kTYyzwEDD/)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def xorAfterQueries(self, nums: List[int], queries: List[List[int]]) -> int:
@@ -268,7 +270,7 @@ func pow(x, n int) int {
 }
 ```
 
-## 进一步优化
+## 写法一的优化
 
 把懒初始化的想法进一步扩展。比如 $k=3$ 时，没有遇到 $l\bmod k=2$ 的组，那么这一组的商分数组全为 $1$，无需遍历。
 
@@ -512,6 +514,312 @@ func pow(x, n int) int {
 
 - 时间复杂度：$\mathcal{O}(n\sqrt q + q\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n\sqrt q)$。
+
+## 写法二
+
+把询问按照 $(k,l\bmod k)$ 分组，对于每一组计算商分。这样空间复杂度更小。
+
+```py [sol-Python3]
+class Solution:
+    def xorAfterQueries(self, nums: List[int], queries: List[List[int]]) -> int:
+        MOD = 1_000_000_007
+        n = len(nums)
+        B = isqrt(len(queries))
+        groups = [[] for _ in range(B)]
+
+        for l, r, k, v in queries:
+            if k < B:
+                groups[k].append((l, r, v))
+            else:
+                for i in range(l, r + 1, k):
+                    nums[i] = nums[i] * v % MOD
+
+        diff = [0] * (n + 1)
+        for k, g in enumerate(groups):
+            if not g:
+                continue
+
+            buckets = [[] for _ in range(k)]
+            for t in g:
+                buckets[t[0] % k].append(t)
+
+            for start, bucket in enumerate(buckets):
+                if not bucket:
+                    continue
+                if len(bucket) == 1:
+                    # 只有一个询问，直接暴力
+                    l, r, v = bucket[0]
+                    for i in range(l, r + 1, k):
+                        nums[i] = nums[i] * v % MOD
+                    continue
+
+                m = (n - start - 1) // k + 1
+                diff[:m] = [1] * m
+                for l, r, v in bucket:
+                    diff[l // k] = diff[l // k] * v % MOD
+                    r = (r - start) // k + 1
+                    diff[r] = diff[r] * pow(v, -1, MOD) % MOD
+
+                mul_d = 1
+                for i in range(m):
+                    mul_d = mul_d * diff[i] % MOD
+                    j = start + i * k
+                    nums[j] = nums[j] * mul_d % MOD
+
+        return reduce(xor, nums)
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int xorAfterQueries(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int B = (int) Math.sqrt(queries.length);
+        List<int[]>[] groups = new ArrayList[B];
+        Arrays.setAll(groups, _ -> new ArrayList<>());
+
+        for (int[] q : queries) {
+            int l = q[0], r = q[1], k = q[2], v = q[3];
+            if (k < B) {
+                groups[k].add(new int[]{l, r, v});
+            } else {
+                for (int i = l; i <= r; i += k) {
+                    nums[i] = (int) ((long) nums[i] * v % MOD);
+                }
+            }
+        }
+
+        int[] diff = new int[n + 1];
+        for (int k = 1; k < B; k++) {
+            List<int[]> g = groups[k];
+            if (g.isEmpty()) {
+                continue;
+            }
+
+            List<int[]>[] buckets = new ArrayList[k];
+            Arrays.setAll(buckets, _ -> new ArrayList<>());
+            for (int[] t : g) {
+                buckets[t[0] % k].add(t);
+            }
+
+            for (int start = 0; start < k; start++) {
+                List<int[]> bucket = buckets[start];
+                if (bucket.isEmpty()) {
+                    continue;
+                }
+                if (bucket.size() == 1) {
+                    // 只有一个询问，直接暴力
+                    int[] t = bucket.get(0);
+                    int l = t[0], r = t[1];
+                    long v = t[2];
+                    for (int i = l; i <= r; i += k) {
+                        nums[i] = (int) (nums[i] * v % MOD);
+                    }
+                    continue;
+                }
+
+                int m = (n - start - 1) / k + 1;
+                Arrays.fill(diff, 0, m, 1);
+                for (int[] t : bucket) {
+                    int l = t[0];
+                    long v = t[2];
+                    diff[l / k] = (int) (diff[l / k] * v % MOD);
+                    int r = (t[1] - start) / k + 1;
+                    diff[r] = (int) (diff[r] * pow(v, MOD - 2) % MOD);
+                }
+
+                long mulD = 1;
+                for (int i = 0; i < m; i++) {
+                    mulD = mulD * diff[i] % MOD;
+                    int j = start + i * k;
+                    nums[j] = (int) (nums[j] * mulD % MOD);
+                }
+            }
+        }
+
+        int ans = 0;
+        for (int x : nums) {
+            ans ^= x;
+        }
+        return ans;
+    }
+
+    private long pow(long x, int n) {
+        long res = 1;
+        for (; n > 0; n /= 2) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    const int MOD = 1'000'000'007;
+
+    long long pow(long long x, int n) {
+        long long res = 1;
+        for (; n; n /= 2) {
+            if (n % 2) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+
+public:
+    int xorAfterQueries(vector<int>& nums, vector<vector<int>>& queries) {
+        int n = nums.size();
+        int B = ceil(sqrt(queries.size()));
+        vector<vector<tuple<int, int, int>>> groups(B);
+
+        for (auto& q : queries) {
+            int l = q[0], r = q[1], k = q[2], v = q[3];
+            if (k < B) {
+                groups[k].emplace_back(l, r, v);
+            } else {
+                for (int i = l; i <= r; i += k) {
+                    nums[i] = 1LL * nums[i] * v % MOD;
+                }
+            }
+        }
+
+        vector<int> diff(n + 1);
+        for (int k = 1; k < B; k++) {
+            auto& g = groups[k];
+            if (g.empty()) {
+                continue;
+            }
+
+            vector<vector<tuple<int, int, int>>> buckets(k);
+            for (auto& t : g) {
+                buckets[get<0>(t) % k].emplace_back(t);
+            }
+
+            for (int start = 0; start < k; start++) {
+                auto& bucket = buckets[start];
+                if (bucket.empty()) {
+                    continue;
+                }
+                if (bucket.size() == 1) {
+                    // 只有一个询问，直接暴力
+                    auto& [l, r, v] = bucket[0];
+                    for (int i = l; i <= r; i += k) {
+                        nums[i] = 1LL * nums[i] * v % MOD;
+                    }
+                    continue;
+                }
+
+                int m = (n - start - 1) / k + 1;
+                fill(diff.begin(), diff.begin() + m, 1);
+                for (auto& [l, r, v] : bucket) {
+                    diff[l / k] = 1LL * diff[l / k] * v % MOD;
+                    r = (r - start) / k + 1;
+                    diff[r] = diff[r] * pow(v, MOD - 2) % MOD;
+                }
+
+                long long mul_d = 1;
+                for (int i = 0; i < m; i++) {
+                    mul_d = mul_d * diff[i] % MOD;
+                    int j = start + i * k;
+                    nums[j] = nums[j] * mul_d % MOD;
+                }
+            }
+        }
+
+        return reduce(nums.begin(), nums.end(), 0, bit_xor());
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 1_000_000_007
+
+func xorAfterQueries(nums []int, queries [][]int) (ans int) {
+	n := len(nums)
+	B := int(math.Sqrt(float64(len(queries))))
+	type tuple struct{ l, r, v int }
+	groups := make([][]tuple, B)
+
+	for _, q := range queries {
+		l, r, k, v := q[0], q[1], q[2], q[3]
+		if k < B {
+			groups[k] = append(groups[k], tuple{l, r, v})
+		} else {
+			for i := l; i <= r; i += k {
+				nums[i] = nums[i] * v % mod
+			}
+		}
+	}
+
+	diff := make([]int, n+1)
+	for k, g := range groups {
+		if g == nil {
+			continue
+		}
+		buckets := make([][]tuple, k)
+		for _, t := range g {
+			buckets[t.l%k] = append(buckets[t.l%k], t)
+		}
+		for start, bucket := range buckets {
+			if bucket == nil {
+				continue
+			}
+			if len(bucket) == 1 {
+				// 只有一个询问，直接暴力
+				t := bucket[0]
+				for i := t.l; i <= t.r; i += k {
+					nums[i] = nums[i] * t.v % mod
+				}
+				continue
+			}
+
+			for i := range (n-start-1)/k + 1 {
+				diff[i] = 1
+			}
+			for _, t := range bucket {
+				diff[t.l/k] = diff[t.l/k] * t.v % mod
+				r := (t.r-start)/k + 1
+				diff[r] = diff[r] * pow(t.v, mod-2) % mod
+			}
+
+			mulD := 1
+			for i := range (n-start-1)/k + 1 {
+				mulD = mulD * diff[i] % mod
+				j := start + i*k
+				nums[j] = nums[j] * mulD % mod
+			}
+		}
+	}
+
+	for _, x := range nums {
+		ans ^= x
+	}
+	return
+}
+
+func pow(x, n int) int {
+	res := 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
+		}
+		x = x * x % mod
+	}
+	return res
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\sqrt q + q\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n + q)$。
 
 ## 相似题目
 
