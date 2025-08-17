@@ -12,9 +12,9 @@ $$
 
 个正方形。
 
-根据 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)，将上式转化成下取整，方便计算。
+根据 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)，我们可以将式子中的上取整转化成下取整，方便计算机计算。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV191YCzjEvc/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -72,3 +72,5 @@ func minSensors(n, m, k int) int {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
