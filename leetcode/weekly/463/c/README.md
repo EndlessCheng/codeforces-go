@@ -1,6 +1,14 @@
+## 错误做法
+
+计算 $\textit{nums}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)，贪心地，每次删除一对最近（或者最远）的相同前缀和对应的子数组。
+
+错误原因：考虑两对相同的前缀和，如果它们对应的子数组相交（但不包含），且删除一个子数组后，另一个子数组就无法删除。那么删除谁更好呢？没有合适的贪心策略。
+
+还得是 DP。
+
 ## 分析
 
-考虑删除 $\textit{nums}$ 的某个子数组 $a$（$a$ 的元素和是 $k$ 的倍数）。$a$ 的更内部元素如何删除，是否会影响到 $a$ 整体的删除？
+考虑删除 $\textit{nums}$ 的某个子数组 $a$，满足 $a$ 的元素和是 $k$ 的倍数。在思考 DP 之前，要想清楚：如果我们先删除了 $a$ 的更内部元素，是否会影响到 $a$ 整体的删除？
 
 比如 $k=4$，考虑删除子数组 $a=[2,1,3,2]$。有两种删除方案：
 
@@ -11,29 +19,31 @@
 
 一般地，如果 $a$ 的元素和是 $k$ 的倍数，且删除的更内部的子数组元素和也是 $k$ 的倍数，那么删除更内部元素后，$a$ 的剩余元素之和是不变的，仍然为 $k$ 的倍数。
 
-这个性质意味着，我们可以首先考虑删除 $\textit{nums}$ 的最右边的子数组，无需担心这个子数组内部元素对删除的影响。
+这个性质意味着，我们可以首先考虑删除 $\textit{nums}$ 最右边的子数组，而无需担心这个子数组内部元素对删除的影响。
+
+> 注：从右往左思考，我们寻找到的子问题都是 $\textit{nums}$ 的前缀，方便计算。当然，你想从左往右思考也可以，递推的时候就要倒着遍历 $\textit{nums}$ 了。
 
 ## 寻找子问题
 
 考虑 $\textit{nums}[n-1]$ 删或不删：
 
 - 不删，问题变成前缀 $[0,n-2]$ 的最小和。
-- 删，设子数组的左端点为 $j$，删除子数组 $[j,n-1]$ 后，问题变成前缀 $[0,j-1]$ 的最小和。
+- 删，设子数组的左端点为 $j$，满足子数组 $[j,n-1]$ 的元素和是 $k$ 的倍数。删除子数组 $[j,n-1]$ 后，问题变成前缀 $[0,j-1]$ 的最小和。
 
 删或不删都会把原问题变成一个**和原问题相似的、规模更小的子问题**。
 
 ## 状态定义与状态转移方程
 
-根据上面的讨论，定义 $f[i+1]$ 表示前缀 $[0,i]$ 的最小和。其中 $+1$ 是为了留出位置给 $f[0]$ 表示空前缀。
+根据上面的讨论，定义 $f[i+1]$ 表示前缀 $[0,i]$ 的最小和。其中 $+1$ 是为了留出位置给 $f[0]$，表示空前缀。
 
 考虑 $\textit{nums}[i]$ 删或不删：
 
-- 不删，问题变成前缀 $[0,i-1]$ 的最小和，即 $f[i]$，加上 $\textit{nums}[i]$，得到 $f[i+1] = f[i] + \textit{nums}[i]$。
+- 不删，问题变成前缀 $[0,i-1]$ 的最小和，即 $f[i]$。加上 $\textit{nums}[i]$，得到 $f[i+1] = f[i] + \textit{nums}[i]$。
 - 删，可能有多个子数组的左端点，满足子数组的元素和是 $k$ 的倍数。设这些左端点为 $j_1,j_2,\dots,j_m$。删除子数组 $[j,i]$ 后，问题变成前缀 $[0,j-1]$ 的最小和，即 $f[j]$。取最小值，得 $f[i+1] = \min\limits_{j\in \{j_1,j_2,\dots,j_m\}} f[j]$。
 
 现在的问题是，如何快速计算 $\min\limits_{j\in \{j_1,j_2,\dots,j_m\}} f[j]$？
 
-首先要找到这些 $j_1,j_2,\dots,j_m$。计算 $\textit{nums}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组 $\textit{sum}$，每一项都模 $k$。比如当 $\textit{sum}[i+1] = 6$ 时，左边还有 $\textit{sum}[j_1] = \textit{sum}[j_2] = 6$，即子数组 $[j_1,i]$ 和子数组 $[j_2,i]$ 的元素和模 $k$ 都是 $0$。考虑维护这些 $\textit{sum}[j] = 6$ 对应的 $f[j]$ 的最小值，记作 $\textit{minF}$，比如 $\textit{minF}[6]$ 表示所有模 $k$ 为 $6$ 的前缀和对应的状态值的最小值。如此一来，转移方程就可以优化成 $f[i+1] = \textit{minF}[\textit{sum}[i+1]]$。
+首先要找到这些 $j_1,j_2,\dots,j_m$。计算 $\textit{nums}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组 $\textit{sum}$，每一项都模 $k$。比如当 $\textit{sum}[i+1] = 6$ 时，左边还有 $\textit{sum}[j_1] = \textit{sum}[j_2] = 6$，即子数组 $[j_1,i]$ 和子数组 $[j_2,i]$ 的元素和模 $k$ 都是 $0$。考虑维护这些 $\textit{sum}[j] = 6$ 对应的 $f[j]$ 的最小值，记到 $\textit{minF}$ 中。比如 $\textit{minF}[6]$ 记录着模 $k$ 为 $6$ 的前缀和对应的状态值的最小值。如此一来，转移方程就可以优化成 $f[i+1] = \textit{minF}[\textit{sum}[i+1]]$。
 
 不删和删取最小值，得
 
@@ -49,9 +59,9 @@ $$
 
 代码实现时，$\textit{sum}$ 和 $f$ 都可以优化为一个变量。
 
-为什么可以一遍累加一边取模，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+为什么可以一遍累加一边取模？见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1kTYyzwEDD/?t=39m10s)，欢迎点赞关注~
 
 ## 数组实现
 

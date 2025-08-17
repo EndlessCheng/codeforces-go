@@ -4,20 +4,26 @@
 
 计算两个前缀和数组：
 
-- $\textit{prices}[i]\cdot \textit{strategy}[i]$ 的前缀和，记作 $\textit{sum}$。
-- $\textit{prices}[i]$ 的前缀和，记作 $\textit{sumSell}$。
+- 定义数组 $c$，其中 $c[i] = \textit{prices}[i]\cdot \textit{strategy}[i]$。计算 $c$ 的前缀和，记作 $\textit{sum}$。
+- 计算 $\textit{prices}$ 的前缀和，记作 $\textit{sumSell}$。
 
 如果不修改，答案为 $\textit{sum}[n]$。
 
-如果修改，枚举修改 $[i-k,i-1]$ 这个子数组，答案由三部分组成：
+如果修改，枚举修改子数组 $[i-k,i-1]$。修改后的利润由三部分组成：
 
 1. $[0,i-k-1]$ 的 $\textit{prices}[i]\cdot \textit{strategy}[i]$ 之和，即 $\textit{sum}[i-k]$。
 2. $[i,n-1]$ 的 $\textit{prices}[i]\cdot \textit{strategy}[i]$ 之和，即 $\textit{sum}[n] - \textit{sum}[i]$。
 3. $[i-k/2,i-1]$ 的 $\textit{prices}[i]$ 之和，即 $\textit{sumSell}[i] - \textit{sumSell}[i-k/2]$。
 
-取上述三者之和的最大值，即为修改一次时的答案。与 $\textit{sum}[n]$ 取最大值，即为最终答案。
+总和为
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+$$
+\textit{sum}[i-k] + \textit{sum}[n] - \textit{sum}[i] + \textit{sumSell}[i] - \textit{sumSell}[i-k/2]
+$$
+
+用上式更新答案的最大值。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1kTYyzwEDD/?t=29m23s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -101,18 +107,18 @@ func maxProfit(prices []int, strategy []int, k int) int64 {
 
 **前置知识**：[定长滑动窗口](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)。
 
-考虑修改元素时，在不修改的基础上，**最大增量**是多少。
+考虑修改元素时，在不修改的基础上，利润的**最大增量**是多少。（如果无法增大，则最大增量为 $0$）
 
-我们有两个相邻的、长度均为 $k/2$ 的定长滑动窗口：
+增量来自长为 $k$ 的子数组 $[i-k,i-1]$，将其分为左右两部分：
 
-1. $[i-k,i-k/2-1]$，这里面的元素和增加了 $\textit{prices}[i]\cdot (-\textit{strategy}[i])$ 之和。
-2. $[i-k/2,i-1]$，这里面的元素和增加了 $\textit{prices}[i]\cdot (1-\textit{strategy}[i])$ 之和。
+1. 左半为 $[i-k,i-k/2-1]$，修改后，增量为 $\textit{prices}[i]\cdot (-\textit{strategy}[i])$ 之和。
+2. 右半为 $[i-k/2,i-1]$，修改后，增量为 $\textit{prices}[i]\cdot (1-\textit{strategy}[i])$ 之和。
 
 当窗口向右滑动时：
 
-1. $\textit{prices}[i]\cdot (1-\textit{strategy}[i])$ 进入第二个窗口。
-2. 下标为 $i-k/2$ 的元素从第二个窗口移到一个窗口中，交易策略从 $1$ 变成 $0$，所以元素和减少了 $\textit{prices}[i-k/2]$。
-3. $\textit{prices}[i-k]\cdot (-\textit{strategy}[i-k])$ 离开第一个窗口。
+1. $\textit{prices}[i]\cdot (1-\textit{strategy}[i])$ 进入窗口。
+2. 下标为 $i-k/2$ 的元素从右半移到左半，交易策略从 $1$ 变成 $0$，所以增量减少了 $\textit{prices}[i-k/2]$。
+3. $\textit{prices}[i-k]\cdot (-\textit{strategy}[i-k])$ 离开窗口。
 
 ```py [sol-Python3]
 # 手写 max 更快
@@ -224,7 +230,7 @@ func maxProfit(prices, strategy []int, k int) int64 {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{prices}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(1)$。Python 的切片改成循环可以做到 $\mathcal{O}(1)$ 空间。
 
 ## 专题训练
 

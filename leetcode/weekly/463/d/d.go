@@ -9,6 +9,7 @@ func xorAfterQueries(nums []int, queries [][]int) (ans int) {
 	n := len(nums)
 	B := int(math.Sqrt(float64(len(queries))))
 	diff := make([][]int, B)
+	has := make([][]bool, B)
 
 	for _, q := range queries {
 		l, r, k, v := q[0], q[1], q[2], q[3]
@@ -19,7 +20,9 @@ func xorAfterQueries(nums []int, queries [][]int) (ans int) {
 				for j := range diff[k] {
 					diff[k][j] = 1
 				}
+				has[k] = make([]bool, k)
 			}
+			has[k][l%k] = true
 			diff[k][l] = diff[k][l] * v % mod
 			r = r - (r-l)%k + k
 			diff[k][r] = diff[k][r] * pow(v, mod-2) % mod
@@ -34,7 +37,10 @@ func xorAfterQueries(nums []int, queries [][]int) (ans int) {
 		if d == nil {
 			continue
 		}
-		for start := range k {
+		for start, b := range has[k] {
+			if !b {
+				continue
+			}
 			mulD := 1
 			for i := start; i < n; i += k {
 				mulD = mulD * d[i] % mod
