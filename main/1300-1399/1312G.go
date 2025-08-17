@@ -37,7 +37,7 @@ func cf1312G(in io.Reader, _w io.Writer) {
 			f[v] = min(f[v], kth+1)
 		}
 		kth = min(kth, f[v]) // min(从祖先跳过来，先跳到 v 再继续跳）
-		for _, w := range son[v] {
+		for _, w := range son[v][:] {
 			if w > 0 {
 				f[w] = f[v] + 1
 				sz += dfs(w, kth+sz)
