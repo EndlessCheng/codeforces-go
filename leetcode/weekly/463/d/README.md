@@ -512,7 +512,7 @@ func pow(x, n int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\sqrt q + q\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n\sqrt q + q\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度，$M=10^9+7$。
 - 空间复杂度：$\mathcal{O}(n\sqrt q)$。
 
 ## 写法二
@@ -818,12 +818,8 @@ func pow(x, n int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\sqrt q + q\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n\sqrt q + q\log M)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度，$M=10^9+7$。
 - 空间复杂度：$\mathcal{O}(n + q)$。
-
-## 相似题目
-
-[3590. 第 K 小的路径异或和](https://leetcode.cn/problems/kth-smallest-path-xor-sum/)
 
 ## 分类题单
 
