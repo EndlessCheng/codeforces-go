@@ -13,6 +13,7 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 https://leetcode.cn/discuss/post/YiXPXW/
 
 网格图 DFS
+https://oeis.org/A357234 a(n) is the maximum length of a snake-like polyomino in an n X n square that starts and ends at opposite corners
 LC417. 太平洋大西洋水流问题 https://leetcode.cn/problems/pacific-atlantic-water-flow/
 - https://codeforces.com/problemset/problem/1651/D 1900
 LC827. 最大人工岛 https://leetcode.cn/problems/making-a-large-island/
