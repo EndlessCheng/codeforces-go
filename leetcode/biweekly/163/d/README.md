@@ -78,7 +78,7 @@ class Solution {
             Arrays.fill(f, Integer.MAX_VALUE / 2);
             f[1] = -grid[0][0]; // 起点的成本不算
             for (int[] row : grid) {
-                for (int j = 0; j < row.length; j++) {
+                for (int j = 0; j < n; j++) {
                     int x = row[j];
                     f[j + 1] = Math.min(Math.min(f[j], f[j + 1]) + x, sufMinF[x]);
                     minF[x] = Math.min(minF[x], f[j + 1]);
@@ -117,7 +117,7 @@ public:
             ranges::fill(f, INT_MAX / 2);
             f[1] = -grid[0][0]; // 起点的成本不算
             for (auto& row : grid) {
-                for (int j = 0; j < row.size(); j++) {
+                for (int j = 0; j < n; j++) {
                     int x = row[j];
                     f[j + 1] = min(min(f[j], f[j + 1]) + x, suf_min_f[x]);
                     min_f[x] = min(min_f[x], f[j + 1]);
@@ -181,7 +181,7 @@ func minCost(grid [][]int, k int) int {
 
 每次循环我们会计算一遍 $\textit{sufMinF}$。如果发现某次循环没有改变 $\textit{sufMinF}$，那么无论再传送多少次，都不会再改变 $\textit{sufMinF}$ 了，此时我们已经找到了答案。
 
-力扣喜欢出随机数据。测试发现，$m=n=80$，值域 $10^4$ 的随机数据，迭代约 $2.2$ 次就收敛了，然后再循环一次发现收敛，即 $\textit{sufMinF}$ 在循环前后是相同的。所以平均外层循环约 $3.2$ 次就可以退出循环了，而不是循环 $k+1$ 次。
+力扣喜欢出随机数据。测试发现，对于 $m=n=80$，值域在 $[0,10^4]$ 中随机的测试数据，平均迭代约 $2.2$ 次就收敛了，然后再循环一次发现收敛，即 $\textit{sufMinF}$ 在循环前后是相同的。所以平均外层循环约 $3.2$ 次就可以退出循环了，而不是循环 $k+1$ 次。
 
 ```py [sol-Python3]
 # 手写 min 更快
@@ -238,7 +238,7 @@ class Solution {
             Arrays.fill(f, Integer.MAX_VALUE / 2);
             f[1] = -grid[0][0]; // 起点的成本不算
             for (int[] row : grid) {
-                for (int j = 0; j < row.length; j++) {
+                for (int j = 0; j < n; j++) {
                     int x = row[j];
                     f[j + 1] = Math.min(Math.min(f[j], f[j + 1]) + x, sufMinF[x]);
                     minF[x] = Math.min(minF[x], f[j + 1]);
@@ -282,7 +282,7 @@ public:
             ranges::fill(f, INT_MAX / 2);
             f[1] = -grid[0][0]; // 起点的成本不算
             for (auto& row : grid) {
-                for (int j = 0; j < row.size(); j++) {
+                for (int j = 0; j < n; j++) {
                     int x = row[j];
                     f[j + 1] = min(min(f[j], f[j + 1]) + x, suf_min_f[x]);
                     min_f[x] = min(min_f[x], f[j + 1]);
