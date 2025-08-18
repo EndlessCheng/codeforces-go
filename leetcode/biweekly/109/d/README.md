@@ -110,7 +110,7 @@ func pow(i, x int) int {
 
 ```js [sol-JS]
 var numberOfWays = function(n, x) {
-    const f = new Array(n + 1).fill(0);
+    const f = Array(n + 1).fill(0);
     f[0] = 1;
     // 本题数据范围小，pow 的计算结果一定准确
     for (let i = 1; Math.pow(i, x) <= n; i++) {
