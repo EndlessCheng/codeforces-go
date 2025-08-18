@@ -47,7 +47,7 @@ class Solution {
         int[] dis = new int[n];
         Arrays.fill(dis, Integer.MAX_VALUE);
         // 堆中保存 (起点到节点 x 的最短路长度，节点 x)
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
         dis[0] = 0; // 起点到自己的距离是 0
         pq.offer(new int[]{0, 0});
 
