@@ -5,14 +5,16 @@ import (
 	"slices"
 )
 
-/* 根号算法 Sqrt Decomposition
+/* 根号分解 Sqrt Decomposition
 分块数据结构见后
 
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
-常用于图论或者某些数组统计类题目
-参考 Competitive Programmer’s Handbook Ch.27
+常用于数组统计类题目、图论题目
+视频讲解 https://www.bilibili.com/video/BV1kTYyzwEDD/
+
 王悦同《根号算法——不只是分块》
 暴力美学——浅谈根号分治 https://www.luogu.com.cn/blog/Amateur-threshold/pu-li-mei-xue-qian-tan-gen-hao-fen-zhi
+https://ddosvoid.github.io/2020/10/18/%E6%B5%85%E8%B0%88%E6%A0%B9%E5%8F%B7%E7%AE%97%E6%B3%95/
 
 题目花样很多，下面举个例子
 有 n 个对象，每个对象有一个「关于其他对象的统计量」ci（一个数、一个集合的元素个数，等等）
@@ -21,22 +23,25 @@ import (
 当 ci ≤ √n 时，这样的对象有 O(n) 个，由于统计量 ci 很小，暴力枚举当前对象的统计量，时间复杂度为 O(n√n)。此乃算法二
 这样，以 √n 为界，我们将所有对象划分成了两组，并用两个不同的算法处理
 这两种算法是看待同一个问题的两种不同方式，通过恰当地组合（平衡）这两个算法，复杂度由 O(n^2) 降至 O(n√n)
-例子是 https://codeforces.com/problemset/problem/1806/E
+例子是 https://codeforces.com/problemset/problem/1806/E 2200
 注意：**枚举时要做到不重不漏**
 
-可以从这题上手 https://www.luogu.com.cn/problem/P3396
-- 同 https://codeforces.com/contest/103/problem/D 2100
+https://www.luogu.com.cn/problem/P3396 哈希冲突 可以从这题上手
 https://www.luogu.com.cn/problem/T279521?contestId=65460
 - https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
 LCP16 https://leetcode.cn/problems/you-le-yuan-de-you-lan-ji-hua/
+LC3655 https://leetcode.cn/problems/xor-after-range-multiplication-queries-ii/
 https://codeforces.com/problemset/problem/1921/F 1900
 https://codeforces.com/problemset/problem/797/E 2000
+https://codeforces.com/problemset/problem/103/D 2100
 https://codeforces.com/problemset/problem/1207/F 2100
+https://codeforces.com/problemset/problem/1580/C 2200
 https://codeforces.com/problemset/problem/1806/E 2200
 https://codeforces.com/problemset/problem/1968/G2 2200 也可以直接记忆化
 https://codeforces.com/problemset/problem/425/D 2300
 https://codeforces.com/problemset/problem/677/D 2300
 https://codeforces.com/problemset/problem/1468/M 2300 或四元环
+https://codeforces.com/problemset/problem/1654/E 2300
 https://codeforces.com/problemset/problem/342/E 2400
 https://codeforces.com/problemset/problem/506/D 2400
 https://codeforces.com/problemset/problem/786/C 2400 见下面的 floorDivide
@@ -98,15 +103,16 @@ https://www.luogu.com.cn/problem/P3203 [HN10] 弹飞绵羊
 https://www.nowcoder.com/discuss/353159150542725120 K 题 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=50861318
 */
 func _(a []int) {
+	n := len(a)
+	blockSize := int(math.Sqrt(float64(n))) // 建议设为常量，避免超时 【提示】大一点可能更快一些
+	//blockSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
+
 	// 下标从 0 开始
 	type block struct {
 		l, r           int // [l,r]
 		origin, sorted []int
 		//lazyAdd int
 	}
-	n := len(a)
-	blockSize := int(math.Sqrt(float64(n))) // 建议设为常量，避免超时 【提示】大一点可能更快一些
-	//blockSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
 	blocks := make([]block, (n-1)/blockSize+1)
 	for i, v := range a {
 		j := i / blockSize
