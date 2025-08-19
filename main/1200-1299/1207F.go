@@ -16,7 +16,7 @@ func cf1207F(in io.Reader, _w io.Writer) {
 	var q, op, x uint32
 	var y int32
 	Fscan(in, &q)
-	B := uint32(math.Sqrt(mx / 2))
+	B := uint32(math.Sqrt(mx / 5))
 	sum := make([][]int32, B)
 	for i := range sum {
 		sum[i] = make([]int32, i)
