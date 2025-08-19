@@ -1,27 +1,35 @@
 ## 方法一：暴力枚举
 
-一共有如下六种情况。
+问题相当于把 $\textit{grid}$ 划分成三个区域，每个区域暴力找 [3195. 包含所有 1 的最小矩形面积 I](https://leetcode.cn/problems/find-the-minimum-area-to-cover-all-ones-i/)。
 
-![w403d.png](https://pic.leetcode.cn/1719114413-gJmraG-w403d.png)
+有如下六种划分方案。
 
-暴力枚举分割线的位置，划分成三个区域，每个区域对应周赛第二题，见 [题解](https://leetcode.cn/problems/find-the-minimum-area-to-cover-all-ones-i/solutions/2819335/bian-li-pythonjavacgo-by-endlesscheng-6po1/)。
+![w403d.png](https://pic.leetcode.cn/1719114413-gJmraG-w403d.png){:width=500px}
 
-代码实现时，只需实现上面三种，下面三种可以通过把 $\textit{grid}$ 顺时针旋转 90° 得到。
+暴力枚举分割线的位置，把矩形划分成三个区域，每个区域用 [3195. 包含所有 1 的最小矩形面积 I](https://leetcode.cn/problems/find-the-minimum-area-to-cover-all-ones-i/) 的方法暴力求解。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1MZ421M74P/) 第四题，欢迎点赞关注！
+只需实现图中上面三种方案，下面三种方案可以通过把 $\textit{grid}$ 顺时针旋转 $90^\circ$ 得到，从而复用同一段代码逻辑。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1MZ421M74P/) 第四题，欢迎点赞关注~
 
 ```py [sol-Python3]
+# 把矩阵 a 顺时针旋转 90°
+def rotate(a: List[List[int]]) -> List[List[int]]:
+    return list(zip(*reversed(a)))
+
 class Solution:
     def minimumSum(self, grid: List[List[int]]) -> int:
-        return min(self.f(grid), self.f(self.rotate(grid)))
+        return min(self.solve(grid), self.solve(rotate(grid)))
 
-    def f(self, a: List[List[int]]) -> int:
+    def solve(self, a: List[List[int]]) -> int:
+        # 3195. 包含所有 1 的最小矩形面积 I
+        # 限定在 a 的 [l,r) 列中
         def minimumArea(a: List[List[int]], l: int, r: int) -> int:
-            left, right = len(a[0]), 0
-            top, bottom = len(a), 0
+            left = top = inf
+            right = bottom = 0
             for i, row in enumerate(a):
                 for j, x in enumerate(row[l:r]):
-                    if x == 1:
+                    if x:
                         left = min(left, j)
                         right = max(right, j)
                         top = min(top, i)
@@ -30,6 +38,7 @@ class Solution:
 
         ans = inf
         m, n = len(a), len(a[0])
+
         if m >= 3:
             for i in range(1, m):
                 for j in range(i + 1, m):
@@ -38,6 +47,7 @@ class Solution:
                     area += minimumArea(a[i:j], 0, n)
                     area += minimumArea(a[j:], 0, n)
                     ans = min(ans, area)
+
         if m >= 2 and n >= 2:
             for i in range(1, m):
                 for j in range(1, n):
@@ -46,28 +56,26 @@ class Solution:
                     area += minimumArea(a[i:], 0, j)
                     area += minimumArea(a[i:], j, n)
                     ans = min(ans, area)
+
                     # 图片上右
                     area = minimumArea(a[:i], 0, j)
                     area += minimumArea(a[:i], j, n)
                     area += minimumArea(a[i:], 0, n)
                     ans = min(ans, area)
         return ans
-
-    # 顺时针旋转矩阵 90°
-    def rotate(self, a: List[List[int]]) -> List[List[int]]:
-        return list(zip(*reversed(a)))
 ```
 
 ```java [sol-Java]
 class Solution {
     public int minimumSum(int[][] grid) {
-        return Math.min(f(grid), f(rotate(grid)));
+        return Math.min(solve(grid), solve(rotate(grid)));
     }
 
-    private int f(int[][] a) {
-        int ans = Integer.MAX_VALUE;
+    private int solve(int[][] a) {
         int m = a.length;
         int n = a[0].length;
+        int ans = Integer.MAX_VALUE;
+
         if (m >= 3) {
             for (int i = 1; i < m; i++) {
                 for (int j = i + 1; j < m; j++) {
@@ -79,6 +87,7 @@ class Solution {
                 }
             }
         }
+
         if (m >= 2 && n >= 2) {
             for (int i = 1; i < m; i++) {
                 for (int j = 1; j < n; j++) {
@@ -87,6 +96,7 @@ class Solution {
                     area += minimumArea(a, i, m, 0, j);
                     area += minimumArea(a, i, m, j, n);
                     ans = Math.min(ans, area);
+
                     // 图片上右
                     area = minimumArea(a, 0, i, 0, j);
                     area += minimumArea(a, 0, i, j, n);
@@ -95,13 +105,16 @@ class Solution {
                 }
             }
         }
+
         return ans;
     }
 
+    // 3195. 包含所有 1 的最小矩形面积 I
+    // 限定在 a 的 [u,d) 行，[l,r) 列中
     private int minimumArea(int[][] a, int u, int d, int l, int r) {
-        int left = a[0].length;
+        int left = r;
         int right = 0;
-        int top = a.length;
+        int top = d;
         int bottom = 0;
         for (int i = u; i < d; i++) {
             for (int j = l; j < r; j++) {
@@ -116,7 +129,7 @@ class Solution {
         return (right - left + 1) * (bottom - top + 1);
     }
 
-    // 顺时针旋转矩阵 90°
+    // 把矩阵 a 顺时针旋转 90°
     private int[][] rotate(int[][] a) {
         int m = a.length;
         int n = a[0].length;
@@ -133,11 +146,10 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    // 顺时针旋转矩阵 90°
-    vector<vector<int>> rotate(vector<vector<int>>& a) {
-        int m = a.size();
-        int n = a[0].size();
-        vector<vector<int>> b(n, vector<int>(m));
+    // 把矩阵 a 顺时针旋转 90°
+    vector<vector<int>> rotate(const vector<vector<int>>& a) {
+        int m = a.size(), n = a[0].size();
+        vector b(n, vector<int>(m));
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 b[j][m - 1 - i] = a[i][j];
@@ -146,8 +158,11 @@ class Solution {
         return b;
     }
 
-    int minimumArea(vector<vector<int>>& a, int u, int d, int l, int r) {
-        int left = a[0].size(), right = 0, top = a.size(), bottom = 0;
+    // 3195. 包含所有 1 的最小矩形面积 I
+    // 限定在 a 的 [u,d) 行，[l,r) 列中
+    int minimumArea(const vector<vector<int>>& a, int u, int d, int l, int r) {
+        int left = r, right = 0;
+        int top = d, bottom = 0;
         for (int i = u; i < d; i++) {
             for (int j = l; j < r; j++) {
                 if (a[i][j] == 1) {
@@ -161,10 +176,10 @@ class Solution {
         return (right - left + 1) * (bottom - top + 1);
     }
 
-    int f(vector<vector<int>>& a) {
+    int solve(const vector<vector<int>>& a) {
+        int m = a.size(), n = a[0].size();
         int ans = INT_MAX;
-        int m = a.size();
-        int n = a[0].size();
+
         if (m >= 3) {
             for (int i = 1; i < m; i++) {
                 for (int j = i + 1; j < m; j++) {
@@ -176,6 +191,7 @@ class Solution {
                 }
             }
         }
+
         if (m >= 2 && n >= 2) {
             for (int i = 1; i < m; i++) {
                 for (int j = 1; j < n; j++) {
@@ -184,6 +200,7 @@ class Solution {
                     area += minimumArea(a, i, m, 0, j);
                     area += minimumArea(a, i, m, j, n);
                     ans = min(ans, area);
+
                     // 图片上右
                     area = minimumArea(a, 0, i, 0, j);
                     area += minimumArea(a, 0, i, j, n);
@@ -192,20 +209,22 @@ class Solution {
                 }
             }
         }
+
         return ans;
     }
 
 public:
     int minimumSum(vector<vector<int>>& grid) {
-        auto g = rotate(grid);
-        return min(f(grid), f(g));
+        return min(solve(grid), solve(rotate(grid)));
     }
 };
 ```
 
 ```go [sol-Go]
+// 3195. 包含所有 1 的最小矩形面积 I
+// 限定在 a 的 [l,r) 列中
 func minimumArea(a [][]int, l, r int) int {
-	left, right := len(a[0]), 0
+	left, right := r, 0
 	top, bottom := len(a), 0
 	for i, row := range a {
 		for j, x := range row[l:r] {
@@ -222,7 +241,8 @@ func minimumArea(a [][]int, l, r int) int {
 
 func minimumSum(grid [][]int) int {
 	ans := math.MaxInt
-	f := func(a [][]int) {
+
+	solve := func(a [][]int) {
 		m, n := len(a), len(a[0])
 		if m >= 3 {
 			for i := 1; i < m; i++ {
@@ -235,6 +255,7 @@ func minimumSum(grid [][]int) int {
 				}
 			}
 		}
+
 		if m >= 2 && n >= 2 {
 			for i := 1; i < m; i++ {
 				for j := 1; j < n; j++ {
@@ -243,6 +264,7 @@ func minimumSum(grid [][]int) int {
 					area += minimumArea(a[i:], 0, j)
 					area += minimumArea(a[i:], j, n)
 					ans = min(ans, area)
+
 					// 图片上右
 					area = minimumArea(a[:i], 0, j)
 					area += minimumArea(a[:i], j, n)
@@ -252,12 +274,13 @@ func minimumSum(grid [][]int) int {
 			}
 		}
 	}
-	f(grid)
-	f(rotate(grid))
+
+	solve(grid)
+	solve(rotate(grid))
 	return ans
 }
 
-// 顺时针旋转矩阵 90°
+// 把矩阵 a 顺时针旋转 90°
 func rotate(a [][]int) [][]int {
 	m, n := len(a), len(a[0])
 	b := make([][]int, n)
@@ -312,11 +335,14 @@ func rotate(a [][]int) [][]int {
 预处理每行最左最右 $1$ 的列号。在枚举两条分割线的同时，维护中间区域的最左最右 $1$ 的列号，以及最上最下的 $1$ 的行号。
 
 ```py [sol-Python3]
+def rotate(a: List[List[int]]) -> List[List[int]]:
+    return list(zip(*reversed(a)))
+
 class Solution:
     def minimumSum(self, grid: List[List[int]]) -> int:
-        return min(self.f(grid), self.f(rotate(grid)))
+        return min(self.solve(grid), self.solve(rotate(grid)))
 
-    def f(self, a: List[List[int]]) -> int:
+    def solve(self, a: List[List[int]]) -> int:
         m, n = len(a), len(a[0])
         lr = []  # 每一行最左最右 1 的列号
         for i in range(m):
@@ -387,19 +413,15 @@ class Solution:
                     # 图片上右
                     ans = min(ans, lt[i][j] + rt[i][j] + lb[i][n])
         return ans
-
-# 顺时针旋转矩阵 90°
-def rotate(a: List[List[int]]) -> List[List[int]]:
-    return list(zip(*reversed(a)))
 ```
 
 ```java [sol-Java]
 class Solution {
     public int minimumSum(int[][] grid) {
-        return Math.min(f(grid), f(rotate(grid)));
+        return Math.min(solve(grid), solve(rotate(grid)));
     }
 
-    private int f(int[][] a) {
+    private int solve(int[][] a) {
         int m = a.length;
         int n = a[0].length;
         int[][] lr = new int[m][2]; // 每一行最左最右 1 的列号
@@ -503,7 +525,6 @@ class Solution {
         return f;
     }
 
-    // 顺时针旋转矩阵 90°
     private int[][] rotate(int[][] a) {
         int m = a.length;
         int n = a[0].length;
@@ -520,10 +541,9 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    // 顺时针旋转矩阵 90°
-    vector<vector<int>> rotate(vector<vector<int>> a) {
+    vector<vector<int>> rotate(const vector<vector<int>> a) {
         int m = a.size(), n = a[0].size();
-        vector<vector<int>> b(n, vector<int>(m));
+        vector b(n, vector<int>(m));
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 b[j][m - 1 - i] = a[i][j];
@@ -532,10 +552,10 @@ class Solution {
         return b;
     }
 
-    vector<vector<int>> minimumArea(vector<vector<int>>& a) {
+    vector<vector<int>> minimumArea(const vector<vector<int>>& a) {
         int m = a.size(), n = a[0].size();
         // f[i+1][j+1] 表示包含【左上角为 (0,0) 右下角为 (i,j) 的子矩形】中的所有 1 的最小矩形面积
-        vector<vector<int>> f(m + 1, vector<int>(n + 1));
+        vector f(m + 1, vector<int>(n + 1));
         vector<tuple<int, int, int>> border(n + 1, {-1, -1, -1});
         for (int i = 0; i < m; i++) {
             int left = -1, right = 0;
@@ -562,7 +582,7 @@ class Solution {
         return f;
     }
 
-    int f(vector<vector<int>>& a) {
+    int solve(vector<vector<int>>& a) {
         int m = a.size(), n = a[0].size();
         vector<pair<int, int>> lr(m); // 每一行最左最右 1 的列号
         for (int i = 0; i < m; i++) {
@@ -622,8 +642,8 @@ class Solution {
 
 public:
     int minimumSum(vector<vector<int>>& grid) {
-        auto g = rotate(grid);
-        return min(f(grid), f(g));
+        auto a = rotate(grid);
+        return min(solve(grid), solve(a));
     }
 };
 ```
@@ -669,7 +689,8 @@ func minimumArea(a [][]int) [][]int {
 
 func minimumSum(grid [][]int) int {
 	ans := math.MaxInt
-	f := func(a [][]int) {
+
+	solve := func(a [][]int) {
 		m, n := len(a), len(a[0])
 		type pair struct{ l, r int }
 		lr := make([]pair, m) // 每一行最左最右 1 的列号
@@ -734,12 +755,12 @@ func minimumSum(grid [][]int) int {
 			}
 		}
 	}
-	f(grid)
-	f(rotate(grid))
+
+	solve(grid)
+	solve(rotate(grid))
 	return ans
 }
 
-// 顺时针旋转矩阵 90°
 func rotate(a [][]int) [][]int {
 	m, n := len(a), len(a[0])
 	b := make([][]int, n)
@@ -768,16 +789,18 @@ func rotate(a [][]int) [][]int {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
