@@ -4,7 +4,7 @@
 
 选出包含 $i$ 的询问，设这些询问的 $\textit{val}$ 组成了数组 $\textit{vals}$，问题变成：
 
-- 从 $\textit{vals}$ 的前缀中选一些数，元素和能否恰好等于 $\textit{nums}[i]$？
+- 从 $\textit{vals}$ 的**前缀**中选一些数，元素和能否恰好等于 $\textit{nums}[i]$？前缀的意思是，从左到右遍历 $\textit{vals}$，一旦某个时刻发现可以组成 $\textit{nums}[i]$，就退出循环。
 
 这是 0-1 背包。[416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/) 是本题的简单版本。原理见[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
