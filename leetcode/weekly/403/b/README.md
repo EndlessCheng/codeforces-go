@@ -50,10 +50,10 @@ class Solution {
 class Solution {
 public:
     int minimumArea(vector<vector<int>>& grid) {
-        int m = grid.size(), n = grid[0].size();
-        int left = m, right = 0, top = n, bottom = 0;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
+        int left = INT_MAX, right = 0;
+        int top = INT_MAX, bottom = 0;
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 0; j < grid[i].size(); j++) {
                 if (grid[i][j]) {
                     left = min(left, j);
                     right = max(right, j);
@@ -72,10 +72,10 @@ public:
 #define MAX(a, b) ((b) > (a) ? (b) : (a))
 
 int minimumArea(int** grid, int gridSize, int* gridColSize) {
-    int m = gridSize, n = gridColSize[0];
-    int left = m, right = 0, top = n, bottom = 0;
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++) {
+    int left = INT_MAX, right = 0;
+    int top = INT_MAX, bottom = 0;
+    for (int i = 0; i < gridSize; i++) {
+        for (int j = 0; j < gridColSize[i]; j++) {
             if (grid[i][j]) {
                 left = MIN(left, j);
                 right = MAX(right, j);
@@ -90,8 +90,8 @@ int minimumArea(int** grid, int gridSize, int* gridColSize) {
 
 ```go [sol-Go]
 func minimumArea(grid [][]int) int {
-	left, right := len(grid[0]), 0
-	top, bottom := len(grid), 0
+	left, right := math.MaxInt, 0
+	top, bottom := math.MaxInt, 0
 	for i, row := range grid {
 		for j, x := range row {
 			if x == 1 {
@@ -108,10 +108,10 @@ func minimumArea(grid [][]int) int {
 
 ```js [sol-JavaScript]
 var minimumArea = function(grid) {
-    const m = grid.length, n = grid[0].length;
-    let left = m, right = 0, top = n, bottom = 0;
-    for (let i = 0; i < m; i++) {
-        for (let j = 0; j < n; j++) {
+    let left = Infinity, right = 0;
+    let top = Infinity, bottom = 0;
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
             if (grid[i][j]) {
                 left = Math.min(left, j);
                 right = Math.max(right, j);
