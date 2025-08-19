@@ -183,12 +183,17 @@ func minCost(grid [][]int, k int) int {
 
 力扣喜欢出随机数据。测试发现，对于 $m=n=80$，值域在 $[0,10^4]$ 中随机的测试数据，平均迭代约 $2.2$ 次就收敛了，然后再循环一次发现收敛，即 $\textit{sufMinF}$ 在循环前后是相同的。所以平均外层循环约 $3.2$ 次就可以退出循环了，而不是循环 $k+1$ 次。
 
+此外，如果 $k>0$ 且可以直接跳到终点，即 $\textit{grid}[0][0]\ge \textit{grid}[m-1][n-1]$，那么直接返回 $0$。
+
 ```py [sol-Python3]
 # 手写 min 更快
 min = lambda a, b: b if b < a else a
 
 class Solution:
     def minCost(self, grid: List[List[int]], k: int) -> int:
+        if k and grid[0][0] >= grid[-1][-1]:
+            return 0
+
         n = len(grid[0])
         mx = max(map(max, grid))
 
@@ -218,7 +223,12 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int minCost(int[][] grid, int k) {
+        int m = grid.length;
         int n = grid[0].length;
+        if (k > 0 && grid[0][0] >= grid[m - 1][n - 1]) {
+            return 0;
+        }
+
         int mx = 0;
         for (int[] row : grid) {
             for (int x : row) {
@@ -245,12 +255,16 @@ class Solution {
                 }
             }
 
-            int[] tmp = sufMinF.clone();
+            boolean done = true;
             // 计算 minF 的后缀最小值
             for (int i = mx; i >= 0; i--) {
-                sufMinF[i] = Math.min(sufMinF[i + 1], minF[i]);
+                int mn = Math.min(sufMinF[i + 1], minF[i]);
+                if (mn < sufMinF[i]) {
+                    sufMinF[i] = mn;
+                    done = false;
+                }
             }
-            if (Arrays.equals(sufMinF, tmp)) {
+            if (done) {
                 // 收敛了：传送不改变 sufMinF，那么无论再传送多少次都不会改变 sufMinF
                 break;
             }
@@ -265,7 +279,11 @@ class Solution {
 class Solution {
 public:
     int minCost(vector<vector<int>>& grid, int k) {
-        int n = grid[0].size();
+        int m = grid.size(), n = grid[0].size();
+        if (k && grid[0][0] >= grid[m - 1][n - 1]) {
+            return 0;
+        }
+
         int mx = 0;
         for (auto& row : grid) {
             mx = max(mx, ranges::max(row));
@@ -307,7 +325,11 @@ public:
 
 ```go [sol-Go]
 func minCost(grid [][]int, k int) int {
-	n := len(grid[0])
+	m, n := len(grid), len(grid[0])
+	if k > 0 && grid[0][0] > grid[m-1][n-1] {
+		return 0
+	}
+
 	mx := 0
 	for _, row := range grid {
 		mx = max(mx, slices.Max(row))
@@ -337,12 +359,16 @@ func minCost(grid [][]int, k int) int {
 			}
 		}
 
-		tmp := slices.Clone(sufMinF)
+		done := true
 		// 计算 minF 的后缀最小值
 		for i := mx; i >= 0; i-- {
-			sufMinF[i] = min(sufMinF[i+1], minF[i])
+			mn := min(sufMinF[i+1], minF[i])
+			if mn < sufMinF[i] {
+				sufMinF[i] = mn
+				done = false
+			}
 		}
-		if slices.Equal(sufMinF, tmp) {
+		if done {
 			// 收敛了：传送不改变 sufMinF，那么无论再传送多少次都不会改变 sufMinF
 			break
 		}

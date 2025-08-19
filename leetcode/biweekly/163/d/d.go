@@ -43,12 +43,16 @@ func minCost(grid [][]int, k int) int {
 			}
 		}
 
-		tmp := slices.Clone(sufMinF)
+		done := true
 		// 计算 minF 的后缀最小值
 		for i := mx; i >= 0; i-- {
-			sufMinF[i] = min(sufMinF[i+1], minF[i])
+			mn := min(sufMinF[i+1], minF[i])
+			if mn < sufMinF[i] {
+				sufMinF[i] = mn
+				done = false
+			}
 		}
-		if slices.Equal(sufMinF, tmp) {
+		if done {
 			// 收敛了：传送不改变 sufMinF，那么无论再传送多少次都不会改变 sufMinF
 			break
 		}
