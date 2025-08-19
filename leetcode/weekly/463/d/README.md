@@ -24,7 +24,7 @@
 
 比如 $l=1$，$r=9$，更新的下标是 $1,4,7$。在左端点 $1$ 处乘以 $v$，右端点 $7+k=10$ 处除以 $v$（乘以 $v$ 的逆元）。这样我们计算 $1,4,7,10,\dots$ 的前缀积，就可以正确地得到最终数组每一项要乘的数了。
 
-这里的 $7$ 是怎么算的？我们要找 $\le r$ 的最大的 $3k+1$，或者说，要把 $r$ 减少多少。这个减少量等同于当 $l=0$，$r=8$ 时，$r$ 到 $\le r$ 的最近的 $k$ 的倍数的距离，即 $8\bmod k = 2$。
+这里的 $7$ 是怎么算的？我们要找 $\le r$ 的最大的 $3k+1$，或者说，要把 $r$ 减少多少。这个减少量等同于当 $l=0$，$r=8$ 时，$r$ 到 $\le r$ 的最近的 $k$ 的倍数的距离，即 $8\bmod k = 2$。一般地，更新的最大下标是 $r-(r-l)\bmod k$。再加上 $k$，得到要做商分标记的位置。
 
 一般地，在左端点 $l$ 处乘以 $v$，右端点 $r-(r-l)\bmod k+k$ 处除以 $v$（乘以 $v$ 的逆元）。
 
@@ -534,7 +534,6 @@ class Solution:
                 for i in range(l, r + 1, k):
                     nums[i] = nums[i] * v % MOD
 
-        diff = [0] * (n + 1)
         for k, g in enumerate(groups):
             if not g:
                 continue
@@ -554,7 +553,7 @@ class Solution:
                     continue
 
                 m = (n - start - 1) // k + 1
-                diff[:m] = [1] * m
+                diff = [1] * (m + 1)
                 for l, r, v in bucket:
                     diff[l // k] = diff[l // k] * v % MOD
                     r = (r - start) // k + 1
@@ -840,7 +839,6 @@ class Solution:
                 for i in range(l, r + 1, k):
                     nums[i] = nums[i] * v % MOD
 
-        diff = [0] * (n + 1)
         for k, g in enumerate(groups):
             if not g:
                 continue
@@ -860,7 +858,7 @@ class Solution:
                     continue
 
                 m = (n - start - 1) // k + 1
-                diff[:m] = [1] * m
+                diff = [1] * (m + 1)
                 for l, r, v in bucket:
                     diff[l // k] = diff[l // k] * v % MOD
                     r = (r - start) // k + 1
