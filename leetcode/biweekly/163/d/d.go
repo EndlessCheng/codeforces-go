@@ -9,7 +9,11 @@ import (
 
 // https://space.bilibili.com/206214
 func minCost(grid [][]int, k int) int {
-	n := len(grid[0])
+	m, n := len(grid), len(grid[0])
+	if k > 0 && grid[0][0] > grid[m-1][n-1] {
+		return 0
+	}
+
 	mx := 0
 	for _, row := range grid {
 		mx = max(mx, slices.Max(row))
@@ -45,7 +49,7 @@ func minCost(grid [][]int, k int) int {
 			sufMinF[i] = min(sufMinF[i+1], minF[i])
 		}
 		if slices.Equal(sufMinF, tmp) {
-			// 收敛了：传送一次不改变 sufMinF，那么无论传送多少次都不会改变 sufMinF
+			// 收敛了：传送不改变 sufMinF，那么无论再传送多少次都不会改变 sufMinF
 			break
 		}
 	}
