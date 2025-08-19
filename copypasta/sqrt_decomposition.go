@@ -31,10 +31,10 @@ https://www.luogu.com.cn/problem/T279521?contestId=65460
 - https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
 LCP16 https://leetcode.cn/problems/you-le-yuan-de-you-lan-ji-hua/
 LC3655 https://leetcode.cn/problems/xor-after-range-multiplication-queries-ii/
+https://codeforces.com/problemset/problem/1207/F 实际难度 1700
 https://codeforces.com/problemset/problem/1921/F 1900
 https://codeforces.com/problemset/problem/797/E 2000
 https://codeforces.com/problemset/problem/103/D 2100
-https://codeforces.com/problemset/problem/1207/F 2100
 https://codeforces.com/problemset/problem/1580/C 2200
 https://codeforces.com/problemset/problem/1806/E 2200
 https://codeforces.com/problemset/problem/1968/G2 2200 也可以直接记忆化
@@ -94,7 +94,6 @@ https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 https://cp-algorithms.com/sequences/rmq.html
 https://www.luogu.com.cn/problem/P3396
-https://codeforces.com/problemset/problem/1207/F 2100
 https://codeforces.com/problemset/problem/551/E 2500 经典题   Go1.22 推荐块大小为 sqrt(n/5)，比 sqrt(n) 快一倍
 https://codeforces.com/problemset/problem/13/E 2700
 https://codeforces.com/problemset/problem/455/D 2700
