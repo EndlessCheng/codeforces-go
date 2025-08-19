@@ -21,7 +21,7 @@ class Solution:
         MOD = 1_000_000_007
         f = [1] + [0] * target
         for count, marks in types:
-            for j in range(target, 0, -1):
+            for j in range(target, marks - 1, -1):
                 for k in range(1, min(count, j // marks) + 1):
                     f[j] += f[j - k * marks]
                 f[j] %= MOD
@@ -37,7 +37,7 @@ class Solution {
         for (int[] p : types) {
             int count = p[0];
             int marks = p[1];
-            for (int j = target; j > 0; j--) {
+            for (int j = target; j >= marks; j--) {
                 for (int k = 1; k <= Math.min(count, j / marks); k++) {
                     f[j] = (f[j] + f[j - k * marks]) % MOD;
                 }
@@ -52,12 +52,12 @@ class Solution {
 class Solution {
 public:
     int waysToReachTarget(int target, vector<vector<int>>& types) {
-        const int MOD = 1e9 + 7;
+        const int MOD = 1'000'000'007;
         vector<int> f(target + 1);
         f[0] = 1;
         for (auto& p : types) {
             int count = p[0], marks = p[1];
-            for (int j = target; j > 0; j--) {
+            for (int j = target; j >= marks; j--) {
                 for (int k = 1; k <= min(count, j / marks); k++) {
                     f[j] = (f[j] + f[j - k * marks]) % MOD;
                 }
@@ -75,7 +75,7 @@ func waysToReachTarget(target int, types [][]int) int {
 	f[0] = 1
 	for _, p := range types {
 		count, marks := p[0], p[1]
-		for j := target; j > 0; j-- {
+		for j := target; j >= marks; j-- {
 			for k := 1; k <= min(count, j/marks); k++ {
 				f[j] += f[j-k*marks]
 			}
@@ -100,8 +100,8 @@ func waysToReachTarget(target int, types [][]int) int {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
