@@ -1,6 +1,6 @@
 package main
 
-func countSquares1(matrix [][]int) (ans int) {
+func countSquares0(matrix [][]int) (ans int) {
 	sum := make([][]int, len(matrix)+1)
 	sum[0] = make([]int, len(matrix[0])+1)
 	for i, mi := range matrix {
@@ -20,6 +20,27 @@ func countSquares1(matrix [][]int) (ans int) {
 		}
 	}
 	return ans
+}
+
+func countSquares1(matrix [][]int) (ans int) {
+	m, n := len(matrix), len(matrix[0])
+	for top := range m { // 枚举上边界
+		a := make([]int, n)
+		for bottom := top; bottom < m; bottom++ { // 枚举下边界
+			h := bottom - top + 1 // 高
+			// 2348. 全 h 子数组的数目
+			last := -1
+			for j := range n {
+				a[j] += matrix[bottom][j] // 把 bottom 这一行的值加到 a 中
+				if a[j] != h {
+					last = j // 记录上一个非 h 元素的位置
+				} else if j-last >= h { // 右端点为 j 的长为 h 的子数组全是 h
+					ans++
+				}
+			}
+		}
+	}
+	return
 }
 
 func countSquares(matrix [][]int) (ans int) {
