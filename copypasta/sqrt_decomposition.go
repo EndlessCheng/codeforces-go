@@ -47,6 +47,7 @@ https://codeforces.com/problemset/problem/506/D 2400
 https://codeforces.com/problemset/problem/786/C 2400 见下面的 floorDivide
 https://codeforces.com/problemset/problem/1619/H 2400 大步+小步，有点分段打表的味道
 https://codeforces.com/problemset/problem/348/C 2500
+https://codeforces.com/problemset/problem/911/G 2500 攒够 B 个询问才执行一次处理
 https://codeforces.com/problemset/problem/1270/F 2600
 https://codeforces.com/problemset/problem/1039/D 2800
 https://codeforces.com/problemset/problem/1039/E 3400
