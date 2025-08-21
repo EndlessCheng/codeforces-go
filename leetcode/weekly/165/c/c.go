@@ -43,7 +43,7 @@ func countSquares1(matrix [][]int) (ans int) {
 	return
 }
 
-func countSquares(matrix [][]int) (ans int) {
+func countSquares2(matrix [][]int) (ans int) {
 	for i, row := range matrix {
 		for j, x := range row {
 			if x > 0 && i > 0 && j > 0 {
@@ -51,6 +51,44 @@ func countSquares(matrix [][]int) (ans int) {
 			}
 			ans += row[j]
 		}
+	}
+	return
+}
+
+func countSquare(heights []int) (ans int) {
+	st := []int{-1} // 在栈中只有一个数的时候，栈顶的「下面那个数」是 -1，对应 left[i] = -1 的情况
+	for r, hr := range heights {
+		for len(st) > 1 && heights[st[len(st)-1]] >= hr {
+			h := heights[st[len(st)-1]] // 矩形的高
+			st = st[:len(st)-1]
+			l := st[len(st)-1] // 栈顶下面那个数就是 l
+			w := r - l - 1
+			upper := min(h, w)
+			lower := hr + 1
+			if l >= 0 {
+				lower = max(heights[l], hr) + 1
+			}
+			if lower <= upper {
+				ans += (w*2 + 2 - lower - upper) * (upper - lower + 1) / 2
+			}
+		}
+		st = append(st, r)
+	}
+	return
+}
+
+func countSquares(matrix [][]int) (ans int) {
+	heights := make([]int, len(matrix[0])+1) // 末尾多一个 0，理由见我 84 题题解
+	for _, row := range matrix {
+		// 计算底边为 row 的柱子高度
+		for j, x := range row {
+			if x == 0 {
+				heights[j] = 0 // 柱子高度为 0
+			} else {
+				heights[j]++ // 柱子高度加一
+			}
+		}
+		ans += countSquare(heights)
 	}
 	return
 }
