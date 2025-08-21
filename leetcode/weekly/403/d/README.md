@@ -301,23 +301,35 @@ func rotate(a [][]int) [][]int {
 - 时间复杂度：$\mathcal{O}((mn)^2)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(mn)$。
 
-## 方法二：用 DP 预处理
+## 方法二：动态规划
 
-定义 $f[i+1][j+1]$ 表示包含「左上角为 $(0,0)$ 右下角为 $(i,j)$ 的子矩形」中的所有 $1$ 的最小矩形面积。
+方法一过于暴力了，大量的时间都花在遍历矩阵元素上，同一个元素会被反复遍历 $\mathcal{O}(mn)$ 次。
 
-定义 $\textit{border}[i+1][j+1]$ 包含三个数，分别表示上述最小矩形的上边界、左边界和右边界。
+有重复计算的地方，就有优化。
 
-从上到下，从左到右遍历 $\textit{grid}$。设当前遍历到 $\textit{grid}[i]$ 这一排，其中最左边的 $1$ 和最右边的 $1$ 的列号分别为 $\textit{left}$ 和 $\textit{right}$，分类讨论：
+回想一下你之前写过的一些二维 DP，比如网格图 DP、[二维前缀和](https://leetcode.cn/problems/range-sum-query-2d-immutable/solution/tu-jie-yi-zhang-tu-miao-dong-er-wei-qian-84qp/) 等。这类 DP 的特点是，可以从 $\textit{grid}$ 的一个角（比如左上角）开始，递推得到**包含这个角的所有子矩形的信息**。
 
-- 如果 $\textit{grid}[i]$ 这一行全为 $0$，那么「左上角为 $(0,0)$ 右下角为 $(i,j)$ 的子矩形」中的所有 $1$ 的最小矩形面积，等于「左上角为 $(0,0)$ 右下角为 $(i-1,j)$ 的子矩形」中的所有 $1$ 的最小矩形面积，即 $f[i+1][j+1] = f[i][j+1],\ \textit{border}[i+1][j+1]=\textit{border}[i][j+1]$。
-- 如果 $\textit{grid}[i]$ 这一行包含 $1$，且上面的全为 $0$，那么 $f[i+1][j+1] = \textit{right}-\textit{left}+1,\ \textit{border}[i+1][j+1]=(i,\textit{left},\textit{right})$。
-- 如果 $\textit{grid}[i]$ 这一行包含 $1$，且上面也包含 $1$，那么最小矩形：
-  - 上边界是 $\textit{border}[i][j+1]$ 的上边界 $t$。
-  - 左边界是 $\textit{border}[i][j+1]$ 的左边界与 $\textit{left}$ 的最小值 $l$。
-  - 右边界是 $\textit{border}[i][j+1]$ 的右边界与 $\textit{right}$ 的最大值 $r$。
+在六种划分方案中，右边四种每个区域都包含 $\textit{grid}$ 的一个角。尝试 DP。
+
+![w403d.png](https://pic.leetcode.cn/1719114413-gJmraG-w403d.png){:width=500px}
+
+定义 $f[i+1][j+1]$ 表示考虑「左上角为 $(0,0)$ 右下角为 $(i,j)$ 的子矩形」，包含这个子矩形中的所有 $1$ 的最小矩形面积。（我们算的是这个子矩形中的子矩形）
+
+定义 $\textit{border}[i+1][j+1]$ 包含三个数，分别表示上述最小矩形的上边界、左边界和右边界。（下边界无需记录）
+
+从上到下，从左到右遍历 $\textit{grid}$。设当前遍历到 $\textit{grid}[i]$ 这一行。在 $\textit{grid}[i][0]$ 到 $\textit{grid}[i][j]$ 中，设最左边的 $1$ 的列号为 $\textit{left}$（不存在则为 $-1$），最右边的 $1$ 的列号为 $\textit{right}$。注意 $\textit{left}$ 和 $\textit{right}$ 会随着我们遍历 $\textit{grid}[i]$ 这一行而发生变化。
+
+分类讨论：
+
+- 如果 $\textit{grid}[i]$ 这一行包含 $1$，且 $0$ 到 $i-1$ 行全为 $0$，那么 $f[i+1][j+1] = \textit{right}-\textit{left}+1,\ \textit{border}[i+1][j+1]=(i,\textit{left},\textit{right})$。
+- 如果 $\textit{grid}[i]$ 这一行全为 $0$，那么包含「左上角为 $(0,0)$ 右下角为 $(i,j)$ 的子矩形」中的所有 $1$ 的最小矩形面积，等于包含「左上角为 $(0,0)$ 右下角为 $(i-1,j)$ 的子矩形」中的所有 $1$ 的最小矩形面积，即 $f[i+1][j+1] = f[i][j+1]$。同理有 $\textit{border}[i+1][j+1]=\textit{border}[i][j+1]$。
+- 如果 $\textit{grid}[i]$ 这一行包含 $1$，且 $0$ 到 $i-1$ 行中也有 $1$，那么最小矩形：
+  - 上边界是包含「左上角为 $(0,0)$ 右下角为 $(i-1,j)$ 的子矩形」中的所有 $1$ 的最小矩形的上边界，即 $\textit{border}[i][j+1]$ 的上边界，记作 $t$。
+  - 左边界是 $\textit{border}[i][j+1]$ 的左边界与 $\textit{left}$ 的最小值，记作 $l$。
+  - 右边界是 $\textit{border}[i][j+1]$ 的右边界与 $\textit{right}$ 的最大值，记作 $r$。
   - 下边界是 $i$。
-  - $f[i+1][j+1] = (r - l + 1) \cdot (i - t + 1)$。
-  - $\textit{border}[i+1][j+1]=(t,l,r)$。
+  - 面积 $f[i+1][j+1] = (r - l + 1) \cdot (i - t + 1)$。
+  - 边界 $\textit{border}[i+1][j+1]=(t,l,r)$。
 
 代码实现时，$\textit{border}$ 可以用一个长为 $n$ 的数组滚动计算。
 
@@ -328,11 +340,14 @@ func rotate(a [][]int) [][]int {
 - 包含「右下角为 $(m-1,n-1)$ 左上角为 $(i,j)$ 的子矩形」中的所有 $1$ 的最小矩形面积。
 - 包含「右上角为 $(0,n-1)$ 左下角为 $(i,j)$ 的子矩形」中的所有 $1$ 的最小矩形面积。
 
-这样就可以快速计算出方法一图中的上中和上右两种情况。
+这样就能快速计算六种划分方案中的右边四种。
 
-对于方法一图中的上左情况，如何计算中间区域的最小矩形面积？
+对于左边两种，中间区域的最小矩形面积怎么算？
 
-预处理每行最左最右 $1$ 的列号。在枚举两条分割线的同时，维护中间区域的最左最右 $1$ 的列号，以及最上最下的 $1$ 的行号。
+优化一下暴力的过程即可：
+
+- 首先预处理每行最左最右的 $1$ 的列号。
+- 然后在枚举两条分割线的同时，维护中间区域的最左最右 $1$ 的列号（最左取最小值，最右取最大值），以及最上最下的 $1$ 的行号。
 
 ```py [sol-Python3]
 def rotate(a: List[List[int]]) -> List[List[int]]:
@@ -344,15 +359,6 @@ class Solution:
 
     def solve(self, a: List[List[int]]) -> int:
         m, n = len(a), len(a[0])
-        lr = []  # 每一行最左最右 1 的列号
-        for i in range(m):
-            l, r = -1, 0
-            for j in range(n):
-                if a[i][j] > 0:
-                    if l < 0:
-                        l = j
-                    r = j
-            lr.append((l, r))
 
         def minimumArea(a: List[List[int]]) -> List[List[int]]:
             m, n = len(a), len(a[0])
@@ -378,6 +384,17 @@ class Solution:
                         f[i + 1][j + 1] = (r - l + 1) * (i - pre_top + 1)
                         border[j] = (pre_top, l, r)
             return f
+
+        # 预处理每一行最左最右 1 的列号，用于中间区域最小矩形面积的计算
+        lr = [None] * m
+        for i in range(m):
+            l, r = -1, 0
+            for j in range(n):
+                if a[i][j] > 0:
+                    if l < 0:
+                        l = j
+                    r = j
+            lr[i] = (l, r)
 
         # lt[i+1][j+1] = 包含【左上角为 (0,0) 右下角为 (i,j) 的子矩形】中的所有 1 的最小矩形面积
         lt = minimumArea(a)
@@ -424,7 +441,9 @@ class Solution {
     private int solve(int[][] a) {
         int m = a.length;
         int n = a[0].length;
-        int[][] lr = new int[m][2]; // 每一行最左最右 1 的列号
+        
+        // 预处理每一行最左最右 1 的列号，用于中间区域最小矩形面积的计算
+        int[][] lr = new int[m][2];
         for (int i = 0; i < m; i++) {
             int l = -1;
             int r = 0;
@@ -584,7 +603,9 @@ class Solution {
 
     int solve(vector<vector<int>>& a) {
         int m = a.size(), n = a[0].size();
-        vector<pair<int, int>> lr(m); // 每一行最左最右 1 的列号
+        
+        // 预处理每一行最左最右 1 的列号，用于中间区域最小矩形面积的计算
+        vector<pair<int, int>> lr(m);
         for (int i = 0; i < m; i++) {
             int l = -1, r = 0;
             for (int j = 0; j < n; j++) {
@@ -692,8 +713,10 @@ func minimumSum(grid [][]int) int {
 
 	solve := func(a [][]int) {
 		m, n := len(a), len(a[0])
+
+		// 预处理每一行最左最右 1 的列号，用于中间区域最小矩形面积的计算
 		type pair struct{ l, r int }
-		lr := make([]pair, m) // 每一行最左最右 1 的列号
+		lr := make([]pair, m)
 		for i, row := range a {
 			l, r := -1, 0
 			for j, x := range row {
