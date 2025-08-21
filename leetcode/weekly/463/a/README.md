@@ -120,6 +120,8 @@ func maxProfit(prices []int, strategy []int, k int) int64 {
 2. 下标为 $i-k/2$ 的元素从右半移到左半，交易策略从 $1$ 变成 $0$，所以增量减少了 $\textit{prices}[i-k/2]$。
 3. $\textit{prices}[i-k]\cdot (-\textit{strategy}[i-k])$ 离开窗口。
 
+## 写法一
+
 ```py [sol-Python3]
 # 手写 max 更快
 max = lambda a, b: b if b > a else a
@@ -227,10 +229,105 @@ func maxProfit(prices, strategy []int, k int) int64 {
 }
 ```
 
+## 写法二
+
+```py [sol-Python3]
+class Solution:
+    def maxProfit(self, prices: List[int], strategy: List[int], k: int) -> int:
+        total = max_s = s = 0
+        for i, (p, st) in enumerate(zip(prices, strategy)):
+            total += p * st
+            # 1. 入
+            s += p * (1 - st)
+            if i < k - 1:  # 窗口长度不足 k
+                if i >= k // 2 - 1:
+                    s -= prices[i - k // 2 + 1]
+                continue
+            # 2. 更新
+            max_s = max(max_s, s)
+            # 3. 出
+            s -= prices[i - k // 2 + 1] - prices[i - k + 1] * strategy[i - k + 1]
+        return total + max_s
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxProfit(int[] prices, int[] strategy, int k) {
+        long total = 0, maxSum = 0, sum = 0;
+        for (int i = 0; i < prices.length; i++) {
+            int p = prices[i], s = strategy[i];
+            total += p * s;
+            // 1. 入
+            sum += p * (1 - s);
+            if (i < k - 1) { // 窗口长度不足 k
+                if (i >= k / 2 - 1) {
+                    sum -= prices[i - k / 2 + 1];
+                }
+                continue;
+            }
+            // 2. 更新
+            maxSum = Math.max(maxSum, sum);
+            // 3. 出
+            sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
+        }
+        return total + maxSum;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxProfit(vector<int>& prices, vector<int>& strategy, int k) {
+        long long total = 0, max_sum = 0, sum = 0;
+        for (int i = 0; i < prices.size(); i++) {
+            int p = prices[i], s = strategy[i];
+            total += p * s;
+            // 1. 入
+            sum += p * (1 - s);
+            if (i < k - 1) { // 窗口长度不足 k
+                if (i >= k / 2 - 1) {
+                    sum -= prices[i - k / 2 + 1];
+                }
+                continue;
+            }
+            // 2. 更新
+            max_sum = max(max_sum, sum);
+            // 3. 出
+            sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
+        }
+        return total + max_sum;
+    }
+};
+```
+
+```go [sol-Go]
+func maxProfit(prices, strategy []int, k int) int64 {
+	var total, maxSum, sum int
+	for i, p := range prices {
+		s := strategy[i]
+		total += p * s
+		// 1. 入
+		sum += p * (1 - s)
+		if i < k-1 { // 窗口长度不足 k
+			if i >= k/2-1 {
+				sum -= prices[i-k/2+1]
+			}
+			continue
+		}
+		// 2. 更新
+		maxSum = max(maxSum, sum)
+		// 3. 出
+		sum -= prices[i-k/2+1] - prices[i-k+1]*strategy[i-k+1]
+	}
+	return int64(total + maxSum)
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{prices}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。Python 的切片改成循环可以做到 $\mathcal{O}(1)$ 空间。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
 

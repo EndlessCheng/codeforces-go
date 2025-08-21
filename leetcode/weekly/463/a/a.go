@@ -18,7 +18,7 @@ func maxProfit1(prices []int, strategy []int, k int) int64 {
 	return int64(ans)
 }
 
-func maxProfit(prices, strategy []int, k int) int64 {
+func maxProfit2(prices, strategy []int, k int) int64 {
 	total, sum := 0, 0
 	// 计算第一个窗口
 	for i := range k / 2 {
@@ -38,6 +38,27 @@ func maxProfit(prices, strategy []int, k int) int64 {
 		total += p * s
 		sum += p*(1-s) - prices[i-k/2] + prices[i-k]*strategy[i-k]
 		maxSum = max(maxSum, sum)
+	}
+	return int64(total + maxSum)
+}
+
+func maxProfit(prices, strategy []int, k int) int64 {
+	var total, maxSum, sum int
+	for i, p := range prices {
+		s := strategy[i]
+		total += p * s
+		// 1. 入
+		sum += p * (1 - s)
+		if i < k-1 { // 窗口长度不足 k
+			if i >= k/2-1 {
+				sum -= prices[i-k/2+1]
+			}
+			continue
+		}
+		// 2. 更新
+		maxSum = max(maxSum, sum)
+		// 3. 出
+		sum -= prices[i-k/2+1] - prices[i-k+1]*strategy[i-k+1]
 	}
 	return int64(total + maxSum)
 }
