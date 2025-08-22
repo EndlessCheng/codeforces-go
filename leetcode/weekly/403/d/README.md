@@ -1,12 +1,12 @@
 ## 方法一：暴力枚举
 
-问题相当于把 $\textit{grid}$ 划分成三个区域，每个区域暴力找 [3195. 包含所有 1 的最小矩形面积 I](https://leetcode.cn/problems/find-the-minimum-area-to-cover-all-ones-i/)。
+问题相当于把 $\textit{grid}$ 划分成三个区域，每个区域计算 [3195. 包含所有 1 的最小矩形面积 I](https://leetcode.cn/problems/find-the-minimum-area-to-cover-all-ones-i/)。
 
 有如下六种划分方案。
 
 ![w403d.png](https://pic.leetcode.cn/1719114413-gJmraG-w403d.png){:width=500px}
 
-暴力枚举分割线的位置，把矩形划分成三个区域，每个区域用 [3195. 包含所有 1 的最小矩形面积 I](https://leetcode.cn/problems/find-the-minimum-area-to-cover-all-ones-i/) 的方法暴力求解。
+暴力枚举分割线的位置，把矩形划分成三个区域，每个区域用 3195 题的暴力方法求解。
 
 只需实现图中上面三种方案，下面三种方案可以通过把 $\textit{grid}$ 顺时针旋转 $90^\circ$ 得到，从而复用同一段代码逻辑。
 
