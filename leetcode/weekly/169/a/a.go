@@ -1,17 +1,11 @@
 package main
 
-func sumZero(n int) (ans []int) {
-    if n &1 ==0 {
-    	m:= n/2
-    	for i :=1;i<=m;i++ {
-    		ans = append(ans, i,-i)
-		}
-	} else {
-		ans = append(ans, 0)
-		m:=n/2
-		for i :=1;i<=m;i++ {
-			ans = append(ans, i,-i)
-		}
+func sumZero(n int) []int {
+	a := make([]int, n)
+	m := n / 2
+	for i := range m {
+		a[i] = i + 1
+		a[i+m] = -i - 1
 	}
-	return
+	return a
 }
