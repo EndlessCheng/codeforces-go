@@ -35,6 +35,7 @@ func cf946G(in io.Reader, out io.Writer) {
 		}
 
 		if j < len(f1) {
+			// 对于 f1[j] 来说，可以删除 a[i]，从 f0[j] 转移过来（如果 f0[j] 更小的话）
 			f1[j] = min(f1[j], f0[j])
 		}
 	}
