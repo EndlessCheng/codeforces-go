@@ -34,14 +34,8 @@ func cf1989C(in io.Reader, out io.Writer) {
 		}
 		if s0+inc <= s1-dec {
 			Fprintln(out, s0+inc)
-			continue
-		}
-		newS1 := max(s0, s1-dec)
-		dec -= s1 - newS1
-		if inc > dec {
-			Fprintln(out, newS1+(inc-dec-newS1+s0)/2)
 		} else {
-			Fprintln(out, s0-(dec-inc+1)/2)
+			Fprintln(out, (s0+s1+inc-dec)>>1)
 		}
 	}
 }
