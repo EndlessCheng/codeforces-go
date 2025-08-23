@@ -390,7 +390,7 @@ class Solution:
         for i in range(m):
             l, r = -1, 0
             for j in range(n):
-                if a[i][j] > 0:
+                if a[i][j]:
                     if l < 0:
                         l = j
                     r = j
@@ -411,7 +411,7 @@ class Solution:
         ans = inf
         if m >= 3:
             for i in range(1, m):
-                left, right, top, bottom = n, 0, m, 0
+                left, right, top, bottom = n, -1, m, -1
                 for j in range(i + 1, m):
                     l, r = lr[j - 1]
                     if l >= 0:
@@ -475,9 +475,9 @@ class Solution {
         if (m >= 3) {
             for (int i = 1; i < m; i++) {
                 int left = n;
-                int right = 0;
+                int right = -1;
                 int top = m;
-                int bottom = 0;
+                int bottom = -1;
                 for (int j = i + 1; j < m; j++) {
                     int l = lr[j - 1][0];
                     if (l >= 0) {
@@ -603,13 +603,13 @@ class Solution {
 
     int solve(vector<vector<int>>& a) {
         int m = a.size(), n = a[0].size();
-        
+
         // 预处理每一行最左最右 1 的列号，用于中间区域最小矩形面积的计算
         vector<pair<int, int>> lr(m);
         for (int i = 0; i < m; i++) {
             int l = -1, r = 0;
             for (int j = 0; j < n; j++) {
-                if (a[i][j] > 0) {
+                if (a[i][j]) {
                     if (l < 0) {
                         l = j;
                     }
@@ -634,7 +634,7 @@ class Solution {
         int ans = INT_MAX;
         if (m >= 3) {
             for (int i = 1; i < m; i++) {
-                int left = n, right = 0, top = m, bottom = 0;
+                int left = n, right = -1, top = m, bottom = -1;
                 for (int j = i + 1; j < m; j++) {
                     if (auto& [l, r] = lr[j - 1]; l >= 0) {
                         left = min(left, l);
@@ -744,7 +744,7 @@ func minimumSum(grid [][]int) int {
 
 		if m >= 3 {
 			for i := 1; i < m; i++ {
-				left, right, top, bottom := n, 0, m, 0
+				left, right, top, bottom := n, -1, m, -1
 				for j := i + 1; j < m; j++ {
 					if p := lr[j-1]; p.l >= 0 {
 						left = min(left, p.l)
