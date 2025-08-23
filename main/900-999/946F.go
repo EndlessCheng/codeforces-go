@@ -35,7 +35,7 @@ func cf946F(in io.Reader, out io.Writer) {
 	var n, x int
 	var s string
 	Fscan(in, &n, &x, &s)
-	f := make([]mat46, x+1)
+	f := make([]mat46, x+2)
 	for i := range f {
 		f[i] = newMat46(n + 1)
 	}

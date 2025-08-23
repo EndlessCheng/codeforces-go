@@ -20,6 +20,11 @@ func Test_cf946F(t *testing.T) {
 1010101010`,
 			`553403224`,
 		},
+		{
+			`1 0
+0`,
+			`1`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf946F)
 }
