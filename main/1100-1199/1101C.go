@@ -25,8 +25,7 @@ o:
 
 		maxR := a[0].r
 		for i := 1; i < n; i++ {
-			p := a[i]	
-			if p.l > maxR {
+			if a[i].l > maxR {
 				ans := make([]int, n)
 				for j := range ans {
 					ans[j] = 1
@@ -40,7 +39,7 @@ o:
 				Fprintln(out)
 				continue o
 			}
-			maxR = max(maxR, p.r)
+			maxR = max(maxR, a[i].r)
 		}
 		Fprintln(out, -1)
 	}
