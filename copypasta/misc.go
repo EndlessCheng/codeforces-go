@@ -1221,6 +1221,7 @@ func minJumpNumbers(a []int) (ans int) {
 // 合并 a 中所有重叠的闭区间（哪怕只有一个端点重叠，也算重叠）
 // 注意 [1,1] 和 [2,2] 不能合并成 [1,2]
 // 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
+// LC56 https://leetcode.cn/problems/merge-intervals/
 // https://codeforces.com/problemset/problem/1101/C 1500
 // https://codeforces.com/problemset/problem/1626/C 1700
 // - 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
