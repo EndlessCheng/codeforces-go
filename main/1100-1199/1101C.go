@@ -23,24 +23,23 @@ o:
 		}
 		slices.SortFunc(a, func(a, b tuple) int { return a.l - b.l })
 
-		maxR, cnt, preI := a[0].r, 1, a[0].i
-		for _, p := range a[1:] {
+		maxR := a[0].r
+		for i := 1; i < n; i++ {
+			p := a[i]	
 			if p.l > maxR {
-				if cnt == 1 {
-					for i := range n {
-						if i == preI {
-							Fprint(out, "1 ")
-						} else {
-							Fprint(out, "2 ")
-						}
-					}
-					Fprintln(out)
-					continue o
+				ans := make([]int, n)
+				for j := range ans {
+					ans[j] = 1
 				}
-				cnt = 0
+				for _, p := range a[:i] {
+					ans[p.i] = 2
+				}
+				for _, v := range ans {
+					Fprint(out, v, " ")
+				}
+				Fprintln(out)
+				continue o
 			}
-			preI = p.i
-			cnt++
 			maxR = max(maxR, p.r)
 		}
 		Fprintln(out, -1)
