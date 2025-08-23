@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	. "fmt"
 	"io"
 	"slices"
@@ -26,10 +27,7 @@ o:
 		maxR := a[0].r
 		for i := 1; i < n; i++ {
 			if a[i].l > maxR {
-				ans := make([]int, n)
-				for j := range ans {
-					ans[j] = 1
-				}
+				ans := bytes.Repeat([]byte{1}, n)
 				for _, p := range a[:i] {
 					ans[p.i] = 2
 				}
