@@ -48,6 +48,7 @@ https://codeforces.com/problemset/problem/1843/E 1600
 https://codeforces.com/problemset/problem/1118/D2 1700
 https://codeforces.com/problemset/problem/2110/D 1700 也有 O(n+m) 做法
 https://codeforces.com/problemset/problem/645/D 1800 也有 O(n) 做法
+https://codeforces.com/problemset/problem/1073/C 1800
 https://codeforces.com/problemset/problem/2037/F 2100
 
 ### 二分答案：求最大
