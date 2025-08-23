@@ -18,17 +18,18 @@ func newMat46(n int) mat46 {
 
 func mul46(a, b mat46) mat46 {
 	const mod = 1_000_000_007
-	ret := newMat46(len(a))
+	c := newMat46(len(a))
 	for i, row := range a {
-		for j := range i + 1 {
-			s := 0
-			for k := j; k <= i; k++ {
-				s = (s + row[k]*b[k][j]) % mod
+		for k, x := range row {
+			if x == 0 {
+				continue
 			}
-			ret[i][j] = s
+			for j, y := range b[k] {
+				c[i][j] = (c[i][j] + x*y) % mod
+			}
 		}
 	}
-	return ret
+	return c
 }
 
 func cf946F(in io.Reader, out io.Writer) {
