@@ -1,4 +1,4 @@
-对于每条对角线，行号 $i$ 减列号 $j$ 是一个定值。（回想一下 [51. N 皇后](https://leetcode.cn/problems/n-queens/) 的写法）
+对于每条对角线，行号 $i$ 减列号 $j$ 是一个定值。比如主对角线上 $i-j$ 恒为 $0$。（也可以回想一下 [51. N 皇后](https://leetcode.cn/problems/n-queens/) 的写法）
 
 设 $k=i-j+n$，那么右上角那条对角线的 $k=1$，左下角那条对角线的 $k=m+n-1$。（本题 $m=n$）
 
