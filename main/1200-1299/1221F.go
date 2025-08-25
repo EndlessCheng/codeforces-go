@@ -1,21 +1,22 @@
 package main
 
 import (
-	"bufio"
-	"cmp"
 	. "fmt"
 	"io"
 	"math/bits"
-	"os"
 	"slices"
 	"sort"
 )
 
 // https://github.com/EndlessCheng
 type pair struct{ mx, i int }
-type seg []struct {
-	pair
-	l, r, todo int
+type seg []struct{ pair; l, r, todo int }
+
+func (t seg) merge(a, b pair) pair {
+	if a.mx > b.mx {
+		return a
+	}
+	return b
 }
 
 func (t seg) apply(o, f int) {
@@ -23,15 +24,8 @@ func (t seg) apply(o, f int) {
 	t[o].todo += f
 }
 
-func merge(a, b pair) pair {
-	if a.mx > b.mx {
-		return a
-	}
-	return b
-}
-
 func (t seg) maintain(o int) {
-	t[o].pair = merge(t[o<<1].pair, t[o<<1|1].pair)
+	t[o].pair = t.merge(t[o<<1].pair, t[o<<1|1].pair)
 }
 
 func (t seg) spread(o int) {
@@ -85,7 +79,7 @@ func (t seg) query(o, l, r int) pair {
 	if l > m {
 		return t.query(o<<1|1, l, r)
 	}
-	return merge(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
+	return t.merge(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
 }
 
 func cf1221F(in io.Reader, out io.Writer) {
@@ -97,7 +91,7 @@ func cf1221F(in io.Reader, out io.Writer) {
 	// a <= min(x,y) <= max(x,y) <= b
 	// a <= x'
 	// y' <= b
-	// 按照 b 分组  sum - b + a = sum+a  - b 
+	// 按照 b 分组  sum - b + a = (a + sum) - b 
 	// 当我们添加 x' 时，把 [0,x'] 中的数都增加 c  搞定！
 	// 最后求一下 [0,b] 中的最大值
 
@@ -111,23 +105,27 @@ func cf1221F(in io.Reader, out io.Writer) {
 		}
 		b = append(b, a[i].x, a[i].y)
 	}
-	slices.SortFunc(a, func(a, b point) int { return cmp.Or(a.y-b.y, a.c-b.c) })
 	slices.Sort(b)
 	b = slices.Compact(b)
 	m := len(b)
 
-	x1, x2 := int(2e9), int(2e9)
 	t := make(seg, 2<<bits.Len(uint(m-1)))
 	t.build(b, 1, 0, m-1)
-	for _, p := range a {
-		t.update(1, 0, sort.SearchInts(b, p.x), p.c)
-		res := t.query(1, 0, sort.SearchInts(b, p.y))
-		if res.mx-p.y > ans {
-			ans, x1, x2 = res.mx-p.y, b[res.i], p.y
+
+	slices.SortFunc(a, func(a, b point) int { return a.y - b.y })
+	x1, x2 := int(2e9), int(2e9)
+	for i := 0; i < n; {
+		y := a[i].y
+		for ; i < n && a[i].y == y; i++ {
+			t.update(1, 0, sort.SearchInts(b, a[i].x), a[i].c)
+		}
+		res := t.query(1, 0, sort.SearchInts(b, y))
+		if res.mx-y > ans {
+			ans, x1, x2 = res.mx-y, b[res.i], y
 		}
 	}
 	Fprintln(out, ans)
 	Fprint(out, x1, x1, x2, x2)
 }
 
-func main() { cf1221F(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf1221F(bufio.NewReader(os.Stdin), os.Stdout) }
