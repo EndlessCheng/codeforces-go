@@ -1,10 +1,10 @@
-想象有一个人在网格图上移动，按照题目要求，移动经过的值必须为 $1,2,0,2,0,\cdots$。
+想象有一个人在网格图上移动，按照题目要求，移动经过的值必须为 $1,2,0,2,0,\dots$
 
-由于移动路径不会形成环（否则路径会有多个 $1$，或者说拐弯了不止一次），我们可以写一个递归，来模拟人在网格图上的移动。
+由于至多转弯一次，所以移动路径不会形成环，可以写一个记忆化搜索，模拟人在网格图上的移动。
 
 定义 $\textit{dfs}(i,j,k,\textit{canTurn},\textit{target})$ 表示在如下约束下的最长移动步数。
 
-- **上一步**在 $(i,j)$。
+- **上一步**的位置在 $(i,j)$。（定义成上一步，方便编程实现）
 - 移动方向为 $\textit{DIRS}[k]$，其中 $\textit{DIRS}$ 是一个长为 $4$ 的方向数组。
 - 是否可以右转，用布尔值 $\textit{canTurn}$ 表示。
 - 当前位置的目标值必须等于 $\textit{target}$。
@@ -12,7 +12,7 @@
 **递归边界**：
 
 - 出界，返回 $0$。
-- 如果 $\textit{grid}[i'][j']\ne \textit{target}$，返回 $0$。其中 $(i',j')$ 是从 $(i,j)$ 向 $\textit{DIRS}[k]$ 方向移动一步后的位置。
+- 设 $(i',j')$ 是从 $(i,j)$ 向 $\textit{DIRS}[k]$ 方向移动一步后的位置。如果 $\textit{grid}[i'][j']\ne \textit{target}$，返回 $0$。
 
 **递归入口**：
 
@@ -180,7 +180,7 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 }
 ```
 
-## 剪枝优化
+## 最优性剪枝
 
 #### 优化一
 
@@ -396,7 +396,7 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 - [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
 - [2328. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)
 
-更多相似题目，见下面动态规划题单中的「**二、网格图 DP**」。
+更多相似题目，见下面动态规划题单的「**二、网格图 DP**」。
 
 ## 分类题单
 
@@ -407,8 +407,8 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
@@ -416,3 +416,5 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
