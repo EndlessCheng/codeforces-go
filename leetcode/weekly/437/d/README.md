@@ -9,10 +9,17 @@
 - 是否可以右转，用布尔值 $\textit{canTurn}$ 表示。
 - 当前位置的目标值必须等于 $\textit{target}$。
 
+**转移**：
+
+- 设 $(i',j')$ 是从 $(i,j)$ 向 $\textit{DIRS}[k]$ 方向移动一步后的位置。
+- 直行：递归到 $\textit{dfs}(i',j',k,\textit{canTurn}, 2-\textit{target})$。这里用 $2-\textit{target}$ 来实现 $2$ 和 $0$ 的切换。也可以写成 $\textit{target}\oplus 2$。 
+- 右转：如果 $\textit{canTurn} = \texttt{true}$，那么递归到 $\textit{dfs}(i',j',(k+1)\bmod 4, \texttt{false}, 2-\textit{target})$。其中 $(k+1)\bmod 4$ 表示环形数组 $\textit{DIRS}$ 的下一个元素的下标。如果 $k<3$，那么 $k$ 更新为 $k+1$；否则 $k$ 更新为 $0$。
+- 返回二者的最大值加一。其中加一表示走了一步。
+
 **递归边界**：
 
 - 出界，返回 $0$。
-- 设 $(i',j')$ 是从 $(i,j)$ 向 $\textit{DIRS}[k]$ 方向移动一步后的位置。如果 $\textit{grid}[i'][j']\ne \textit{target}$，返回 $0$。
+- 如果 $\textit{grid}[i'][j']\ne \textit{target}$，返回 $0$。
 
 **递归入口**：
 
