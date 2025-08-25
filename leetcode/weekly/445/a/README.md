@@ -10,7 +10,7 @@
 
 [视频讲解](https://www.bilibili.com/video/BV1e3dBYLEDz/)
 
-```py [sol-Python3]
+```py [sol-Py3]
 class Solution:
     def findClosest(self, x: int, y: int, z: int) -> int:
         a = abs(x - z)
@@ -18,6 +18,14 @@ class Solution:
         if a == b:
             return 0
         return 1 if a < b else 2
+```
+
+```py [sol-Py3 写法二]
+class Solution:
+    def findClosest(self, x: int, y: int, z: int) -> int:
+        a = abs(x - z)
+        b = abs(y - z)
+        return (0, 2, 1)[(a > b) - (a < b)]
 ```
 
 ```java [sol-Java]
@@ -41,6 +49,14 @@ public:
 };
 ```
 
+```c [sol-C]
+int findClosest(int x, int y, int z) {
+    int a = abs(x - z);
+    int b = abs(y - z);
+    return a == b ? 0 : a < b ? 1 : 2;
+}
+```
+
 ```go [sol-Go]
 func findClosest(x, y, z int) int {
 	a := abs(x - z)
@@ -57,6 +73,36 @@ func findClosest(x, y, z int) int {
 func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
+```go [sol-Go 写法二]
+var state = [3]int{1, 0, 2}
+
+func findClosest(x, y, z int) int {
+	a := abs(x - z)
+	b := abs(y - z)
+	return state[cmp.Compare(a, b)+1]
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+```js [sol-JS]
+var findClosest = function(x, y, z) {
+    const a = Math.abs(x - z);
+    const b = Math.abs(y - z);
+    return a === b ? 0 : a < b ? 1 : 2;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn find_closest(x: i32, y: i32, z: i32) -> i32 {
+        let a = (x - z).abs();
+        let b = (y - z).abs();
+        if a == b { 0 } else if a < b { 1 } else { 2 }
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(1)$。
@@ -71,8 +117,8 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
@@ -80,3 +126,5 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
