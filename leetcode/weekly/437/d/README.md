@@ -70,7 +70,7 @@ class Solution {
     public int lenOfVDiagonal(int[][] grid) {
         int m = grid.length;
         int n = grid[0].length;
-        // 开太多维度影响效率，这里把 k 和 canTurn 压缩成一个 int
+        // 数组维度太多影响效率，这里把 k 和 canTurn 压缩成一个 int
         int[][][] memo = new int[m][n][1 << 3];
         int ans = 0;
         for (int i = 0; i < m; i++) {
@@ -85,6 +85,7 @@ class Solution {
         return ans;
     }
 
+    // 上一步在 (i,j)，移动方向为 DIRS[k]，是否可以右转，当前位置目标值
     private int dfs(int i, int j, int k, int canTurn, int target, int[][] grid, int[][][] memo) {
         i += DIRS[k][0];
         j += DIRS[k][1];
@@ -113,6 +114,7 @@ public:
         int m = grid.size(), n = grid[0].size();
         vector memo(m, vector<array<array<int, 2>, 4>>(n));
 
+        // 上一步在 (i,j)，移动方向为 DIRS[k]，是否可以右转，当前位置目标值
         auto dfs = [&](this auto&& dfs, int i, int j, int k, bool can_turn, int target) -> int {
             i += DIRS[k][0];
             j += DIRS[k][1];
@@ -155,6 +157,7 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 		memo[i] = make([][4][2]int, n)
 	}
 
+	// 上一步在 (i,j)，移动方向为 DIRS[k]，是否可以右转，当前位置目标值
 	var dfs func(int, int, int, int, int) int
 	dfs = func(i, j, k, canTurn, target int) (res int) {
 		i += DIRS[k][0]
