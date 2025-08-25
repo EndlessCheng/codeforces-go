@@ -833,7 +833,7 @@ func maxWalls(robots []int, distance []int, walls []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + m\log m + n\log m)$，其中 $n$ 是 $\textit{robots}$ 的长度，$m$ 是 $\textit{walls}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 六、双指针优化
 
@@ -1050,7 +1050,7 @@ func maxWalls(robots []int, distance []int, walls []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + m\log m)$，其中 $n$ 是 $\textit{robots}$ 的长度，$m$ 是 $\textit{walls}$ 的长度。瓶颈在排序上。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练
 
