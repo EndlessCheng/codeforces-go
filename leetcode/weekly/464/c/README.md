@@ -8,7 +8,7 @@
 继续，设 $[0,i]$ 中的最大值为 $\textit{preMax}[i]$，$[i+1,n-1]$ 中的最小值为 $\textit{sufMin}[i+1]$。
 
 - 如果 $\textit{preMax}[i] > \textit{sufMin}[i+1]$，我们可以先从 $i$ 跳到 $\textit{preMax}[i]$ 的位置，再跳到 $\textit{sufMin}[i+1]$ 的位置，最后跳到 $i+1$。所以 $i+1$ 能跳到的数，$i$ 也能跳到（反之亦然），所以 $\textit{ans}[i] = \textit{ans}[i+1]$。
-- 否则 $\textit{preMax}[i] \le \textit{sufMin}[i+1]$。比如 $\textit{nums}=[3,1,2,30,10,20]$，无法从 $3,1,2$ 跳到 $30,10,20$。一般地，对于 $[0,i]$ 中的任意下标 $p$ 和 $[i+1,n-1]$ 中的任意下标 $q$，我们有 $\textit{nums}[p]\le \textit{preMax}[i]\le \textit{sufMin}[i+1]\le \textit{nums}[q]$，所以 $[0,i]$ 中的任何下标都无法跳到 $[i+1,n-1]$ 中。问题变成 $[0,i]$ 的子问题。根据前文 $i=n-1$ 的讨论，$\textit{ans}[i] = \textit{preMax}[i]$。
+- 否则 $\textit{preMax}[i] \le \textit{sufMin}[i+1]$。比如 $\textit{nums}=[3,1,2,30,10,20]$，无法从 $3,1,2$ 跳到 $30,10,20$。一般地，对于 $[0,i]$ 中的任意下标 $p$ 和 $[i+1,n-1]$ 中的任意下标 $q$，我们有 $\textit{nums}[p]\le \textit{preMax}[i]\le \textit{sufMin}[i+1]\le \textit{nums}[q]$，所以 $[0,i]$ 中的任何下标都无法跳到 $[i+1,n-1]$ 中。问题变成 $[0,i]$ 的子问题。类似前文 $i=n-1$ 的讨论，同理有 $\textit{ans}[i] = \textit{preMax}[i]$。
 
 一般地，我们有如下状态转移方程
 
@@ -25,6 +25,20 @@ $$
 代码实现时，可以在计算 $\textit{ans}$ 的同时计算 $\textit{sufMin}$，所以 $\textit{sufMin}$ 可以简化成一个变量。
 
 ```py [sol-Python3]
+class Solution:
+    def maxValue(self, nums: List[int]) -> List[int]:
+        n = len(nums)
+        pre_max = list(accumulate(nums, max))  # nums 的前缀最大值
+
+        ans = [0] * n
+        suf_min = inf
+        for i in range(n - 1, -1, -1):
+            ans[i] = pre_max[i] if pre_max[i] <= suf_min else ans[i + 1]
+            suf_min = min(suf_min, nums[i])
+        return ans
+```
+
+```py [sol-Python3 普通写法]
 class Solution:
     def maxValue(self, nums: List[int]) -> List[int]:
         n = len(nums)
@@ -113,10 +127,7 @@ func maxValue(nums []int) []int {
 class Solution:
     def maxValue(self, nums: List[int]) -> List[int]:
         n = len(nums)
-        pre_max = [0] * n
-        pre_max[0] = nums[0]
-        for i in range(1, n):
-            pre_max[i] = max(pre_max[i - 1], nums[i])
+        pre_max = list(accumulate(nums, max))  # nums 的前缀最大值
 
         suf_min = inf
         for i in range(n - 1, -1, -1):
