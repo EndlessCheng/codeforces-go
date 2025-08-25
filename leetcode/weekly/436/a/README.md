@@ -98,11 +98,11 @@ public:
 #define MIN(a, b) ((b) < (a) ? (b) : (a))
 #define MAX(a, b) ((b) > (a) ? (b) : (a))
 
-int cmp(const void* a, const void* b) {
+int cmp_less(const void* a, const void* b) {
     return (*(int*)a - *(int*)b);
 }
 
-int cmp_reverse(const void* a, const void* b) {
+int cmp_greater(const void* a, const void* b) {
     return (*(int*)b - *(int*)a);
 }
 
@@ -119,7 +119,7 @@ int** sortMatrix(int** grid, int gridSize, int* gridColSize, int* returnSize, in
             a[idx++] = grid[k + j - n][j]; // 根据 k 的定义 i=k+j-n
         }
 
-        qsort(a, max_j - min_j + 1, sizeof(int), min_j > 0 ? cmp : cmp_reverse);
+        qsort(a, max_j - min_j + 1, sizeof(int), min_j > 0 ? cmp_less : cmp_greater);
 
         idx = 0;
         for (int j = min_j; j <= max_j; j++) {
