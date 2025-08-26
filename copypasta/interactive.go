@@ -45,10 +45,12 @@ https://codeforces.com/problemset/problem/727/C 1400
 https://codeforces.com/problemset/problem/2013/C 1400
 https://codeforces.com/problemset/problem/1407/C 1600
 https://codeforces.com/problemset/problem/2037/E 1600
+https://codeforces.com/problemset/problem/1934/C 1700 网格图
 https://codeforces.com/problemset/problem/896/B 2000
 https://codeforces.com/problemset/problem/1521/C 2000
 https://codeforces.com/problemset/problem/1634/D 2000
 https://codeforces.com/problemset/problem/1023/E 2100 网格图
+https://codeforces.com/problemset/problem/1205/C 2400 网格图
 https://codeforces.com/problemset/problem/1617/D2 2400
 LC1538 找出隐藏数组中出现次数最多的元素 https://leetcode.cn/problems/guess-the-majority-in-a-hidden-array/
 https://www.luogu.com.cn/problem/P12399 最大子段和
