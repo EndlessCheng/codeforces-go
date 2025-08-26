@@ -124,6 +124,10 @@ func maxValue(nums []int) []int {
 也可以直接把答案保存在 $\textit{preMax}$ 中。
 
 ```py [sol-Python3]
+# 手写 min max 更快
+min = lambda a, b: b if b < a else a
+max = lambda a, b: b if b > a else a
+
 class Solution:
     def maxValue(self, nums: List[int]) -> List[int]:
         n = len(nums)
