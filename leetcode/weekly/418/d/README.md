@@ -180,11 +180,12 @@ func gcdValues(nums []int, queries []int64) []int {
 
 ## 变形题
 
-计算有多少个**子序列**的 GCD 恰好等于 $1$。
+1. 计算有多少个子序列的 GCD 恰好等于 $i$。见 [CF803F](https://codeforces.com/problemset/problem/803/F)。
+2. 计算树上有多少条简单路径的点权 GCD 恰好等于 $i$。见 [CF990G](https://codeforces.com/problemset/problem/990/G)。
 
-这题是 [CF803F](https://codeforces.com/problemset/problem/803/F)。
+> 注：子数组 GCD 可以用 LogTrick 做，见位运算题单。
 
-更多相似题目，见下面数学题单中 GCD 相关的小节。
+更多相似题目，见下面数学题单的「**§1.6 最大公约数（GCD）**」。
 
 ## 分类题单
 
