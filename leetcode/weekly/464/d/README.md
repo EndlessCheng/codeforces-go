@@ -471,7 +471,7 @@ func maxWalls(robots []int, distance []int, walls []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + m\log m + n\log m)$，其中 $n$ 是 $\textit{robots}$ 的长度，$m$ 是 $\textit{walls}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n)$，单个状态的计算时间为 $\mathcal{O}(\log m)$，所以动态规划的时间复杂度为 $\mathcal{O}(n\log m)$。前面排序需要 $\mathcal{O}(n\log n + m\log m)$ 的时间。
-- 空间复杂度：$\mathcal{O}(n)$。保存多少状态，就需要多少空间。
+- 空间复杂度：$\mathcal{O}(n)$。保存多少状态，就需要多少空间。忽略排序的栈开销。
 
 ## 四、1:1 翻译成递推
 
@@ -655,7 +655,7 @@ func maxWalls(robots []int, distance []int, walls []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + m\log m + n\log m)$，其中 $n$ 是 $\textit{robots}$ 的长度，$m$ 是 $\textit{walls}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。忽略排序的栈开销。
 
 ## 五、空间优化
 
@@ -833,7 +833,7 @@ func maxWalls(robots []int, distance []int, walls []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + m\log m + n\log m)$，其中 $n$ 是 $\textit{robots}$ 的长度，$m$ 是 $\textit{walls}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。忽略排序的栈开销。
 
 ## 六、双指针优化
 
@@ -1050,7 +1050,7 @@ func maxWalls(robots []int, distance []int, walls []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + m\log m)$，其中 $n$ 是 $\textit{robots}$ 的长度，$m$ 是 $\textit{walls}$ 的长度。瓶颈在排序上。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。忽略排序的栈开销。
 
 ## 专题训练
 
