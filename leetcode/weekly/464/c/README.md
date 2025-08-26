@@ -1,14 +1,24 @@
-倒着思考。对于 $i=n-1$ 来说，它可以跳到 $\textit{nums}$ 的最大值：
+想一想，是 $\textit{ans}[0]$ 更好算，还是 $\textit{ans}[n-1]$ 更好算？
+
+对于 $i=n-1$ 来说，它一定能跳到 $\textit{nums}$ 的最大值：
 
 - 如果最大值等于 $\textit{nums}[n-1]$，那么命题成立。
-- 否则最大值比 $\textit{nums}[n-1]$ 大，且下标小于 $n-1$。根据规则，可以从 $n-1$ 跳到。
+- 否则最大值比 $\textit{nums}[n-1]$ 大，且下标小于 $n-1$。根据规则，能从 $n-1$ 跳到。
 
 所以 $\textit{ans}[n-1] = \max(\textit{nums})$。
 
-继续，设 $[0,i]$ 中的最大值为 $\textit{preMax}[i]$，$[i+1,n-1]$ 中的最小值为 $\textit{sufMin}[i+1]$。
+而对于 $\textit{ans}[0]$，就变得非常复杂了。比如 $\textit{nums}=[6,8,5,9,7]$，从 $6$ 跳到 $9$ 的顺序为 $6\to 5\to 8\to 7\to 9$。
 
-- 如果 $\textit{preMax}[i] > \textit{sufMin}[i+1]$，我们可以先从 $i$ 跳到 $\textit{preMax}[i]$ 的位置，再跳到 $\textit{sufMin}[i+1]$ 的位置，最后跳到 $i+1$。所以 $i+1$ 能跳到的数，$i$ 也能跳到（反之亦然），所以 $\textit{ans}[i] = \textit{ans}[i+1]$。
-- 否则 $\textit{preMax}[i] \le \textit{sufMin}[i+1]$。比如 $\textit{nums}=[3,1,2,30,10,20]$，无法从 $3,1,2$ 跳到 $30,10,20$。一般地，对于 $[0,i]$ 中的任意下标 $p$ 和 $[i+1,n-1]$ 中的任意下标 $q$，我们有 $\textit{nums}[p]\le \textit{preMax}[i]\le \textit{sufMin}[i+1]\le \textit{nums}[q]$，所以 $[0,i]$ 中的任何下标都无法跳到 $[i+1,n-1]$ 中。问题变成 $[0,i]$ 的子问题。类似前文 $i=n-1$ 的讨论，同理有 $\textit{ans}[i] = \textit{preMax}[i]$。
+所以**倒着思考更简单**。
+
+那么，每个数都能跳到最大值吗？什么情况下无法跳到最大值？
+
+比如 $\textit{nums}=[3,1,2,30,10,20]$，无法从 $3,1,2$ 跳到 $30,10,20$。在 $2$ 和 $30$ 之间有一条「分界线」，如果分界线左边的最大值比分界线右边的最小值还小（或者相等），那么无法从分界线左边跳到分界线右边，所以分界线左边的数无法跳到 $\textit{nums}$ 的最大值。
+
+一般地，设 $[0,i]$ 中的最大值为 $\textit{preMax}[i]$，$[i+1,n-1]$ 中的最小值为 $\textit{sufMin}[i+1]$。
+
+- 如果 $\textit{preMax}[i] \le \textit{sufMin}[i+1]$，对于 $[0,i]$ 中的任意下标 $p$ 和 $[i+1,n-1]$ 中的任意下标 $q$，我们有 $\textit{nums}[p]\le \textit{preMax}[i]\le \textit{sufMin}[i+1]\le \textit{nums}[q]$，所以 $[0,i]$ 中的任何下标都无法跳到 $[i+1,n-1]$ 中。问题变成 $[0,i]$ 的子问题。类似前文 $i=n-1$ 的讨论，我们有 $\textit{ans}[i] = \textit{preMax}[i]$。
+- 否则 $\textit{preMax}[i] > \textit{sufMin}[i+1]$，我们可以先从 $i$ 跳到 $\textit{preMax}[i]$ 的位置，再跳到 $\textit{sufMin}[i+1]$ 的位置，最后跳到 $i+1$。所以 $i+1$ 能跳到的数，$i$ 也能跳到（反之亦然），所以 $\textit{ans}[i] = \textit{ans}[i+1]$。
 
 一般地，我们有如下状态转移方程
 
