@@ -2,28 +2,29 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 type pair struct{ x, y int }
+var dirs = []pair{{0, -1}, {0, 1}, {-1, 0}, {1, 0}} // 左右上下
 
-var dir4 = []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
-
-func nearestExit(g [][]byte, entrance []int) int {
-	n, m := len(g), len(g[0])
-	s := pair{entrance[0], entrance[1]}
-	g[s.x][s.y] = 0
-	q := []pair{s}
+func nearestExit(maze [][]byte, entrance []int) int {
+	m, n := len(maze), len(maze[0])
+	sx, sy := entrance[0], entrance[1] // 起点
+	maze[sx][sy] = 0 // 访问标记
+	q := []pair{{sx, sy}}
 	for ans := 1; len(q) > 0; ans++ {
 		tmp := q
 		q = nil
 		for _, p := range tmp {
-			for _, d := range dir4 {
-				if x, y := p.x+d.x, p.y+d.y; 0 <= x && x < n && 0 <= y && y < m && g[x][y] == '.' {
-					if x == 0 || y == 0 || x == n-1 || y == m-1 {
+			// 注意起点不算终点，不能在这里判断 p 是不是终点
+			for _, d := range dirs { // 访问相邻的格子
+				x, y := p.x+d.x, p.y+d.y
+				if 0 <= x && x < m && 0 <= y && y < n && maze[x][y] == '.' { // 之前没有访问过
+					if x == 0 || y == 0 || x == m-1 || y == n-1 { // 到达终点
 						return ans
 					}
-					g[x][y] = 0
+					maze[x][y] = 0 // 访问标记
 					q = append(q, pair{x, y})
 				}
 			}
 		}
 	}
-	return -1
+	return -1 // 无法到达终点
 }
