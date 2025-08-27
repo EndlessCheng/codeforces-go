@@ -12,7 +12,7 @@ import (
 )
 
 /*
-如何科学刷题？ https://leetcode.cn/circle/discuss/RvFUtj/
+如何科学刷题 https://leetcode.cn/circle/discuss/RvFUtj/
 1. 滑动窗口与双指针（定长/不定长/单序列/双序列/三指针） https://leetcode.cn/circle/discuss/0viNMK/
 2. 二分算法（二分答案/最小化最大值/最大化最小值/第K小） https://leetcode.cn/circle/discuss/SqopEo/
 3. 单调栈（基础/矩形面积/贡献法/最小字典序） https://leetcode.cn/circle/discuss/9oZFK9/
@@ -49,19 +49,20 @@ https://codeforces.com/problemset/problem/1270/B 1200 式子变形 或者 脑筋
 https://codeforces.com/problemset/problem/1420/B 1200
 https://codeforces.com/problemset/problem/318/B 1300 子串
 https://codeforces.com/problemset/problem/1926/D 1300
-https://atcoder.jp/contests/abc353/tasks/abc353_d 844=CF1349
 https://codeforces.com/problemset/problem/1974/C 1400
-https://atcoder.jp/contests/abc342/tasks/abc342_d 944=CF1425
 https://codeforces.com/problemset/problem/159/D 1500 回文子串
 https://codeforces.com/problemset/problem/873/B 1500
 https://codeforces.com/problemset/problem/1879/D 1700 子数组长度
 https://codeforces.com/problemset/problem/2065/G 1700 质因子 分类讨论
+https://codeforces.com/problemset/problem/846/F 1800
 https://codeforces.com/problemset/problem/1800/F 1900 异或
 https://codeforces.com/problemset/problem/1592/E 2400
+https://atcoder.jp/contests/abc353/tasks/abc353_d 844=CF1349
+https://atcoder.jp/contests/abc342/tasks/abc342_d 944=CF1425
 
 枚举右，维护左：需要维护两种值（pair）
 https://codeforces.com/problemset/problem/1931/D 1300
-https://leetcode.cn/problems/count-beautiful-substrings-ii/ 2445
+https://leetcode.cn/problems/count-beautiful-substrings-ii/
 
 枚举中间
 https://codeforces.com/problemset/problem/1957/D 1900 前后缀分解 从高到低思考
@@ -69,11 +70,6 @@ https://atcoder.jp/contests/abc102/tasks/arc100_b 1801=CF2073
 
 任意下标 i 和 j
 https://codeforces.com/problemset/problem/1895/C 1400
-
-哈希表
-- [2260. 必须拿起的最小连续卡牌数](https://leetcode.cn/problems/minimum-consecutive-cards-to-pick-up/) 1365
-- [982. 按位与为零的三元组](https://leetcode.cn/problems/triples-with-bitwise-and-equal-to-zero/) 2085
-- [面试题 16.21. 交换和](https://leetcode.cn/problems/sum-swap-lcci/)
 
 前缀和
 https://codeforces.com/problemset/problem/466/C
@@ -139,6 +135,7 @@ https://codeforces.com/problemset/problem/1837/F 2400
 https://codeforces.com/problemset/problem/2005/D 2400 GCD logTrick
 https://codeforces.com/problemset/problem/314/D 2500
 https://codeforces.com/problemset/problem/835/F 2500
+https://codeforces.com/problemset/problem/946/G 2500
 https://codeforces.com/problemset/problem/1701/E 2500 DP / 也可以用状态机 DP，那样无需前后缀分解
 https://codeforces.com/problemset/problem/622/F 2600
 昆明 2024：至多修改一个子数组 [L,R] ：把元素都加上 k，最大化整个数组的 GCD
@@ -218,26 +215,21 @@ https://codeforces.com/contest/489/problem/B 1200
 https://atcoder.jp/contests/abc312/tasks/abc312_f
 另见 strings.go 中的 isSubseq
 
-a[i] + b[j] <= target
-- 相向双指针
-- LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
-- LC1498 https://leetcode.cn/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/
-- https://codeforces.com/problemset/problem/1538/C 1300
-- https://atcoder.jp/contests/abc366/tasks/abc366_e
-- https://leetcode.cn/problems/3sum-smaller/
-a[i] + b[j] >= target
-- 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
-- https://atcoder.jp/contests/abc353/tasks/abc353_c
-a[i] - b[j] <= target
-- 同向双指针
-- 另一种思路：把 b 数组取反再 reverse，就变成 a[i] + (-b[j]) <= target 了
-- 一个数组 https://www.luogu.com.cn/problem/P1102
-a[i] - b[j] >= target
-- 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
+相向双指针 a[i] + b[j] = < > target 
+https://codeforces.com/problemset/problem/1538/C 1300
+https://codeforces.com/problemset/problem/2112/C 1300
+https://atcoder.jp/contests/abc366/tasks/abc366_e
+https://atcoder.jp/contests/abc353/tasks/abc353_c
+
+同向双指针 a[i] - b[j] = < > target
+另一种思路：把 b 数组取反再 reverse，就变成 a[i] + (-b[j]) <= target 了
+一个数组 https://www.luogu.com.cn/problem/P1102
+
 子数组元素和 = < > target
-- 用前缀和，转换成上面 a[i] - b[j] 的形式（= 可以转换成 <=t 减去 <=t-1）
+用前缀和，转换成上面 a[i] - b[j] 的形式（= 可以转换成 <=t 减去 <=t-1）
+
 子序列元素和 = < > target
-- 0-1 背包恰好/至多/至少，见 https://www.bilibili.com/video/BV16Y411v7Y6/ 末尾的总结
+0-1 背包恰好/至多/至少，见 https://www.bilibili.com/video/BV16Y411v7Y6/ 末尾的总结
 
 分组循环
 https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/
@@ -299,6 +291,7 @@ https://codeforces.com/problemset/problem/2126/D 1200 区间贪心
 https://codeforces.com/problemset/problem/545/D 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1498/B 1300 从大到小贪心
+https://codeforces.com/problemset/problem/1555/B 1300
 https://codeforces.com/problemset/problem/1585/C 1300
 https://codeforces.com/problemset/problem/1902/C 1300
 https://codeforces.com/problemset/problem/388/A 1400
@@ -318,6 +311,7 @@ https://codeforces.com/problemset/problem/1691/C 1400
 https://codeforces.com/problemset/problem/1735/C 1400 字典序最小
 https://codeforces.com/problemset/problem/1895/C 1400
 https://codeforces.com/problemset/problem/1896/C 1400
+https://codeforces.com/problemset/problem/1989/C 1400
 https://codeforces.com/problemset/problem/864/D 1500
 https://codeforces.com/problemset/problem/985/C 1500
 https://codeforces.com/problemset/problem/1659/C 1500
@@ -387,6 +381,7 @@ https://codeforces.com/problemset/problem/1612/G 2500
 https://codeforces.com/problemset/problem/296/A 1100
 https://codeforces.com/problemset/problem/1579/D 1400
 - LC1953 https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/
+https://codeforces.com/problemset/problem/884/F 2500
 https://codeforces.com/problemset/problem/1521/E 2700 二维+对角不同
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
@@ -753,6 +748,8 @@ https://codeforces.com/problemset/problem/1097/C 1400
 https://codeforces.com/problemset/problem/1837/D 1400
 https://codeforces.com/problemset/problem/990/C 1500
 https://codeforces.com/problemset/problem/847/C 1800 构造
+https://codeforces.com/problemset/problem/1709/C 1800 方案数
+- 相似问题 LC2116 https://leetcode.cn/problems/check-if-a-parentheses-string-can-be-valid/
 https://codeforces.com/problemset/problem/1821/E 2100
 https://codeforces.com/problemset/problem/1830/C 2400
 https://codeforces.com/problemset/problem/3/D 2600 反悔贪心（反悔堆）
