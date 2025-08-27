@@ -1,22 +1,22 @@
-设矩形的左上角为 $(x_0,y_0)$，右下角为 $(x_1,y_1)$。
+设矩形的左上角为 $(x_1,y_1)$，右下角为 $(x_2,y_2)$。
 
 根据题意，我们需要满足如下三个要求：
 
-1. $x_0\le x_1$。
-2. $y_0\ge y_1$。
+1. $x_1\le x_2$。
+2. $y_1\ge y_2$。
 3. 矩形内部或边界上没有其他点。
 
 为方便计算，先把 $\textit{points}$ 按照横坐标**从小到大**排序（横坐标相同呢？后面会说明）。排序后，第一个要求自动成立。
 
-然后外层循环枚举 $\textit{points}[i] = (x_0,y_0)$；内层循环从 $i+1$ 开始，枚举 $\textit{points}[j] = (x_1,y_1)$，跳过 $y_1 > y_0$ 的点。这样就满足了第二个要求。
+然后外层循环枚举 $\textit{points}[i] = (x_1,y_1)$；内层循环从 $i+1$ 开始，枚举 $\textit{points}[j] = (x_2,y_2)$，跳过 $y_2 > y_1$ 的点。这样就满足了第二个要求。
 
 最后来处理第三个要求，这等价于：
 
-- 对于下标在 $[i+1,j-1]$ 中的每个点，纵坐标要么大于 $y_0$，要么小于 $y_1$。如果不满足，那么这个点就在矩形内部或边界上了。
+- 对于下标在 $[i+1,j-1]$ 中的每个点，纵坐标要么大于 $y_1$，要么小于 $y_2$。如果不满足，那么这个点就在矩形内部或边界上了。
 
-纵坐标大于 $y_0$ 的点，我们已经跳过了，所以只需满足纵坐标小于 $y_1$。
+纵坐标大于 $y_1$ 的点，我们已经跳过了，所以只需满足纵坐标小于 $y_2$。
 
-枚举到 $\textit{points}[j] = (x_1,y_1)$ 时，之前遍历过的点，纵坐标都必须小于 $y_1$。难道要再遍历一遍 $[i+1,j-1]$？不需要，只要这些点的纵坐标的**最大值**小于 $y_1$，那么这些点的纵坐标就都小于 $y_1$（$\mathcal{O}(1)$ 时间获取 $\mathcal{O}(n)$ 信息）。所以只需维护遍历过的点的纵坐标的最大值 $\textit{maxY}$。如果发现 $y_1> \textit{maxY}$，就把答案加一。
+枚举到 $\textit{points}[j] = (x_2,y_2)$ 时，之前遍历过的点，纵坐标都必须小于 $y_2$。难道要再遍历一遍 $[i+1,j-1]$？不需要，只要这些点的纵坐标的**最大值**小于 $y_2$，那么这些点的纵坐标就都小于 $y_2$（$\mathcal{O}(1)$ 时间获取 $\mathcal{O}(n)$ 信息）。所以只需维护遍历过的点的纵坐标的最大值 $\textit{maxY}$。如果发现 $y_2> \textit{maxY}$，就把答案加一。
 
 最后来说，对于横坐标相同的点，要怎么处理。
 
@@ -31,11 +31,11 @@ class Solution:
     def numberOfPairs(self, points: List[List[int]]) -> int:
         points.sort(key=lambda p: (p[0], -p[1]))  # x 升序，y 降序
         ans = 0
-        for i, (_, y0) in enumerate(points):
+        for i, (_, y1) in enumerate(points):
             max_y = -inf
-            for (_, y1) in points[i + 1:]:
-                if y0 >= y1 > max_y:
-                    max_y = y1
+            for (_, y2) in points[i + 1:]:
+                if y1 >= y2 > max_y:
+                    max_y = y2
                     ans += 1
         return ans
 ```
@@ -47,12 +47,12 @@ class Solution {
         Arrays.sort(points, (a, b) -> a[0] != b[0] ? a[0] - b[0] : b[1] - a[1]);
         int ans = 0;
         for (int i = 0; i < points.length; i++) {
-            int y0 = points[i][1];
+            int y1 = points[i][1];
             int maxY = Integer.MIN_VALUE;
             for (int j = i + 1; j < points.length; j++) {
-                int y1 = points[j][1];
-                if (y1 <= y0 && y1 > maxY) {
-                    maxY = y1;
+                int y2 = points[j][1];
+                if (y2 <= y1 && y2 > maxY) {
+                    maxY = y2;
                     ans++;
                 }
             }
@@ -70,12 +70,12 @@ public:
         ranges::sort(points, {}, [](auto& p) { return pair(p[0], -p[1]); });
         int ans = 0, n = points.size();
         for (int i = 0; i < n; i++) {
-            int y0 = points[i][1];
+            int y1 = points[i][1];
             int max_y = INT_MIN;
             for (int j = i + 1; j < n; j++) {
-                int y1 = points[j][1];
-                if (y1 <= y0 && y1 > max_y) {
-                    max_y = y1;
+                int y2 = points[j][1];
+                if (y2 <= y1 && y2 > max_y) {
+                    max_y = y2;
                     ans++;
                 }
             }
@@ -97,12 +97,12 @@ int numberOfPairs(int** points, int pointsSize, int* pointsColSize) {
     qsort(points, pointsSize, sizeof(int*), cmp);
     int ans = 0;
     for (int i = 0; i < pointsSize; i++) {
-        int y0 = points[i][1];
+        int y1 = points[i][1];
         int max_y = INT_MIN;
         for (int j = i + 1; j < pointsSize; j++) {
-            int y1 = points[j][1];
-            if (y1 <= y0 && y1 > max_y) {
-                max_y = y1;
+            int y2 = points[j][1];
+            if (y2 <= y1 && y2 > max_y) {
+                max_y = y2;
                 ans++;
             }
         }
@@ -116,12 +116,12 @@ func numberOfPairs(points [][]int) (ans int) {
 	// x 升序，y 降序
 	slices.SortFunc(points, func(a, b []int) int { return cmp.Or(a[0]-b[0], b[1]-a[1]) })
 	for i, p := range points {
-		y0 := p[1]
+		y1 := p[1]
 		maxY := math.MinInt
 		for _, q := range points[i+1:] {
-			y1 := q[1]
-			if y1 <= y0 && y1 > maxY {
-				maxY = y1
+			y2 := q[1]
+			if y2 <= y1 && y2 > maxY {
+				maxY = y2
 				ans++
 			}
 		}
@@ -136,12 +136,12 @@ var numberOfPairs = function(points) {
     const n = points.length;
     let ans = 0;
     for (let i = 0; i < n; i++) {
-        const y0 = points[i][1];
+        const y1 = points[i][1];
         let max_y = -Infinity;
         for (let j = i + 1; j < n; j++) {
-            const y1 = points[j][1];
-            if (y1 <= y0 && y1 > max_y) {
-                max_y = y1;
+            const y2 = points[j][1];
+            if (y2 <= y1 && y2 > max_y) {
+                max_y = y2;
                 ans++;
             }
         }
@@ -156,12 +156,12 @@ impl Solution {
         points.sort_unstable_by_key(|p| (p[0], -p[1])); // x 升序，y 降序
         let mut ans = 0;
         for (i, p) in points.iter().enumerate() {
-            let y0 = p[1];
+            let y1 = p[1];
             let mut max_y = i32::MIN;
             for q in &points[i + 1..] {
-                let y1 = q[1];
-                if y1 <= y0 && y1 > max_y {
-                    max_y = y1;
+                let y2 = q[1];
+                if y2 <= y1 && y2 > max_y {
+                    max_y = y2;
                     ans += 1;
                 }
             }
