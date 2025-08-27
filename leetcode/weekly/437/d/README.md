@@ -401,6 +401,170 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 }
 ```
 
+## 空间优化
+
+从一个 $1$ 出发，在不拐弯的情况下，我们不可能与另一条从 $1$ 出发且没有拐弯的路径重合（否则路径上就有两个 $1$ 了）。
+
+所以 $\textit{canTurn} = \texttt{true}$ 的状态不会重复访问到，也就无需记忆化了。换言之，类似数位 DP，只需在 $\textit{canTurn} = \texttt{false}$ 时记忆化。
+
+> Python 用户可以忽略这个优化，仍然用方便的 `@cache` 装饰器。
+
+```java [sol-Java]
+class Solution {
+    private static final int[][] DIRS = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
+
+    public int lenOfVDiagonal(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][][] memo = new int[m][n][4];
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != 1) {
+                    continue;
+                }
+                int[] maxs = {m - i, j + 1, i + 1, n - j}; // 理论最大值（走到底）
+                for (int k = 0; k < 4; k++) { // 枚举起始方向
+                    // 优化一：如果理论最大值没有超过 ans，那么不递归
+                    if (maxs[k] > ans) {
+                        ans = Math.max(ans, dfs(i, j, k, true, 2, grid, memo) + 1);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+    private int dfs(int i, int j, int k, boolean canTurn, int target, int[][] grid, int[][][] memo) {
+        i += DIRS[k][0];
+        j += DIRS[k][1];
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[i].length || grid[i][j] != target) {
+            return 0;
+        }
+        // 只在 canTurn=false 时读取和写入 memo
+        if (!canTurn && memo[i][j][k] > 0) {
+            return memo[i][j][k];
+        }
+        int res = dfs(i, j, k, canTurn, 2 - target, grid, memo) + 1;
+        if (!canTurn) {
+            return memo[i][j][k] = res;
+        }
+        int[] maxs = {grid.length - i, j + 1, i + 1, grid[i].length - j}; // 理论最大值（走到底）
+        k = (k + 1) % 4;
+        // 优化二：如果理论最大值没有超过 res，那么不递归
+        if (Math.min(maxs[k], maxs[(k + 3) % 4]) > res) {
+            res = Math.max(res, dfs(i, j, k, false, 2 - target, grid, memo) + 1);
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    static constexpr int DIRS[4][2] = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
+
+public:
+    int lenOfVDiagonal(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        vector memo(m, vector<array<int, 4>>(n));
+
+        auto dfs = [&](this auto&& dfs, int i, int j, int k, bool can_turn, int target) -> int {
+            i += DIRS[k][0];
+            j += DIRS[k][1];
+            if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] != target) {
+                return 0;
+            }
+            // 只在 can_turn=false 时读取和写入 memo
+            if (!can_turn && memo[i][j][k]) {
+                return memo[i][j][k];
+            }
+            int res = dfs(i, j, k, can_turn, 2 - target) + 1;
+            if (!can_turn) {
+                return memo[i][j][k] = res;
+            }
+            int maxs[4] = {m - i, j + 1, i + 1, n - j}; // 理论最大值（走到底）
+            k = (k + 1) % 4;
+            // 优化二：如果理论最大值没有超过 res，那么不递归
+            if (min(maxs[k], maxs[(k + 3) % 4]) > res) {
+                res = max(res, dfs(i, j, k, false, 2 - target) + 1);
+            }
+            return res;
+        };
+
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != 1) {
+                    continue;
+                }
+                int maxs[4] = {m - i, j + 1, i + 1, n - j}; // 理论最大值（走到底）
+                for (int k = 0; k < 4; k++) { // 枚举起始方向
+                    // 优化一：如果理论最大值没有超过 ans，那么不递归
+                    if (maxs[k] > ans) {
+                        ans = max(ans, dfs(i, j, k, true, 2) + 1);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+var DIRS = [4][2]int{{1, 1}, {1, -1}, {-1, -1}, {-1, 1}}
+
+func lenOfVDiagonal(grid [][]int) (ans int) {
+	m, n := len(grid), len(grid[0])
+	memo := make([][][4]int, m)
+	for i := range memo {
+		memo[i] = make([][4]int, n)
+	}
+
+	var dfs func(int, int, int, bool, int) int
+	dfs = func(i, j, k int, canTurn bool, target int) int {
+		i += DIRS[k][0]
+		j += DIRS[k][1]
+		if i < 0 || i >= m || j < 0 || j >= n || grid[i][j] != target {
+			return 0
+		}
+		// 只在 canTurn=false 时读取和写入 memo
+		if !canTurn && memo[i][j][k] > 0 {
+			return memo[i][j][k]
+		}
+		res := dfs(i, j, k, canTurn, 2-target) + 1
+		if !canTurn {
+			memo[i][j][k] = res
+			return res
+		}
+		maxs := [4]int{m - i, j + 1, i + 1, n - j} // 理论最大值（走到底）
+		k = (k + 1) % 4
+		// 优化二：如果理论最大值没有超过 res，那么不递归
+		if min(maxs[k], maxs[(k+3)%4]) > res {
+			res = max(res, dfs(i, j, k, false, 2-target)+1)
+		}
+		return res
+	}
+
+	for i, row := range grid {
+		for j, x := range row {
+			if x != 1 {
+				continue
+			}
+			maxs := [4]int{m - i, j + 1, i + 1, n - j} // 理论最大值（走到底）
+			for k, mx := range maxs { // 枚举起始方向
+				// 优化一：如果理论最大值没有超过 ans，那么不递归
+				if mx > ans {
+					ans = max(ans, dfs(i, j, k, true, 2)+1)
+				}
+			}
+		}
+	}
+	return
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(mn)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(mn)$。
