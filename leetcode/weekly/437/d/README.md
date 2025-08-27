@@ -14,7 +14,7 @@
 - 设 $(i',j')$ 是从 $(i,j)$ 向 $\textit{DIRS}[k]$ 方向移动一步后的位置。
 - 直行：递归到 $\textit{dfs}(i',j',k,\textit{canTurn}, 2-\textit{target})$。这里用 $2-\textit{target}$ 来实现 $2$ 和 $0$ 的切换。也可以写成 $\textit{target}\oplus 2$。 
 - 右转：如果 $\textit{canTurn} = \texttt{true}$，那么递归到 $\textit{dfs}(i',j',(k+1)\bmod 4, \texttt{false}, 2-\textit{target})$。其中 $(k+1)\bmod 4$ 表示环形数组 $\textit{DIRS}$ 的下一个元素的下标。如果 $k<3$，那么 $k$ 更新为 $k+1$；否则 $k$ 更新为 $0$。
-- 返回二者的最大值加一。其中加一表示走了一步。
+- 返回二者加一后的最大值。其中加一表示走了一步。
 
 **递归边界**：
 
@@ -48,10 +48,10 @@ class Solution:
             j += DIRS[k][1]
             if not (0 <= i < m and 0 <= j < n) or grid[i][j] != target:
                 return 0
-            res = dfs(i, j, k, can_turn, 2 - target)  # 直行
+            res = dfs(i, j, k, can_turn, 2 - target) + 1  # 直行
             if can_turn:
-                res = max(res, dfs(i, j, (k + 1) % 4, False, 2 - target))  # 右转
-            return res + 1  # 算上当前位置
+                res = max(res, dfs(i, j, (k + 1) % 4, False, 2 - target) + 1)  # 右转
+            return res
 
         ans = 0
         for i, row in enumerate(grid):
@@ -96,11 +96,11 @@ class Solution {
         if (memo[i][j][mask] > 0) { // 之前计算过
             return memo[i][j][mask];
         }
-        int res = dfs(i, j, k, canTurn, 2 - target, grid, memo); // 直行
+        int res = dfs(i, j, k, canTurn, 2 - target, grid, memo) + 1; // 直行
         if (canTurn == 1) {
-            res = Math.max(res, dfs(i, j, (k + 1) % 4, 0, 2 - target, grid, memo)); // 右转
+            res = Math.max(res, dfs(i, j, (k + 1) % 4, 0, 2 - target, grid, memo) + 1); // 右转
         }
-        return memo[i][j][mask] = res + 1; // 算上当前位置
+        return memo[i][j][mask] = res; // 记忆化
     }
 }
 ```
@@ -125,11 +125,11 @@ public:
             if (res) { // 之前计算过
                 return res;
             }
-            res = dfs(i, j, k, can_turn, 2 - target); // 直行
+            res = dfs(i, j, k, can_turn, 2 - target) + 1; // 直行
             if (can_turn) {
-                res = max(res, dfs(i, j, (k + 1) % 4, false, 2 - target)); // 右转
+                res = max(res, dfs(i, j, (k + 1) % 4, false, 2 - target) + 1); // 右转
             }
-            return ++res; // 算上当前位置
+            return res;
         };
 
         int ans = 0;
@@ -159,22 +159,22 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 
 	// 上一步在 (i,j)，移动方向为 DIRS[k]，是否可以右转，当前位置目标值
 	var dfs func(int, int, int, int, int) int
-	dfs = func(i, j, k, canTurn, target int) (res int) {
+	dfs = func(i, j, k, canTurn, target int) int {
 		i += DIRS[k][0]
 		j += DIRS[k][1]
 		if i < 0 || i >= m || j < 0 || j >= n || grid[i][j] != target {
-			return
+			return 0
 		}
 		p := &memo[i][j][k][canTurn]
 		if *p > 0 { // 之前计算过
 			return *p
 		}
-		defer func() { *p = res }() // 记忆化
-		res = dfs(i, j, k, canTurn, 2-target) // 直行
+		res := dfs(i, j, k, canTurn, 2-target) + 1 // 直行
 		if canTurn == 1 {
-			res = max(res, dfs(i, j, (k+1)%4, 0, 2-target)) // 右转
+			res = max(res, dfs(i, j, (k+1)%4, 0, 2-target)+1) // 右转
 		}
-		return res + 1 // 算上当前位置
+		*p = res // 记忆化
+		return res
 	}
 
 	for i, row := range grid {
@@ -223,14 +223,14 @@ class Solution:
             j += DIRS[k][1]
             if not (0 <= i < m and 0 <= j < n) or grid[i][j] != target:
                 return 0
-            res = dfs(i, j, k, can_turn, 2 - target)
+            res = dfs(i, j, k, can_turn, 2 - target) + 1
             if can_turn:
-                maxs = (m - i - 1, j, i, n - j - 1)  # 理论最大值（走到底）
+                maxs = (m - i, j + 1, i + 1, n - j)  # 理论最大值（走到底）
                 k = (k + 1) % 4
                 # 优化二：如果理论最大值没有超过 res，那么不递归
                 if maxs[k] > res:
-                    res = max(res, dfs(i, j, k, False, 2 - target))
-            return res + 1
+                    res = max(res, dfs(i, j, k, False, 2 - target) + 1)
+            return res
 
         ans = 0
         for i, row in enumerate(grid):
@@ -262,7 +262,8 @@ class Solution {
                 }
                 int[] maxs = {m - i, j + 1, i + 1, n - j}; // 理论最大值（走到底）
                 for (int k = 0; k < 4; k++) { // 枚举起始方向
-                    if (maxs[k] > ans) { // 优化一：如果理论最大值没有超过 ans，那么不递归
+                    // 优化一：如果理论最大值没有超过 ans，那么不递归
+                    if (maxs[k] > ans) {
                         ans = Math.max(ans, dfs(i, j, k, 1, 2, grid, memo) + 1);
                     }
                 }
@@ -281,16 +282,16 @@ class Solution {
         if (memo[i][j][mask] > 0) {
             return memo[i][j][mask];
         }
-        int res = dfs(i, j, k, canTurn, 2 - target, grid, memo);
+        int res = dfs(i, j, k, canTurn, 2 - target, grid, memo) + 1;
         if (canTurn == 1) {
-            int[] maxs = {grid.length - i - 1, j, i, grid[i].length - j - 1}; // 理论最大值（走到底）
+            int[] maxs = {grid.length - i, j + 1, i + 1, grid[i].length - j}; // 理论最大值（走到底）
             k = (k + 1) % 4;
             // 优化二：如果理论最大值没有超过 res，那么不递归
             if (maxs[k] > res) {
-                res = Math.max(res, dfs(i, j, k, 0, 2 - target, grid, memo));
+                res = Math.max(res, dfs(i, j, k, 0, 2 - target, grid, memo) + 1);
             }
         }
-        return memo[i][j][mask] = res + 1;
+        return memo[i][j][mask] = res;
     }
 }
 ```
@@ -314,16 +315,16 @@ public:
             if (res) {
                 return res;
             }
-            res = dfs(i, j, k, can_turn, 2 - target);
+            res = dfs(i, j, k, can_turn, 2 - target) + 1;
             if (can_turn) {
-                int maxs[4] = {m - i - 1, j, i, n - j - 1}; // 理论最大值（走到底）
+                int maxs[4] = {m - i, j + 1, i + 1, n - j}; // 理论最大值（走到底）
                 k = (k + 1) % 4;
                 // 优化二：如果理论最大值没有超过 res，那么不递归
                 if (maxs[k] > res) {
-                    res = max(res, dfs(i, j, k, false, 2 - target));
+                    res = max(res, dfs(i, j, k, false, 2 - target) + 1);
                 }
             }
-            return ++res;
+            return res;
         };
 
         int ans = 0;
@@ -334,7 +335,8 @@ public:
                 }
                 int maxs[4] = {m - i, j + 1, i + 1, n - j}; // 理论最大值（走到底）
                 for (int k = 0; k < 4; k++) { // 枚举起始方向
-                    if (maxs[k] > ans) { // 优化一：如果理论最大值没有超过 ans，那么不递归
+                    // 优化一：如果理论最大值没有超过 ans，那么不递归
+                    if (maxs[k] > ans) {
                         ans = max(ans, dfs(i, j, k, true, 2) + 1);
                     }
                 }
@@ -356,27 +358,27 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 	}
 
 	var dfs func(int, int, int, int, int) int
-	dfs = func(i, j, k, canTurn, target int) (res int) {
+	dfs = func(i, j, k, canTurn, target int) int {
 		i += DIRS[k][0]
 		j += DIRS[k][1]
 		if i < 0 || i >= m || j < 0 || j >= n || grid[i][j] != target {
-			return
+			return 0
 		}
 		p := &memo[i][j][k][canTurn]
 		if *p > 0 {
 			return *p
 		}
-		defer func() { *p = res }()
-		res = dfs(i, j, k, canTurn, 2-target)
+		res := dfs(i, j, k, canTurn, 2-target) + 1
 		if canTurn == 1 {
-			maxs := [4]int{m - i - 1, j, i, n - j - 1} // 理论最大值（走到底）
+			maxs := [4]int{m - i, j + 1, i + 1, n - j} // 理论最大值（走到底）
 			k = (k + 1) % 4
 			// 优化二：如果理论最大值没有超过 res，那么不递归
 			if maxs[k] > res {
-				res = max(res, dfs(i, j, k, 0, 2-target))
+				res = max(res, dfs(i, j, k, 0, 2-target)+1)
 			}
 		}
-		return res + 1
+		*p = res
+		return res
 	}
 
 	for i, row := range grid {
@@ -386,7 +388,8 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 			}
 			maxs := [4]int{m - i, j + 1, i + 1, n - j} // 理论最大值（走到底）
 			for k, mx := range maxs { // 枚举起始方向
-				if mx > ans { // 优化一：如果理论最大值没有超过 ans，那么不递归
+				// 优化一：如果理论最大值没有超过 ans，那么不递归
+				if mx > ans {
 					ans = max(ans, dfs(i, j, k, 1, 2)+1)
 				}
 			}
