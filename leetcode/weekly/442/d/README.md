@@ -166,7 +166,7 @@ $$
 (2^2-2^0)\cdot 1 + (2^4-2^2)\cdot 2 + \cdots + (2^k-2^{k-2})\cdot \dfrac{k}{2}
 $$
 
-利用错位相减法（详见 [视频讲解](https://www.bilibili.com/video/BV12eXYYVE5H/?t=22m46s)），上式可以化简为
+利用错位相减法（详见 [视频讲解](https://www.bilibili.com/video/BV12eXYYVE5H/?t=22m46s)），上式可化简为
 
 $$
 k\cdot 2^{k-1} - \dfrac{2^k-1}{3}
