@@ -1,13 +1,28 @@
-将 $\textit{points}$ 按照横坐标**从小到大**排序，横坐标相同的，按照纵坐标**从大到小**排序。
+设矩形的左上角为 $(x_0,y_0)$，右下角为 $(x_1,y_1)$。
 
-如此一来，在枚举 $\textit{points}[i]$ 和 $\textit{points}[j]$ 时（$i<j$），只需关心纵坐标的大小。
+根据题意，我们需要满足如下三个要求：
 
-固定 $\textit{points}[i]$，然后枚举 $\textit{points}[j]$：
+1. $x_0\le x_1$。
+2. $y_0\ge y_1$。
+3. 矩形内部或边界上没有其他点。
 
-- 如果 $\textit{points}[j]$ 的纵坐标比之前枚举的点的纵坐标都大，那么矩形内没有其它点，符合要求，答案加一。
-- 如果 $\textit{points}[j]$ 的纵坐标小于等于之前枚举的某个点的纵坐标，那么矩形内有其它点，不符合要求。
+为方便计算，先把 $\textit{points}$ 按照横坐标**从小到大**排序（横坐标相同呢？后面会说明）。排序后，第一个要求自动成立。
 
-所以在枚举 $\textit{points}[j]$ 的同时，需要维护纵坐标的最大值 $\textit{maxY}$。这也解释了为什么横坐标相同的，按照纵坐标**从大到小**排序。这保证了横坐标相同时，我们总是优先枚举更靠上的点，不会误把包含其它点的矩形也当作符合要求的矩形。
+然后外层循环枚举 $\textit{points}[i] = (x_0,y_0)$；内层循环从 $i+1$ 开始，枚举 $\textit{points}[j] = (x_1,y_1)$，跳过 $y_1 > y_0$ 的点。这样就满足了第二个要求。
+
+最后来处理第三个要求，这等价于：
+
+- 对于下标在 $[i+1,j-1]$ 中的每个点，纵坐标要么大于 $y_0$，要么小于 $y_1$。如果不满足，那么这个点就在矩形内部或边界上了。
+
+纵坐标大于 $y_0$ 的点，我们已经跳过了，所以只需满足纵坐标小于 $y_1$。
+
+枚举到 $\textit{points}[j] = (x_1,y_1)$ 时，之前遍历过的点，纵坐标都必须小于 $y_1$。难道要再遍历一遍 $[i+1,j-1]$？不需要，只要这些点的纵坐标的**最大值**小于 $y_1$，那么这些点的纵坐标就都小于 $y_1$（$\mathcal{O}(1)$ 时间获取 $\mathcal{O}(n)$ 信息）。所以只需维护遍历过的点的纵坐标的最大值 $\textit{maxY}$。如果发现 $y_1> \textit{maxY}$，就把答案加一。
+
+最后来说，对于横坐标相同的点，要怎么处理。
+
+比如 $\textit{points} = [(1,3),(1,2),(1,1)]$，其中有两个满足要求的矩形：$(1,3)$ 为左上角，$(1,2)$ 为右下角的矩形；$(1,2)$ 为左上角，$(1,1)$ 为右下角的矩形。注意 $(1,3)$ 为左上角，$(1,1)$ 为右下角的矩形包含 $(1,2)$，不满足要求。
+
+由于内层循环中的 $j$ 是从 $i+1$ 开始枚举的，所以在横坐标相同时，要按照纵坐标**从大到小**排序。这也保证了横坐标相同时，我们总是会先遍历到纵坐标更大的点。在上面的例子中，遍历到 $(1,1)$ 之前，一定会先遍历到 $(1,2)$。这样对于 $(1,3)$ 为左上角，$(1,1)$ 为右下角的矩形，我们就能正确地判断出这个矩形是不合法的。
 
 [视频讲解](https://www.bilibili.com/video/BV14C411r7nN/) 第四题。
 
@@ -18,9 +33,9 @@ class Solution:
         ans = 0
         for i, (_, y0) in enumerate(points):
             max_y = -inf
-            for (_, y) in points[i + 1:]:
-                if max_y < y <= y0:
-                    max_y = y
+            for (_, y1) in points[i + 1:]:
+                if y0 >= y1 > max_y:
+                    max_y = y1
                     ans += 1
         return ans
 ```
@@ -35,9 +50,9 @@ class Solution {
             int y0 = points[i][1];
             int maxY = Integer.MIN_VALUE;
             for (int j = i + 1; j < points.length; j++) {
-                int y = points[j][1];
-                if (y <= y0 && y > maxY) {
-                    maxY = y;
+                int y1 = points[j][1];
+                if (y1 <= y0 && y1 > maxY) {
+                    maxY = y1;
                     ans++;
                 }
             }
@@ -58,9 +73,9 @@ public:
             int y0 = points[i][1];
             int max_y = INT_MIN;
             for (int j = i + 1; j < n; j++) {
-                int y = points[j][1];
-                if (y <= y0 && y > max_y) {
-                    max_y = y;
+                int y1 = points[j][1];
+                if (y1 <= y0 && y1 > max_y) {
+                    max_y = y1;
                     ans++;
                 }
             }
@@ -85,9 +100,9 @@ int numberOfPairs(int** points, int pointsSize, int* pointsColSize) {
         int y0 = points[i][1];
         int max_y = INT_MIN;
         for (int j = i + 1; j < pointsSize; j++) {
-            int y = points[j][1];
-            if (y <= y0 && y > max_y) {
-                max_y = y;
+            int y1 = points[j][1];
+            if (y1 <= y0 && y1 > max_y) {
+                max_y = y1;
                 ans++;
             }
         }
@@ -104,9 +119,9 @@ func numberOfPairs(points [][]int) (ans int) {
 		y0 := p[1]
 		maxY := math.MinInt
 		for _, q := range points[i+1:] {
-			y := q[1]
-			if y <= y0 && y > maxY {
-				maxY = y
+			y1 := q[1]
+			if y1 <= y0 && y1 > maxY {
+				maxY = y1
 				ans++
 			}
 		}
@@ -124,9 +139,9 @@ var numberOfPairs = function(points) {
         const y0 = points[i][1];
         let max_y = -Infinity;
         for (let j = i + 1; j < n; j++) {
-            const y = points[j][1];
-            if (y <= y0 && y > max_y) {
-                max_y = y;
+            const y1 = points[j][1];
+            if (y1 <= y0 && y1 > max_y) {
+                max_y = y1;
                 ans++;
             }
         }
@@ -144,9 +159,9 @@ impl Solution {
             let y0 = p[1];
             let mut max_y = i32::MIN;
             for q in &points[i + 1..] {
-                let y = q[1];
-                if y <= y0 && y > max_y {
-                    max_y = y;
+                let y1 = q[1];
+                if y1 <= y0 && y1 > max_y {
+                    max_y = y1;
                     ans += 1;
                 }
             }
