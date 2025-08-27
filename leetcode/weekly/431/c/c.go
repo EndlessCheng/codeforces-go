@@ -9,11 +9,12 @@ func maximumWhiteTiles(tiles [][]int, carpetLen int) (ans int) {
 	for _, tile := range tiles {
 		tl, tr, c := tile[0], tile[1], tile[2]
 		cover += (tr - tl + 1) * c
-		for tiles[left][1]+carpetLen-1 < tr {
+		carpetLeft := tr - carpetLen + 1
+		for tiles[left][1] < carpetLeft {
 			cover -= (tiles[left][1] - tiles[left][0] + 1) * tiles[left][2]
 			left++
 		}
-		uncover := max((tr-carpetLen+1-tiles[left][0])*tiles[left][2], 0)
+		uncover := max((carpetLeft-tiles[left][0])*tiles[left][2], 0)
 		ans = max(ans, cover-uncover)
 	}
 	return

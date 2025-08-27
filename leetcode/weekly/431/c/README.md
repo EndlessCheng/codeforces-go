@@ -17,10 +17,11 @@ class Solution:
         ans = cover = left = 0
         for tl, tr, c in tiles:
             cover += (tr - tl + 1) * c
-            while tiles[left][1] < tr - carpetLen + 1:
+            carpet_left = tr - carpetLen + 1
+            while tiles[left][1] < carpet_left:
                 cover -= (tiles[left][1] - tiles[left][0] + 1) * tiles[left][2]
                 left += 1
-            uncover = max((tr - carpetLen + 1 - tiles[left][0]) * tiles[left][2], 0)
+            uncover = max((carpet_left - tiles[left][0]) * tiles[left][2], 0)
             ans = max(ans, cover - uncover)
         return ans
 
@@ -63,11 +64,12 @@ class Solution {
         for (int[] tile : tiles) {
             int tl = tile[0], tr = tile[1], c = tile[2];
             cover += (long) (tr - tl + 1) * c;
-            while (tiles[left][1] + carpetLen - 1 < tr) {
+            int carpetLeft = tr - carpetLen + 1;
+            while (tiles[left][1] < carpetLeft) {
                 cover -= (long) (tiles[left][1] - tiles[left][0] + 1) * tiles[left][2];
                 left++;
             }
-            long uncover = Math.max((long) (tr - carpetLen + 1 - tiles[left][0]) * tiles[left][2], 0);
+            long uncover = Math.max((long) (carpetLeft - tiles[left][0]) * tiles[left][2], 0);
             ans = Math.max(ans, cover - uncover);
         }
         return ans;
@@ -77,18 +79,19 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    // 2271. 毯子覆盖的最多白色砖块数
+    // 2271. 毯子覆盖的最多白色砖块数（已排序）
     long long maximumWhiteTiles(vector<vector<int>>& tiles, int carpetLen) {
         long long ans = 0, cover = 0;
         int left = 0;
         for (auto& tile : tiles) {
             int tl = tile[0], tr = tile[1], c = tile[2];
             cover += (long long) (tr - tl + 1) * c;
-            while (tiles[left][1] + carpetLen - 1 < tr) {
+            int carpet_left = tr - carpetLen + 1;
+            while (tiles[left][1] < carpet_left) {
                 cover -= (long long) (tiles[left][1] - tiles[left][0] + 1) * tiles[left][2];
                 left++;
             }
-            long long uncover = max((long long) (tr - carpetLen + 1 - tiles[left][0]) * tiles[left][2], 0LL);
+            long long uncover = max((long long) (carpet_left - tiles[left][0]) * tiles[left][2], 0LL);
             ans = max(ans, cover - uncover);
         }
         return ans;
@@ -117,11 +120,12 @@ func maximumWhiteTiles(tiles [][]int, carpetLen int) (ans int) {
 	for _, tile := range tiles {
 		tl, tr, c := tile[0], tile[1], tile[2]
 		cover += (tr - tl + 1) * c
-		for tiles[left][1]+carpetLen-1 < tr {
+		carpetLeft := tr - carpetLen + 1
+		for tiles[left][1] < carpetLeft {
 			cover -= (tiles[left][1] - tiles[left][0] + 1) * tiles[left][2]
 			left++
 		}
-		uncover := max((tr-carpetLen+1-tiles[left][0])*tiles[left][2], 0)
+		uncover := max((carpetLeft-tiles[left][0])*tiles[left][2], 0)
 		ans = max(ans, cover-uncover)
 	}
 	return
@@ -144,8 +148,6 @@ func maximumCoins(coins [][]int, k int) int64 {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{coins}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
-更多相似题目，见下面滑动窗口题单中的「**§2.1 求最长/最大**」。
-
 ## 变形题
 
 如果题目没有保证区间互不重叠呢？
@@ -158,17 +160,21 @@ func maximumCoins(coins [][]int, k int) int64 {
 
 如何计算叠加后的区间有哪些？用差分数组（哈希表），具体可以看数据结构题单。
 
+## 专题训练
+
+见下面滑动窗口题单的「**§2.1 越短越合法/求最长/最大**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. 【本题相关】[滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
@@ -176,3 +182,5 @@ func maximumCoins(coins [][]int, k int) int64 {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
