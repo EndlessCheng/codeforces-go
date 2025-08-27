@@ -1,9 +1,6 @@
 package main
 
-import (
-	. "fmt"
-	"math/bits"
-)
+import . "fmt"
 
 // https://github.com/EndlessCheng
 func less30(i, j int) bool {
@@ -13,37 +10,26 @@ func less30(i, j int) bool {
 	return c == "<"
 }
 
-func dfs30(l, r int) (mn, mx int) {
-	sz := r - l
-	if sz == 1 {
-		return l, l
-	}
-	if sz == 2 {
-		if less30(l, l+1) {
-			return l, l + 1
-		}
-		return l + 1, l
-	}
-	m := l + sz/2
-	if sz&(sz-1) > 0 {
-		m = l + 1<<(bits.Len(uint(sz))-1)
-	}
-	mn, mx = dfs30(l, m)
-	mn2, mx2 := dfs30(m, r)
-	if less30(mn2, mn) {
-		mn = mn2
-	}
-	if less30(mx, mx2) {
-		mx = mx2
-	}
-	return
-}
-
 func cf730B() {
 	var T, n int
 	for Scan(&T); T > 0; T-- {
 		Scan(&n)
-		mn, mx := dfs30(1, n+1)
+		mn, mx := 1, 2-n%2
+		if n%2 == 0 && less30(2, 1) {
+			mn, mx = 2, 1
+		}
+		for i := 3 - n%2; i <= n; i += 2 {
+			x, y := i, i+1
+			if less30(i+1, i) {
+				x, y = i+1, i
+			}
+			if less30(x, mn) {
+				mn = x
+			}
+			if less30(mx, y) {
+				mx = y
+			}
+		}
 		Println("!", mn, mx)
 	}
 }
