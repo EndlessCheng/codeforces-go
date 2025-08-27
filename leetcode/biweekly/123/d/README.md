@@ -1,6 +1,6 @@
 将 $\textit{points}$ 按照横坐标**从小到大**排序，横坐标相同的，按照纵坐标**从大到小**排序。
 
-如此一来，在枚举 $\textit{points}[i]$ 和 $\textit{points}[j]$ 时（$i<j$），就只需要关心纵坐标的大小。
+如此一来，在枚举 $\textit{points}[i]$ 和 $\textit{points}[j]$ 时（$i<j$），只需关心纵坐标的大小。
 
 固定 $\textit{points}[i]$，然后枚举 $\textit{points}[j]$：
 
@@ -14,7 +14,7 @@
 ```py [sol-Python3]
 class Solution:
     def numberOfPairs(self, points: List[List[int]]) -> int:
-        points.sort(key=lambda p: (p[0], -p[1]))
+        points.sort(key=lambda p: (p[0], -p[1]))  # x 升序，y 降序
         ans = 0
         for i, (_, y0) in enumerate(points):
             max_y = -inf
@@ -28,7 +28,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int numberOfPairs(int[][] points) {
-        Arrays.sort(points, (p, q) -> p[0] != q[0] ? p[0] - q[0] : q[1] - p[1]);
+        // x 升序，y 降序
+        Arrays.sort(points, (a, b) -> a[0] != b[0] ? a[0] - b[0] : b[1] - a[1]);
         int ans = 0;
         for (int i = 0; i < points.length; i++) {
             int y0 = points[i][1];
@@ -50,7 +51,8 @@ class Solution {
 class Solution {
 public:
     int numberOfPairs(vector<vector<int>>& points) {
-        ranges::sort(points, {}, [](auto& p) -> pair<int, int> { return {p[0], -p[1]}; });
+        // x 升序，y 降序
+        ranges::sort(points, {}, [](auto& p) { return pair(p[0], -p[1]); });
         int ans = 0, n = points.size();
         for (int i = 0; i < n; i++) {
             int y0 = points[i][1];
@@ -68,8 +70,35 @@ public:
 };
 ```
 
+```c [sol-C]
+int cmp(const void* p, const void* q) {
+    int* a = *(int**)p;
+    int* b = *(int**)q;
+    // x 升序，y 降序
+    return a[0] != b[0] ? a[0] - b[0] : b[1] - a[1];
+}
+
+int numberOfPairs(int** points, int pointsSize, int* pointsColSize) {
+    qsort(points, pointsSize, sizeof(int*), cmp);
+    int ans = 0;
+    for (int i = 0; i < pointsSize; i++) {
+        int y0 = points[i][1];
+        int max_y = INT_MIN;
+        for (int j = i + 1; j < pointsSize; j++) {
+            int y = points[j][1];
+            if (y <= y0 && y > max_y) {
+                max_y = y;
+                ans++;
+            }
+        }
+    }
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func numberOfPairs(points [][]int) (ans int) {
+	// x 升序，y 降序
 	slices.SortFunc(points, func(a, b []int) int { return cmp.Or(a[0]-b[0], b[1]-a[1]) })
 	for i, p := range points {
 		y0 := p[1]
@@ -86,10 +115,51 @@ func numberOfPairs(points [][]int) (ans int) {
 }
 ```
 
+```js [sol-JavaScript]
+var numberOfPairs = function(points) {
+    points.sort((a, b) => a[0] - b[0] || b[1] - a[1]); // x 升序，y 降序
+    const n = points.length;
+    let ans = 0;
+    for (let i = 0; i < n; i++) {
+        const y0 = points[i][1];
+        let max_y = -Infinity;
+        for (let j = i + 1; j < n; j++) {
+            const y = points[j][1];
+            if (y <= y0 && y > max_y) {
+                max_y = y;
+                ans++;
+            }
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn number_of_pairs(mut points: Vec<Vec<i32>>) -> i32 {
+        points.sort_unstable_by_key(|p| (p[0], -p[1])); // x 升序，y 降序
+        let mut ans = 0;
+        for (i, p) in points.iter().enumerate() {
+            let y0 = p[1];
+            let mut max_y = i32::MIN;
+            for q in &points[i + 1..] {
+                let y = q[1];
+                if y <= y0 && y > max_y {
+                    max_y = y;
+                    ans += 1;
+                }
+            }
+        }
+        ans
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $\textit{points}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销和 Python 切片开销。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。Python 可以用循环代替切片。
 
 ## 分类题单
 
