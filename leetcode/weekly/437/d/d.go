@@ -26,7 +26,7 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 			maxs := [4]int{m - i, j + 1, i + 1, n - j} // 理论最大值（走到底）
 			k = (k + 1) % 4
 			// 优化二：如果理论最大值没有超过 res，那么不递归
-			if maxs[k] > res {
+			if min(maxs[k], maxs[(k+3)%4]) > res {
 				res = max(res, dfs(i, j, k, 0, 2-target)+1)
 			}
 		}

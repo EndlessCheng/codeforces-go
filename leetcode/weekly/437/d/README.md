@@ -209,7 +209,9 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 
 #### 优化二
 
-同理，在递归中，如果要右转，可以先判断继续走的理论最大值是否大于 $\textit{res}$，如果大于则递归，否则不递归。
+同理，在递归中，如果要右转，可以先判断右转后继续走的理论最大值是否大于 $\textit{res}$，如果大于则递归，否则不递归。
+
+以右下走为例，如果 $(i,j)$ 离网格图下边缘更近，那么至多走 $m-i$ 步；如果 $(i,j)$ 离网格图右边缘更近，那么至多走 $n-j$ 步。二者的最小值 $\min(m-i,n-j)$ 就是还能移动的步数的理论最大值。
 
 ```py [sol-Python3]
 class Solution:
@@ -228,7 +230,7 @@ class Solution:
                 maxs = (m - i, j + 1, i + 1, n - j)  # 理论最大值（走到底）
                 k = (k + 1) % 4
                 # 优化二：如果理论最大值没有超过 res，那么不递归
-                if maxs[k] > res:
+                if min(maxs[k], maxs[k - 1]) > res:
                     res = max(res, dfs(i, j, k, False, 2 - target) + 1)
             return res
 
@@ -287,7 +289,7 @@ class Solution {
             int[] maxs = {grid.length - i, j + 1, i + 1, grid[i].length - j}; // 理论最大值（走到底）
             k = (k + 1) % 4;
             // 优化二：如果理论最大值没有超过 res，那么不递归
-            if (maxs[k] > res) {
+            if (Math.min(maxs[k], maxs[(k + 3) % 4]) > res) {
                 res = Math.max(res, dfs(i, j, k, 0, 2 - target, grid, memo) + 1);
             }
         }
@@ -320,7 +322,7 @@ public:
                 int maxs[4] = {m - i, j + 1, i + 1, n - j}; // 理论最大值（走到底）
                 k = (k + 1) % 4;
                 // 优化二：如果理论最大值没有超过 res，那么不递归
-                if (maxs[k] > res) {
+                if (min(maxs[k], maxs[(k + 3) % 4]) > res) {
                     res = max(res, dfs(i, j, k, false, 2 - target) + 1);
                 }
             }
@@ -373,7 +375,7 @@ func lenOfVDiagonal(grid [][]int) (ans int) {
 			maxs := [4]int{m - i, j + 1, i + 1, n - j} // 理论最大值（走到底）
 			k = (k + 1) % 4
 			// 优化二：如果理论最大值没有超过 res，那么不递归
-			if maxs[k] > res {
+			if min(maxs[k], maxs[(k+3)%4]) > res {
 				res = max(res, dfs(i, j, k, 0, 2-target)+1)
 			}
 		}
