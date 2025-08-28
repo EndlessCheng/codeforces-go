@@ -59,6 +59,7 @@ https://codeforces.com/problemset/problem/1763/D 2200 推荐 分类讨论
 https://codeforces.com/problemset/problem/1946/E 2200 排列
 https://codeforces.com/problemset/problem/1204/E 2300 推荐
 https://codeforces.com/problemset/problem/1342/E 2300
+https://codeforces.com/problemset/problem/1550/D 2300
 https://codeforces.com/problemset/problem/2077/C 2300
 https://codeforces.com/problemset/problem/26/D 2400 类似卡特兰数的镜像反射技巧
 https://codeforces.com/problemset/problem/1109/D 2400 Prufer 序列
