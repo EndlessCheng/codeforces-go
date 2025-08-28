@@ -373,6 +373,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/377/D   2400
 // https://codeforces.com/problemset/problem/446/C   2400 斐波那契数列 广义斐波那契数列 https://gemini.google.com/app/62b7bb3403b692db 往上翻
 // https://codeforces.com/problemset/problem/1114/F  2400
+// https://codeforces.com/problemset/problem/1221/F  2400 正方形覆盖点 技巧：把加点转化成加区间
 // https://codeforces.com/problemset/problem/1969/E  2400
 // https://codeforces.com/problemset/problem/266/E   2500 k 次幂带权前缀和
 // https://codeforces.com/problemset/problem/618/E   2500 旋转 http://poj.org/problem?id=2991
@@ -573,7 +574,7 @@ func (t lazySeg) spreadAll(o int) {
 
 //
 
-// 动态开点线段树·其一·单点修改
+// 动态开点线段树·其一·单点修改      implicit segment tree
 // 注：如果 TLE 可以使用 func init() { debug.SetGCPercent(-1) } 加速
 // 基于 295E 的性能测试：
 // 动态开点           1374ms  https://codeforces.com/problemset/submission/295/328591887
@@ -585,7 +586,7 @@ func (t lazySeg) spreadAll(o int) {
 // LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
 // https://codeforces.com/problemset/problem/2000/H 2200
 // - 相似题目 https://www.luogu.com.cn/problem/P2894
-// https://codeforces.com/problemset/problem/911/G 2500
+// https://codeforces.com/problemset/problem/911/G 2500 merge move
 // https://codeforces.com/problemset/problem/1614/E 2600 todo
 // https://atcoder.jp/contests/abc351/tasks/abc351_f
 // 树套树见 fenwick_tree.go
@@ -651,9 +652,10 @@ func newStRoot(l, r int) *stNode {
 }
 
 // 动态开点线段树·其二·延迟标记（区间修改）
-// https://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
-// https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
-//（内存受限）https://codeforces.com/problemset/problem/1557/D
+// https://codeforces.com/problemset/problem/1557/D 2200（内存受限）
+// https://codeforces.com/problemset/problem/803/G 2300
+// https://codeforces.com/problemset/problem/915/E 2300（注：此题有多种解法）
+// https://www.luogu.com.cn/problem/P5848 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F
 var emptyLazyNode = &lazyNode{sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 
 func init() {
