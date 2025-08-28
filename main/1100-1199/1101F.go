@@ -26,18 +26,17 @@ func cf1101F(in io.Reader, out io.Writer) {
 	for i := range f {
 		f[i] = make([]int, n)
 	}
+	for i := range f[0] {
+		f[0][i] = 1e9
+	}
 	for l, qs := range g {
 		f[0][l] = 0
-		for r := l + 1; r < n; r++ {
-			f[0][r] = 1e9
-		}
 		for k := 1; k < n-l; k++ {
 			opt := l
 			for r := l + 1; r < n; r++ {
 				for a[r]-a[opt+1] > f[k-1][opt+1] {
 					opt++
 				}
-				// V 型曲线谷底的两个数
 				f[k][r] = min(a[r]-a[opt], f[k-1][opt+1])
 			}
 		}
