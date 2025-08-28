@@ -552,6 +552,7 @@ https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
+https://codeforces.com/problemset/problem/1550/D  2300
 https://codeforces.com/problemset/problem/1028/E  2400 推荐 找特殊位置
 https://codeforces.com/problemset/problem/1098/C  2400 树
 https://codeforces.com/problemset/problem/1244/G  2400
@@ -719,11 +720,12 @@ https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
 https://codeforces.com/group/BJlsDCvlJO/contest/586547/problem/I
 
 增量法
-- [2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/) 2033
+- [2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/)
+	  https://codeforces.com/problemset/problem/846/F 1800 一样的题目 也可以用贡献法
       https://atcoder.jp/contests/abc371/tasks/abc371_e 一样的题目
-      结合线段树优化 DP https://codeforces.com/contest/833/problem/B 2200
-- [828. 统计子串中的唯一字符](https://leetcode.cn/problems/count-unique-characters-of-all-substrings-of-a-given-string/) 2034
-- [2916. 子数组不同元素数目的平方和 II](https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/) 2816
+      https://codeforces.com/contest/833/problem/B 2200 结合线段树优化 DP
+- [828. 统计子串中的唯一字符](https://leetcode.cn/problems/count-unique-characters-of-all-substrings-of-a-given-string/)
+- [2916. 子数组不同元素数目的平方和 II](https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/)
 https://codeforces.com/problemset/problem/1715/C 1700 也可以用贡献法
 https://codeforces.com/problemset/problem/1428/F 2400
 
