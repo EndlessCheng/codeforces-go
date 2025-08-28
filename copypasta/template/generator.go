@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/EndlessCheng/codeforces-go/copypasta/template/luogu"
+	"github.com/levigross/grequests"
 	"github.com/skratchdot/open-golang/open"
 	"net/url"
 	"os"
@@ -10,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 )
+
+const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 
 const (
 	CmdCodeforces = "cf"  // https://github.com/xalanq/cf-tool
@@ -69,6 +72,33 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	contestID, problemID, isGYM := parseCodeforcesProblemURL(problemURL)
 	if _, err := strconv.Atoi(contestID); err != nil {
 		return fmt.Errorf("invalid URL: %v", err)
+	}
+
+	// 拿到题目的难度分
+	resp, err := grequests.Get("https://codeforces.com/api/problemset.problems?lang=en", &grequests.RequestOptions{
+		UserAgent: ua,
+	})
+	if err != nil {
+		return err
+	}
+	d := struct {
+		Result struct {
+			Problems []struct {
+				ContestId int    `json:"contestId"`
+				Index     string `json:"index"`
+				Rating    int    `json:"rating"`
+			} `json:"problems"`
+		} `json:"result"`
+	}{}
+	if err := resp.JSON(&d); err != nil {
+		return err
+	}
+	ratingS := ""
+	for _, p := range d.Result.Problems {
+		if strconv.Itoa(p.ContestId) == contestID && p.Index == problemID {
+			ratingS = " " + strconv.Itoa(p.Rating)
+			break
+		}
 	}
 
 	// 标准化
@@ -145,14 +175,14 @@ import (
 	"testing"
 )
 
+// %s%s
 // %s
-// %s
-func Test_cf%[3]s(t *testing.T) {
+func Test_cf%s(t *testing.T) {
 	testCases := [][2]string{%s
 	}
-	testutil.AssertEqualStringCase(t, testCases, 0, cf%[3]s)
+	testutil.AssertEqualStringCase(t, testCases, 0, cf%s)
 }
-`, problemURL, statusURL, problemID, exampleStr)
+`, problemURL, ratingS, statusURL, problemID, exampleStr, problemID)
 
 	var dir string
 	if isGYM {
