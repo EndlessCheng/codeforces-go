@@ -121,9 +121,8 @@ int** sortMatrix(int** grid, int gridSize, int* gridColSize, int* returnSize, in
 
         qsort(a, max_j - min_j + 1, sizeof(int), min_j > 0 ? cmp_less : cmp_greater);
 
-        idx = 0;
         for (int j = min_j; j <= max_j; j++) {
-            grid[k + j - n][j] = a[idx++];
+            grid[k + j - n][j] = a[j - min_j];
         }
     }
 
