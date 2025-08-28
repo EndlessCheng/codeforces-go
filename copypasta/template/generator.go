@@ -71,7 +71,8 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 		return fmt.Errorf("invalid URL: %v", err)
 	}
 
-	luoguURL := fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
+	// 标准化
+	problemURL = fmt.Sprintf("https://codeforces.com/problemset/problem/%s/%s", contestID, problemID)
 
 	var statusURL string
 	if isGYM {
@@ -79,11 +80,11 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	} else {
 		statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s?friends=on", urlObj.Host, contestID, problemID)
 	}
-
 	if openWebsite {
 		open.Run(statusURL)
 	}
 
+	luoguURL := fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
 	example, err := luogu.ParseExamples(luoguURL)
 	if err != nil {
 		fmt.Println(err)
