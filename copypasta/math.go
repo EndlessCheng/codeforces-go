@@ -3826,7 +3826,6 @@ func _(abs func(int) int) {
 
 	// 对 1~√n 中的每个 i，计算 pi(n/i)
 	// 时间复杂度和 Min_25 筛是一样的 O(n^(3/4) / log n)
-	// https://gemini.google.com/app/84de068764ac883e
 	// https://codeforces.com/problemset/problem/665/F 2400
 	calcPi2 := func(n int) []int {
 		m := int(math.Sqrt(float64(n)))
