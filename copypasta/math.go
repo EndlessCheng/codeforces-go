@@ -3825,6 +3825,7 @@ func _(abs func(int) int) {
 	// Meissel-Lehmer https://www.luogu.com.cn/problem/P7884
 
 	// 对 1~√n 中的每个 i，计算 pi(n/i)
+	// 特别地，令 i=1，这个算法可以更快地计算 pi(n)，对于 n <= 1e11 可以 1s 跑出结果
 	// 核心思路：乍一看 [2,n] 中的质数很多，但只需要筛掉合数，剩下的就都是质数，而这些合数一定能被 [2,√n] 中的质数整除
 	// 时间复杂度和 Min_25 筛是一样的 O(n^(3/4) / log n)
 	// https://codeforces.com/problemset/problem/665/F 2400
