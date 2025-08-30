@@ -11,18 +11,42 @@ import (
 
 /* 数论 组合数学
 
-鸽巢原理 抽屉原理
-https://en.wikipedia.org/wiki/Pigeonhole_principle
-https://codeforces.com/problemset/problem/1178/E
+a%-b == a%b
+a < b 等价于 a ≤ b-1
+a > b 等价于 a ≥ b+1
 
-上取整下取整转换公式的证明 https://zhuanlan.zhihu.com/p/1890356682149838951
+对于整数来说有
+ax ≤ b  =>  x ≤ ⌊b/a⌋       ax < b  =>  x < ⌈b/a⌉
+ax > b  =>  x > ⌊b/a⌋       ax ≥ b  =>  x ≥ ⌈b/a⌉
 
-アルゴリズムと数学 演習問題集 https://atcoder.jp/contests/math-and-algorithm
+推论
+x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i     相当于 x<<i ≤ s-1
+x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i     相当于 x<<i > s-1
 
-一些不等式及其证明 https://www.luogu.com.cn/blog/chinesepikaync/oi-zhong-kuai-yong-dao-di-yi-suo-fou-deng-shi-ji-ji-zheng-ming
+1<<x ≤ v  =>  x ≤ bits.Len(uint(v))-1     1<<x < v  =>  x ≤ bits.Len(uint(v-1))-1
+1<<x > v  =>  x ≥ bits.Len(uint(v))       1<<x ≥ v  =>  x ≥ bits.Len(uint(v-1))
+https://codeforces.com/problemset/problem/2040/B 1000
 
-https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
-https://euler.stephan-brumme.com/toolbox/
+⌊log2(x)⌋ = bits.Len(x) - 1
+⌈log2(x)⌉ = bits.Len(x-1)
+
+a < b<<k  =>  a>>k < b
+https://codeforces.com/problemset/problem/2035/D 1800
+
+p<<x ≤ q  => TODO 分类讨论
+https://codeforces.com/problemset/problem/1883/E 1600
+
+⌊a/x⌋≤b  =>  TODO
+https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/
+
+⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
+⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
+证明见 https://leetcode.cn/problems/minimum-number-of-days-to-eat-n-oranges/solutions/2773476/liang-chong-fang-fa-ji-yi-hua-sou-suo-zu-18jv/ 的复杂度分析
+
+  >= x 的最小的 a 的倍数，再减去 x
+= (a - x%a) % a
+= a-1 - (x-1) % a   只需要一次取模
+https://leetcode.cn/problems/minimum-increments-for-target-multiples-in-an-array/
 
 1+2+...+x = x*(x+1)/2 <= k
 解得 x <= (int(math.Sqrt(float64(k*8+1)) - 1)) / 2
@@ -35,33 +59,20 @@ https://euler.stephan-brumme.com/toolbox/
 解得 x <= (int(math.Sqrt(float64(k*8+1)) + 1)) / 2
 注意精度
 
-a%-b == a%b
-a < b 等价于 a ≤ b-1
-a > b 等价于 a ≥ b+1
+math.Log10(1e15) == 14.999999999999998
 
-对于整数来说有
-ax≤b  =>  x≤⌊b/a⌋           ax<b  =>  x<⌈b/a⌉
-ax>b  =>  x>⌊b/a⌋           ax≥b  =>  x≥⌈b/a⌉
+取模小练习
+https://atcoder.jp/contests/abc298/tasks/abc298_d
+https://www.luogu.com.cn/problem/P1134
 
-推论
-x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i     相当于 x<<i ≤ s-1
-x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i     相当于 x<<i > s-1
-
-1<<x ≤ v  =>  x ≤ bits.Len(uint(v))-1     1<<x < v  =>  x ≤ bits.Len(uint(v-1))-1
-1<<x > v  =>  x ≥ bits.Len(uint(v))       1<<x ≥ v  =>  x ≥ bits.Len(uint(v-1))
-https://codeforces.com/problemset/problem/2040/B 1000
-
-p<<x ≤ q
-https://codeforces.com/problemset/problem/1883/E 1600
-
-⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
-⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
-证明见 https://leetcode.cn/problems/minimum-number-of-days-to-eat-n-oranges/solutions/2773476/liang-chong-fang-fa-ji-yi-hua-sou-suo-zu-18jv/ 的复杂度分析
-
-  >= x 的最小的 a 的倍数，再减去 x
-= (a - x%a) % a
-= a-1 - (x-1) % a   只需要一次取模
-https://leetcode.cn/problems/minimum-increments-for-target-multiples-in-an-array/
+鸽巢原理 抽屉原理
+https://en.wikipedia.org/wiki/Pigeonhole_principle
+https://codeforces.com/problemset/problem/1178/E
+上取整下取整转换公式的证明 https://zhuanlan.zhihu.com/p/1890356682149838951
+アルゴリズムと数学 演習問題集 https://atcoder.jp/contests/math-and-algorithm
+一些不等式及其证明 https://www.luogu.com.cn/blog/chinesepikaync/oi-zhong-kuai-yong-dao-di-yi-suo-fou-deng-shi-ji-ji-zheng-ming
+https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
+https://euler.stephan-brumme.com/toolbox/
 
 https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
 https://oeis.org/A257213 mex(n/i); Least d>0 such that floor(n/d) = floor(n/(d+1))
@@ -82,6 +93,10 @@ GP: Sn = a1*(q^n-1)/(q-1), q!=1    其实感觉不如自己手推，用错位相
 https://zh.wikipedia.org/wiki/%E7%AD%89%E5%B9%82%E6%B1%82%E5%92%8C#%E4%B8%80%E8%88%AC%E6%95%B0%E5%88%97%E7%9A%84%E7%AD%89%E5%B9%82%E5%92%8C
 1^2 + ... + n^2 = n*(n+1)*(2*n+1)/6
 1^3 + ... + n^3 = [n(n+1)/2]^2
+
+式子变形
+https://codeforces.com/problemset/problem/1423/J 2500 给定正整数 n，计算 x+2y+4z=n 有多少个非负整数解
+https://codeforces.com/problemset/problem/1656/F 2600 完全图带参 MST
 
 Abel 求和公式 / 离散分部积分公式 / 分部求和法 / Abel 变换
 https://en.wikipedia.org/wiki/Summation_by_parts
@@ -219,12 +234,6 @@ https://oeis.org/A216485 222...2
 	a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
 	https://oeis.org/A181061
 
-Berlekamp–Massey algorithm
-https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
-https://oi-wiki.org/math/berlekamp-massey/
-
-椭圆曲线加密算法 https://ac.nowcoder.com/acm/contest/6916/C
-
 Gaussian integer https://en.wikipedia.org/wiki/Gaussian_integer
 Eisenstein integer https://en.wikipedia.org/wiki/Eisenstein_integer
 Eisenstein prime https://en.wikipedia.org/wiki/Eisenstein_prime
@@ -259,8 +268,8 @@ https://oeis.org/A284668 record index < 10^n
 https://oeis.org/A008884 3x+1 sequence starting at 27
 LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
 
+椭圆曲线加密算法 https://ac.nowcoder.com/acm/contest/6916/C
 Funny sum https://codeforces.com/blog/entry/125796?#comment-1116197
-
 todo https://ac.nowcoder.com/acm/contest/85687/F
 - https://ac.nowcoder.com/acm/discuss/blogs?tagId=270235
 
@@ -346,26 +355,15 @@ func _(abs func(int) int) {
 	https://mathworld.wolfram.com/EuclideanAlgorithm.html
 	https://en.wikipedia.org/wiki/Euclidean_algorithm
 	https://stackoverflow.com/questions/3980416/time-complexity-of-euclids-algorithm
-
-	https://codeforces.com/contest/2008/problem/G 1800
-
-	GCD 卷积（GCD Convolution）
-	https://codeforces.com/blog/entry/112346
-	https://judge.yosupo.jp/problem/gcd_convolution
-	https://atcoder.jp/contests/agc038/tasks/agc038_c
-	https://codeforces.com/gym/103688/problem/E
-	https://codeforces.com/problemset/problem/1884/D
-	https://ac.nowcoder.com/acm/contest/73854/G
-
+	https://codeforces.com/blog/entry/63771 Tighter time complexity for GCD
+	https://codeforces.com/blog/entry/92720 Runtime of finding the GCD of an array
 	https://oeis.org/A051010 Triangle T(m,n) giving of number of steps in the Euclidean algorithm for gcd(m,n) with 0<=m<n
 	https://oeis.org/A034883 Maximum length of Euclidean algorithm starting with n and any nonnegative i<n
 	https://oeis.org/A049826 GCD(n,i) 的迭代次数之和，O(nlogn)
 
-	Tighter time complexity for GCD https://codeforces.com/blog/entry/63771
-	Runtime of finding the GCD of an array https://codeforces.com/blog/entry/92720
-
 	基础题
 	https://codeforces.com/problemset/problem/1736/B 1200
+	https://codeforces.com/problemset/problem/2126/E 1400
 	https://codeforces.com/problemset/problem/1920/C 1600
 
 	因子与 GCD
@@ -380,6 +378,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1458/A 1600
 	https://codeforces.com/problemset/problem/1766/D 1600
 	https://codeforces.com/problemset/problem/1295/D 1800
+	https://codeforces.com/problemset/problem/2008/G 1800
 
 	GCD 套路：枚举倍数（调和级数复杂度）
 	https://codeforces.com/problemset/problem/264/B 1500 GCD 与质因子
@@ -393,7 +392,7 @@ func _(abs func(int) int) {
 	构造
 	https://codeforces.com/problemset/problem/1366/D 2000
 
-	todo 基于值域预处理的快速 GCD https://www.luogu.com.cn/problem/P5435
+	todo https://www.luogu.com.cn/problem/P5435 基于值域预处理的快速 GCD
 
 	GCD = 1 的子序列个数 https://codeforces.com/problemset/problem/803/F https://ac.nowcoder.com/acm/problem/112055
 	见后面的 mu
@@ -417,6 +416,14 @@ func _(abs func(int) int) {
 	裴蜀定理 Bézout's identity
 	LC1250 https://leetcode.cn/problems/check-if-it-is-a-good-array/
 	https://www.codechef.com/problems/SJ1
+
+	GCD 卷积（GCD Convolution）
+	https://codeforces.com/blog/entry/112346
+	https://judge.yosupo.jp/problem/gcd_convolution
+	https://atcoder.jp/contests/agc038/tasks/agc038_c
+	https://codeforces.com/gym/103688/problem/E
+	https://codeforces.com/problemset/problem/1884/D
+	https://ac.nowcoder.com/acm/contest/73854/G
 
 	*/
 
@@ -504,6 +511,8 @@ func _(abs func(int) int) {
 	// LC3312 https://leetcode.cn/problems/sorted-gcd-pair-queries/
 	// - https://www.codechef.com/problems/KGCD 3056 难点在输出方案
 	// - https://discuss.codechef.com/t/KGCD-editorial/
+	// https://codeforces.com/problemset/problem/803/F 2000 子序列 EDU20
+	// https://codeforces.com/problemset/problem/990/G 2400 树上路径 EDU45
 	countGCD := func(a []int) []int {
 		mx := slices.Max(a)
 		cntX := make([]int, mx+1)
@@ -524,7 +533,7 @@ func _(abs func(int) int) {
 		return cntG
 	}
 
-	// 统计数组的所有子区间的 GCD 的不同个数
+	// 统计子数组 GCD 的不同个数
 	// 代码和题目见 bits.go 中的 bitOpTrick
 
 	// 统计数组的所有子序列的 GCD 的不同个数，复杂度 O(Clog^2C)
@@ -917,6 +926,24 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/U82118
 	isPrime = func(n int) bool { return big.NewInt(int64(n)).ProbablyPrime(0) }
 
+	// O(sqrt n / log n)
+	// 需要先预处理 sqrt U 以内的质数
+	// https://leetcode.cn/problems/sum-of-largest-prime-substrings/solutions/3685356/pan-duan-zhi-shu-pythonjavacgo-by-endles-0w8f/
+	isPrimeFaster := func(n int, mx int, isP []bool, primes []int) bool {
+		if n <= mx {
+			return isP[n]
+		}
+		for _, p := range primes {
+			if p*p > n {
+				break
+			}
+			if n%p == 0 {
+				return false
+			}
+		}
+		return true
+	}
+
 	// 判断质数+求最大质因子
 	// 先用 Pollard-Rho 算法求出一个因子，然后递归求最大质因子
 	// https://zhuanlan.zhihu.com/p/267884783
@@ -963,14 +990,6 @@ func _(abs func(int) int) {
 		}
 	}
 
-	/* 题单：预处理质数
-	- [204. 计数质数](https://leetcode.cn/problems/count-primes/)
-	- [2761. 和等于目标值的质数对](https://leetcode.cn/problems/prime-pairs-with-target-sum/) 1505
-	- [2523. 范围内最接近的两个质数](https://leetcode.cn/problems/closest-prime-numbers-in-range/) 1650
-	- [2601. 质数减法运算](https://leetcode.cn/problems/prime-subtraction-operation/) 1779
-	- [2867. 统计树中的合法路径数目](https://leetcode.cn/problems/count-valid-paths-in-a-tree/) 2428
-	*/
-
 	// 预处理: [2,mx] 范围内的质数
 	// 埃筛 埃氏筛 埃拉托斯特尼筛法 Sieve of Eratosthenes
 	// 该算法也说明了：前 n 个数的平均质因子数量是 O(loglogn) 级别的
@@ -981,8 +1000,9 @@ func _(abs func(int) int) {
 	//         π(10^n) https://oeis.org/A006880
 	//         4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534, /* 1e9 */
 	//         455052511, 4118054813, 37607912018, 346065536839, 3204941750802, 29844570422669, 279238341033925, 2623557157654233, 24739954287740860, 234057667276344607,
-	// 思想应用 https://codeforces.com/contest/1646/problem/E
-	// https://codeforces.com/problemset/problem/576/A
+	// https://codeforces.com/problemset/problem/2104/D 1400
+	// https://codeforces.com/problemset/problem/576/A 1500
+	// https://codeforces.com/problemset/problem/1646/E 2200
 	sieve := func() {
 		const mx int = 1e6
 		primes := []int{}
@@ -1132,6 +1152,8 @@ func _(abs func(int) int) {
 
 	// 区间筛法
 	// 预处理 [2,√R] 的所有质数，去筛 [L,R] 之间的质数
+	// https://www.luogu.com.cn/problem/P1835 http://poj.org/problem?id=2689
+	// https://atcoder.jp/contests/abc412/tasks/abc412_e
 
 	// todo 多组数据下的记忆化质因数分解 https://codeforces.com/contest/1512/submission/112590495
 
@@ -1458,6 +1480,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1372/B 1300
 
 	// 枚举一个数的全部因子
+	// https://codeforces.com/problemset/problem/2114/F 2000
 	divisors := func(n int) (ds []int) {
 		for d := 1; d*d <= n; d++ {
 			if n%d == 0 {
@@ -1543,14 +1566,16 @@ func _(abs func(int) int) {
 		}
 	}
 
-	// 预处理: [1,mx] 范围内数的所有因子
-	// 复杂度 O(nlogn)
-	// NOTE: 1~n 的因子个数总和大约为 nlogn
+	// 预处理: [1,N] 中的整数的所有因子
+	// 复杂度 O(NlogN)
 	// NOTE: divisors[x] 为奇数 => x 为完全平方数 https://oeis.org/A000290
 	// NOTE: halfDivisors(x) 为 ≤√x 的因数集合 https://oeis.org/A161906
 	// https://codeforces.com/problemset/problem/1777/C 1700
+	// https://codeforces.com/problemset/problem/2094/H 1900
+	// https://codeforces.com/problemset/problem/2123/G 2100
+	// https://codeforces.com/problemset/problem/1986/G2 2500
 	// https://codeforces.com/problemset/problem/1730/E 2700
-	divisorsAll := func() {
+	initDivisors := func() {
 		const mx = 1_000_001
 		divisors := [mx][]int32{} // 如果 mx 很大会 MLE，改成 int32
 		for i := int32(1); i < mx; i++ {
@@ -1719,15 +1744,17 @@ func _(abs func(int) int) {
 	// - [2709. 最大公约数遍历](https://leetcode.cn/problems/greatest-common-divisor-traversal/) 2172
 	// - [1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/) 2429
 	// - [1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/) 2500
-	// https://codeforces.com/problemset/problem/385/C
-	// https://codeforces.com/gym/103107/problem/F (另一种做法是欧拉筛）
+	// https://codeforces.com/problemset/problem/385/C 1700
+	// https://codeforces.com/problemset/problem/594/D 2500
+	// https://codeforces.com/gym/103107/problem/F 另一种做法是欧拉筛
 	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
 		for i := 2; i <= mx; i++ {
 			if lpf[i] == 0 {
 				for j := i; j <= mx; j += i {
-					if lpf[j] == 0 { // 去掉这个判断就变成求 GPF，也可以用来（从大到小地）分解质因数
+					// 去掉 if lpf[j] == 0 就变成求 GPF，可以用来【从大到小地】分解质因数
+					if lpf[j] == 0 {
 						lpf[j] = i
 					}
 				}
@@ -2032,7 +2059,8 @@ func _(abs func(int) int) {
 	// 预处理质因子
 	// 例如 pf[12] = [2,3]
 	// for i>=2, pf[i][0] == i means i is prime
-	primeDivisorsAll := func() {
+	// https://codeforces.com/problemset/problem/2065/G
+	initPrimeDivisors := func() {
 		const mx int = 1e6
 		pf := [mx + 1][]int{}
 		for i := 2; i <= mx; i++ {
@@ -2106,11 +2134,15 @@ func _(abs func(int) int) {
 	}
 
 	// 欧拉函数（互质的数的个数）Euler totient function
+	// φ(n) = n * (1 - 1/p1) * (1 - 1/p2) * ... * (1 - 1/pr)，其中 p1,p2,...,pr 是 n 的质因子
 	// https://oeis.org/A000010 https://oeis.org/A000010/list
 	// https://en.wikipedia.org/wiki/Euler%27s_totient_function
 	// 下界 https://en.wikipedia.org/wiki/Euler%27s_totient_function#Growth_rate
 	// 比较松的下界 φ(n) >= √(n/2)
 	// https://oi-wiki.org/math/euler/
+	//
+	// https://codeforces.com/problemset/problem/594/D 2500
+	//
 	// 前缀和见下面的「phi 求和相关」
 	// φ(φ...(n)) 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
 	//      https://codeforces.com/problemset/problem/1797/E 2300
@@ -2241,14 +2273,16 @@ func _(abs func(int) int) {
 	// https://atcoder.jp/contests/abc222/tasks/abc222_g
 	// https://oj.socoding.cn/p/1981
 
-	// 扩展欧拉定理（降幂公式）
+	// 扩展欧拉定理（欧拉降幂公式）
 	// https://oi-wiki.org/math/fermat/#_5
 	// https://zhuanlan.zhihu.com/p/42632291
 	// https://blog.csdn.net/synapse7/article/details/19610361
 	// a^b ≡ a^(b mod φ(m)) (mod m), gcd(a,m)=1
 	// a^b ≡ a^(b mod φ(m) + φ(m)) (mod m), gcd(a,m)!=1 且 b>φ(m)
-	// 模板题 https://www.luogu.com.cn/problem/P5091
-	// 例题 https://codeforces.com/problemset/problem/615/D
+	//
+	// https://www.luogu.com.cn/problem/P5091 模板题
+	// https://codeforces.com/problemset/problem/615/D 2000 例题
+	// https://codeforces.com/problemset/problem/906/D 2700
 	// https://atcoder.jp/contests/abc228/tasks/abc228_e
 	// https://cses.fi/problemset/task/1712
 	exPhi := func(a, b, m int) int {
@@ -2526,6 +2560,7 @@ func _(abs func(int) int) {
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
 	// 滑窗 https://codeforces.com/contest/1833/problem/F
+	// 注：计算 val ^ (-n) 无需求两次快速幂，而是同余成 val ^ (p-1-n)
 	invP := func(a, p int) int {
 		if a <= 0 {
 			panic(-1)
@@ -2868,11 +2903,13 @@ func _(abs func(int) int) {
 	// = 1, otherwise
 
 	// binomial(n, floor(n/2)) https://oeis.org/A001405
-	// a(n) ~ 2^n / sqrt(π * n/2)     O(2^n/sqrt(n))         斯特林公式
-	// a(2n) ~ 4^n / sqrt(πn)         O(4^n/sqrt(n))
+	// a(n) ~ 2^n / sqrt(π * n/2)     O(2^n / sqrt(n))         斯特林公式
+	// a(2n) ~ 4^n / sqrt(πn)         O(4^n / sqrt(n))
 	// 从一个大小为 n 的集合的子集中随机选一个，选到 floor(n/2) 大小的子集的概率约为 1 / sqrt(π * n/2)
 	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
-	// EXTRA: https://oeis.org/A000984 Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
+	// 偶数项: https://oeis.org/A000984 Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
+	// - 前缀和 https://oeis.org/A006134 a(n) = Sum_{k=0..n} binomial(2*k,k)    GF(x) = 1 / ((1-x) * sqrt(1-4*x))
+	//                                  a(n) ~ 2^(2*n+2) / (3*sqrt(πn))
 	// EXTRA: https://oeis.org/A100071 a(n) = n * A001405(n-1) = 1, 2, 6, 12, 30, 60, 140, 280, 630, 1260, ...
 	//                                 a(n) = a(n-1) * n / floor(n/2)
 	// EXTRA: https://oeis.org/A107373 a(n) = (n/2) * A001405(n-1) - 2^(n-2)
@@ -2901,6 +2938,7 @@ func _(abs func(int) int) {
 	}
 
 	// O(n) 预处理阶乘及其逆元，O(1) 求组合数
+	// 推广：用这个方法可以 O(1) 算子数组乘积
 	// 模板题 https://www.luogu.com.cn/problem/B3717
 	// 组合数模 10 的模板 https://leetcode.cn/problems/check-if-digits-are-equal-in-string-after-operations-ii/solution/mo-shu-wei-he-shu-shi-de-zu-he-shu-by-en-8x7t/
 	{
@@ -3040,8 +3078,9 @@ func _(abs func(int) int) {
 		return res
 	}
 
-	// 适用于 n 巨大但 k 或 n-k 较小的情况
-	// https://codeforces.com/problemset/problem/451/E
+	// 适用于 n 巨大但 k 或 n-k 较小的情况（或者只计算一次组合数，O(1) 空间）
+	// https://codeforces.com/problemset/problem/451/E 2300
+	// https://codeforces.com/problemset/problem/1526/E 2400
 	combMod := func(n, k int) int {
 		if n < k {
 			return 0
@@ -3196,7 +3235,8 @@ func _(abs func(int) int) {
 	//    UVa1638 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4513
 	//    todo https://www.luogu.com.cn/problem/P5408
 	//         https://www.luogu.com.cn/problem/P5409
-	//         https://codeforces.com/problemset/problem/1516/E
+	//         https://codeforces.com/problemset/problem/1516/E 2500
+	//         https://codeforces.com/problemset/problem/960/G 2900
 	// 【第二类斯特林数】S2(n,k) https://oeis.org/A008277
 	//    将 n 个元素拆分为 k 个非空集的方法数
 	//    用容斥计算单个项 S2(n,k) = (1/k!) * ∑{i=0..k} (-1)^(k-i)*C(k, i)*i^n
@@ -3205,6 +3245,9 @@ func _(abs func(int) int) {
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
 	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
 	//    LC1692 https://leetcode.cn/problems/count-ways-to-distribute-candies/
+	//    https://codeforces.com/problemset/problem/1716/F 2500 把幂转成下降幂 https://chatgpt.com/c/6836d520-3efc-8011-ac52-a2207a5251d0
+	//    https://codeforces.com/problemset/problem/1278/F 2600 把幂转成下降幂 https://chatgpt.com/c/68284f34-38cc-8011-9dd2-04beb3fbed53
+	//    - https://www.luogu.com.cn/article/v9zshgeb
 	//    https://www.luogu.com.cn/problem/P5395
 	//    todo https://www.luogu.com.cn/problem/P5396
 	//    https://oeis.org/A019538 n 个位置，每个位置填 [1,k] 之间的数，要求每个数字至少出现一次 => k!*S2(n,k)
@@ -3213,7 +3256,7 @@ func _(abs func(int) int) {
 	// Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
 	// todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
 	// todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
-	stirling1 := func(n, k int) int {
+	stirling1 := func(n int) [][]int {
 		s := make([][]int, n+1)
 		for i := range s {
 			s[i] = make([]int, n+1) // K+1
@@ -3225,10 +3268,10 @@ func _(abs func(int) int) {
 				s[i][j] = (s[i-1][j-1] + s[i-1][j]*(i-1)) % mod
 			}
 		}
-		return s[n][k]
+		return s
 	}
 
-	stirling2 := func(n, k int) int {
+	stirling2 := func(n int) [][]int {
 		s2 := make([][]int, n+1)
 		for i := range s2 {
 			s2[i] = make([]int, n+1)
@@ -3239,7 +3282,20 @@ func _(abs func(int) int) {
 				s2[i][j] = (s2[i-1][j-1] + s2[i-1][j]*j) % mod
 			}
 		}
-		return s2[n][k]
+		return s2
+	}
+
+	// 只计算第 n 行
+	stirling2Row := func(n int) []int {
+		s2 := make([]int, n+1)
+		s2[0] = 1
+		for i := 1; i <= n; i++ {
+			for j := i; j > 0; j-- {
+				s2[j] = (s2[j-1] + s2[j]*j) % mod
+			}
+			s2[0] = 0
+		}
+		return s2
 	}
 
 	// 第二类斯特林数·行
@@ -3347,6 +3403,78 @@ func _(abs func(int) int) {
 	// T(n, k) = k * T(n-1, k) + (n-k+1) * T(n-1, k-1), T(1, 1) = 1
 	// T(n, k) = Sum_{j=0..k} (-1)^j * (k-j)^n * C(n+1, j)
 	// todo 浅谈欧拉数 https://www.luogu.com.cn/blog/Karry5307/eulerian-numbers
+
+	// Mahonian 数
+	// https://en.wikipedia.org/wiki/Major_index
+	// f(n,k) 表示恰好有 k 个逆序对的 1~n 的排列的个数
+	// O(nk) 插入法 + 前缀和优化 DP
+	// https://leetcode.cn/problems/k-inverse-pairs-array/ 同 https://www.luogu.com.cn/problem/P2513
+	// https://leetcode.cn/problems/count-the-number-of-inversions/
+	// https://codeforces.com/problemset/problem/1542/E1 2400
+	// https://codeforces.com/problemset/problem/1542/E2 2700
+
+	// 优化前 O(n^2 * maxK) = O(n^4)
+	mahonian := func(n int) [][]int {
+		maxK := n * (n - 1) / 2
+		f := make([][]int, n+1)
+		for i := range f {
+			f[i] = make([]int, maxK+1)
+		}
+		f[0][0] = 1
+		for i := 1; i <= n; i++ {
+			for j := range i*(i-1)/2 + 1 {
+				s := 0
+				// 将新的数字 i 插入到 1~i-1 的排列中，根据插入位置的不同，会新增 t=0~min(i-1,j) 个逆序对
+				for t := range min(i, j+1) {
+					s += f[i-1][j-t]
+				}
+				f[i][j] = s % mod
+			}
+		}
+		return f
+	}
+
+	// 前缀和优化 O(n * maxK) = O(n^3)
+	mahonian2 := func(n, maxK int) [][]int {
+		//maxK := n * (n - 1) / 2
+		f := make([][]int, n+1)
+		for i := range f {
+			f[i] = make([]int, maxK+1)
+		}
+		f[0][0] = 1
+		sum := make([]int, maxK+2)
+		for i := 1; i <= n; i++ {
+			mx := min(i*(i-1)/2, maxK) // 如果 maxK 是 n*(n-1)/2，改成 i*(i-1)/2
+			for j, v := range f[i-1][:mx+1] {
+				sum[j+1] = sum[j] + v
+			}
+			for j := range mx + 1 {
+				f[i][j] = (sum[j+1] - sum[max(j-i+1, 0)]) % mod
+			}
+		}
+		return f
+	}
+
+	// 前缀和优化（原地）
+	// https://leetcode.cn/problems/k-inverse-pairs-array/
+	mahonian3 := func(n, maxK int) int {
+		if maxK > n*(n-1)/2 {
+			return 0
+		}
+		const mod = 1_000_000_007
+		f := make([]int, maxK+1)
+		f[0] = 1
+		for i := 1; i <= n; i++ {
+			up := min(i*(i-1)/2, maxK)
+			for j := 1; j <= up; j++ {
+				f[j] = (f[j] + f[j-1]) % mod
+			}
+			for j := up; j >= i; j-- {
+				f[j] = (f[j] - f[j-i] + mod) % mod
+			}
+		}
+		return f[maxK]
+	}
 
 	//
 
@@ -3492,6 +3620,7 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/blog/lx-2003/mobius-inversion
 	// [Tutorial] Generalized Möbius Inversion on Posets https://codeforces.com/blog/entry/98413
 	// [Tutorial] Zeta, Mobius Transform to AND, OR, GCD Convolution https://codeforces.com/blog/entry/119082
+	// Möbius function, Möbius inversion explanation from a combinatorics perspective https://codeforces.com/blog/entry/143029
 	//
 	// todo 题单 https://www.luogu.com.cn/training/1055#problems
 	// todo 重新做一遍
@@ -3661,7 +3790,7 @@ func _(abs func(int) int) {
 			for l, r := 2, 0; l <= m; l = r + 1 {
 				h := m / l
 				r = m / h
-				res -= (r - l + 1) * sumPhi(int(h))
+				res -= (r - l + 1) * sumPhi(h)
 			}
 			cachePhi[n] = res
 			return res
@@ -3687,12 +3816,57 @@ func _(abs func(int) int) {
 		}
 	}
 
-	// Min25 筛 - 积性函数前缀和
+	// Min_25 筛 - 积性函数前缀和
 	// https://zhuanlan.zhihu.com/p/60378354
 	// https://oi-wiki.org/math/min-25/
 	// https://codeforces.com/blog/entry/92703
 	// todo 模板题 https://www.luogu.com.cn/problem/P5325
-	//  Meissel-Lehmer https://www.luogu.com.cn/problem/P7884
+	// https://leetcode.cn/problems/count-the-number-of-ideal-arrays/solutions/3658527/min25shai-jie-fa-by-vclip-2uji/?envType=daily-question&envId=2025-04-22
+	// Meissel-Lehmer https://www.luogu.com.cn/problem/P7884
+
+	// 对 1~√n 中的每个 i，计算 pi(n/i)
+	// 时间复杂度和 Min_25 筛是一样的 O(n^(3/4) / log n)
+	// https://gemini.google.com/app/84de068764ac883e
+	// https://codeforces.com/problemset/problem/665/F 2400
+	calcPi2 := func(n int) []int {
+		m := int(math.Sqrt(float64(n)))
+		pi := make([]int, m+1)  // pi[i] 是 <= i 的质数个数
+		pi2 := make([]int, m+1) // pi2[i] 是 <= n/i 的质数个数
+		for i := 1; i <= m; i++ {
+			// 先假设所有大于 1 的数都可能是质数
+			pi[i] = i - 1
+			pi2[i] = n/i - 1
+		}
+
+		// 筛法
+		for i := 2; i <= m; i++ {
+			prePi := pi[i-1]
+			if pi[i] > prePi { // i 是质数
+				for j := 1; j <= min(m, n/(i*i)); j++ {
+					// 原理见下面计算 pi[j] 的注释
+					// 根据 i*j 的大小决定转移来源
+					if i*j <= m {
+						pi2[j] -= pi2[i*j] - prePi
+					} else {
+						pi2[j] -= pi[n/(i*j)] - prePi
+					}
+				}
+				// sum_{i <= n^(1/4)} m = m * pi(n^(1/4)) = O(n^(3/4) / log n)
+				for j := m; j >= i*i; j-- {
+					// 更新前，pi[j] 表示 [2,j] 中不是 [2,i-1] 中任何质数的倍数的数的个数
+					// 我们需要减去恰好被质数 i 筛掉的数的个数，从而得到 [2,j] 中不是 [2,i] 中任何质数的倍数的数的个数
+					// 恰好被质数 i 筛掉的数（设为 x）必须是 i 的倍数，且不能是 [2,i-1] 中任何质数的倍数
+					// 简单来说就是 LPF(x) = i
+					// 为了计算 x 的个数，我们需要把「i 的倍数」这个条件去掉
+					// 令 x = i * k，那么 LPF(k) >= i，所以 k 也不能是 [2,i-1] 中任何质数的倍数
+					// 由 x <= j 得 i <= k <= j/i，所以 k 的个数就是 [i,j/i] 中的不是 [2,i-1] 中任何质数的倍数的数的个数，即 pi[j/i] - pi[i-1]
+					pi[j] -= pi[j/i] - prePi
+				}
+			}
+		}
+
+		return pi2
+	}
 
 	// 一篇新论文，复杂度为 O((nlogn)^(3/5))
 	// Summing μ(n): a faster elementary algorithm
@@ -3736,6 +3910,7 @@ func _(abs func(int) int) {
 	异或和 F(n) 1,0,2,1,4,12,1,20,54,1,88,200,33,344,826,225,1756,3268,7313,1788
 	定义 f(m) 为最小的满足 F(i)+F(j) ≡ 0 (mod m) 的 i (j<=i)，f(m) 大概是 O(√m) 的
 	todo https://codeforces.com/problemset/problem/226/C
+	https://codeforces.com/problemset/problem/446/C 2400
 
 	其他相关序列
 	https://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
@@ -3785,11 +3960,11 @@ func _(abs func(int) int) {
 
 		floorSum,
 
-		isPrime, sieve, allPi, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2,
+		isPrime, isPrimeFaster, sieve, allPi, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2,
 		powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 
 		maxDivisorNum, maxDivisorNumWithLimit, minNumOfTargetDivisors, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor,
-		divisorsAll, primeDivisorsAll, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
+		initDivisors, initPrimeDivisors, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
 
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
@@ -3805,13 +3980,14 @@ func _(abs func(int) int) {
 		// 阶乘，组合，排列（可重排列）
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf,
 		initComb, comb, combMod, permRepeat, kthPermRepeat,
-		stirling1, stirling2, stirling2RowPoly,
+		stirling1, stirling2, stirling2Row, stirling2RowPoly,
 		bellTriangle, bellPoly, setPartition,
+		mahonian, mahonian2, mahonian3,
 
 		calcMu, sieveMu, sieveMu2,
 
 		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
 
-		sieveDu,
+		sieveDu, calcPi2,
 	}
 }
