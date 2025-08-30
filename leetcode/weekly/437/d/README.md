@@ -27,7 +27,7 @@
 
 计算所有 $\textit{dfs}(i,j,k,\texttt{true},2)+1$ 的最大值，即为答案。
 
-⚠**注意**：$\textit{target}$ 无需记忆化，因为知道 $(i,j)$ 就间接知道 $\textit{target}$ 是多少，代码只是为了方便实现，额外传入了 $\textit{target}$。
+⚠**注意**：$\textit{target}$ 无需记忆化，因为知道 $(i,j,k)$ 就间接知道 $\textit{target}$ 是多少，代码只是为了方便实现，额外传入了 $\textit{target}$。
 
 关于记忆化搜索的原理，请看 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)。
 
