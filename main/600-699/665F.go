@@ -34,9 +34,12 @@ func cf665F(in io.Reader, out io.Writer) {
 		}
 	}
 
-	ans := pi[int(math.Cbrt(float64(n)))]
+	ans := pi[int(math.Cbrt(float64(n)))] // p^3 的个数
 	for i := 2; i <= m; i++ {
-		if pi[i] > pi[i-1] {
+		if pi[i] > pi[i-1] { // i 是质数（记作 p）
+			// p * q <= n
+			// 所以 p < q <= n/p
+			// 所以 q 的个数就是 pi(n/p) - pi(p)
 			ans += pi2[i] - pi[i]
 		}
 	}
