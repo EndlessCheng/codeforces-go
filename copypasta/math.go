@@ -3838,7 +3838,7 @@ func _(abs func(int) int) {
 			pi2[i] = n/i - 1
 		}
 
-		// 筛法
+		// 用[2,√n] 中的质数筛掉合数
 		for i := 2; i <= m; i++ {
 			prePi := pi[i-1]
 			if pi[i] > prePi { // i 是质数
