@@ -61,6 +61,7 @@ https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列
 https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
 https://codeforces.com/problemset/problem/2042/D 1900
 https://codeforces.com/problemset/problem/629/D 2000
+https://codeforces.com/problemset/problem/1288/E 2000 转化
 https://codeforces.com/problemset/problem/1891/F 2000 离线 树 回溯
 https://codeforces.com/problemset/problem/165/D 2100
 https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和
@@ -72,6 +73,7 @@ https://codeforces.com/problemset/problem/762/E 2200 离散化
 - https://codeforces.com/problemset/problem/1045/G 2200 同 762E
 https://codeforces.com/problemset/problem/1194/E 2200 多变量统计
 https://codeforces.com/problemset/problem/2065/H 2200
+https://codeforces.com/problemset/problem/628/E 2300 Z 形状个数
 https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
 https://codeforces.com/problemset/problem/12/D 2400 三维偏序
