@@ -49,7 +49,7 @@ class Solution:
                     path[i] = n
                     ans = path.copy()  # path[:]
                 return
-            for d in divisors[n]:  # 枚举 x 的因子
+            for d in divisors[n]:  # 枚举 n 的因子 d
                 path[i] = d  # 直接覆盖，无需恢复现场
                 dfs(i + 1, n // d, min(mn, d), max(mx, d))
 
@@ -78,7 +78,7 @@ class Solution {
             }
             return;
         }
-        for (int d = 1; d <= n; d++) { // 枚举 x 的因子
+        for (int d = 1; d <= n; d++) { // 枚举 n 的因子 d
             if (n % d == 0) {
                 path[i] = d; // 直接覆盖，无需恢复现场
                 dfs(i + 1, n / d, Math.min(mn, d), Math.max(mx, d), path);
@@ -130,7 +130,7 @@ class Solution {
             }
             return;
         }
-        for (int d : divisors[n]) { // 枚举 x 的因子
+        for (int d : divisors[n]) { // 枚举 n 的因子 d
             path[i] = d; // 直接覆盖，无需恢复现场
             dfs(i + 1, n / d, Math.min(mn, d), Math.max(mx, d), path);
         }
@@ -168,7 +168,7 @@ public:
                 }
                 return;
             }
-            for (int d : divisors[n]) { // 枚举 x 的因子
+            for (int d : divisors[n]) { // 枚举 n 的因子 d
                 path[i] = d; // 直接覆盖，无需恢复现场
                 dfs(i + 1, n / d, min(mn, d), max(mx, d));
             }
@@ -207,7 +207,7 @@ func minDifference(n, k int) (ans []int) {
 			}
 			return
 		}
-		for _, d := range divisors[n] { // 枚举 x 的因子
+		for _, d := range divisors[n] { // 枚举 n 的因子 d
 			path[i] = d // 直接覆盖，无需恢复现场
 			dfs(i+1, n/d, min(mn, d), max(mx, d))
 		}
@@ -246,7 +246,7 @@ class Solution:
                     path[i] = n
                     ans = path.copy()  # path[:]
                 return
-            for d in divisors[n]:  # 枚举 x 的因子
+            for d in divisors[n]:  # 枚举 n 的因子 d
                 if d * d > n:
                     break
                 if i == 0 or d >= path[i - 1]:
@@ -278,7 +278,7 @@ class Solution {
             }
             return;
         }
-        for (int d = i == 0 ? 1 : path[i - 1]; d * d <= n; d++) { // 枚举 x 的因子
+        for (int d = i == 0 ? 1 : path[i - 1]; d * d <= n; d++) { // 枚举 n 的因子 d
             if (n % d == 0) {
                 path[i] = d; // 直接覆盖，无需恢复现场
                 dfs(i + 1, n / d, path);
@@ -331,7 +331,7 @@ class Solution {
             return;
         }
         int maxD = (int) Math.sqrt(n);
-        for (int d : divisors[n]) { // 枚举 x 的因子
+        for (int d : divisors[n]) { // 枚举 n 的因子 d
             if (d > maxD) {
                 break;
             }
@@ -375,7 +375,7 @@ public:
                 return;
             }
             int max_d = sqrt(n);
-            for (int d : divisors[n]) { // 枚举 x 的因子
+            for (int d : divisors[n]) { // 枚举 n 的因子 d
                 if (d > max_d) {
                     break;
                 }
@@ -419,7 +419,7 @@ func minDifference(n, k int) (ans []int) {
 			}
 			return
 		}
-		for _, d := range divisors[n] { // 枚举 x 的因子
+		for _, d := range divisors[n] { // 枚举 n 的因子 d
 			if d*d > n {
 				break
 			}
