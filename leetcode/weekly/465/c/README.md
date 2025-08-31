@@ -1,3 +1,15 @@
+## 转化
+
+首先我们有如下暴力思路：
+
+- 外层循环枚举 $\textit{nums}[i]$，内层循环枚举 $\textit{nums}[j]$，如果 $\textit{nums}[i]\ &\ \textit{nums}[j] = 0$，那么用 $\textit{nums}[i]\cdot \textit{nums}[j]$ 更新答案的最大值。
+
+这个做法的时间复杂度是 $\mathcal{O}(n^2)$ 的，会超时。
+
+怎么样更快？能不能对于每个 $\textit{nums}[i]$，求出满足 $\textit{nums}[i]\ &\ \textit{nums}[j] = 0$ 的 $\textit{nums}[j]$ 的最大值？
+
+如何理解 $\textit{nums}[i]\ &\ \textit{nums}[j] = 0$？
+
 根据 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)，把每个 $\textit{nums}_i$ 视作一个集合 $S_i$。
 
 用集合思考，两个数的按位与等于 $0$，等价于两个集合 $A$ 和 $B$ 的交集为空，即 
@@ -6,27 +18,25 @@ $$
 A\cap B = \varnothing
 $$
 
-这等价于 $B$ 是 $A$ 关于全集 $U$ 的补集的子集，即
+这又等价于 $B$ 是 $A$ 关于全集 $U$ 的补集的子集，即
 
 $$
 B \subseteq \complement_UA
 $$
 
-枚举 $\textit{nums}_i$，为了让乘积最大，我们需要知道 $\textit{nums}_j$ 的最大值，其中 $j$ 需要满足 $S_j \subseteq \complement_US_i$。
+枚举 $\textit{nums}_i$，为了让乘积最大，我们需要知道 $\textit{nums}_j$ 的最大值，其中 $\textit{nums}_j$ 对应的集合为 $S_j$，需要满足 $S_j \subseteq \complement_US_i$。
 
-这是**高维前缀和**（Sum Over Subsets DP，SOS DP）的标准应用。
+## 方法一：普通状压 DP
 
-> 注：Sum Over Subsets DP 直译过来是**子集和 DP**，国内算法竞赛圈一般叫高维前缀和。
-
-定义 $f[S]$ 表示 $S$ 的所有子集的对应元素值的最大值。
-
-$S$ 可以分解为如下子集的**并集**。
+注意到，集合 $S$ 等价于如下子集的**并集**。
 
 - 枚举 $S$ 中的元素 $i$。
 - 移除 $i$，得到 $S$ 的子集 $T_i = S \setminus \{i\}$。
-- 所有 $T_i$ 的并集即为 $S$。
+- 所有 $T_i$ 的并集等于 $S$。
 
 由于 $T_i$ 是一个更小的集合，是规模更小的子问题，所以可以用 DP 解决。
+
+定义 $f[S]$ 表示 $S$ 的所有子集的对应二进制的最大值。
 
 计算所有 $f[T_i] = f[S \setminus \{i\}]$ 的最大值
 
@@ -46,11 +56,11 @@ $$
 \max_{i=0}^{n-1} \textit{nums}_i\cdot f[\complement_US_i]
 $$
 
-集合用二进制数表示，用位运算实现集合的运算，具体请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
+代码实现时，用二进制数表示集合，用位运算实现上述有关集合的运算，具体请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1SMaGz7EXe/)，欢迎点赞关注~
 
-## 优化前
+### 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -156,9 +166,282 @@ func maxProduct(nums []int) int64 {
 }
 ```
 
-## 优化
+### 写法二（优化）
 
-先枚举 $i$，再枚举 $s$。
+利用 $\text{lowbit}$，可以直接枚举 $s$ 的每个比特 $1$。
+
+```py [sol-Python3]
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        w = max(nums).bit_length()
+        u = 1 << w
+        f = [0] * u
+        for x in nums:
+            f[x] = x
+
+        for s in range(3, u):
+            t = s
+            while t:
+                lb = t & -t
+                v = f[s ^ lb]
+                if v > f[s]:
+                    f[s] = v
+                t ^= lb
+
+        return max(x * f[(u - 1) ^ x] for x in nums)
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxProduct(int[] nums) {
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+        
+        int w = 32 - Integer.numberOfLeadingZeros(mx);
+        int u = 1 << w;
+        int[] f = new int[u];
+        for (int x : nums) {
+            f[x] = x;
+        }
+
+        for (int s = 3; s < u; s++) {
+            for (int t = s, lb; t > 0; t ^= lb) {
+                lb = t & -t;
+                f[s] = Math.max(f[s], f[s ^ lb]);
+            }
+        }
+
+        long ans = 0;
+        for (int x : nums) {
+            ans = Math.max(ans, (long) x * f[(u - 1) ^ x]);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxProduct(vector<int>& nums) {
+        int w = bit_width((uint32_t) ranges::max(nums));
+        int u = 1 << w;
+        vector<int> f(u);
+        for (int x : nums) {
+            f[x] = x;
+        }
+
+        for (int s = 3; s < u; s++) {
+            for (int t = s, lb; t > 0; t ^= lb) {
+                lb = t & -t;
+                f[s] = max(f[s], f[s ^ lb]);
+            }
+        }
+
+        long long ans = 0;
+        for (int x : nums) {
+            ans = max(ans, 1LL * x * f[(u - 1) ^ x]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxProduct(nums []int) int64 {
+	w := bits.Len(uint(slices.Max(nums)))
+	u := 1 << w
+	f := make([]int, u)
+	for _, x := range nums {
+		f[x] = x
+	}
+
+	for s := 3; s < u; s++ {
+		for t, lb := s, 0; t > 0; t ^= lb {
+			lb = t & -t
+			f[s] = max(f[s], f[s^lb])
+		}
+	}
+
+	ans := 0
+	for _, x := range nums {
+		ans = max(ans, x*f[u-1^x])
+	}
+	return int64(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + U\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(U)$。
+
+## 方法二：高维前缀和（Sum Over Subsets DP，SOS DP）
+
+> 注：Sum Over Subsets DP 直译过来是**子集和 DP**，国内算法竞赛圈一般叫高维前缀和。
+
+方法一其实扩展性不太好，如果改成计算每个集合 $S$ 的所有子集的元素和，由于各个 $T_i = S \setminus \{i\}$ 之间存在交集，我们会重复累加，导致计算结果比正确答案大。
+
+### 如何正确地划分 S 的子集
+
+比如 $S = \{1,3,4\}$，有 $8$ 个子集，可以分为两类：
+
+- 包含 $4$ 的子集：$\{4\},\{1,4\},\{3,4\},\{1,3,4\}$。
+- 不含 $4$ 的子集：$\varnothing,\{1\},\{3\},\{1,3\}$。
+
+为了准确地分解 $S$，引入如下定义：
+
+- 定义 $F(S,i)$ 表示保留 $S$ 中的大于等于 $i$ 的数的所有子集。
+
+注意 $F(S,i)$ 是一个集合，其中的元素也是集合。
+
+再来看 $S = \{1,3,4\}$ 这个例子：
+
+- 包含 $4$ 的子集就是 $F(S,4) = \{\{4\},\{1,4\},\{3,4\},\{1,3,4\}\}$。
+- 不含 $4$ 的子集就是 $F(S\setminus \{4\},4) = \{\varnothing,\{1\},\{3\},\{1,3\}\}$。
+
+那么 $F(S,4)\cup F(S\setminus \{4\},4)$ 就是 $S$ 的所有子集了。
+
+### 状态定义与状态转移方程
+
+定义 $f[i][S]$ 表示保留 $S$ 中的大于 $i$ 的数的所有子集的对应二进制的最大值。这里为了计算方便，定义成大于 $i$。
+
+分类讨论：
+
+- 如果 $i\notin S$，那么问题变成保留 $S$ 中的大于 $i-1$ 的数的所有子集的对应二进制的最大值，即 $f[i][S] = f[i-1][S]$。
+- 如果 $i\in S$，用「选或不选」思考：
+  - 选 $i$，问题变成保留 $S$ 中的大于 $i-1$ 的数的所有子集的对应二进制的最大值，即 $f[i-1][S]$。
+  - 不选 $i$，问题变成保留 $S\setminus \{i\}$ 中的大于 $i-1$ 的数的所有子集的对应二进制的最大值，即 $f[i-1][S\setminus \{i\}]$。
+  - 二者取最大值，得 $f[i][S] = \max(f[i-1][S], f[i-1][S\setminus \{i\}])$。
+
+总结：
+
+$$
+f[i][S] =
+\begin{cases}
+f[i-1][S], & i\notin S     \\
+\max(f[i-1][S], f[i-1][S\setminus \{i\}]), & i\in S     \\
+\end{cases}
+$$
+
+初始值：$f[-1][S_i] = \textit{nums}_i$。
+
+最后 $f[w-1][S]$ 就是 $S$ 的所有子集的对应二进制的最大值。其中 $w$ 是 $\textit{nums}$ 中的最大二进制长度。
+
+代码实现时，$f$ 的第一个维度可以优化掉。
+
+⚠**注意**：方法一和方法二的代码很像，只有先枚举 $s$ 还是先枚举 $i$ 的区别，然而完全不一样！如果改成把求最大值改成求和，方法一的状态转移有重叠，会重复计算，方法二则不会。读者可以类比 [377. 组合总和 Ⅳ](https://leetcode.cn/problems/combination-sum-iv/)（排列）和 [518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/)（组合）的区别，加深体会。
+
+### 写法一
+
+```py [sol-Python3]
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        w = max(nums).bit_length()
+        u = 1 << w
+        f = [0] * u
+        for x in nums:
+            f[x] = x
+
+        for i in range(w):
+            bit = 1 << i  # 避免在循环中反复计算 1 << i
+            for s in range(3, u):
+                if s & bit:
+                    v = f[s ^ bit]
+                    if v > f[s]:
+                        f[s] = v
+
+        return max(x * f[(u - 1) ^ x] for x in nums)
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxProduct(int[] nums) {
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        int w = 32 - Integer.numberOfLeadingZeros(mx);
+        int u = 1 << w;
+        int[] f = new int[u];
+        for (int x : nums) {
+            f[x] = x;
+        }
+
+        for (int i = 0; i < w; i++) {
+            for (int s = 3; s < u; s++) {
+                if ((s >> i & 1) > 0) {
+                    f[s] = Math.max(f[s], f[s ^ (1 << i)]);
+                }
+            }
+        }
+
+        long ans = 0;
+        for (int x : nums) {
+            ans = Math.max(ans, (long) x * f[(u - 1) ^ x]);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxProduct(vector<int>& nums) {
+        int w = bit_width((uint32_t) ranges::max(nums));
+        int u = 1 << w;
+        vector<int> f(u);
+        for (int x : nums) {
+            f[x] = x;
+        }
+
+        for (int i = 0; i < w; i++) {
+            for (int s = 3; s < u; s++) {
+                if (s >> i & 1) {
+                    f[s] = max(f[s], f[s ^ (1 << i)]);
+                }
+            }
+        }
+
+        long long ans = 0;
+        for (int x : nums) {
+            ans = max(ans, 1LL * x * f[(u - 1) ^ x]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxProduct(nums []int) int64 {
+	w := bits.Len(uint(slices.Max(nums)))
+	u := 1 << w
+	f := make([]int, u)
+	for _, x := range nums {
+		f[x] = x
+	}
+
+	for i := range w {
+		for s := 3; s < u; s++ {
+			if s>>i&1 > 0 {
+				f[s] = max(f[s], f[s^1<<i])
+			}
+		}
+	}
+
+	ans := 0
+	for _, x := range nums {
+		ans = max(ans, x*f[u-1^x])
+	}
+	return int64(ans)
+}
+```
+
+### 写法二（优化）
 
 通过把 $s$ 或上 $2^i$，快速跳到第 $i$ 位是 $1$ 的 $s$，从而减少无效枚举。相当于跳过了所有 `(s >> i & 1) == 0` 的情况。
 
@@ -227,7 +510,7 @@ public:
         }
 
         for (int i = 0; i < w; i++) {
-            for (int s = 0; s < u; s++) {
+            for (int s = 3; s < u; s++) {
                 s |= 1 << i; // 快速跳到第 i 位是 1 的 s
                 f[s] = max(f[s], f[s ^ (1 << i)]);
             }

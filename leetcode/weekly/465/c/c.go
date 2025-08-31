@@ -14,11 +14,10 @@ func maxProduct1(nums []int) int64 {
 		f[x] = x
 	}
 
-	for s := 3; s < u; s++ { // 从小到大枚举集合 s
-		for i := range w { // 枚举 s 中的元素 i
-			if s>>i&1 > 0 { // i 属于集合 s
-				f[s] = max(f[s], f[s^1<<i]) // 从 s 的子集 s \ {i} 转移过来
-			}
+	for s := 3; s < u; s++ {
+		for t, lb := s, 0; t > 0; t ^= lb {
+			lb = t & -t
+			f[s] = max(f[s], f[s^lb])
 		}
 	}
 
