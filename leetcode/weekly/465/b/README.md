@@ -59,6 +59,37 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
+    public int[] minDifference(int n, int k) {
+        int[] path = new int[k];
+        dfs(0, n, Integer.MAX_VALUE, 0, path);
+        return ans;
+    }
+
+    private int minDiff = Integer.MAX_VALUE;
+    private int[] ans;
+
+    private void dfs(int i, int n, int mn, int mx, int[] path) {
+        if (i == path.length - 1) {
+            int d = Math.max(mx, n) - Math.min(mn, n); // 最后一个数是 n
+            if (d < minDiff) {
+                minDiff = d;
+                path[i] = n;
+                ans = path.clone();
+            }
+            return;
+        }
+        for (int d = 1; d <= n; d++) { // 枚举 x 的因子
+            if (n % d == 0) {
+                path[i] = d; // 直接覆盖，无需恢复现场
+                dfs(i + 1, n / d, Math.min(mn, d), Math.max(mx, d), path);
+            }
+        }
+    }
+}
+```
+
+```java [sol-Java 预处理]
+class Solution {
     private static final int MX = 100_001;
     private static final List<Integer>[] divisors = new ArrayList[MX];
     private static boolean initialized = false;
@@ -227,6 +258,37 @@ class Solution:
 ```
 
 ```java [sol-Java]
+class Solution {
+    public int[] minDifference(int n, int k) {
+        int[] path = new int[k];
+        dfs(0, n, path);
+        return ans;
+    }
+
+    private int minDiff = Integer.MAX_VALUE;
+    private int[] ans;
+
+    private void dfs(int i, int n, int[] path) {
+        if (i == path.length - 1) {
+            // path[0] 最小，n 最大
+            if (n - path[0] < minDiff) {
+                minDiff = n - path[0];
+                path[i] = n;
+                ans = path.clone();
+            }
+            return;
+        }
+        for (int d = i == 0 ? 1 : path[i - 1]; d * d <= n; d++) { // 枚举 x 的因子
+            if (n % d == 0) {
+                path[i] = d; // 直接覆盖，无需恢复现场
+                dfs(i + 1, n / d, path);
+            }
+        }
+    }
+}
+```
+
+```java [sol-Java 预处理]
 class Solution {
     private static final int MX = 100_001;
     private static final List<Integer>[] divisors = new ArrayList[MX];
