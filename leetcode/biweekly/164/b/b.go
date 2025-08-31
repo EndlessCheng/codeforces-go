@@ -1,46 +1,49 @@
 package main
 
 // https://space.bilibili.com/206214
-// 计算除了 x 以外的出现次数之和 sum，出现次数最大值 mx
-func getSumAndMax(cnt []int, x byte) (sum, mx int) {
+// 计算这一组的得分（配对个数），以及剩余元素个数
+func calc(cnt []int, x byte) (int, int) {
+	sum, mx := 0, 0
 	for i, c := range cnt {
 		if i != int(x-'a') {
 			sum += c
 			mx = max(mx, c)
 		}
 	}
-	return
+	pairs := min(sum/2, sum-mx)
+	return pairs, sum - pairs*2
 }
 
-// 计算这一组在得到 k 个 xx 后的得分
-func calcScore(sum, mx, k int) int {
-	sum += k
-	mx = max(mx, k)
-	return min(sum/2, sum-mx)
-}
-
-func score(cards []string, x byte) (ans int) {
-	var cnt1, cnt2 [10]int // 题目保证只有前 10 个小写字母
+func score(cards []string, x byte) int {
+	var cnt1, cnt2 [10]int
 	for _, s := range cards {
-		// 统计形如 x? 的每个 ? 的出现次数
 		if s[0] == x {
 			cnt1[s[1]-'a']++
 		}
-		// 统计形如 ?x 的每个 ? 的出现次数
 		if s[1] == x {
 			cnt2[s[0]-'a']++
 		}
 	}
 
-	sum1, max1 := getSumAndMax(cnt1[:], x)
-	sum2, max2 := getSumAndMax(cnt2[:], x)
+	pairs1, left1 := calc(cnt1[:], x)
+	pairs2, left2 := calc(cnt2[:], x)
+	ans := pairs1 + pairs2 // 不考虑 xx 时的得分
 
 	cntXX := cnt1[x-'a']
-	// 枚举分配 k 个 xx 给第一组，其余的 xx 给第二组
-	for k := range cntXX + 1 {
-		score1 := calcScore(sum1, max1, k)
-		score2 := calcScore(sum2, max2, cntXX-k)
-		ans = max(ans, score1+score2)
+	// 把 xx 和剩下的 x? 和 ?x 配对
+	// 每有 1 个 xx，得分就能增加一，但这不能超过剩下的 x? 和 ?x 的个数 left1+left2
+	if cntXX > 0 {
+		mn := min(cntXX, left1+left2)
+		ans += mn
+		cntXX -= mn
 	}
-	return
+
+	// 如果还有 xx，就撤销之前的配对，比如 (ax,bx) 改成 (ax,xx) 和 (bx,xx)
+	// 每有 2 个 xx，得分就能增加一，但这不能超过之前的配对个数 pairs1+pairs2
+	// 由于这种方案平均每个 xx 只能增加 0.5 分，不如上面的，所以先考虑把 xx 和剩下的 x? 和 ?x 配对，再考虑撤销之前的配对
+	if cntXX > 0 {
+		ans += min(cntXX/2, pairs1+pairs2)
+	}
+
+	return ans
 }

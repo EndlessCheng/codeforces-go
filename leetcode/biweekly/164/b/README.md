@@ -1,9 +1,11 @@
 ## 理解题意
 
-由于字符串必须包含字母 $\texttt{x}$，所以我们能选的字符串
+注意字符串长度只有 $2$。
 
-- 要么是 $\texttt{xa},\texttt{xb},\texttt{xc},\ldots$ 
-- 要么是 $\texttt{ax},\texttt{bx},\texttt{cx},\ldots$
+题目要求所选字符串必须包含 $\texttt{x}$，所以我们能选的字符串有两组：
+
+- 第一组：字符串的第一个字母是 $\texttt{x}$，即 $\texttt{xa},\texttt{xb},\texttt{xc},\ldots$ 
+- 第二组：字符串的第二个字母是 $\texttt{x}$，即 $\texttt{ax},\texttt{bx},\texttt{cx},\ldots$
 
 比如从第一组中选一个 $\texttt{xa}$ 和 $\texttt{xb}$，这两个字符串恰好有一个下标上的字母不同，根据题意，它们是兼容的，可以消除，得分加一。
 
@@ -25,7 +27,7 @@
 
 - 给定数组 $\textit{cnt}$，每次操作，选两个下标不同的正整数，各减少一。目标：最大化操作次数。
 
-由于每次操作的都是两个下标不同的数，把这些下标按顺序拼接，可以构造出一个**相邻元素不同**的序列。例如 $(1,2),(2,3),(3,4)$ 这三个操作，可以拼接成 $[1,2,3,2,3,4]$。注意为了保证相邻不同，$(2,3)$ 调整为等价的 $(3,2)$，都表示选一个下标 $2$ 和一个下标 $3$。
+由于每次操作的都是两个下标不同的数，把这些下标按顺序拼接，可以构造出一个**相邻元素不同**的序列。例如 $(1,2),(2,3),(3,4)$ 这三个操作，可以拼接成 $[1,2,3,2,3,4]$。注意为了保证相邻不同，把 $(2,3)$ 调整为等价的 $(3,2)$，都表示选一个下标 $2$ 和一个下标 $3$。
 
 设 $\textit{sum} = \sum\limits_{i}\textit{cnt}[i]$，$\textit{mx} = \max(\textit{cnt})$。
 
@@ -44,6 +46,8 @@ $$
 由于 $\texttt{xx}$ 的个数不超过 $\textit{cards}$ 的长度，我们可以枚举分配多少个 $\texttt{xx}$ 给第一组，其余的 $\texttt{xx}$ 给第二组，然后用上面的公式计算答案，取最大值。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1aCaGzWEm4/?t=1m20s)，欢迎点赞关注~
+
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -232,6 +236,218 @@ func score(cards []string, x byte) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $\textit{cards}$ 的长度，$|\Sigma|=10$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+
+## 优化
+
+可以不枚举 $\texttt{xx}$ 的个数，直接计算。
+
+首先计算不考虑 $\texttt{xx}$ 时：
+
+- 第一组的得分（配对个数）$\textit{pairs}_1$，以及第一组配对后的剩余字符串个数 $\textit{left}_1$。
+- 第二组的得分（配对个数）$\textit{pairs}_2$，以及第二组配对后的剩余字符串个数 $\textit{left}_2$。
+
+然后考虑 $\texttt{xx}$ 的影响。
+
+首先，把 $\texttt{xx}$ 和剩余的字符串配对，每有 $1$ 个 $\texttt{xx}$，得分就能增加一，但这不能超过剩下的字符串个数 $\textit{left}_1 +\textit{left}_2$。
+
+然后，如果还有 $\texttt{xx}$，就撤销之前的配对，比如 $(\texttt{ax},\texttt{bx})$ 改成 $(\texttt{ax},\texttt{xx})$ 和 $(\texttt{bx},\texttt{xx})$。这样每有 $2$ 个 $\texttt{xx}$，得分就能增加一，但这不能超过之前的配对个数 $\textit{pairs}_1+\textit{pairs}_2$。由于这种方案平均每个 $\texttt{xx}$ 只能增加 $0.5$ 分，不如上面的，所以先考虑把 $\texttt{xx}$ 和剩余的字符串配对，再考虑撤销之前的配对。
+
+```py [sol-Python3]
+class Solution:
+    # 计算这一组的得分（配对个数），以及剩余元素个数
+    def calc(self, cnt: Counter, x: str) -> (int, int):
+        del cnt[x]
+        sum_cnt = sum(cnt.values())
+        max_cnt = max(cnt.values(), default=0)
+        pairs = min(sum_cnt // 2, sum_cnt - max_cnt)
+        return pairs, sum_cnt - pairs * 2
+
+    def score(self, cards: List[str], x: str) -> int:
+        cnt1 = Counter(b for a, b in cards if a == x)
+        cnt2 = Counter(a for a, b in cards if b == x)
+
+        cnt_xx = cnt1[x]
+        pairs1, left1 = self.calc(cnt1, x)
+        pairs2, left2 = self.calc(cnt2, x)
+        ans = pairs1 + pairs2  # 不考虑 xx 时的得分
+
+        # 把 xx 和剩下的 x? 和 ?x 配对
+        # 每有 1 个 xx，得分就能增加一，但这不能超过剩下的 x? 和 ?x 的个数 left1+left2
+        if cnt_xx > 0:
+            mn = min(cnt_xx, left1 + left2)
+            ans += mn
+            cnt_xx -= mn
+
+        # 如果还有 xx，就撤销之前的配对，比如 (ax,bx) 改成 (ax,xx) 和 (bx,xx)
+        # 每有 2 个 xx，得分就能增加一，但这不能超过之前的配对个数 pairs1+pairs2
+        # 由于这种方案平均每个 xx 只能增加 0.5 分，不如上面的，所以先考虑把 xx 和剩下的 x? 和 ?x 配对，再考虑撤销之前的配对
+        if cnt_xx > 0:
+            ans += min(cnt_xx // 2, pairs1 + pairs2)
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    // 计算这一组的得分（配对个数），以及剩余元素个数
+    private int[] calc(int[] cnt, char x) {
+        int sum = 0, mx = 0;
+        for (int i = 0; i < cnt.length; i++) {
+            if (i != x - 'a') {
+                sum += cnt[i];
+                mx = Math.max(mx, cnt[i]);
+            }
+        }
+        int pairs = Math.min(sum / 2, sum - mx);
+        return new int[]{pairs, sum - pairs * 2};
+    }
+
+    public int score(String[] cards, char x) {
+        int[] cnt1 = new int[10];
+        int[] cnt2 = new int[10];
+        for (String s : cards) {
+            char c0 = s.charAt(0);
+            char c1 = s.charAt(1);
+            if (c0 == x) {
+                cnt1[c1 - 'a']++;
+            }
+            if (c1 == x) {
+                cnt2[c0 - 'a']++;
+            }
+        }
+
+        int[] res1 = calc(cnt1, x);
+        int[] res2 = calc(cnt2, x);
+        int pairs1 = res1[0], left1 = res1[1];
+        int pairs2 = res2[0], left2 = res2[1];
+        int ans = pairs1 + pairs2; // 不考虑 xx 时的得分
+
+        int cntXX = cnt1[x - 'a'];
+        // 把 xx 和剩下的 x? 和 ?x 配对
+        // 每有 1 个 xx，得分就能增加一，但这不能超过剩下的 x? 和 ?x 的个数 left1+left2
+        if (cntXX > 0) {
+            int mn = Math.min(cntXX, left1 + left2);
+            ans += mn;
+            cntXX -= mn;
+        }
+
+        // 如果还有 xx，就撤销之前的配对，比如 (ax,bx) 改成 (ax,xx) 和 (bx,xx)
+        // 每有 2 个 xx，得分就能增加一，但这不能超过之前的配对个数 pairs1+pairs2
+        // 由于这种方案平均每个 xx 只能增加 0.5 分，不如上面的，所以先考虑把 xx 和剩下的 x? 和 ?x 配对，再考虑撤销之前的配对
+        if (cntXX > 0) {
+            ans += Math.min(cntXX / 2, pairs1 + pairs2);
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 计算这一组的得分（配对个数），以及剩余元素个数
+    pair<int, int> calc(const array<int, 10>& cnt, char x) {
+        int sum = 0, mx = 0;
+        for (int i = 0; i < cnt.size(); i++) {
+            if (i != x - 'a') {
+                sum += cnt[i];
+                mx = max(mx, cnt[i]);
+            }
+        }
+        int pairs = min(sum / 2, sum - mx);
+        return {pairs, sum - pairs * 2};
+    }
+
+public:
+    int score(vector<string>& cards, char x) {
+        array<int, 10> cnt1{}, cnt2{};
+        for (auto& s : cards) {
+            if (s[0] == x) {
+                cnt1[s[1] - 'a']++;
+            }
+            if (s[1] == x) {
+                cnt2[s[0] - 'a']++;
+            }
+        }
+
+        auto [pairs1, left1] = calc(cnt1, x);
+        auto [pairs2, left2] = calc(cnt2, x);
+        int ans = pairs1 + pairs2; // 不考虑 xx 时的得分
+
+        int cnt_xx = cnt1[x - 'a'];
+        // 把 xx 和剩下的 x? 和 ?x 配对
+        // 每有 1 个 xx，得分就能增加一，但这不能超过剩下的 x? 和 ?x 的个数 left1+left2
+        if (cnt_xx > 0) {
+            int mn = min(cnt_xx, left1 + left2);
+            ans += mn;
+            cnt_xx -= mn;
+        }
+
+        // 如果还有 xx，就撤销之前的配对，比如 (ax,bx) 改成 (ax,xx) 和 (bx,xx)
+        // 每有 2 个 xx，得分就能增加一，但这不能超过之前的配对个数 pairs1+pairs2
+        // 由于这种方案平均每个 xx 只能增加 0.5 分，不如上面的，所以先考虑把 xx 和剩下的 x? 和 ?x 配对，再考虑撤销之前的配对
+        if (cnt_xx > 0) {
+            ans += min(cnt_xx / 2, pairs1 + pairs2);
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+// 计算这一组的得分（配对个数），以及剩余元素个数
+func calc(cnt []int, x byte) (int, int) {
+	sum, mx := 0, 0
+	for i, c := range cnt {
+		if i != int(x-'a') {
+			sum += c
+			mx = max(mx, c)
+		}
+	}
+	pairs := min(sum/2, sum-mx)
+	return pairs, sum - pairs*2
+}
+
+func score(cards []string, x byte) int {
+	var cnt1, cnt2 [10]int
+	for _, s := range cards {
+		if s[0] == x {
+			cnt1[s[1]-'a']++
+		}
+		if s[1] == x {
+			cnt2[s[0]-'a']++
+		}
+	}
+
+	pairs1, left1 := calc(cnt1[:], x)
+	pairs2, left2 := calc(cnt2[:], x)
+	ans := pairs1 + pairs2 // 不考虑 xx 时的得分
+
+	cntXX := cnt1[x-'a']
+	// 把 xx 和剩下的 x? 和 ?x 配对
+	// 每有 1 个 xx，得分就能增加一，但这不能超过剩下的 x? 和 ?x 的个数 left1+left2
+	if cntXX > 0 {
+		mn := min(cntXX, left1+left2)
+		ans += mn
+		cntXX -= mn
+	}
+
+	// 如果还有 xx，就撤销之前的配对，比如 (ax,bx) 改成 (ax,xx) 和 (bx,xx)
+	// 每有 2 个 xx，得分就能增加一，但这不能超过之前的配对个数 pairs1+pairs2
+	// 由于这种方案平均每个 xx 只能增加 0.5 分，不如上面的，所以先考虑把 xx 和剩下的 x? 和 ?x 配对，再考虑撤销之前的配对
+	if cntXX > 0 {
+		ans += min(cntXX/2, pairs1+pairs2)
+	}
+
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $\textit{cards}$ 的长度，$|\Sigma|=10$ 是字符集合的大小。瓶颈在遍历 $\textit{cards}$ 上。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
 ## 专题训练
