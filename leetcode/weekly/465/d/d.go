@@ -11,45 +11,50 @@ var divisors [mx][]int
 func init() {
 	// 预处理每个数的因子
 	for i := 1; i < mx; i++ {
-		for j := i; j < mx; j += i {
-			divisors[j] = append(divisors[j], i)
+		for j := i; j < mx; j += i { // 枚举 i 的倍数 j
+			divisors[j] = append(divisors[j], i) // i 是 j 的因子
 		}
 	}
+}
+
+// 完整模板见 https://leetcode.cn/circle/discuss/mOr1u6/
+type fenwick []int
+
+func newFenwickTree(n int) fenwick {
+	return make(fenwick, n+1) // 使用下标 1 到 n
+}
+
+// a[i] 增加 val
+// 1 <= i <= n
+// 时间复杂度 O(log n)
+func (f fenwick) update(i, val int) {
+	for ; i < len(f); i += i & -i {
+		f[i] += val
+	}
+}
+
+// 求前缀和 a[1] + ... + a[i]
+// 1 <= i <= n
+// 时间复杂度 O(log n)
+func (f fenwick) pre(i int) (res int) {
+	for ; i > 0; i &= i - 1 {
+		res += f[i]
+	}
+	return res % mod
 }
 
 func totalBeauty(nums []int) (ans int) {
 	m := slices.Max(nums)
 
-	// 树状数组（时间戳优化）
-	tree := make([]int, m+1)
-	time := make([]int, m+1) // 避免反复初始化树状数组
-	now := 0
-	update := func(i, val int) {
-		for ; i <= m; i += i & -i {
-			if time[i] < now {
-				time[i] = now
-				tree[i] = 0 // 懒初始化
-			}
-			tree[i] = (tree[i] + val) % mod
-		}
-	}
-	pre := func(i int) (res int) {
-		for ; i > 0; i &= i - 1 {
-			if time[i] == now {
-				res += tree[i]
-			}
-		}
-		return res % mod
-	}
-
 	// 计算 b 的严格递增子序列的个数
-	cntIS := func(b []int) (res int) {
-		now++
+	countIncreasingSubsequence := func(b []int, g int) (res int) {
+		t := newFenwickTree(m / g)
 		for _, x := range b {
+			x /= g
 			// cnt 表示以 x 结尾的严格递增子序列的个数
-			cnt := pre(x-1) + 1 // +1 是因为 x 可以一个数组成一个子序列
+			cnt := t.pre(x-1) + 1 // +1 是因为 x 可以一个数组成一个子序列
 			res += cnt
-			update(x, cnt) // 更新以 x 结尾的严格递增子序列的个数
+			t.update(x, cnt) // 更新以 x 结尾的严格递增子序列的个数
 		}
 		return res % mod
 	}
@@ -63,7 +68,7 @@ func totalBeauty(nums []int) (ans int) {
 
 	f := make([]int, m+1)
 	for i := m; i > 0; i-- {
-		f[i] = cntIS(groups[i])
+		f[i] = countIncreasingSubsequence(groups[i], i)
 		// 倍数容斥
 		for j := i * 2; j <= m; j += i {
 			f[i] -= f[j]
