@@ -444,7 +444,7 @@ func minDifference(n, k int) (ans []int) {
 - 时间复杂度：$\mathcal{O}(D^{k/2})$，其中 $D\le 128$ 是因子个数的最大值。搜索树是一棵 $\sqrt{D}$ 叉树，高度为 $k$，一共有 $\mathcal{O}(D^{k/2})$ 个节点，遍历这棵搜索树需要 $\mathcal{O}(D^{k/2})$ 的时间。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $4400$。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-**注**：如果把枚举 $d$ 的上界由 $\left\lfloor\sqrt n\right\rfloor$ 改成 $\left\lfloor\sqrt[k-i] n\right\rfloor$，则由调和级数可知，节点个数降至 $\mathcal{O}(D^{\log k})$。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $2864$。
+**注**：如果把枚举 $d$ 的上界由 $\left\lfloor\sqrt n\right\rfloor$ 改成 $\left\lfloor\sqrt[k-i] n\right\rfloor$，则由调和级数可知，节点个数降至 $\mathcal{O}(D^{\ln k})$。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $2864$。
 
 ## 专题训练
 
