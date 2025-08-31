@@ -24,6 +24,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1SMaGz7EXe/?t=20m55s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 # 预处理每个数的因子
 MX = 100_001
@@ -80,7 +82,7 @@ class Solution {
     public int[] minDifference(int n, int k) {
         init();
         int[] path = new int[k];
-        dfs(k - 1, n, Integer.MAX_VALUE, 0, path);
+        dfs(0, n, Integer.MAX_VALUE, 0, path);
         return ans;
     }
 
@@ -88,7 +90,7 @@ class Solution {
     private int[] ans;
 
     private void dfs(int i, int n, int mn, int mx, int[] path) {
-        if (i == 0) {
+        if (i == path.length - 1) {
             int d = Math.max(mx, n) - Math.min(mn, n); // 最后一个数是 n
             if (d < minDiff) {
                 minDiff = d;
@@ -99,7 +101,7 @@ class Solution {
         }
         for (int d : divisors[n]) { // 枚举 x 的因子
             path[i] = d; // 直接覆盖，无需恢复现场
-            dfs(i - 1, n / d, Math.min(mn, d), Math.max(mx, d), path);
+            dfs(i + 1, n / d, Math.min(mn, d), Math.max(mx, d), path);
         }
     }
 }
@@ -180,6 +182,192 @@ func minDifference(n, k int) (ans []int) {
 		}
 	}
 	dfs(0, n, math.MaxInt, 0)
+	return
+}
+```
+
+## 优化
+
+1. **排除等效冗余**。比如先填 $2$ 再填 $3$，和先填 $3$ 再填 $2$，二者是等效的。不妨规定所填数字必须大于等于上一个填的数字。
+2. 根据 1，如果因子 $d^2 >n$，那么下一个填的数必然小于 $d$，不满足要求，此时直接退出循环。
+3. 根据 1，$\textit{path}$ 是递增的，所以最小值就是 $\textit{path}[0]$，最大值就是 $\textit{path}[k-1]$，无需在递归过程中维护最小值和最大值。
+
+```py [sol-Python3]
+# 预处理每个数的因子
+MX = 100_001
+divisors = [[] for _ in range(MX)]
+for i in range(1, MX):
+    for j in range(i, MX, i):  # 枚举 i 的倍数 j
+        divisors[j].append(i)  # i 是 j 的因子
+
+class Solution:
+    def minDifference(self, n: int, k: int) -> List[int]:
+        min_diff = inf
+        path = [0] * k
+        ans = None
+
+        def dfs(i: int, n: int) -> None:
+            if i == k - 1:
+                nonlocal min_diff, ans
+                # path[0] 最小，n 最大
+                if n - path[0] < min_diff:
+                    min_diff = n - path[0]
+                    path[i] = n
+                    ans = path.copy()  # path[:]
+                return
+            for d in divisors[n]:  # 枚举 x 的因子
+                if d * d > n:
+                    break
+                if i == 0 or d >= path[i - 1]:
+                    path[i] = d  # 直接覆盖，无需恢复现场
+                    dfs(i + 1, n // d)
+
+        dfs(0, n)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MX = 100_001;
+    private static final List<Integer>[] divisors = new ArrayList[MX];
+    private static boolean initialized = false;
+
+    // 这样写比 static block 更快
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        // 预处理每个数的因子
+        Arrays.setAll(divisors, _ -> new ArrayList<>());
+        for (int i = 1; i < MX; i++) {
+            for (int j = i; j < MX; j += i) { // 枚举 i 的倍数 j
+                divisors[j].add(i); // i 是 j 的因子
+            }
+        }
+    }
+
+    public int[] minDifference(int n, int k) {
+        init();
+        int[] path = new int[k];
+        dfs(0, n, path);
+        return ans;
+    }
+
+    private int minDiff = Integer.MAX_VALUE;
+    private int[] ans;
+
+    private void dfs(int i, int n, int[] path) {
+        if (i == path.length - 1) {
+            // path[0] 最小，n 最大
+            if (n - path[0] < minDiff) {
+                minDiff = n - path[0];
+                path[i] = n;
+                ans = path.clone();
+            }
+            return;
+        }
+        int maxD = (int) Math.sqrt(n);
+        for (int d : divisors[n]) { // 枚举 x 的因子
+            if (d > maxD) {
+                break;
+            }
+            if (i == 0 || d >= path[i - 1]) {
+                path[i] = d; // 直接覆盖，无需恢复现场
+                dfs(i + 1, n / d, path);
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MX = 100'001;
+vector<int> divisors[MX];
+
+int init = [] {
+    // 预处理每个数的因子
+    for (int i = 1; i < MX; i++) {
+        for (int j = i; j < MX; j += i) { // 枚举 i 的倍数 j
+            divisors[j].push_back(i); // i 是 j 的因子
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    vector<int> minDifference(int n, int k) {
+        int min_diff = INT_MAX;
+        vector<int> path(k), ans;
+
+        auto dfs = [&](this auto&& dfs, int i, int n) -> void {
+            if (i == k - 1) {
+                // path[0] 最小，n 最大
+                if (n - path[0] < min_diff) {
+                    min_diff = n - path[0];
+                    path[i] = n;
+                    ans = path;
+                }
+                return;
+            }
+            int max_d = sqrt(n);
+            for (int d : divisors[n]) { // 枚举 x 的因子
+                if (d > max_d) {
+                    break;
+                }
+                if (i == 0 || d >= path[i - 1]) {
+                    path[i] = d; // 直接覆盖，无需恢复现场
+                    dfs(i + 1, n / d);
+                }
+            }
+        };
+
+        dfs(0, n);
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+const mx = 100_001
+var divisors [mx][]int
+
+func init() {
+	// 预处理每个数的因子
+	for i := 1; i < mx; i++ {
+		for j := i; j < mx; j += i { // 枚举 i 的倍数 j
+			divisors[j] = append(divisors[j], i) // i 是 j 的因子
+		}
+	}
+}
+
+func minDifference(n, k int) (ans []int) {
+	minDiff := math.MaxInt
+	path := make([]int, k)
+	var dfs func(int, int)
+	dfs = func(i, n int) {
+		if i == k-1 {
+			// path[0] 最小，n 最大
+			if n-path[0] < minDiff {
+				minDiff = n - path[0]
+				path[i] = n
+				ans = slices.Clone(path)
+			}
+			return
+		}
+		for _, d := range divisors[n] { // 枚举 x 的因子
+			if d*d > n {
+				break
+			}
+			if i == 0 || d >= path[i-1] {
+				path[i] = d // 直接覆盖，无需恢复现场
+				dfs(i+1, n/d)
+			}
+		}
+	}
+	dfs(0, n)
 	return
 }
 ```
