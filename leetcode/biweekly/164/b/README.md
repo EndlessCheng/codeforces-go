@@ -73,15 +73,12 @@ class Solution {
         int[] cnt1 = new int[10]; // 题目保证只有前 10 个小写字母
         int[] cnt2 = new int[10];
         for (String s : cards) {
-            // 统计形如 x? 的每个 ? 的出现次数
             char c0 = s.charAt(0);
             char c1 = s.charAt(1);
             if (c0 == x) {
-                cnt1[c1 - 'a']++;
-            }
-            // 统计形如 ?x 的每个 ? 的出现次数
-            if (c1 == x) {
-                cnt2[c0 - 'a']++;
+                cnt1[c1 - 'a']++; // 统计形如 x? 的每个 ? 的出现次数
+            } else if (c1 == x) {
+                cnt2[c0 - 'a']++; // 统计形如 ?x 的每个 ? 的出现次数（不含 xx）
             }
         }
 
@@ -147,13 +144,10 @@ public:
     int score(vector<string>& cards, char x) {
         array<int, 10> cnt1{}, cnt2{}; // 题目保证只有前 10 个小写字母
         for (auto& s : cards) {
-            // 统计形如 x? 的每个 ? 的出现次数
             if (s[0] == x) {
-                cnt1[s[1] - 'a']++;
-            }
-            // 统计形如 ?x 的每个 ? 的出现次数
-            if (s[1] == x) {
-                cnt2[s[0] - 'a']++;
+                cnt1[s[1] - 'a']++; // 统计形如 x? 的每个 ? 的出现次数
+            } else if (s[1] == x) {
+                cnt2[s[0] - 'a']++; // 统计形如 ?x 的每个 ? 的出现次数（不含 xx）
             }
         }
 
@@ -195,13 +189,10 @@ func calcScore(sum, mx, k int) int {
 func score(cards []string, x byte) (ans int) {
 	var cnt1, cnt2 [10]int // 题目保证只有前 10 个小写字母
 	for _, s := range cards {
-		// 统计形如 x? 的每个 ? 的出现次数
 		if s[0] == x {
-			cnt1[s[1]-'a']++
-		}
-		// 统计形如 ?x 的每个 ? 的出现次数
-		if s[1] == x {
-			cnt2[s[0]-'a']++
+			cnt1[s[1]-'a']++ // 统计形如 x? 的每个 ? 的出现次数
+		} else if s[1] == x {
+			cnt2[s[0]-'a']++ // 统计形如 ?x 的每个 ? 的出现次数（不含 xx）
 		}
 	}
 
@@ -297,8 +288,7 @@ class Solution {
             char c1 = s.charAt(1);
             if (c0 == x) {
                 cnt1[c1 - 'a']++;
-            }
-            if (c1 == x) {
+            } else if (c1 == x) {
                 cnt2[c0 - 'a']++;
             }
         }
@@ -351,8 +341,7 @@ public:
         for (auto& s : cards) {
             if (s[0] == x) {
                 cnt1[s[1] - 'a']++;
-            }
-            if (s[1] == x) {
+            } else if (s[1] == x) {
                 cnt2[s[0] - 'a']++;
             }
         }
@@ -401,8 +390,7 @@ func score(cards []string, x byte) int {
 	for _, s := range cards {
 		if s[0] == x {
 			cnt1[s[1]-'a']++
-		}
-		if s[1] == x {
+		} else if s[1] == x {
 			cnt2[s[0]-'a']++
 		}
 	}

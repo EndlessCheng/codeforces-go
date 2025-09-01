@@ -19,8 +19,7 @@ func score(cards []string, x byte) int {
 	for _, s := range cards {
 		if s[0] == x {
 			cnt1[s[1]-'a']++
-		}
-		if s[1] == x {
+		} else if s[1] == x {
 			cnt2[s[0]-'a']++
 		}
 	}
