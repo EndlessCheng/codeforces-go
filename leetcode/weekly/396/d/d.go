@@ -1,11 +1,9 @@
 package main
 
-import (
-	"slices"
-)
+import "slices"
 
 // https://space.bilibili.com/206214
-func minCostToEqualizeArray(nums []int, c1 int, c2 int) int {
+func minCostToEqualizeArray(nums []int, c1, c2 int) int {
 	const mod = 1_000_000_007
 	n := len(nums)
 	m := slices.Min(nums)
@@ -21,10 +19,7 @@ func minCostToEqualizeArray(nums []int, c1 int, c2 int) int {
 	f := func(x int) int {
 		s := base + (x-M)*n
 		d := x - m
-		if d*2 <= s {
-			return s/2*c2 + s%2*c1
-		}
-		return (s-d)*c2 + (d*2-s)*c1
+		return max(s/2*c2+s%2*c1, (s-d)*c2+(d*2-s)*c1)
 	}
 
 	i := (n*M - m*2 - base + n - 3) / (n - 2)

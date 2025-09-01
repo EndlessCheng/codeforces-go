@@ -1,13 +1,10 @@
 package main
 
-import "sort"
+import "slices"
 
 // https://space.bilibili.com/206214/dynamic
-func fillCups(a []int) (ans int) {
-	for sort.Ints(a); a[1] > 0; sort.Ints(a) {
-		ans++
-		a[1]--
-		a[2]--
-	}
-	return ans + a[2]
+func fillCups(amount []int) int {
+	s := amount[0] + amount[1] + amount[2]
+	mx := slices.Max(amount)
+	return max((s+1)/2, mx)
 }

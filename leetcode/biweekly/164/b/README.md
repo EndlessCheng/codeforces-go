@@ -19,27 +19,13 @@
 
 在这种情况下，第一组和第二组是互相独立的，可以分别计算。
 
-以第一组为例说明。
+对于每一组，问题相当于：
 
-统计第二个字母 $s[1]$ 的出现次数，记在一个 $\textit{cnt}$ 数组中。
+- 给定数组 $a$，每次操作，删除 $a$ 中的两个不同元素（配对）。最多可以操作多少次？
 
-问题相当于：
+**定理**：最多操作 $\min\left(\left\lfloor\dfrac{n}{2}\right\rfloor,n-m\right)$ 次。其中 $n$ 是数组 $a$ 的长度，$m$ 是出现次数最多的元素的出现次数。
 
-- 给定数组 $\textit{cnt}$，每次操作，选两个下标不同的正整数，各减少一。目标：最大化操作次数。
-
-由于每次操作的都是两个下标不同的数，把这些下标按顺序拼接，可以构造出一个**相邻元素不同**的序列。例如 $(1,2),(2,3),(3,4)$ 这三个操作，可以拼接成 $[1,2,3,2,3,4]$。注意为了保证相邻不同，把 $(2,3)$ 调整为等价的 $(3,2)$，都表示选一个下标 $2$ 和一个下标 $3$。
-
-设 $\textit{sum} = \sum\limits_{i}\textit{cnt}[i]$，$\textit{mx} = \max(\textit{cnt})$。
-
-**定理**：如果 $\textit{mx}$ 比其余元素个数 $\textit{sum}- \textit{mx}$ 还多，那么操作次数为其余元素个数 $\textit{sum}- \textit{mx}$。否则操作次数为 $\left\lfloor\dfrac{sum}{2}\right\rfloor$。
-
-[证明+具体构造方案](https://leetcode.cn/problems/reorganize-string/solutions/2779462/tan-xin-gou-zao-pai-xu-bu-pai-xu-liang-c-h9jg/)
-
-这个结论可以简化，操作次数等于
-
-$$
-\min\left(\left\lfloor\dfrac{sum}{2}\right\rfloor, \textit{sum}- \textit{mx}\right)
-$$
+[证明+具体操作方案](https://zhuanlan.zhihu.com/p/1945782212176909162)
 
 ## 有 xx 的情况
 

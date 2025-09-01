@@ -14,13 +14,13 @@ $$
 
 **分析**：设 $\textit{tot}=\sum \textit{ops}[i]$，$\textit{mx}=\max(\textit{ops})$。假如每次可以把 $\textit{tot}$ 减少 $2$，那么把 $\textit{tot}$ 减少到 $\le 0$，至少要操作 $\left\lceil\dfrac{\textit{tot}}{2}\right\rceil$ 次。但如果 $\textit{mx}$ 很大，操作次数就等于 $\textit{mx}$（每次操作选 $\textit{mx}$ 和另一个数）。
 
-**定理**：最小操作次数为
+**定理**：最少操作次数为
 
 $$
 \max\left(\left\lceil\dfrac{\textit{tot}}{2}\right\rceil, \textit{mx}\right)
 $$
 
-[证明+具体构造方案](https://leetcode.cn/problems/reorganize-string/solutions/2779462/tan-xin-gou-zao-pai-xu-bu-pai-xu-liang-c-h9jg/)
+[证明+具体操作方案](https://zhuanlan.zhihu.com/p/1945782212176909162)。
 
 本题由于 $\textit{nums}$ 中的数字是连续整数，相邻数字的操作次数至多相差 $1$。
 
@@ -42,7 +42,7 @@ $$
 
 算出了 $\textit{tot}$，就算出了答案。
 
-## 公式
+## 公式推导
 
 定义 $f(n)$ 为 $[1,n]$ 中的单个数的操作次数之和。
 
@@ -154,7 +154,7 @@ func minOperations(queries [][]int) int64 {
 - 时间复杂度：$\mathcal{O}(q\log U)$，其中 $q$ 是 $\textit{queries}$ 的长度，$U$ 是 $r$ 的最大值。每个询问需要 $\mathcal{O}(\log U)$ 的时间。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 优化
+## 化简公式
 
 $\mathcal{O}(1)$ 计算 $f(n)$。
 
@@ -256,6 +256,10 @@ func minOperations(queries [][]int) int64 {
 
 - 时间复杂度：$\mathcal{O}(q)$，其中 $q$ 是 $\textit{queries}$ 的长度。每个询问只需 $\mathcal{O}(1)$ 时间。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 专题训练
+
+见下面贪心题单的「**§1.8 相邻不同**」。
 
 ## 分类题单
 

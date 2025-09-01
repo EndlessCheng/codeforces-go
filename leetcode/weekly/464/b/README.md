@@ -2,30 +2,30 @@
 
 既然是 $k$ 个 $k$ 个地删，那么首先要满足 $\textit{nums}$ 的长度 $n$ 是 $k$ 的倍数。
 
-然后，讨论 $k=2$ 的情况。
+设 $m$ 是出现次数最多的元素的出现次数。
 
-这等价于重排数字，使得相邻数字不同。重排后可以两两一组，每组作为每次删除的两个数。
+对于 $k=2$ 的情况，我们有如下定理。
 
-**结论**：出现次数最多的数的个数，不能超过其余元素的个数。（注意本题需要恰好清空）
+**定理**：如果 $m > n-m$，即出现次数最多的元素，比其余元素的个数还要多，那么无法满足题目要求，否则可以满足。
 
-**证明**：见 [题解](https://leetcode.cn/problems/reorganize-string/solutions/2779462/tan-xin-gou-zao-pai-xu-bu-pai-xu-liang-c-h9jg/)，包含具体构造方法。
+[证明+具体操作方案](https://zhuanlan.zhihu.com/p/1945782212176909162)
 
-推广到一般情况，设出现次数最多的数的个数为 $\textit{mx}$，每次把 $\textit{mx}$ 减少 $1$，其余元素的个数就要减少 $k-1$，所以其余元素的个数必须至少为 $\textit{mx}\cdot(k-1)$，即
+推广到一般情况，每次把 $m$ 减少 $1$，其余元素的个数就要减少 $k-1$，所以其余元素的个数必须至少为 $m\cdot(k-1)$，即
 
 $$
-\textit{mx}\cdot(k-1) \le n-\textit{mx}
+m\cdot(k-1) \le n-m
 $$
 
 即
 
 $$
-\textit{mx}\cdot k \le n
+m\cdot k \le n
 $$
 
 对于 C++ 和 Java，为防止乘法溢出，可以改为等价的
 
 $$
-\textit{mx}\le \left\lfloor\dfrac{n}{k}\right\rfloor
+m\le \left\lfloor\dfrac{n}{k}\right\rfloor
 $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1X9eJz2EWE/?t=4m32s)，欢迎点赞关注~

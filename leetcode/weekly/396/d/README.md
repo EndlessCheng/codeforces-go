@@ -2,7 +2,9 @@
 
 为方便描述，将 $\textit{cost}_1$ 和 $\textit{cost}_2$ 简记为 $c_1$ 和 $c_2$。 
 
-设 $m = \min(\textit{nums}),\ M=\max(\textit{nums})$。本题看上去把所有数都变成 $M$ 即可，但请看 $[1,3,4,4]$ 这个例子：
+设 $m = \min(\textit{nums}),\ M=\max(\textit{nums})$。
+
+本题看上去把所有数都变成 $M$ 即可，但请看 $[1,3,4,4]$ 这个例子：
 
 - 全部变成 $4$：用操作二把数字 $1$ 和 $3$ 都加一，现在数组为 $[2,4,4,4]$；然后用操作一把数字 $2$ 加二，现在数组为 $[4,4,4,4]$。总开销为 $2c_1 + c_2$。
 - 全部变成 $5$：只用操作二，把数字 $1$ 和 $3$ 加一两次，现在数组为 $[3,5,4,4]$；然后把数字 $3$ 和 $4$ 加一，现在数组为 $[4,5,5,4]$；然后把数字 $4$ 和 $4$ 加一，现在数组为 $[5,5,5,5]$。总开销为 $4c_2$。
@@ -30,10 +32,10 @@ $$
 总共需要执行
 
 $$
-\begin{align}
-& (M - \textit{nums}[0]) + (M - \textit{nums}[1]) + \cdots + (M - \textit{nums}[n-1])\\
-=\ &nM - (\textit{nums}[0] + \textit{nums}[1] + \cdots + \textit{nums}[n-1])
-\end{align}
+\begin{aligned}
+    & (M - \textit{nums}[0]) + (M - \textit{nums}[1]) + \cdots + (M - \textit{nums}[n-1])      \\
+={} & nM - (\textit{nums}[0] + \textit{nums}[1] + \cdots + \textit{nums}[n-1])        \\
+\end{aligned}
 $$
 
 次操作一。
@@ -62,71 +64,34 @@ $$
 
 具体要如何操作呢？
 
-为方便大家理解，想象有 $n$ 个盒子，第 $i$ 个盒子装有 $x-\textit{nums}[i]$ 个小球，这是 $\textit{nums}[i]$ 需要加一的次数。总共有 $s$ 个小球。
+为方便大家理解，想象有 $n$ 个盒子，第 $i$ 个盒子装有 $x-\textit{nums}[i]$ 个小球，这是 $\textit{nums}[i]$ 需要加一的次数。
 
 操作一相当于从一个非空盒子中取出一个球，操作二相当于从两个不同的非空盒子中各取一个小球。
 
-例如有三个盒子，分别装有 $3,3,2$ 个小球：
+我们需要计算最多能执行多少次操作二。
 
-- 从第 $1,2$ 个盒子中各取一个小球，剩余个数为 $2,2,2$。
-- 从第 $1,2$ 个盒子中各取一个小球，剩余个数为 $1,1,2$。
-- 从第 $1,3$ 个盒子中各取一个小球，剩余个数为 $0,1,1$。
-- 从第 $2,3$ 个盒子中各取一个小球，剩余个数为 $0,0,0$。
+设总共有 $s$ 个小球，其中装有小球数最多的盒子，装了 $d = x - m$ 个小球。
 
-注意，如果三个盒子分别装有 $3,3,3$ 个小球，最后还剩下一个小球，只能用操作一取出。
+**结论**：最多执行 $\min\left(\left\lfloor\dfrac{s}{2}\right\rfloor,s-d\right)$ 次操作二。
 
-看上去，可以执行 $\left\lfloor\dfrac{s}{2}\right\rfloor$ 次操作二，再加上 $s\bmod 2$ 次操作一。
+[证明+具体操作方案](https://zhuanlan.zhihu.com/p/1945782212176909162)
 
-但这是不对的，例如有三个盒子，分别装有 $4,1,1$ 个小球：
-
-- 从第 $1,2$ 个盒子中各取一个小球，剩余个数为 $3,0,1$。
-- 从第 $1,3$ 个盒子中各取一个小球，剩余个数为 $2,0,0$。
-- 无法继续用操作二，只能用操作一。
-
-看上去，如果一个盒子装有很多小球，比其它盒子的小球总数还多，就没法执行 $\left\lfloor\dfrac{s}{2}\right\rfloor$ 次操作二了。怎么证明这个观察？
-
-以 $3,3,2$ 为例，总共有 $3+3+2=8$ 个位置，我们可以按照 $1,3,5,7,2,4,6,8$ 的顺序，首先填入三个 $1$，得到
-
-$$
-1,\text{\_},1,\text{\_},1,\text{\_},\text{\_},\text{\_}
-$$
-
-继续按照顺序，填入三个 $2$，得到
-
-$$
-1,2,1,2,1,\text{\_},2,\text{\_}
-$$
-
-最后填入两个 $3$，得到
-
-$$
-1,2,1,2,1,3,2,3
-$$
-
-两两一组，得到
-
-$$
-(1,2),(1,2),(1,3),(2,3)
-$$
-
-这正是上面取球例子中的取法。
-
-一个盒子最多有 $d = x - m$ 个小球，分类讨论：
-
-- 如果 $d\le s- d$，即 $d\le \left\lfloor\dfrac{s}{2}\right\rfloor$，按照上述构造方式，同一组中不可能有相同元素。这意味着，如果 $d\le s- d$，只用操作二，最后至多剩下一个小球（如果 $s$ 是奇数的话）。
-- 如果 $d> s- d$，即使每次都用操作二，从这个装有 $d$ 个小球的盒子中取球，在 $s-d$ 次操作二后，其余盒子中的总共 $s-d$ 个小球全部取完，后面只能用操作一取走这个盒子中剩余的 $d-(s-d)$ 个小球。
-- 这两种情况都做到了**尽量多地使用操作二**。
-
-按照上述讨论，计算都变成 $x$ 的总开销 $f(x)$：
+根据结论，计算都变成 $x$ 的总开销 $f(x)$：
 
 - 如果 $2d\le s$，那么先执行 $\left\lfloor\dfrac{s}{2}\right\rfloor$ 次操作二，然后执行 $s\bmod 2$ 次操作一，总开销为
    $$
    f(x) = \left\lfloor\dfrac{s}{2}\right\rfloor\cdot c_2 + s\bmod 2\cdot c_1 
    $$
-- 如果 $2d> s$，那么先执行 $s-d$ 次操作二，然后执行 $2d-s$ 次操作一，总开销为
+- 如果 $2d> s$，那么先执行 $s-d$ 次操作二，然后执行 $s - 2(s-d) = 2d-s$ 次操作一，总开销为
    $$
    f(x) = (s-d)\cdot c_2 + (2d-s)\cdot c_1
    $$
+
+两种情况可以合并为
+
+$$
+f(x) = \max\left(\left\lfloor\dfrac{s}{2}\right\rfloor\cdot c_2 + s\bmod 2\cdot c_1, (s-d)\cdot c_2 + (2d-s)\cdot c_1\right)
+$$
 
 枚举 $x$，取 $f(x)$ 的最小值，即为最小总开销。
 
@@ -200,9 +165,7 @@ class Solution:
         def f(x: int) -> int:
             s = base + (x - M) * n
             d = x - m
-            if d * 2 <= s:
-                return s // 2 * c2 + s % 2 * c1
-            return (s - d) * c2 + (d * 2 - s) * c1
+            return max(s // 2 * c2 + s % 2 * c1, (s - d) * c2 + (d * 2 - s) * c1)
 
         i = (n * M - m * 2 - base + n - 3) // (n - 2)
         return min(f(M), f(M + 1)) % MOD if i <= M else \
@@ -241,10 +204,7 @@ class Solution {
     private long f(int x, long base, long n, int m, int M, int c1, int c2) {
         long s = base + (x - M) * n;
         int d = x - m;
-        if (d * 2 <= s) {
-            return s / 2 * c2 + s % 2 * c1;
-        }
-        return (s - d) * c2 + (d * 2 - s) * c1;
+        return Math.max(s / 2 * c2 + s % 2 * c1, (s - d) * c2 + (d * 2 - s) * c1);
     }
 }
 ```
@@ -264,10 +224,7 @@ public:
         auto f = [&](int x) -> long long {
             long long s = base + (x - M) * n;
             int d = x - m;
-            if (d * 2 <= s) {
-                return s / 2 * c2 + s % 2 * c1;
-            }
-            return (s - d) * c2 + (d * 2 - s) * c1;
+            return max(s / 2 * c2 + s % 2 * c1, (s - d) * c2 + (d * 2 - s) * c1);
         };
 
         int i = (n * M - m * 2 - base + n - 3) / (n - 2);
@@ -278,7 +235,7 @@ public:
 ```
 
 ```go [sol-Go]
-func minCostToEqualizeArray(nums []int, c1 int, c2 int) int {
+func minCostToEqualizeArray(nums []int, c1, c2 int) int {
 	const mod = 1_000_000_007
 	n := len(nums)
 	m := slices.Min(nums)
@@ -294,10 +251,7 @@ func minCostToEqualizeArray(nums []int, c1 int, c2 int) int {
 	f := func(x int) int {
 		s := base + (x-M)*n
 		d := x - m
-		if d*2 <= s {
-			return s/2*c2 + s%2*c1
-		}
-		return (s-d)*c2 + (d*2-s)*c1
+		return max(s/2*c2+s%2*c1, (s-d)*c2+(d*2-s)*c1)
 	}
 
 	i := (n*M - m*2 - base + n - 3) / (n - 2)
@@ -310,27 +264,29 @@ func minCostToEqualizeArray(nums []int, c1 int, c2 int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在计算 $m,M,\textit{base}$ 上，如果已知这些数据，则时间复杂度为 $\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 相似题目
+## 专题训练
 
-- [1753. 移除石子的最大得分](https://leetcode.cn/problems/maximum-score-from-removing-stones/) 1488
-- [1953. 你可以工作的最大周数](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/) 1804
+见下面贪心题单的「**§1.8 相邻不同**」。
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
