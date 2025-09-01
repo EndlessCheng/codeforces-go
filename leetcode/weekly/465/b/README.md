@@ -1,6 +1,8 @@
 **前置知识**：回溯（搜索），见[【基础算法精讲 14】](https://www.bilibili.com/video/BV1mG4y1A7Gu/)。
 
-题目要求把 $n$ 拆分成 $k$ 个数的乘积，这可以暴搜枚举所有拆分方案。
+题目要求把 $n$ 拆分成 $k$ 个数的乘积。数据范围显示 $k\le 5$，这暗示我们暴搜所有拆分方案。
+
+> 注：一个数的因子个数可以用开立方估计。
 
 用一个长为 $k$ 的数组 $\textit{path}$ 记录搜索过程中拆分出的数字。
 
@@ -444,7 +446,7 @@ func minDifference(n, k int) (ans []int) {
 - 时间复杂度：$\mathcal{O}(D^{k/2})$，其中 $D\le 128$ 是因子个数的最大值。搜索树是一棵 $\sqrt{D}$ 叉树，高度为 $k$，一共有 $\mathcal{O}(D^{k/2})$ 个节点，遍历这棵搜索树需要 $\mathcal{O}(D^{k/2})$ 的时间。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $4400$。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-**注**：如果把枚举 $d$ 的上界由 $\left\lfloor\sqrt n\right\rfloor$ 改成 $\left\lfloor\sqrt[k-i] n\right\rfloor$，则由调和级数可知，节点个数降至 $\mathcal{O}(D^{\ln k})$。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $2864$。
+**注**：如果把枚举 $d$ 的上界由 $\left\lfloor\sqrt n\right\rfloor$ 进一步优化成 $\left\lfloor\sqrt[k-i] n\right\rfloor$，则由调和级数可知，节点个数降至 $\mathcal{O}(D^{\ln k})$。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $2864$。
 
 ## 专题训练
 
