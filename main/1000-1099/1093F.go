@@ -24,9 +24,10 @@ func cf1093F(in io.Reader, out io.Writer) {
 				continue
 			}
 			cnt[x]++
-			f[i][x] = sumF[i-1]
 			if cnt[x] >= l {
-				f[i][x] = (f[i][x] - sumF[i-l] + f[i-l][x]) % mod
+				f[i][x] = (sumF[i-1] - sumF[i-l] + f[i-l][x]) % mod
+			} else {
+				f[i][x] = sumF[i-1]
 			}
 			sumF[i] += f[i][x]
 		}
