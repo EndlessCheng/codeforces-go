@@ -72,10 +72,10 @@ class Solution:
                 return 1
             if grid[i][j] == 0:  # 没有镜子，随便走
                 return (dfs(i, j - 1, 0) + dfs(i - 1, j, 1)) % 1_000_000_007
-            if k == 0:  # 从下边过来
-                return dfs(i - 1, j, 1)  # 反射到左边
-            # 从右边过来
-            return dfs(i, j - 1, 0)  # 反射到上边
+            if k == 0:  # 从右边过来
+                return dfs(i - 1, j, 1)  # 反射到上边
+            # 从下边过来
+            return dfs(i, j - 1, 0)  # 反射到左边
 
         m, n = len(grid), len(grid[0])
         return dfs(m - 1, n - 1, 0)  # 从终点出发
@@ -110,10 +110,10 @@ class Solution {
         int res;
         if (grid[i][j] == 0) { // 没有镜子，随便走
             res = (dfs(i, j - 1, 0, memo, grid) + dfs(i - 1, j, 1, memo, grid)) % MOD;
-        } else if (k == 0) { // 从下边过来
-            res = dfs(i - 1, j, 1, memo, grid); // 反射到左边
-        } else { // 从右边过来
-            res = dfs(i, j - 1, 0, memo, grid); // 反射到上边
+        } else if (k == 0) { // 从右边过来
+            res = dfs(i - 1, j, 1, memo, grid); // 反射到上边
+        } else { // 从下边过来
+            res = dfs(i, j - 1, 0, memo, grid); // 反射到左边
         }
         return memo[i][j][k] = res; // 记忆化
     }
@@ -141,10 +141,10 @@ public:
             }
             if (grid[i][j] == 0) { // 没有镜子，随便走
                 res = (dfs(i, j - 1, 0) + dfs(i - 1, j, 1)) % MOD;
-            } else if (k == 0) { // 从下边过来
-                res = dfs(i - 1, j, 1); // 反射到左边
-            } else { // 从右边过来
-                res = dfs(i, j - 1, 0); // 反射到上边
+            } else if (k == 0) { // 从右边过来
+                res = dfs(i - 1, j, 1); // 反射到上边
+            } else { // 从下边过来
+                res = dfs(i, j - 1, 0); // 反射到左边
             }
             return res;
         };
@@ -181,11 +181,11 @@ func uniquePaths(grid [][]int) (ans int) {
 		if grid[i][j] == 0 { // 没有镜子，随便走
 			return (dfs(i, j-1, 0) + dfs(i-1, j, 1)) % mod
 		}
-		if k == 0 { // 从下边过来
-			return dfs(i-1, j, 1) // 反射到左边
+		if k == 0 { // 从右边过来
+			return dfs(i-1, j, 1) // 反射到上边
 		}
-		// 从右边过来
-		return dfs(i, j-1, 0) // 反射到上边
+		// 从下边过来
+		return dfs(i, j-1, 0) // 反射到左边
 	}
 	return dfs(m-1, n-1, 0) // 从终点出发
 }
