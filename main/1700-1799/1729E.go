@@ -1,8 +1,8 @@
 package main
 
-import (
-	. "fmt"
-)
+import . "fmt"
+
+// 加强版做法 https://www.luogu.com.cn/article/94f6a6ho
 
 // https://github.com/EndlessCheng
 func cf1729E() {
