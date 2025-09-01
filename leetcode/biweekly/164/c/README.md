@@ -295,6 +295,26 @@ class Solution:
     def uniquePaths(self, grid: List[List[int]]) -> int:
         MOD = 1_000_000_007
         n = len(grid[0])
+        # 2*(n+1) 比 (n+1)*2 快（可以对比 Python3 写法二）
+        f0 = [0] * (n + 1)
+        f1 = [0] * (n + 1)
+        f0[1] = f1[1] = 1
+        for row in grid:
+            for j, x in enumerate(row):
+                if x == 0:
+                    f0[j + 1] = (f0[j] + f1[j + 1]) % MOD
+                    f1[j + 1] = f0[j + 1]
+                else:
+                    f0[j + 1] = f1[j + 1]
+                    f1[j + 1] = f0[j]
+        return f0[n]
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def uniquePaths(self, grid: List[List[int]]) -> int:
+        MOD = 1_000_000_007
+        n = len(grid[0])
         f = [[0, 0] for _ in range(n + 1)]
         f[1] = [1, 1]
         for row in grid:
@@ -309,6 +329,32 @@ class Solution:
 ```
 
 ```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int uniquePaths(int[][] grid) {
+        int n = grid[0].length;
+        // 2*(n+1) 比 (n+1)*2 快（可以对比 Java 写法二）
+        int[] f0 = new int[n + 1];
+        int[] f1 = new int[n + 1];
+        f0[1] = f1[1] = 1;
+        for (int[] row : grid) {
+            for (int j = 0; j < n; j++) {
+                if (row[j] == 0) {
+                    f0[j + 1] = (f0[j] + f1[j + 1]) % MOD;
+                    f1[j + 1] = f0[j + 1];
+                } else {
+                    f0[j + 1] = f1[j + 1];
+                    f1[j + 1] = f0[j];
+                }
+            }
+        }
+        return f0[n];
+    }
+}
+```
+
+```java [sol-Java 写法二]
 class Solution {
     private static final int MOD = 1_000_000_007;
 
