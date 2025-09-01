@@ -249,6 +249,7 @@ func minDifference(n, k int) (ans []int) {
 1. **排除等效冗余**。比如先填 $2$ 再填 $3$，和先填 $3$ 再填 $2$，二者是等效的。不妨规定所填数字必须大于等于上一个填的数字。
 2. 根据 1，如果因子 $d^2 >n$，那么下一个填的数必然小于 $d$，不满足要求，此时直接退出循环。
 3. 根据 1，$\textit{path}$ 是递增的，所以最小值就是 $\textit{path}[0]$，最大值就是 $\textit{path}[k-1]$，无需在递归过程中维护最小值和最大值。
+4. **最优性剪枝**。当 $i>0$ 时，如果发现 $d - \textit{path}[0]\ge \textit{minDiff}$，那么无法让 $\textit{minDiff}$ 变小，此时直接退出循环。
 
 ```py [sol-Python3]
 # 预处理每个数的因子
@@ -274,7 +275,7 @@ class Solution:
                     ans = path.copy()  # path[:]
                 return
             for d in divisors[n]:  # 枚举 n 的因子 d
-                if d * d > n:
+                if d * d > n or i > 0 and d - path[0] >= min_diff:
                     break
                 if i == 0 or d >= path[i - 1]:
                     path[i] = d  # 直接覆盖，无需恢复现场
@@ -305,7 +306,9 @@ class Solution {
             }
             return;
         }
-        for (int d = i == 0 ? 1 : path[i - 1]; d * d <= n; d++) { // 枚举 n 的因子 d
+        int low = i == 0 ? 1 : path[i - 1];
+        int high = i == 0 ? n : path[0] + minDiff - 1;
+        for (int d = low; d <= high && d * d <= n; d++) { // 枚举 n 的因子 d
             if (n % d == 0) {
                 path[i] = d; // 直接覆盖，无需恢复现场
                 dfs(i + 1, n / d, path);
@@ -359,7 +362,7 @@ class Solution {
         }
         int maxD = (int) Math.sqrt(n);
         for (int d : divisors[n]) { // 枚举 n 的因子 d
-            if (d > maxD) {
+            if (d > maxD || i > 0 && d - path[0] >= minDiff) {
                 break;
             }
             if (i == 0 || d >= path[i - 1]) {
@@ -403,7 +406,7 @@ public:
             }
             int max_d = sqrt(n);
             for (int d : divisors[n]) { // 枚举 n 的因子 d
-                if (d > max_d) {
+                if (d > max_d || i > 0 && d - path[0] >= min_diff) {
                     break;
                 }
                 if (i == 0 || d >= path[i - 1]) {
@@ -447,7 +450,7 @@ func minDifference(n, k int) (ans []int) {
 			return
 		}
 		for _, d := range divisors[n] { // 枚举 n 的因子 d
-			if d*d > n {
+			if d*d > n || i > 0 && d-path[0] >= minDiff {
 				break
 			}
 			if i == 0 || d >= path[i-1] {
@@ -463,10 +466,10 @@ func minDifference(n, k int) (ans []int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(D^{k/2})$，其中 $D\le 128$ 是因子个数的最大值。搜索树是一棵 $\sqrt{D}$ 叉树，高度为 $k$，一共有 $\mathcal{O}(D^{k/2})$ 个节点，遍历这棵搜索树需要 $\mathcal{O}(D^{k/2})$ 的时间。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $4400$。
+- 时间复杂度：$\mathcal{O}(D^{k/2})$，其中 $D\le 128$ 是因子个数的最大值。搜索树是一棵 $\sqrt{D}$ 叉树，高度为 $k$，一共有 $\mathcal{O}(D^{k/2})$ 个节点，遍历这棵搜索树需要 $\mathcal{O}(D^{k/2})$ 的时间。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $2322$。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-**注**：如果把枚举 $d$ 的上界由 $\left\lfloor\sqrt n\right\rfloor$ 进一步优化成 $\left\lfloor\sqrt[k-i] n\right\rfloor$，则由调和级数可知，节点个数降至 $\mathcal{O}(D^{\ln k})$。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $2864$。
+**注**：如果把枚举 $d$ 的上界由 $\left\lfloor\sqrt n\right\rfloor$ 进一步优化成 $\left\lfloor\sqrt[k-i] n\right\rfloor$，则由调和级数可知，节点个数降至 $\mathcal{O}(D^{\ln k})$。测试表明，当 $n=90720$，$k=5$ 时节点个数达到最大，为 $2192$。
 
 ## 专题训练
 
