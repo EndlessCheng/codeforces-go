@@ -61,6 +61,7 @@ https://www.luogu.com.cn/problem/P12399 最大子段和
 ## 随机
 
 https://codeforces.com/problemset/problem/2074/E 1600
+https://codeforces.com/problemset/problem/1729/E 1800 进阶问题：保证 q(a,b) = q(b,a)
 https://codeforces.com/problemset/problem/843/B 2000 数组 链表
 https://codeforces.com/problemset/problem/1114/E 2200 数论
 https://codeforces.com/problemset/problem/1840/G2 2500
