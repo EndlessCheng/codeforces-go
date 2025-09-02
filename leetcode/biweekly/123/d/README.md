@@ -24,6 +24,8 @@
 
 由于内层循环中的 $j$ 是从 $i+1$ 开始枚举的，所以在横坐标相同时，要按照纵坐标**从大到小**排序。这也保证了横坐标相同时，我们总是会先遍历到纵坐标更大的点。在上面的例子中，遍历到 $(1,1)$ 之前，一定会先遍历到 $(1,2)$。这样对于 $(1,3)$ 为左上角，$(1,1)$ 为右下角的矩形，我们就能正确地判断出这个矩形是不合法的。
 
+**优化**：如果在循环中发现 $\textit{maxY} = y_1$，那么不存在满足要求的 $y_2$，此时可以退出循环。
+
 [视频讲解](https://www.bilibili.com/video/BV14C411r7nN/) 第四题。
 
 ```py [sol-Python3]
@@ -37,6 +39,8 @@ class Solution:
                 if y1 >= y2 > max_y:
                     max_y = y2
                     ans += 1
+                if max_y == y1:  # 优化
+                    break
         return ans
 ```
 
@@ -49,7 +53,7 @@ class Solution {
         for (int i = 0; i < points.length; i++) {
             int y1 = points[i][1];
             int maxY = Integer.MIN_VALUE;
-            for (int j = i + 1; j < points.length; j++) {
+            for (int j = i + 1; j < points.length && maxY < y1; j++) {
                 int y2 = points[j][1];
                 if (y2 <= y1 && y2 > maxY) {
                     maxY = y2;
@@ -72,7 +76,7 @@ public:
         for (int i = 0; i < n; i++) {
             int y1 = points[i][1];
             int max_y = INT_MIN;
-            for (int j = i + 1; j < n; j++) {
+            for (int j = i + 1; j < n && max_y < y1; j++) {
                 int y2 = points[j][1];
                 if (y2 <= y1 && y2 > max_y) {
                     max_y = y2;
@@ -99,7 +103,7 @@ int numberOfPairs(int** points, int pointsSize, int* pointsColSize) {
     for (int i = 0; i < pointsSize; i++) {
         int y1 = points[i][1];
         int max_y = INT_MIN;
-        for (int j = i + 1; j < pointsSize; j++) {
+        for (int j = i + 1; j < pointsSize && max_y < y1; j++) {
             int y2 = points[j][1];
             if (y2 <= y1 && y2 > max_y) {
                 max_y = y2;
@@ -124,6 +128,9 @@ func numberOfPairs(points [][]int) (ans int) {
 				maxY = y2
 				ans++
 			}
+			if maxY == y1 { // 优化
+				break
+			}
 		}
 	}
 	return
@@ -138,7 +145,7 @@ var numberOfPairs = function(points) {
     for (let i = 0; i < n; i++) {
         const y1 = points[i][1];
         let max_y = -Infinity;
-        for (let j = i + 1; j < n; j++) {
+        for (let j = i + 1; j < n && max_y < y1; j++) {
             const y2 = points[j][1];
             if (y2 <= y1 && y2 > max_y) {
                 max_y = y2;
@@ -163,6 +170,9 @@ impl Solution {
                 if y2 <= y1 && y2 > max_y {
                     max_y = y2;
                     ans += 1;
+                }
+                if max_y == y1 { // 优化
+                    break;
                 }
             }
         }
