@@ -1,3 +1,192 @@
+## 方法一：BFS
+
+做法和 [2612. 最少翻转操作数](https://leetcode.cn/problems/minimum-reverse-operations/) 是类似的，请先阅读 [我的题解](https://leetcode.cn/problems/minimum-reverse-operations/solutions/2204092/liang-chong-zuo-fa-ping-heng-shu-bing-ch-vr0z/)。
+
+设 $s$ 的长度为 $n$，其中有 $z$ 个 $0$。
+
+翻转一次后，$s$ 有多少个 $0$？$z$ 可以变成什么数？
+
+设翻转了 $x$ 个 $0$，那么也同时翻转了 $k-x$ 个 $1$，这些 $1$ 变成了 $0$。
+
+所以 $z$ 减少了 $x$，然后又增加了 $k-x$。
+
+所以新的 $z'$ 为
+
+$$
+z' = z - x + (k-x) = z+k-2x
+$$
+
+$x$ 最大可以是 $k$，但这不能超过 $s$ 中的 $0$ 的个数 $z$，所以 $x$ 最大为 $\min(k,z)$。
+
+$k-x$ 最大可以是 $k$，但这不能超过 $s$ 中的 $1$ 的个数 $n-z$，所以 $k-x$ 最大为 $\min(k,n-z)$，所以 $x$ 最小为 $\max(0,k-n+z)$。
+
+所以 $x$ 的范围为
+
+$$
+[\max(0,k-n+z),\min(k,z)]
+$$
+
+其余逻辑同 2612 题。
+
+```py [sol-Python3]
+class Solution:
+    def minOperations(self, s: str, k: int) -> int:
+        n = len(s)
+        not_vis = [SortedList(range(0, n + 1, 2)), SortedList(range(1, n + 1, 2))]
+        not_vis[0].add(n + 1)  # 哨兵，下面 sl[idx] <= mx 无需判断越界
+        not_vis[1].add(n + 1)
+
+        start = s.count('0')  # 起点
+        not_vis[start % 2].discard(start)
+        q = [start]
+        ans = 0
+        while q:
+            tmp = q
+            q = []
+            for z in tmp:
+                if z == 0:  # 没有 0，翻转完毕
+                    return ans
+                # not_vis[mn % 2] 中的从 mn 到 mx 都可以从 z 翻转到
+                mn = z + k - 2 * min(k, z)
+                mx = z + k - 2 * max(0, k - n + z)
+                sl = not_vis[mn % 2]
+                idx = sl.bisect_left(mn)
+                while sl[idx] <= mx:
+                    j = sl.pop(idx)  # 注意 pop(idx) 会使后续元素向左移，不需要写 idx += 1
+                    q.append(j)
+            ans += 1
+        return -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int minOperations(String s, int k) {
+        int n = s.length();
+        TreeSet<Integer>[] notVis = new TreeSet[2];
+        for (int m = 0; m < 2; m++) {
+            notVis[m] = new TreeSet<>();
+            for (int i = m; i <= n; i += 2) {
+                notVis[m].add(i);
+            }
+        }
+
+        // 计算起点
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == '0') {
+                start++;
+            }
+        }
+
+        notVis[start % 2].remove(start);
+        List<Integer> q = List.of(start);
+        for (int ans = 0; !q.isEmpty(); ans++) {
+            List<Integer> tmp = q;
+            q = new ArrayList<>();
+            for (int z : tmp) {
+                if (z == 0) { // 没有 0，翻转完毕
+                    return ans;
+                }
+                // notVis[mn % 2] 中的从 mn 到 mx 都可以从 z 翻转到
+                int mn = z + k - 2 * Math.min(k, z);
+                int mx = z + k - 2 * Math.max(0, k - n + z);
+                TreeSet<Integer> set = notVis[mn % 2];
+                for (Iterator<Integer> it = set.tailSet(mn).iterator(); it.hasNext(); it.remove()) {
+                    int j = it.next();
+                    if (j > mx) {
+                        break;
+                    }
+                    q.add(j);
+                }
+            }
+        }
+        return -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minOperations(string s, int k) {
+        int n = s.size();
+        set<int> not_vis[2];
+        for (int m = 0; m < 2; m++) {
+            for (int i = m; i <= n; i += 2) {
+                not_vis[m].insert(i);
+            }
+            not_vis[m].insert(n + 1); // 哨兵，下面无需判断 it != st.end()
+        }
+
+        int start = ranges::count(s, '0'); // 起点
+        not_vis[start % 2].erase(start);
+        vector<int> q = {start};
+        for (int ans = 0; !q.empty(); ans++) {
+            vector<int> nxt;
+            for (int z : q) {
+                if (z == 0) { // 没有 0，翻转完毕
+                    return ans;
+                }
+                // not_vis[mn % 2] 中的从 mn 到 mx 都可以从 z 翻转到
+                int mn = z + k - 2 * min(k, z);
+                int mx = z + k - 2 * max(0, k - n + z);
+                auto& st = not_vis[mn % 2];
+                for (auto it = st.lower_bound(mn); *it <= mx; it = st.erase(it)) {
+                    nxt.push_back(*it);
+                }
+            }
+            q = move(nxt);
+        }
+        return -1;
+    }
+};
+```
+
+```go [sol-Go]
+// import "github.com/emirpasic/gods/v2/trees/redblacktree"
+func minOperations(s string, k int) (ans int) {
+	n := len(s)
+	notVis := [2]*redblacktree.Tree[int, struct{}]{}
+	for m := range notVis {
+		notVis[m] = redblacktree.New[int, struct{}]()
+		for i := m; i <= n; i += 2 {
+			notVis[m].Put(i, struct{}{})
+		}
+		notVis[m].Put(n+1, struct{}{}) // 哨兵，下面无需判断 node != nil
+	}
+
+	start := strings.Count(s, "0")
+	notVis[start%2].Remove(start)
+	q := []int{start}
+	for q != nil {
+		tmp := q
+		q = nil
+		for _, z := range tmp {
+			if z == 0 { // 没有 0，翻转完毕
+				return ans
+			}
+			// notVis[mn % 2] 中的从 mn 到 mx 都可以从 z 翻转到
+			mn := z + k - 2*min(k, z)
+			mx := z + k - 2*max(0, k-n+z)
+			t := notVis[mn%2]
+			for node, _ := t.Ceiling(mn); node.Key <= mx; node, _ = t.Ceiling(mn) {
+				q = append(q, node.Key)
+				t.Remove(node.Key)
+			}
+		}
+		ans++
+	}
+	return -1
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $s$ 的长度。$[0,n]$ 中的每个数至多入队出队各一次，每次 $\mathcal{O}(\log n)$ 时间。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：数学
+
 ### 分析
 
 设 $s$ 中有 $z$ 个 $0$，设一共操作了 $m$ 次。那么总翻转次数为 $mk$。
@@ -114,7 +303,7 @@ class Solution:
         z = s.count('0')
         if z == 0:
             return 0
-        if n == k:
+        if k == n:
             return 1 if z == n else -1
 
         ans = inf
@@ -145,7 +334,7 @@ class Solution {
         if (z == 0) {
             return 0;
         }
-        if (n == k) {
+        if (k == n) {
             return z == n ? 1 : -1;
         }
 
@@ -176,7 +365,7 @@ public:
         if (z == 0) {
             return 0;
         }
-        if (n == k) {
+        if (k == n) {
             return z == n ? 1 : -1;
         }
 
@@ -205,7 +394,7 @@ func minOperations(s string, k int) int {
 	if z == 0 {
 		return 0
 	}
-	if n == k {
+	if k == n {
 		if z == n {
 			return 1
 		}
@@ -234,7 +423,7 @@ func minOperations(s string, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。瓶颈在遍历 $s$ 上，如果已知 $0$ 的个数，则时间复杂度是 $\mathcal{O}(1)$。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。瓶颈在遍历 $s$ 上。如果已知 $s$ 中的 $0$ 的个数，则时间复杂度是 $\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
