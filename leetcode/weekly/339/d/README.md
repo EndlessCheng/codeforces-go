@@ -2,9 +2,11 @@
 
 把下标 $0$ 到 $n-1$ 看成节点 $0$ 到 $n-1$。设 $i$ 翻转后的位置为 $j$，在 $i$ 到 $j$ 之间连边，边权为 $1$（表示操作一次）。
 
-转换后，问题变成从 $p$ 到各个点的**最短路**。
+问题变成：
 
-既然是最短路问题，且边权均为 $1$，可以用 **BFS** 计算。
+- 计算 $p$ 到各个点的**最短路**。
+
+由于图中边权均为 $1$，可以用 **BFS** 计算。
 
 当我们位于下标 $i$ 时，下一步可以去哪？换句话说，通过**一次**操作，可以到达哪些下标？
 
@@ -126,7 +128,7 @@ class Solution {
 class Solution {
 public:
     vector<int> minReverseOperations(int n, int p, vector<int>& banned, int k) {
-        unordered_set<int> ban{banned.begin(), banned.end()};
+        unordered_set<int> ban(banned.begin(), banned.end());
         set<int> indices[2];
         for (int i = 0; i < n; i++) {
             if (i != p && !ban.contains(i)) {
