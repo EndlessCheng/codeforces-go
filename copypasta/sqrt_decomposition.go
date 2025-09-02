@@ -1,9 +1,6 @@
 package copypasta
 
-import (
-	"math"
-	"slices"
-)
+import "math"
 
 /* 根号分解 Sqrt Decomposition
 分块数据结构见后
@@ -95,6 +92,7 @@ https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 https://cp-algorithms.com/sequences/rmq.html
 https://www.luogu.com.cn/problem/P3396
+https://codeforces.com/problemset/problem/444/C 2400
 https://codeforces.com/problemset/problem/551/E 2500 经典题   Go1.22 推荐块大小为 sqrt(n/5)，比 sqrt(n) 快一倍
 https://codeforces.com/problemset/problem/13/E 2700
 https://codeforces.com/problemset/problem/455/D 2700
@@ -102,48 +100,48 @@ https://codeforces.com/problemset/problem/2043/G 3000
 https://www.luogu.com.cn/problem/P3203 [HN10] 弹飞绵羊
 https://www.nowcoder.com/discuss/353159150542725120 K 题 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=50861318
 */
-func _(a []int) {
+func _(a []int) { // 下标从 0 开始
 	n := len(a)
-	blockSize := int(math.Sqrt(float64(n))) // 建议设为常量，避免超时 【提示】大一点可能更快一些
-	//blockSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
+	B := int(math.Sqrt(float64(n)))
+	//B := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
 
-	// 下标从 0 开始
 	type block struct {
-		l, r           int // [l,r]
-		origin, sorted []int
-		//lazyAdd int
+		l, r int // [l,r)
+		sum  int
+		todo int
 	}
-	blocks := make([]block, (n-1)/blockSize+1)
-	for i, v := range a {
-		j := i / blockSize
-		if i%blockSize == 0 {
-			blocks[j] = block{l: i, origin: make([]int, 0, blockSize)}
+	blocks := make([]block, (n-1)/B+1)
+	calcBlock := func(l, r int) (res int) {
+		for j := l; j < r; j++ {
+			v := a[j]
+			_ = v
 		}
-		blocks[j].origin = append(blocks[j].origin, v)
+		return
 	}
-	for i := range blocks {
-		b := &blocks[i]
-		b.r = b.l + len(b.origin) - 1
-		b.sorted = slices.Clone(b.origin)
-		slices.Sort(b.sorted)
+	for i := 0; i < n; i += B {
+		r := min(i+B, n)
+		sum := calcBlock(i, r)
+		blocks[i/B] = block{i, r, sum, 0}
 	}
-	sqrtOp := func(l, r int, v int) { // [l,r], starts at 0
+
+	// [l,r), 从 0 开始
+	sqrtOp := func(l, r int, v int) { 
 		for i := range blocks {
 			b := &blocks[i]
-			if b.r < l {
+			if b.r <= l {
 				continue
 			}
-			if b.l > r {
+			if b.l >= r {
 				break
 			}
 			if l <= b.l && b.r <= r {
-				// do op on full block
+				// 完整块
 			} else {
-				// do op on part block
+				// 部分块
 				bl := max(b.l, l)
 				br := min(b.r, r)
-				for j := bl - b.l; j <= br-b.l; j++ {
-					// do b.origin[j]...
+				for j := bl; j < br; j++ {
+					
 				}
 			}
 		}
