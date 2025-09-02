@@ -153,6 +153,92 @@ class FenwickTree {
 
 class Solution {
     private static final int MOD = 1_000_000_007;
+
+    public int totalBeauty(int[] nums) {
+        int m = 0;
+        for (int x : nums) {
+            m = Math.max(m, x);
+        }
+
+        List<Integer>[] groups = new ArrayList[m + 1];
+        Arrays.setAll(groups, _ -> new ArrayList<>());
+        for (int x : nums) {
+            for (int d = 1; d * d <= x; d++) { // 枚举 x 的因子 d
+                if (x % d == 0) {
+                    groups[d].add(x);
+                    if (d * d < x) {
+                        groups[x / d].add(x);
+                    }
+                }
+            }
+        }
+
+        int[] f = new int[m + 1];
+        long ans = 0;
+        for (int i = m; i > 0; i--) {
+            long res = countIncreasingSubsequence(groups[i], i, m);
+            // 倍数容斥
+            for (int j = i * 2; j <= m; j += i) {
+                res -= f[j];
+            }
+            res %= MOD;
+            f[i] = (int) res;
+            // m 个 MOD * m 相加，至多为 MOD * m * m，不会超过 64 位整数最大值
+            ans += res * i;
+        }
+        // 保证结果非负
+        return (int) ((ans % MOD + MOD) % MOD);
+    }
+
+    // 计算 b 的严格递增子序列的个数
+    private long countIncreasingSubsequence(List<Integer> b, int g, int m) {
+        FenwickTree t = new FenwickTree(m / g);
+        long res = 0;
+        for (int x : b) {
+            x /= g;
+            // cnt 表示以 x 结尾的严格递增子序列的个数
+            long cnt = t.pre(x - 1) + 1; // +1 是因为 x 可以一个数组成一个子序列
+            cnt %= MOD;
+            res += cnt;
+            t.update(x, cnt); // 更新以 x 结尾的严格递增子序列的个数
+        }
+        return res;
+    }
+}
+```
+
+```java [sol-Java 预处理]
+// 完整模板见 https://leetcode.cn/circle/discuss/mOr1u6/
+class FenwickTree {
+    private final long[] tree;
+
+    public FenwickTree(int n) {
+        tree = new long[n + 1]; // 使用下标 1 到 n
+    }
+
+    // a[i] 增加 val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public void update(int i, long val) {
+        for (; i < tree.length; i += i & -i) {
+            tree[i] += val;
+        }
+    }
+
+    // 求前缀和 a[1] + ... + a[i]
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public long pre(int i) {
+        long res = 0;
+        for (; i > 0; i &= i - 1) {
+            res += tree[i];
+        }
+        return res;
+    }
+}
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
     private static final int MX = 70_001;
     private static final List<Integer>[] divisors = new ArrayList[MX];
     private static boolean initialized = false;
@@ -467,6 +553,103 @@ class Solution:
 ```
 
 ```java [sol-Java]
+class FenwickTree {
+    private static final int MOD = 1_000_000_007;
+    private final int[] tree;
+    private final int[] time;
+    private int now = 0;
+
+    public FenwickTree(int size) {
+        tree = new int[size + 1];
+        time = new int[size + 1];
+    }
+
+    // 重置树状数组（懒重置）
+    public void reset() {
+        now++;
+    }
+
+    // 把位置 i 的数增加 val
+    public void update(int i, int val) {
+        while (i < tree.length) {
+            if (time[i] < now) {
+                time[i] = now;
+                tree[i] = 0; // 懒重置
+            }
+            tree[i] = (tree[i] + val) % MOD;
+            i += i & -i;
+        }
+    }
+
+    // 计算 [1,i] 的元素和
+    public int pre(int i) {
+        long res = 0;
+        while (i > 0) {
+            if (time[i] == now) {
+                res += tree[i];
+            }
+            i &= i - 1;
+        }
+        return (int) (res % MOD);
+    }
+}
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int totalBeauty(int[] nums) {
+        int m = 0;
+        for (int x : nums) {
+            m = Math.max(m, x);
+        }
+
+        List<Integer>[] groups = new ArrayList[m + 1];
+        Arrays.setAll(groups, _ -> new ArrayList<>());
+        for (int x : nums) {
+            for (int d = 1; d * d <= x; d++) { // 枚举 x 的因子 d
+                if (x % d == 0) {
+                    groups[d].add(x);
+                    if (d * d < x) {
+                        groups[x / d].add(x);
+                    }
+                }
+            }
+        }
+
+        FenwickTree t = new FenwickTree(m);
+        int[] f = new int[m + 1];
+        long ans = 0;
+        for (int i = m; i > 0; i--) {
+            long res = countIncreasingSubsequence(groups[i], t);
+            // 倍数容斥
+            for (int j = i * 2; j <= m; j += i) {
+                res -= f[j];
+            }
+            res %= MOD;
+            f[i] = (int) res;
+            // m 个 MOD * m 相加，至多为 MOD * m * m，不会超过 64 位整数最大值
+            ans += res * i;
+        }
+        // 保证结果非负
+        return (int) ((ans % MOD + MOD) % MOD);
+    }
+
+    // 计算 b 的严格递增子序列的个数
+    private long countIncreasingSubsequence(List<Integer> b, FenwickTree t) {
+        t.reset();
+        long res = 0;
+        for (int x : b) {
+            // cnt 表示以 x 结尾的严格递增子序列的个数
+            int cnt = t.pre(x - 1) + 1; // +1 是因为 x 可以一个数组成一个子序列
+            res += cnt;
+            t.update(x, cnt); // 更新以 x 结尾的严格递增子序列的个数
+        }
+        return res;
+    }
+}
+```
+
+```java [sol-Java 预处理]
 class FenwickTree {
     private static final int MOD = 1_000_000_007;
     private final int[] tree;
