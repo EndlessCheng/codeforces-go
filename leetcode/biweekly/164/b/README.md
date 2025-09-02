@@ -38,8 +38,7 @@
 ```py [sol-Python3]
 class Solution:
     # 计算除了 x 以外的出现次数之和 sum_cnt，出现次数最大值 max_cnt
-    def get_sum_and_max(self, cnt: Counter, x: str) -> Tuple[int, int]:
-        del cnt[x]
+    def get_sum_and_max(self, cnt: Dict[str, int]) -> Tuple[int, int]:
         sum_cnt = sum(cnt.values())
         max_cnt = max(cnt.values(), default=0)
         return sum_cnt, max_cnt
@@ -51,12 +50,13 @@ class Solution:
         return min(s // 2, s - mx)
 
     def score(self, cards: List[str], x: str) -> int:
-        cnt1 = Counter(b for a, b in cards if a == x)  # 统计 "x?" 中的 ? 的出现次数
-        cnt2 = Counter(a for a, b in cards if b == x)  # 统计 "?x" 中的 ? 的出现次数
+        cnt = Counter(cards)
+        cnt_xx = cnt.pop(x + x, 0)
+        cnt1 = {b: c for (a, b), c in cnt.items() if a == x}  # 统计 "x?" 中的 ? 的出现次数
+        cnt2 = {a: c for (a, b), c in cnt.items() if b == x}  # 统计 "?x" 中的 ? 的出现次数
 
-        cnt_xx = cnt1[x]
-        sum1, max1 = self.get_sum_and_max(cnt1, x)
-        sum2, max2 = self.get_sum_and_max(cnt2, x)
+        sum1, max1 = self.get_sum_and_max(cnt1)
+        sum2, max2 = self.get_sum_and_max(cnt2)
 
         ans = 0
         # 枚举分配 k 个 xx 给第一组，其余的 xx 给第二组
@@ -233,20 +233,20 @@ func score(cards []string, x byte) (ans int) {
 ```py [sol-Python3]
 class Solution:
     # 计算这一组的得分（配对个数），以及剩余元素个数
-    def calc(self, cnt: Counter, x: str) -> (int, int):
-        del cnt[x]
+    def calc(self, cnt: Dict[str, int]) -> Tuple[int, int]:
         sum_cnt = sum(cnt.values())
         max_cnt = max(cnt.values(), default=0)
         pairs = min(sum_cnt // 2, sum_cnt - max_cnt)
         return pairs, sum_cnt - pairs * 2
 
     def score(self, cards: List[str], x: str) -> int:
-        cnt1 = Counter(b for a, b in cards if a == x)
-        cnt2 = Counter(a for a, b in cards if b == x)
+        cnt = Counter(cards)
+        cnt_xx = cnt.pop(x + x, 0)
+        cnt1 = {b: c for (a, b), c in cnt.items() if a == x}  # 统计 "x?" 中的 ? 的出现次数
+        cnt2 = {a: c for (a, b), c in cnt.items() if b == x}  # 统计 "?x" 中的 ? 的出现次数
 
-        cnt_xx = cnt1[x]
-        pairs1, left1 = self.calc(cnt1, x)
-        pairs2, left2 = self.calc(cnt2, x)
+        pairs1, left1 = self.calc(cnt1)
+        pairs2, left2 = self.calc(cnt2)
         ans = pairs1 + pairs2  # 不考虑 xx 时的得分
 
         # 把 xx 和剩下的 x? 和 ?x 配对
