@@ -92,8 +92,8 @@ https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 https://cp-algorithms.com/sequences/rmq.html
 https://www.luogu.com.cn/problem/P3396
-https://codeforces.com/problemset/problem/444/C 2400
-https://codeforces.com/problemset/problem/551/E 2500 经典题   Go1.22 推荐块大小为 sqrt(n/5)，比 sqrt(n) 快一倍
+https://codeforces.com/problemset/problem/444/C 2400 DZY Loves Colors 经典题
+https://codeforces.com/problemset/problem/551/E 2500 GukiZ and GukiZiana   Go1.22 推荐块大小为 sqrt(n/5)，比 sqrt(n) 快一倍
 https://codeforces.com/problemset/problem/13/E 2700
 https://codeforces.com/problemset/problem/455/D 2700
 https://codeforces.com/problemset/problem/2043/G 3000
