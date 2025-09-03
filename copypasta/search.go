@@ -30,6 +30,7 @@ https://atcoder.jp/contests/abc390/tasks/abc390_d
 可行性剪枝 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C 2300
+https://codeforces.com/problemset/problem/1132/E 2300 背包
 https://codeforces.com/problemset/problem/58/E 2400
 https://atcoder.jp/contests/abc233/tasks/abc233_c
 https://atcoder.jp/contests/abc319/tasks/abc319_c
@@ -1190,7 +1191,7 @@ func loop() {
 		}
 	}
 
-	// 主对角线（从左上到右下）
+	// 主对角线 ↘
 	// 第一排在右上，最后一排在左下
 	// - [2711. 对角线上不同值的数量差](https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/) 1429
 	// - [3446. 按对角线进行矩阵排序](https://leetcode.cn/problems/sort-matrix-by-diagonals/) 
@@ -1209,12 +1210,13 @@ func loop() {
 		}
 	}
 
-	// 副对角线（从左下到右上）
+	// 反对角线 ↗
 	// 第一排在左上，最后一排在右下
 	// - [498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/)
 	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）主+副
+	// https://codeforces.com/problemset/problem/628/E 2300
 	loopAntiDiagonal := func(n, m int) {
-		for K := 0; K < n+m-1; K++ {
+		for K := range n + m - 1 {
 			minJ := max(K-n+1, 0)
 			maxJ := min(K, m-1)
 			for j := minJ; j <= maxJ; j++ {
