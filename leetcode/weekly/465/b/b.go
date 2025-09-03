@@ -34,7 +34,7 @@ func minDifference(n, k int) (ans []int) {
 			return
 		}
 		for _, d := range divisors[n] { // 枚举 x 的因子
-			if d*d > n {
+			if d*d > n || i > 0 && d-path[0] >= minDiff {
 				break
 			}
 			if i == 0 || d >= path[i-1] {
