@@ -75,6 +75,7 @@ https://www.luogu.com.cn/problem/P1314
 好比用一个盖子去压住最大值，让最大值尽量小
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 https://codeforces.com/problemset/problem/1840/D 1400
+https://codeforces.com/problemset/problem/2070/C 1500
 https://codeforces.com/problemset/problem/883/I 1900 DP
 https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
