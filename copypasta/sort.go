@@ -19,8 +19,8 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 长为 n 的二分区间，最坏情况下的二分次数，等于 n 的二进制长度 bits.Len(n)
 
 测试一下，你有没有学到二分的本质？
-https://codeforces.com/contest/1945/problem/E 1700
-https://codeforces.com/contest/1999/problem/G2 1700
+https://codeforces.com/problemset/problem/1945/E 1700
+https://codeforces.com/problemset/problem/1999/G2 1700
 https://codeforces.com/problemset/problem/1624/F 2000
 
 LC853 https://leetcode.cn/problems/car-fleet/
@@ -33,11 +33,6 @@ https://codeforces.com/problemset/problem/165/B 1500
 https://codeforces.com/problemset/problem/1971/E 1500
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 https://atcoder.jp/contests/abc334/tasks/abc334_d 前缀和
-
-### 二分答案原理
-为什么二分的结果一定就是我们要求的，可不可能无法由数组中的元素组合得到？
-我在 https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/ 中说到：
-设答案为 s，那么必然有 f(s−1)<k 且 f(s)≥k。注意这和「第 k 小」是等价的。
 
 ### 二分答案：求最小
 https://codeforces.com/problemset/problem/1701/C 1400
@@ -98,22 +93,22 @@ https://codeforces.com/contest/2008/problem/H 2100
 
 ### 最大化中位数
 https://codeforces.com/problemset/problem/1201/C 1400 也可以贪心做
-https://codeforces.com/contest/1993/problem/D 2200
+https://codeforces.com/problemset/problem/1993/D 2200
 
 ### 第 K 小/大（部分题目也可以用堆解决）
 第 k 小等价于：求最小的 x，满足 <= x 的数至少有 k 个（k 从 1 开始）
 第 k 大等价于：求最大的 x，满足 >= x 的数至少有 k 个（k 从 1 开始）
-https://atcoder.jp/contests/abc155/tasks/abc155_d 1845 综合
-https://atcoder.jp/contests/abc149/tasks/abc149_e 1905
-https://atcoder.jp/contests/arc173/tasks/arc173_a 也可以用九进制
 https://codeforces.com/problemset/problem/912/E 2400
 https://codeforces.com/problemset/problem/1983/F 2500
 https://codeforces.com/problemset/problem/1446/F 3200
+https://atcoder.jp/contests/abc155/tasks/abc155_d 1845 综合
+https://atcoder.jp/contests/abc149/tasks/abc149_e 1905
+https://atcoder.jp/contests/arc173/tasks/arc173_a 也可以用九进制
 
 ### 0-1 分数规划
 题目见下面的「search01」
 
-#### 不好想到的二分（这也能二分？！）
+### 不好想到的二分（这也能二分？！）
 https://codeforces.com/problemset/problem/1707/A 1600
 
 《挑战》3.1 节练习题
