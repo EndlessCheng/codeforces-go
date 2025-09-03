@@ -294,7 +294,7 @@ public:
         int mx = bit_width((uint32_t) ranges::max(nums));
         vector<vector<int>> lowbit_pos(mx);
 
-        struct Interval { int g, l, r; };  // 左开右闭 (l, r]
+        struct Interval { int g, l, r; }; // 左开右闭 (l, r]
         vector<Interval> intervals;
 
         long long ans = 0;

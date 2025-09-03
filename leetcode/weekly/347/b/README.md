@@ -329,7 +329,7 @@ class Solution {
             for (int j = minJ; j <= maxJ; j++) {
                 int i = k + j - n;
                 ans[i][j] = Long.bitCount(set); // 计算 set 中 1 的个数
-                set |= 1L << grid[i][j];  // 把 grid[i][j] 加到 set 中
+                set |= 1L << grid[i][j]; // 把 grid[i][j] 加到 set 中
             }
 
             set = 0;

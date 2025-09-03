@@ -329,7 +329,7 @@ impl Solution {
         for i in 0..m / 2 {
             for j in 0..n / 2 {
                 let cnt1 = a[i][j] + a[i][n - 1 - j] + a[m - 1 - i][j] + a[m - 1 - i][n - 1 - j];
-                ans += cnt1.min(4 - cnt1);  // 全为 1 或全为 0
+                ans += cnt1.min(4 - cnt1); // 全为 1 或全为 0
             }
         }
 

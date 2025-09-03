@@ -26,7 +26,7 @@ public:
     int reverseDegree(string s) {
         int ans = 0;
         for (int i = 0; i < s.size(); i++) {
-            ans += ('{' - s[i]) * (i + 1);  // 下标从 1 开始
+            ans += ('{' - s[i]) * (i + 1); // 下标从 1 开始
         }
         return ans;
     }
