@@ -44,13 +44,11 @@ func (t *treap) prepare(l, r int) {
 
 func (t *treap) setRange(l, r int, val tpValueType) {
 	t.prepare(l, r)
-	// 保留 l，后面直接修改，从而代替删除+插入操作
-	for o := t.next(l); o != nil && o.l <= r; o = t.next(o.l) {
+	for o := t.floor(l); o != nil && o.l <= r; o = t.next(o.l) {
+		// ... [o.l, o.r]
 		t.delete(tpKeyType(o.l))
 	}
-	o := t.floor(l)
-	o.r = r
-	o.val = val
+	t.put1(l, r, val)
 }
 
 // https://codeforces.com/problemset/problem/558/E
