@@ -1,36 +1,128 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1AM4y1x7r4/) 第二题。
+示例 1 的 $s = \texttt{lEetcOde}$，其中元音字母为 $\texttt{EeOe}$，排序后为 $\texttt{EOee}$。（大写字母排前面是因为大写字母的 ASCII 值更小）
 
-普通写法：
+原来的 $s = \texttt{l\underline{Ee}tc\underline{O}d\underline{e}}$ 视作 $\texttt{l}\_\_\texttt{tc}\_\texttt{d}\_$，包含 $4$ 个空位。
 
-```py
+在空位依次填入 $\texttt{EOee}$，得到答案 $\texttt{l\underline{EO}tc\underline{e}d\underline{e}}$。
+
+## 写法一
+
+```py [sol-Python3]
 class Solution:
     def sortVowels(self, s: str) -> str:
-        a = sorted(c for c in s if c in "aeiouAEIOU")
-        t = list(s)
+        vowels = sorted(ch for ch in s if ch in "AEIOUaeiou")
+        t = list(s)  # str 无法修改，转成 list
         j = 0
-        for i, c in enumerate(t):
-            if c in "aeiouAEIOU":
-                t[i] = a[j]
+        for i, ch in enumerate(t):
+            if ch in "AEIOUaeiou":
+                t[i] = vowels[j]  # 填空
                 j += 1
         return ''.join(t)
 ```
 
-位运算写法：
+```java [sol-Java]
+class Solution {
+    public String sortVowels(String S) {
+        StringBuilder vowels = new StringBuilder();
+        char[] s = S.toCharArray();
+        for (char ch : s) {
+            char c = Character.toLowerCase(ch);
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                vowels.append(ch);
+            }
+        }
 
-```go
+        char[] sortedVowels = vowels.toString().toCharArray();
+        Arrays.sort(sortedVowels);
+
+        int j = 0;
+        for (int i = 0; i < s.length; i++) {
+            char c = Character.toLowerCase(s[i]);
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                s[i] = sortedVowels[j++];
+            }
+        }
+        return new String(s);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string sortVowels(string s) {
+        string vowels;
+        for (char ch : s) {
+            char c = tolower(ch);
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                vowels += ch;
+            }
+        }
+
+        ranges::sort(vowels);
+
+        int j = 0;
+        for (char& ch : s) {
+            char c = tolower(ch);
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                ch = vowels[j++];
+            }
+        }
+        return s;
+    }
+};
+```
+
+```c [sol-C]
+#define VOWEL_MASK 0x208222
+
+int cmp(const void* a, const void* b) {
+    return *(char*)a - *(char*)b;
+}
+
+char* sortVowels(char* s) {
+    int n = strlen(s);
+    char* vowels = malloc(n * sizeof(char));
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+        char c = tolower(s[i]);
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            vowels[k++] = s[i];
+        }
+    }
+
+    qsort(vowels, k, sizeof(char), cmp);
+
+    k = 0;
+    for (int i = 0; i < n; i++) {
+        char c = tolower(s[i]);
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            s[i] = vowels[k++];
+        }
+    }
+
+    free(vowels);
+    return s;
+}
+```
+
+```go [sol-Go]
 func sortVowels(s string) string {
-	a := []byte{}
-	for _, c := range s {
-		if 2130466>>(c&31)&1 > 0 {
-			a = append(a, byte(c))
+	vowels := []byte{}
+	for _, ch := range s {
+		c := unicode.ToLower(ch)
+		if c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' {
+			vowels = append(vowels, byte(ch))
 		}
 	}
-	sort.Slice(a, func(i, j int) bool { return a[i] < a[j] })
 
-	t, j := []byte(s), 0
-	for i, c := range t {
-		if 2130466>>(c&31)&1 > 0 {
-			t[i] = a[j]
+	slices.Sort(vowels)
+
+	t := []byte(s)
+	j := 0
+	for i, ch := range t {
+		c := unicode.ToLower(rune(ch))
+		if c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' {
+			t[i] = vowels[j]
 			j++
 		}
 	}
@@ -38,7 +130,263 @@ func sortVowels(s string) string {
 }
 ```
 
+```js [sol-JavaScript]
+var sortVowels = function(s) {
+    const vowels = [];
+    for (const ch of s) {
+        if ("AEIOUaeiou".includes(ch)) {
+            vowels.push(ch);
+        }
+    }
+
+    vowels.sort();
+
+    let j = 0;
+    const t = s.split('');
+    for (let i = 0; i < t.length; i++) {
+        if ("AEIOUaeiou".includes(t[i])) {
+            t[i] = vowels[j++];
+        }
+    }
+    return t.join('');
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn sort_vowels(s: String) -> String {
+        let mut vowels = s.bytes()
+            .filter(|&ch| "AEIOUaeiou".contains(ch as char))
+            .collect::<Vec<_>>();
+
+        vowels.sort_unstable();
+
+        let mut s = s.into_bytes();
+        let mut j = 0;
+        for ch in s.iter_mut() {
+            if "AEIOUaeiou".contains(*ch as char) {
+                *ch = vowels[j];
+                j += 1;
+            }
+        }
+        unsafe { String::from_utf8_unchecked(s) }
+    }
+}
+```
+
+## 写法二（优化）
+
+查看 ASCII 表可知，$\texttt{A}$ 到 $\texttt{Z}$ 的 ASCII 值的二进制低 $5$ 位是 $1$ 到 $26$，$\texttt{a}$ 到 $\texttt{z}$ 的 ASCII 值的二进制低 $5$ 位也是 $1$ 到 $26$。
+
+所以可以用 `ch & 31` 把字母 $\textit{ch}$ 转成 $1$ 到 $26$，无论 $\textit{ch}$ 是大写还是小写，规则是统一的。
+
+由于 $\texttt{aeiou}$ 分别是第 $1,5,7,15,21$ 个字母，根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，我们可以把元音集合
+
+$$
+\{\texttt{a},\texttt{e},\texttt{i},\texttt{o},\texttt{u}\}
+$$
+
+视作数字
+
+$$
+2^1 + 2^5 + 2^7 + 2^{15} + 2^{21} = 2130466
+$$
+
+即十六进制的 $\texttt{0x208222}$。
+
+可以用位运算快速判断字母是否在元音集合中。
+
+```py [sol-Python3]
+class Solution:
+    def sortVowels(self, s: str) -> str:
+        VOWEL_MASK = 0x208222
+        is_vowel = lambda ch: VOWEL_MASK >> (ord(ch) & 31) & 1
+
+        vowels = sorted(filter(is_vowel, s))
+        t = list(s)  # str 无法修改，转成 list
+        j = 0
+        for i, ch in enumerate(t):
+            if is_vowel(ch):
+                t[i] = vowels[j]  # 填空
+                j += 1
+        return ''.join(t)
+```
+
+```java [sol-Java]
+class Solution {
+    public String sortVowels(String S) {
+        final int VOWEL_MASK = 0x208222;
+
+        char[] s = S.toCharArray();
+        byte[] vowels = new byte[s.length]; // 比 StringBuilder 快
+        int k = 0;
+        for (char ch : s) {
+            if ((VOWEL_MASK >> (ch & 31) & 1) > 0) {
+                vowels[k++] = (byte) ch;
+            }
+        }
+
+        Arrays.sort(vowels, 0, k);
+
+        k = 0;
+        for (int i = 0; i < s.length; i++) {
+            if ((VOWEL_MASK >> (s[i] & 31) & 1) > 0) {
+                s[i] = (char) vowels[k++];
+            }
+        }
+        return new String(s);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string sortVowels(string s) {
+        const int VOWEL_MASK = 0x208222;
+        string vowels;
+        for (char ch : s) {
+            if (VOWEL_MASK >> (ch & 31) & 1) { // ch 是元音
+                vowels += ch;
+            }
+        }
+
+        ranges::sort(vowels);
+
+        int j = 0;
+        for (char& ch : s) {
+            if (VOWEL_MASK >> (ch & 31) & 1) { // ch 是元音
+                ch = vowels[j++];
+            }
+        }
+        return s;
+    }
+};
+```
+
+```c [sol-C]
+#define VOWEL_MASK 0x208222
+
+int cmp(const void* a, const void* b) {
+    return *(char*)a - *(char*)b;
+}
+
+char* sortVowels(char* s) {
+    int n = strlen(s);
+    char* vowels = malloc(n * sizeof(char));
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+        if (VOWEL_MASK >> (s[i] & 31) & 1) {
+            vowels[k++] = s[i];
+        }
+    }
+
+    qsort(vowels, k, sizeof(char), cmp);
+
+    k = 0;
+    for (int i = 0; i < n; i++) {
+        if (VOWEL_MASK >> (s[i] & 31) & 1) {
+            s[i] = vowels[k++];
+        }
+    }
+
+    free(vowels);
+    return s;
+}
+```
+
+```go [sol-Go]
+func sortVowels(s string) string {
+	const vowelMask = 0x208222
+	vowels := []byte{}
+	for _, ch := range s {
+		if vowelMask>>(ch&31)&1 > 0 { // ch 是元音
+			vowels = append(vowels, byte(ch))
+		}
+	}
+
+	slices.Sort(vowels)
+
+	t := []byte(s)
+	j := 0
+	for i, ch := range t {
+		if vowelMask>>(ch&31)&1 > 0 { // ch 是元音
+			t[i] = vowels[j]
+			j++
+		}
+	}
+	return string(t)
+}
+```
+
+```js [sol-JavaScript]
+var sortVowels = function(s) {
+    const VOWEL_MASK = 0x208222;
+    const vowels = [];
+    for (const ch of s) {
+        if (VOWEL_MASK >> (ch.charCodeAt(0) & 31) & 1) {
+            vowels.push(ch);
+        }
+    }
+
+    vowels.sort();
+
+    let j = 0;
+    const t = s.split('');
+    for (let i = 0; i < t.length; i++) {
+        if (VOWEL_MASK >> (t[i].charCodeAt(0) & 31) & 1) {
+            t[i] = vowels[j++];
+        }
+    }
+    return t.join('');
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn sort_vowels(s: String) -> String {
+        const VOWEL_MASK: u32 = 0x208222;
+        let mut vowels = s.bytes()
+            .filter(|&ch| VOWEL_MASK >> (ch & 31) & 1 > 0)
+            .collect::<Vec<_>>();
+
+        vowels.sort_unstable();
+
+        let mut s = s.into_bytes();
+        let mut j = 0;
+        for ch in s.iter_mut() {
+            if VOWEL_MASK >> (*ch & 31) & 1 > 0 {
+                *ch = vowels[j];
+                j += 1;
+            }
+        }
+        unsafe { String::from_utf8_unchecked(s) }
+    }
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $s$ 的长度。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $s$ 的长度。若用计数排序，则时间复杂度为 $\mathcal{O}(n+|\Sigma|)$，其中 $|\Sigma|=52$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

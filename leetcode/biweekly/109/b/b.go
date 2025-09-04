@@ -2,22 +2,47 @@ package main
 
 import (
 	"slices"
+	"unicode"
 )
 
 // https://space.bilibili.com/206214
-func sortVowels(s string) string {
-	a := []byte{}
-	for _, c := range s {
-		if 2130466>>(c&31)&1 > 0 {
-			a = append(a, byte(c))
+func sortVowels1(s string) string {
+	vowels := []byte{}
+	for _, ch := range s {
+		c := unicode.ToLower(ch)
+		if c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' {
+			vowels = append(vowels, byte(ch))
 		}
 	}
-	slices.Sort(a)
+	slices.Sort(vowels)
 
-	t, j := []byte(s), 0
-	for i, c := range t {
-		if 2130466>>(c&31)&1 > 0 {
-			t[i] = a[j]
+	t := []byte(s)
+	j := 0
+	for i, ch := range t {
+		c := unicode.ToLower(rune(ch))
+		if c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' {
+			t[i] = vowels[j]
+			j++
+		}
+	}
+	return string(t)
+}
+
+func sortVowels(s string) string {
+	const vowelMask = 0x208222
+	vowels := []byte{}
+	for _, ch := range s {
+		if vowelMask>>(ch&31)&1 > 0 { // ch 是元音
+			vowels = append(vowels, byte(ch))
+		}
+	}
+	slices.Sort(vowels)
+
+	t := []byte(s)
+	j := 0
+	for i, ch := range t {
+		if vowelMask>>(ch&31)&1 > 0 { // ch 是元音
+			t[i] = vowels[j]
 			j++
 		}
 	}
