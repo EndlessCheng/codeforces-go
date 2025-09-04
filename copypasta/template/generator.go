@@ -199,7 +199,7 @@ func Test_cf%s(t *testing.T) {
 	return nil
 }
 
-const problemsetJsonFilePath = "problemset.json"
+const problemsetJsonFilePath = "problemset/problemset.json"
 
 func downloadJson() (err error) {
 	resp, err := grequests.Get("https://codeforces.com/api/problemset.problems?lang=en", &grequests.RequestOptions{UserAgent: ua})
