@@ -13,13 +13,14 @@ package copypasta
 // https://codeforces.com/problemset/problem/558/E 2300 代码 https://codeforces.com/problemset/submission/558/117163317
 // https://codeforces.com/problemset/problem/817/F 2300（数据水）代码 https://codeforces.com/contest/817/submission/118365591
 // https://codeforces.com/problemset/problem/915/E 2300 代码【比较全面】https://codeforces.com/problemset/submission/915/117158161
+// https://codeforces.com/problemset/problem/1638/E 2400 Colorful Operations 结合树状数组
 // https://codeforces.com/problemset/problem/981/G 2500
 // todo https://codeforces.com/problemset/problem/1638/E
 // todo https://www.luogu.com.cn/problem/P5350
 //      https://www.luogu.com.cn/problem/P5586
 
 // 使用时，为简化判断，可在初始时插入一段 [1,n] 区间（或 [0,2e9] 等）
-// 直接复制上面的代码
+// 参考代码（泛型）https://codeforces.com/problemset/submission/1638/336821582
 type odtNode struct {
 	tpNode
 	l, r int
@@ -30,10 +31,10 @@ func (t *treap) floor(int) (_ *odtNode)         { return }
 func (t *treap) next(int) (_ *odtNode)          { return }
 
 func (t *treap) split(mid int) {
-	if o := t.floor(mid); o.l < mid && mid <= o.r {
-		r, val := o.r, o.val
+	o := t.floor(mid)
+	if o.l < mid { // && mid <= o.r
+		t.put1(mid, o.r, o.val)
 		o.r = mid - 1
-		t.put1(mid, r, val)
 	}
 }
 
@@ -44,7 +45,7 @@ func (t *treap) prepare(l, r int) {
 
 func (t *treap) setRange(l, r int, val tpValueType) {
 	t.prepare(l, r)
-	for o := t.floor(l); o != nil && o.l <= r; o = t.next(o.l) {
+	for o := t.floor(l); o.l <= r; o = t.next(o.l) {
 		// ... [o.l, o.r]
 		t.delete(tpKeyType(o.l))
 	}
