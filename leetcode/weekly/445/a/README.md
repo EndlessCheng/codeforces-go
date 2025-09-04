@@ -8,9 +8,9 @@
 - 如果 $a<b$，返回 $1$。
 - 如果 $a>b$，返回 $2$。
 
-[视频讲解](https://www.bilibili.com/video/BV1e3dBYLEDz/)
+## 写法一
 
-```py [sol-Py3]
+```py [sol-Python3]
 class Solution:
     def findClosest(self, x: int, y: int, z: int) -> int:
         a = abs(x - z)
@@ -18,14 +18,6 @@ class Solution:
         if a == b:
             return 0
         return 1 if a < b else 2
-```
-
-```py [sol-Py3 写法二]
-class Solution:
-    def findClosest(self, x: int, y: int, z: int) -> int:
-        a = abs(x - z)
-        b = abs(y - z)
-        return (0, 2, 1)[(a > b) - (a < b)]
 ```
 
 ```java [sol-Java]
@@ -101,6 +93,45 @@ impl Solution {
         if a == b { 0 } else if a < b { 1 } else { 2 }
     }
 }
+```
+
+## 写法二
+
+部分语言可以利用 $\texttt{bool}$ 自动转成 $\texttt{int}$ 的特性简化代码逻辑。
+
+```py [sol-Python3]
+class Solution:
+    def findClosest(self, x: int, y: int, z: int) -> int:
+        a = abs(x - z)
+        b = abs(y - z)
+        return (a > b) << 1 | (a < b)
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int findClosest(int x, int y, int z) {
+        int a = abs(x - z);
+        int b = abs(y - z);
+        return (a > b) << 1 | (a < b);
+    }
+};
+```
+
+```c [sol-C]
+int findClosest(int x, int y, int z) {
+    int a = abs(x - z);
+    int b = abs(y - z);
+    return (a > b) << 1 | (a < b);
+}
+```
+
+```js [sol-JavaScript]
+var findClosest = function(x, y, z) {
+    const a = Math.abs(x - z);
+    const b = Math.abs(y - z);
+    return (a > b) << 1 | (a < b);
+};
 ```
 
 #### 复杂度分析
