@@ -78,6 +78,7 @@ https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
 https://codeforces.com/problemset/problem/12/D 2400 三维偏序
 https://codeforces.com/problemset/problem/246/E 2400
+https://codeforces.com/problemset/problem/1401/E 2400 Divide Square 线段把矩形分割成多少块
 https://codeforces.com/problemset/problem/594/D 2500
 https://codeforces.com/problemset/problem/1334/F 2500
 https://codeforces.com/problemset/problem/1635/F 2800
