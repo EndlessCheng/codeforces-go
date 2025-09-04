@@ -28,7 +28,7 @@ func sortVowels1(s string) string {
 	return string(t)
 }
 
-func sortVowels(s string) string {
+func sortVowels2(s string) string {
 	const vowelMask = 0x208222
 	vowels := []byte{}
 	for _, ch := range s {
@@ -45,6 +45,35 @@ func sortVowels(s string) string {
 			t[i] = vowels[j]
 			j++
 		}
+	}
+	return string(t)
+}
+
+func sortVowels(s string) string {
+	const vowelMask = 0x208222
+	cnt := ['u' + 1]int{}
+	for _, ch := range s {
+		if vowelMask>>(ch&31)&1 > 0 {
+			cnt[ch]++
+		}
+	}
+
+	t := []byte(s)
+	j := byte('A')
+	for i, ch := range t {
+		if vowelMask>>(ch&31)&1 == 0 {
+			continue
+		}
+		// 找下一个出现次数大于 0 的元音字母
+		for cnt[j] == 0 {
+			if j == 'Z' {
+				j = 'a'
+			} else {
+				j++
+			}
+		}
+		t[i] = j
+		cnt[j]--
 	}
 	return string(t)
 }

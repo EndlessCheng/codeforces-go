@@ -331,8 +331,8 @@ var sortVowels = function(s) {
 
     vowels.sort();
 
-    let j = 0;
     const t = s.split('');
+    let j = 0;
     for (let i = 0; i < t.length; i++) {
         if (VOWEL_MASK >> (t[i].charCodeAt(0) & 31) & 1) {
             t[i] = vowels[j++];
@@ -367,8 +367,214 @@ impl Solution {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $s$ 的长度。若用计数排序，则时间复杂度为 $\mathcal{O}(n+|\Sigma|)$，其中 $|\Sigma|=52$ 是字符集合的大小。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 写法三：计数排序
+
+```py [sol-Python3]
+class Solution:
+    def sortVowels(self, s: str) -> str:
+        VOWELS = "AEIOUaeiou"
+        cnt = Counter(ch for ch in s if ch in VOWELS)
+
+        it = iter(VOWELS)
+        cur = next(it)
+
+        t = list(s)  # str 无法修改，转成 list
+        for i, ch in enumerate(t):
+            if ch in VOWELS:
+                if cnt[cur] == 0:
+                    # 找下一个出现次数大于 0 的元音字母
+                    cur = next(c for c in it if cnt[c])
+                t[i] = cur
+                cnt[cur] -= 1
+        return ''.join(t)
+```
+
+```java [sol-Java]
+class Solution {
+    public String sortVowels(String S) {
+        final int VOWEL_MASK = 0x208222;
+
+        char[] s = S.toCharArray();
+        int[] cnt = new int['u' + 1];
+        for (char ch : s) {
+            if ((VOWEL_MASK >> (ch & 31) & 1) > 0) {
+                cnt[ch]++;
+            }
+        }
+
+        int j = 'A';
+        for (int i = 0; i < s.length; i++) {
+            if ((VOWEL_MASK >> (s[i] & 31) & 1) == 0) {
+                continue;
+            }
+            // 找下一个出现次数大于 0 的元音字母
+            while (cnt[j] == 0) {
+                j = j == 'Z' ? 'a' : j + 1;
+            }
+            s[i] = (char) j;
+            cnt[j]--;
+        }
+        return new String(s);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string sortVowels(string s) {
+        const int VOWEL_MASK = 0x208222;
+        int cnt['u' + 1]{};
+        for (char ch : s) {
+            if (VOWEL_MASK >> (ch & 31) & 1) {
+                cnt[ch]++;
+            }
+        }
+
+        char j = 'A';
+        for (char& ch : s) {
+            if ((VOWEL_MASK >> (ch & 31) & 1) == 0) {
+                continue;
+            }
+            // 找下一个出现次数大于 0 的元音字母
+            while (cnt[j] == 0) {
+                j = j == 'Z' ? 'a' : j + 1;
+            }
+            ch = j;
+            cnt[j]--;
+        }
+        return s;
+    }
+};
+```
+
+```c [sol-C]
+#define VOWEL_MASK 0x208222
+
+char* sortVowels(char* s) {
+    int cnt['z' + 1] = {};
+    for (int i = 0; s[i]; i++) {
+        if (VOWEL_MASK >> (s[i] & 31) & 1) {
+            cnt[s[i]]++;
+        }
+    }
+
+    char j = 'A';
+    for (int i = 0; s[i]; i++) {
+        if ((VOWEL_MASK >> (s[i] & 31) & 1) == 0) {
+            continue;
+        }
+        // 找下一个出现次数大于 0 的元音字母
+        while (cnt[j] == 0) {
+            j = j == 'Z' ? 'a' : j + 1;
+        }
+        s[i] = j;
+        cnt[j]--;
+    }
+    return s;
+}
+```
+
+```go [sol-Go]
+func sortVowels(s string) string {
+	const vowelMask = 0x208222
+	cnt := ['u' + 1]int{}
+	for _, ch := range s {
+		if vowelMask>>(ch&31)&1 > 0 {
+			cnt[ch]++
+		}
+	}
+
+	t := []byte(s)
+	j := byte('A')
+	for i, ch := range t {
+		if vowelMask>>(ch&31)&1 == 0 {
+			continue
+		}
+		// 找下一个出现次数大于 0 的元音字母
+		for cnt[j] == 0 {
+			if j == 'Z' {
+				j = 'a'
+			} else {
+				j++
+			}
+		}
+		t[i] = j
+		cnt[j]--
+	}
+	return string(t)
+}
+```
+
+```js [sol-JavaScript]
+var sortVowels = function(s) {
+    const VOWEL_MASK = 0x208222;
+    const cnt = Array('u'.charCodeAt(0) + 1).fill(0);
+    for (const ch of s) {
+        const c = ch.charCodeAt(0);
+        if (VOWEL_MASK >> (c & 31) & 1) {
+            cnt[c]++;
+        }
+    }
+
+    const t = s.split('');
+    const ordZ = 'Z'.charCodeAt(0);
+    let j = 'A'.charCodeAt(0);
+    for (let i = 0; i < t.length; i++) {
+        if ((VOWEL_MASK >> (t[i].charCodeAt(0) & 31) & 1) === 0) {
+            continue;
+        }
+        // 找下一个出现次数大于 0 的元音字母
+        while (cnt[j] === 0) {
+            j = j == ordZ ? 'a'.charCodeAt(0) : j + 1;
+        }
+        t[i] = String.fromCharCode(j);
+        cnt[j]--;
+    }
+    return t.join('');
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn sort_vowels(s: String) -> String {
+        const VOWEL_MASK: u32 = 0x208222;
+        let mut cnt = [0; 'z' as usize + 1];
+        for ch in s.bytes() {
+            if (VOWEL_MASK >> (ch & 31)) & 1 > 0 {
+                cnt[ch as usize] += 1;
+            }
+        }
+
+        let mut s = s.into_bytes();
+        let mut j = 0;
+        for ch in s.iter_mut() {
+            if VOWEL_MASK >> (*ch & 31) & 1 == 0 {
+                continue;
+            }
+            // 找下一个出现次数大于 0 的元音字母
+            while cnt[j as usize] == 0 {
+                if j == b'Z' {
+                    j = b'a';
+                } else {
+                    j += 1;
+                }
+            }
+            *ch = j;
+            cnt[j as usize] -= 1;
+        }
+        unsafe { String::from_utf8_unchecked(s) }
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n+|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=10$ 或 $52$ 或 $128$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
 ## 分类题单
 
