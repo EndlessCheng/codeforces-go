@@ -24,7 +24,7 @@ $$
 
 本题由于 $\textit{nums}$ 中的数字是连续整数，相邻数字的操作次数至多相差 $1$。
 
-例如两个数的情况 $\textit{ops}=[x-1,x]$，得到 $\textit{mx}=x$，$\textit{tot} = 2x-1$。由于 $\left\lceil\dfrac{2x-1}{2}\right\rceil = x$，所以 $\textit{mx} \le \left\lceil\dfrac{\textit{tot}}{2}\right\rceil$ 成立。其他情况元素更多，$\textit{tot}$ 更大，$\textit{mx} \le \left\lceil\dfrac{\textit{tot}}{2}\right\rceil$ 更加成立。
+例如两个数的情况 $\textit{ops}=[x-1,x]$，得到 $\textit{mx}=x$，$\textit{tot} = 2x-1$。由于 $\left\lceil\dfrac{2x-1}{2}\right\rceil = x$，所以 $\textit{mx} \le \left\lceil\dfrac{\textit{tot}}{2}\right\rceil$ 成立。推广到更多元素的情况，设最大值为 $\textit{mx}=x$，其余元素不超过 $x$，当元素增多时，$\textit{tot}$ 更大，$\textit{mx} \le \left\lceil\dfrac{\textit{tot}}{2}\right\rceil$ 更加成立。
 
 所以本题
 
@@ -46,18 +46,18 @@ $$
 
 定义 $f(n)$ 为 $[1,n]$ 中的单个数的操作次数之和。
 
-设 $n$ 的二进制长度为 $m$，那么：
+设 $n$ 的二进制长度为 $m$。按照 $[1,n]$ 中的数字的二进制长度，分组计算：
 
 - 对于长为 $i$ 的二进制数（其中 $1\le i\le m-1$），最小是 $2^{i-1}$，最大是 $2^i-1$，共有 $2^{i-1}$ 个，每个需要操作 $\left\lceil\dfrac{i}{2}\right\rceil$ 次。
 - 对于长为 $m$ 的二进制数，最小是 $2^{m-1}$，最大是 $n$，共有 $n+1-2^{m-1}$ 个，每个需要操作 $\left\lceil\dfrac{m}{2}\right\rceil$ 次。
 
-累加得
+两部分累加，得
 
 $$
 f(n) = \sum_{i=1}^{m-1} \left\lceil\dfrac{i}{2}\right\rceil 2^{i-1} + \left\lceil\dfrac{m}{2}\right\rceil(n+1-2^{m-1})
 $$
 
-$[l,r]$ 中的单个数的操作次数之和为 
+由于 $[l,r]$ 可以拆分成 $[1,r]$ 减去 $[1,l-1]$，所以 $[l,r]$ 中的单个数的操作次数之和为 
 
 $$
 \textit{tot} = f(r) - f(l-1)
