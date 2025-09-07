@@ -164,12 +164,12 @@ class Solution:
     def bowlSubarrays(self, nums: List[int]) -> int:
         ans = 0
         st = []
-        for i, x in enumerate(nums):
-            while st and nums[st[-1]] < x:
+        for x in nums:
+            while st and st[-1] < x:
                 st.pop()
                 if st:
                     ans += 1
-            st.append(i)
+            st.append(x)
         return ans
 ```
 
@@ -178,15 +178,14 @@ class Solution {
     public long bowlSubarrays(int[] nums) {
         int ans = 0;
         Deque<Integer> st = new ArrayDeque<>(); // 更快的写法见【Java 数组】
-        for (int i = 0; i < nums.length; i++) {
-            int x = nums[i];
-            while (!st.isEmpty() && nums[st.peek()] < x) {
+        for (int x : nums) {
+            while (!st.isEmpty() && st.peek() < x) {
                 st.pop();
                 if (!st.isEmpty()) {
                     ans++;
                 }
             }
-            st.push(i);
+            st.push(x);
         }
         return ans;
     }
@@ -196,19 +195,17 @@ class Solution {
 ```java [sol-Java 数组]
 class Solution {
     public long bowlSubarrays(int[] nums) {
-        int n = nums.length;
         long ans = 0;
-        int[] st = new int[n]; // 模拟栈
+        int[] st = new int[nums.length]; // 模拟栈
         int top = -1; // 栈顶下标
-        for (int i = 0; i < n; i++) {
-            int x = nums[i];
-            while (top >= 0 && nums[st[top]] < x) {
+        for (int x : nums) {
+            while (top >= 0 && st[top] < x) {
                 top--; // 出栈
                 if (top >= 0) {
                     ans++;
                 }
             }
-            st[++top] = i; // 入栈
+            st[++top] = x; // 入栈
         }
         return ans;
     }
@@ -221,15 +218,14 @@ public:
     long long bowlSubarrays(vector<int>& nums) {
         int ans = 0;
         stack<int> st;
-        for (int i = 0; i < nums.size(); i++) {
-            int x = nums[i];
-            while (!st.empty() && nums[st.top()] < x) {
+        for (int x : nums) {
+            while (!st.empty() && st.top() < x) {
                 st.pop();
                 if (!st.empty()) {
                     ans++;
                 }
             }
-            st.push(i);
+            st.push(x);
         }
         return ans;
     }
@@ -239,14 +235,14 @@ public:
 ```go [sol-Go]
 func bowlSubarrays(nums []int) (ans int64) {
 	st := []int{}
-	for i, x := range nums {
-		for len(st) > 0 && nums[st[len(st)-1]] < x {
+	for _, x := range nums {
+		for len(st) > 0 && st[len(st)-1] < x {
 			st = st[:len(st)-1]
 			if len(st) > 0 {
 				ans++
 			}
 		}
-		st = append(st, i)
+		st = append(st, x)
 	}
 	return
 }
