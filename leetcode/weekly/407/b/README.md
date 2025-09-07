@@ -73,7 +73,7 @@ var doesAliceWin = function(s) {
 ```rust [sol-Rust]
 impl Solution {
     pub fn does_alice_win(s: String) -> bool {
-        s.chars().any(|c| "aeiou".contains(c))
+        s.bytes().any(|c| "aeiou".contains(c as char))
     }
 }
 ```
