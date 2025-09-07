@@ -120,7 +120,7 @@ var maxFreqSum = function(s) {
     for (const ch of s) {
         const idx = ch.charCodeAt(0) - 'a'.charCodeAt(0);
         cnt[idx]++;
-        if (/[aeiou]/.test(ch)) {
+        if ("aeiou".includes(ch)) {
             maxVowelCnt = Math.max(maxVowelCnt, cnt[idx]);
         } else {
             maxConsonantCnt = Math.max(maxConsonantCnt, cnt[idx]);
