@@ -66,6 +66,7 @@ https://leetcode.cn/problems/count-beautiful-substrings-ii/
 枚举中间
 https://codeforces.com/problemset/problem/1957/D 1900 前后缀分解 从高到低思考
 https://atcoder.jp/contests/abc102/tasks/arc100_b 1801=CF2073
+https://ac.nowcoder.com/acm/contest/111921/E
 
 任意下标 i 和 j
 https://codeforces.com/problemset/problem/1895/C 1400
@@ -288,6 +289,7 @@ https://codeforces.com/problemset/problem/2047/B O(n) 做法约 1200
 https://codeforces.com/problemset/problem/2117/C 1200
 https://codeforces.com/problemset/problem/2126/D 1200 区间贪心
 https://codeforces.com/problemset/problem/545/D 1300
+https://codeforces.com/problemset/problem/1279/B 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1498/B 1300 从大到小贪心
 https://codeforces.com/problemset/problem/1555/B 1300
@@ -318,6 +320,7 @@ https://codeforces.com/problemset/problem/1759/E 1500
 https://codeforces.com/problemset/problem/1873/G 1500
 https://codeforces.com/problemset/problem/1924/A 1500
 https://codeforces.com/problemset/problem/913/C 1600
+https://codeforces.com/problemset/problem/1082/C 1600
 https://codeforces.com/problemset/problem/1707/A 1600 倒序思维
 https://codeforces.com/problemset/problem/2082/B 1600
 https://codeforces.com/problemset/problem/1157/C2 1700
@@ -552,11 +555,12 @@ https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
-https://codeforces.com/problemset/problem/1550/D  2300
+https://codeforces.com/problemset/problem/1550/D  2300 组合数学
 https://codeforces.com/problemset/problem/1028/E  2400 推荐 找特殊位置
 https://codeforces.com/problemset/problem/1098/C  2400 树
 https://codeforces.com/problemset/problem/1244/G  2400
 https://codeforces.com/problemset/problem/1761/E  2400
+https://codeforces.com/problemset/problem/2111/F  2400
 https://codeforces.com/problemset/problem/297/D   2500
 https://codeforces.com/problemset/problem/976/D   2500
 https://codeforces.com/problemset/problem/1474/E  2500
@@ -745,6 +749,7 @@ LC3187 https://leetcode.cn/problems/peaks-in-array/
 
 合法括号字符串（Regular Bracket Sequence, RBS）
 https://codeforces.com/problemset/problem/1469/A 1000
+https://codeforces.com/problemset/problem/1373/C 1300
 https://codeforces.com/problemset/problem/1693/A 1300 类似思想
 https://codeforces.com/problemset/problem/1097/C 1400
 https://codeforces.com/problemset/problem/1837/D 1400
@@ -933,6 +938,9 @@ Golang 卡常技巧（注：关于 IO 的加速见 io.go）
 测试：哈希表用时是数组的 13 倍（本题瓶颈）
 slice    249ms https://codeforces.com/problemset/submission/570/209063267
 hashmap 3259ms https://codeforces.com/problemset/submission/570/209063603
+
+Go1.22 map 如果执行了大量 delete，记得手动缩容，否则遍历的时候会遍历大量无效桶
+手动缩容：mp = maps.Clone(mp) https://codeforces.com/contest/1082/submission/337206798
 
 bool to int
 int(*(*uint8)(unsafe.Pointer(&boolVal)))
