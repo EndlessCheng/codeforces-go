@@ -2,7 +2,7 @@
 
 否则，由于操作后，子数组所有元素都相等，所以直接操作整个数组，就能让所有元素相等，返回 $1$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1heYGzWEUa/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
