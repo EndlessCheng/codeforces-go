@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 // https://space.bilibili.com/206214
 func maxFreqSum1(s string) int {
 	cnt := [26]int{}
@@ -7,7 +9,7 @@ func maxFreqSum1(s string) int {
 	maxConsonantCnt := 0
 	for _, ch := range s {
 		cnt[ch-'a']++
-		if ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' {
+		if strings.IndexRune("aeiou", ch) >= 0 {
 			maxVowelCnt = max(maxVowelCnt, cnt[ch-'a'])
 		} else {
 			maxConsonantCnt = max(maxConsonantCnt, cnt[ch-'a'])

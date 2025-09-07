@@ -102,7 +102,7 @@ func maxFreqSum(s string) int {
 	maxConsonantCnt := 0
 	for _, ch := range s {
 		cnt[ch-'a']++
-		if ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' {
+		if strings.IndexRune("aeiou", ch) >= 0 {
 			maxVowelCnt = max(maxVowelCnt, cnt[ch-'a'])
 		} else {
 			maxConsonantCnt = max(maxConsonantCnt, cnt[ch-'a'])
@@ -120,7 +120,7 @@ var maxFreqSum = function(s) {
     for (const ch of s) {
         const idx = ch.charCodeAt(0) - 'a'.charCodeAt(0);
         cnt[idx]++;
-        if (ch === 'a' || ch === 'e' || ch === 'i' || ch === 'o' || ch === 'u') {
+        if (/[aeiou]/.test(ch)) {
             maxVowelCnt = Math.max(maxVowelCnt, cnt[idx]);
         } else {
             maxConsonantCnt = Math.max(maxConsonantCnt, cnt[idx]);
@@ -139,7 +139,7 @@ impl Solution {
         for ch in s.bytes() {
             let idx = (ch as u8 - b'a') as usize;
             cnt[idx] += 1;
-            if ch == b'a' || ch == b'e' || ch == b'i' || ch == b'o' || ch == b'u' {
+            if "aeiou".contains(ch as char) {
                 max_vowel_cnt = max_vowel_cnt.max(cnt[idx]);
             } else {
                 max_consonant_cnt = max_consonant_cnt.max(cnt[idx]);
