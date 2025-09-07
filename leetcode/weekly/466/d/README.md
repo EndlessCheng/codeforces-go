@@ -20,7 +20,9 @@
 
 特判 $n=0$ 的情况，返回 $1$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1heYGzWEUa/?t=23m15s)，欢迎点赞关注~
+
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -30,7 +32,7 @@ class Solution:
 
         m = n.bit_length()  # n 的二进制长度
 
-        # 二进制长度小于 m，随便填
+        # 对于二进制长度小于 m 的回文数，左半边随便填
         ans = 1  # 0 也是回文数
         # 枚举二进制长度，最高位填 1，回文数左半的其余位置随便填
         for i in range(1, m):
@@ -66,7 +68,7 @@ class Solution {
         // n 的二进制长度
         int m = 64 - Long.numberOfLeadingZeros(n);
 
-        // 二进制长度小于 m，随便填
+        // 对于二进制长度小于 m 的回文数，左半边随便填
         int ans = 1; // 0 也是回文数
         // 枚举二进制长度，最高位填 1，回文数左半的其余位置随便填
         for (int i = 1; i < m; i++) {
@@ -107,7 +109,7 @@ public:
 
         int m = bit_width((uint64_t) n); // n 的二进制长度
 
-        // 二进制长度小于 m，随便填
+        // 对于二进制长度小于 m 的回文数，左半边随便填
         int ans = 1; // 0 也是回文数
         // 枚举二进制长度，最高位填 1，回文数左半的其余位置随便填
         for (int i = 1; i < m; i++) {
@@ -146,7 +148,7 @@ func countBinaryPalindromes(n int64) int {
 
 	m := bits.Len(uint(n)) // n 的二进制长度
 
-	// 二进制长度小于 m，随便填
+	// 对于二进制长度小于 m 的回文数，左半边随便填
 	ans := 1 // 0 也是回文数
 	// 枚举二进制长度，最高位填 1，回文数左半的其余位置随便填
 	for i := 1; i < m; i++ {
@@ -181,10 +183,166 @@ func countBinaryPalindromes(n int64) int {
 - 时间复杂度：$\mathcal{O}(\log n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 写法二（优化）
+
+对于二进制长度小于 $m$ 的情况：
+
+- 二进制数等于 $0$：有 $1$ 个回文数。
+- 二进制长为 $1,2$：一共有 $2^1$ 个回文数。
+- 二进制长为 $3,4$：一共有 $2^2$ 个回文数。
+- 二进制长为 $5,6$：一共有 $2^3$ 个回文数。
+- 依此类推。比如说 $m=10$，那么最多算到二进制长为 $7,8$。剩下的 $9,10$ 单独算。
+
+一般地，累加等差数列 $1+2^1+2^2+\cdots+2^k$，得
+
+$$
+2^{k+1} - 1
+$$
+
+其中 $k = \left\lfloor\dfrac{m-1}{2}\right\rfloor$。
+
+如果 $m$ 是偶数，还要算上二进制长为 $m-1$ 的回文数个数，即 $2^k$。
+
+对于二进制长度恰好等于 $m$ 的情况，分两部分计算：
+
+- 回文数的左半小于 $n$ 的左半，即 $\left\lfloor\dfrac{n}{2^{\left\lfloor m/2 \right\rfloor}}\right\rfloor$。对于回文数的左半：
+   - 最小是 $2^k$，其中 $k = \left\lfloor\dfrac{m-1}{2}\right\rfloor$。
+   - 最大是 $n$ 的左半减一，即 $\left\lfloor\dfrac{n}{2^{\left\lfloor m/2 \right\rfloor}}\right\rfloor - 1$。
+   - 这一共有 $\left\lfloor\dfrac{n}{2^{\left\lfloor m/2 \right\rfloor}}\right\rfloor - 2^k$ 个回文数。
+- 回文数的左半等于 $n$ 的左半。我们需要计算把 $n$ 的左半翻转后得到右半，与左半拼接后的数 $x$ 是否 $\le n$，如果满足则答案加一。
+
+```py [sol-Python3]
+class Solution:
+    def countBinaryPalindromes(self, n: int) -> int:
+        if n == 0:
+            return 1
+
+        m = n.bit_length()
+        k = (m - 1) // 2
+
+        # 二进制长度小于 m
+        ans = (2 << k) - 1
+        if m % 2 == 0:
+            ans += 1 << k
+
+        # 二进制长度等于 m，且回文数的左半小于 n 的左半
+        pal = n >> (m // 2)
+        ans += pal - (1 << k)
+
+        # 二进制长度等于 m，且回文数的左半等于 n 的左半
+        v = pal >> (m % 2)
+        while v:
+            pal = pal * 2 + v % 2
+            v //= 2
+        if pal <= n:
+            ans += 1
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int countBinaryPalindromes(long n) {
+        if (n == 0) {
+            return 1;
+        }
+
+        int m = 64 - Long.numberOfLeadingZeros(n);
+        int k = (m - 1) / 2;
+
+        // 二进制长度小于 m
+        int ans = (2 << k) - 1;
+        if (m % 2 == 0) {
+            ans += 1 << k;
+        }
+
+        // 二进制长度等于 m，且回文数的左半小于 n 的左半
+        long pal = n >> (m / 2);
+        ans += pal - (1 << k);
+
+        // 二进制长度等于 m，且回文数的左半等于 n 的左半
+        for (long v = pal >> (m % 2); v > 0; v /= 2) {
+            pal = pal * 2 + v % 2;
+        }
+        if (pal <= n) {
+            ans++;
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countBinaryPalindromes(long long n) {
+        if (n <= 1) {
+            return n + 1;
+        }
+
+        int m = bit_width((uint64_t) n);
+        int k = (m - 1) / 2;
+
+        // 二进制长度小于 m
+        int ans = (2 << k) - 1;
+        if (m % 2 == 0) {
+            ans += 1 << k;
+        }
+
+        // 二进制长度等于 m，且回文数的左半小于 n 的左半
+        int left = n >> (m / 2);
+        ans += left - (1 << k);
+
+        // 二进制长度等于 m，且回文数的左半等于 n 的左半
+        int right = __builtin_bitreverse32(left >> (m % 2)) >> (32 - m / 2);
+        if ((1LL * left << (m / 2) | right) <= n) {
+            ans++;
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countBinaryPalindromes(n int64) int {
+	if n == 0 {
+		return 1
+	}
+
+	m := bits.Len(uint(n))
+	k := (m - 1) / 2
+
+	// 二进制长度小于 m
+	ans := 2<<k - 1
+	if m%2 == 0 {
+		ans += 1 << k
+	}
+
+	// 二进制长度等于 m，且回文数的左半小于 n 的左半
+	left := n >> (m / 2)
+	ans += int(left) - 1<<k
+
+	// 二进制长度等于 m，且回文数的左半等于 n 的左半
+	right := bits.Reverse32(uint32(left>>(m%2))) >> (32 - m/2)
+	if left<<(m/2)|int64(right) <= n {
+		ans++
+	}
+
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\log n)$ 或 $\mathcal{O}(1)$。其中 $\mathcal{O}(1)$ 写法见 C++ 代码或 Go 代码。
+- 空间复杂度：$\mathcal{O}(1)$。
+
 ## 专题训练
 
-1. 动态规划题单的「**十、数位 DP**」。
-2. 数学题单的「**§7.1 回文数**」。
+1. 数学题单的「**§7.1 回文数**」。
+2. 动态规划题单的「**十、数位 DP**」。
 
 ## 分类题单
 

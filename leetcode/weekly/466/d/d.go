@@ -52,31 +52,22 @@ func countBinaryPalindromes(n int64) int {
 		return 1
 	}
 
-	m := bits.Len(uint(n)) // n 的二进制长度
+	m := bits.Len(uint(n))
+	k := (m - 1) / 2
 
-	// 二进制长度小于 m，随便填
-	ans := 1 // 0 也是回文数
-	// 枚举二进制长度，最高位填 1，回文数左半的其余位置随便填
-	for i := 1; i < m; i++ {
-		ans += 1 << ((i - 1) / 2)
+	// 二进制长度小于 m
+	ans := 2<<k - 1
+	if m%2 == 0 {
+		ans += 1 << k
 	}
 
-	// 最高位一定是 1，从次高位开始填
-	for i := m - 2; i >= m/2; i-- {
-		if n>>i&1 > 0 {
-			// 这一位可以填 0，那么回文数左半的剩余位置可以随便填
-			ans += 1 << (i - m/2)
-		}
-		// 在后续循环中，这一位填 1
-	}
+	// 二进制长度等于 m，且回文数的左半小于 n 的左半
+	left := n >> (m / 2)
+	ans += int(left) - 1<<k
 
-	pal := n >> (m / 2)
-	// 左半反转到右半
-	// 如果 m 是奇数，那么去掉回文中心再反转
-	for v := pal >> (m % 2); v > 0; v /= 2 {
-		pal = pal*2 + v%2
-	}
-	if pal <= n {
+	// 二进制长度等于 m，且回文数的左半等于 n 的左半
+	right := bits.Reverse32(uint32(left>>(m%2))) >> (32 - m/2)
+	if left<<(m/2)|int64(right) <= n {
 		ans++
 	}
 
