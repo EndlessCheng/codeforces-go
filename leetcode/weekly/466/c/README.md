@@ -251,6 +251,85 @@ func bowlSubarrays(nums []int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此整个二重循环的总循环次数为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 空间优化
+
+$\textit{nums}$ 遍历过的数不会再用到，可以充分利用遍历过的空间，把 $\textit{nums}$ 当作栈。
+
+```py [sol-Python3]
+class Solution:
+    def bowlSubarrays(self, nums: List[int]) -> int:
+        ans = 0
+        top = -1  # 栈顶下标
+        for x in nums:
+            while top >= 0 and nums[top] < x:
+                top -= 1  # 出栈
+                if top >= 0:
+                    ans += 1
+            top += 1
+            nums[top] = x  # 入栈
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long bowlSubarrays(int[] nums) {
+        long ans = 0;
+        int top = -1; // 栈顶下标
+        for (int x : nums) {
+            while (top >= 0 && nums[top] < x) {
+                top--; // 出栈
+                if (top >= 0) {
+                    ans++;
+                }
+            }
+            nums[++top] = x; // 入栈
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long bowlSubarrays(vector<int>& nums) {
+        int ans = 0;
+        int top = -1; // 栈顶下标
+        for (int x : nums) {
+            while (top >= 0 && nums[top] < x) {
+                top--; // 出栈
+                if (top >= 0) {
+                    ans++;
+                }
+            }
+            nums[++top] = x; // 入栈
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func bowlSubarrays(nums []int) (ans int64) {
+	st := nums[:0]
+	for _, x := range nums {
+		for len(st) > 0 && st[len(st)-1] < x {
+			st = st[:len(st)-1]
+			if len(st) > 0 {
+				ans++
+			}
+		}
+		st = append(st, x)
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此整个二重循环的总循环次数为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
 ## 思考题
 
 本题要求子数组两个端点都大于中间元素，如果改成**至少**有一个端点大于中间元素，怎么做？

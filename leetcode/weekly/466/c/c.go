@@ -21,7 +21,7 @@ func bowlSubarrays1(nums []int) (ans int64) {
 }
 
 func bowlSubarrays(nums []int) (ans int64) {
-	st := []int{}
+	st := nums[:0]
 	for _, x := range nums {
 		for len(st) > 0 && st[len(st)-1] < x {
 			st = st[:len(st)-1]
