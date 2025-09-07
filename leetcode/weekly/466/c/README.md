@@ -24,9 +24,13 @@ $$
 
 ⚠**注意**：小心子数组两端点元素相同的情况，不能重复统计。不妨规定，左侧找大于等于，右侧找严格大于。
 
-> 上述结论表明，答案的上界是 $2n$（粗略估计），所以用 $\texttt{int}$ 就够了。
+不过本题保证「所有元素互不相同」。但我的这个做法有重复元素也能做。
+
+> 此外，上述结论表明，答案的上界是 $2n$（粗略估计），所以用 $\texttt{int}$ 就够了。本题没有重复元素，答案的上界是 $n$（见写法二）。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -136,6 +140,111 @@ func bowlSubarrays(nums []int) (ans int64) {
 		// i 左侧大于等于 nums[i] 的数的下标是 st[len(st)-1]
 		if len(st) > 0 && i-st[len(st)-1] > 1 { // 子数组的长度至少为 3
 			ans++
+		}
+		st = append(st, i)
+	}
+	return
+}
+```
+
+## 写法二
+
+注意到，无论是左大右小（比如 $[3,1,2]$）还是左小右大（比如 $[2,1,3]$），当我们遍历到 $\textit{nums}[i]$ 时，如果出栈后栈不为空，说明栈顶和 $\textit{nums}[i]$ 是合法子数组的左右端点。「栈不为空」这个条件还说明子数组的长度至少是 $3$。
+
+比如 $[5,3,2,1,4]$，遍历到 $4$ 时：
+
+- 弹出 $1$，发现栈不为空，那么 $[2,1,4]$ 是符合要求的子数组。
+- 弹出 $2$，发现栈不为空，那么 $[3,2,1,4]$ 是符合要求的子数组。
+- 弹出 $3$，发现栈不为空，那么 $[5,3,2,1,4]$ 是符合要求的子数组。
+
+注意本题保证所有元素互不相同。
+
+```py [sol-Python3]
+class Solution:
+    def bowlSubarrays(self, nums: List[int]) -> int:
+        ans = 0
+        st = []
+        for i, x in enumerate(nums):
+            while st and nums[st[-1]] < x:
+                st.pop()
+                if st:
+                    ans += 1
+            st.append(i)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long bowlSubarrays(int[] nums) {
+        int ans = 0;
+        Deque<Integer> st = new ArrayDeque<>(); // 更快的写法见【Java 数组】
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+            while (!st.isEmpty() && nums[st.peek()] < x) {
+                st.pop();
+                if (!st.isEmpty()) {
+                    ans++;
+                }
+            }
+            st.push(i);
+        }
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long bowlSubarrays(int[] nums) {
+        int n = nums.length;
+        long ans = 0;
+        int[] st = new int[n]; // 模拟栈
+        int top = -1; // 栈顶下标
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            while (top >= 0 && nums[st[top]] < x) {
+                top--; // 出栈
+                if (top >= 0) {
+                    ans++;
+                }
+            }
+            st[++top] = i; // 入栈
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long bowlSubarrays(vector<int>& nums) {
+        int ans = 0;
+        stack<int> st;
+        for (int i = 0; i < nums.size(); i++) {
+            int x = nums[i];
+            while (!st.empty() && nums[st.top()] < x) {
+                st.pop();
+                if (!st.empty()) {
+                    ans++;
+                }
+            }
+            st.push(i);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func bowlSubarrays(nums []int) (ans int64) {
+	st := []int{}
+	for i, x := range nums {
+		for len(st) > 0 && nums[st[len(st)-1]] < x {
+			st = st[:len(st)-1]
+			if len(st) > 0 {
+				ans++
+			}
 		}
 		st = append(st, i)
 	}
