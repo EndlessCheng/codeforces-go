@@ -4,9 +4,17 @@
 - 如果 $s$ 包含奇数个元音，小红可以直接把整个 $s$ 移除，小红赢。
 - 如果 $s$ 包含正偶数个元音，由于**偶数减奇数等于奇数**，小红移除任意包含奇数个元音的子串后，剩余元音个数仍然为奇数。由于**奇数减偶数还是奇数**，所以无论小明怎么操作，仍然会剩下奇数个元音，此时小红可以直接把整个 $s$ 移除，小红赢。
 
-所以只要 $s$ 包含元音，就返回 $\texttt{true}$，否则返回 $\texttt{false}$。
+总结：
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV16Z421N7P2/) 第二题，欢迎点赞关注！
+$$
+\begin{aligned}
+& 0 \to 输 \\
+& 奇数 \xrightarrow{小红} 赢 \\
+& 正偶数 \xrightarrow{小红} 奇数 \xrightarrow{小明} 奇数 \xrightarrow{小红} 赢 \\
+\end{aligned}
+$$
+
+所以只要 $s$ 包含至少一个元音，就返回 $\texttt{true}$，否则返回 $\texttt{false}$。
 
 ```py [sol-Python3]
 class Solution:
@@ -38,9 +46,35 @@ public:
 };
 ```
 
+```c [sol-C]
+bool doesAliceWin(char* s) {
+    for (int i = 0; s[i]; i++) {
+        char c = s[i];
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            return true;
+        }
+    }
+    return false;
+}
+```
+
 ```go [sol-Go]
 func doesAliceWin(s string) bool {
 	return strings.ContainsAny(s, "aeiou")
+}
+```
+
+```js [sol-JavaScript]
+var doesAliceWin = function(s) {
+    return /[aeiou]/.test(s);
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn does_alice_win(s: String) -> bool {
+        s.chars().any(|c| "aeiou".contains(c))
+    }
 }
 ```
 
@@ -59,15 +93,19 @@ func doesAliceWin(s string) bool {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
