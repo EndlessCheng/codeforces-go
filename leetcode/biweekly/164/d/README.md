@@ -294,7 +294,17 @@ $$
 - 如果 $z=n$，即 $s$ 全为 $0$，那么只需操作 $1$ 次。
 - 否则无论怎么操作，$s$ 中始终有 $0$，返回 $-1$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1aCaGzWEm4/?t=14m54s)，欢迎点赞关注~
+### 上取整转成下取整
+
+关于上取整的计算，当 $a$ 为非负整数，$b$ 为正整数时，有恒等式
+
+$$
+\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a+b-1}{b}\right\rfloor
+$$
+
+证明见 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1aCaGzWEm4/?t=14m54s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
