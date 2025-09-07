@@ -3,6 +3,7 @@ package main
 import (
 	. "fmt"
 	"io"
+	"maps"
 	"slices"
 )
 
@@ -10,36 +11,32 @@ import (
 func cf1082C(in io.Reader, out io.Writer) {
 	var n, m, s, r, ans, tot int
 	Fscan(in, &n, &m)
-	type pair struct {
-		s int
-		a []int
-	}
-	g := make([]pair, m+1)
+	g := map[int][]int{}
 	for range n {
 		Fscan(in, &s, &r)
-		g[s].a = append(g[s].a, r)
+		g[s] = append(g[s], r)
 	}
-	for _, p := range g {
-		slices.SortFunc(p.a, func(a, b int) int { return b - a })
+	for _, a := range g {
+		slices.SortFunc(a, func(a, b int) int { return b - a })
 	}
 
+	sum := make([]int, m+1)
 	for i := 0; len(g) > 0; i++ {
-		newG := []pair{}
-		for _, p := range g {
-			if len(p.a) <= i {
-				tot -= p.s
+		for v, a := range g {
+			if len(a) <= i {
+				tot -= sum[v]
+				delete(g, v)
 				continue
 			}
-			tot += p.a[i]
-			p.s += p.a[i]
-			if p.s <= 0 {
-				tot -= p.s
-			} else {
-				newG = append(newG, p)
+			tot += a[i]
+			sum[v] += a[i]
+			if sum[v] <= 0 {
+				tot -= sum[v]
+				delete(g, v)
 			}
 		}
 		ans = max(ans, tot)
-		g = newG
+		g = maps.Clone(g)
 	}
 	Fprint(out, ans)
 }
