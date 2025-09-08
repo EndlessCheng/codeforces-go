@@ -226,18 +226,30 @@ class Solution:
             ans += 1 << k
 
         # 二进制长度等于 m，且回文数的左半小于 n 的左半
-        pal = n >> (m // 2)
-        ans += pal - (1 << k)
+        left = n >> (m // 2)
+        ans += left - (1 << k)
 
         # 二进制长度等于 m，且回文数的左半等于 n 的左半
-        v = pal >> (m % 2)
-        while v:
-            pal = pal * 2 + v % 2
-            v //= 2
-        if pal <= n:
+        right = self.reverseBits(left >> (m % 2)) >> (32 - m // 2)
+        if left << (m // 2) | right <= n:
             ans += 1
 
         return ans
+
+    # 190. 颠倒二进制位
+    # https://leetcode.cn/problems/reverse-bits/
+    def reverseBits(self, n: int) -> int:
+        # 交换 16 位
+        n = ((n >> 16) | (n << 16)) & 0xFFFFFFFF
+        # 交换每个 8 位块
+        n = (((n & 0xFF00FF00) >> 8) | ((n & 0x00FF00FF) << 8)) & 0xFFFFFFFF
+        # 交换每个 4 位块
+        n = (((n & 0xF0F0F0F0) >> 4) | ((n & 0x0F0F0F0F) << 4)) & 0xFFFFFFFF
+        # 交换每个 2 位块
+        n = (((n & 0xCCCCCCCC) >> 2) | ((n & 0x33333333) << 2)) & 0xFFFFFFFF
+        # 交换相邻位
+        n = (((n & 0xAAAAAAAA) >> 1) | ((n & 0x55555555) << 1)) & 0xFFFFFFFF
+        return n
 ```
 
 ```java [sol-Java]
@@ -257,14 +269,12 @@ class Solution {
         }
 
         // 二进制长度等于 m，且回文数的左半小于 n 的左半
-        long pal = n >> (m / 2);
-        ans += pal - (1 << k);
+        int left = (int) (n >> (m / 2));
+        ans += left - (1 << k);
 
         // 二进制长度等于 m，且回文数的左半等于 n 的左半
-        for (long v = pal >> (m % 2); v > 0; v /= 2) {
-            pal = pal * 2 + v % 2;
-        }
-        if (pal <= n) {
+        int right = Integer.reverse(left >> (m % 2)) >>> (32 - m / 2);
+        if (((long) left << (m / 2) | right) <= n) {
             ans++;
         }
 
@@ -336,7 +346,7 @@ func countBinaryPalindromes(n int64) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(\log n)$ 或 $\mathcal{O}(1)$。其中 $\mathcal{O}(1)$ 写法见 C++ 代码或 Go 代码。
+- 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
