@@ -35,7 +35,8 @@ Kick Start 2021 Round C Binary Operator https://codingcompetitions.withgoogle.co
 https://codeforces.com/problemset/problem/1689/D https://www.luogu.com.cn/blog/wangxiwen/solution-cf1689d
 https://atcoder.jp/contests/abc272/tasks/abc272_g
 todo https://codeforces.com/problemset/problem/364/D 2900
-推荐 https://atcoder.jp/contests/abc339/tasks/abc339_f
+https://atcoder.jp/contests/abc339/tasks/abc339_f 推荐
+https://atcoder.jp/contests/jsc2025advance-final/tasks/abc422_e
 
 随机映射
 https://codeforces.com/problemset/problem/1746/F 2800
