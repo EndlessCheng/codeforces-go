@@ -1,8 +1,8 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，感兴趣的小伙伴可以来 [关注](https://space.bilibili.com/206214/dynamic) 一波哦~
+本题 [视频讲解](https://www.bilibili.com/video/BV16e4y1Q73o?t=2m11s) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
 
 ---
 
-## 方法一：平衡树
+## 方法一：平衡树（有序集合）
 
 由于数据范围很大，我们可以用一个**哈希表** $m$ 记录每个下标对应的元素，另一个**哈希表套平衡树** $\textit{ms}$ 记录每个元素对应的下标集合。
 
@@ -18,9 +18,9 @@ class NumberContainers:
 
     def change(self, index: int, number: int) -> None:
         if index in self.m:
-            self.ms[self.m[index]].remove(index)
+            self.ms[self.m[index]].remove(index)  # 移除旧数据
         self.m[index] = number
-        self.ms[number].add(index)
+        self.ms[number].add(index)  # 添加新数据
 
     def find(self, number: int) -> int:
         s = self.ms[number]
@@ -34,9 +34,9 @@ class NumberContainers {
 
     public void change(int index, int number) {
         var old = m.get(index);
-        if (old != null) ms.get(old).remove(index);
+        if (old != null) ms.get(old).remove(index); // 移除旧数据
         m.put(index, number);
-        ms.computeIfAbsent(number, k -> new TreeSet<>()).add(index);
+        ms.computeIfAbsent(number, k -> new TreeSet<>()).add(index); // 添加新数据
     }
 
     public int find(int number) {
@@ -48,17 +48,17 @@ class NumberContainers {
 
 ```cpp [sol1-C++]
 class NumberContainers {
-    map<int, int> m;
-    map<int, set<int>> ms;
+    unordered_map<int, int> m;
+    unordered_map<int, set<int>> ms;
 
 public:
     void change(int index, int number) {
         auto it = m.find(index);
         if (it != m.end()) {
-            ms[it->second].erase(index);
+            ms[it->second].erase(index); // 移除旧数据
             it->second = number; // 优化：直接在迭代器上赋值
         } else m[index] = number;
-        ms[number].insert(index);
+        ms[number].insert(index); // 添加新数据
     }
 
     int find(int number) {
@@ -80,13 +80,13 @@ func Constructor() NumberContainers {
 
 func (n NumberContainers) Change(index int, number int) {
 	if num, ok := n.m[index]; ok {
-		n.ms[num].Remove(index)
+		n.ms[num].Remove(index) // 移除旧数据
 	}
 	n.m[index] = number
 	if n.ms[number] == nil {
 		n.ms[number] = redblacktree.NewWithIntComparator()
 	}
-	n.ms[number].Put(index, nil)
+	n.ms[number].Put(index, nil) // 添加新数据
 }
 
 func (n NumberContainers) Find(number int) int {
@@ -98,12 +98,12 @@ func (n NumberContainers) Find(number int) int {
 }
 ```
 
-## 方法二：堆
+## 方法二：懒删除堆
 
 另一种做法是用堆：
 
 - 对于 `change` 操作，直接往 $\textit{ms}$ 中记录，不做任何删除操作；
-- 对于 `find` 操作，查看堆顶下标对应的元素是否和 $\textit{number}$ 相同，若不相同则意味着对应的元素已被替换成了其他值，直接弹出堆顶；否则堆顶就是答案。
+- 对于 `find` 操作，查看堆顶下标对应的元素是否和 $\textit{number}$ 相同，若不相同则意味着对应的元素已被替换成了其他值，堆顶存的是个垃圾数据，直接弹出堆顶；否则堆顶就是答案。
 
 ```py [sol2-Python3]
 class NumberContainers:
@@ -113,7 +113,7 @@ class NumberContainers:
 
     def change(self, index: int, number: int) -> None:
         self.m[index] = number
-        heappush(self.ms[number], index)
+        heappush(self.ms[number], index)  # 直接添加新数据，后面 find 再删除旧的
 
     def find(self, number: int) -> int:
         h = self.ms[number]
@@ -129,7 +129,7 @@ class NumberContainers {
 
     public void change(int index, int number) {
         m.put(index, number);
-        ms.computeIfAbsent(number, k -> new PriorityQueue<>()).offer(index);
+        ms.computeIfAbsent(number, k -> new PriorityQueue<>()).offer(index); // 直接添加新数据，后面 find 再删除旧的
     }
 
     public int find(int number) {
@@ -143,13 +143,13 @@ class NumberContainers {
 
 ```cpp [sol2-C++]
 class NumberContainers {
-    map<int, int> m;
-    map<int, priority_queue<int, vector<int>, greater<>>> ms;
+    unordered_map<int, int> m;
+    unordered_map<int, priority_queue<int, vector<int>, greater<>>> ms;
 
 public:
     void change(int index, int number) {
         m[index] = number;
-        ms[number].push(index);
+        ms[number].push(index); // 直接添加新数据，后面 find 再删除旧的
     }
 
     int find(int number) {
@@ -177,7 +177,7 @@ func (n NumberContainers) Change(index int, number int) {
 	if n.ms[number] == nil {
 		n.ms[number] = &hp{}
 	}
-	heap.Push(n.ms[number], index)
+	heap.Push(n.ms[number], index) // 直接添加新数据，后面 find 再删除旧的
 }
 
 func (n NumberContainers) Find(number int) int {
