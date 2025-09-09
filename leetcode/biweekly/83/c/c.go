@@ -5,39 +5,38 @@ import (
 	"sort"
 )
 
-// https://space.bilibili.com/206214/dynamic
 type NumberContainers struct {
-	m  map[int]int
-	ms map[int]*hp
+	indexToNumber   map[int]int
+	numberToIndices map[int]*hp
 }
 
 func Constructor() NumberContainers {
 	return NumberContainers{map[int]int{}, map[int]*hp{}}
 }
 
-func (n NumberContainers) Change(index int, number int) {
-	n.m[index] = number
-	if n.ms[number] == nil {
-		n.ms[number] = &hp{}
+func (n NumberContainers) Change(index, number int) {
+	// 添加新数据
+	n.indexToNumber[index] = number
+	if _, ok := n.numberToIndices[number]; !ok {
+		n.numberToIndices[number] = &hp{}
 	}
-	heap.Push(n.ms[number], index)
+	heap.Push(n.numberToIndices[number], index)
 }
 
 func (n NumberContainers) Find(number int) int {
-	h, ok := n.ms[number]
+	indices, ok := n.numberToIndices[number]
 	if !ok {
 		return -1
 	}
-	for h.Len() > 0 && n.m[h.IntSlice[0]] != number {
-		heap.Pop(h)
+	for indices.Len() > 0 && n.indexToNumber[indices.IntSlice[0]] != number {
+		heap.Pop(indices) // 堆顶货不对板，说明是旧数据，删除
 	}
-	if h.Len() == 0 {
+	if indices.Len() == 0 {
 		return -1
 	}
-	return h.IntSlice[0]
+	return indices.IntSlice[0]
 }
 
 type hp struct{ sort.IntSlice }
-
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }

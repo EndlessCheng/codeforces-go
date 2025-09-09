@@ -1,200 +1,270 @@
-本题 [视频讲解](https://www.bilibili.com/video/BV16e4y1Q73o?t=2m11s) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
+## 方法一：哈希表 + 有序集合
 
----
+为了实现 $\texttt{find}$，我们需要对每个 $\textit{number}$ 创建一个有序集合，维护这个 $\textit{number}$ 对应的所有下标。用有序集合可以快速地获取最小下标。
 
-## 方法一：平衡树（有序集合）
+对于 $\texttt{change}$，如果 $\textit{index}$ 处有数字，我们需要先删除旧的数字，所以还需要知道每个 $\textit{index}$ 对应的 $\textit{number}$ 是多少，这可以用一个哈希表记录。
 
-由于数据范围很大，我们可以用一个**哈希表** $m$ 记录每个下标对应的元素，另一个**哈希表套平衡树** $\textit{ms}$ 记录每个元素对应的下标集合。
+具体来说，创建一个哈希表 $\textit{indexToNumber}$，以及一个哈希表套有序集合 $\textit{numberToIndices}$。
 
-对于 `change` 操作，如果 $\textit{index}$ 处已有数字，则先从 $\textit{ms}[m[\textit{index}]]$ 中删掉 $\textit{index}$。然后将 $\textit{index}$ 和 $\textit{number}$ 记录到 $m$ 和 $\textit{ms}$ 中。
+对于 $\texttt{change}$：
 
-```py [sol1-Python3]
-from sortedcontainers import SortedSet
+- 如果 $\textit{index}$ 处有数字 $x$，那么从 $\textit{numberToIndices}[x]$ 中删除 $\textit{index}$（删除旧的数据）。
+- 然后，更新（或者插入）$\textit{indexToNumber}[\textit{index}] = \textit{number}$，往 $\textit{numberToIndices}[\textit{number}]$ 中添加 $\textit{index}$。
 
+对于 $\texttt{find}$，获取 $\textit{numberToIndices}[\textit{number}]$ 中的最小元素即可。
+
+```py [sol-Python3]
 class NumberContainers:
     def __init__(self):
-        self.m = {}
-        self.ms = defaultdict(SortedSet)
+        self.index_to_number = {}
+        # from sortedcontainers import SortedSet
+        self.number_to_indices = defaultdict(SortedSet)
 
     def change(self, index: int, number: int) -> None:
-        if index in self.m:
-            self.ms[self.m[index]].remove(index)  # 移除旧数据
-        self.m[index] = number
-        self.ms[number].add(index)  # 添加新数据
+        # 移除旧数据
+        old_number = self.index_to_number.get(index, None)
+        if old_number is not None:
+            self.number_to_indices[old_number].discard(index)
+
+        # 添加新数据
+        self.index_to_number[index] = number
+        self.number_to_indices[number].add(index)
 
     def find(self, number: int) -> int:
-        s = self.ms[number]
-        return s[0] if s else -1
+        indices = self.number_to_indices[number]
+        return indices[0] if indices else -1
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class NumberContainers {
-    Map<Integer, Integer> m = new HashMap<>();
-    Map<Integer, TreeSet<Integer>> ms = new HashMap<>();
+    private final Map<Integer, Integer> indexToNumber = new HashMap<>();
+    private final Map<Integer, TreeSet<Integer>> numberToIndices = new HashMap<>();
 
     public void change(int index, int number) {
-        var old = m.get(index);
-        if (old != null) ms.get(old).remove(index); // 移除旧数据
-        m.put(index, number);
-        ms.computeIfAbsent(number, k -> new TreeSet<>()).add(index); // 添加新数据
+        // 移除旧数据
+        Integer oldNumber = indexToNumber.get(index);
+        if (oldNumber != null) {
+            numberToIndices.get(oldNumber).remove(index);
+        }
+
+        // 添加新数据
+        indexToNumber.put(index, number);
+        numberToIndices.computeIfAbsent(number, _ -> new TreeSet<>()).add(index);
     }
 
     public int find(int number) {
-        var s = ms.get(number);
-        return s == null || s.isEmpty() ? -1 : s.first();
+        TreeSet<Integer> indices = numberToIndices.get(number);
+        return indices == null || indices.isEmpty() ? -1 : indices.first();
     }
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class NumberContainers {
-    unordered_map<int, int> m;
-    unordered_map<int, set<int>> ms;
+    unordered_map<int, int> index_to_number;
+    unordered_map<int, set<int>> number_to_indices;
 
 public:
     void change(int index, int number) {
-        auto it = m.find(index);
-        if (it != m.end()) {
-            ms[it->second].erase(index); // 移除旧数据
-            it->second = number; // 优化：直接在迭代器上赋值
-        } else m[index] = number;
-        ms[number].insert(index); // 添加新数据
+        // 移除旧数据
+        auto it = index_to_number.find(index);
+        if (it != index_to_number.end()) {
+            number_to_indices[it->second].erase(index);
+        }
+
+        // 添加新数据
+        index_to_number[index] = number;
+        number_to_indices[number].insert(index);
     }
 
     int find(int number) {
-        auto it = ms.find(number);
-        return it == ms.end() || it->second.empty() ? -1 : *it->second.begin();
+        auto it = number_to_indices.find(number);
+        return it == number_to_indices.end() || it->second.empty() ? -1 : *it->second.begin();
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
+// import "github.com/emirpasic/gods/v2/trees/redblacktree"
 type NumberContainers struct {
-	m  map[int]int
-	ms map[int]*redblacktree.Tree
+	indexToNumber   map[int]int
+	numberToIndices map[int]*redblacktree.Tree[int, struct{}]
 }
 
 func Constructor() NumberContainers {
-	return NumberContainers{map[int]int{}, map[int]*redblacktree.Tree{}}
+	return NumberContainers{map[int]int{}, map[int]*redblacktree.Tree[int, struct{}]{}}
 }
 
-func (n NumberContainers) Change(index int, number int) {
-	if num, ok := n.m[index]; ok {
-		n.ms[num].Remove(index) // 移除旧数据
+func (n NumberContainers) Change(index, number int) {
+	// 移除旧数据
+	if oldNumber, ok := n.indexToNumber[index]; ok {
+		n.numberToIndices[oldNumber].Remove(index)
 	}
-	n.m[index] = number
-	if n.ms[number] == nil {
-		n.ms[number] = redblacktree.NewWithIntComparator()
+
+	// 添加新数据
+	n.indexToNumber[index] = number
+	if n.numberToIndices[number] == nil {
+		n.numberToIndices[number] = redblacktree.New[int, struct{}]()
 	}
-	n.ms[number].Put(index, nil) // 添加新数据
+	n.numberToIndices[number].Put(index, struct{}{})
 }
 
 func (n NumberContainers) Find(number int) int {
-	s, ok := n.ms[number]
-	if !ok || s.Size() == 0 {
+	indices, ok := n.numberToIndices[number]
+	if !ok || indices.Empty() {
 		return -1
 	}
-	return s.Left().Key.(int)
+	return indices.Left().Key
 }
 ```
 
-## 方法二：懒删除堆
+#### 复杂度分析
 
-另一种做法是用堆：
+- 时间复杂度：
+   - 初始化 $\mathcal{O}(1)$。
+   - $\texttt{change}$：$\mathcal{O}(\log q)$，其中 $q$ 是 $\texttt{change}$ 的调用次数。
+   - $\texttt{find}$：$\mathcal{O}(\log q)$ 或者 $\mathcal{O}(1)$，取决于有序集合是否额外维护最小值。
+- 空间复杂度：$\mathcal{O}(q)$。
 
-- 对于 `change` 操作，直接往 $\textit{ms}$ 中记录，不做任何删除操作；
-- 对于 `find` 操作，查看堆顶下标对应的元素是否和 $\textit{number}$ 相同，若不相同则意味着对应的元素已被替换成了其他值，堆顶存的是个垃圾数据，直接弹出堆顶；否则堆顶就是答案。
+## 方法二：哈希表 + 懒删除堆
 
-```py [sol2-Python3]
+$\textit{numberToIndices}$ 改成哈希表套最小堆。
+
+对于 $\texttt{change}$，不删除旧数据。
+
+对于 $\texttt{find}$，查看堆顶是否等于 $\textit{number}$，若不相同，则意味着堆顶是之前没有删除的旧数据，弹出堆顶；否则堆顶就是答案。
+
+```py [sol-Python3]
 class NumberContainers:
     def __init__(self):
-        self.m = {}
-        self.ms = defaultdict(list)
+        self.index_to_number = {}
+        self.number_to_indices = defaultdict(list)
 
     def change(self, index: int, number: int) -> None:
-        self.m[index] = number
-        heappush(self.ms[number], index)  # 直接添加新数据，后面 find 再删除旧的
+        # 添加新数据
+        self.index_to_number[index] = number
+        heappush(self.number_to_indices[number], index)
 
     def find(self, number: int) -> int:
-        h = self.ms[number]
-        while h and self.m[h[0]] != number:  # 意味着 h[0] 处的元素已被替换成了其他值
-            heappop(h)
-        return h[0] if h else -1
+        indices = self.number_to_indices[number]
+        while indices and self.index_to_number[indices[0]] != number:
+            heappop(indices)  # 堆顶货不对板，说明是旧数据，删除
+        return indices[0] if indices else -1
 ```
 
-```java [sol2-Java]
+```java [sol-Java]
 class NumberContainers {
-    Map<Integer, Integer> m = new HashMap<>();
-    Map<Integer, Queue<Integer>> ms = new HashMap<>();
+    private final Map<Integer, Integer> indexToNumber = new HashMap<>();
+    private final Map<Integer, PriorityQueue<Integer>> numberToIndices = new HashMap<>();
 
     public void change(int index, int number) {
-        m.put(index, number);
-        ms.computeIfAbsent(number, k -> new PriorityQueue<>()).offer(index); // 直接添加新数据，后面 find 再删除旧的
+        // 添加新数据
+        indexToNumber.put(index, number);
+        numberToIndices.computeIfAbsent(number, _ -> new PriorityQueue<>()).offer(index);
     }
 
     public int find(int number) {
-        var q = ms.get(number);
-        if (q == null) return -1;
-        while (!q.isEmpty() && m.get(q.peek()) != number) q.poll();
-        return q.isEmpty() ? -1 : q.peek();
+        PriorityQueue<Integer> indices = numberToIndices.get(number);
+        if (indices == null) {
+            return -1;
+        }
+        while (!indices.isEmpty() && indexToNumber.get(indices.peek()) != number) {
+            indices.poll(); // 堆顶货不对板，说明是旧数据，删除
+        }
+        return indices.isEmpty() ? -1 : indices.peek();
     }
 }
 ```
 
-```cpp [sol2-C++]
+```cpp [sol-C++]
 class NumberContainers {
-    unordered_map<int, int> m;
-    unordered_map<int, priority_queue<int, vector<int>, greater<>>> ms;
+    unordered_map<int, int> index_to_number;
+    unordered_map<int, priority_queue<int, vector<int>, greater<int>>> number_to_indices;
 
 public:
     void change(int index, int number) {
-        m[index] = number;
-        ms[number].push(index); // 直接添加新数据，后面 find 再删除旧的
+        // 添加新数据
+        index_to_number[index] = number;
+        number_to_indices[number].push(index);
     }
 
     int find(int number) {
-        auto it = ms.find(number);
-        if (it == ms.end()) return -1;
-        auto &q = it->second;
-        while (!q.empty() && m[q.top()] != number) q.pop();
-        return q.empty() ? -1 : q.top();
+        auto& indices = number_to_indices[number];
+        while (!indices.empty() && index_to_number[indices.top()] != number) {
+            indices.pop(); // 堆顶货不对板，说明是旧数据，删除
+        }
+        return indices.empty() ? -1 : indices.top();
     }
 };
 ```
 
-```go [sol2-Go]
+```go [sol-Go]
 type NumberContainers struct {
-	m  map[int]int
-	ms map[int]*hp
+	indexToNumber   map[int]int
+	numberToIndices map[int]*hp
 }
 
 func Constructor() NumberContainers {
 	return NumberContainers{map[int]int{}, map[int]*hp{}}
 }
 
-func (n NumberContainers) Change(index int, number int) {
-	n.m[index] = number
-	if n.ms[number] == nil {
-		n.ms[number] = &hp{}
+func (n NumberContainers) Change(index, number int) {
+	// 添加新数据
+	n.indexToNumber[index] = number
+	if _, ok := n.numberToIndices[number]; !ok {
+		n.numberToIndices[number] = &hp{}
 	}
-	heap.Push(n.ms[number], index) // 直接添加新数据，后面 find 再删除旧的
+	heap.Push(n.numberToIndices[number], index)
 }
 
 func (n NumberContainers) Find(number int) int {
-	h, ok := n.ms[number]
+	indices, ok := n.numberToIndices[number]
 	if !ok {
 		return -1
 	}
-	for h.Len() > 0 && n.m[h.IntSlice[0]] != number {
-		heap.Pop(h)
+	for indices.Len() > 0 && n.indexToNumber[indices.IntSlice[0]] != number {
+		heap.Pop(indices) // 堆顶货不对板，说明是旧数据，删除
 	}
-	if h.Len() == 0 {
+	if indices.Len() == 0 {
 		return -1
 	}
-	return h.IntSlice[0]
+	return indices.IntSlice[0]
 }
 
 type hp struct{ sort.IntSlice }
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 ```
+
+#### 复杂度分析
+
+- 时间复杂度：
+  - 初始化 $\mathcal{O}(1)$。
+  - $\texttt{change}$：$\mathcal{O}(\log q)$，其中 $q$ 是 $\texttt{change}$ 的调用次数。
+  - $\texttt{find}$：均摊 $\mathcal{O}(\log q)$。
+- 空间复杂度：$\mathcal{O}(q)$。
+
+## 专题训练
+
+见下面数据结构题单的「**§5.6 懒删除堆**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
