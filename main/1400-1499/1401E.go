@@ -41,6 +41,9 @@ func cf1401E(in io.Reader, out io.Writer) {
 	for range m {
 		Fscan(in, &x, &l, &r)
 		qs[x] = append(qs[x], pair{l, r})
+		if l == 0 && r == mx {
+			ans++
+		}
 	}
 
 	t := make(fenwick01, mx+1)
