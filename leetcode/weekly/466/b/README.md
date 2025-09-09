@@ -63,6 +63,70 @@ func minOperations(s string) int {
 }
 ```
 
+## 优化
+
+如果发现最小的字母是 $\texttt{b}$，可以提前退出循环。
+
+```py [sol-Python3]
+class Solution:
+    def minOperations(self, s: str) -> int:
+        if 'b' in s:
+            return 25
+        # 'z' 的下一个字符是 '{'
+        min_c = min((c for c in s if c != 'a'), default='{')
+        return ord('{') - ord(min_c)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minOperations(String s) {
+        int minC = 'z' + 1;
+        for (char c : s.toCharArray()) {
+            if (c != 'a') {
+                minC = Math.min(minC, c);
+                if (minC == 'b') {
+                    break;
+                }
+            }
+        }
+        return 'z' + 1 - minC;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minOperations(string s) {
+        char min_c = 'z' + 1;
+        for (char c : s) {
+            if (c != 'a') {
+                min_c = min(min_c, c);
+                if (min_c == 'b') {
+                    break;
+                }
+            }
+        }
+        return 'z' + 1 - min_c;
+    }
+};
+```
+
+```go [sol-Go]
+func minOperations(s string) int {
+	minC := 'z' + 1
+	for _, c := range s {
+		if c != 'a' {
+			minC = min(minC, c)
+			if minC == 'b' {
+				break
+			}
+		}
+	}
+	return int('z' + 1 - minC)
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。

@@ -6,6 +6,9 @@ func minOperations(s string) int {
 	for _, c := range s {
 		if c != 'a' {
 			minC = min(minC, c)
+			if minC == 'b' {
+				break
+			}
 		}
 	}
 	return int('z' + 1 - minC)
