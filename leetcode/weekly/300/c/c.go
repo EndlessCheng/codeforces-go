@@ -1,18 +1,21 @@
 package main
 
 // https://space.bilibili.com/206214/dynamic
-func peopleAwareOfSecret1(n, delay, forget int) int {
+func peopleAwareOfSecret(n, delay, forget int) int {
 	const mod = 1_000_000_007
-	sum := make([]int, n+1)
+	sum := make([]int, n+1) // known 数组的前缀和
 	sum[1] = 1
-	for i := 2; i <= n; i++ {
-		f := (sum[max(0, i-delay)] - sum[max(0, i-forget)]) % mod
-		sum[i] = (sum[i-1] + f) % mod
+
+	for j := 2; j <= n; j++ {
+		known := sum[max(j-delay, 0)] - sum[max(j-forget, 0)]
+		sum[j] = (sum[j-1] + known) % mod
 	}
-	return ((sum[n]-sum[max(0, n-forget)])%mod + mod) % mod
+
+	ans := sum[n] - sum[max(n-forget, 0)]
+	return (ans%mod + mod) % mod // 保证答案非负
 }
 
-func peopleAwareOfSecret(n, delay, forget int) (ans int) {
+func peopleAwareOfSecret1(n, delay, forget int) (ans int) {
 	const mod = 1_000_000_007
 	diff := make([]int, n+2)
 	diff[1] = 1
