@@ -2294,6 +2294,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // https://codeforces.com/problemset/problem/1633/E 2400 绝对值 MST
 // https://codeforces.com/problemset/problem/1707/C 2400 与 DFS 搜索树结合
 // https://codeforces.com/problemset/problem/875/F 2500 基环树
+// https://codeforces.com/problemset/problem/1120/D 2500
 // https://codeforces.com/problemset/problem/196/E 2600 传送门
 // https://codeforces.com/problemset/problem/1981/E 2600
 // https://codeforces.com/problemset/problem/827/D 2700 对于图中每条边，边权至多是多少，能让这条边仍然在所有 MST 中
@@ -5268,13 +5269,14 @@ func (*graph) maximalCliques(g []int) int {
 // 考察枚举中的 w：若 deg[w]>√m，由于度数超过 √m 的点的个数至多为 O(√m)，根据定向规则，w 的入度也至多为 O(√m)；
 //               若 deg[w]<=√m，由于 w 的邻边数量就是 deg[w]，所以入度也至多为 O(√m)
 // 因此，这种定向方式保证了枚举中的 w 的入度至多为 O(√m)，从而总体复杂度为 ∑in[w]*out[w] < √m*∑out[w] < √m*m
-// 注：若定向时从度数小的指向度数大的，同样地，w 的出度至多为 O(√m)，从而复杂度亦为 O(m√m)
+// 注：若定向时从度数小的指向度数大的，同样地，w 的出度至多为 O(√m)，复杂度亦为 O(m√m)
 // 讲解+题目 https://blog.nowcoder.net/n/9bfaeb850d6f4df6b257ffcf8e5889dd
 // https://www.luogu.com.cn/blog/KingSann/fou-chang-yong-di-hei-ke-ji-san-yuan-huan-post
 // https://www.luogu.com.cn/blog/i207M/san-yuan-huan-ji-shuo-xue-xi-bi-ji
 // https://www.cnblogs.com/Khada-Jhin/p/10143074.html
 // https://cdn.luogu.com.cn/upload/image_hosting/4ty1215p.png
 // http://acm.hdu.edu.cn/showproblem.php?pid=6184
+// 模板题 https://leetcode.cn/problems/paths-in-maze-that-lead-to-same-room/
 func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 	deg := make([]int, n)
 	for _, e := range edges {
@@ -5287,6 +5289,8 @@ func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 	g := make([][]int, n)
 	for _, e := range edges {
 		v, w := e[0], e[1]
+		v--
+		w--
 		if deg[v] > deg[w] || deg[v] == deg[w] && v > w {
 			v, w = w, v
 		}
