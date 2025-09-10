@@ -2,15 +2,24 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 func replaceNonCoprimes(nums []int) []int {
-	s := []int{nums[0]}
-	for _, num := range nums[1:] {
-		s = append(s, num)
-		for len(s) > 1 && gcd(s[len(s)-1], s[len(s)-2]) > 1 {
-			s[len(s)-2] *= s[len(s)-1] / gcd(s[len(s)-1], s[len(s)-2])
-			s = s[:len(s)-1]
+	st := nums[:0]
+	for _, x := range nums {
+		for len(st) > 0 && gcd(x, st[len(st)-1]) > 1 {
+			x = lcm(x, st[len(st)-1])
+			st = st[:len(st)-1]
 		}
+		st = append(st, x)
 	}
-	return s
+	return st
 }
 
-func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
+}
+
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
