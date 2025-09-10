@@ -24,22 +24,21 @@ func CF1470B(_r io.Reader, _w io.Writer) {
 		}
 	}
 	core := func(x int) int {
-		c := 1
+		res := 1
 		for x > 1 {
 			p := lpf[x]
-			e := 1
-			for x /= p; lpf[x] == p; x /= p {
-				e ^= 1
+			for x%(p*p) == 0 {
+				x /= p * p
 			}
-			if e > 0 {
-				c *= p
+			if x%p == 0 {
+				x /= p
+				res *= p
 			}
 		}
-		return c
+		return res
 	}
 
-	var T, n, v, q int
-	var w int64
+	var T, n, v, q, w int
 	for Fscan(in, &T); T > 0; T-- {
 		cnt := map[int]int{}
 		for Fscan(in, &n); n > 0; n-- {
@@ -48,17 +47,14 @@ func CF1470B(_r io.Reader, _w io.Writer) {
 		}
 		maxC, c1 := 0, cnt[1]
 		for v, c := range cnt {
-			if c > maxC {
-				maxC = c
-			}
-			if c&1 == 0 && v > 1 {
+			maxC = max(maxC, c)
+			if c%2 == 0 && v > 1 {
 				c1 += c
 			}
 		}
-		if maxC > c1 {
-			c1 = maxC
-		}
-		for Fscan(in, &q); q > 0; q-- {
+		c1 = max(c1, maxC)
+		Fscan(in, &q)
+		for range q {
 			if Fscan(in, &w); w > 0 {
 				Fprintln(out, c1)
 			} else {
