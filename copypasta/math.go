@@ -1697,21 +1697,12 @@ func _(abs func(int) int) {
 
 	// 朴素 core
 	core := func(n int) int {
-		res := 1
 		for i := 2; i*i <= n; i++ {
-			e := 0
-			for n%i == 0 {
-				e ^= 1
-				n /= i
-			}
-			if e == 1 {
-				res *= i
+			for n%(i*i) == 0 {
+				n /= i * i
 			}
 		}
-		if n > 1 {
-			res *= n
-		}
-		return res
+		return n
 	}
 
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
@@ -1918,6 +1909,7 @@ func _(abs func(int) int) {
 			return ds
 		}
 
+		// 平方剩余核
 		// EXTRA: https://oeis.org/A007913 Squarefree part of n (also called core(n))
 		// a(n) is the smallest positive number m such that n/m is a square
 		// https://oeis.org/A013928 Number of (positive) squarefree numbers < n
@@ -1929,18 +1921,18 @@ func _(abs func(int) int) {
 		// https://codeforces.com/contest/1470/problem/B
 		// https://codeforces.com/contest/1497/problem/E2
 		core := func(x int) int {
-			c := 1
+			res := 1
 			for x > 1 {
 				p := lpf[x]
-				e := 1
-				for x /= p; x%p == 0; x /= p {
-					e ^= 1
+				for x%(p*p) == 0 {
+					x /= p * p
 				}
-				if e > 0 {
-					c *= p
+				if x%p == 0 {
+					x /= p
+					res *= p
 				}
 			}
-			return c
+			return res
 		}
 
 		coreAll := func() {
@@ -2581,6 +2573,7 @@ func _(abs func(int) int) {
 	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
 	// https://www.zhihu.com/question/59033693
 	// 模板题 https://www.luogu.com.cn/problem/P3811
+	// https://codeforces.com/problemset/problem/997/C 2500
 	calcAllInv := func() {
 		const mod = 998244353
 		const mx int = 1e6
@@ -3245,6 +3238,7 @@ func _(abs func(int) int) {
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
 	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
 	//    LC1692 https://leetcode.cn/problems/count-ways-to-distribute-candies/
+	//    https://codeforces.com/problemset/problem/932/E 2400
 	//    https://codeforces.com/problemset/problem/1716/F 2500 把幂转成下降幂 https://chatgpt.com/c/6836d520-3efc-8011-ac52-a2207a5251d0
 	//    https://codeforces.com/problemset/problem/1278/F 2600 把幂转成下降幂 https://chatgpt.com/c/68284f34-38cc-8011-9dd2-04beb3fbed53
 	//    - https://www.luogu.com.cn/article/v9zshgeb
@@ -3286,6 +3280,7 @@ func _(abs func(int) int) {
 	}
 
 	// 只计算第 n 行
+	// https://codeforces.com/problemset/problem/932/E 2400
 	stirling2Row := func(n int) []int {
 		s2 := make([]int, n+1)
 		s2[0] = 1
@@ -3820,6 +3815,7 @@ func _(abs func(int) int) {
 	// https://zhuanlan.zhihu.com/p/60378354
 	// https://oi-wiki.org/math/min-25/
 	// https://codeforces.com/blog/entry/92703
+	// https://www.luogu.com.cn/article/ko7omb31
 	// todo 模板题 https://www.luogu.com.cn/problem/P5325
 	// https://leetcode.cn/problems/count-the-number-of-ideal-arrays/solutions/3658527/min25shai-jie-fa-by-vclip-2uji/?envType=daily-question&envId=2025-04-22
 	// Meissel-Lehmer https://www.luogu.com.cn/problem/P7884
@@ -3828,6 +3824,7 @@ func _(abs func(int) int) {
 	// 特别地，令 i=1，这个算法可以更快地计算 pi(n)，对于 n <= 1e11 可以 1s 跑出结果
 	// 核心思路：乍一看 [2,n] 中的质数很多，但只需要筛掉合数，剩下的就都是质数，而这些合数一定能被 [2,√n] 中的质数整除
 	// 时间复杂度和 Min_25 筛是一样的 O(n^(3/4) / log n)
+	// https://loj.ac/p/6235
 	// https://codeforces.com/problemset/problem/665/F 2400
 	calcPi2 := func(n int) []int {
 		m := int(math.Sqrt(float64(n)))
