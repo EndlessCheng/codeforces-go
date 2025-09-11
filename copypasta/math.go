@@ -3498,19 +3498,13 @@ func _(abs func(int) int) {
 	// https://oeis.org/A030059 μ(x)=-1 的数
 	// https://oeis.org/A005117 μ(x)!=0 的数（即 squarefree numbers）
 	calcMu := func(n int) int {
-		if n == 1 {
-			return 1
-		}
 		mu := 1
 		for i := 2; i*i <= n; i++ {
-			e := 0
-			for ; n%i == 0; n /= i {
-				e++
-			}
-			if e > 1 {
+			if n%(i*i) == 0 {
 				return 0
 			}
-			if e > 0 {
+			if n%i == 0 {
+				n /= i
 				mu = -mu
 			}
 		}
@@ -3520,8 +3514,21 @@ func _(abs func(int) int) {
 		return mu
 	}
 
+	// 调和级数枚举写法
+	// https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
+	// https://codeforces.com/problemset/problem/1043/F 2500
+	initMu := func() {
+		const mx int = 1e6
+		mu := [mx + 1]int{1: 1} // int8
+		for i := 1; i <= mx; i++ {
+			for j := i * 2; j <= mx; j += i {
+				mu[j] -= mu[i]
+			}
+		}
+	}
+
 	// 线性筛写法
-	sieveMu := func() {
+	initMu2 := func() {
 		const mx int = 1e6
 		mu := [mx + 1]int{1: 1} // int8
 		primes := []int{}
@@ -3542,18 +3549,6 @@ func _(abs func(int) int) {
 					break
 				}
 				mu[v] = -mu[i]
-			}
-		}
-	}
-
-	// 调和级数枚举写法
-	// https://codeforces.com/contest/2037/problem/G 因子容斥
-	sieveMu2 := func() {
-		const mx int = 1e6
-		mu := [mx + 1]int{1: 1} // int8
-		for i := 1; i <= mx; i++ {
-			for j := i * 2; j <= mx; j += i {
-				mu[j] -= mu[i]
 			}
 		}
 	}
@@ -3982,7 +3977,7 @@ func _(abs func(int) int) {
 		bellTriangle, bellPoly, setPartition,
 		mahonian, mahonian2, mahonian3,
 
-		calcMu, sieveMu, sieveMu2,
+		calcMu, initMu, initMu2,
 
 		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
 
