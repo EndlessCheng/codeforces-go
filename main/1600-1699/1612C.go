@@ -7,14 +7,18 @@ import (
 )
 
 // https://github.com/EndlessCheng
-func ceilSqrt(x int) int {
-	return int(math.Ceil(math.Sqrt(float64(x))))
-}
-
 func isqrt(x int) int {
 	rt := int(math.Sqrt(float64(x)))
 	if rt*rt > x {
 		rt--
+	}
+	return rt
+}
+
+func ceilSqrt(x int) int {
+	rt := int(math.Sqrt(float64(x)))
+	if rt*rt < x {
+		rt++
 	}
 	return rt
 }
