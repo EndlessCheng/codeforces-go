@@ -9,7 +9,7 @@ func maxFreqSum1(s string) int {
 	maxConsonantCnt := 0
 	for _, ch := range s {
 		cnt[ch-'a']++
-		if strings.IndexRune("aeiou", ch) >= 0 {
+		if strings.ContainsRune("aeiou", ch) {
 			maxVowelCnt = max(maxVowelCnt, cnt[ch-'a'])
 		} else {
 			maxConsonantCnt = max(maxConsonantCnt, cnt[ch-'a'])
