@@ -8,7 +8,7 @@ import (
 // https://github.com/EndlessCheng
 func cf840C(in io.Reader, out io.Writer) {
 	const M = 1_000_000_007
-	const mx = 300
+	const mx = 301
 	C := [mx][mx]int{}
 	for i := range C {
 		C[i][0] = 1
