@@ -154,7 +154,6 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 */
 
 // isqrt 返回 floor(sqrt(x))
-// 函数名来自 Python 中的 math.isqrt
 // 由于 float64 无法【精确】表示过大的 int（超出 2^53-1 的），需要微调   
 // 注：【精确】指代码中的 float64 必须要对应着唯一的 int，才能保证计算结果正确 https://www.zhihu.com/question/29010688
 //
@@ -170,12 +169,23 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 // 可以用以下题目测试：
 // https://atcoder.jp/contests/abc191/tasks/abc191_d 
 // https://atcoder.jp/contests/abc243/tasks/abc243_g
-// https://codeforces.com/problemset/problem/1036/F
-// https://codeforces.com/problemset/problem/1862/D
+// https://codeforces.com/problemset/problem/1612/C 1300
+// https://codeforces.com/problemset/problem/1862/D 1300
+// https://codeforces.com/problemset/problem/1036/F 2400
 func isqrt(x int) int {
 	rt := int(math.Sqrt(float64(x))) // 可能会算多一点点
 	if rt*rt > x {
 		rt--
+	}
+	return rt
+}
+
+// ceilSqrt 返回 ceil(sqrt(x))
+// https://codeforces.com/problemset/problem/1612/C 1300
+func ceilSqrt(x int) int {
+	rt := int(math.Sqrt(float64(x)))
+	if rt*rt < x {
+		rt++
 	}
 	return rt
 }
