@@ -1,5 +1,3 @@
-[视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第四题。
-
 ## 方法一：按照下标的 core 值分组
 
 定义 $\text{core}(n)$ 为 $n$ 除去完全平方因子后的剩余结果。
@@ -14,20 +12,17 @@
 
 那么按照下标的 $\text{core}$ 值分组，累加同一组的元素和，最大元素和即为答案。
 
+[视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第四题。
+
 ```py [sol-Python3]
 @cache  # 保存 core(n) 的计算结果，测试用例之间可以复用
 def core(n: int) -> int:
-    res = 1
-    for i in range(2, isqrt(n) + 1):
-        e = 0
-        while n % i == 0:
-            e ^= 1
-            n //= i
-        if e:
-            res *= i
-    if n > 1:
-        res *= n
-    return res
+    i = 2
+    while i * i <= n:
+        while n % (i * i) == 0:
+            n //= i * i
+        i += 1
+    return n
 
 class Solution:
     def maximumSum(self, nums: List[int]) -> int:
@@ -52,21 +47,12 @@ class Solution {
     }
 
     private int core(int n) {
-        int res = 1;
         for (int i = 2; i * i <= n; i++) {
-            int e = 0;
-            while (n % i == 0) {
-                e ^= 1;
-                n /= i;
-            }
-            if (e == 1) {
-                res *= i;
+            while (n % (i * i) == 0) {
+                n /= i * i;
             }
         }
-        if (n > 1) {
-            res *= n;
-        }
-        return res;
+        return n;
     }
 }
 ```
@@ -74,51 +60,33 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     int core(int n) {
-        int res = 1;
         for (int i = 2; i * i <= n; i++) {
-            int e = 0;
-            while (n % i == 0) {
-                e ^= 1;
-                n /= i;
-            }
-            if (e) {
-                res *= i;
+            while (n % (i * i) == 0) {
+                n /= i * i;
             }
         }
-        if (n > 1) {
-            res *= n;
-        }
-        return res;
+        return n;
     }
 
 public:
-    long long maximumSum(vector<int> &nums) {
+    long long maximumSum(vector<int>& nums) {
         vector<long long> sum(nums.size() + 1);
         for (int i = 0; i < nums.size(); i++) {
             sum[core(i + 1)] += nums[i];
         }
-        return *max_element(sum.begin(), sum.end());
+        return ranges::max(sum);
     }
 };
 ```
 
 ```go [sol-Go]
 func core(n int) int {
-	res := 1
-	for i := 2; i*i <= n; i++ {
-		e := 0
-		for n%i == 0 {
-			e ^= 1
-			n /= i
-		}
-		if e == 1 {
-			res *= i
-		}
-	}
-	if n > 1 {
-		res *= n
-	}
-	return res
+    for i := 2; i*i <= n; i++ {
+        for n%(i*i) == 0 {
+            n /= i * i
+        }
+    }
+    return n
 }
 
 func maximumSum(nums []int) (ans int64) {
@@ -130,31 +98,20 @@ func maximumSum(nums []int) (ans int64) {
     }
     return
 }
-
-func max(a, b int64) int64 { if b > a { return b }; return a }
 ```
 
 ```js [sol-JavaScript]
 function core(n) {
-    let res = 1;
     for (let i = 2; i * i <= n; i++) {
-        let e = 0;
-        while (n % i === 0) {
-            e ^= 1;
-            n /= i;
-        }
-        if (e === 1) {
-            res *= i;
+        while (n % (i * i) === 0) {
+            n /= i * i;
         }
     }
-    if (n > 1) {
-        res *= n;
-    }
-    return res;
+    return n;
 }
 
-var maximumSum = function (nums) {
-    const sum = new Array(nums.length + 1).fill(0);
+var maximumSum = function(nums) {
+    const sum = Array(nums.length + 1).fill(0);
     for (let i = 0; i < nums.length; i++) {
         sum[core(i + 1)] += nums[i];
     }
@@ -223,7 +180,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long maximumSum(vector<int> &nums) {
+    long long maximumSum(vector<int>& nums) {
         long long ans = 0;
         int n = nums.size();
         for (int i = 1; i <= n; i++) {
@@ -240,18 +197,16 @@ public:
 
 ```go [sol-Go]
 func maximumSum(nums []int) (ans int64) {
-	n := len(nums)
-	for i := 1; i <= n; i++ {
-		sum := int64(0)
-		for j := 1; i*j*j <= n; j++ {
-			sum += int64(nums[i*j*j-1]) // -1 是因为数组下标从 0 开始
-		}
-		ans = max(ans, sum)
-	}
-	return
+    n := len(nums)
+    for i := 1; i <= n; i++ {
+        sum := int64(0)
+        for j := 1; i*j*j <= n; j++ {
+            sum += int64(nums[i*j*j-1]) // -1 是因为数组下标从 0 开始
+        }
+        ans = max(ans, sum)
+    }
+    return
 }
-
-func max(a, b int64) int64 { if b > a { return b }; return a }
 ```
 
 ```js [sol-JavaScript]
@@ -338,7 +293,7 @@ int init = [] {
 
 class Solution {
 public:
-    long long maximumSum(vector<int> &nums) {
+    long long maximumSum(vector<int>& nums) {
         long long ans = 0;
         vector<long long> sum(nums.size() + 1, 0);
         for (int i = 1; i <= nums.size(); ++i) {
@@ -368,9 +323,7 @@ func maximumSum(nums []int) (ans int64) {
     for i, x := range nums {
         c := core[i+1]
         sum[c] += int64(x)
-        if sum[c] > ans {
-            ans = sum[c]
-        }
+        ans = max(ans, sum[c])
     }
     return
 }
@@ -387,7 +340,7 @@ for (let i = 1; i < MX; i++) {
     }
 }
 
-var maximumSum = function (nums) {
+var maximumSum = function(nums) {
     const sum = Array(nums.length + 1).fill(0);
     for (let i = 0; i < nums.length; i++) {
         sum[core[i + 1]] += nums[i];
@@ -404,17 +357,17 @@ var maximumSum = function (nums) {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
