@@ -219,7 +219,7 @@ func maxValue(nums []int) []int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
 
 ## 分类题单
 
