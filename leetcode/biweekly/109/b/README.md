@@ -110,7 +110,7 @@ func sortVowels(s string) string {
 	vowels := []byte{}
 	for _, ch := range s {
 		c := unicode.ToLower(ch)
-		if strings.IndexRune("aeiou", c) >= 0 {
+		if strings.ContainsRune("aeiou", c) {
 			vowels = append(vowels, byte(ch))
 		}
 	}
@@ -121,7 +121,7 @@ func sortVowels(s string) string {
 	j := 0
 	for i, ch := range t {
 		c := unicode.ToLower(rune(ch))
-		if strings.IndexRune("aeiou", c) >= 0 {
+		if strings.ContainsRune("aeiou", c) {
 			t[i] = vowels[j]
 			j++
 		}
@@ -180,7 +180,7 @@ impl Solution {
 
 所以可以用 `ch & 31` 把字母 $\textit{ch}$ 转成 $1$ 到 $26$，无论 $\textit{ch}$ 是大写还是小写，规则是统一的。
 
-由于 $\texttt{aeiou}$ 分别是第 $1,5,7,15,21$ 个字母，根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，我们可以把元音集合
+由于 $\texttt{aeiou}$ 分别是第 $1,5,9,15,21$ 个字母，根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，我们可以把元音集合
 
 $$
 \{\texttt{a},\texttt{e},\texttt{i},\texttt{o},\texttt{u}\}
@@ -189,7 +189,7 @@ $$
 视作数字
 
 $$
-2^1 + 2^5 + 2^7 + 2^{15} + 2^{21} = 2130466
+2^1 + 2^5 + 2^9 + 2^{15} + 2^{21} = 2130466
 $$
 
 即十六进制的 $\texttt{0x208222}$。

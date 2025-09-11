@@ -11,7 +11,7 @@ func sortVowels1(s string) string {
 	vowels := []byte{}
 	for _, ch := range s {
 		c := unicode.ToLower(ch)
-		if strings.IndexRune("aeiou", c) >= 0 {
+		if strings.ContainsRune("aeiou", c) {
 			vowels = append(vowels, byte(ch))
 		}
 	}
@@ -22,7 +22,7 @@ func sortVowels1(s string) string {
 	j := 0
 	for i, ch := range t {
 		c := unicode.ToLower(rune(ch))
-		if strings.IndexRune("aeiou", c) >= 0 {
+		if strings.ContainsRune("aeiou", c) {
 			t[i] = vowels[j]
 			j++
 		}
