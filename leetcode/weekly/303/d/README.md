@@ -4,7 +4,7 @@
 
 #### 提示 1
 
-对于 $x|y$ 和 $x\&y$ 中的 $1$，在同一个比特位上，如果都有 $1$，那这个 $1$ 会被统计两次；如果一个为 $1$ 另一个为 $0$，那这个 $1$ 会被统计一次。
+对于 $x|y$ 和 $x\&y$，在同一个比特位上，如果都有 $1$，那这个 $1$ 会被统计两次；如果一个为 $1$ 另一个为 $0$，那这个 $1$ 会被统计一次。
 
 #### 提示 2
 
@@ -16,9 +16,17 @@ $$
 c(x|y)+c(x\&y)=c(x)+c(y)
 $$
 
+另外一种思路是把二进制数看成集合，根据容斥原理 $|A \cup B| = |A| + |B| - |A \cap B|$，得
+
+$$
+|A \cup B| + |A \cap B| = |A| + |B|
+$$
+
+再转换到二进制上，同样可以得到上面的等式。
+
 #### 提示 3
 
-遍历去重后的 $\textit{nums}$，统计 $c(\textit{nums}[i])$ 的个数，记录在 $\textit{cnt}$ 中，然后写一个二重循环遍历 $\textit{cnt}$，对于所有的 $c(x)+c(y)\ge k$，累加 $\textit{cnt}[c(x)]\cdot\textit{cnt}[c(y)]$，表示从这两组中各选一个 $x$ 和 $y$ 组成优质数对的个数。
+遍历去重后的 $\textit{nums}$，统计 $c(\textit{nums}[i])$ 的个数，记录在 $\textit{cnt}$ 中，然后写一个二重循环遍历 $\textit{cnt}$，对于所有的 $c(x)+c(y)\ge k$，累加 $\textit{cnt}[c(x)]\cdot\textit{cnt}[c(y)]$，表示从这两组中各选一个 $x$ 和 $y$ 组成优质数对的个数（乘法原理）。
 
 #### 复杂度分析
 
@@ -40,19 +48,22 @@ class Solution:
 ```java [sol1-Java]
 class Solution {
     public long countExcellentPairs(int[] nums, int k) {
-        var ans = 0L;
         var vis = new HashSet<Integer>();
         var cnt = new HashMap<Integer, Integer>();
-        for (var x : nums)
-            if (!vis.contains(x)) {
-                vis.add(x);
+        for (var x : nums) {
+            if (vis.add(x)) {
                 var c = Integer.bitCount(x);
-                cnt.put(c, cnt.getOrDefault(c, 0) + 1);
+                cnt.merge(c, 1, Integer::sum);
             }
-        for (var x : cnt.entrySet())
-            for (var y : cnt.entrySet())
-                if (x.getKey() + y.getKey() >= k)
+        }
+        var ans = 0L;
+        for (var x : cnt.entrySet()) {
+            for (var y : cnt.entrySet()) {
+                if (x.getKey() + y.getKey() >= k) {
                     ans += (long) x.getValue() * y.getValue();
+                }
+            }
+        }
         return ans;
     }
 }
@@ -61,15 +72,19 @@ class Solution {
 ```cpp [sol1-C++]
 class Solution {
 public:
-    long long countExcellentPairs(vector<int> &nums, int k) {
+    long long countExcellentPairs(vector<int>& nums, int k) {
         unordered_map<int, int> cnt;
-        for (int x : unordered_set<int>(nums.begin(), nums.end())) // 去重
-            ++cnt[__builtin_popcount(x)];
-        long ans = 0L;
-        for (auto &[cx, ccx] : cnt)
-            for (auto &[cy, ccy] : cnt)
-                if (cx + cy >= k) // (x,y) 是优质数对
-                    ans += (long) ccx * ccy;
+        for (int x : unordered_set<int>(nums.begin(), nums.end())) { // 去重
+            cnt[popcount((uint32_t) x)]++;
+        }
+        long long ans = 0;
+        for (auto& [cx, ccx] : cnt) {
+            for (auto& [cy, ccy] : cnt) {
+                if (cx + cy >= k) { // (x,y) 是优质数对
+                    ans += 1LL * ccx * ccy;
+                }
+            }
+        }
         return ans;
     }
 };
@@ -98,7 +113,7 @@ func countExcellentPairs(nums []int, k int) (ans int64) {
 
 进一步地，二重循环可以用前缀和（或者后缀和）来优化。
 
-我们可以从小到大遍历 $c(x)$，根据 $c(y)\ge k-c(x)$，对应的 $c(y)$ 也会从大到小减小，我们可以用后缀和维护这些 $cnt[c(y)]$ 的和。
+我们可以从小到大遍历 $\textit{cnt}[c(x)]$，由于 $c(y)\ge k-c(x)$，$c(y)$ 也会从大到小减小，我们可以用后缀和维护这些 $\textit{cnt}[c(y)]$ 的和。
 
 #### 复杂度分析
 
@@ -115,7 +130,7 @@ class Solution:
         s = sum(cnt[k:])
         for cx, ccx in enumerate(cnt):
             ans += ccx * s
-            if 0 <= k - 1 - cx < 30:
+            if 0 <= k - 1 - cx < 30:  # 下一轮循环 cx 是 cx+1
                 s += cnt[k - 1 - cx]
         return ans
 ```
@@ -127,19 +142,22 @@ class Solution {
     public long countExcellentPairs(int[] nums, int k) {
         var vis = new HashSet<Integer>();
         var cnt = new int[U];
-        for (var x : nums)
-            if (!vis.contains(x)) {
-                vis.add(x);
-                ++cnt[Integer.bitCount(x)];
+        for (var x : nums) {
+            if (vis.add(x)) {
+                cnt[Integer.bitCount(x)]++;
             }
+        }
         var ans = 0L;
         var s = 0;
-        for (var i = k; i < U; i++)
+        for (var i = k; i < U; i++) {
             s += cnt[i];
-        for (int cx = 0; cx < U; cx++) {
+        }
+        for (var cx = 0; cx < U; cx++) {
             ans += (long) cnt[cx] * s;
-            var cy = k - 1 - cx;
-            if (0 <= cy && cy < U) s += cnt[cy];
+            var cy = k - 1 - cx; // 下一轮循环 cx 是 cx+1
+            if (0 <= cy && cy < U) {
+                s += cnt[cy];
+            }
         }
         return ans;
     }
@@ -150,18 +168,22 @@ class Solution {
 class Solution {
     static constexpr int U = 30;
 public:
-    long long countExcellentPairs(vector<int> &nums, int k) {
-        int cnt[U] = {};
-        for (int x : unordered_set<int>(nums.begin(), nums.end())) // 去重
-            ++cnt[__builtin_popcount(x)];
-        long ans = 0L;
+    long long countExcellentPairs(vector<int>& nums, int k) {
+        int cnt[U]{};
+        for (int x : unordered_set<int>(nums.begin(), nums.end())) { // 去重
+            cnt[popcount((uint32_t) x)]++;
+        }
+        long long ans = 0;
         int s = 0;
-        for (int i = k; i < U; i++)
+        for (int i = k; i < U; i++) {
             s += cnt[i];
+        }
         for (int cx = 0; cx < U; cx++) {
-            ans += (long) cnt[cx] * s;
-            int cy = k - 1 - cx;
-            if (0 <= cy && cy < U) s += cnt[cy];
+            ans += 1LL * cnt[cx] * s;
+            int cy = k - 1 - cx; // 下一轮循环 cx 是 cx+1
+            if (0 <= cy && cy < U) {
+                s += cnt[cy];
+            }
         }
         return ans;
     }
@@ -170,8 +192,9 @@ public:
 
 ```go [sol2-Go]
 func countExcellentPairs(nums []int, k int) (ans int64) {
+	const U = 30
 	vis := map[int]bool{}
-	cnt := [30]int{}
+	cnt := [U]int{}
 	for _, x := range nums {
 		if !vis[x] {
 			vis[x] = true
@@ -179,13 +202,13 @@ func countExcellentPairs(nums []int, k int) (ans int64) {
 		}
 	}
 	s := 0
-	for i := k; i < 30; i++ {
+	for i := k; i < U; i++ {
 		s += cnt[i]
 	}
 	for cx, ccx := range cnt {
 		ans += int64(ccx) * int64(s)
-		cy := k - 1 - cx
-		if 0 <= cy && cy < 30 {
+		cy := k - 1 - cx // 下一轮循环 cx 是 cx+1
+		if 0 <= cy && cy < U {
 			s += cnt[cy]
 		}
 	}
