@@ -19,6 +19,12 @@ $$
 ```py [sol-Python3]
 class Solution:
     def doesAliceWin(self, s: str) -> bool:
+        return any(c in s for c in "aeiou")
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def doesAliceWin(self, s: str) -> bool:
         return any(c in "aeiou" for c in s)
 ```
 
