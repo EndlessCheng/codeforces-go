@@ -44,8 +44,10 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://codeforces.com/problemset/problem/1726/D 2000 处理图上的环
 // https://codeforces.com/problemset/problem/1851/G 2000 离线
 // https://codeforces.com/problemset/problem/87/D 2300
+// https://codeforces.com/problemset/problem/990/G 2400
 // https://codeforces.com/problemset/problem/1166/F 2400
 // https://codeforces.com/problemset/problem/1253/F 2500 启发式合并
+// https://codeforces.com/problemset/problem/1559/D2 2500 构造
 // https://codeforces.com/problemset/problem/1876/D 2500
 // https://atcoder.jp/contests/abc304/tasks/abc304_e 转换
 // https://atcoder.jp/contests/abc238/tasks/abc238_e 转换
@@ -119,6 +121,34 @@ func _(n int) {
 	find := func(x int) int {
 		rt := x
 		for fa[rt] != rt {
+			rt = fa[rt]
+		}
+		for fa[x] != rt {
+			fa[x], x = rt, fa[x]
+		}
+		return rt
+	}
+	_ = find
+}
+
+// 带时间戳的写法，适用于需要频繁初始化小并查集的场景
+// https://codeforces.com/problemset/problem/990/G
+func _(n int) {
+	time := make([]int, n)
+	var now int // 不能等于 0
+	fa := make([]int, n)
+	size := make([]int, n)
+	find := func(x int) int {
+		rt := x
+		for {
+			if time[rt] != now {
+				time[rt] = now
+				fa[rt] = rt
+				size[rt] = 1
+			}
+			if fa[rt] == rt {
+				break
+			}
 			rt = fa[rt]
 		}
 		for fa[x] != rt {
@@ -249,12 +279,12 @@ func _(n int) {
 	// https://codeforces.com/problemset/problem/2020/D 1800
 	// https://codeforces.com/problemset/problem/724/D 1900
 	// https://codeforces.com/problemset/problem/827/D 2700
-	markRange := func(l, r int) { 
+	markRange := func(l, r int) {
 		// 闭区间 [l,r]
 		// uf 需要开 n+1 空间（或者 n+2，如果下标从 1 开始）
 		// 注意起点一定要 i := find(l)
 		to := find(r + 1)
-		for i := find(l); i <= r; i = find(i + 1) { 
+		for i := find(l); i <= r; i = find(i + 1) {
 			// mark i ...
 			fa[i] = to
 		}
