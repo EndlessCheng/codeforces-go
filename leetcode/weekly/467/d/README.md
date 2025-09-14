@@ -47,6 +47,7 @@ $$
 [本题视频讲解](https://www.bilibili.com/video/BV1TBpczdE8P/?t=24m20s)，欢迎点赞关注~
 
 ```py [sol-Python3]
+# 更快的写法见【Python3 写法二】
 class Solution:
     def countStableSubsequences(self, nums: list[int]) -> int:
         MOD = 1_000_000_007
@@ -56,6 +57,21 @@ class Solution:
             f[x][1] = (f[x][1] + f[x][0]) % MOD
             f[x][0] = (f[x][0] + f[x ^ 1][0] + f[x ^ 1][1] + 1) % MOD
         return (f[0][0] + f[0][1] + f[1][0] + f[1][1]) % MOD
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def countStableSubsequences(self, nums: list[int]) -> int:
+        MOD = 1_000_000_007
+        f00 = f01 = f10 = f11 = 0  # 去掉访问 list 的开销
+        for x in nums:
+            if x % 2 == 0:
+                f01 = (f01 + f00) % MOD
+                f00 = (f00 + f10 + f11 + 1) % MOD
+            else:
+                f11 = (f11 + f10) % MOD
+                f10 = (f10 + f00 + f01 + 1) % MOD
+        return (f00 + f01 + f10 + f11) % MOD
 ```
 
 ```java [sol-Java]
