@@ -7,8 +7,8 @@
 
 当 $x=3$ 时，我们可以枚举选 $0,1$ 个 $3$（不能选 $2$ 个 $3$，超过 $k=5$ 了）：
 
-- 从大于 $3$ 的数中选 $0$ 个，问题变成：从 $[3,2]$ 中选择一些数，元素和能否恰好等于 $k=5$？
-- 从大于 $3$ 的数中选 $1$ 个，将其替换为 $3$，问题变成：从 $[3,2]$ 中选择一些数，元素和能否恰好等于 $k-3=2$？
+- 从大于 $3$ 的数中选 $0$ 个，问题变成：从 $\le 3$ 的数，即从 $[3,2]$ 中选择一些数，元素和能否恰好等于 $k=5$？
+- 从大于 $3$ 的数中选 $1$ 个，将其替换为 $3$，问题变成：从 $\le 3$ 的数，即从 $[3,2]$ 中选择一些数，元素和能否恰好等于 $k-3=2$？
 
 这是标准的 **0-1 背包**，原理见[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)，包含**为什么要倒序循环**的讲解。
 
@@ -94,8 +94,8 @@ public:
         ranges::sort(nums);
 
         int n = nums.size();
-        vector<bool> ans(n, false);
-        vector<int8_t> f(k + 1, false);
+        vector<bool> ans(n);
+        vector<int8_t> f(k + 1);
         f[0] = true; // 不选元素，和为 0
 
         int i = 0;
@@ -156,6 +156,71 @@ func subsequenceSumAfterCapping(nums []int, k int) []bool {
 
 - 时间复杂度：$\mathcal{O}(nk + n\log n + \min(n^2,k\log n))$，其中 $n$ 是 $\textit{nums}$ 的长度。计算 0-1 背包的双指针是 $\mathcal{O}(nk)$。排序是 $\mathcal{O}(n\log n)$。枚举 $j$ 的循环，如果 $k$ 很大，循环次数是 $\mathcal{O}(n^2)$；如果 $n$ 很大，循环次数是 $\dfrac{k}{1} + \dfrac{k}{2} + \dots + \dfrac{k}{n}$，由调和级数可知，循环次数为 $\mathcal{O}(k\log n)$，二者取最小值。
 - 空间复杂度：$\mathcal{O}(k)$。忽略排序的栈开销。返回值不计入。
+
+## 附：bitset 优化
+
+把布尔数组用二进制表示，用位运算实现快速转移。
+
+```py [sol-Python3]
+class Solution:
+    def subsequenceSumAfterCapping(self, nums: List[int], k: int) -> List[bool]:
+        nums.sort()
+
+        n = len(nums)
+        ans = [False] * n
+        f = 1
+        u = (1 << (k + 1)) - 1
+
+        i = 0
+        for x in range(1, n + 1):
+            # 增量地考虑所有等于 x 的数
+            while i < n and nums[i] == x:
+                f |= (f << nums[i]) & u
+                i += 1
+
+            # 枚举（从大于 x 的数中）选了 j 个 x
+            for j in range(min(n - i, k // x) + 1):
+                if f >> (k - j * x) & 1:
+                    ans[x - 1] = True
+                    break
+        return ans
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<bool> subsequenceSumAfterCapping(vector<int>& nums, int k) {
+        ranges::sort(nums);
+
+        int n = nums.size();
+        vector<bool> ans(n);
+        bitset<4001> f = 1;
+
+        int i = 0;
+        for (int x = 1; x <= n; x++) {
+            // 增量地考虑所有等于 x 的数
+            while (i < n && nums[i] == x) {
+                f |= f << nums[i];
+                i++;
+            }
+
+            // 枚举（从大于 x 的数中）选了 j 个 x
+            for (int j = 0; j <= min(n - i, k / x); j++) {
+                if (f[k - j * x]) {
+                    ans[x - 1] = true;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nk/w + n\log n + \min(n^2,k\log n))$，其中 $n$ 是 $\textit{nums}$ 的长度，$w=32$ 或 $64$。计算 0-1 背包的双指针是 $\mathcal{O}(nk/w)$。排序是 $\mathcal{O}(n\log n)$。枚举 $j$ 的循环，如果 $k$ 很大，循环次数是 $\mathcal{O}(n^2)$；如果 $n$ 很大，循环次数是 $\dfrac{k}{1} + \dfrac{k}{2} + \dots + \dfrac{k}{n}$，由调和级数可知，循环次数为 $\mathcal{O}(k\log n)$，二者取最小值。
+- 空间复杂度：$\mathcal{O}(k/w)$。忽略排序的栈开销。返回值不计入。
 
 ## 专题训练
 
