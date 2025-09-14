@@ -12,11 +12,11 @@
 
 这是标准的 **0-1 背包**，原理见[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)，包含**为什么要倒序循环**的讲解。
 
-如果对于每个 $x$，都重新算一遍 0-1 背包，就太慢了。
+如果对于每个 $x$，都重新算一遍 $\mathcal{O}(nk)$ 的 0-1 背包，时间复杂度为 $\mathcal{O}(n^2k)$，太慢了。
 
 我们可以把 $\textit{nums}$ 从小到大排序，然后写一个双指针，外层循环枚举 $x=1,2,3,\dots,n$，内层循环在 $[1,x-1]$ 的基础上，**增量地**考虑所有满足 $\textit{nums}[i] = x$ 的 $\textit{nums}[i]$ 的 0-1 背包。
 
-然后（从大于 $x$ 的数中）枚举选 $j$ 个 $x$。
+然后（从大于 $x$ 的数中）**枚举**选 $j$ 个 $x$。
 
 由于剩下的大于 $x$ 的数有 $n-i$ 个，且必须满足 $k-jx\ge 0$，所以 $j$ 至多枚举到
 
@@ -268,7 +268,7 @@ func subsequenceSumAfterCapping(nums []int, k int) []bool {
 		}
 
 		// 枚举（从大于 x 的数中）选了 j 个 x
-		for j := 0; j <= min(n-i, k/x); j++ {
+		for j := range min(n-i, k/x) + 1 {
 			if f.Bit(k-j*x) > 0 {
 				ans[x-1] = true
 				break

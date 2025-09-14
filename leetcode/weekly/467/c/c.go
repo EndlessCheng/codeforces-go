@@ -54,7 +54,7 @@ func subsequenceSumAfterCapping(nums []int, k int) []bool {
 		}
 
 		// 枚举（从大于 x 的数中）选了 j 个 x
-		for j := 0; j <= min(n-i, k/x); j++ {
+		for j := range min(n-i, k/x) + 1 {
 			if f.Bit(k-j*x) > 0 {
 				ans[x-1] = true
 				break
