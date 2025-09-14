@@ -26,7 +26,7 @@ $$
 
 如果我们可以从 $\le x$ 的数中得到元素和 $k-jx$，那么 $\textit{ans}[x-1] = \texttt{true}$。（注意 $\textit{ans}$ 的下标从 $0$ 开始）
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1TBpczdE8P/?t=3m48s)，包含 bitset 优化的讲解，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -159,7 +159,7 @@ func subsequenceSumAfterCapping(nums []int, k int) []bool {
 
 ## 附：bitset 优化
 
-把布尔数组用二进制表示，用位运算实现快速转移。
+把布尔数组用二进制表示，用位运算加速状态转移。
 
 ```py [sol-Python3]
 class Solution:
@@ -175,15 +175,46 @@ class Solution:
         for x in range(1, n + 1):
             # 增量地考虑所有等于 x 的数
             while i < n and nums[i] == x:
-                f |= (f << nums[i]) & u
+                f |= (f << nums[i]) & u  # 保证 f 的二进制长度 <= k+1
                 i += 1
 
             # 枚举（从大于 x 的数中）选了 j 个 x
             for j in range(min(n - i, k // x) + 1):
-                if f >> (k - j * x) & 1:
+                if f >> (k - j * x) & 1:  # 等价于优化前的 f[k - j * x]
                     ans[x - 1] = True
                     break
         return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean[] subsequenceSumAfterCapping(int[] nums, int k) {
+        Arrays.sort(nums);
+
+        int n = nums.length;
+        boolean[] ans = new boolean[n];
+        BigInteger f = BigInteger.ONE;
+        BigInteger u = BigInteger.ONE.shiftLeft(k + 1).subtract(BigInteger.ONE); // (1 << (k + 1)) - 1
+
+        int i = 0;
+        for (int x = 1; x <= n; x++) {
+            // 增量地考虑所有等于 x 的数
+            while (i < n && nums[i] == x) {
+                f = f.or(f.shiftLeft(nums[i])).and(u); // 保证 f 的二进制长度 <= k+1
+                i++;
+            }
+
+            // 枚举（从大于 x 的数中）选了 j 个 x
+            for (int j = 0; j <= Math.min(n - i, k / x); j++) {
+                if (f.testBit(k - j * x)) {
+                    ans[x - 1] = true;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+}
 ```
 
 ```cpp [sol-C++]
@@ -215,6 +246,37 @@ public:
         return ans;
     }
 };
+```
+
+```go [sol-Go]
+func subsequenceSumAfterCapping(nums []int, k int) []bool {
+	slices.Sort(nums)
+
+	n := len(nums)
+	ans := make([]bool, n)
+	f := big.NewInt(1)
+	u := new(big.Int).Lsh(big.NewInt(1), uint(k+1))
+	u.Sub(u, big.NewInt(1))
+
+	i := 0
+	for x := 1; x <= n; x++ {
+		// 增量地考虑所有等于 x 的数
+		for i < n && nums[i] == x {
+			shifted := new(big.Int).Lsh(f, uint(nums[i]))
+			f.Or(f, shifted).And(f, u) // And(f, u) 保证 f 的二进制长度 <= k+1
+			i++
+		}
+
+		// 枚举（从大于 x 的数中）选了 j 个 x
+		for j := 0; j <= min(n-i, k/x); j++ {
+			if f.Bit(k-j*x) > 0 {
+				ans[x-1] = true
+				break
+			}
+		}
+	}
+	return ans
+}
 ```
 
 #### 复杂度分析

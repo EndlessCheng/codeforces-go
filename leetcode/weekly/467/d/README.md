@@ -13,7 +13,7 @@
 
 ## 状态定义和状态转移方程
 
-根据上面的讨论，定义 $f[i+1][x][j]$ 表示满足如下约束的稳定子序列的个数（$+1$ 是为了用 $f[0]$ 表示空）：
+根据上面的讨论，定义 $f[i+1][x][j]$ 表示满足如下约束的稳定子序列的个数（$+1$ 是为了用 $f[0]$ 表示空前缀）：
 
 - 元素下标在 $[0,i]$ 中。
 - 子序列末尾元素的奇偶性为 $x$，其中 $x=0$ 或者 $1$。
@@ -44,7 +44,7 @@ $$
 
 注意取模。为什么可以在计算中途取模？见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1TBpczdE8P/?t=24m20s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -78,13 +78,13 @@ class Solution {
 public:
     int countStableSubsequences(vector<int>& nums) {
         const int MOD = 1'000'000'007;
-        int f[2][2]{};
+        long long f[2][2]{};
         for (int x : nums) {
             x %= 2;
             f[x][1] = (f[x][1] + f[x][0]) % MOD;
-            f[x][0] = (1LL * f[x][0] + f[x ^ 1][0] + f[x ^ 1][1] + 1) % MOD;
+            f[x][0] = (f[x][0] + f[x ^ 1][0] + f[x ^ 1][1] + 1) % MOD;
         }
-        return (1LL * f[0][0] + f[0][1] + f[1][0] + f[1][1]) % MOD;
+        return (f[0][0] + f[0][1] + f[1][0] + f[1][1]) % MOD;
     }
 };
 ```

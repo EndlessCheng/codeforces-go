@@ -4,7 +4,7 @@
 2. 把 $\textit{nums}$ 去重。
 3. 如果 $\textit{nums}$ 的长度大于 $k$，返回 $\textit{nums}$ 的前 $k$ 个数；否则返回 $\textit{nums}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1TBpczdE8P/?t=1m30s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -15,10 +15,8 @@ class Solution:
 ```py [sol-Python3 写法二]
 class Solution:
     def maxKDistinct(self, nums: list[int], k: int) -> list[int]:
-        nums = sorted(set(nums), reverse=True)
-        if len(nums) > k:
-            return nums[:k]
-        return nums
+        a = sorted(set(nums), reverse=True)  # 去重+排序
+        return a[:k]
 ```
 
 ```java [sol-Java]
