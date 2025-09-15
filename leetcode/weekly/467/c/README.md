@@ -40,7 +40,8 @@ class Solution:
 
         i = 0
         for x in range(1, n + 1):
-            # 增量地考虑所有等于 x 的数
+            # 增量地考虑所有恰好等于 x 的数
+            # 小于 x 的数在之前的循环中已计算完毕，无需重复计算
             while i < n and nums[i] == x:
                 for j in range(k, nums[i] - 1, -1):
                     f[j] = f[j] or f[j - nums[i]]  # 0-1 背包：不选 or 选
@@ -66,7 +67,8 @@ class Solution {
 
         int i = 0;
         for (int x = 1; x <= n; x++) {
-            // 增量地考虑所有等于 x 的数
+            // 增量地考虑所有恰好等于 x 的数
+            // 小于 x 的数在之前的循环中已计算完毕，无需重复计算
             while (i < n && nums[i] == x) {
                 for (int j = k; j >= nums[i]; j--) {
                     f[j] = f[j] || f[j - nums[i]]; // 0-1 背包：不选 or 选
@@ -100,7 +102,8 @@ public:
 
         int i = 0;
         for (int x = 1; x <= n; x++) {
-            // 增量地考虑所有等于 x 的数
+            // 增量地考虑所有恰好等于 x 的数
+            // 小于 x 的数在之前的循环中已计算完毕，无需重复计算
             while (i < n && nums[i] == x) {
                 for (int j = k; j >= nums[i]; j--) {
                     f[j] = f[j] || f[j - nums[i]]; // 0-1 背包：不选 or 选
@@ -132,7 +135,8 @@ func subsequenceSumAfterCapping(nums []int, k int) []bool {
 
 	i := 0
 	for x := 1; x <= n; x++ {
-		// 增量地考虑所有等于 x 的数
+		// 增量地考虑所有恰好等于 x 的数
+		// 小于 x 的数在之前的循环中已计算完毕，无需重复计算
 		for i < n && nums[i] == x {
 			for j := k; j >= nums[i]; j-- {
 				f[j] = f[j] || f[j-nums[i]] // 0-1 背包：不选 or 选
@@ -173,7 +177,7 @@ class Solution:
 
         i = 0
         for x in range(1, n + 1):
-            # 增量地考虑所有等于 x 的数
+            # 增量地考虑所有恰好等于 x 的数
             while i < n and nums[i] == x:
                 f |= (f << nums[i]) & u  # 保证 f 的二进制长度 <= k+1
                 i += 1
@@ -198,7 +202,7 @@ class Solution {
 
         int i = 0;
         for (int x = 1; x <= n; x++) {
-            // 增量地考虑所有等于 x 的数
+            // 增量地考虑所有恰好等于 x 的数
             while (i < n && nums[i] == x) {
                 f = f.or(f.shiftLeft(nums[i])).and(u); // 保证 f 的二进制长度 <= k+1
                 i++;
@@ -229,7 +233,7 @@ public:
 
         int i = 0;
         for (int x = 1; x <= n; x++) {
-            // 增量地考虑所有等于 x 的数
+            // 增量地考虑所有恰好等于 x 的数
             while (i < n && nums[i] == x) {
                 f |= f << nums[i];
                 i++;
@@ -260,7 +264,7 @@ func subsequenceSumAfterCapping(nums []int, k int) []bool {
 
 	i := 0
 	for x := 1; x <= n; x++ {
-		// 增量地考虑所有等于 x 的数
+		// 增量地考虑所有恰好等于 x 的数
 		for i < n && nums[i] == x {
 			shifted := new(big.Int).Lsh(f, uint(nums[i]))
 			f.Or(f, shifted).And(f, u) // And(f, u) 保证 f 的二进制长度 <= k+1

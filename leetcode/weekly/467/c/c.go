@@ -17,6 +17,7 @@ func subsequenceSumAfterCapping1(nums []int, k int) []bool {
 	i := 0
 	for x := 1; x <= n; x++ {
 		// 增量地考虑所有等于 x 的数
+		// 小于 x 的数在之前的循环中已计算完毕，无需重复计算
 		for i < n && nums[i] == x {
 			for j := k; j >= nums[i]; j-- {
 				f[j] = f[j] || f[j-nums[i]] // 0-1 背包：不选 or 选
