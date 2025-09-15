@@ -182,6 +182,10 @@ class Solution:
                 f |= (f << nums[i]) & u  # 保证 f 的二进制长度 <= k+1
                 i += 1
 
+            if f >> k & 1:  # 等价于优化前的 f[k]
+                ans[x - 1:] = [True] * (n - x + 1)  # 后面都是 True
+                break
+
             # 枚举（从大于 x 的数中）选了 j 个 x
             for j in range(min(n - i, k // x) + 1):
                 if f >> (k - j * x) & 1:  # 等价于优化前的 f[k - j * x]
