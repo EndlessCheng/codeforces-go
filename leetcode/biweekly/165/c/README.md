@@ -1,3 +1,5 @@
+## 方法一：构造
+
 题目要求：同一支队伍不能在连续两场比赛中。对于连续两场比赛的队伍 $(a,b)$ 和 $(c,d)$，$a,b,c,d$ 必须互不相同，所以 $n\le 3$ 时无解。
 
 对于 $n=4$ 的情况，可以程序验证所有 $12!$ 的比赛排列，证明这是无解的。
@@ -19,7 +21,7 @@
 
 有两种解决办法。
 
-## 方法一
+### 构造方法一
 
 微调 $d=1$ 和 $d=n-1$ 中的各一对比赛。以 $n=6$ 为例：
 
@@ -195,7 +197,7 @@ func generateSchedule(n int) [][]int {
 }
 ```
 
-## 方法二
+### 构造方法二
 
 先完成 $d=2,3,\dots,n-2$ 的比赛，把 $d=1$ 和 $d=n-1$ 的比赛排在后面。
 
@@ -317,6 +319,204 @@ func generateSchedule(n int) [][]int {
 
 - 时间复杂度：$\mathcal{O}(n^2)$。
 - 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
+
+## 方法二：随机
+
+随机生成一个长为 $n(n-1)$ 的赛程排列 $\textit{perm}$，然后看看能否从这个排列中得到一个合法的赛程：
+
+1. 先把 $\textit{perm}$ 的最后一场（或者第一场）比赛删除，加入答案。
+2. 遍历 $\textit{perm}$，如果发现 $\textit{perm}[i]$ 与上一场比赛无冲突，那么删除 $\textit{perm}[i]$，加入答案。然后重新遍历 $\textit{perm}$。
+3. 循环直到 $\textit{perm}$ 为空。
+
+如果失败（所有 $\textit{perm}[i]$ 都与上一场比赛有冲突），则重新随机生成赛程排列，按照上述过程判断。
+
+```py [sol-Python3]
+class Solution:
+    def gen(self, perm: List[List[int]]) -> List[List[int]]:
+        ans = [perm.pop()]
+        while perm:
+            # 倒着遍历，这样删除的时候 i 更大，移动的数据少
+            for i in range(len(perm) - 1, -1, -1):
+                p = perm[i]
+                last_a, last_b = ans[-1]
+                if p[0] != last_a and p[0] != last_b and p[1] != last_a and p[1] != last_b:
+                    # p 和上一场比赛无冲突
+                    ans.append(p)
+                    del perm[i]
+                    break  # 找下一场比赛
+            else:  # 没有中途 break
+                return []
+        return ans
+
+    def generateSchedule(self, n: int) -> List[List[int]]:
+        if n < 5:
+            return []
+
+        # 赛程排列
+        perm = [[i, j] for i, j in permutations(range(n), 2)]
+
+        while True:
+            shuffle(perm)  # 随机打乱
+            ans = self.gen(perm.copy())
+            if ans:
+                return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[][] generateSchedule(int n) {
+        if (n < 5) {
+            return new int[][]{};
+        }
+
+        // 赛程排列
+        List<int[]> perm = new ArrayList<>(n * (n - 1));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    perm.add(new int[]{i, j});
+                }
+            }
+        }
+
+        while (true) {
+            Collections.shuffle(perm); // 随机打乱
+            int[][] ans = gen(new ArrayList<>(perm));
+            if (ans != null) {
+                return ans;
+            }
+        }
+    }
+
+    private int[][] gen(List<int[]> perm) {
+        int[][] ans = new int[perm.size()][];
+        ans[0] = perm.removeLast();
+        int idx = 1;
+        next:
+        while (!perm.isEmpty()) {
+            // 倒着遍历，这样删除的时候 i 更大，移动的数据少
+            for (int i = perm.size() - 1; i >= 0; i--) {
+                int[] p = perm.get(i);
+                int lastA = ans[idx - 1][0];
+                int lastB = ans[idx - 1][1];
+                if (p[0] != lastA && p[0] != lastB && p[1] != lastA && p[1] != lastB) {
+                    // p 和上一场比赛无冲突
+                    ans[idx++] = p;
+                    perm.remove(i);
+                    continue next; // 找下一场比赛
+                }
+            }
+            return null;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    vector<vector<int>> gen(vector<vector<int>> perm) {
+        vector<vector<int>> ans;
+        ans.push_back(perm.back());
+        perm.pop_back();
+        while (!perm.empty()) {
+            bool found = false;
+            // 倒着遍历，这样删除的时候 i 更大，移动的数据少
+            for (int i = perm.size() - 1; i >= 0; i--) {
+                auto& p = perm[i];
+                auto& last = ans.back();
+                if (p[0] != last[0] && p[0] != last[1] && p[1] != last[0] && p[1] != last[1]) {
+                    // p 和上一场比赛无冲突
+                    ans.push_back(p);
+                    perm.erase(perm.begin() + i);
+                    found = true;
+                    break; // 找下一场比赛
+                }
+            }
+            if (!found) {
+                return {};
+            }
+        }
+        return ans;
+    };
+
+public:
+    vector<vector<int>> generateSchedule(int n) {
+        if (n < 5) {
+            return {};
+        }
+
+        // 赛程排列
+        vector<vector<int>> perm;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    perm.push_back({i, j});
+                }
+            }
+        }
+
+        mt19937 rng(chrono::steady_clock::now().time_since_epoch().count()); // 或者 mt19937 rng(1);
+        while (true) {
+            ranges::shuffle(perm, rng); // 随机打乱
+            auto ans = gen(perm);
+            if (!ans.empty()) {
+                return ans;
+            }
+        }
+    }
+};
+```
+
+```go [sol-Go]
+func gen(perm [][]int) (ans [][]int) {
+	ans = append(ans, perm[0])
+	perm = perm[1:]
+next:
+	for len(perm) > 0 {
+		// 倒着遍历，这样删除的时候 i 更大，移动的数据少
+		for i, p := range slices.Backward(perm) {
+			last := ans[len(ans)-1]
+			if p[0] != last[0] && p[0] != last[1] && p[1] != last[0] && p[1] != last[1] {
+				// p 和上一场比赛无冲突
+				ans = append(ans, p)
+				perm = append(perm[:i], perm[i+1:]...) // 删除 perm[i]
+				continue next // 找下一场比赛
+			}
+		}
+		return nil
+	}
+	return
+}
+
+func generateSchedule(n int) [][]int {
+	if n < 5 {
+		return nil
+	}
+
+	// 赛程排列
+	perm := make([][]int, 0, n*(n-1))
+	for i := range n {
+		for j := range n {
+			if j != i {
+				perm = append(perm, []int{i, j})
+			}
+		}
+	}
+
+	for {
+		rand.Shuffle(len(perm), func(i, j int) { perm[i], perm[j] = perm[j], perm[i] })
+		if ans := gen(slices.Clone(perm)); ans != nil {
+			return ans
+		}
+	}
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：期望 $\mathcal{O}(K n^2)$，其中 $K<6$ 是期望 $\texttt{shuffle}$ 次数。测试发现，当 $n=5$ 时 $K\approx 5.1$，$n$ 越大 $K$ 越小，$n=50$ 时 $K\approx 1.1$。$\texttt{gen}$ 函数最坏是 $\mathcal{O}(n^3)$，期望时间复杂度是 $\mathcal{O}(n^2)$。
+- 空间复杂度：$\mathcal{O}(n^2)$。
 
 本题构造方式不止一种，欢迎在评论区分享你的构造方案。
 
