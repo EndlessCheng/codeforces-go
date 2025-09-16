@@ -14,7 +14,7 @@
 
 对于第一排的某个数 $a[i]$，它可以贡献到下一排左边的数（如果有），也可以贡献到下一排右边的数（如果有）。
 
-所以 $a[i]$ 的系数等于从第一排的位置 $i$ 移动到最后一排的路径数。由于移动范围是一个平行四边形，类似 [62. 不同路径题解](https://leetcode.cn/problems/unique-paths/solutions/3062432/liang-chong-fang-fa-dong-tai-gui-hua-zu-o5k32/) 的方法二，我们要走 $m-1$ 步，其中有 $i$ 步在往左下走，所以在最终结果中，原数组的第 $i$ 个元素的系数（出现次数）是组合数
+所以 $a[i]$ 的系数等于从第一排的位置 $i$ 移动到最后一排的路径数。由于移动范围是一个平行四边形，根据 [62. 不同路径题解](https://leetcode.cn/problems/unique-paths/solutions/3062432/liang-chong-fang-fa-dong-tai-gui-hua-zu-o5k32/) 的方法二，我们要走 $m-1$ 步，其中有 $i$ 步要往左下走，所以在最终结果中，原数组的第 $i$ 个元素的系数是组合数
 
 $$
 \dbinom {m-1} {i}
@@ -57,7 +57,7 @@ inv_f = [0] * (MX + 1)
 p2 = [0] * (MX + 1)
 p5 = [0] * (MX + 1)
 
-f[0] = 1
+f[0] = inv_f[0] = 1
 for i in range(1, MX + 1):
     x = i
     # 计算 2 的幂次
@@ -69,16 +69,9 @@ for i in range(1, MX + 1):
         e5 += 1
         x //= 5
     f[i] = f[i - 1] * x % MOD
+    inv_f[i] = pow(f[i], 3, MOD)  # 欧拉定理求逆元
     p2[i] = p2[i - 1] + e2
     p5[i] = p5[i - 1] + e5
-
-inv_f[MX] = pow(f[MX], 3, MOD)  # 欧拉定理求逆元
-for i in range(MX, 0, -1):
-    x = i
-    x >>= (x & -x).bit_length() - 1
-    while x % 5 == 0:
-        x //= 5
-    inv_f[i - 1] = inv_f[i] * x % MOD
 
 def comb(n: int, k: int) -> int:
     # 由于每项都 < 10，所以无需中途取模
@@ -103,8 +96,16 @@ class Solution {
     private static final int[] p2 = new int[MX + 1];
     private static final int[] p5 = new int[MX + 1];
 
-    static {
-        f[0] = 1;
+    private static boolean initialized = false;
+
+    // 这样写比 static block 快
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        f[0] = invF[0] = 1;
         for (int i = 1; i <= MX; i++) {
             int x = i;
             // 计算 2 的幂次
@@ -117,18 +118,9 @@ class Solution {
                 x /= 5;
             }
             f[i] = f[i - 1] * x % MOD;
+            invF[i] = pow(f[i], 3); // 欧拉定理求逆元
             p2[i] = p2[i - 1] + e2;
             p5[i] = p5[i - 1] + e5;
-        }
-
-        invF[MX] = pow(f[MX], 3); // 欧拉定理求逆元
-        for (int i = MX; i > 0; i--) {
-            int x = i;
-            x >>= Integer.numberOfTrailingZeros(x);
-            while (x % 5 == 0) {
-                x /= 5;
-            }
-            invF[i - 1] = invF[i] * x % MOD;
         }
     }
 
@@ -152,6 +144,7 @@ class Solution {
     }
 
     public boolean hasSameDigits(String S) {
+        init();
         char[] s = S.toCharArray();
         int diff = 0;
         for (int i = 0; i < s.length - 1; i++) {
@@ -180,7 +173,7 @@ int qpow(int x, int n) {
 }
 
 auto init = []() {
-    f[0] = 1;
+    f[0] = inv_f[0] = 1;
     for (int i = 1; i <= MX; i++) {
         int x = i;
         // 计算 2 的幂次
@@ -193,18 +186,9 @@ auto init = []() {
             x /= 5;
         }
         f[i] = f[i - 1] * x % MOD;
+        inv_f[i] = qpow(f[i], 3); // 欧拉定理求逆元
         p2[i] = p2[i - 1] + e2;
         p5[i] = p5[i - 1] + e5;
-    }
-
-    inv_f[MX] = qpow(f[MX], 3); // 欧拉定理求逆元
-    for (int i = MX; i > 0; i--) {
-        int x = i;
-        x >>= countr_zero((unsigned) x);
-        while (x % 5 == 0) {
-            x /= 5;
-        }
-        inv_f[i - 1] = inv_f[i] * x % MOD;
     }
     return 0;
 }();
@@ -248,6 +232,7 @@ var f, invF, p2, p5 [mx + 1]int
 
 func init() {
 	f[0] = 1
+	invF[0] = 1
 	for i := 1; i <= mx; i++ {
 		x := i
 		// 2 的幂次
@@ -260,18 +245,9 @@ func init() {
 			x /= 5
 		}
 		f[i] = f[i-1] * x % mod
+		invF[i] = pow(f[i], 3) // 欧拉定理求逆元
 		p2[i] = p2[i-1] + e2
 		p5[i] = p5[i-1] + e5
-	}
-
-	invF[mx] = pow(f[mx], 3) // 欧拉定理
-	for i := mx; i > 0; i-- {
-		x := i
-		x >>= bits.TrailingZeros(uint(x))
-		for x%5 == 0 {
-			x /= 5
-		}
-		invF[i-1] = invF[i] * x % mod
 	}
 }
 
@@ -316,7 +292,7 @@ inv_f = [0] * (MX + 1)
 p2 = [0] * (MX + 1)
 p5 = [0] * (MX + 1)
 
-f[0] = 1
+f[0] = inv_f[0] = 1
 for i in range(1, MX + 1):
     x = i
     # 计算 2 的幂次
@@ -328,19 +304,12 @@ for i in range(1, MX + 1):
         e5 += 1
         x //= 5
     f[i] = f[i - 1] * x % MOD
+    inv_f[i] = pow(f[i], 3, MOD)  # 欧拉定理求逆元
     p2[i] = p2[i - 1] + e2
     p5[i] = p5[i - 1] + e5
 
-inv_f[MX] = pow(f[MX], 3, MOD)  # 欧拉定理求逆元
-for i in range(MX, 0, -1):
-    x = i
-    x >>= (x & -x).bit_length() - 1
-    while x % 5 == 0:
-        x //= 5
-    inv_f[i - 1] = inv_f[i] * x % MOD
-
 def comb(n: int, k: int) -> int:
-    e2 = p2[n] - p2[k] - p2[n-k]
+    e2 = p2[n] - p2[k] - p2[n - k]
     return f[n] * inv_f[k] * inv_f[n - k] * \
         (POW2[(e2 - 1) % 4] if e2 else 1) * \
         (5 if p5[n] - p5[k] - p5[n - k] else 1)
@@ -363,8 +332,16 @@ class Solution {
     private static final int[] p2 = new int[MX + 1];
     private static final int[] p5 = new int[MX + 1];
 
-    static {
-        f[0] = 1;
+    private static boolean initialized = false;
+
+    // 这样写比 static block 快
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        f[0] = invF[0] = 1;
         for (int i = 1; i <= MX; i++) {
             int x = i;
             // 计算 2 的幂次
@@ -377,18 +354,9 @@ class Solution {
                 x /= 5;
             }
             f[i] = f[i - 1] * x % MOD;
+            invF[i] = pow(f[i], 3); // 欧拉定理求逆元
             p2[i] = p2[i - 1] + e2;
             p5[i] = p5[i - 1] + e5;
-        }
-
-        invF[MX] = pow(f[MX], 3); // 欧拉定理求逆元
-        for (int i = MX; i > 0; i--) {
-            int x = i;
-            x >>= Integer.numberOfTrailingZeros(x);
-            while (x % 5 == 0) {
-                x /= 5;
-            }
-            invF[i - 1] = invF[i] * x % MOD;
         }
     }
 
@@ -412,6 +380,7 @@ class Solution {
     }
 
     public boolean hasSameDigits(String S) {
+        init();
         char[] s = S.toCharArray();
         int diff = 0;
         for (int i = 0; i < s.length - 1; i++) {
@@ -441,7 +410,7 @@ int qpow(int x, int n) {
 }
 
 auto init = []() {
-    f[0] = 1;
+    f[0] = inv_f[0] = 1;
     for (int i = 1; i <= MX; i++) {
         int x = i;
         // 计算 2 的幂次
@@ -454,18 +423,9 @@ auto init = []() {
             x /= 5;
         }
         f[i] = f[i - 1] * x % MOD;
+        inv_f[i] = qpow(f[i], 3); // 欧拉定理求逆元
         p2[i] = p2[i - 1] + e2;
         p5[i] = p5[i - 1] + e5;
-    }
-
-    inv_f[MX] = qpow(f[MX], 3); // 欧拉定理求逆元
-    for (int i = MX; i > 0; i--) {
-        int x = i;
-        x >>= countr_zero((unsigned) x);
-        while (x % 5 == 0) {
-            x /= 5;
-        }
-        inv_f[i - 1] = inv_f[i] * x % MOD;
     }
     return 0;
 }();
@@ -509,6 +469,7 @@ var f, invF, p2, p5 [mx + 1]int
 
 func init() {
 	f[0] = 1
+	invF[0] = 1
 	for i := 1; i <= mx; i++ {
 		x := i
 		// 2 的幂次
@@ -521,18 +482,9 @@ func init() {
 			x /= 5
 		}
 		f[i] = f[i-1] * x % mod
+		invF[i] = pow(f[i], 3) // 欧拉定理求逆元
 		p2[i] = p2[i-1] + e2
 		p5[i] = p5[i-1] + e5
-	}
-
-	invF[mx] = pow(f[mx], 3) // 欧拉定理
-	for i := mx; i > 0; i-- {
-		x := i
-		x >>= bits.TrailingZeros(uint(x))
-		for x%5 == 0 {
-			x /= 5
-		}
-		invF[i-1] = invF[i] * x % mod
 	}
 }
 
