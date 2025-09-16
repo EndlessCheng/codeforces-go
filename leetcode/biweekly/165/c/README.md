@@ -354,8 +354,9 @@ class Solution:
         if n < 5:
             return []
 
-        # 赛程排列
-        perm = [[i, j] for i, j in permutations(range(n), 2)]
+        # 初始化赛程排列
+        # 也可以用 list(permutations(range(n), 2))，但内部元素是 tuple
+        perm = [[a, b] for a, b in permutations(range(n), 2)]
 
         while True:
             shuffle(perm)  # 随机打乱
@@ -371,7 +372,7 @@ class Solution {
             return new int[][]{};
         }
 
-        // 赛程排列
+        // 初始化赛程排列
         List<int[]> perm = new ArrayList<>(n * (n - 1));
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -448,7 +449,7 @@ public:
             return {};
         }
 
-        // 赛程排列
+        // 初始化赛程排列
         vector<vector<int>> perm;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -496,7 +497,7 @@ func generateSchedule(n int) [][]int {
 		return nil
 	}
 
-	// 赛程排列
+	// 初始化赛程排列
 	perm := make([][]int, 0, n*(n-1))
 	for i := range n {
 		for j := range n {
