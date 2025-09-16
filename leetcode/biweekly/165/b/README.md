@@ -1,4 +1,17 @@
-本题是**定长滑动窗口**，原理见[【套路】教你解决定长滑窗](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)。
+## 贪心
+
+当物品 $x = \textit{arrivals}[i]$ 进入窗口时，如果发现窗口中 $x$ 的出现次数超过 $m$，我们有两种选择：
+
+- 丢弃刚进入窗口的物品 $x$。
+- 如果窗口中还有另一个物品 $x'=x$，我们可以时光倒流到 $x'$ 进入窗口的那个时刻，将 $x'$ 丢弃。
+
+哪种选择更好？
+
+晚丢更好，如果后面还有更多的 $x$，那么晚丢会让窗口中的 $x$ 的个数比早丢更少，后面丢弃的物品数更少。
+
+## 定长滑动窗口
+
+关于定长滑动窗口的原理，见[【套路】教你解决定长滑窗](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)。
 
 注意一开始的长为 $1,2,3,\dots,w-1$ 的窗口也要考察是否需要丢弃物品。
 
