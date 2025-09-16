@@ -18,7 +18,7 @@
 ```py [sol-Python3]
 class Solution:
     def minArrivalsToDiscard(self, arrivals: List[int], w: int, m: int) -> int:
-        cnt = defaultdict(int)
+        cnt = [0] * (max(arrivals) + 1)  # 或者用 defaultdict(int)
         ans = 0
         for i, x in enumerate(arrivals):
             # x 进入窗口
@@ -154,8 +154,8 @@ func minArrivalsToDiscard(arrivals []int, w, m int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{arrivals}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n + U)$，其中 $n$ 是 $\textit{arrivals}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n + U)$。
 
 ## 专题训练
 
