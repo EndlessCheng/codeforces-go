@@ -74,12 +74,14 @@ https://codeforces.com/problemset/problem/762/E 2200 离散化
 https://codeforces.com/problemset/problem/1194/E 2200 多变量统计
 https://codeforces.com/problemset/problem/2065/H 2200
 https://codeforces.com/problemset/problem/628/E 2300 Z 形状个数
+- https://leetcode.cn/problems/max-black-square-lcci/ 相似题目
 https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
 https://codeforces.com/problemset/problem/12/D 2400 三维偏序
 https://codeforces.com/problemset/problem/246/E 2400
-https://codeforces.com/problemset/problem/1401/E 2400 Divide Square 线段把矩形分割成多少块
+https://codeforces.com/problemset/problem/1401/E 2400 线段把矩形分割成多少块
 https://codeforces.com/problemset/problem/594/D 2500
+https://codeforces.com/problemset/problem/992/E 2500 Nastya and King-Shamans  si <= sj * 2，这个不等式至多成立 O(log U) 次
 https://codeforces.com/problemset/problem/1334/F 2500
 https://codeforces.com/problemset/problem/1635/F 2800
 https://codeforces.com/problemset/problem/1446/F 3200
