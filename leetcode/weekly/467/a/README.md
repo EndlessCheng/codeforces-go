@@ -39,6 +39,16 @@ public:
 };
 ```
 
+```cpp [sol-C++ 写法二]
+class Solution {
+public:
+    int earliestTime(vector<vector<int>>& tasks) {
+        auto t = ranges::min(tasks, {}, [](auto& t) { return t[0] + t[1]; });
+        return t[0] + t[1];
+    }
+};
+```
+
 ```go [sol-Go]
 func earliestTime(tasks [][]int) int {
 	ans := math.MaxInt
