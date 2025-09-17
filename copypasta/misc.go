@@ -1178,6 +1178,7 @@ func makeLexicographicallySmallestStringBySwappingAdjacentElements2(a []int) []i
 // - [1736. 替换隐藏数字得到的最晚时间](https://leetcode.cn/problems/latest-time-by-replacing-hidden-digits/) 1264
 // - [3114. 替换字符可以得到的最晚时间](https://leetcode.cn/problems/latest-time-you-can-obtain-after-replacing-characters/) 1291
 // - [2224. 转化时间需要的最少操作数](https://leetcode.cn/problems/minimum-number-of-operations-to-convert-time/) 1296
+// - [1904. 你完成的完整对局数](https://leetcode.cn/problems/the-number-of-full-rounds-you-have-played/) 1498
 // - [2933. 高访问员工](https://leetcode.cn/problems/high-access-employees/) 1537
 // 解析月日：LC2409 https://leetcode.cn/problems/count-days-spent-together/
 func parseTime(s string) (hour, minute, total int) {
