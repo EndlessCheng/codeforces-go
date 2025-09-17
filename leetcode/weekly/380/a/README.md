@@ -6,13 +6,13 @@
 ```py [sol-Python3]
 class Solution:
     def maxFrequencyElements(self, nums: List[int]) -> int:
-        ans = max_cnt = 0
         cnt = defaultdict(int)
+        ans = max_cnt = 0
         for x in nums:
             cnt[x] += 1
             c = cnt[x]
             if c > max_cnt:
-                max_cnt = ans = c
+                ans = max_cnt = c
             elif c == max_cnt:
                 ans += c
         return ans
@@ -21,7 +21,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxFrequencyElements(int[] nums) {
-        Map<Integer, Integer> cnt = new HashMap<>();
+        Map<Integer, Integer> cnt = new HashMap<>(); // 更快的写法见【Java 数组】
         int maxCnt = 0;
         int ans = 0;
         for (int x : nums) {
@@ -37,12 +37,36 @@ class Solution {
 }
 ```
 
+```java [sol-Java 数组]
+class Solution {
+    public int maxFrequencyElements(int[] nums) {
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+        
+        int[] cnt = new int[mx + 1];
+        int maxCnt = 0;
+        int ans = 0;
+        for (int x : nums) {
+            int c = ++cnt[x];
+            if (c > maxCnt) {
+                ans = maxCnt = c;
+            } else if (c == maxCnt) {
+                ans += c;
+            }
+        }
+        return ans;
+    }
+}
+```
+
 ```cpp [sol-C++]
 class Solution {
 public:
     int maxFrequencyElements(vector<int>& nums) {
-        int ans = 0, max_cnt = 0;
         unordered_map<int, int> cnt;
+        int ans = 0, max_cnt = 0;
         for (int x : nums) {
             int c = ++cnt[x];
             if (c > max_cnt) {
@@ -71,6 +95,47 @@ func maxFrequencyElements(nums []int) (ans int) {
 		}
 	}
 	return
+}
+```
+
+```js [sol-JavaScript]
+var maxFrequencyElements = function(nums) {
+    const cnt = new Map();
+    let ans = 0, maxCnt = 0;
+    for (const x of nums) {
+        const c = (cnt.get(x) ?? 0) + 1;
+        cnt.set(x, c);
+        if (c > maxCnt) {
+            ans = maxCnt = c;
+        } else if (c === maxCnt) {
+            ans += c;
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn max_frequency_elements(nums: Vec<i32>) -> i32 {
+        let mut cnt = HashMap::new();
+        let mut max_cnt = 0;
+        let mut ans = 0;
+        for x in nums {
+            let e = cnt.entry(x).or_insert(0);
+            *e += 1;
+            let c = *e;
+            if c > max_cnt {
+                max_cnt = c;
+                ans = c;
+            } else if c == max_cnt {
+                ans += c;
+            }
+        }
+        ans
+    }
 }
 ```
 
