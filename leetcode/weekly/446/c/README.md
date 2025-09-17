@@ -62,7 +62,7 @@ class Solution {
         long[] ans = new long[k];
         int[][] f = new int[n + 1][k];
         for (int i = 0; i < n; i++) {
-            int v = nums[i] % k;
+            int v = nums[i] % k; // 避免下面乘法溢出
             f[i + 1][v] = 1;
             for (int y = 0; y < k; y++) {
                 f[i + 1][y * v % k] += f[i][y]; // 刷表法
@@ -84,7 +84,7 @@ public:
         vector<long long> ans(k);
         vector f(n + 1, vector<int>(k));
         for (int i = 0; i < n; i++) {
-            int v = nums[i] % k;
+            int v = nums[i] % k; // 避免下面乘法溢出
             f[i + 1][v] = 1;
             for (int y = 0; y < k; y++) {
                 f[i + 1][y * v % k] += f[i][y]; // 刷表法
@@ -147,7 +147,7 @@ class Solution {
         long[] ans = new long[k];
         int[] f = new int[k];
         for (int v : nums) {
-            v %= k;
+            v %= k; // 避免下面乘法溢出
             int[] nf = new int[k];
             nf[v] = 1;
             for (int y = 0; y < k; y++) {
@@ -170,7 +170,7 @@ public:
         vector<long long> ans(k);
         vector<int> f(k); // 更快的写法见【C++ array】
         for (int v : nums) {
-            v %= k;
+            v %= k; // 避免下面乘法溢出
             vector<int> nf(k);
             nf[v] = 1;
             for (int y = 0; y < k; y++) {
@@ -193,7 +193,7 @@ public:
         vector<long long> ans(k);
         array<int, 5> f{};
         for (int v : nums) {
-            v %= k;
+            v %= k; // 避免下面乘法溢出
             array<int, 5> nf{};
             nf[v] = 1;
             for (int y = 0; y < k; y++) {
