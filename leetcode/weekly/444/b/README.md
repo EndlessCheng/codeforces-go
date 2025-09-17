@@ -8,13 +8,13 @@
 
 1. $\textit{packetQ}$：存储数据包的队列。
 2. $\textit{packetSet}$：存储所有未转发的数据包，方便判重。
-3. $\textit{destToTimestamps}$：哈希表套队列，key 是 $\textit{destination}$，value 是对应的由 $\textit{timestamp}$ 组成的队列。
+3. $\textit{destToTimestamps}$：哈希表套队列，哈希表的 key 是 $\textit{destination}$，value 是对应的由 $\textit{timestamp}$ 组成的队列。
 
 $\texttt{addPacket}$ 和 $\textit{forwardPacket}$ 按题目要求实现，具体见代码。
 
-$\texttt{getCount}$ 可以用二分查找，类似 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)。
+$\texttt{getCount}$ 可以用二分查找，见 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)。
 
-为了方便二分，可以用列表（数组）模拟队列，额外用一个变量表示队首的下标。
+为了方便二分，可以用列表（数组）模拟队列，额外用一个变量 $\textit{head}$ 表示队首的下标。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ezRvYiE27/)，欢迎点赞关注~
 
@@ -47,7 +47,7 @@ class Router:
 
     def getCount(self, destination: int, startTime: int, endTime: int) -> int:
         timestamps = self.dest_to_timestamps[destination]
-        left = bisect_left(timestamps, startTime)  # deque 访问不是 O(1) 的，可以看另一份代码
+        left = bisect_left(timestamps, startTime)  # deque 访问不是 O(1) 的，可以看另一份代码【Python3 list】
         right = bisect_right(timestamps, endTime)
         return right - left
 ```
@@ -97,7 +97,7 @@ class Router {
     private final int memoryLimit;
     private final Queue<Packet> packetQ = new ArrayDeque<>(); // Packet 队列
     private final Set<Packet> packetSet = new HashSet<>(); // Packet 集合
-    private final Map<Integer, Pair> destToTimestamps = new HashMap<>(); // destination -> [[timestamp], head]
+    private final Map<Integer, Pair> destToTimestamps = new HashMap<>(); // destination -> ([timestamp], head)
 
     public Router(int memoryLimit) {
         this.memoryLimit = memoryLimit;
@@ -105,7 +105,7 @@ class Router {
 
     public boolean addPacket(int source, int destination, int timestamp) {
         Packet packet = new Packet(source, destination, timestamp);
-        if (!packetSet.add(packet)) {
+        if (!packetSet.add(packet)) { // packet 在 packetSet 中
             return false;
         }
         if (packetQ.size() == memoryLimit) { // 太多了
@@ -136,10 +136,11 @@ class Router {
         return right - left;
     }
 
+    // https://www.bilibili.com/video/BV1AP41137w7/
     private int lowerBound(List<Integer> nums, int target, int left) {
         int right = nums.size();
         while (left + 1 < right) {
-            int mid = (left + right) >>> 1;
+            int mid = left + (right - left) / 2;
             if (nums.get(mid) >= target) {
                 right = mid;
             } else {
@@ -175,7 +176,7 @@ class Router {
     queue<tuple<int, int, int>> packet_q; // packet 队列
     // 注：如果不想手写 TupleHash，可以用 set
     unordered_set<tuple<int, int, int>, TupleHash> packet_set; // packet 集合
-    unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> [[timestamp], head]
+    unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> ([timestamp], head)
 
 public:
     Router(int memoryLimit) {
@@ -183,7 +184,7 @@ public:
     }
 
     bool addPacket(int source, int destination, int timestamp) {
-        auto packet = make_tuple(source, destination, timestamp);
+        auto packet = tuple(source, destination, timestamp);
         if (!packet_set.insert(packet).second) { // packet 在 packet_set 中
             return false;
         }
@@ -245,7 +246,7 @@ class Router {
     queue<tuple<int, int, int>> packet_q; // packet 队列
     // 注：如果不想手写 TupleHash，可以用 set
     unordered_set<tuple<int, int, int>, TupleHash> packet_set; // packet 集合
-    unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> [[timestamp], head]
+    unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> ([timestamp], head)
 
 public:
     Router(int memoryLimit) {
@@ -253,7 +254,7 @@ public:
     }
 
     bool addPacket(int source, int destination, int timestamp) {
-        auto packet = make_tuple(source, destination, timestamp);
+        auto packet = tuple(source, destination, timestamp);
         if (!packet_set.insert(packet).second) { // packet 在 packet_set 中
             return false;
         }
@@ -334,6 +335,126 @@ func (r *Router) ForwardPacket() []int {
 func (r *Router) GetCount(destination, startTime, endTime int) int {
 	timestamps := r.destToTimestamps[destination]
 	return sort.SearchInts(timestamps, endTime+1) - sort.SearchInts(timestamps, startTime)
+}
+```
+
+```js [sol-JS]
+class Router {
+    constructor(memoryLimit) {
+        this.memory_limit = memoryLimit;
+        this.packetQ = new Queue(); // packet 队列，Queue 来自 datastructures-js 库
+        this.packetSet = new Set(); // packet 集合
+        this.destToTimestamps = new Map(); // destination -> [[timestamp], head]
+    }
+
+    addPacket(source, destination, timestamp) {
+        const key = `${source},${destination},${timestamp}`;
+        if (this.packetSet.has(key)) {
+            return false;
+        }
+        this.packetSet.add(key);
+
+        if (this.packetQ.size() === this.memory_limit) { // 太多了
+            this.forwardPacket();
+        }
+        this.packetQ.enqueue([source, destination, timestamp]); // 入队
+
+        if (!this.destToTimestamps.has(destination)) {
+            this.destToTimestamps.set(destination, [[], 0]);
+        }
+        this.destToTimestamps.get(destination)[0].push(timestamp);
+        return true;
+    };
+
+    forwardPacket() {
+        if (this.packetQ.isEmpty()) {
+            return [];
+        }
+        const [source, destination, timestamp] = this.packetQ.dequeue(); // 出队
+        this.packetSet.delete(`${source},${destination},${timestamp}`);
+        this.destToTimestamps.get(destination)[1]++; // 队首下标加一，模拟出队
+        return [source, destination, timestamp];
+    };
+
+    getCount(destination, startTime, endTime) {
+        if (!this.destToTimestamps.has(destination)) {
+            return 0;
+        }
+        const [timestamps, head] = this.destToTimestamps.get(destination);
+        const left = this.#lowerBound(timestamps, startTime, head - 1);
+        const right = this.#lowerBound(timestamps, endTime + 1, head - 1);
+        return right - left;
+    }
+
+    // https://www.bilibili.com/video/BV1AP41137w7/
+    #lowerBound(nums, target, left) {
+        let right = nums.length;
+        while (left + 1 < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (nums[mid] >= target) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+}
+```
+
+```rust [sol-Rust]
+use std::collections::{VecDeque, HashSet, HashMap};
+
+struct Router {
+    memory_limit: usize,
+    packet_q: VecDeque<(i32, i32, i32)>, // packet 队列
+    packet_set: HashSet<(i32, i32, i32)>, // packet 集合
+    dest_to_timestamps: HashMap<i32, (Vec<i32>, usize)>, // destination -> ([timestamp], head)
+}
+
+impl Router {
+    fn new(memory_limit: i32) -> Self {
+        Self {
+            memory_limit: memory_limit as usize,
+            packet_q: VecDeque::new(),
+            packet_set: HashSet::new(),
+            dest_to_timestamps: HashMap::new(),
+        }
+    }
+
+    fn add_packet(&mut self, source: i32, destination: i32, timestamp: i32) -> bool {
+        let packet = (source, destination, timestamp);
+        if !self.packet_set.insert(packet) { // packet 在 packet_set 中
+            return false;
+        }
+        if self.packet_q.len() == self.memory_limit { // 太多了
+            self.forward_packet();
+        }
+        self.packet_q.push_back(packet); // 入队
+        self.dest_to_timestamps.entry(destination).or_insert_with(|| (vec![], 0)).0.push(timestamp);
+        true
+    }
+
+    fn forward_packet(&mut self) -> Vec<i32> {
+        if let Some(packet) = self.packet_q.pop_front() {
+            self.packet_set.remove(&packet);
+            let (source, destination, timestamp) = packet;
+            self.dest_to_timestamps.get_mut(&destination).unwrap().1 += 1; // 队首下标加一，模拟出队
+            vec![source, destination, timestamp]
+        } else {
+            vec![]
+        }
+    }
+
+    fn get_count(&self, destination: i32, start_time: i32, end_time: i32) -> i32 {
+        if let Some((timestamps, head)) = self.dest_to_timestamps.get(&destination) {
+            let left = timestamps[*head..].partition_point(|&x| x < start_time);
+            let right = timestamps[*head..].partition_point(|&x| x <= end_time);
+            (right - left) as _
+        } else {
+            0
+        }
+    }
 }
 ```
 
