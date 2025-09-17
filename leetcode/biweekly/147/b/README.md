@@ -241,7 +241,7 @@ struct TaskManager {
 
 impl TaskManager {
     fn new(tasks: Vec<Vec<i32>>) -> Self {
-        let mut manager = TaskManager {
+        let mut manager = Self {
             mp: HashMap::new(),
             h: BinaryHeap::new(),
         };
