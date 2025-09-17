@@ -1,14 +1,14 @@
-创建一个 key 为字符串，value 为整数的哈希表。
+创建一个哈希表，直接把整个 $\textit{cell}$ 字符串作为哈希表的键，无需解析行号列号。
 
-- $\texttt{setCell}$：把 $\textit{cell}$ 和 $\textit{value}$ 插入哈希表。注意不需要解析 $\textit{cell}$。
+- $\texttt{setCell}$：把键值对 $\textit{cell}$ 和 $\textit{value}$ 插入哈希表。
 - $\texttt{resetCell}$：把 $\textit{cell}$ 从哈希表中删除。
-- $\texttt{getValue}$：去掉第一个字符，然后用 $\texttt{+}$ 号分割字符串，查找哈希表，把两部分的和加入答案。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1i6Q8YUEtN/?t=1m53s)，欢迎点赞关注~
+- $\texttt{getValue}$：去掉第一个字符（$\texttt{=}$），用 $\texttt{+}$ 分割字符串，得到两个字符串，分别转成整数再相加：
+   - 如果字符串的第一个字符是大写字母，那么查找哈希表，得到对应的 $\textit{value}$（没有就是 $0$）。
+   - 否则，把字符串转成整数。
 
 ```py [sol-Python3]
 class Spreadsheet:
-    def __init__(self, rows: int):
+    def __init__(self, _):
         self.data = {}
 
     def setCell(self, cell: str, value: int) -> None:
@@ -20,7 +20,7 @@ class Spreadsheet:
     def getValue(self, formula: str) -> int:
         ans = 0
         for cell in formula[1:].split("+"):
-            # 注：如果用 defaultdict(int)，哪怕是访问 self.data[cell] 也会把 cell 插入哈希表，增加空间复杂度
+            # 注：如果用 defaultdict(int)，访问 self.data[cell] 也会把 cell 插入哈希表，增加空间复杂度
             ans += self.data.get(cell, 0) if cell[0].isupper() else int(cell)
         return ans
 ```
@@ -108,6 +108,71 @@ func (s Spreadsheet) GetValue(formula string) (ans int) {
 }
 ```
 
+```js [sol-JavaScript]
+class Spreadsheet {
+    constructor(rows) {
+        this.data = new Map();
+    }
+
+    setCell(cell, value) {
+        this.data.set(cell, value);
+    }
+
+    resetCell(cell) {
+        this.data.delete(cell);
+    }
+
+    getValue(formula) {
+        let ans = 0;
+        for (const cell of formula.slice(1).split("+")) {
+            if ("A" <= cell[0] && cell[0] <= "Z") {
+                ans += this.data.get(cell) ?? 0;
+            } else {
+                ans += parseInt(cell);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+struct Spreadsheet {
+    data: HashMap<String, i32>,
+}
+
+impl Spreadsheet {
+    fn new(_: i32) -> Self {
+        Spreadsheet {
+            data: HashMap::new(),
+        }
+    }
+
+    fn set_cell(&mut self, cell: String, value: i32) {
+        self.data.insert(cell, value);
+    }
+
+    fn reset_cell(&mut self, cell: String) {
+        self.data.remove(&cell);
+    }
+
+    fn get_value(&self, formula: String) -> i32 {
+        formula[1..]
+            .split('+')
+            .map(|cell| {
+                if cell.as_bytes()[0].is_ascii_uppercase() {
+                    *self.data.get(cell).unwrap_or(&0)
+                } else {
+                    cell.parse::<i32>().unwrap()
+                }
+            })
+            .sum()
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：初始化为 $\mathcal{O}(1)$，其余为 $\mathcal{O}(L)$，其中 $L$ 是 $\textit{cell}$（或者 $\textit{formula}$）的长度。
@@ -122,8 +187,8 @@ func (s Spreadsheet) GetValue(formula string) (ans int) {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
@@ -131,3 +196,5 @@ func (s Spreadsheet) GetValue(formula string) (ans int) {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
