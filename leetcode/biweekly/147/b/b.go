@@ -9,46 +9,47 @@ import (
 type pair struct{ priority, userId int }
 
 type TaskManager struct {
-	h  *hp          // (priority, taskId, userId)
 	mp map[int]pair // taskId -> (priority, userId)
+	h  *hp          // (priority, taskId, userId)
 }
 
 func Constructor(tasks [][]int) TaskManager {
-	h := hp{}
-	mp := map[int]pair{}
-	for _, task := range tasks {
-		userId, taskId, priority := task[0], task[1], task[2]
+	n := len(tasks)
+	mp := make(map[int]pair, n) // 预分配空间
+	h := make(hp, n)
+	for i, t := range tasks {
+		userId, taskId, priority := t[0], t[1], t[2]
 		mp[taskId] = pair{priority, userId}
-		h = append(h, tuple{priority, taskId, userId})
+		h[i] = tuple{priority, taskId, userId}
 	}
 	heap.Init(&h)
-	return TaskManager{&h, mp}
+	return TaskManager{mp, &h}
 }
 
-func (tm *TaskManager) Add(userId, taskId, priority int) {
-	tm.mp[taskId] = pair{priority, userId}
-	heap.Push(tm.h, tuple{priority, taskId, userId})
+func (t *TaskManager) Add(userId, taskId, priority int) {
+	t.mp[taskId] = pair{priority, userId}
+	heap.Push(t.h, tuple{priority, taskId, userId})
 }
 
-func (tm *TaskManager) Edit(taskId, newPriority int) {
+func (t *TaskManager) Edit(taskId, newPriority int) {
 	// 懒修改
-	tm.Add(tm.mp[taskId].userId, taskId, newPriority)
+	t.Add(t.mp[taskId].userId, taskId, newPriority)
 }
 
-func (tm *TaskManager) Rmv(taskId int) {
+func (t *TaskManager) Rmv(taskId int) {
 	// 懒删除
-	tm.mp[taskId] = pair{-1, -1}
+	t.mp[taskId] = pair{-1, -1}
 }
 
-func (tm *TaskManager) ExecTop() int {
-	for tm.h.Len() > 0 {
-		top := heap.Pop(tm.h).(tuple)
+func (t *TaskManager) ExecTop() int {
+	for t.h.Len() > 0 {
+		top := heap.Pop(t.h).(tuple)
 		priority, taskId, userId := top.priority, top.taskId, top.userId
-		// 如果货不对板，堆顶和 mp 中记录的不一样，说明这个数据已被修改/删除，不做处理
-		if tm.mp[taskId] == (pair{priority, userId}) {
-			tm.Rmv(taskId)
+		if t.mp[taskId] == (pair{priority, userId}) {
+			t.Rmv(taskId)
 			return userId
 		}
+		// else 货不对板，堆顶和 mp 中记录的不一样，说明这个数据已被修改/删除，不做处理
 	}
 	return -1
 }
@@ -56,7 +57,7 @@ func (tm *TaskManager) ExecTop() int {
 type tuple struct{ priority, taskId, userId int }
 type hp []tuple
 
-func (h hp) Len() int      { return len(h) }
+func (h hp) Len() int { return len(h) }
 func (h hp) Less(i, j int) bool {
 	return cmp.Or(h[i].priority-h[j].priority, h[i].taskId-h[j].taskId) > 0
 }

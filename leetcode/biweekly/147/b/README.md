@@ -1,16 +1,14 @@
-用**最大堆**维护优先级、任务编号、用户编号。
+为了实现 $\texttt{execTop}$，用**最大堆**维护优先级、任务编号、用户编号。
 
-同时额外用一个哈希表记录每个任务编号对应的**最新的**优先级和用户编号。
+为了实现堆的懒更新和懒删除，用一个哈希表记录每个任务编号对应的**最新的**优先级和用户编号。哈希表的 key 是任务编号，value 是优先级和用户编号组成的二元组。
 
-- 对于 $\texttt{edit}$，直接把一个新的优先级、任务编号、用户编号三元组入堆。同时更新哈希表。
-- 对于 $\texttt{rmv}$，直接把元素从哈希表删掉（或者优先级改成 $-1$）。
-- 对于 $\texttt{execTop}$，不断弹出「货不对板」的堆顶，也就是任务编号和哈希表中记录的数据不一致的堆顶。直到找到一致的数据或者堆为空。
+- $\texttt{edit}$：直接把一个新的优先级、任务编号、用户编号三元组入堆。同时更新哈希表。
+- $\texttt{rmv}$：把元素从哈希表中删掉。更简单的写法是，把优先级改成 $-1$。
+- $\texttt{execTop}$：不断弹出「货不对板」的堆顶，也就是任务编号和哈希表中记录的数据不一致的堆顶。直到堆为空或者找到一致的数据。
 
 > 注 1：如果你学过 Dijkstra 算法，其中的堆就是懒更新堆。
 >
 > 注 2：题目保证输入的 $\textit{tasks}$ 数组中没有重复的 $\textit{taskId}$。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1SzrAYMESJ/?t=2m46s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class TaskManager:
@@ -34,18 +32,21 @@ class TaskManager:
     def execTop(self) -> int:
         while self.h:
             priority, taskId, userId = heappop(self.h)
-            # 如果货不对板，堆顶和 mp 中记录的不一样，说明这个数据已被修改/删除，不做处理
             if self.mp[-taskId] == (-priority, userId):
                 self.rmv(-taskId)
                 return userId
+            # else 货不对板，堆顶和 mp 中记录的不一样，说明堆顶数据已被修改或删除，不做处理
         return -1
 ```
 
 ```java [sol-Java]
 class TaskManager {
-    private final Map<Integer, int[]> mp = new HashMap<>(); // taskId -> (priority, userId)
+    // taskId -> (priority, userId)
+    private final Map<Integer, int[]> mp = new HashMap<>();
+
+    // (priority, taskId, userId)
     private final PriorityQueue<int[]> pq =
-            new PriorityQueue<>((a, b) -> a[0] != b[0] ? b[0] - a[0] : b[1] - a[1]); // (priority, taskId, userId)
+            new PriorityQueue<>((a, b) -> a[0] != b[0] ? b[0] - a[0] : b[1] - a[1]);
 
     public TaskManager(List<List<Integer>> tasks) {
         for (List<Integer> task : tasks) {
@@ -60,7 +61,8 @@ class TaskManager {
 
     public void edit(int taskId, int newPriority) {
         // 懒修改
-        add(mp.get(taskId)[1], taskId, newPriority);
+        int userId = mp.get(taskId)[1];
+        add(userId, taskId, newPriority);
     }
 
     public void rmv(int taskId) {
@@ -73,11 +75,11 @@ class TaskManager {
             int[] top = pq.poll();
             int priority = top[0], taskId = top[1], userId = top[2];
             int[] p = mp.get(taskId);
-            // 如果货不对板，堆顶和 mp 中记录的不一样，说明这个数据已被修改/删除，不做处理
             if (p[0] == priority && p[1] == userId) {
                 rmv(taskId);
                 return userId;
             }
+            // else 货不对板，堆顶和 mp 中记录的不一样，说明堆顶数据已被修改或删除，不做处理
         }
         return -1;
     }
@@ -86,8 +88,8 @@ class TaskManager {
 
 ```cpp [sol-C++]
 class TaskManager {
-    priority_queue<tuple<int, int, int>> pq; // (priority, taskId, userId)
     unordered_map<int, pair<int, int>> mp; // taskId -> (priority, userId)
+    priority_queue<tuple<int, int, int>> pq; // (priority, taskId, userId)
 
 public:
     TaskManager(vector<vector<int>>& tasks) {
@@ -115,11 +117,11 @@ public:
         while (!pq.empty()) {
             auto [priority, taskId, userId] = pq.top();
             pq.pop();
-            // 如果货不对板，堆顶和 mp 中记录的不一样，说明这个数据已被修改/删除，不做处理
             if (mp[taskId] == pair(priority, userId)) {
                 rmv(taskId);
                 return userId;
             }
+            // else 货不对板，堆顶和 mp 中记录的不一样，说明堆顶数据已被修改或删除，不做处理
         }
         return -1;
     }
@@ -130,46 +132,47 @@ public:
 type pair struct{ priority, userId int }
 
 type TaskManager struct {
-	h  *hp          // (priority, taskId, userId)
 	mp map[int]pair // taskId -> (priority, userId)
+	h  *hp          // (priority, taskId, userId)
 }
 
 func Constructor(tasks [][]int) TaskManager {
-	h := hp{}
-	mp := map[int]pair{}
-	for _, task := range tasks {
-		userId, taskId, priority := task[0], task[1], task[2]
+	n := len(tasks)
+	mp := make(map[int]pair, n) // 预分配空间
+	h := make(hp, n)
+	for i, t := range tasks {
+		userId, taskId, priority := t[0], t[1], t[2]
 		mp[taskId] = pair{priority, userId}
-		h = append(h, tuple{priority, taskId, userId})
+		h[i] = tuple{priority, taskId, userId}
 	}
 	heap.Init(&h)
-	return TaskManager{&h, mp}
+	return TaskManager{mp, &h}
 }
 
-func (tm *TaskManager) Add(userId, taskId, priority int) {
-	tm.mp[taskId] = pair{priority, userId}
-	heap.Push(tm.h, tuple{priority, taskId, userId})
+func (t *TaskManager) Add(userId, taskId, priority int) {
+	t.mp[taskId] = pair{priority, userId}
+	heap.Push(t.h, tuple{priority, taskId, userId})
 }
 
-func (tm *TaskManager) Edit(taskId, newPriority int) {
+func (t *TaskManager) Edit(taskId, newPriority int) {
 	// 懒修改
-	tm.Add(tm.mp[taskId].userId, taskId, newPriority)
+	t.Add(t.mp[taskId].userId, taskId, newPriority)
 }
 
-func (tm *TaskManager) Rmv(taskId int) {
+func (t *TaskManager) Rmv(taskId int) {
 	// 懒删除
-	tm.mp[taskId] = pair{-1, -1}
+	t.mp[taskId] = pair{-1, -1}
 }
 
-func (tm *TaskManager) ExecTop() int {
-	for tm.h.Len() > 0 {
-		top := heap.Pop(tm.h).(tuple)
+func (t *TaskManager) ExecTop() int {
+	for t.h.Len() > 0 {
+		top := heap.Pop(t.h).(tuple)
 		priority, taskId, userId := top.priority, top.taskId, top.userId
-		// 如果货不对板，堆顶和 mp 中记录的不一样，说明这个数据已被修改/删除，不做处理
-		if tm.mp[taskId] == (pair{priority, userId}) {
-			tm.Rmv(taskId)
+		if t.mp[taskId] == (pair{priority, userId}) {
+			t.Rmv(taskId)
 			return userId
 		}
+		// else 货不对板，堆顶和 mp 中记录的不一样，说明堆顶数据已被修改或删除，不做处理
 	}
 	return -1
 }
@@ -183,6 +186,101 @@ func (h *hp) Push(v any)        { *h = append(*h, v.(tuple)) }
 func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 ```
 
+```js [sol-JavaScript]
+class TaskManager {
+    constructor(tasks) {
+        // taskId -> [priority, userId]
+        this.mp = new Map();
+
+        // 最大堆 [priority, taskId, userId]
+        this.pq = new PriorityQueue((a, b) => a[0] !== b[0] ? b[0] - a[0] : b[1] - a[1]);
+
+        for (const [userId, taskId, priority] of tasks) {
+            this.add(userId, taskId, priority);
+        }
+    }
+
+    add(userId, taskId, priority) {
+        this.mp.set(taskId, [priority, userId]);
+        this.pq.enqueue([priority, taskId, userId]);
+    }
+
+    edit(taskId, newPriority) {
+        // 懒修改
+        const userId = this.mp.get(taskId)[1];
+        this.add(userId, taskId, newPriority);
+    }
+
+    rmv(taskId) {
+        // 懒删除
+        this.mp.get(taskId)[0] = -1;
+    }
+
+    execTop() {
+        while (!this.pq.isEmpty()) {
+            const [priority, taskId, userId] = this.pq.dequeue();
+            const [p, u] = this.mp.get(taskId);
+            if (p === priority && u === userId) {
+                this.rmv(taskId);
+                return userId;
+            }
+            // else 货不对板，堆顶和 mp 中记录的不一样，说明堆顶数据已被修改或删除，不做处理
+        }
+        return -1;
+    }
+}
+```
+
+```rust [sol-Rust]
+use std::collections::{BinaryHeap, HashMap};
+
+struct TaskManager {
+    mp: HashMap<i32, (i32, i32)>, // taskId -> (priority, userId)
+    h: BinaryHeap<(i32, i32, i32)>, // (priority, taskId, userId)
+}
+
+impl TaskManager {
+    fn new(tasks: Vec<Vec<i32>>) -> Self {
+        let mut manager = TaskManager {
+            mp: HashMap::new(),
+            h: BinaryHeap::new(),
+        };
+        for task in tasks {
+            manager.add(task[0], task[1], task[2]);
+        }
+        manager
+    }
+
+    fn add(&mut self, user_id: i32, task_id: i32, priority: i32) {
+        self.mp.insert(task_id, (priority, user_id));
+        self.h.push((priority, task_id, user_id));
+    }
+
+    fn edit(&mut self, task_id: i32, new_priority: i32) {
+        // 懒修改
+        let user_id = self.mp.get(&task_id).unwrap().1;
+        self.add(user_id, task_id, new_priority);
+    }
+
+    fn rmv(&mut self, task_id: i32) {
+        // 懒删除
+        *self.mp.get_mut(&task_id).unwrap() = (-1, -1);
+    }
+
+    fn exec_top(&mut self) -> i32 {
+        while let Some((priority, task_id, user_id)) = self.h.pop() {
+            let (p, u) = self.mp[&task_id];
+            if p == priority && u == user_id {
+                self.rmv(task_id);
+                return user_id;
+            }
+            // else 货不对板，堆顶和 mp 中记录的不一样，说明堆顶数据已被修改或删除，不做处理
+        }
+        -1
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：
@@ -192,7 +290,9 @@ func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; 
   - $\texttt{execTop}$：均摊 $\mathcal{O}(\log (n+q))$。每个元素至多入堆出堆各一次。
 - 空间复杂度：$\mathcal{O}(n+q)$。
 
-更多相似题目，见下面数据结构题单中的「**§5.6 懒删除堆**」。
+## 专题训练
+
+见下面数据结构题单的「**§5.6 懒删除堆**」。
 
 ## 分类题单
 
@@ -203,12 +303,14 @@ func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; 
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. 【本题相关】[常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
