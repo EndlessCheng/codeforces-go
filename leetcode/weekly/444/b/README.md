@@ -460,7 +460,7 @@ impl Router {
 
 #### 复杂度分析
 
-- 时间复杂度：$\texttt{GetCount}$ 是 $\mathcal{O}(\log \min(q, \textit{memoryLimit}))$，其中 $q$ 是 $\texttt{addPacket}$ 的调用次数。其余操作为 $\mathcal{O}(1)$。
+- 时间复杂度：$\texttt{getCount}$ 是 $\mathcal{O}(\log \min(q, \textit{memoryLimit}))$，其中 $q$ 是 $\texttt{addPacket}$ 的调用次数。其余操作为 $\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(\min(q, \textit{memoryLimit}))$。
 
 ## 分类题单
