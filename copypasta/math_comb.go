@@ -68,7 +68,9 @@ https://codeforces.com/problemset/problem/1526/E 2400 后缀数组
 https://codeforces.com/problemset/problem/1608/D 2400
 https://codeforces.com/problemset/problem/156/D 2500 Prufer 序列 n^(cc-2)
 https://codeforces.com/problemset/problem/348/D 2500 不相交路径
+https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元素不同
 https://codeforces.com/problemset/problem/997/C 2500
+https://codeforces.com/problemset/problem/1096/E 2500 容斥
 https://codeforces.com/problemset/problem/1838/E 2500
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
