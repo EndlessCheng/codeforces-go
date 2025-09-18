@@ -128,7 +128,9 @@ func _(n int) {
 		}
 		return rt
 	}
-	_ = find
+	merge := func(from, to int) { fa[find(from)] = find(to) }
+
+	_ = merge
 }
 
 // 带时间戳的写法，适用于需要频繁初始化小并查集的场景
@@ -278,6 +280,7 @@ func _(n int) {
 	// https://codeforces.com/problemset/problem/371/D 1800 经典题
 	// https://codeforces.com/problemset/problem/2020/D 1800
 	// https://codeforces.com/problemset/problem/724/D 1900
+	// https://codeforces.com/problemset/problem/1687/C 2500 BFS
 	// https://codeforces.com/problemset/problem/827/D 2700
 	markRange := func(l, r int) {
 		// 闭区间 [l,r]
