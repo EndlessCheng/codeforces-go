@@ -192,7 +192,8 @@ class Solution:
                 r -= 1
             while l and nums[l - 1] >= lower - x:
                 l -= 1
-            # 在方法一中，二分的结果必须 <= j，方法二同理
+            # 在方法一中，二分的结果必须 <= j
+            # 方法二同理，要保证 l 和 r 都 <= j
             ans += min(r, j) - min(l, j)
         return ans
 ```
@@ -227,7 +228,8 @@ class Solution {
             while (l > 0 && nums[l - 1] >= lower - nums[j]) {
                 l--;
             }
-            // 在方法一中，二分的结果必须 <= j，方法二同理
+            // 在方法一中，二分的结果必须 <= j
+            // 方法二同理，要保证 l 和 r 都 <= j
             ans += Math.min(r, j) - Math.min(l, j);
         }
         return ans;
@@ -249,7 +251,8 @@ public:
             while (l && nums[l - 1] >= lower - nums[j]) {
                 l--;
             }
-            // 在方法一中，二分的结果必须 <= j，方法二同理
+            // 在方法一中，二分的结果必须 <= j
+            // 方法二同理，要保证 l 和 r 都 <= j
             ans += min(r, j) - min(l, j);
         }
         return ans;
@@ -275,7 +278,8 @@ long long countFairPairs(int* nums, int numsSize, int lower, int upper) {
         while (l && nums[l - 1] >= lower - nums[j]) {
             l--;
         }
-        // 在方法一中，二分的结果必须 <= j，方法二同理
+        // 在方法一中，二分的结果必须 <= j
+        // 方法二同理，要保证 l 和 r 都 <= j
         ans += MIN(r, j) - MIN(l, j);
     }
     return ans;
@@ -293,7 +297,8 @@ func countFairPairs(nums []int, lower, upper int) (ans int64) {
         for l > 0 && nums[l-1] >= lower-x {
             l--
         }
-        // 在方法一中，二分的结果必须 <= j，方法二同理
+        // 在方法一中，二分的结果必须 <= j
+        // 方法二同理，要保证 l 和 r 都 <= j
         ans += int64(min(r, j)-min(l, j))
     }
     return
@@ -311,7 +316,8 @@ var countFairPairs = function(nums, lower, upper) {
         while (l && nums[l - 1] >= lower - nums[j]) {
             l--;
         }
-        // 在方法一中，二分的结果必须 <= j，方法二同理
+        // 在方法一中，二分的结果必须 <= j
+        // 方法二同理，要保证 l 和 r 都 <= j
         ans += Math.min(r, j) - Math.min(l, j);
     }
     return ans;
@@ -332,7 +338,8 @@ impl Solution {
             while l > 0 && nums[l - 1] >= lower - x {
                 l -= 1;
             }
-            // 在方法一中，二分的结果必须 <= j，方法二同理
+            // 在方法一中，二分的结果必须 <= j
+            // 方法二同理，要保证 l 和 r 都 <= j
             ans += r.min(j) - l.min(j);
         }
         ans as _
