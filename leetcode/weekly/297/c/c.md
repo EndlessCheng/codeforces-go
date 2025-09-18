@@ -65,9 +65,11 @@ class Solution {
     public int distributeCookies(int[] cookies, int k) {
         int n = cookies.length;
         int[] sum = new int[1 << n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0, bit = 1 << i; j < bit; j++)
+        for (int i = 0; i < n; i++) {
+            for (int j = 0, bit = 1 << i; j < bit; j++) {
                 sum[bit | j] = sum[j] + cookies[i];
+            }
+        }
 
         int[] f = sum.clone();
         for (int i = 1; i < k; i++) {
@@ -88,9 +90,11 @@ public:
     int distributeCookies(vector<int>& cookies, int k) {
         int n = cookies.size();
         vector<int> sum(1 << n);
-        for (int i = 0; i < n; i++)
-            for (int j = 0, bit = 1 << i; j < bit; j++)
+        for (int i = 0; i < n; i++) {
+            for (int j = 0, bit = 1 << i; j < bit; j++) {
                 sum[bit | j] = sum[j] + cookies[i];
+            }
+        }
 
         vector<int> f(sum);
         for (int i = 1; i < k; i++) {
@@ -129,7 +133,7 @@ func distributeCookies(cookies []int, k int) int {
 ```
 
 ```js [sol-JavaScript]
-var distributeCookies = function (cookies, k) {
+var distributeCookies = function(cookies, k) {
     const n = cookies.length;
     const sum = Array(1 << n).fill(0);
     for (let i = 0; i < n; i++) {
