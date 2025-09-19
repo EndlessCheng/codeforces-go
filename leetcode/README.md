@@ -178,9 +178,9 @@
 ||[1696. 跳跃游戏 VI](https://leetcode.cn/problems/jump-game-vi/)|[代码](https://leetcode.cn/problems/jump-game-vi/solution/yi-bu-bu-you-hua-cong-di-gui-dao-di-tui-84qn3/)|*课后作业|
 ||[2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/)|[代码](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/solution/dpcong-on2-dao-onpythonjavacgo-by-endles-nux5/)|*课后作业|
 
-### 算法题单
+### 完整算法题单
 
-🔥[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+🔥[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/) 包含核心刷题路线
 
 1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
