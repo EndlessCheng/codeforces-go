@@ -11,21 +11,9 @@ func cf1996D(in io.Reader, out io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &x)
 		ans := 0
-		for a := 1; ; a++ {
-			c := min((n-a*a)/(a*2), x-a*2)
-			if c <= 0 {
-				break
-			}
-			ans += c * 3
-			if c >= a {
-				ans -= 2
-			}
-			for b := a + 1; ; b++ {
-				d := min((n-a*b)/(a+b), x-a-b) - b
-				if d <= 0 {
-					break
-				}
-				ans += d * 6
+		for a := 1; a < min(n, x-1); a++ {
+			for b := 1; b <= min(n/a, x-a); b++ {
+				ans += min((n-a*b)/(a+b), x-a-b)
 			}
 		}
 		Fprintln(out, ans)
