@@ -8,32 +8,25 @@ import (
 // https://github.com/EndlessCheng
 func cf2070D(in io.Reader, out io.Writer) {
 	const mod = 998244353
-	var T, n int
+	var T, n, p int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		g := make([][]int, n)
-		for w := 1; w < n; w++ {
-			var p int
+		d := make([]int, n)
+		row := make([][]int, n)
+		for i := 1; i < n; i++ {
 			Fscan(in, &p)
 			p--
-			g[p] = append(g[p], w)
+			g[p] = append(g[p], i)
+			d[i] = d[p] + 1
+			row[d[i]] = append(row[d[i]], i)
 		}
-
-		row := make([][]int, n)
-		var dfs func(int, int)
-		dfs = func(v, d int) {
-			row[d] = append(row[d], v)
-			for _, w := range g[v] {
-				dfs(w, d+1)
-			}
-		}
-		dfs(0, 0)
 
 		f := make([]int, n)
 		pre := 0
-		for d := n - 1; d > 0; d-- {
+		for i := n - 1; i > 0; i-- {
 			cur := 0
-			for _, v := range row[d] {
+			for _, v := range row[i] {
 				sum := pre
 				for _, w := range g[v] {
 					sum -= f[w]
