@@ -28,7 +28,7 @@ func maxProduct1(nums []int) int64 {
 	return int64(ans)
 }
 
-func maxProduct(nums []int) int64 {
+func maxProduct2(nums []int) int64 {
 	w := bits.Len(uint(slices.Max(nums)))
 	u := 1 << w
 	f := make([]int, u)
@@ -40,6 +40,44 @@ func maxProduct(nums []int) int64 {
 		for s := 0; s < u; s++ {
 			s |= 1 << i // 快速跳到第 i 位是 1 的 j
 			f[s] = max(f[s], f[s^1<<i])
+		}
+	}
+
+	ans := 0
+	for _, x := range nums {
+		ans = max(ans, x*f[u-1^x])
+	}
+	return int64(ans)
+}
+
+// 基于方法一
+func maxProduct(nums []int) int64 {
+	w := bits.Len(uint(slices.Max(nums)))
+	u := 1 << w
+
+	n := len(nums)
+	if n*n <= u*w {
+		// 暴力
+		ans := 0
+		for i, x := range nums {
+			for _, y := range nums[:i] {
+				if x&y == 0 {
+					ans = max(ans, x*y)
+				}
+			}
+		}
+		return int64(ans)
+	}
+
+	f := make([]int, u)
+	for _, x := range nums {
+		f[x] = x
+	}
+
+	for s := range f {
+		for t, lb := s, 0; t > 0; t ^= lb {
+			lb = t & -t
+			f[s] = max(f[s], f[s^lb])
 		}
 	}
 

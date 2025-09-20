@@ -554,6 +554,181 @@ func maxProduct(nums []int) int64 {
 - 时间复杂度：$\mathcal{O}(n + U\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(U)$。
 
+## 附：平衡暴力和 DP 的算法
+
+如果 $n^2 \le U\log U$，直接用暴力算。 
+
+```py [sol-Python3]
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        w = max(nums).bit_length()
+        u = 1 << w
+
+        n = len(nums)
+        if n * n <= u * w:
+            # 暴力
+            ans = 0
+            for i, x in enumerate(nums):
+                for y in nums[:i]:
+                    if x & y == 0 and x * y > ans:
+                        ans = x * y
+            return ans
+
+        f = [0] * u
+        for x in nums:
+            f[x] = x
+
+        for i in range(w):
+            bit = 1 << i  # 避免在循环中反复计算 1 << i
+            s = 0
+            while s < u:
+                s |= bit  # 快速跳到第 i 位是 1 的 s
+                v = f[s ^ bit]
+                if v > f[s]:
+                    f[s] = v
+                s += 1
+
+        return max(x * f[(u - 1) ^ x] for x in nums)
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxProduct(int[] nums) {
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        int w = 32 - Integer.numberOfLeadingZeros(mx);
+        int u = 1 << w;
+
+        int n = nums.length;
+        if (n <= u * w / n) { // 避免 n*n 溢出
+            // 暴力
+            long ans = 0;
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                for (int j = 0; j < i; j++) {
+                    int y = nums[j];
+                    if ((x & y) == 0) {
+                        ans = Math.max(ans, (long) x * y);
+                    }
+                }
+            }
+            return ans;
+        }
+
+        int[] f = new int[u];
+        for (int x : nums) {
+            f[x] = x;
+        }
+
+        for (int i = 0; i < w; i++) {
+            for (int s = 0; s < u; s++) {
+                s |= 1 << i; // 快速跳到第 i 位是 1 的 s
+                f[s] = Math.max(f[s], f[s ^ (1 << i)]);
+            }
+        }
+
+        long ans = 0;
+        for (int x : nums) {
+            ans = Math.max(ans, (long) x * f[(u - 1) ^ x]);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+// 基于方法一
+class Solution {
+public:
+    long long maxProduct(vector<int>& nums) {
+        int w = bit_width((uint32_t) ranges::max(nums));
+        int u = 1 << w;
+
+        int n = nums.size();
+        if (n <= u * w / n) { // 避免 n*n 溢出
+            // 暴力
+            long long ans = 0;
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                for (int j = 0; j < i; j++) {
+                    int y = nums[j];
+                    if ((x & y) == 0) {
+                        ans = max(ans, 1LL * x * y);
+                    }
+                }
+            }
+            return ans;
+        }
+
+        vector<int> f(u);
+        for (int x : nums) {
+            f[x] = x;
+        }
+
+        for (int s = 0; s < u; s++) {
+            for (int t = s, lb; t > 0; t ^= lb) {
+                lb = t & -t;
+                f[s] = max(f[s], f[s ^ lb]);
+            }
+        }
+
+        long long ans = 0;
+        for (int x : nums) {
+            ans = max(ans, 1LL * x * f[(u - 1) ^ x]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+// 基于方法一
+func maxProduct(nums []int) int64 {
+	w := bits.Len(uint(slices.Max(nums)))
+	u := 1 << w
+
+	n := len(nums)
+	if n*n <= u*w {
+		// 暴力
+		ans := 0
+		for i, x := range nums {
+			for _, y := range nums[:i] {
+				if x&y == 0 {
+					ans = max(ans, x*y)
+				}
+			}
+		}
+		return int64(ans)
+	}
+
+	f := make([]int, u)
+	for _, x := range nums {
+		f[x] = x
+	}
+
+	for s := range f {
+		for t, lb := s, 0; t > 0; t ^= lb {
+			lb = t & -t
+			f[s] = max(f[s], f[s^lb])
+		}
+	}
+
+	ans := 0
+	for _, x := range nums {
+		ans = max(ans, x*f[u-1^x])
+	}
+	return int64(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\min(n^2, n + U\log U))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(U)$。
+
 ## 相似题目
 
 [2732. 找到矩阵中的好子集](https://leetcode.cn/problems/find-a-good-subset-of-the-matrix/)
