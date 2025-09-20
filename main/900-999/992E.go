@@ -22,6 +22,16 @@ func (t fenwick92) pre(i int) (s int) {
 	return
 }
 
+func (t fenwick92) rank(sum int) (res int) {
+	for b := 1 << 17; b > 0; b >>= 1 {
+		if nxt := res | b; nxt < len(t) && t[nxt] < sum {
+			sum -= t[nxt]
+			res = nxt
+		}
+	}
+	return res + 1
+}
+
 func cf992E(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
@@ -34,30 +44,22 @@ func cf992E(in io.Reader, _w io.Writer) {
 		t.update(i, a[i])
 	}
 
-	var dfs func(int, int) int
-	dfs = func(l, r int) int {
-		if l+1 == r {
-			if t.pre(l)*2 == t.pre(r) {
-				return r
-			}
-			return -1
-		}
-		res := -1
-		m := (l + r) / 2
-		if t.pre(l)*2 <= t.pre(m) {
-			res = max(res, dfs(l, m))
-		}
-		if t.pre(m)*2 <= t.pre(r) {
-			res = max(res, dfs(m, r))
-		}
-		return res
-	}
-
+o:
 	for range q {
 		Fscan(in, &p, &x)
 		t.update(p, x-a[p])
 		a[p] = x
-		Fprintln(out, dfs(0, n))
+
+		i := 1
+		for i <= n {
+			s := t.pre(i)
+			if a[i]*2 == s {
+				Fprintln(out, i)
+				continue o
+			}
+			i = t.rank(s * 2)
+		}
+		Fprintln(out, -1)
 	}
 }
 
