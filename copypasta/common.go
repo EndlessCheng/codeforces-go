@@ -35,7 +35,8 @@ https://leetcode.cn/problems/apply-operations-to-make-string-empty/
 
 暴力枚举
 https://codeforces.com/problemset/problem/681/B 1300
-- [2207. 字符串中最多数目的子序列](https://leetcode.cn/problems/maximize-number-of-subsequences-in-a-string/) 1550
+- [2207. 字符串中最多数目的子序列](https://leetcode.cn/problems/maximize-number-of-subsequences-in-a-string/)
+https://codeforces.com/problemset/problem/1996/D 1500
 另见 search.go
 
 枚举右，维护左
@@ -283,6 +284,7 @@ https://codeforces.com/problemset/problem/339/E 2700
     - https://codeforces.com/contest/1914/problem/E2 1400
 - todo 复习 [659. 分割数组为连续子序列](https://leetcode.cn/problems/split-array-into-consecutive-subsequences/)
 - [2193. 得到回文串的最少操作次数](https://leetcode.cn/problems/minimum-number-of-moves-to-make-palindrome/) 好题！可以做到 O(nlogn)
+https://codeforces.com/problemset/problem/1550/B 1000
 https://codeforces.com/problemset/problem/1920/B 1100
 https://codeforces.com/problemset/problem/1993/B 1100
 https://codeforces.com/problemset/problem/2047/B O(n) 做法约 1200
@@ -406,10 +408,11 @@ https://atcoder.jp/contests/dp/tasks/dp_x 0-1 背包
 https://ac.nowcoder.com/acm/contest/65259/C 相邻两数之差的绝对值为 1
 
 非邻项交换（最小代价排序/字典序最小）
-https://codeforces.com/contest/252/problem/B 1800
+https://codeforces.com/problemset/problem/1174/B 1200
+https://codeforces.com/problemset/problem/252/B 1800
 https://codeforces.com/problemset/problem/1768/D 1800
-https://codeforces.com/contest/1907/problem/F 1800 shift+reverse
-https://codeforces.com/contest/109/problem/D 2000
+https://codeforces.com/problemset/problem/1907/F 1800 shift+reverse
+https://codeforces.com/problemset/problem/109/D 2000
 LC1202 https://leetcode.cn/problems/smallest-string-with-swaps/
 LC2948 https://leetcode.cn/problems/make-lexicographically-smallest-array-by-swapping-elements/
 
@@ -433,6 +436,7 @@ https://codeforces.com/problemset/problem/1765/K 1500
 https://codeforces.com/problemset/problem/1990/C 1500
 https://codeforces.com/problemset/problem/1608/C 1700
 https://codeforces.com/problemset/problem/2124/D 1700
+https://codeforces.com/problemset/problem/911/D 1800 逆序对
 https://codeforces.com/problemset/problem/1442/A 1800
 https://codeforces.com/problemset/problem/558/C  1900
 https://codeforces.com/problemset/problem/1747/D 1900 不变量
@@ -459,6 +463,7 @@ https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/500/C 1600
 https://codeforces.com/problemset/problem/601/A 1600
 https://codeforces.com/problemset/problem/2065/F 1700
+https://codeforces.com/problemset/problem/911/D 1800
 https://codeforces.com/problemset/problem/1763/C 2000
 https://codeforces.com/problemset/problem/1443/E 2400 唬人
 https://codeforces.com/problemset/problem/825/G 2500 树
@@ -491,6 +496,7 @@ https://codeforces.com/contest/1977/problem/C
 
 构造 constructive algorithms 
 https://codeforces.com/problemset/problem/1927/B   900
+https://codeforces.com/problemset/problem/1174/A  1000
 https://codeforces.com/problemset/problem/1772/C  1000
 https://codeforces.com/problemset/problem/1998/B  1000
 https://codeforces.com/problemset/problem/2037/C  1000
@@ -564,7 +570,9 @@ https://codeforces.com/problemset/problem/2111/F  2400
 https://codeforces.com/problemset/problem/297/D   2500
 https://codeforces.com/problemset/problem/976/D   2500
 https://codeforces.com/problemset/problem/1474/E  2500
+https://codeforces.com/problemset/problem/1559/D2 2500
 https://codeforces.com/problemset/problem/1689/E  2500 脑筋急转弯
+https://codeforces.com/problemset/problem/10/E    2600 Greedy Change todo
 https://codeforces.com/problemset/problem/1227/G  2600 证明是亮点
 https://codeforces.com/problemset/problem/1521/E  2700 二维相邻不同
 https://codeforces.com/problemset/problem/1838/F  3000 交互 二分
@@ -593,6 +601,7 @@ LC3189 https://leetcode.cn/problems/minimum-moves-to-get-a-peaceful-board/
 
 分类讨论（部分题是易错题）
 https://codeforces.com/problemset/problem/862/A 1000
+https://codeforces.com/problemset/problem/1550/B 1000
 https://codeforces.com/problemset/problem/1931/C 1000
 https://codeforces.com/problemset/problem/2039/B 1000
 https://codeforces.com/problemset/problem/262/B 1200
@@ -600,6 +609,7 @@ https://codeforces.com/problemset/problem/1364/A 1200
 https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
 https://codeforces.com/problemset/problem/2065/C2 1300
+https://codeforces.com/problemset/problem/2075/B 1300
 https://codeforces.com/problemset/problem/30/A 1400
 https://codeforces.com/problemset/problem/45/I 1400
 https://codeforces.com/problemset/problem/489/C 1400
@@ -1157,6 +1167,7 @@ func _() {
 	}
 
 	// 返回 a 的各个子集的元素和
+	// 刷表法 DP，在集合 mask 中添加下标 i
 	// 复杂度为 O(1+2+4+...+2^(n-1)) = O(2^n)
 	// https://codeforces.com/contest/1209/problem/E2
 	// https://www.luogu.com.cn/problem/P3694

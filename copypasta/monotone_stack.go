@@ -52,6 +52,7 @@ https://atcoder.jp/contests/arc189/tasks/arc189_d 2006=CF2228
 https://atcoder.jp/contests/agc029/tasks/agc029_c 2103=CF2302
 https://www.luogu.com.cn/problem/P7167 倍增
 https://www.luogu.com.cn/problem/P9290
+https://ac.nowcoder.com/acm/contest/116002/F
 
 单调栈二分
 LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 2327 做法不止一种

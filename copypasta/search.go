@@ -1193,8 +1193,8 @@ func loop() {
 
 	// 主对角线 ↘
 	// 第一排在右上，最后一排在左下
+	// - [3446. 按对角线进行矩阵排序](https://leetcode.cn/problems/sort-matrix-by-diagonals/) 1373
 	// - [2711. 对角线上不同值的数量差](https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/) 1429
-	// - [3446. 按对角线进行矩阵排序](https://leetcode.cn/problems/sort-matrix-by-diagonals/) 
 	// - [1329. 将矩阵按对角线排序](https://leetcode.cn/problems/sort-the-matrix-diagonally/) 1548
 	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
 	// 注意下面 loopAntiDiagonal 还有一些题目
@@ -1212,9 +1212,10 @@ func loop() {
 
 	// 反对角线 ↗
 	// 第一排在左上，最后一排在右下
-	// - [498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/)
-	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）主+副
+	// - [498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/)，[我的题解](https://leetcode.cn/problems/diagonal-traverse/solutions/3762798/mo-ban-bian-li-dui-jiao-xian-pythonjavac-jnky/)
+	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）主+反
 	// https://codeforces.com/problemset/problem/628/E 2300
+	// - https://leetcode.cn/problems/max-black-square-lcci/
 	loopAntiDiagonal := func(n, m int) {
 		for K := range n + m - 1 {
 			minJ := max(K-n+1, 0)

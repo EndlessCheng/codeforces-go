@@ -55,7 +55,7 @@ https://codeforces.com/problemset/problem/1023/E 2100 网格图
 https://codeforces.com/problemset/problem/1205/C 2400 网格图
 https://codeforces.com/problemset/problem/1617/D2 2400
 https://codeforces.com/problemset/problem/2109/C3 2600 数学 加减乘除数位和 从 X 到 Y
-LC1538 找出隐藏数组中出现次数最多的元素 https://leetcode.cn/problems/guess-the-majority-in-a-hidden-array/
+https://leetcode.cn/problems/guess-the-majority-in-a-hidden-array/ LC1538 找出隐藏数组中出现次数最多的元素
 https://www.luogu.com.cn/problem/P12399 最大子段和
 
 ## 随机

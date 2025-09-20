@@ -28,15 +28,16 @@ https://codeforces.com/problemset/problem/1114/E 2200
 https://oi-wiki.org/misc/rand-technique/
 https://www.luogu.com.cn/blog/DengDuck/qian-tan-ha-xi-yu-chu-li-ha-xi-chong-tu-di-yi-suo-fang-fa
 随机梯度下降 SGD, Stochastic Gradient Descent https://en.wikipedia.org/wiki/Stochastic_gradient_descent
-https://codeforces.com/problemset/problem/995/C
-https://codeforces.com/problemset/problem/1314/D 推荐
-https://codeforces.com/problemset/problem/1523/D
-Kick Start 2021 Round C Binary Operator https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec290
-https://codeforces.com/problemset/problem/1689/D https://www.luogu.com.cn/blog/wangxiwen/solution-cf1689d
+https://codeforces.com/problemset/problem/1689/D 1900 https://www.luogu.com.cn/blog/wangxiwen/solution-cf1689d
+https://codeforces.com/problemset/problem/995/C 2300
+https://codeforces.com/problemset/problem/1314/D 2300 推荐
+https://codeforces.com/problemset/problem/1523/D 2400
+https://codeforces.com/problemset/problem/1305/F 2500 数论
+https://codeforces.com/problemset/problem/364/D 2900 todo
 https://atcoder.jp/contests/abc272/tasks/abc272_g
-todo https://codeforces.com/problemset/problem/364/D 2900
 https://atcoder.jp/contests/abc339/tasks/abc339_f 推荐
 https://atcoder.jp/contests/jsc2025advance-final/tasks/abc422_e
+https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec290 Kick Start 2021 Round C Binary Operator
 
 随机映射
 https://codeforces.com/problemset/problem/1746/F 2800

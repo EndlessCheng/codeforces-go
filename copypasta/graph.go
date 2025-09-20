@@ -198,6 +198,34 @@ func (*graph) dfs(g [][]int, st int) {
 		}
 	}
 
+	{
+		// dfs(v) 返回 v 能否走到终点（不走到环中）
+		// 如果无论 v 怎么走，都会走到环中（无限走下去），返回 false
+		// https://codeforces.com/problemset/problem/2118/D2 2200
+		vis := make([]int8, len(g))
+		var dfs func(int) bool
+		dfs = func(v int) bool {
+			if vis[v] != 0 {
+				return vis[v] > 0
+			}
+			// 到达终点
+			if g[v] == nil { 
+				vis[v] = 1
+				return true
+			}
+			vis[v] = -1 // 先标记为在 dfs 栈中
+			for _, w := range g[v] {
+				// 存在一条路径可以让 v 走到终点
+				if dfs(w) {
+					vis[v] = 1
+					return true
+				}
+			}
+			// 无论 v 怎么走，都会走到环中（无限走下去）
+			return false
+		}
+	}
+
 	// 返回一个以 start 为起点和终点的简单环
 	// ！必须保证 start 在一个环中
 	// 例如 cycle=[1,2,3] 表示一个 1->2->3->1 的环
@@ -2286,6 +2314,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // - https://ac.nowcoder.com/acm/contest/1056/A 《算法竞赛进阶指南》走廊泼水节
 // https://codeforces.com/problemset/problem/1108/F 2100 MST 的唯一性
 // https://codeforces.com/problemset/problem/733/F 2200 与 LCA 结合
+// https://codeforces.com/problemset/problem/2118/D2 2200
 // https://codeforces.com/problemset/problem/891/C 2300 判断给定的边是否均在同一棵 MST 中
 // https://codeforces.com/problemset/problem/160/D 2300 关键边、伪关键边（与割边结合）
 // - LC1489 https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/
@@ -3915,7 +3944,7 @@ func (G *graph) twoSAT(n int) []bool {
 // https://codeforces.com/problemset/problem/1335/F 2200
 // https://codeforces.com/problemset/problem/1907/G 2200
 // https://codeforces.com/problemset/problem/1200/F 2300 拆点
-// https://codeforces.com/problemset/problem/835/F 2500
+// https://codeforces.com/problemset/problem/835/F 2500 去掉（基环上的）一条边后的最小直径 前后缀分解 环形问题 形状设计
 // https://codeforces.com/problemset/problem/875/F 2500 最小生成基环树
 // https://codeforces.com/problemset/problem/1270/G 2700 构造 建图
 // https://atcoder.jp/contests/abc357/tasks/abc357_e 内向基环树简单路径个数
@@ -3991,7 +4020,7 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 		var n int
 		g := make([][]int, n)
 		deg := make([]int, len(g))
-		//for i := 0; i < len(g); i++ {
+		//for range len(g) {
 		//  var v, w int
 		//	Fscan(in, &v, &w)
 		//	v--
@@ -4018,31 +4047,60 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 			}
 		}
 
+		// 求一个基环
+		// https://codeforces.com/problemset/problem/835/F 2500
+		cycle := []int{}
+		//cycleWt := []int{} // 带权基环树，基环边权
+		for start, d := range deg {
+			if d > 1 {
+				pre := -1
+				cur := start
+				for {
+					cycle = append(cycle, cur)
+					// 找下一个点
+					for _, nxt := range g[cur] {
+						if nxt != pre && deg[nxt] > 1 {
+							// 带权基环树，在这里记录 cur-nxt 的边权
+							//cycleWt = append(cycleWt, e.wt)
+							pre = cur
+							cur = nxt
+							break
+						}
+					}
+					if cur == start { // 下一个点是起点
+						break
+					}
+				}
+				break // 找到了基环（如果求多个基环，就改成把 cycle 加到 cycles 中）
+			}
+		}
+
 		var curRoot int
 		_ = curRoot
 		// v 到 curRoot 的距离为 d
-		var dfsBranch func(v, fa, d int) int
+		var dfsBranch func(int, int, int) int
 		dfsBranch = func(v, fa, d int) int {
 			size := 1
 			for _, w := range g[v] {
 				if w != fa && deg[w] < 2 {
 					sz := dfsBranch(w, v, d+1)
-					// do sz ...
 					size += sz
 				}
 			}
 			return size
 		}
+
+		// 也可以遍历 cycle    for i, root := range cycle { ... }
 		size := 0
 		for root, d := range deg {
 			if d > 1 { // root 在基环上
 				curRoot = root
 				sz := dfsBranch(root, -1, 0)
-				// do sz ...
 				size += sz
 			}
 		}
 
+		// 其他
 		{
 			// 遍历基环（一般是求长度）
 			vis := make([]bool, len(g))
@@ -4108,27 +4166,6 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 					id++
 					f(i, -1)
 				}
-			}
-		}
-
-		// EXTRA: 求基环
-		var cycle []int
-		for i, d := range deg {
-			if d > 1 {
-				pre, v := -1, i
-				for {
-					cycle = append(cycle, v)
-					for _, w := range g[v] {
-						if w != pre && deg[w] > 1 {
-							pre, v = v, w
-							break
-						}
-					}
-					if v == i {
-						break
-					}
-				}
-				break
 			}
 		}
 	}
