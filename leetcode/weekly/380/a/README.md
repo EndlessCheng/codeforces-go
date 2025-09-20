@@ -80,6 +80,34 @@ public:
 };
 ```
 
+```c [sol-C]
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
+
+int maxFrequencyElements(int* nums, int numsSize) {
+    int mx = 0; // 直接初始化 mx = 100 可以做到一次遍历
+    for (int i = 0; i < numsSize; i++) {
+        mx = MAX(mx, nums[i]);
+    }
+
+    int* cnt = calloc(mx + 1, sizeof(int));
+    int max_cnt = 0;
+    int ans = 0;
+
+    for (int i = 0; i < numsSize; i++) {
+        int c = ++cnt[nums[i]];
+        if (c > max_cnt) {
+            ans = c;
+            max_cnt = c;
+        } else if (c == max_cnt) {
+            ans += c;
+        }
+    }
+
+    free(cnt);
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func maxFrequencyElements(nums []int) (ans int) {
 	cnt := map[int]int{}
