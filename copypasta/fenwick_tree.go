@@ -149,6 +149,7 @@ func (t fenwick) query(l, r int) int {
 // 返回最小的 x 满足 ∑i=[1..x] t[i] >= k
 // 思路类似【倍增】的查询，不断寻找 ∑<k 的数（位置），最后 +1 就是答案
 // 如果第 k 小的数不存在，返回 len(t)
+// 注：如果是普通树状数组，相当于查找前缀和 >= k 的最小下标（lowerBound），见 https://codeforces.com/problemset/problem/992/E
 // https://oi-wiki.org/ds/fenwick/#%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9%E6%9F%A5%E8%AF%A2%E5%85%A8%E5%B1%80%E7%AC%AC-k-%E5%B0%8F
 // https://codeforces.com/blog/entry/61364
 //
