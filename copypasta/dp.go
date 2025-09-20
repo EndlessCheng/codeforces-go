@@ -63,6 +63,7 @@ https://codeforces.com/problemset/problem/2027/D2 2200 在 DP 数组上滑窗
 https://codeforces.com/problemset/problem/2045/H 2200
 https://codeforces.com/problemset/problem/31/E 2400
 https://codeforces.com/problemset/problem/796/E 2400 状态设计
+https://codeforces.com/problemset/problem/946/F 2400 状态设计 todo
 https://codeforces.com/problemset/problem/983/C 2400
 https://codeforces.com/problemset/problem/360/C 2500
 https://codeforces.com/problemset/problem/6/D 2600
@@ -203,8 +204,9 @@ https://atcoder.jp/contests/arc115/tasks/arc115_e 容斥
 todo https://codeforces.com/problemset/problem/744/C 2400
 https://codeforces.com/problemset/problem/796/E 2400
 https://codeforces.com/problemset/problem/939/F 2400
+https://codeforces.com/problemset/problem/1093/F 2400 容斥
 https://codeforces.com/problemset/problem/1348/E 2400 做到 O(nk) todo 需要复习
-https://codeforces.com/problemset/problem/840/C 2500
+https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元素不同
 https://atcoder.jp/contests/abc237/tasks/abc237_f
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/arc097/tasks/arc097_c 混合逆序对
@@ -241,10 +243,6 @@ LC2212 https://leetcode.cn/problems/maximum-points-in-an-archery-competition/
 常见于递增子序列相关的题目
 LC3041 https://leetcode.cn/problems/maximize-consecutive-elements-in-an-array-after-modification/
 https://codeforces.com/problemset/problem/1582/F1
-
-决策单调性
-todo 决策单调性优化总结 https://www.luogu.com.cn/blog/command-block/dp-di-jue-ce-dan-diao-xing-you-hua-zong-jie
-https://codeforces.com/problemset/problem/229/D
 
 增量法
 见 common.go
@@ -868,11 +866,12 @@ func _(abs func(int) int) {
 	// - 详细证明 https://www.luogu.com.cn/article/m4267u8v
 	// - （弱化版）在至少一个 LIS 中 https://atcoder.jp/contests/abc354/tasks/abc354_f
 	// - 删除元素+Dilworth https://ac.nowcoder.com/acm/contest/3782/C
-	// - 修改一个数后的最大 LIS https://atcoder.jp/contests/abc360/tasks/abc360_g
-	// - 修改 2 个数呢？修改 k 个数呢？
 	// - 多个询问，单点修改后计算 LIS https://codeforces.com/problemset/problem/650/D 2600
 	// https://codeforces.com/problemset/problem/1468/A 2200 LaIS 与单调栈结合
 	// https://codeforces.com/problemset/problem/1826/E 2400 bitset 优化 
+	// https://codeforces.com/problemset/problem/946/G 2500
+	// - https://atcoder.jp/contests/abc360/tasks/abc360_g 相似题目 修改一个数后的最大 LIS
+	// - 修改 2 个数呢？修改 k 个数呢？
 	// https://codeforces.com/problemset/problem/249/D 2700
 	// https://atcoder.jp/contests/abc237/tasks/abc237_f 状态设计 LIS 计数 
 	// https://atcoder.jp/contests/abc393/tasks/abc393_f
@@ -886,7 +885,7 @@ func _(abs func(int) int) {
 	lis := func(a []int) int {
 		f := []int{}
 		for _, v := range a {
-			j := sort.SearchInts(f, v) // 改成 v+1 为非严格递增
+			j := sort.SearchInts(f, v) // v 是严格递增，改成 v+1 是非严格递增
 			if j < len(f) {
 				f[j] = v
 			} else {
@@ -991,11 +990,11 @@ func _(abs func(int) int) {
 		}
 	}
 
-	// LIS 方案数 O(nlogn)
+	// LIS 个数 O(nlogn)
 	// 原理见下面这题官方题解的方法二
 	// LC673 https://leetcode.cn/problems/number-of-longest-increasing-subsequence/
 	// https://www.luogu.com.cn/problem/P1108
-	cntLis := func(a []int) int {
+	cntLIS := func(a []int) int {
 		g := [][]int{}   // 保留所有历史信息
 		cnt := [][]int{} // 个数前缀和
 		for _, v := range a {
@@ -1016,6 +1015,24 @@ func _(abs func(int) int) {
 		}
 		c := cnt[len(cnt)-1]
 		return c[len(c)-1]
+	}
+
+	// 严格递增子序列个数（不需要最长）
+	// https://leetcode.cn/problems/sum-of-beautiful-subsequences/
+	cntIS := func(a []int) (res int) {
+		b := slices.Clone(a)
+		slices.Sort(b)
+		b = slices.Compact(b)
+
+		t := newFenwickTree(len(b))
+		for _, v := range a {
+			v = sort.SearchInts(b, v) + 1 // v ∈ [1,len(b)]
+			cnt := t.pre(v-1) + 1 // < v 的个数 + v 自己单独组成一个子序列
+			cnt %= mod
+			res += cnt
+			t.update(v, cnt)
+		}
+		return res % mod
 	}
 
 	// LIS 相关构造题
@@ -1317,6 +1334,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/577/B 1900 抽屉原理
 	// https://codeforces.com/problemset/problem/687/C 1900 恰好组成 k 的数中能恰好组成哪些数
 	// https://codeforces.com/problemset/problem/864/E 2000 打印方案
+	// https://codeforces.com/problemset/problem/2075/D 2000 双背包 恰好装满+至少装满
 	// https://atcoder.jp/contests/abc383/tasks/abc383_f 1706=CF2001 深刻理解 0-1 背包 & 完全背包
 	// https://codeforces.com/problemset/problem/981/E 2200 转移对象是下标
 	// https://codeforces.com/problemset/problem/1203/F2 2300 排序+转换
@@ -1355,7 +1373,7 @@ func _(abs func(int) int) {
 	// 0-1 背包 EXTRA: 恰好装满
 	// https://leetcode.cn/contest/sf-tech/problems/cINqyA/
 	// 转换 二维费用 https://codeforces.com/problemset/problem/730/J
-	zeroOneKnapsackExactlyFull := func(values, weights []int, maxW int) {
+	zeroOneKnapsackExactlyFull := func(values, weights []int, maxW int) int {
 		f := make([]int, maxW+1)
 		for i := range f {
 			f[i] = -1e9 // -1e18
@@ -1367,18 +1385,23 @@ func _(abs func(int) int) {
 				f[j] = max(f[j], f[j-w]+v)
 			}
 		}
+
 		for i := maxW; i >= 0; i-- {
 			if f[i] >= 0 { // 能恰好装满 i，此时背包物品价值和的最大值是 f[i]
-				// ...
+				return f[i]
 			}
 		}
+		return -1
 	}
 
-	// 0-1 背包 EXTRA: 至少装入重量和为 maxW 的物品，求价值和的最小值 https://www.luogu.com.cn/problem/P4377
+	// 0-1 背包 EXTRA: 至少装满，即至少装入重量和为 maxW 的物品，求价值和的最小值
 	// f[0] 表示至少为 0 的情况，也表示没有任何约束的情况
 	// 比如选第 i 个物品后容量 <=0 了，那就表示前面的 i-1 个物品可以不受约束地随意选或不选了
-	// 转换 https://codeforces.com/problemset/problem/19/B LC2742 https://leetcode.cn/problems/painting-the-walls/
-	// 二维费用的情况+价值最小 https://ac.nowcoder.com/acm/contest/6218/C
+	// https://www.luogu.com.cn/problem/P4377
+	// 转换 https://codeforces.com/problemset/problem/19/B 1900
+	// - LC2742 https://leetcode.cn/problems/painting-the-walls/
+	// https://codeforces.com/problemset/problem/2075/D 2000 双背包 恰好装满+至少装满
+	// https://ac.nowcoder.com/acm/contest/6218/C 二维费用的情况+价值最小
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		f := make([]int, maxW+1)
 		for i := range f {
@@ -1505,6 +1528,7 @@ func _(abs func(int) int) {
 	// LC322 https://leetcode.cn/problems/coin-change/ 恰好装满 
 	// LC1449 https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/ 恰好装满+打印方案 
 	// 【脑洞】求极限：lim_{maxW->∞} f[maxW]/maxW
+	// 思维扩展 https://codeforces.com/problemset/problem/10/E 2600
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
 		f := make([]int, maxW+1) // fill
 		//f[0] = 0
@@ -2230,6 +2254,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1613/D 1900 爽
 	https://codeforces.com/problemset/problem/623/B 2300
 	https://codeforces.com/problemset/problem/796/E 2400
+	https://codeforces.com/problemset/problem/946/G 2500 LIS
 	https://codeforces.com/problemset/problem/1701/E 2500 LCS 变形题
 	*/
 
@@ -2291,6 +2316,7 @@ func _(abs func(int) int) {
 	概率 DP
 	https://atcoder.jp/contests/dp/tasks/dp_i 入门题
 	- 在本题中，选或不选不是人为决定的，而是由概率决定的
+	https://codeforces.com/problemset/problem/2125/D 1600 入门题
 	https://codeforces.com/problemset/problem/2081/A 1800 转化成概率 DP
 	https://codeforces.com/problemset/problem/16/E 1900
 	https://codeforces.com/problemset/problem/540/D 1900
@@ -2425,7 +2451,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1215/E 2200
 	// https://codeforces.com/problemset/problem/1238/E 2200 式子变形
 	// https://codeforces.com/problemset/problem/327/E 2300 卡常优化 另一种做法是折半枚举
-	// todo https://codeforces.com/problemset/problem/744/C 2400 状态设计
+	// https://codeforces.com/problemset/problem/744/C 2400 状态设计 todo
 	// https://codeforces.com/problemset/problem/1598/F 2400 合法括号字符串
 	// https://codeforces.com/problemset/problem/1550/E 2500 状态设计
 	// https://www.luogu.com.cn/problem/P3694 前缀和
@@ -2433,10 +2459,9 @@ func _(abs func(int) int) {
 	permDP := func(a []int, check func(int, int) bool) int {
 		n := len(a)
 		f := make([]int, 1<<n)
-		// 求最小值的题目
-		//for i := 1; i < len(f); i++ { f[i] = 1e18 }
-		// 计数题目
-		f[0] = 1
+		// 求最小值的题目 for i := 1; i < len(f); i++ { f[i] = 1e18 }
+		// 求最大值的部分题目 for i := 1; i < len(f); i++ { f[i] = -1 } 把 -1 当作不合法
+		f[0] = 1 // 计数题目
 		for s, fs := range f { // 前面选的下标集合是 s
 			if fs == 0 { // 剪枝：用在计数题目上
 				continue
@@ -2761,8 +2786,10 @@ func _(abs func(int) int) {
 	// Some SOS DP Insights https://codeforces.com/blog/entry/105247
 	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
 	//
+	// LC3670 https://leetcode.cn/problems/maximum-product-of-two-integers-with-no-common-bits/
+	//    求满足 ai&aj=0 的最大 ai*aj
 	// LC2732 https://leetcode.cn/problems/find-a-good-subset-of-the-matrix/
-	//    最简单的 SOSDP，判断是否有两个子集满足 x&y=0 且 idx[x]>=0 且 idx[y]>=0
+	//    判断是否有两个子集满足 x&y=0 且 idx[x]>=0 且 idx[y]>=0
 	// https://codeforces.com/problemset/problem/1554/B 1700 求下标最大次大，与 k 大小无关的写法
 	// https://codeforces.com/problemset/problem/165/E 2200
 	// https://codeforces.com/problemset/problem/1234/F 2200
@@ -3021,6 +3048,9 @@ func _(abs func(int) int) {
 	对称
 	LC248 https://leetcode.cn/problems/strobogrammatic-number-iii/
 	LC1088 https://leetcode.cn/problems/confusing-number-ii/ 2077
+
+	思维扩展
+	https://codeforces.com/problemset/problem/946/E 2200 重排成回文串
 	*/
 
 	// 上下界数位 DP（v2.1 模板）
@@ -3780,6 +3810,7 @@ func _(abs func(int) int) {
 	// todo https://codeforces.com/problemset/problem/125/E 2400 单度限制最小生成树（恰好）
 	//  https://codeforces.com/problemset/problem/321/E 2600
 	//  https://codeforces.com/problemset/problem/739/E 3000 也可以费用流
+	//  https://codeforces.com/problemset/problem/720/F 3100
 	//  结合四边形不等式 IOI00 邮局 https://www.luogu.com.cn/problem/P4767 
 	//  - https://www.luogu.com.cn/problem/P6246
 	//  https://www.luogu.com.cn/problem/P5308
@@ -3862,6 +3893,11 @@ func _(abs func(int) int) {
 		return
 	}
 
+	// 决策单调性优化 DP
+	// todo 决策单调性优化总结 https://www.luogu.com.cn/blog/command-block/dp-di-jue-ce-dan-diao-xing-you-hua-zong-jie
+	// https://codeforces.com/problemset/problem/229/D 2100
+	// https://codeforces.com/problemset/problem/1101/F 2400 看似二分，但实际上只是对状态定义有帮助（最大间距的最小值）
+
 	// 四边形不等式优化 Knuth's Optimization / Knuth-Yao Speedup
 	// 满足该性质的 DAG 叫做 Monge 图
 	// https://oi-wiki.org/dp/opt/quadrangle/
@@ -3911,6 +3947,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/982/C 1500
 	https://codeforces.com/problemset/problem/369/C 1600
 	https://codeforces.com/problemset/problem/1689/C 1600 二叉树
+	https://codeforces.com/problemset/problem/2070/D 1600
 	https://codeforces.com/problemset/problem/743/D 1800
 	https://codeforces.com/problemset/problem/1083/A 1800
 	https://codeforces.com/problemset/problem/1833/G 1800
@@ -3955,13 +3992,14 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1881/F 1700
 	// https://codeforces.com/problemset/problem/1238/F 2200
 	// https://codeforces.com/problemset/problem/1042/F 2400 贪心
+	// https://codeforces.com/problemset/problem/835/F 2500 基环树 形状设计
 	// 虚树直径 https://www.luogu.com.cn/problem/P4103
 	diameter := func(st int, g [][]int) (diameter int) {
 		var dfs func(int, int) int
 		dfs = func(v, fa int) (maxL int) {
 			for _, w := range g[v] {
 				if w != fa {
-					subL := dfs(w, v) + 1 // wt
+					subL := dfs(w, v) + 1 // e.wt
 					diameter = max(diameter, maxL+subL)
 					maxL = max(maxL, subL)
 				}
@@ -4702,7 +4740,7 @@ func _(abs func(int) int) {
 		minimumArea,
 
 		lcs, lcsCount,
-		lisSlow, lis, lisAll, lisModify, lisRollback, cntLis, lcis, lcisPath, countLIS,
+		lisSlow, lis, lisAll, lisModify, lisRollback, cntLIS, cntIS, lcis, lcisPath, countLIS,
 		distinctSubsequence, distinctSubsequenceWithFixedLength,
 		palindromeO1Space, isPalindrome, minPalindromeCut,
 
