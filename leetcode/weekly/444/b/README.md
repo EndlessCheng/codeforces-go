@@ -14,7 +14,7 @@ $\texttt{addPacket}$ 和 $\textit{forwardPacket}$ 按题目要求实现，具体
 
 $\texttt{getCount}$ 可以用二分查找，见 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)。
 
-为了方便二分，可以用列表（数组）模拟队列，额外用一个变量 $\textit{head}$ 表示队首的下标。
+部分语言为了方便二分，可以用列表（数组）模拟队列，额外用一个变量 $\textit{head}$ 表示队首的下标。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ezRvYiE27/)，欢迎点赞关注~
 
@@ -176,7 +176,8 @@ class Router {
     queue<tuple<int, int, int>> packet_q; // packet 队列
     // 注：如果不想手写 TupleHash，可以用 set
     unordered_set<tuple<int, int, int>, TupleHash> packet_set; // packet 集合
-    unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> ([timestamp], head)
+    // deque 支持随机访问，方便二分
+    unordered_map<int, deque<int>> dest_to_timestamps; // destination -> [timestamp]
 
 public:
     Router(int memoryLimit) {
@@ -192,7 +193,7 @@ public:
             forwardPacket();
         }
         packet_q.push(packet); // 入队
-        dest_to_timestamps[destination].first.push_back(timestamp);
+        dest_to_timestamps[destination].push_back(timestamp);
         return true;
     }
 
@@ -204,14 +205,14 @@ public:
         packet_q.pop();
         packet_set.erase(packet);
         auto [source, destination, timestamp] = packet;
-        dest_to_timestamps[destination].second++; // 队首下标加一，模拟出队
+        dest_to_timestamps[destination].pop_front();
         return {source, destination, timestamp};
     }
 
     int getCount(int destination, int startTime, int endTime) {
-        auto& [timestamps, head] = dest_to_timestamps[destination];
-        auto left = ranges::lower_bound(timestamps.begin() + head, timestamps.end(), startTime);
-        auto right = ranges::upper_bound(timestamps.begin() + head, timestamps.end(), endTime);
+        auto& timestamps = dest_to_timestamps[destination];
+        auto left = ranges::lower_bound(timestamps, startTime);
+        auto right = ranges::upper_bound(timestamps, endTime);
         return right - left;
     }
 };
@@ -246,7 +247,8 @@ class Router {
     queue<tuple<int, int, int>> packet_q; // packet 队列
     // 注：如果不想手写 TupleHash，可以用 set
     unordered_set<tuple<int, int, int>, TupleHash> packet_set; // packet 集合
-    unordered_map<int, pair<vector<int>, int>> dest_to_timestamps; // destination -> ([timestamp], head)
+    // deque 支持随机访问，方便二分
+    unordered_map<int, deque<int>> dest_to_timestamps; // destination -> [timestamp]
 
 public:
     Router(int memoryLimit) {
@@ -262,7 +264,7 @@ public:
             forwardPacket();
         }
         packet_q.push(packet); // 入队
-        dest_to_timestamps[destination].first.push_back(timestamp);
+        dest_to_timestamps[destination].push_back(timestamp);
         return true;
     }
 
@@ -274,14 +276,14 @@ public:
         packet_q.pop();
         packet_set.erase(packet);
         auto [source, destination, timestamp] = packet;
-        dest_to_timestamps[destination].second++; // 队首下标加一，模拟出队
+        dest_to_timestamps[destination].pop_front();
         return {source, destination, timestamp};
     }
 
     int getCount(int destination, int startTime, int endTime) {
-        auto& [timestamps, head] = dest_to_timestamps[destination];
-        auto left = ranges::lower_bound(timestamps.begin() + head, timestamps.end(), startTime);
-        auto right = ranges::upper_bound(timestamps.begin() + head, timestamps.end(), endTime);
+        auto& timestamps = dest_to_timestamps[destination];
+        auto left = ranges::lower_bound(timestamps, startTime);
+        auto right = ranges::upper_bound(timestamps, endTime);
         return right - left;
     }
 };
