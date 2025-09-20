@@ -374,6 +374,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/446/C   2400 斐波那契数列 广义斐波那契数列 https://gemini.google.com/app/62b7bb3403b692db 往上翻
 // https://codeforces.com/problemset/problem/1114/F  2400
 // https://codeforces.com/problemset/problem/1221/F  2400 正方形覆盖点 技巧：把加点转化成加区间
+// https://codeforces.com/problemset/problem/1638/E  2400 Colorful Operations
 // https://codeforces.com/problemset/problem/1969/E  2400
 // https://codeforces.com/problemset/problem/266/E   2500 k 次幂带权前缀和
 // https://codeforces.com/problemset/problem/618/E   2500 旋转 http://poj.org/problem?id=2991

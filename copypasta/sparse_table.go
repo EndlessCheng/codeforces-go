@@ -22,6 +22,7 @@ https://codeforces.com/problemset/problem/1709/D 1700
 https://codeforces.com/problemset/problem/2050/F 1700 GCD
 https://codeforces.com/problemset/problem/1548/B 1800 GCD
 https://codeforces.com/problemset/problem/689/D 2100 二分/三指针
+https://codeforces.com/problemset/problem/1107/G 2500
 https://www.jisuanke.com/contest/11346/challenges 变长/种类
 todo https://ac.nowcoder.com/acm/problem/240870 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=53616019
 
