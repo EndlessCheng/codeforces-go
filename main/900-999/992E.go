@@ -22,7 +22,7 @@ func (t fenwick92) pre(i int) (s int) {
 	return
 }
 
-func (t fenwick92) rank(sum int) (res int) {
+func (t fenwick92) index(sum int) (res int) {
 	for b := 1 << 17; b > 0; b >>= 1 {
 		if nxt := res | b; nxt < len(t) && t[nxt] < sum {
 			sum -= t[nxt]
@@ -57,7 +57,7 @@ o:
 				Fprintln(out, i)
 				continue o
 			}
-			i = t.rank(s * 2)
+			i = t.index(s * 2)
 		}
 		Fprintln(out, -1)
 	}
