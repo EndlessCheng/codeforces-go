@@ -1,8 +1,6 @@
-子数组的最大差值，等于整个子数组的最大值减去整个子数组的最小值。
+由于同一个子数组可以重复选，所以最优解是，把差值最大的子数组重复选 $k$ 次。
 
-由于同一个子数组可以重复选，所以答案就是最大差值乘以 $k$。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+最大差值等于 $\textit{nums}$ 的最大值减去 $\textit{nums}$ 的最小值。
 
 ```py [sol-Python3]
 class Solution:
@@ -45,6 +43,14 @@ func maxTotalValue(nums []int, k int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 思考题
+
+计算数组的最小值和最大值，最多需要多少次比大小？
+
+C++ `std::minmax` 的 [文档](https://en.cppreference.com/w/cpp/algorithm/minmax.html) 写着：至多要 $\dfrac{3N}{2}$ 次。
+
+如何实现？见 [CF730B](https://codeforces.com/problemset/problem/730/B)。
+
 ## 专题训练
 
 见下面思维题单的「**§5.2 脑筋急转弯**」。
@@ -67,3 +73,5 @@ func maxTotalValue(nums []int, k int) int64 {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

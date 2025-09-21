@@ -4,7 +4,7 @@
 
 由于 $0$ 或 $x$ 等于 $x$，所以可以用 $0$ 作为答案的初始值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV19GWcziEYE/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -60,6 +60,13 @@ func evenNumberBitwiseORs(nums []int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 思考题
+
+1. 把按位或改成按位与，怎么做？$\textit{ans}$ 应该初始化成多少？
+2. 对 $\textit{nums}$ 的每个子数组，计算 $\texttt{evenNumberBitwiseORs}$，累加返回值。你能想出一个非暴力的做法吗？
+
+欢迎在评论区分享你的思路/代码。
 
 ## 分类题单
 
