@@ -4,7 +4,11 @@
 
 把 $\textit{rewardValues}$ 从小到大排序。
 
-排序后，问题类似 0-1 背包，原理请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
+排序后，问题相当于：
+
+- 从左到右遍历 $\textit{rewardValues}$，考虑每个 $\textit{rewardValues}[i]$ 选或不选，计算能得到的最大总奖励。
+
+这类似 0-1 背包，原理请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
 定义 $f[i][j]$ 表示能否从 $\textit{rewardValues}$ 的前 $i$ 个数中得到总奖励 $j$。
 
@@ -27,7 +31,7 @@ $$
 
 $j$ 最大枚举到 $2m-1$（见下面答疑），其中 $m$ 是数组的最大值。
 
-这样可以解决 [3180. 执行操作可获得的最大总奖励 I](https://leetcode.cn/problems/maximum-total-reward-using-operations-i/)，但本题数据范围更大，需要去掉第一个维度，并用 **bitset** 优化（也可以用 **bigint**）。
+至此，我们已经可以解决 [3180. 执行操作可获得的最大总奖励 I](https://leetcode.cn/problems/maximum-total-reward-using-operations-i/) 了。但本题数据范围更大，需要去掉第一个维度，并用 **bitset** 优化（也可以用 **bigint**）。
 
 #### 答疑
 
