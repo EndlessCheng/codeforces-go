@@ -92,7 +92,57 @@ class Solution {
 public:
     int minSplitMerge(vector<int>& nums1, vector<int>& nums2) {
         int n = nums1.size();
-        set<vector<int>> vis = {nums1};
+        set<vector<int>> vis = {nums1}; // 哈希集合写法见【C++ 写法二】
+        vector<vector<int>> q = {nums1};
+        for (int ans = 0; ; ans++) {
+            vector<vector<int>> nxt;
+            for (auto& a : q) {
+                if (a == nums2) {
+                    return ans;
+                }
+                for (int l = 0; l < n; l++) {
+                    for (int r = l + 1; r <= n; r++) {
+                        auto b = a;
+                        vector<int> sub(b.begin() + l, b.begin() + r);
+                        b.erase(b.begin() + l, b.begin() + r); // 从 b 中移除 sub
+                        for (int i = 0; i <= b.size(); i++) {
+                            auto c = b;
+                            c.insert(c.begin() + i, sub.begin(), sub.end());
+                            if (vis.insert(c).second) { // c 不在 vis 中
+                                nxt.emplace_back(c);
+                            }
+                        }
+                    }
+                }
+            }
+            q = move(nxt);
+        }
+    }
+};
+```
+
+```cpp [sol-C++ 写法二]
+template<typename T>
+struct VectorHash {
+    static void hash_combine(size_t& seed, const T& v) {
+        // 参考 boost::hash_combine
+        seed ^= hash<T>{}(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+    }
+
+    size_t operator()(const vector<T>& vec) const {
+        size_t seed = 0;
+        for (const T& v : vec) {
+            hash_combine(seed, v);
+        }
+        return seed;
+    }
+};
+
+class Solution {
+public:
+    int minSplitMerge(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size();
+        unordered_set<vector<int>, VectorHash<int>> vis = {nums1};
         vector<vector<int>> q = {nums1};
         for (int ans = 0; ; ans++) {
             vector<vector<int>> nxt;
