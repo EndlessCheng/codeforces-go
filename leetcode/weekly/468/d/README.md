@@ -1,4 +1,4 @@
-示例 2 的 $\textit{nums}=[4,2,5,1]$，我们把所有子数组的值算出来，得到一个矩阵 $M$，其中 $M_{l,r}$ 表示子数组 $[l,r]$ 的值。规定 $l>r$ 时值为 $0$。
+示例 2 的 $\textit{nums}=[4,2,5,1]$，我们把所有子数组的值算出来，可以得到一个矩阵 $M$，其中 $M_{l,r}$ 表示子数组 $[l,r]$ 的值。规定 $l>r$ 时值为 $0$。
 
 $$
 M = \begin{bmatrix}
@@ -11,17 +11,17 @@ $$
 
 当左端点固定时，右端点越大，子数组的最小值越小，最大值越大，所以子数组的值也就越大。
 
-所以矩阵的每一行都是**递增**的。问题相当于：
+所以矩阵**每一行都是递增的**。问题相当于：
 
 - 合并 $n$ 个递增列表，计算前 $k$ 大元素之和。
 
-根据 [23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/) 的 [做法](https://leetcode.cn/problems/merge-k-sorted-lists/solutions/2384305/liang-chong-fang-fa-zui-xiao-dui-fen-zhi-zbzx/)：
+根据 [23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/) 的 [堆的做法](https://leetcode.cn/problems/merge-k-sorted-lists/solutions/2384305/liang-chong-fang-fa-zui-xiao-dui-fen-zhi-zbzx/)：
 
 1. 把矩阵每一行的最后一个数 $M_{l,n-1}$ 加到最大堆中。
 2. 循环 $k$ 次。
 3. 每次循环，弹出堆顶，把堆顶 $M_{l,r}$ 加入答案，然后把左边元素 $M_{l,r-1}$ 入堆。
 
-我们不能直接把整个 $M$ 算出来（太慢了），而是在入堆的时候计算，这需要一个数据结构，支持查询区间最小值和区间最大值。可以用线段树，或者 ST 表。下面用的 ST 表。
+我们不能直接把整个 $M$ 算出来（太慢了），而是在入堆的时候计算。这需要一个数据结构，支持查询区间最小值和区间最大值。可以用线段树，或者 ST 表。下面用的 ST 表。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
@@ -55,16 +55,19 @@ class Solution:
     def maxTotalValue(self, nums: List[int], k: int) -> int:
         n = len(nums)
         st = ST(nums)
+
+        # 堆中保存 (子数组值，左端点，右端点加一)
         # 取负号变成最大堆
         h = [(-st.query(i, n), i, n) for i in range(n)]
         heapify(h)
 
         ans = 0
-        for _ in range(k):  # 题目保证 k 不超过所有子数组的个数
-            d, l, r = heappop(h)
+        for _ in range(k):
+            d, l, r = h[0]
+            if d == 0:  # 堆中剩余元素全是 0
+                break
             ans -= d
-            if l < r - 1:
-                heappush(h, (-st.query(l, r - 1), l, r - 1))
+            heapreplace(h, (-st.query(l, r - 1), l, r - 1))
         return ans
 ```
 
@@ -103,17 +106,16 @@ class Solution {
 
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);
         for (int i = 0; i < n; i++) {
-            pq.add(new int[]{query(st, i, n), i, n});
+            pq.add(new int[]{query(st, i, n), i, n}); // 子数组值，左端点，右端点加一
         }
 
         long ans = 0;
-        while (k-- > 0) {
+        while (k-- > 0 && pq.peek()[0] > 0) {
             int[] top = pq.poll();
             ans += top[0];
-            int l = top[1], r = top[2];
-            if (l < r - 1) {
-                pq.add(new int[]{query(st, l, r - 1), l, r - 1});
-            }
+            top[2]--;
+            top[0] = query(st, top[1], top[2]);
+            pq.add(top);
         }
         return ans;
     }
@@ -155,17 +157,15 @@ public:
 
         priority_queue<tuple<int, int, int>> pq;
         for (int i = 0; i < n; i++) {
-            pq.emplace(query(st, i, n), i, n);
+            pq.emplace(query(st, i, n), i, n); // 子数组值，左端点，右端点加一
         }
 
         long long ans = 0;
-        while (k--) {
+        while (k-- && get<0>(pq.top())) {
             auto [d, l, r] = pq.top();
             pq.pop();
             ans += d;
-            if (l < r - 1) {
-                pq.emplace(query(st, l, r - 1), l, r - 1);
-            }
+            pq.emplace(query(st, l, r - 1), l, r - 1);
         }
         return ans;
     }
@@ -209,16 +209,15 @@ func maxTotalValue(nums []int, k int) (ans int64) {
 	st := newST(nums)
 	h := make(hp, n)
 	for i := range h {
-		h[i] = tuple{st.query(i, n), i, n}
+		h[i] = tuple{st.query(i, n), i, n} // 子数组值，左端点，右端点加一
 	}
 	heap.Init(&h)
 
-	for range k { // 题目保证 k 不超过所有子数组的个数
-		t := heap.Pop(&h).(tuple)
-		ans += int64(t.d)
-		if t.l < t.r-1 {
-			heap.Push(&h, tuple{st.query(t.l, t.r-1), t.l, t.r - 1})
-		}
+	for ; k > 0 && h[0].d > 0; k-- {
+		ans += int64(h[0].d)
+		h[0].r--
+		h[0].d = st.query(h[0].l, h[0].r)
+		heap.Fix(&h, 0)
 	}
 	return
 }
@@ -229,14 +228,14 @@ type hp []tuple
 func (h hp) Len() int           { return len(h) }
 func (h hp) Less(i, j int) bool { return h[i].d > h[j].d }
 func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v any)        { *h = append(*h, v.(tuple)) }
-func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (hp) Push(any)             {}
+func (hp) Pop() (_ any)         { return }
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}((n+k)\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n\log n)$。
+- 空间复杂度：$\mathcal{O}(n\log n)$。用线段树可以做到 $\mathcal{O}(n)$ 空间。
 
 ## 分类题单
 

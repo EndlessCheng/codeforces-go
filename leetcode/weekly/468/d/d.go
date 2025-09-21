@@ -42,16 +42,15 @@ func maxTotalValue(nums []int, k int) (ans int64) {
 	st := newST(nums)
 	h := make(hp, n)
 	for i := range h {
-		h[i] = tuple{st.query(i, n), i, n}
+		h[i] = tuple{st.query(i, n), i, n} // 子数组值，左端点，右端点加一
 	}
 	heap.Init(&h)
 
-	for range k {
-		t := heap.Pop(&h).(tuple)
-		ans += int64(t.d)
-		if t.l < t.r-1 {
-			heap.Push(&h, tuple{st.query(t.l, t.r-1), t.l, t.r - 1})
-		}
+	for ; k > 0 && h[0].d > 0; k-- {
+		ans += int64(h[0].d)
+		h[0].r--
+		h[0].d = st.query(h[0].l, h[0].r)
+		heap.Fix(&h, 0)
 	}
 	return
 }
@@ -62,5 +61,5 @@ type hp []tuple
 func (h hp) Len() int           { return len(h) }
 func (h hp) Less(i, j int) bool { return h[i].d > h[j].d }
 func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v any)        { *h = append(*h, v.(tuple)) }
-func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (hp) Push(any)             {}
+func (hp) Pop() (_ any)         { return }
