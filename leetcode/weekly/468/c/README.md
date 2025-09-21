@@ -25,7 +25,7 @@ class Solution:
     def minSplitMerge(self, nums1: List[int], nums2: List[int]) -> int:
         n = len(nums1)
         vis = {tuple(nums1)}
-        q = deque([nums1])
+        q = [nums1]
         for ans in count(0):
             tmp = q
             q = []
@@ -47,8 +47,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int minSplitMerge(int[] nums1, int[] nums2) {
-        List<Integer> nums2List = toList(nums2);
         int n = nums1.length;
+        List<Integer> nums2List = toList(nums2);
         Set<List<Integer>> vis = new HashSet<>();
         vis.add(toList(nums1));
         List<List<Integer>> q = List.of(toList(nums1));
