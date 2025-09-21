@@ -18,7 +18,7 @@
 
 **答**：我们可以把一个元素（当作子数组）提取出来，插在数组的任意位置。类似扑克牌，我们**可以随意洗牌**。所以可以把 $\textit{nums}_1$ 变成其任意排列。由于题目保证 $\textit{nums}_2$ 是 $\textit{nums}_1$ 的一个排列，所以一定可以把 $\textit{nums}_1$ 变成 $\textit{nums}_2$。 
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV19GWcziEYE/?t=7m23s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -162,7 +162,7 @@ func minSplitMerge(nums1, nums2 []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n!\cdot n^4)$，其中 $n$ 是 $\textit{nums}_1$ 的长度。
+- 时间复杂度：$\mathcal{O}(n!\cdot n^4)$，其中 $n$ 是 $\textit{nums}_1$ 的长度。最多有 $\mathcal{O}(n!)$ 个状态，每个状态有 $\mathcal{O}(n^3)$ 种操作，每种操作需要 $\mathcal{O}(n)$ 的时间拼接数组。
 - 空间复杂度：$\mathcal{O}(n!\cdot n)$。最多有 $\mathcal{O}(n!)$ 个状态，每个状态占用 $\mathcal{O}(n)$ 的空间。
 
 ## 分类题单
