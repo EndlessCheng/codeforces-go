@@ -27,6 +27,8 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV19GWcziEYE/?t=20m56s)，欢迎点赞关注~
 
+### 写法一
+
 ```py [sol-Python3]
 # 手写 min max 更快
 min = lambda a, b: b if b < a else a
@@ -38,19 +40,18 @@ def op(a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[int, int]:
 class ST:
     def __init__(self, a: List[int]):
         n = len(a)
-        sz = n.bit_length()
-        st = [[None] * sz for _ in range(n)]
-        for i, x in enumerate(a):
-            st[i][0] = (x, x)
-        for j in range(1, sz):
-            for i in range(n - (1 << j) + 1):
-                st[i][j] = op(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+        w = n.bit_length()
+        st = [[None] * n for _ in range(w)]
+        st[0] = [(x, x) for x in a]
+        for i in range(1, w):
+            for j in range(n - (1 << i) + 1):
+                st[i][j] = op(st[i - 1][j], st[i - 1][j + (1 << (i - 1))])
         self.st = st
 
     # [l, r) 左闭右开
     def query(self, l: int, r: int) -> int:
         k = (r - l).bit_length() - 1
-        mn, mx = op(self.st[l][k], self.st[r - (1 << k)][k])
+        mn, mx = op(self.st[k][l], self.st[k][r - (1 << k)])
         return mx - mn
 
 class Solution:
@@ -61,7 +62,7 @@ class Solution:
         # 堆中保存 (子数组值，左端点，右端点加一)
         # 取负号变成最大堆
         h = [(-st.query(i, n), i, n) for i in range(n)]
-        heapify(h)
+        # 由于 h 是递减的，无需堆化
 
         ans = 0
         for _ in range(k):
@@ -74,41 +75,46 @@ class Solution:
 ```
 
 ```java [sol-Java]
-class Solution {
-    private int[] op(int[] a, int[] b) {
-        return new int[]{Math.min(a[0], b[0]), Math.max(a[1], b[1])};
-    }
+class ST {
+    private final int[][] stMin;
+    private final int[][] stMax;
 
-    private int[][][] newSt(int[] a) {
+    public ST(int[] a) {
         int n = a.length;
-        int sz = 32 - Integer.numberOfLeadingZeros(n);
-        int[][][] st = new int[n][sz][2];
-        for (int i = 0; i < n; i++) {
-            st[i][0][0] = a[i];
-            st[i][0][1] = a[i];
+        int w = 32 - Integer.numberOfLeadingZeros(n);
+        stMin = new int[w][n];
+        stMax = new int[w][n];
+
+        for (int j = 0; j < n; j++) {
+            stMin[0][j] = a[j];
+            stMax[0][j] = a[j];
         }
-        for (int j = 1; j < sz; j++) {
-            for (int i = 0; i + (1 << j) <= n; i++) {
-                st[i][j] = op(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+
+        for (int i = 1; i < w; i++) {
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                stMin[i][j] = Math.min(stMin[i - 1][j], stMin[i - 1][j + (1 << (i - 1))]);
+                stMax[i][j] = Math.max(stMax[i - 1][j], stMax[i - 1][j + (1 << (i - 1))]);
             }
         }
-        return st;
     }
 
-    // [l,r) 左闭右开
-    private int query(int[][][] st, int l, int r) {
+    // [l, r) 左闭右开
+    public int query(int l, int r) {
         int k = 31 - Integer.numberOfLeadingZeros(r - l);
-        int[] t = op(st[l][k], st[r - (1 << k)][k]);
-        return t[1] - t[0];
+        int mn = Math.min(stMin[k][l], stMin[k][r - (1 << k)]);
+        int mx = Math.max(stMax[k][l], stMax[k][r - (1 << k)]);
+        return mx - mn;
     }
+}
 
+class Solution{
     public long maxTotalValue(int[] nums, int k) {
         int n = nums.length;
-        int[][][] st = newSt(nums);
+        ST st = new ST(nums);
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]); // 最大堆
         for (int i = 0; i < n; i++) {
-            pq.add(new int[]{query(st, i, n), i, n}); // 子数组值，左端点，右端点加一
+            pq.add(new int[]{st.query(i, n), i, n}); // 子数组值，左端点，右端点加一
         }
 
         long ans = 0;
@@ -116,7 +122,7 @@ class Solution {
             int[] top = pq.poll();
             ans += top[0];
             top[2]--;
-            top[0] = query(st, top[1], top[2]);
+            top[0] = st.query(top[1], top[2]);
             pq.add(top);
         }
         return ans;
@@ -125,41 +131,48 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-class Solution {
-    pair<int, int> op(const pair<int, int>& a, const pair<int, int>& b) {
-        return {min(a.first, b.first), max(a.second, b.second)};
-    }
+class ST {
+    vector<vector<int>> st_min;
+    vector<vector<int>> st_max;
 
-    vector<vector<pair<int, int>>> new_st(vector<int>& a) {
+public:
+    ST(const vector<int>& a) {
         size_t n = a.size();
-        int sz = bit_width(n);
-        vector st(n, vector<pair<int, int>>(sz));
-        for (int i = 0; i < n; i++) {
-            st[i][0] = {a[i], a[i]};
+        int w = bit_width(n);
+        st_min.resize(w, vector<int>(n));
+        st_max.resize(w, vector<int>(n));
+
+        for (int j = 0; j < n; j++) {
+            st_min[0][j] = a[j];
+            st_max[0][j] = a[j];
         }
-        for (int j = 1; j < sz; j++) {
-            for (int i = 0; i + (1 << j) <= n; i++) {
-                st[i][j] = op(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+
+        for (int i = 1; i < w; i++) {
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                st_min[i][j] = min(st_min[i - 1][j], st_min[i - 1][j + (1 << (i - 1))]);
+                st_max[i][j] = max(st_max[i - 1][j], st_max[i - 1][j + (1 << (i - 1))]);
             }
         }
-        return st;
     }
 
-    // [l,r) 左闭右开
-    int query(const vector<vector<pair<int, int>>>& st, int l, int r) {
+    // [l, r) 左闭右开
+    int query(int l, int r) const {
         int k = bit_width((uint32_t) r - l) - 1;
-        auto [mn, mx] = op(st[l][k], st[r - (1 << k)][k]);
+        int mn = min(st_min[k][l], st_min[k][r - (1 << k)]);
+        int mx = max(st_max[k][l], st_max[k][r - (1 << k)]);
         return mx - mn;
     }
+};
 
+class Solution {
 public:
     long long maxTotalValue(vector<int>& nums, int k) {
         int n = nums.size();
-        auto st = new_st(nums);
+        ST st(nums);
 
         priority_queue<tuple<int, int, int>> pq;
         for (int i = 0; i < n; i++) {
-            pq.emplace(query(st, i, n), i, n); // 子数组值，左端点，右端点加一
+            pq.emplace(st.query(i, n), i, n); // 子数组值，左端点，右端点加一
         }
 
         long long ans = 0;
@@ -167,7 +180,7 @@ public:
             auto [d, l, r] = pq.top();
             pq.pop();
             ans += d;
-            pq.emplace(query(st, l, r - 1), l, r - 1);
+            pq.emplace(st.query(l, r - 1), l, r - 1);
         }
         return ans;
     }
@@ -181,17 +194,16 @@ func op(a, b pair) pair {
 	return pair{min(a.min, b.min), max(a.max, b.max)}
 }
 
-type ST [][]pair
+type ST [][16]pair // 16 = bits.Len(5e4)
 
 func newST(a []int) ST {
 	n := len(a)
-	sz := bits.Len(uint(n))
+	w := bits.Len(uint(n))
 	st := make(ST, n)
 	for i, x := range a {
-		st[i] = make([]pair, sz)
 		st[i][0] = pair{x, x}
 	}
-	for j := 1; j < sz; j++ {
+	for j := 1; j < w; j++ {
 		for i := range n - 1<<j + 1 {
 			st[i][j] = op(st[i][j-1], st[i+1<<(j-1)][j-1])
 		}
@@ -213,7 +225,7 @@ func maxTotalValue(nums []int, k int) (ans int64) {
 	for i := range h {
 		h[i] = tuple{st.query(i, n), i, n} // 子数组值，左端点，右端点加一
 	}
-	heap.Init(&h)
+	// 由于 h 是递减的，无需堆化
 
 	for ; k > 0 && h[0].d > 0; k-- {
 		ans += int64(h[0].d)
@@ -228,7 +240,7 @@ type tuple struct{ d, l, r int }
 type hp []tuple
 
 func (h hp) Len() int           { return len(h) }
-func (h hp) Less(i, j int) bool { return h[i].d > h[j].d }
+func (h hp) Less(i, j int) bool { return h[i].d > h[j].d } // 最大堆
 func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (hp) Push(any)             {}
 func (hp) Pop() (_ any)         { return }
@@ -237,6 +249,233 @@ func (hp) Pop() (_ any)         { return }
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}((n+k)\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n\log n)$。用线段树可以做到 $\mathcal{O}(n)$ 空间。
+
+### 写法二
+
+由于矩阵每一列是递减的，我们可以先把 $M_{0,n-1}$ 入堆，在循环的过程中把其余 $M_{i,n-1}$ 入堆。
+
+由于一开始堆的大小不大，出堆入堆更快，整体效率更高。
+
+```py [sol-Python3]
+# 手写 min max 更快
+min = lambda a, b: b if b < a else a
+max = lambda a, b: b if b > a else a
+
+def op(a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[int, int]:
+    return min(a[0], b[0]), max(a[1], b[1])
+
+class ST:
+    def __init__(self, a: List[int]):
+        n = len(a)
+        w = n.bit_length()
+        st = [[None] * n for _ in range(w)]
+        st[0] = [(x, x) for x in a]
+        for i in range(1, w):
+            for j in range(n - (1 << i) + 1):
+                st[i][j] = op(st[i - 1][j], st[i - 1][j + (1 << (i - 1))])
+        self.st = st
+
+    # [l, r) 左闭右开
+    def query(self, l: int, r: int) -> int:
+        k = (r - l).bit_length() - 1
+        mn, mx = op(self.st[k][l], self.st[k][r - (1 << k)])
+        return mx - mn
+
+class Solution:
+    def maxTotalValue(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        st = ST(nums)
+
+        h = [(-st.query(0, n), 0, n)]
+        ans = 0
+        for _ in range(k):
+            d, l, r = h[0]
+            if d == 0:  # 堆中剩余元素全是 0
+                break
+            ans -= d
+            heapreplace(h, (-st.query(l, r - 1), l, r - 1))
+            if r == n and l + 1 < n:
+                heappush(h, (-st.query(l + 1, n), l + 1, n))
+        return ans
+```
+
+```java [sol-Java]
+class ST {
+    private final int[][] stMin;
+    private final int[][] stMax;
+
+    public ST(int[] a) {
+        int n = a.length;
+        int w = 32 - Integer.numberOfLeadingZeros(n);
+        stMin = new int[w][n];
+        stMax = new int[w][n];
+
+        for (int j = 0; j < n; j++) {
+            stMin[0][j] = a[j];
+            stMax[0][j] = a[j];
+        }
+
+        for (int i = 1; i < w; i++) {
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                stMin[i][j] = Math.min(stMin[i - 1][j], stMin[i - 1][j + (1 << (i - 1))]);
+                stMax[i][j] = Math.max(stMax[i - 1][j], stMax[i - 1][j + (1 << (i - 1))]);
+            }
+        }
+    }
+
+    // [l, r) 左闭右开
+    public int query(int l, int r) {
+        int k = 31 - Integer.numberOfLeadingZeros(r - l);
+        int mn = Math.min(stMin[k][l], stMin[k][r - (1 << k)]);
+        int mx = Math.max(stMax[k][l], stMax[k][r - (1 << k)]);
+        return mx - mn;
+    }
+}
+
+class Solution{
+    public long maxTotalValue(int[] nums, int k) {
+        int n = nums.length;
+        ST st = new ST(nums);
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]); // 最大堆
+        pq.add(new int[]{st.query(0, n), 0, n}); // 子数组值，左端点，右端点加一
+
+        long ans = 0;
+        while (k-- > 0 && pq.peek()[0] > 0) {
+            int[] top = pq.poll();
+            int d = top[0], l = top[1], r = top[2];
+            ans += d;
+            pq.add(new int[]{st.query(l, r - 1), l, r - 1});
+            if (r == n && l + 1 < n) {
+                pq.add(new int[]{st.query(l + 1, n), l + 1, n});
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class ST {
+    vector<vector<int>> st_min;
+    vector<vector<int>> st_max;
+
+public:
+    ST(const vector<int>& a) {
+        size_t n = a.size();
+        int w = bit_width(n);
+        st_min.resize(w, vector<int>(n));
+        st_max.resize(w, vector<int>(n));
+
+        for (int j = 0; j < n; j++) {
+            st_min[0][j] = a[j];
+            st_max[0][j] = a[j];
+        }
+
+        for (int i = 1; i < w; i++) {
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                st_min[i][j] = min(st_min[i - 1][j], st_min[i - 1][j + (1 << (i - 1))]);
+                st_max[i][j] = max(st_max[i - 1][j], st_max[i - 1][j + (1 << (i - 1))]);
+            }
+        }
+    }
+
+    // [l, r) 左闭右开
+    int query(int l, int r) const {
+        int k = bit_width((uint32_t) r - l) - 1;
+        int mn = min(st_min[k][l], st_min[k][r - (1 << k)]);
+        int mx = max(st_max[k][l], st_max[k][r - (1 << k)]);
+        return mx - mn;
+    }
+};
+
+class Solution {
+public:
+    long long maxTotalValue(vector<int>& nums, int k) {
+        int n = nums.size();
+        ST st(nums);
+
+        priority_queue<tuple<int, int, int>> pq;
+        pq.emplace(st.query(0, n), 0, n); // 子数组值，左端点，右端点加一
+
+        long long ans = 0;
+        while (k-- && get<0>(pq.top())) {
+            auto [d, l, r] = pq.top();
+            pq.pop();
+            ans += d;
+            pq.emplace(st.query(l, r - 1), l, r - 1);
+            if (r == n && l + 1 < n) {
+                pq.emplace(st.query(l + 1, n), l + 1, n);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+type pair struct{ min, max int }
+
+func op(a, b pair) pair {
+	return pair{min(a.min, b.min), max(a.max, b.max)}
+}
+
+type ST [][16]pair // 16 = bits.Len(5e4)
+
+func newST(a []int) ST {
+	n := len(a)
+	w := bits.Len(uint(n))
+	st := make(ST, n)
+	for i, x := range a {
+		st[i][0] = pair{x, x}
+	}
+	for j := 1; j < w; j++ {
+		for i := range n - 1<<j + 1 {
+			st[i][j] = op(st[i][j-1], st[i+1<<(j-1)][j-1])
+		}
+	}
+	return st
+}
+
+// [l,r) 左闭右开
+func (st ST) query(l, r int) int {
+	k := bits.Len(uint(r-l)) - 1
+	p := op(st[l][k], st[r-1<<k][k])
+	return p.max - p.min
+}
+
+func maxTotalValue(nums []int, k int) (ans int64) {
+	n := len(nums)
+	st := newST(nums)
+	h := hp{{st.query(0, n), 0, n}} // 子数组值，左端点，右端点加一
+
+	for ; k > 0 && h[0].d > 0; k-- {
+		ans += int64(h[0].d)
+		l, r := h[0].l, h[0].r
+		h[0].r--
+		h[0].d = st.query(h[0].l, h[0].r)
+		heap.Fix(&h, 0)
+		if r == n && l+1 < n {
+			heap.Push(&h, tuple{st.query(l+1, n), l + 1, n})
+		}
+	}
+	return
+}
+
+type tuple struct{ d, l, r int }
+type hp []tuple
+
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return h[i].d > h[j].d } // 最大堆
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(tuple)) }
+func (hp) Pop() (_ any)         { return }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + k\log \min(n,k))$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n\log n)$。用线段树可以做到 $\mathcal{O}(n)$ 空间。
 
 ## 方法二：二分 + 滑动窗口 + 单调队列 + 单调栈 + Lazy 线段树 + 线段树二分

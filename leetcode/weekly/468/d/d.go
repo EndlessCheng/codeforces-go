@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/heap"
 	"fmt"
 	"math/bits"
 	"slices"
@@ -8,6 +9,66 @@ import (
 )
 
 // https://space.bilibili.com/206214
+type pair struct{ min, max int }
+
+func op(a, b pair) pair {
+	return pair{min(a.min, b.min), max(a.max, b.max)}
+}
+
+type ST [][16]pair // 16 = bits.Len(5e4)
+
+func newST(a []int) ST {
+	n := len(a)
+	w := bits.Len(uint(n))
+	st := make(ST, n)
+	for i, x := range a {
+		st[i][0] = pair{x, x}
+	}
+	for j := 1; j < w; j++ {
+		for i := range n - 1<<j + 1 {
+			st[i][j] = op(st[i][j-1], st[i+1<<(j-1)][j-1])
+		}
+	}
+	return st
+}
+
+// [l,r) 左闭右开
+func (st ST) query(l, r int) int {
+	k := bits.Len(uint(r-l)) - 1
+	p := op(st[l][k], st[r-1<<k][k])
+	return p.max - p.min
+}
+
+func maxTotalValue(nums []int, k int) (ans int64) {
+	n := len(nums)
+	st := newST(nums)
+	h := hp{{st.query(0, n), 0, n}}
+
+	for ; k > 0 && h[0].d > 0; k-- {
+		fmt.Println(h)
+		ans += int64(h[0].d)
+		l, r := h[0].l, h[0].r
+		h[0].d = st.query(l, r-1)
+		h[0].r--
+		heap.Fix(&h, 0)
+		if r == n && l+1 < n {
+			heap.Push(&h, tuple{st.query(l+1, n), l + 1, n})
+		}
+	}
+	return
+}
+
+type tuple struct{ d, l, r int }
+type hp []tuple
+
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return h[i].d > h[j].d }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(tuple)) }
+func (hp) Pop() (_ any)         { return }
+
+//
+
 type data struct{ sumMin, sumMax, lMin, lMax int }
 type todo struct{ todoMin, todoMax int }
 type lazySeg []struct {
@@ -112,7 +173,7 @@ func (t lazySeg) findLast(o, l, r int, f func(data) bool) int {
 	return idx
 }
 
-func maxTotalValue(nums []int, k int) (ans int64) {
+func maxTotalValue2(nums []int, k int) (ans int64) {
 	// 二分 + 滑动窗口 + 单调队列
 	lowD := sort.Search(slices.Max(nums)-slices.Min(nums), func(lowD int) bool {
 		lowD++
