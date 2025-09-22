@@ -77,12 +77,8 @@ class Solution {
         }
     }
 
-    private List<Integer> toList(int[] a) {
-        List<Integer> b = new ArrayList<>();
-        for (int x : a) {
-            b.add(x);
-        }
-        return b;
+    private List<Integer> toList(int[] nums) {
+        return Arrays.stream(nums).boxed().collect(Collectors.toList());
     }
 }
 ```
