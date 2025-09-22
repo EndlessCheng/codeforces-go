@@ -412,7 +412,7 @@ public:
             q.pop();
             f[x][0].set(0); // x 单独一个点，路径边权和为 0
             for (int s = t - 1; s >= 0; s--) {
-                if (f[x][k].test(s)) { // 恰好 k 条边
+                if (f[x][k][s]) { // 恰好 k 条边
                     ans = max(ans, s);
                     break;
                 }
@@ -656,7 +656,7 @@ public:
         int ans = -1;
         for (auto& bs : f[k]) {
             for (int s = t - 1; s >= 0; s--) {
-                if (bs.test(s)) {
+                if (bs[s]) {
                     ans = max(ans, s);
                     break;
                 }
