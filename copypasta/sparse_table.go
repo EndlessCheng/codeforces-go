@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/bits"
+import (
+	"fmt"
+	"math/bits"
+)
 
 /* 稀疏表 Sparse Table
 st[i][j] 对应的区间是 [i, i+2^j)
@@ -29,33 +32,43 @@ todo https://ac.nowcoder.com/acm/problem/240870 https://ac.nowcoder.com/acm/cont
 题单 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 */
 
-type ST [][]int
+type sparseTable struct {
+	st [][]int
+	op func(int, int) int
+}
 
-// a 的下标从 0 开始
-func NewST(a []int) ST {
+// 时间复杂度 O(n * log n)
+func newSparseTable(a []int, op func(int, int) int) sparseTable {
 	n := len(a)
-	sz := bits.Len(uint(n))
-	st := make(ST, n)
-	for i, v := range a {
-		st[i] = make([]int, sz)
-		st[i][0] = v
+	w := bits.Len(uint(n))
+	st := make([][]int, w)
+	for i := range st {
+		st[i] = make([]int, n)
 	}
-	for j := 1; j < sz; j++ {
-		for i := range n - 1<<j + 1 {
-			st[i][j] = st.Op(st[i][j-1], st[i+1<<(j-1)][j-1])
+	copy(st[0], a)
+	for i := 1; i < w; i++ {
+		for j := range n - 1<<i + 1 {
+			st[i][j] = op(st[i-1][j], st[i-1][j+1<<(i-1)])
 		}
 	}
-	return st
+	return sparseTable{st, op}
 }
 
-// 查询区间 [l,r)    0 <= l < r <= n
-func (st ST) Query(l, r int) int {
-	k := bits.Len32(uint32(r-l)) - 1
-	return st.Op(st[l][k], st[r-1<<k][k])
+// [l, r) 左闭右开，下标从 0 开始
+// 返回 op(nums[l:r])
+// 时间复杂度 O(1)
+func (s sparseTable) query(l, r int) int {
+	k := bits.Len(uint(r-l)) - 1
+	return s.op(s.st[k][l], s.st[k][r-1<<k])
 }
 
-// min, max, gcd, ...
-func (ST) Op(int, int) (_ int) { return }
+// 使用方法举例
+func sparseTableExample() {
+	nums := []int{3, 1, 4, 1, 5, 9, 2, 6}
+	st := newSparseTable(nums, func(a, b int) int { return max(a, b) })
+	fmt.Println(st.query(0, 5)) // 5
+	fmt.Println(st.query(1, 1)) // 错误：必须保证 l < r
+}
 
 //
 
@@ -63,12 +76,12 @@ func (ST) Op(int, int) (_ int) { return }
 // https://codeforces.com/problemset/problem/675/E
 // - 此题另一种做法是单调栈二分，见 https://www.luogu.com.cn/problem/solution/CF675E
 type stPair struct{ v, i int }
-type ST2 [][]stPair
+type sparseTableWithIndex [][]stPair
 
-func NewST2(a []int) ST2 {
+func newSparseTableWithIndex(a []int) sparseTableWithIndex {
 	n := len(a)
 	sz := bits.Len(uint(n))
-	st := make(ST2, n)
+	st := make(sparseTableWithIndex, n)
 	for i, v := range a {
 		st[i] = make([]stPair, sz)
 		st[i][0] = stPair{v, i}
@@ -86,7 +99,7 @@ func NewST2(a []int) ST2 {
 }
 
 // 查询区间 [l,r)，注意 l 和 r 是从 0 开始算的
-func (st ST2) Query(l, r int) int {
+func (st sparseTableWithIndex) query(l, r int) int {
 	k := bits.Len32(uint32(r-l)) - 1
 	a, b := st[l][k], st[r-1<<k][k]
 	if a.v <= b.v { // 最小值，相等时下标取左侧
