@@ -271,8 +271,8 @@ func (hp) Pop() (_ any)         { return }
 
 这相当于：
 
-1. 先找到 $3$ 左边最近的小于等于 $3$ 的元素位置 $l$。这可以用单调栈实现，原理见[【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)。
-2. 设 $3$ 的下标为 $i$。把 $[l+1,i]$ 中的元素都置为 $3$。这可以用 Lazy 线段树。
+1. 先找到 $3$ 左边最近的小于等于 $3$ 的元素位置 $j$。这可以用单调栈实现，原理见[【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)。
+2. 设 $3$ 的下标为 $i$。把 $[j+1,i]$ 中的元素都置为 $3$。这可以用 Lazy 线段树。
 
 对于最大值的维护，做法同理。
 
@@ -901,6 +901,10 @@ func maxTotalValue(nums []int, k int) (ans int64) {
 
 - 时间复杂度：$\mathcal{O}(n\log U + n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 专题训练
+
+见下面数据结构题单的「**§5.3 第 K 小/大**」。
 
 ## 分类题单
 
