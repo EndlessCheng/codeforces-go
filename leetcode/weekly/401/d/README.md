@@ -106,7 +106,7 @@ public:
             f |= f << shift >> (shift - v); // 简化上式
         }
         for (int i = rewardValues.back() * 2 - 1; ; i--) {
-            if (f.test(i)) {
+            if (f[i]) {
                 return i;
             }
         }
@@ -250,7 +250,7 @@ public:
             f |= f << shift >> (shift - v); // 简化上式
         }
         for (int i = m * 2 - 1;; i--) {
-            if (f.test(i)) {
+            if (f[i]) {
                 return i;
             }
         }
@@ -431,7 +431,7 @@ public:
             f |= f << shift >> (shift - v); // 简化上式
         }
         for (int i = m * 2 - 1;; i--) {
-            if (f.test(i)) {
+            if (f[i]) {
                 return i;
             }
         }
