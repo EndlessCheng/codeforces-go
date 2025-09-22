@@ -20,6 +20,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV19GWcziEYE/?t=7m23s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minSplitMerge(self, nums1: List[int], nums2: List[int]) -> int:
@@ -67,7 +69,7 @@ class Solution {
                         for (int i = 0; i <= b.size(); i++) {
                             List<Integer> c = new ArrayList<>(b);
                             c.addAll(i, sub);
-                            if (vis.add(c)) {
+                            if (vis.add(c)) { // c 不在 vis 中
                                 q.add(c);
                             }
                         }
@@ -210,6 +212,204 @@ func minSplitMerge(nums1, nums2 []int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n!\cdot n^4)$，其中 $n$ 是 $\textit{nums}_1$ 的长度。最多有 $\mathcal{O}(n!)$ 个状态，每个状态有 $\mathcal{O}(n^3)$ 种操作，每种操作需要 $\mathcal{O}(n)$ 的时间拼接数组。
 - 空间复杂度：$\mathcal{O}(n!\cdot n)$。最多有 $\mathcal{O}(n!)$ 个状态，每个状态占用 $\mathcal{O}(n)$ 的空间。
+
+## 位运算优化
+
+先把 $\textit{nums}_1$ 和 $\textit{nums}_2$ 离散化，把元素值映射为 $[0,5]$ 中的整数。
+
+由于一个在 $[0,5]$ 中的整数只需要 $3$ 个比特存储，所以一个数组至多要用 $3\times 6 = 18$ 个比特存储，所以可以用一个 $\texttt{int}$ 表示一个数组。
+
+然后就是用位运算代替数组的操作了。
+
+此外，可以在入队前判断是否到达终点，而不是等到出队时再判断。
+
+```py [sol-Python3]
+class Solution:
+    def minSplitMerge(self, nums1: List[int], nums2: List[int]) -> int:
+        if nums1 == nums2:
+            return 0
+
+        n = len(nums1)
+        mp = {x: i for i, x in enumerate(set(nums1))}  # 用于离散化的映射表
+        val1 = sum(mp[x] << (i * 3) for i, x in enumerate(nums1))
+        val2 = sum(mp[x] << (i * 3) for i, x in enumerate(nums2))
+
+        vis = {val1}
+        q = [val1]
+        for ans in count(1):
+            tmp = q
+            q = []
+            for a in tmp:
+                for r in range(1, n + 1):  # 为方便实现，先枚举 r，再枚举 l
+                    v = a & ((1 << (r * 3)) - 1)
+                    for l in range(r):
+                        sub = v >> (l * 3)
+                        b = a & ((1 << (l * 3)) - 1) | a >> (r * 3) << (l * 3)  # 从 a 中移除 sub
+                        for i in range(n - r + l + 1):
+                            c = b & ((1 << (i * 3)) - 1) | sub << (i * 3) | b >> (i * 3) << ((i + r - l) * 3)
+                            if c == val2:
+                                return ans
+                            if c not in vis:
+                                vis.add(c)
+                                q.append(c)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minSplitMerge(int[] nums1, int[] nums2) {
+        if (Arrays.equals(nums1, nums2)) {
+            return 0;
+        }
+
+        int n = nums1.length;
+        int[] sorted = nums1.clone(); // 用于离散化
+        Arrays.sort(sorted);
+
+        int val1 = encode(nums1, sorted);
+        int val2 = encode(nums2, sorted);
+
+        Set<Integer> vis = new HashSet<>();
+        vis.add(val1);
+        List<Integer> q = List.of(val1);
+        for (int ans = 1; ; ans++) {
+            List<Integer> tmp = q;
+            q = new ArrayList<>();
+            for (int a : tmp) {
+                for (int r = 1; r <= n; r++) { // 为方便实现，先枚举 r，再枚举 l
+                    int t = a & ((1 << (r * 3)) - 1);
+                    for (int l = 0; l < r; l++) {
+                        int sub = t >> (l * 3);
+                        int b = (a & ((1 << (l * 3)) - 1)) | (a >> (r * 3) << (l * 3)); // 从 a 中移除 sub
+                        for (int i = 0; i <= n - r + l; i++) {
+                            int c = (b & ((1 << (i * 3)) - 1)) | (sub << (i * 3)) | (b >> (i * 3) << ((i + r - l) * 3));
+                            if (c == val2) {
+                                return ans;
+                            }
+                            if (vis.add(c)) { // c 不在 vis 中
+                                q.add(c);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private int encode(int[] nums, int[] sorted) {
+        int res = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int x = Arrays.binarySearch(sorted, nums[i]);
+            res |= x << (i * 3);
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    int encode(vector<int>& nums, vector<int>& sorted) {
+        int res = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            int x = ranges::lower_bound(sorted, nums[i]) - sorted.begin();
+            res |= x << (i * 3);
+        }
+        return res;
+    }
+
+public:
+    int minSplitMerge(vector<int>& nums1, vector<int>& nums2) {
+        if (nums1 == nums2) {
+            return 0;
+        }
+
+        int n = nums1.size();
+        auto sorted = nums1; // 用于离散化
+        ranges::sort(sorted);
+
+        int val1 = encode(nums1, sorted);
+        int val2 = encode(nums2, sorted);
+
+        unordered_set<int> vis = {val1};
+        vector<int> q = {val1};
+        for (int ans = 1; ; ans++) {
+            vector<int> nxt;
+            for (int a : q) {
+                for (int r = 1; r <= n; r++) { // 为方便实现，先枚举 r，再枚举 l
+                    int t = a & ((1 << (r * 3)) - 1);
+                    for (int l = 0; l < r; l++) {
+                        int sub = t >> (l * 3);
+                        int b = (a & ((1 << (l * 3)) - 1)) | (a >> (r * 3) << (l * 3)); // 从 a 中移除 sub
+                        for (int i = 0; i <= n - r + l; i++) {
+                            int c = (b & ((1 << (i * 3)) - 1)) | (sub << (i * 3)) | (b >> (i * 3) << ((i + r - l) * 3));
+                            if (c == val2) {
+                                return ans;
+                            }
+                            if (vis.insert(c).second) { // c 不在 vis 中
+                                nxt.push_back(c);
+                            }
+                        }
+                    }
+                }
+            }
+            q = move(nxt);
+        }
+    }
+};
+```
+
+```go [sol-Go]
+func encode(nums, sorted []int) (res int) {
+	for i, x := range nums {
+		res |= sort.SearchInts(sorted, x) << (i * 3)
+	}
+	return
+}
+
+func minSplitMerge(nums1, nums2 []int) int {
+	if slices.Equal(nums1, nums2) {
+		return 0
+	}
+
+	n := len(nums1)
+	sorted := slices.Clone(nums1) // 用于离散化
+	slices.Sort(sorted)
+
+	val1 := encode(nums1, sorted)
+	val2 := encode(nums2, sorted)
+
+	vis := map[int]bool{val1: true}
+	q := []int{val1}
+	for ans := 1; ; ans++ {
+		tmp := q
+		q = nil
+		for _, a := range tmp {
+			for r := 1; r <= n; r++ { // 为方便实现，先枚举 r，再枚举 l
+				t := a & (1<<(r*3) - 1)
+				for l := range r {
+					sub := t >> (l * 3)
+					b := a&(1<<(l*3)-1) | a>>(r*3)<<(l*3) // 从 a 中移除 sub
+					for i := range n - r + l + 1 {
+						c := b&(1<<(i*3)-1) | sub<<(i*3) | b>>(i*3)<<((i+r-l)*3)
+						if c == val2 {
+							return ans
+						}
+						if !vis[c] {
+							vis[c] = true
+							q = append(q, c)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n!\cdot n^3)$，其中 $n$ 是 $\textit{nums}_1$ 的长度。最多有 $\mathcal{O}(n!)$ 个状态，每个状态有 $\mathcal{O}(n^3)$ 种操作，每种操作需要 $\mathcal{O}(1)$ 的时间拼接二进制数。
+- 空间复杂度：$\mathcal{O}(n!)$。最多有 $\mathcal{O}(n!)$ 个状态，每个状态占用 $\mathcal{O}(1)$ 的空间。
 
 ## 分类题单
 
