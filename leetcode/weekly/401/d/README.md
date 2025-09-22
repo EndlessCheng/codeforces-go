@@ -1,6 +1,6 @@
 ## 思路
 
-对于 $\textit{rewardValues}$ 中的数，如果先选大的，就没法再选小的，所以**按照从小到大的顺序选**是最优的。
+对于 $\textit{rewardValues}$ 中的数，如果先选大的，就没法再选小的，所以**按照从小到大的顺序**思考每个 $\textit{rewardValues}[i]$ 选或不选，这种做法是最优的。
 
 把 $\textit{rewardValues}$ 从小到大排序。
 
