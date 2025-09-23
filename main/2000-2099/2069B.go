@@ -12,7 +12,8 @@ func cf2069B(in io.Reader, out io.Writer) {
 		Fscan(in, &n, &m)
 		a := make([][]int, n)
 		c := make([]int8, n*m+1)
-		c1, c2 := 0, 0
+		ans := -1
+		has2 := 0
 		for i := range a {
 			a[i] = make([]int, m)
 			for j := range a[i] {
@@ -23,19 +24,15 @@ func cf2069B(in io.Reader, out io.Writer) {
 				}
 				if j > 0 && v == a[i][j-1] || i > 0 && v == a[i-1][j] {
 					c[v] = 2
-					c2++
-					c1--
+					has2 = 1
+					ans++
 				} else if c[v] == 0 {
 					c[v] = 1
-					c1++
+					ans++
 				}
 			}
 		}
-		if c2 == 0 {
-			Fprintln(out, c1-1)
-		} else {
-			Fprintln(out, c1+(c2-1)*2)
-		}
+		Fprintln(out, ans-has2)
 	}
 }
 
