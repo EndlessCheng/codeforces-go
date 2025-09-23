@@ -40,6 +40,7 @@ https://codeforces.com/problemset/problem/1077/F2 2100
 https://codeforces.com/problemset/problem/1216/F 2100
 https://codeforces.com/problemset/problem/939/F 2400 状态设计
 https://codeforces.com/problemset/problem/1107/G 2400
+https://codeforces.com/problemset/problem/1304/F2 2400
 https://codeforces.com/problemset/problem/797/F 2600
 https://codeforces.com/problemset/problem/377/E 2800
 https://www.luogu.com.cn/problem/P3572
