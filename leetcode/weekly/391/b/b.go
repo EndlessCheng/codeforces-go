@@ -1,12 +1,19 @@
 package main
 
+import "math"
+
 // https://space.bilibili.com/206214
-func maxBottlesDrunk(numBottles, numExchange int) int {
-	ans := numBottles
-	for numBottles >= numExchange { // 有足够的空瓶
-		ans++ // 用 numExchange 个空瓶交换，然后喝掉，产生一个新的空瓶
-		numBottles += 1 - numExchange
+func maxBottlesDrunk1(numBottles, numExchange int) (ans int) {
+	for numBottles >= numExchange {
+		ans += numExchange
+		numBottles -= numExchange - 1
 		numExchange++
 	}
-	return ans
+	return ans + numBottles
+}
+
+func maxBottlesDrunk(n, e int) int {
+	b := e*2 - 1
+	k := (int(math.Sqrt(float64(b*b+(n-e)*8))) - b + 2) / 2
+	return n + k
 }
