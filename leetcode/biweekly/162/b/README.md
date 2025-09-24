@@ -6,11 +6,9 @@ $$
 \textit{mn}\cdot k \ge \textit{mx}
 $$
 
-如果不满足，由于我们排序了，可以把 $\textit{left}$ 加一，直到满足上式。
+在 $[\textit{mn},\textit{mx}]$ 中的元素保留，其余元素去掉。由于排序了，所以这些元素在数组中是**连续**的，问题转化成一个标准的**滑动窗口**模型。如果不满足上式，就把 $\textit{left}$ 加一，直到满足上式。关于滑动窗口的原理，见 [滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
-可见，随着 $i$ 的增大，$\textit{left}$ 要么不变，要么也增大，这可以用 [滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)解决。
-
-用窗口长度 $i-\textit{left}+1$ 更新保留元素个数的最大值 $\textit{maxSave}$。
+内层循环结束后，用窗口长度 $i-\textit{left}+1$ 更新保留元素个数的最大值 $\textit{maxSave}$。
 
 最终答案为 $n - \textit{maxSave}$。
 
