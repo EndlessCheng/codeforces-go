@@ -108,8 +108,6 @@ func shortestBeautifulSubstring(s string, k int) string {
 
 如果窗口内的 $1$ 的个数超过 $k$，或者窗口端点是 $0$，就可以缩小窗口。
 
-> 注：利用字符串哈希（或者后缀数组等），可以把比较字典序的时间降至 $\mathcal{O}(n\log n)$，这样可以做到 $\mathcal{O}(n\log n)$ 的时间复杂度。
-
 ```py [sol-Python3]
 class Solution:
     def shortestBeautifulSubstring(self, s: str, k: int) -> str:
@@ -209,7 +207,9 @@ func shortestBeautifulSubstring(s string, k int) string {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $s$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。字符串切片需要 $\mathcal{O}(n)$ 的空间，Go 除外。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。
+
+注：利用字符串哈希（或者后缀数组等），可以把单次比较字典序的时间降至 $\mathcal{O}(\log n)$，总体做到 $\mathcal{O}(n\log n)$ 的时间复杂度。
 
 ## 分类题单
 
