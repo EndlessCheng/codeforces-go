@@ -55,11 +55,11 @@ https://www.luogu.com.cn/problem/P9290
 https://ac.nowcoder.com/acm/contest/116002/F
 
 单调栈二分
-LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 2327 做法不止一种
-LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
+LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 做法不止一种
+LC2736 https://leetcode.cn/problems/maximum-sum-queries/
 https://codeforces.com/problemset/problem/91/B 1500
-https://atcoder.jp/contests/abc379/tasks/abc379_f 1659=CF1966 也有在线做法
 https://codeforces.com/problemset/problem/2009/G2 2200
+https://atcoder.jp/contests/abc379/tasks/abc379_f 1659=CF1966 也有在线做法
 
 字典序最小
 - [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) ~1800
@@ -70,23 +70,24 @@ https://codeforces.com/problemset/problem/1905/C 1400
 https://codeforces.com/problemset/problem/2046/B 1600
 https://codeforces.com/problemset/problem/1870/D 1800
 https://codeforces.com/problemset/problem/2001/D 1900
-双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
+https://atcoder.jp/contests/arc134/tasks/arc134_d 双序列
 
 贡献法（计算所有子数组的……的和）
-- [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/) 1976
+- [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)
    - https://atcoder.jp/contests/agc057/tasks/agc057_b
-- [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/) $\mathcal{O}(n)$ 做法难度大约 2000
+- [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/)
    - https://codeforces.com/contest/817/problem/D 1900
-- [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/) 2051
-   - 枚举上下边界 https://atcoder.jp/contests/abc311/tasks/abc311_g
-子数组第二大数字的和 https://atcoder.jp/contests/abc140/tasks/abc140_e
-最大值是最小值的倍数 https://codeforces.com/problemset/problem/1730/E 2700
+- [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)
+   - https://atcoder.jp/contests/abc311/tasks/abc311_g 枚举上下边界
+https://codeforces.com/problemset/problem/1827/B2 2400 Range Sorting
+https://codeforces.com/problemset/problem/1730/E 2700 最大值是最小值的倍数
+https://atcoder.jp/contests/abc140/tasks/abc140_e 子数组第二大数字的和
 更多「贡献」话题见 common.go
 
 单调栈优化 DP
-- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
+- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/)
     - https://codeforces.com/problemset/problem/1313/C2 1900
-结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C 2100
+https://codeforces.com/problemset/problem/1483/C 2100 结合线段树，或者巧妙地在单调栈中去维护最值
 https://codeforces.com/problemset/problem/1913/D 2100
 - 原题 https://tlx.toki.id/problems/ksn-2021/2A
 https://codeforces.com/problemset/problem/1407/D 2200
