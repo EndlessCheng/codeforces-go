@@ -33,14 +33,15 @@ https://leetcode.cn/circle/discuss/9oZFK9/
 https://oi-wiki.org/ds/monotonous-stack/
 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
-- [3113. 边界元素是最大值的子数组数目](https://leetcode.cn/problems/find-the-number-of-subarrays-where-boundary-elements-are-maximum/) 2046
+- [3113. 边界元素是最大值的子数组数目](https://leetcode.cn/problems/find-the-number-of-subarrays-where-boundary-elements-are-maximum/)
     - 相似题目 [2421. 好路径的数目](https://leetcode.cn/problems/number-of-good-paths/)
-- [1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/) 2105
+- [1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/)
     - 中间的人可以和 i j 身高相等 https://www.luogu.com.cn/problem/P1823
     - 环形数组 https://codeforces.com/problemset/problem/5/E 2400
-- [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
-    - 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
-    - 应用 https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
+- [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 双单调栈
+    - https://atcoder.jp/contests/abc140/tasks/abc140_e
+    - https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
+    - https://codeforces.com/problemset/problem/1827/B2 2400 Range Sorting 
 https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
@@ -79,7 +80,7 @@ https://atcoder.jp/contests/arc134/tasks/arc134_d 双序列
    - https://codeforces.com/contest/817/problem/D 1900
 - [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)
    - https://atcoder.jp/contests/abc311/tasks/abc311_g 枚举上下边界
-https://codeforces.com/problemset/problem/1827/B2 2400 Range Sorting
+https://codeforces.com/problemset/problem/1827/B2 2400 Range Sorting 双单调栈
 https://codeforces.com/problemset/problem/1730/E 2700 最大值是最小值的倍数
 https://atcoder.jp/contests/abc140/tasks/abc140_e 子数组第二大数字的和
 更多「贡献」话题见 common.go
