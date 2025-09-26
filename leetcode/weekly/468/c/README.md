@@ -411,6 +411,10 @@ func minSplitMerge(nums1, nums2 []int) int {
 - 时间复杂度：$\mathcal{O}(n!\cdot n^3)$，其中 $n$ 是 $\textit{nums}_1$ 的长度。最多有 $\mathcal{O}(n!)$ 个状态，每个状态有 $\mathcal{O}(n^3)$ 种操作，每种操作需要 $\mathcal{O}(1)$ 的时间拼接二进制数。
 - 空间复杂度：$\mathcal{O}(n!)$。最多有 $\mathcal{O}(n!)$ 个状态，每个状态占用 $\mathcal{O}(1)$ 的空间。
 
+## 专题训练
+
+见下面图论题单的「**§1.3 图论建模 + BFS 最短路**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
