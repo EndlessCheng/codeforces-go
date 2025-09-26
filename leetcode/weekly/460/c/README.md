@@ -507,9 +507,9 @@ func minJumps(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 专题训练
+## 相似题目
 
-见数学题单的「**§1.3 质因数分解**」。
+- [1345. 跳跃游戏 IV](https://leetcode.cn/problems/jump-game-iv/) 1810
 
 ## 分类题单
 
