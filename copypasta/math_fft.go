@@ -46,8 +46,9 @@ todo 推式子 https://www.luogu.com.cn/problem/P3338 花絮 https://zhuanlan.zh
 */
 
 type fft struct {
-	n               int
-	omega, omegaInv []complex128
+	n        int
+	omega    []complex128
+	omegaInv []complex128
 }
 
 func newFFT(n int) *fft {
@@ -105,9 +106,13 @@ func (t *fft) idft(a []complex128) {
 //     c[k] = ∑a[i]*b[k-i], i=0~k
 // 入参出参都是次项从低到高的系数
 //
-// EXTRA: 对数组 a 的频率数组 F(x) 计算自卷积，
-//        得到的结果 G(x) 表示两数之和等于 x 的方案数（这两个数之间没有位置约束）
+// EXTRA: 对数组 arr 的频率数组 F(x) 计算自卷积，
+//        得到的结果 G(x) 表示 arr 中两数之和等于 x 的方案数
+//        注意 x 为偶数时 (x/2,x/2) 重复算了，以及 (a,b) 和 (b,a) 重复算了
 // https://atcoder.jp/contests/abc392/tasks/abc392_g
+// https://leetcode.cn/problems/valid-triangle-number/
+// https://leetcode.cn/problems/3sum-with-multiplicity/
+// https://leetcode.cn/problems/3sum-smaller/
 //
 // 关于滑动窗口点积，见后面
 func polyConvFFT(a, b []int) []int {
@@ -121,6 +126,7 @@ func polyConvFFT(a, b []int) []int {
 	for i, v := range b {
 		B[i] = complex(float64(v), 0)
 	}
+
 	t := newFFT(limit)
 	t.dft(A)
 	t.dft(B)
@@ -128,6 +134,7 @@ func polyConvFFT(a, b []int) []int {
 		A[i] *= B[i]
 	}
 	t.idft(A)
+
 	conv := make([]int, n+m-1)
 	for i := range conv {
 		conv[i] = int(math.Round(real(A[i]))) // % mod
@@ -152,7 +159,7 @@ func slidingWindowDotProduct(a, b []int) []int {
 	return c[len(b)-1 : len(a)]
 }
 
-// 计算多个多项式的卷积
+// 分治计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
 // https://codeforces.com/contest/958/problem/F3 可重集大小为 k 的不同子集个数
 func polyConvFFTs(coefs [][]int) []int {
