@@ -1027,7 +1027,7 @@ func _(abs func(int) int) {
 		t := newFenwickTree(len(b))
 		for _, v := range a {
 			v = sort.SearchInts(b, v) + 1 // v ∈ [1,len(b)]
-			cnt := t.pre(v-1) + 1 // < v 的个数 + v 自己单独组成一个子序列
+			cnt := t.pre(v-1) + 1         // < v 的个数 + v 自己单独组成一个子序列
 			cnt %= mod
 			res += cnt
 			t.update(v, cnt)
@@ -2026,10 +2026,10 @@ func _(abs func(int) int) {
 	https://www.luogu.com.cn/problem/P2627 需要优化
 	*/
 	splitDP := func(a, vals []int) {
-		st := NewST(vals)
+		st := newSparseTable(vals, func(a, b int) int { return min(a, b) })
 		// 左闭右开
 		cost := func(l, r int) int {
-			return st.Query(l, r)
+			return st.query(l, r) + r - l
 		}
 
 		n := len(a)
@@ -2060,9 +2060,10 @@ func _(abs func(int) int) {
 	EXTRA: 相邻相关 LC3538 https://leetcode.cn/problems/merge-operations-for-minimum-travel-time/
 	*/
 	splitDPWithLimit := func(a, vals []int, k, sz int) int {
-		st := NewST(vals)
+		st := newSparseTable(vals, func(a, b int) int { return min(a, b) })
+		// 左闭右开
 		cost := func(l, r int) int {
-			return st.Query(l, r)
+			return st.query(l, r) + r - l
 		}
 
 		// 选恰好 k 个子数组，每个子数组的长度恰好为 sz，代价为 cost(i,j)，左闭右开
@@ -2461,7 +2462,7 @@ func _(abs func(int) int) {
 		f := make([]int, 1<<n)
 		// 求最小值的题目 for i := 1; i < len(f); i++ { f[i] = 1e18 }
 		// 求最大值的部分题目 for i := 1; i < len(f); i++ { f[i] = -1 } 把 -1 当作不合法
-		f[0] = 1 // 计数题目
+		f[0] = 1               // 计数题目
 		for s, fs := range f { // 前面选的下标集合是 s
 			if fs == 0 { // 剪枝：用在计数题目上
 				continue
@@ -3585,6 +3586,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1788/E 2200
 	https://codeforces.com/problemset/problem/1842/E 2300
 	https://codeforces.com/problemset/problem/115/E 2400 线段树 式子变形 划分型 DP
+	https://codeforces.com/problemset/problem/1304/F2 2400 单调队列
 	https://codeforces.com/problemset/problem/1609/E 2400 线段树 分治
 	https://atcoder.jp/contests/abc353/tasks/abc353_g 线段树 式子变形
 	https://atcoder.jp/contests/abc397/tasks/abc397_f 线段树 划分型 DP
