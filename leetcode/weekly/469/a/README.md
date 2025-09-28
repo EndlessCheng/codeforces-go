@@ -4,7 +4,7 @@
 
 由于我们是从低位到高位计算的，最后要把答案反转。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV156n9z7E9o/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -48,7 +48,7 @@ class Solution {
 public:
     vector<int> decimalRepresentation(int n) {
         vector<int> ans;
-        long long pow10 = 1;
+        long long pow10 = 1; // 用 long long 避免乘法溢出
         for (; n > 0; n /= 10) {
             int d = n % 10;
             if (d > 0) {

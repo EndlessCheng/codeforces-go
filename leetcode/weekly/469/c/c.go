@@ -1,5 +1,7 @@
 package main
 
+import "slices"
+
 // https://space.bilibili.com/206214
 func zigZagArrays1(n, l, r int) (ans int) {
 	const mod = 1_000_000_007
@@ -39,13 +41,12 @@ func zigZagArrays(n, l, r int) (ans int) {
 	}
 
 	for i := 1; i < n; i++ {
-		nf := make([]int, k)
 		pre := 0
 		for j, v := range f {
-			nf[k-1-j] = pre % mod
+			f[j] = pre % mod
 			pre += v
 		}
-		f = nf
+		slices.Reverse(f)
 	}
 
 	for _, v := range f {

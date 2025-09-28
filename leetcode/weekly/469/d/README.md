@@ -1,4 +1,4 @@
-请先完成上一题 [3699. ZigZag 数组的总数 I](https://leetcode.cn/problems/number-of-zigzag-arrays-i/)。
+请先完成上一题 [3699. ZigZag 数组的总数 I](https://leetcode.cn/problems/number-of-zigzag-arrays-i/)，以及一些稍微简单点的矩阵快速幂优化 DP，例如 [935. 骑士拨号器](https://leetcode.cn/problems/knight-dialer/)，[我的题解](https://leetcode.cn/problems/knight-dialer/solutions/3004116/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-x06l/)。
 
 回顾一下，状态定义为：
 
@@ -47,8 +47,8 @@ $$
 其中：
 
 - $\mathbf{0}$ 是 $k\times k$ 的零矩阵。
-- $\mathbf{A}$ 是 $k\times k$ 的严格下三角全 $1$ 矩阵，对应 $f_0$ 的转移系数。
-- $\mathbf{B}$ 是 $k\times k$ 的严格上三角全 $1$ 矩阵，对应 $f_1$ 的转移系数。
+- $\mathbf{A}$ 是 $k\times k$ 的严格下三角全 $1$ 矩阵，对应从 $f_1$ 到 $f_0$ 的转移系数。
+- $\mathbf{B}$ 是 $k\times k$ 的严格上三角全 $1$ 矩阵，对应从 $f_0$ 到 $f_1$ 的转移系数。
 
 转移方程为
 
@@ -105,7 +105,7 @@ $$
 
 答案为矩阵 $F[n]$ 的元素和。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV156n9z7E9o/?t=33m34s)，欢迎点赞关注~
 
 ## 优化前
 

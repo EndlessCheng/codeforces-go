@@ -9,6 +9,8 @@
 
 所以 ZigZag 数组是一个增减增减交替的数组。
 
+> 本题 ZigZag 可以翻译成「**锯齿形**」。
+
 ## 寻找子问题
 
 由于我们只关心递增递减，可以把值域 $[l,r]$ 调整为 $[0,r-l]$，方便计算。
@@ -49,7 +51,7 @@ $$
 
 注意取模。为什么可以在计算中途取模？请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV156n9z7E9o/?t=14m42s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -434,11 +436,13 @@ func zigZagArrays(n, l, r int) (ans int) {
 
 ## 另一种写法
 
-这个写法是为下一道题 [3700. ZigZag 数组的总数 II](https://leetcode.cn/problems/number-of-zigzag-arrays-ii/) 做铺垫。
+注：这个写法只是为下一道题 [3700. ZigZag 数组的总数 II](https://leetcode.cn/problems/number-of-zigzag-arrays-ii/) 做铺垫，效率可能不如上面的写法。
 
 我们可以把要计算的数据倒着保存在 $f[k-1-j]$ 中，这样就可以每次都正序遍历了。
 
-这需要用滚动数组。
+但我们只有一个数组，不能提前覆盖，怎么办？
+
+可以用滚动数组。也可以先保存在 $f[j]$ 中，最后反转一下。
 
 ```py [sol-Python3]
 class Solution:
@@ -448,12 +452,11 @@ class Solution:
         f = [1] * k
 
         for i in range(1, n):
-            nf = [0] * k
             pre = 0
             for j, v in enumerate(f):
-                nf[-1 - j] = pre % MOD
+                f[j] = pre % MOD
                 pre += v
-            f = nf
+            f.reverse()
 
         return sum(f) * 2 % MOD
 ```
@@ -467,13 +470,13 @@ class Solution {
         Arrays.fill(f, 1);
 
         for (int i = 1; i < n; i++) {
-            int[] nf = new int[k];
             long pre = 0;
             for (int j = 0; j < k; j++) {
-                nf[k - 1 - j] = (int) (pre % MOD);
-                pre += f[j];
+                int v = f[j];
+                f[j] = (int) (pre % MOD);
+                pre += v;
             }
-            f = nf;
+            reverse(f);
         }
 
         long ans = 0;
@@ -481,6 +484,17 @@ class Solution {
             ans += v;
         }
         return (int) (ans * 2 % MOD);
+    }
+
+    private void reverse(int[] arr) {
+        int i = 0, j = arr.length - 1;
+        while (i < j) {
+            int tmp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = tmp;
+            i++;
+            j--;
+        }
     }
 }
 ```
@@ -494,13 +508,13 @@ public:
         vector<int> f(k, 1);
 
         for (int i = 1; i < n; i++) {
-            vector<int> nf(k);
             long long pre = 0;
-            for (int j = 0; j < k; j++) {
-                nf[k - 1 - j] = pre % MOD;
-                pre += f[j];
+            for (int j = 0; j < f.size(); j++) {
+                int v = f[j];
+                f[j] = pre % MOD;
+                pre += v;
             }
-            f = move(nf);
+            ranges::reverse(f);
         }
 
         return reduce(f.begin(), f.end(), 0LL) * 2 % MOD;
@@ -518,13 +532,12 @@ func zigZagArrays(n, l, r int) (ans int) {
 	}
 
 	for i := 1; i < n; i++ {
-		nf := make([]int, k)
 		pre := 0
 		for j, v := range f {
-			nf[k-1-j] = pre % mod
+			f[j] = pre % mod
 			pre += v
 		}
-		f = nf
+		slices.Reverse(f)
 	}
 
 	for _, v := range f {
