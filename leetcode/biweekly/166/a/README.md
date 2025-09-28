@@ -1,15 +1,16 @@
 1. 统计每种字母的出现次数，记录在一个哈希表（或者数组）$\textit{cnt}$ 中。
-2. 把出现次数相同的字母，分到同一组，这可以用一个哈希表套列表实现。
+2. 遍历 $\textit{cnt}$，把出现次数相同的字母，分到同一组，这可以用一个哈希表套列表实现。这一步相当于反向映射，把 $\textit{cnt}$ 的 value 映射到 key 上。
 3. 答案为包含字母最多的组。如果有多个组包含的字母都是最多的，那么返回其中出现次数最大的组。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1AKnRz8Ejn/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def majorityFrequencyGroup(self, s: str) -> str:
+        cnt = Counter(s)
         groups = defaultdict(list)
         k = 0
-        for ch, cnt in Counter(s).items():
+        for ch, cnt in cnt.items():
             groups[cnt].append(ch)
             if (len(groups[cnt]), cnt) > (len(groups[k]), k):
                 k = cnt

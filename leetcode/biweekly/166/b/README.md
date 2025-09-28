@@ -216,7 +216,7 @@ func climbStairs(n int, costs []int) int {
 
 ```py [sol-Python3]
 class Solution:
-    def climbStairs(self, n: int, costs: List[int]) -> int:
+    def climbStairs(self, _, costs: List[int]) -> int:
         f0 = f1 = f2 = 0
         for c in costs:
             f0, f1, f2 = f1, f2, min(f0 + 9, f1 + 4, f2 + 1) + c
@@ -225,7 +225,7 @@ class Solution:
 
 ```py [sol-Python3 手写 min]
 class Solution:
-    def climbStairs(self, n: int, costs: List[int]) -> int:
+    def climbStairs(self, _, costs: List[int]) -> int:
         f0 = f1 = f2 = 0
         for c in costs:
             mn = f0 + 9
@@ -253,7 +253,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int climbStairs(int n, vector<int>& costs) {
+    int climbStairs(int, vector<int>& costs) {
         int f0 = 0, f1 = 0, f2 = 0;
         for (int c : costs) {
             int new_f = min({f0 + 9, f1 + 4, f2 + 1}) + c;
@@ -267,7 +267,7 @@ public:
 ```
 
 ```go [sol-Go]
-func climbStairs(n int, costs []int) int {
+func climbStairs(_ int, costs []int) int {
 	var f0, f1, f2 int
 	for _, c := range costs {
 		f0, f1, f2 = f1, f2, min(f0+9, f1+4, f2+1)+c
@@ -281,7 +281,10 @@ func climbStairs(n int, costs []int) int {
 - 时间复杂度：$\mathcal{O}(nK)$，其中 $K=3$ 是最多可以跳的台阶数。
 - 空间复杂度：$\mathcal{O}(K)$。
 
-**注**：用**斜率优化**可以做到 $\mathcal{O}(n)$ 时间复杂度，与 $K$ 无关。
+本题有两个变形：
+
+1. 去掉 $K=3$ 的约束（可以爬任意多级台阶），这可以用斜率优化，时间复杂度 $\mathcal{O}(n)$。
+2. 额外传入一个参数 $K$，这可以用 [李超线段树](https://oi-wiki.org/ds/li-chao-tree/)，时间复杂度 $\mathcal{O}(n\log^2 n)$。
 
 ## 专题训练
 

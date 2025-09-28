@@ -12,7 +12,7 @@
 
 这是一个标准的**定长滑动窗口**问题，原理讲解[【套路】教你解决定长滑窗！适用于所有定长滑窗题目！](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1AKnRz8Ejn/?t=5m31s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -268,6 +268,11 @@ func distinctPoints(s string, k int) int {
 
 - 时间复杂度：$\mathcal{O}(n-k)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n-k)$。有 $n-k+1$ 个窗口，所以哈希表中至多保存 $n-k+1$ 个不同坐标。
+
+## 变形题
+
+- [CF1296C](https://codeforces.com/problemset/problem/1296/C)
+- [CF1902D](https://codeforces.com/problemset/problem/1902/D)
 
 ## 专题训练
 
