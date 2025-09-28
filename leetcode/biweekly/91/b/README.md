@@ -200,8 +200,6 @@ impl Solution {
 
 1. 第一步，把 $f[i-\textit{zero}]$ 赋值给 $f[i]$。
 2. 第二步，把 $f[i-\textit{one}]$ 加到 $f[i]$ 中。
-   
-由于注意第一步必须满足 $i-\textit{zero}\ge 0$，否则无法转移。第二步也同理，必须满足 $i-\textit{one}\ge 0$。
 
 ```py [sol-Python3]
 class Solution:
