@@ -162,9 +162,9 @@ class Solution:
         m = np.zeros((k * 2, k * 2), dtype=object)
         for i in range(k):
             for j in range(i):
-                m[i][k + j] = 1
+                m[i, k + j] = 1
             for j in range(i + 1, k):
-                m[k + i][j] = 1
+                m[k + i, j] = 1
 
         f1 = np.ones((k * 2, 1), dtype=object)
         fn = pow_mul(m, n - 1, f1)
@@ -418,7 +418,7 @@ class Solution:
         m = np.zeros((k, k), dtype=object)
         for i in range(k):
             for j in range(k - 1 - i):
-                m[i][j] = 1
+                m[i, j] = 1
 
         f1 = np.ones((k, 1), dtype=object)
         fn = pow_mul(m, n - 1, f1)
