@@ -134,35 +134,34 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 	return res
 }
 
-// 一般是状态机 DP
-// 操作 k 次
-func solveDP(k int) (ans int) {
-	const size = 26 // 第二维度的大小
+func solveDP(N int) (ans int) {
+	const size = 26
 
-	// DP 初始值（递归边界）
-	// 一般是一个全为 1 的列向量，对应初始值 f[0][j]=1 或者递归边界 dfs(0,j)=1
-	f0 := newMatrix(size, 1)
-	for i := range f0 {
-		f0[i][0] = 1
-	}
-
+	// 系数矩阵
 	// 例如，递推式中的 f[i][j] += f[i-1][k] * 2，提取系数得 m[j][k] = 2
 	m := newMatrix(size, size)
 	for j := range m {
-		m[j][(j+1)%size] = 3 // 如果 f[i][j] += f[i-1][j+1] * 3
-		m[j][(j+2)%size] = 5 // 如果 f[i][j] += f[i-1][j+2] * 5
+		// 根据题目修改
+		for k := 0; k < j; k++ {
+			m[j][k] = 1
+		}
 	}
 
-	// fk 和 f0 一样，都是长为 size 的列向量
-	fk := m.powMul(k, f0)
+	// 初始值
+	// 一般是全为 1 的列向量，对应 f[0][j]=1 或者递归边界 dfs(0,j)=1
+	f0 := newMatrix(size, 1)
+	for j := range f0 {
+		f0[j][0] = 1
+	}
 
-	// 现在 fk[i][0] 就是 f[k][i] 或者 dfs(k,i)
-	// 特别地，fk[0][0] 就是 f[k][0] 或者 dfs(k,0)
-	for _, row := range fk {
-		ans += row[0] // 举例 ans = sum(f[k])
+	// 答案
+	// 一般来说需要迭代 N-1 次或者 N 次
+	// fn[j][0] 对应 f[-1][j]
+	fn := m.powMul(N-1, f0)
+	for _, row := range fn {
+		ans += row[0]
 	}
 	ans %= mod
-
 	return
 }
 
@@ -634,7 +633,7 @@ func (b *xorBasis) initOnce() {
 // k 从 1 开始
 // https://loj.ac/p/114 http://acm.hdu.edu.cn/showproblem.php?pid=3949
 func (b *xorBasis) kthXor(k int) (xor int) {
-	b.initOnce() // 只会初始化一次
+	b.initOnce()     // 只会初始化一次
 	if b.canBeZero { // 0 是最小的
 		k-- // 占用了一个数
 	}
