@@ -369,6 +369,11 @@ func maxAlternatingSum(nums []int, swaps [][]int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。使用建图 + DFS + 快速选择算法，可以把时间复杂度优化到 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 相似题目
+
+- [1202. 交换字符串中的元素](https://leetcode.cn/problems/smallest-string-with-swaps/) 1855
+- [1722. 执行交换操作后的最小汉明距离](https://leetcode.cn/problems/minimize-hamming-distance-after-swap-operations/) 1892
+
 ## 专题训练
 
 1. 图论题单的「**§1.1 深度优先搜索（DFS）**」。
