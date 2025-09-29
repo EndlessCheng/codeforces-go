@@ -249,6 +249,7 @@ func fasterIO() {
 	wInt := func(x int) {
 		if x == 0 { // 如果保证 x != 0 则去掉
 			outS = append(outS, '0')
+			outS = append(outS, ' ') // 空格或者换行
 			return
 		}
 		if x < 0 { // 如果保证 x >= 0 则去掉
@@ -261,11 +262,11 @@ func fasterIO() {
 			tmpS[p] = '0' | byte(x%10)
 		}
 		outS = append(outS, tmpS[p:]...)
-		//outS = append(outS, '\n') // 空格/换行需要手动添加
+		outS = append(outS, ' ') // 空格或者换行
 	}
 
 	// 最后，直接用 os.Stdout 输出（最上面的 out 是不需要创建的）
-	os.Stdout.Write(outS)
+	defer func() { os.Stdout.Write(outS) }()
 
 	_ = []interface{}{rd, r1, rs, rsn, readStringUntilEOF, wInt}
 }
