@@ -116,6 +116,7 @@
 |[动态规划 - 从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)|[198. 打家劫舍](https://leetcode.cn/problems/house-robber/)|[代码](https://leetcode.cn/problems/house-robber/solutions/2102725/ru-he-xiang-chu-zhuang-tai-ding-yi-he-zh-1wt1/)|包含空间优化|
 ||[70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)|[代码](https://leetcode.cn/problems/climbing-stairs/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-7zm1/)|*课后作业|
 ||[746. 使用最小花费爬楼梯](https://leetcode.cn/problems/min-cost-climbing-stairs/)|[代码](https://leetcode.cn/problems/min-cost-climbing-stairs/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-j99e/)|*课后作业|
+||[3693. 爬楼梯 II](https://leetcode.cn/problems/climbing-stairs-ii/)|[代码](https://leetcode.cn/problems/climbing-stairs-ii/solutions/3793871/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-lkrf/)|*课后作业|
 ||[377. 组合总和 Ⅳ](https://leetcode.cn/problems/combination-sum-iv/)|[代码](https://leetcode.cn/problems/combination-sum-iv/solution/ben-zhi-shi-pa-lou-ti-cong-ji-yi-hua-sou-y52j/)|*课后作业|
 ||[2466. 统计构造好字符串的方案数](https://leetcode.cn/problems/count-ways-to-build-good-strings/)|[代码](https://leetcode.cn/problems/count-ways-to-build-good-strings/solution/by-endlesscheng-4j22/)|*课后作业|
 ||[2266. 统计打字方案数](https://leetcode.cn/problems/count-number-of-texts/)|[代码](https://leetcode.cn/problems/count-number-of-texts/solution/by-endlesscheng-gj8f/)|*课后作业|
