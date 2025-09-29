@@ -172,6 +172,7 @@ func distinctPoints(s string, k int) int {
 第一个窗口的增减量是 $(0,0)$。
 
 ```py [sol-Python3]
+# 更快的写法见【Python3 写法二】
 DIRS = {
     'L': (-1, 0),
     'R': (1, 0),
@@ -189,6 +190,24 @@ class Solution:
             x += in_x - out_x
             y += in_y - out_y
             st.add((x, y))
+        return len(st)
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def distinctPoints(self, s: str, k: int) -> int:
+        n = len(s)
+        DIRS = {
+            'L': -(n + 1),
+            'R': n + 1,
+            'D': -1,
+            'U': 1,
+        }
+        st = {0}  # 第一个窗口
+        x = 0  # 二维坐标映射成一维坐标
+        for i in range(k, n):
+            x += DIRS[s[i]] - DIRS[s[i - k]]
+            st.add(x)
         return len(st)
 ```
 
