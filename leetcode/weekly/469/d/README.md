@@ -1,9 +1,9 @@
-请先完成上一题 [3699. ZigZag 数组的总数 I](https://leetcode.cn/problems/number-of-zigzag-arrays-i/)，以及一些稍微简单点的矩阵快速幂优化 DP，例如 [935. 骑士拨号器](https://leetcode.cn/problems/knight-dialer/)，[我的题解](https://leetcode.cn/problems/knight-dialer/solutions/3004116/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-x06l/)。
+请先完成上一题 [3699. 锯齿形数组的总数 I](https://leetcode.cn/problems/number-of-zigzag-arrays-i/)，以及一些稍微简单点的矩阵快速幂优化 DP，例如 [935. 骑士拨号器](https://leetcode.cn/problems/knight-dialer/)，[我的题解](https://leetcode.cn/problems/knight-dialer/solutions/3004116/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-x06l/)。
 
 回顾一下，状态定义为：
 
-- 定义 $f_0[i][j]$ 表示在第 $i$ 个数为 $j$，且第 $i-1$ 个数和第 $i$ 个数是**递增**的情况下，包含 $i$ 个数的 ZigZag 数组个数。
-- 定义 $f_1[i][j]$ 表示在第 $i$ 个数为 $j$，且第 $i-1$ 个数和第 $i$ 个数是**递减**的情况下，包含 $i$ 个数的 ZigZag 数组个数。
+- 定义 $f_0[i][j]$ 表示在第 $i$ 个数为 $j$，且第 $i-1$ 个数和第 $i$ 个数是**递增**的情况下，包含 $i$ 个数的锯齿形数组个数。
+- 定义 $f_1[i][j]$ 表示在第 $i$ 个数为 $j$，且第 $i-1$ 个数和第 $i$ 个数是**递减**的情况下，包含 $i$ 个数的锯齿形数组个数。
 
 初始值 $f_0[1][j] = f_1[1][j] = 1$。
 
@@ -361,7 +361,7 @@ func zigZagArrays(n, l, r int) (ans int) {
 
 ## 利用对称性优化
 
-和 [3699. ZigZag 数组的总数 I](https://leetcode.cn/problems/number-of-zigzag-arrays-i/) 一样，可以用对称性优化。
+和 [3699. 锯齿形数组的总数 I](https://leetcode.cn/problems/number-of-zigzag-arrays-i/) 一样，可以用对称性优化。
 
 根据 [我的题解](https://leetcode.cn/problems/number-of-zigzag-arrays-i/solutions/3794081/qian-zhui-he-you-hua-dppythonjavacgo-by-k4ps3/) 中的「另一种写法」，我们可以只使用 $k\times k$ 大小的系数矩阵，这个矩阵在反对角线的左上全为 $1$。
 
