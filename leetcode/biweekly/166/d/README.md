@@ -77,8 +77,7 @@ class Solution:
             a.sort()
             odd = uf.odd[i]
             # 小的取负号，大的取正号
-            for j, x in enumerate(a):
-                ans += -x if j < odd else x
+            ans += sum(a[odd:]) - sum(a[:odd])
         return ans
 ```
 
@@ -209,13 +208,14 @@ public:
         long long ans = 0;
         for (int i = 0; i < n; i++) {
             auto& a = g[i];
+            if (a.empty()) {
+                continue;
+            }
             ranges::sort(a);
             int odd = uf.odd[i];
             // 小的取负号，大的取正号
-            for (int j = 0; j < a.size(); j++) {
-                int x = a[j];
-                ans += j < odd ? -x : x;
-            }
+            ans -= reduce(a.begin(), a.begin() + odd, 0LL);
+            ans += reduce(a.begin() + odd, a.end(), 0LL);
         }
         return ans;
     }
@@ -283,10 +283,8 @@ public:
             int odd = uf.odd[i];
             ranges::nth_element(a, a.begin() + odd);
             // 小的取负号，大的取正号
-            for (int j = 0; j < a.size(); j++) {
-                int x = a[j];
-                ans += j < odd ? -x : x;
-            }
+            ans -= reduce(a.begin(), a.begin() + odd, 0LL);
+            ans += reduce(a.begin() + odd, a.end(), 0LL);
         }
         return ans;
     }
