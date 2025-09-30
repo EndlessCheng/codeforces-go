@@ -114,7 +114,6 @@ func (st sparseTableWithIndex) query(l, r int) int {
 // 类似算法：双栈滑动窗口
 // https://codeforces.com/edu/course/3/lesson/18/3
 // https://codeforces.com/edu/course/3/lesson/18/3/practice/contest/619579/problem/A
-// https://codeforces.com/edu/course/3/lesson/18/3/practice/contest/619579/problem/B
 type disjointSparseTable[T any] struct {
 	st [][]T
 	op func(T, T) T
