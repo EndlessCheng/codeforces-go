@@ -116,7 +116,7 @@ func (st sparseTableWithIndex) query(l, r int) int {
 // https://codeforces.com/edu/course/3/lesson/18/3/practice/contest/619579/problem/A
 type disjointSparseTable[T any] struct {
 	st [][]T
-	op func(T, T) T // 需要满足交换律
+	op func(T, T) T
 }
 
 func newDisjointSparseTable[T any](a []T, op func(T, T) T) disjointSparseTable[T] {
@@ -135,7 +135,7 @@ func newDisjointSparseTable[T any](a []T, op func(T, T) T) disjointSparseTable[T
 			// 左半算后缀 op
 			st[k][mid-1] = a[mid-1]
 			for i := mid - 2; i >= m; i-- {
-				st[k][i] = op(st[k][i+1], a[i])
+				st[k][i] = op(a[i], st[k][i+1])
 			}
 
 			// 右半算前缀 op
