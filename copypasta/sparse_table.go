@@ -54,7 +54,7 @@ func newSparseTable[T any](a []T, op func(T, T) T) sparseTable[T] {
 	return sparseTable[T]{st, op}
 }
 
-// [l, r) 左闭右开，下标从 0 开始
+// [l,r) 左闭右开，下标从 0 开始
 // 返回 op(nums[l:r])
 // 时间复杂度 O(1)
 func (s sparseTable[T]) query(l, r int) T {
@@ -107,6 +107,63 @@ func (st sparseTableWithIndex) query(l, r int) int {
 	}
 	return b.i
 }
+
+//
+
+// 不相交 ST 表（Disjoint Sparse Table，DST）
+// 类似算法：双栈滑动窗口
+// https://codeforces.com/edu/course/3/lesson/18/3
+// https://codeforces.com/edu/course/3/lesson/18/3/practice/contest/619579/problem/A
+type disjointSparseTable[T any] struct {
+	st [][]T
+	op func(T, T) T // 需要满足交换律
+}
+
+func newDisjointSparseTable[T any](a []T, op func(T, T) T) disjointSparseTable[T] {
+	n := len(a)
+	w := bits.Len(uint(n))
+	st := make([][]T, w)
+	for i := range st {
+		st[i] = make([]T, n)
+	}
+	copy(st[0], a)
+	for k := 1; k < w; k++ {
+		B := 1 << (k + 1)
+		for m := 0; m < n; m += B {
+			mid := min(m+1<<k, n)
+
+			// 左半算后缀 op
+			st[k][mid-1] = a[mid-1]
+			for i := mid - 2; i >= m; i-- {
+				st[k][i] = op(st[k][i+1], a[i])
+			}
+
+			// 右半算前缀 op
+			if mid < n {
+				end := min(m+B, n)
+				st[k][mid] = a[mid]
+				for i := mid + 1; i < end; i++ {
+					st[k][i] = op(st[k][i-1], a[i])
+				}
+			}
+		}
+	}
+	return disjointSparseTable[T]{st, op}
+}
+
+// [l,r] 闭区间，下标从 0 开始
+func (s disjointSparseTable[T]) query(l, r int) T {
+	if l > r {
+		panic("l > r")
+	}
+	if l == r {
+		return s.st[0][l] // % mod
+	}
+	k := bits.Len(uint(l^r)) - 1
+	return s.op(s.st[k][l], s.st[k][r])
+}
+
+//
 
 // 二维 ST 表
 // 其一 · 保证询问的是正方形区域
