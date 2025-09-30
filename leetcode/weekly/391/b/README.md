@@ -100,7 +100,7 @@ impl Solution {
 
 设 $n = \textit{numBottles}$，$e = \textit{numExchange}$。
 
-设 $k$ 为循环次数（兑换得到的水瓶数），那么答案就是 $n+k$。
+设 $k$ 为循环次数（额外得到的水瓶数），那么答案就是 $n+k$。
 
 我们需要计算最小的 $k$，满足
 
