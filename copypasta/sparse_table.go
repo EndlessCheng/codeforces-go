@@ -32,18 +32,18 @@ todo https://ac.nowcoder.com/acm/problem/240870 https://ac.nowcoder.com/acm/cont
 题单 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 */
 
-type sparseTable struct {
-	st [][]int
-	op func(int, int) int
+type sparseTable[T any] struct {
+	st [][]T
+	op func(T, T) T
 }
 
 // 时间复杂度 O(n * log n)
-func newSparseTable(a []int, op func(int, int) int) sparseTable {
+func newSparseTable[T any](a []T, op func(T, T) T) sparseTable[T] {
 	n := len(a)
 	w := bits.Len(uint(n))
-	st := make([][]int, w)
+	st := make([][]T, w)
 	for i := range st {
-		st[i] = make([]int, n)
+		st[i] = make([]T, n)
 	}
 	copy(st[0], a)
 	for i := 1; i < w; i++ {
@@ -51,13 +51,13 @@ func newSparseTable(a []int, op func(int, int) int) sparseTable {
 			st[i][j] = op(st[i-1][j], st[i-1][j+1<<(i-1)])
 		}
 	}
-	return sparseTable{st, op}
+	return sparseTable[T]{st, op}
 }
 
 // [l, r) 左闭右开，下标从 0 开始
 // 返回 op(nums[l:r])
 // 时间复杂度 O(1)
-func (s sparseTable) query(l, r int) int {
+func (s sparseTable[T]) query(l, r int) T {
 	k := bits.Len(uint(r-l)) - 1
 	return s.op(s.st[k][l], s.st[k][r-1<<k])
 }
