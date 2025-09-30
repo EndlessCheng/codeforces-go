@@ -166,7 +166,7 @@ class Solution:
             for j in range(i + 1, k):
                 m[k + i, j] = 1
 
-        f1 = np.ones((k * 2, 1), dtype=object)
+        f1 = np.ones((k * 2,), dtype=object)
         fn = pow_mul(m, n - 1, f1)
         return fn.sum() % MOD
 ```
@@ -420,7 +420,7 @@ class Solution:
             for j in range(k - 1 - i):
                 m[i, j] = 1
 
-        f1 = np.ones((k, 1), dtype=object)
+        f1 = np.ones((k,), dtype=object)
         fn = pow_mul(m, n - 1, f1)
         return fn.sum() * 2 % MOD
 ```
