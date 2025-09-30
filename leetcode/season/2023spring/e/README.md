@@ -61,7 +61,7 @@ class Solution:
         def DFS(r: int, mask: int) -> int:
             if r == n:  # 找到 1 个合法方案
                 return 1
-            # 写一个暴搜，生成出所有的合法状态
+            # 写一个暴搜，生成所有的合法状态
             def dfs(c: int, row_mask: int, col_mask: int) -> int:
                 if c == m:  # 方案合法
                     return DFS(r + 1, col_mask)  # 枚举下一行
