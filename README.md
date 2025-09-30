@@ -33,7 +33,8 @@
     - 边权并查集（种类并查集）
     - 可持久化并查集
     - 回滚并查集 & 动态图连通性
-  - [稀疏表（ST 表）sparse_table.go](/copypasta/sparse_table.go)
+  - [ST 表 sparse_table.go](/copypasta/sparse_table.go)
+    - 不相交 ST 表
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
     - 差分树状数组（支持区间加、区间求和）
     - 二维差分树状数组
