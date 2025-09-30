@@ -1,28 +1,13 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 	"math/bits"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF689D(_r io.Reader, out io.Writer) {
-	in := bufio.NewReader(_r)
-	min := func(a, b int) int {
-		if a > b {
-			return b
-		}
-		return a
-	}
-	max := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-
+func CF689D(in io.Reader, out io.Writer) {
 	var n int
 	Fscan(in, &n)
 	st := make([][18][2]int, n)
@@ -44,7 +29,7 @@ func CF689D(_r io.Reader, out io.Writer) {
 		return max(p[0], q[0]) - min(p[1], q[1])
 	}
 
-	ans := int64(0)
+	ans := 0
 	for i, l, r := 1, 0, 0; i <= n; i++ {
 		for l < i && query(l, i) > 0 {
 			l++
@@ -52,9 +37,9 @@ func CF689D(_r io.Reader, out io.Writer) {
 		for r < i && query(r, i) >= 0 {
 			r++
 		}
-		ans += int64(r - l)
+		ans += r - l
 	}
 	Fprint(out, ans)
 }
 
-//func main() { CF689D(os.Stdin, os.Stdout) }
+//func main() { CF689D(bufio.NewReader(os.Stdin), os.Stdout) }
