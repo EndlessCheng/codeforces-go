@@ -30,8 +30,8 @@ const mx = 1000
 
 // 计算组合数，需要计算阶乘及其逆元
 var (
-	f    [mx + 1]int // f[n] = n!
-	invF [mx + 1]int // invF[n] = n!^-1
+	f    [mx + 1]int // f[n] = n!（去掉质因子 2 和 5）
+	invF [mx + 1]int // invF[n] = n!^-1（去掉质因子 2 和 5）
 	p2   [mx + 1]int // n! 中的 2 的幂次
 	p5   [mx + 1]int // n! 中的 5 的幂次
 )
