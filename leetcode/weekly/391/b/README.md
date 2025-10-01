@@ -102,7 +102,7 @@ impl Solution {
 
 设 $k$ 为循环次数（额外得到的水瓶数），那么答案就是 $n+k$。
 
-我们需要计算最小的 $k$，满足
+循环 $k$ 次后，剩余瓶子数小于 $e+k$，即
 
 $$
 n - ((e-1) + e + (e+1) + \cdots + (e+k-2)) < e + k
@@ -120,7 +120,7 @@ $$
 k > \dfrac{-(2e-1) + \sqrt{(2e-1)^2+8(n-e)}}{2}
 $$
 
-设 $b = 2e-1$。由于 $k$ 是整数，所以 $k$ 最小为
+设 $b = 2e-1$。由于 $k$ 是整数，所以 $k$ 为
 
 $$
 \left\lfloor\dfrac{\sqrt{b^2+8(n-e)} - b}{2}\right\rfloor + 1 = \left\lfloor\dfrac{\sqrt{b^2+8(n-e)} - b + 2}{2}\right\rfloor
