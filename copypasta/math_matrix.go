@@ -30,13 +30,15 @@ https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
 浅谈范德蒙德(Vandermonde)方阵的逆矩阵与拉格朗日(Lagrange)插值的关系以及快速傅里叶变换(FFT)中IDFT的原理 https://www.cnblogs.com/gzy-cjoier/p/9741950.html
 
 模板题 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
-https://codeforces.com/problemset/problem/1182/E
+https://codeforces.com/problemset/problem/1182/E 2300
+https://codeforces.com/problemset/problem/226/C 2400
+- https://www.luogu.com.cn/problem/P1306
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 挑战 P202 一维方块染色 http://poj.org/problem?id=3734
 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步 https://codeforces.com/problemset/problem/954/F
-https://codeforces.com/problemset/problem/166/E
+https://codeforces.com/problemset/problem/166/E 1500
 
 min max 矩阵快速幂
 https://atcoder.jp/contests/abc236/tasks/abc236_g
@@ -172,6 +174,8 @@ func solveDP(N int) (ans int) {
 // ！数列下标从 1 开始，n 从 1 开始
 // https://www.luogu.com.cn/problem/P1349
 // https://www.luogu.com.cn/problem/P1939
+// https://www.luogu.com.cn/problem/P1306
+// https://codeforces.com/problemset/problem/226/C 2400
 func calcFibonacci(p, q, a1, a2, n int) int {
 	if n == 1 {
 		return a1 % mod
