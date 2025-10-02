@@ -19,7 +19,7 @@ func cf348C(in io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 
-	B := int(math.Sqrt(1e5))
+	B := int(math.Sqrt(1e5 * 3))
 	sets := make([][]int, m)
 	iToBig := make([]int, m)
 	bigSum := []int{}
@@ -33,8 +33,8 @@ func cf348C(in io.Reader, _w io.Writer) {
 			s += a[sets[i][j]]
 		}
 		if k > B {
-			iToBig[i] = len(bigSum) + 1
 			bigSum = append(bigSum, s)
+			iToBig[i] = len(bigSum)
 		}
 	}
 
