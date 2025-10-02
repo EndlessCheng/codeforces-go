@@ -5,65 +5,62 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
-type matrix17 [][]int64
+// https://github.com/EndlessCheng
+const mod17 = 1_000_000_007
 
-func newMatrix17(n int) matrix17 {
-	mat := make(matrix17, n)
-	for i := range mat {
-		mat[i] = make([]int64, n)
-	}
-	return mat
-}
+type matrix17 [][]int
 
-func newMatrixI17(n int) matrix17 {
-	mat := make(matrix17, n)
-	for i := range mat {
-		mat[i] = make([]int64, n)
-		mat[i][i] = 1
+func newMatrix17(n, m int) matrix17 {
+	a := make(matrix17, n)
+	for i := range a {
+		a[i] = make([]int, m)
 	}
-	return mat
+	return a
 }
 
 func (a matrix17) mul(b matrix17) matrix17 {
-	const mod int64 = 1e9 + 7
-	c := newMatrix17(len(a))
-	for i := range a {
-		for j := range b[0] {
-			for k, aik := range a[i] {
-				c[i][j] += aik * b[k][j] % mod
+	c := newMatrix17(len(a), len(b[0]))
+	for i, row := range a {
+		for k, x := range row {
+			if x == 0 {
+				continue
 			}
-			c[i][j] %= mod
+			for j, y := range b[k] {
+				c[i][j] = (c[i][j] + x*y) % mod17
+			}
 		}
 	}
 	return c
 }
 
-func (a matrix17) pow(k int64) matrix17 {
-	res := newMatrixI17(len(a))
-	for ; k > 0; k >>= 1 {
-		if k&1 == 1 {
-			res = res.mul(a)
+// a^n * f0
+func (a matrix17) powMul(n int, f0 matrix17) matrix17 {
+	res := f0
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = a.mul(res)
 		}
 		a = a.mul(a)
 	}
 	return res
 }
 
-func CF1117D(in io.Reader, out io.Writer) {
-	n, m := int64(0), 0
-	Fscan(in, &n, &m)
-	if n < int64(m) {
-		Fprint(out, 1)
-		return
+func cf1117D(in io.Reader, out io.Writer) {
+	var n, k int
+	Fscan(in, &n, &k)
+ 
+	m := newMatrix17(k, k)
+	m[0][0] = 1
+	m[0][k-1] = 1
+	for i := range k - 1 {
+		m[i+1][i] = 1
 	}
-	a := newMatrix17(m)
-	a[0][0] = 1
-	a[0][m-1] = 1
-	for i := 1; i < m; i++ {
-		a[i][i-1] = 1
-	}
-	Fprint(out, a.pow(n)[0][0])
+
+	f0 := newMatrix17(k, 1)
+	f0[0][0] = 1
+ 
+	fn := m.powMul(n, f0)
+	Fprint(out, fn[0][0])
 }
 
-//func main() { CF1117D(os.Stdin, os.Stdout) }
+//func main() { cf1117D(os.Stdin, os.Stdout) }
