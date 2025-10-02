@@ -100,6 +100,9 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 	return res
 }
 
+// 有两种类型的矩阵快速幂优化 DP
+// 一种是多维 DP / 状态机 DP，转移系数写成一个 size*size 的矩阵，见下面的 solveDP
+// 另一种是线性 DP，转移系数写在第一行，其余行 m[i+1][i] = 1，见下面的 calcFibonacci
 func solveDP(N int) (ans int) {
 	const size = 26
 
