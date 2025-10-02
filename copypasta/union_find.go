@@ -20,6 +20,9 @@ import (
 https://zhuanlan.zhihu.com/p/553192435
 
 随机合并下的时间复杂度 https://www.cis.upenn.edu/~sanjeev/papers/soda14_disjoint_set_union.pdf
+
+Tarjan, a linear-time algorithm for a special case of disjoint set union
+https://par.cse.nsysu.edu.tw/resource/paper/2024/240730/A%20Linear-Time%20Algorithm%20for%20a%20Special%20Case%20of%20Disjoint%20Set%20Union.pdf
 */
 
 // 普通并查集
@@ -45,6 +48,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://codeforces.com/problemset/problem/1851/G 2000 离线
 // https://codeforces.com/problemset/problem/87/D 2300
 // https://codeforces.com/problemset/problem/990/G 2400
+// https://codeforces.com/problemset/problem/1132/G 2400
 // https://codeforces.com/problemset/problem/1166/F 2400
 // https://codeforces.com/problemset/problem/1253/F 2500 启发式合并
 // https://codeforces.com/problemset/problem/1559/D2 2500 构造
@@ -79,6 +83,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://codeforces.com/problemset/problem/1157/E 1700
 // https://codeforces.com/problemset/problem/724/D 1900
 // https://codeforces.com/problemset/problem/2018/D 2200
+// https://codeforces.com/problemset/problem/1132/G 2400
 // https://codeforces.com/problemset/problem/827/D 2700
 // https://www.codechef.com/problems/REMSUBARR
 //
