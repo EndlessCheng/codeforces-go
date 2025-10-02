@@ -37,6 +37,13 @@ func cf1789E(in io.Reader, out io.Writer) {
 					cnt += int(s[i] - s[i-1])
 				}
 			} else {
+				// s = Ax+B(x+1)
+				// s = Qx+R，其中 Q>=R
+				// Q = s/x, R = s%x
+				// s/x >= s%x
+				// 枚举 Q，那么满足 s/x=Q 的 s 的范围为 [Qx,Qx+x-1]
+				// 此外 s%x<=Q，s 的范围为 [Qx,Qx+Q]
+				// 二者结合，所以 s 的范围为 [Qx, Qx+min(x-1,Q)] （当然，上界不能超过 mx）
 				q := mx / x
 				for i := 1; i <= q; i++ {
 					cnt += int(s[min(i*x+min(x-1, i), mx)] - s[i*x-1])
