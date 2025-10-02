@@ -9,7 +9,7 @@ import (
 
 // 3B1B 线性代数的本质 https://www.bilibili.com/video/BV1ys411472E
 
-/* 矩阵加速
+/* 矩阵
 https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97#%E7%B7%9A%E6%80%A7%E4%BB%A3%E6%95%B8%E8%A7%A3%E6%B3%95
 https://zhuanlan.zhihu.com/p/56444434
 https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training contest
@@ -29,16 +29,31 @@ https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
 
 浅谈范德蒙德(Vandermonde)方阵的逆矩阵与拉格朗日(Lagrange)插值的关系以及快速傅里叶变换(FFT)中IDFT的原理 https://www.cnblogs.com/gzy-cjoier/p/9741950.html
 
-模板题 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
+矩阵快速幂优化 DP
+视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
+文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
+m 项递推式，以及包含常数项的情况见《挑战》P201
+https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
+https://codeforces.com/problemset/problem/166/E 1500
+https://codeforces.com/problemset/problem/691/E 1900
+https://codeforces.com/problemset/problem/954/F 2100 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步
+https://codeforces.com/problemset/problem/1117/D 2100 a(n) = a(n-1) + a(n-m)
 https://codeforces.com/problemset/problem/1182/E 2300
 https://codeforces.com/problemset/problem/226/C 2400
 - https://www.luogu.com.cn/problem/P1306
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
-TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
-挑战 P202 一维方块染色 http://poj.org/problem?id=3734
-3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步 https://codeforces.com/problemset/problem/954/F
-https://codeforces.com/problemset/problem/166/E 1500
+https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
+https://www.luogu.com.cn/problem/P3216 12345678910111213...n % m
+https://www.luogu.com.cn/problem/P10310
+https://ac.nowcoder.com/acm/contest/9247/A
+https://blog.csdn.net/zyz_bz/article/details/88993616 TR 的数列
+http://poj.org/problem?id=3734 挑战 P202 一维方块染色
+
+https://www.luogu.com.cn/problem/P9777
+已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n
+由于 f(n) * f(1) = f(n+1) + f(n-1)
+所以 f(n+1) = k*f(n) - f(n-1)，矩阵快速幂解决
 
 min max 矩阵快速幂
 https://atcoder.jp/contests/abc236/tasks/abc236_g
@@ -47,57 +62,6 @@ https://atcoder.jp/contests/abc236/tasks/abc236_g
 https://atcoder.jp/contests/abc009/tasks/abc009_4
 
 todo poj 2345 3532 3526
-*/
-
-// 一些题目：https://oi-wiki.org/math/matrix/
-
-func readMatrix(in io.Reader, n, m int) matrix {
-	a := make(matrix, n)
-	for i := range a {
-		a[i] = make([]int, m)
-		//a[i] = make([]int, m, m+1) // 方便高斯消元
-		for j := range a[i] {
-			Fscan(in, &a[i][j])
-		}
-	}
-	return a
-}
-
-func copyMatrix(a matrix) matrix {
-	b := make(matrix, len(a))
-	for i, row := range a {
-		b[i] = slices.Clone(row)
-	}
-	return b
-}
-
-// 顺时针转 90°
-func rotateMatrix(a matrix) matrix {
-	b := make(matrix, len(a[0]))
-	for j := range b {
-		b[j] = make([]int, len(a))
-		for i, row := range a {
-			b[j][len(a)-1-i] = row[j]
-		}
-	}
-	return b
-}
-
-/*
-矩阵快速幂优化 DP
-视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
-文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
-m 项递推式，以及包含常数项的情况见《挑战》P201
-https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
-https://www.luogu.com.cn/problem/P10310
-https://ac.nowcoder.com/acm/contest/9247/A
-https://codeforces.com/problemset/problem/1117/D a(n) = a(n-1) + a(n-m)
-https://www.luogu.com.cn/problem/P3216 12345678910111213...n % m
-
-https://www.luogu.com.cn/problem/P9777
-已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n
-由于 f(n) * f(1) = f(n+1) + f(n-1)
-所以 f(n+1) = k*f(n) - f(n-1)，矩阵快速幂解决
 */
 type matrix [][]int
 
@@ -175,7 +139,6 @@ func solveDP(N int) (ans int) {
 // https://www.luogu.com.cn/problem/P1349
 // https://www.luogu.com.cn/problem/P1939
 // https://www.luogu.com.cn/problem/P1306
-// https://codeforces.com/problemset/problem/226/C 2400
 func calcFibonacci(p, q, a1, a2, n int) int {
 	if n == 1 {
 		return a1 % mod
@@ -229,6 +192,40 @@ func (a matrix) solve(n, sx, sy, tx, ty, k int) int {
 	b[0][sx*n+sy] = 1
 	res := b.mul(a.pow(k))
 	return res[0][tx*n+ty]
+}
+
+//
+
+func readMatrix(in io.Reader, n, m int) matrix {
+	a := make(matrix, n)
+	for i := range a {
+		a[i] = make([]int, m)
+		//a[i] = make([]int, m, m+1) // 方便高斯消元
+		for j := range a[i] {
+			Fscan(in, &a[i][j])
+		}
+	}
+	return a
+}
+
+func copyMatrix(a matrix) matrix {
+	b := make(matrix, len(a))
+	for i, row := range a {
+		b[i] = slices.Clone(row)
+	}
+	return b
+}
+
+// 顺时针转 90°
+func rotateMatrix(a matrix) matrix {
+	b := make(matrix, len(a[0]))
+	for j := range b {
+		b[j] = make([]int, len(a))
+		for i, row := range a {
+			b[j][len(a)-1-i] = row[j]
+		}
+	}
+	return b
 }
 
 func (a matrix) add(b matrix) matrix {
