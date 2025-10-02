@@ -12,20 +12,6 @@ func cf1750D(in io.Reader, out io.Writer) {
 	var T, n, m, pre, v int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m, &pre)
-		primes := []int{}
-		t := pre
-		for p := 2; p*p <= t; p++ {
-			if t%p > 0 {
-				continue
-			}
-			for t /= p; t%p == 0; t /= p {
-			}
-			primes = append(primes, p)
-		}
-		if t > 1 {
-			primes = append(primes, t)
-		}
-
 		ans := 1
 		for range n - 1 {
 			Fscan(in, &v)
@@ -37,14 +23,22 @@ func cf1750D(in io.Reader, out io.Writer) {
 				ans = 0
 				continue
 			}
-			m := m / v
+
 			t := pre / v
 			ps := []int{}
-			for _, p := range primes {
-				if t%p == 0 {
-					ps = append(ps, p)
+			for p := 2; p*p <= t; p++ {
+				if t%p > 0 {
+					continue
 				}
+				for t /= p; t%p == 0; t /= p {
+				}
+				ps = append(ps, p)
 			}
+			if t > 1 {
+				ps = append(ps, t)
+			}
+
+			m := m / v
 			res := 0
 			for i := range 1 << len(ps) {
 				mul := 1
