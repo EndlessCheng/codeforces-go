@@ -424,6 +424,7 @@ func (c *comb) p(n, k int) int {
 // - [3130. 找出所有稳定的二进制数组 II](https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/) 2825
 //    - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
 // https://codeforces.com/problemset/problem/630/K 1500
+// https://codeforces.com/problemset/problem/1750/D 1800
 // https://codeforces.com/problemset/problem/900/D 2000 因子容斥
 // https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
 // https://codeforces.com/problemset/problem/451/E 2300 例题
