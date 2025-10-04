@@ -19,7 +19,7 @@
 
 元素 $x = \textit{arrivals}[i]$ 进入窗口时：
 
-- 如果 $\textit{cnt}[x]=m$，那么丢弃 $x$，答案加一。**注意 $x$ 在未来要离开窗口**，但由于已经丢弃，不能计入。为了方便，我们可以把 $\textit{arrivals}[i]$ 改成 $0$（或者负数），表示已丢弃。
+- 如果 $\textit{cnt}[x]=m$，那么丢弃 $x$，答案加一。⚠**易错点**：$x$ 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 $\textit{cnt}$。为了方便实现，我们可以把 $\textit{arrivals}[i]$ 改成 $0$（或者负数），表示已丢弃。
 - 否则把 $\textit{cnt}[x]$ 加一。
 
 元素 $x = \textit{arrivals}[i+1-w]$ 离开窗口时：
@@ -36,7 +36,7 @@ class Solution:
         for i, x in enumerate(arrivals):
             # x 进入窗口
             if cnt[x] == m:  # x 的个数已达上限
-                # 注意 x 在未来要离开窗口，但由于已经丢弃，不能计入
+                # 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 # 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
                 arrivals[i] = 0
                 ans += 1
@@ -60,7 +60,7 @@ class Solution {
             // x 进入窗口
             int c = cnt.getOrDefault(x, 0);
             if (c == m) { // x 的个数已达上限
-                // 注意 x 在未来要离开窗口，但由于已经丢弃，不能计入
+                // 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 // 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
                 arrivals[i] = 0;
                 ans++;
@@ -93,7 +93,7 @@ class Solution {
             int x = arrivals[i];
             // x 进入窗口
             if (cnt[x] == m) { // x 的个数已达上限
-                // 注意 x 在未来要离开窗口，但由于已经丢弃，不能计入
+                // 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 // 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
                 arrivals[i] = 0;
                 ans++;
@@ -122,7 +122,7 @@ public:
             int& x = arrivals[i];
             // x 进入窗口
             if (cnt[x] == m) { // x 的个数已达上限
-                // 注意 x 在未来要离开窗口，但由于已经丢弃，不能计入
+                // 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 // 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
                 x = 0;
                 ans++;
@@ -147,7 +147,7 @@ func minArrivalsToDiscard(arrivals []int, w, m int) (ans int) {
 	for i, x := range arrivals {
 		// x 进入窗口
 		if cnt[x] == m { // x 的个数已达上限
-			// 注意 x 在未来要离开窗口，但由于已经丢弃，不能计入
+			// 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
 			// 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
 			arrivals[i] = 0
 			ans++
