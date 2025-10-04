@@ -29,7 +29,7 @@ func CF1311F(_r io.Reader, out io.Writer) {
 	ans := int64(0)
 	rank := map[int]int{}
 	for i, v := range x {
-		ans += int64(v) * int64(2*i+1-n) // 先计算 Σ|ai-aj| 的结果
+		ans += int64(v) * int64(2*i+1-n) // 先计算 ∑|ai-aj| 的结果
 		rank[v] = i
 	}
 	for i, p := range ps {
