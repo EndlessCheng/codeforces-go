@@ -3611,10 +3611,6 @@ func (*graph) topoSort(n int, edges [][]int) []int {
 }
 
 // 强连通分量分解 Strongly Connected Component (SCC)
-// 支持自环和重边
-// https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
-// https://oi-wiki.org/graph/scc/#kosaraju
-// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 // 模板题 https://www.luogu.com.cn/problem/P1726
 //       https://atcoder.jp/contests/practice2/tasks/practice2_g
 // 缩点后与 DAG DP 结合 https://codeforces.com/contest/1900/problem/E
@@ -3624,6 +3620,13 @@ func (*graph) topoSort(n int, edges [][]int) []int {
 // 与高斯消元结合 https://www.luogu.com.cn/problem/P6030
 // https://codeforces.com/problemset/problem/999/E 2000
 // https://codeforces.com/problemset/problem/467/D 2400 缩点 + DAG DP
+// https://codeforces.com/problemset/problem/1515/G 2700
+
+// SCC Kosaraju
+// 支持自环和重边
+// https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
+// https://oi-wiki.org/graph/scc/#kosaraju
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 func (*graph) sccKosaraju(n int, edges [][]int) ([][]int, []int) {
 	g := make([][]int, n)
 	rg := make([][]int, len(g))
@@ -3755,21 +3758,21 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 	// 2. subtree(v) 的返祖边所指向的节点的 dfn，也就是经过恰好一条不在 DFS 树上的边，能够到达 subtree(v) 的节点的 dfn
 	allScc := [][]int{}
 	dfn := make([]int, len(g)) // 值从 1 开始
-	dfsClock := 0
+	now := 0
 	st := []int{}
 	var tarjan func(int) int
 	tarjan = func(v int) int {
-		dfsClock++
-		dfn[v] = dfsClock
-		lowV := dfsClock
+		now++
+		dfn[v] = now
+		lowV := now
 		st = append(st, v)
 		for _, w := range g[v] {
 			if dfn[w] == 0 {
 				lowW := tarjan(w)
 				lowV = min(lowV, lowW)
-			} else {
-				// 如果 0 < dfn[w] != inf，说明 w 在 st 中，那么找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
-				// 实际上，不需要判断 dfn[w] == inf 的情况，直接取 min 即可
+			} else { // dfn[w] > 0
+				// 如果此时 dfn[w] != inf，说明 w 在 st 中，那么找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
+				// 实际上，无需判断 dfn[w] != inf，直接取 min 即可
 				lowV = min(lowV, dfn[w])
 			}
 		}
