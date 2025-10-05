@@ -55,7 +55,7 @@ class Solution:
         s = list(map(int, str(n)))
         m = len(s)
 
-        # borrow = True 表示被低位（i+1）借了个 1
+        # borrowed = True 表示被低位（i+1）借了个 1
         # is_num = True 表示之前填的数位，两个数都无前导零
         @cache
         def dfs(i: int, borrowed: bool, is_num: bool) -> int:
@@ -99,7 +99,7 @@ class Solution {
         return dfs(m - 1, false, true, s, memo);
     }
 
-    // borrow = true 表示被低位（i+1）借了个 1
+    // borrowed = true 表示被低位（i+1）借了个 1
     // isNum = true 表示之前填的数位，两个数都无前导零
     private long dfs(int i, boolean borrowed, boolean isNum, char[] s, long[][][] memo) {
         if (i < 0) {
@@ -156,7 +156,7 @@ public:
         int m = s.size();
         vector memo(m, array<array<long long, 2>, 2>({{-1, -1}, {-1, -1}})); // -1 表示没有计算过
 
-        // borrow = true 表示被低位（i+1）借了个 1
+        // borrowed = true 表示被低位（i+1）借了个 1
         // is_num = true 表示之前填的数位，两个数都无前导零
         auto dfs = [&](this auto&& dfs, int i, bool borrowed, bool is_num) -> long long {
             if (i < 0) {
@@ -211,7 +211,7 @@ func countNoZeroPairs(n int64) int64 {
 		memo[i] = [2][2]int{{-1, -1}, {-1, -1}} // -1 表示没有计算过
 	}
 
-	// borrow = 1 表示被低位（i+1）借了个 1
+	// borrowed = 1 表示被低位（i+1）借了个 1
 	// isNum = 1 表示之前填的数位，两个数都无前导零
 	var dfs func(int, int, int) int
 	dfs = func(i, borrowed, isNum int) (res int) {

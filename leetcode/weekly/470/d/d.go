@@ -17,7 +17,7 @@ func countNoZeroPairs(n int64) int64 {
 		memo[i] = [2][2]int{{-1, -1}, {-1, -1}} // -1 表示没有计算过
 	}
 
-	// borrow = 1 表示被低位（i+1）借了个 1
+	// borrowed = 1 表示被低位（i+1）借了个 1
 	// isNum = 1 表示之前填的数位，两个数都无前导零
 	var dfs func(int, int, int) int
 	dfs = func(i, borrowed, isNum int) (res int) {
