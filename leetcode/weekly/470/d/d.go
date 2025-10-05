@@ -17,8 +17,8 @@ func countNoZeroPairs(n int64) int64 {
 		memo[i] = [2][2]int{{-1, -1}, {-1, -1}} // -1 表示没有计算过
 	}
 
-	// borrow = 1 表示被低位（i+1）借位
-	// isNum = 1 表示之前填的数位，两个数都不为 0（无前导零）
+	// borrow = 1 表示被低位（i+1）借了个 1
+	// isNum = 1 表示之前填的数位，两个数都无前导零
 	var dfs func(int, int, int) int
 	dfs = func(i, borrowed, isNum int) (res int) {
 		if i < 0 {
@@ -33,28 +33,23 @@ func countNoZeroPairs(n int64) int64 {
 		defer func() { *p = res }() // 记忆化
 
 		d := int(s[i]-'0') - borrowed
-		// 其中一个数必须填前导零
-		if isNum == 0 {
-			// 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
-			if i > 0 && d == 0 {
-				return 0
+
+		// 情况一：两个数位都不为 0
+		if isNum > 0 {
+			res = dfs(i-1, 0, 1) * twoSumWays(d)     // 不向高位借 1
+			res += dfs(i-1, 1, 1) * twoSumWays(d+10) // 向高位借 1
+		}
+
+		// 情况二：其中一个数位填前导零
+		if i < m-1 { // 不能是最低位
+			if d != 0 {
+				// 如果 d < 0，必须向高位借 1
+				// 如果 isNum = 1，根据对称性，方案数要乘以 2
+				res += dfs(i-1, isNeg(d), 0) * (isNum + 1)
+			} else if i == 0 { // 两个数位都填 0，只有当 i = 0 的时候才有解
+				res++
 			}
-			// 如果 d < 0，必须向高位借位
-			return dfs(i-1, isNeg(d), 0)
 		}
-
-		// 令其中一个数从当前位置开始往左都是 0（前导零）
-		if i < m-1 {
-			if d != 0 { // 另一个数不为 0
-				res = dfs(i-1, isNeg(d), 0) * 2 // 根据对称性乘以 2
-			} else if i == 0 { // 最高位被借走
-				res = 1 // 两个数都是 0
-			} // else res = 0
-		}
-
-		// 两个数位都不为 0
-		res += dfs(i-1, 0, 1) * twoSumWays(d)    // 不向 i-1 借位
-		res += dfs(i-1, 1, 1) * twoSumWays(d+10) // 向 i-1 借位
 		return
 	}
 

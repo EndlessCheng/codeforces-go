@@ -64,26 +64,22 @@ class Solution:
                 return 0 if borrowed else 1
 
             d = s[i] - borrowed
-
-            # 其中一个数必须填前导零
-            if not is_num:
-                # 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
-                if i > 0 and d == 0:
-                    return 0
-                # 如果 d < 0，必须向高位借 1
-                return dfs(i - 1, d < 0, False)
-
-            # 令其中一个数从当前位置开始往左都是 0（前导零）
             res = 0
-            if i < m - 1:
-                if d != 0:  # 另一个数不为 0
-                    res = dfs(i - 1, d < 0, False) * 2  # 根据对称性乘以 2
-                elif i == 0:  # 最高位被借走
-                    res = 1  # 两个数都是 0
 
-            # 两个数位都不为 0
-            res += dfs(i - 1, False, True) * two_sum_ways(d)  # 不向 i-1 借 1
-            res += dfs(i - 1, True, True) * two_sum_ways(d + 10)  # 向 i-1 借 1
+            # 情况一：两个数位都不为 0
+            if is_num:
+                res = dfs(i - 1, False, True) * two_sum_ways(d)  # 不向高位借 1
+                res += dfs(i - 1, True, True) * two_sum_ways(d + 10) # 向高位借 1
+
+            # 情况二：其中一个数位填前导零
+            if i < m - 1:  # 不能是最低位
+                if d:
+                    # 如果 d < 0，必须向高位借 1
+                    # 如果 is_num = True，根据对称性，方案数要乘以 2
+                    res += dfs(i - 1, d < 0, False) * (is_num + 1)
+                elif i == 0:  # 两个数位都填 0，只有当 i = 0 的时候才有解
+                    res += 1
+
             return res
 
         return dfs(m - 1, False, True)
@@ -110,6 +106,7 @@ class Solution {
             // borrowed 必须为 false
             return borrowed ? 0 : 1;
         }
+
         int ib = borrowed ? 1 : 0;
         int in = isNum ? 1 : 0;
         if (memo[i][ib][in] != -1) { // 之前计算过
@@ -117,30 +114,25 @@ class Solution {
         }
 
         int d = s[i] - '0' - (borrowed ? 1 : 0);
-
-        // 其中一个数必须填前导零
-        if (!isNum) {
-            // 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
-            if (i > 0 && d == 0) {
-                return memo[i][ib][in] = 0;
-            }
-            // 如果 d < 0，必须向高位借 1
-            return memo[i][ib][in] = dfs(i - 1, d < 0, false, s, memo);
-        }
-
-        // 令其中一个数从当前位置开始往左都是 0（前导零）
         long res = 0;
-        if (i < s.length - 1) {
-            if (d != 0) { // 另一个数不为 0
-                res = dfs(i - 1, d < 0, false, s, memo) * 2; // 根据对称性乘以 2
-            } else if (i == 0) { // 最高位被借走
-                res = 1; // 两个数都是 0
-            } // else res = 0
+
+        // 情况一：两个数位都不为 0
+        if (isNum) {
+            res = dfs(i - 1, false, true, s, memo) * twoSumWays(d); // 不向高位借 1
+            res += dfs(i - 1, true, true, s, memo) * twoSumWays(d + 10); // 向高位借 1
         }
 
-        // 两个数位都不为 0
-        res += dfs(i - 1, false, true, s, memo) * twoSumWays(d); // 不向 i-1 借 1
-        res += dfs(i - 1, true, true, s, memo) * twoSumWays(d + 10); // 向 i-1 借 1
+        // 情况二：其中一个数位填前导零
+        if (i < s.length - 1) { // 不能是最低位
+            if (d != 0) {
+                // 如果 d < 0，必须向高位借 1
+                // 如果 isNum = true，根据对称性，方案数要乘以 2
+                res += dfs(i - 1, d < 0, false, s, memo) * (isNum ? 2 : 1);
+            } else if (i == 0) { // 两个数位都填 0，只有当 i = 0 的时候才有解
+                res++;
+            }
+        }
+
         return memo[i][ib][in] = res; // 记忆化
     }
 
@@ -171,36 +163,32 @@ public:
                 // borrowed 必须为 false
                 return !borrowed;
             }
+
             long long& res = memo[i][borrowed][is_num]; // 注意这里是引用
             if (res != -1) { // 之前计算过
                 return res;
             }
 
             int d = s[i] - '0' - borrowed;
-
-            // 其中一个数必须填前导零
-            if (!is_num) {
-                // 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
-                if (i > 0 && d == 0) {
-                    return res = 0;
-                }
-                // 如果 d < 0，必须向高位借 1
-                return res = dfs(i - 1, d < 0, false);
-            }
-
-            // 令其中一个数从当前位置开始往左都是 0（前导零）
             res = 0;
-            if (i < m - 1) {
-                if (d != 0) { // 另一个数不为 0
-                    res = dfs(i - 1, d < 0, false) * 2; // 根据对称性乘以 2
-                } else if (i == 0) { // 最高位被借走
-                    res = 1; // 两个数都是 0
-                } // else res = 0
+
+            // 情况一：两个数位都不为 0
+            if (is_num) {
+                res = dfs(i - 1, false, true) * twoSumWays(d); // 不向高位借 1
+                res += dfs(i - 1, true, true) * twoSumWays(d + 10); // 向高位借 1
             }
 
-            // 两个数位都不为 0
-            res += dfs(i - 1, false, true) * twoSumWays(d); // 不向 i-1 借 1
-            res += dfs(i - 1, true, true) * twoSumWays(d + 10); // 向 i-1 借 1
+            // 情况二：其中一个数位填前导零
+            if (i < m - 1) { // 不能是最低位
+                if (d) {
+                    // 如果 d < 0，必须向高位借 1
+                    // 如果 is_num = true，根据对称性，方案数要乘以 2
+                    res += dfs(i - 1, d < 0, false) * (is_num + 1);
+                } else if (i == 0) { // 两个数位都填 0，只有当 i = 0 的时候才有解
+                    res++;
+                }
+            }
+
             return res;
         };
 
@@ -240,28 +228,22 @@ func countNoZeroPairs(n int64) int64 {
 
 		d := int(s[i]-'0') - borrowed
 
-		// 其中一个数必须填前导零
-		if isNum == 0 {
-			// 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
-			if i > 0 && d == 0 {
-				return 0
+		// 情况一：两个数位都不为 0
+		if isNum > 0 {
+			res = dfs(i-1, 0, 1) * twoSumWays(d)     // 不向高位借 1
+			res += dfs(i-1, 1, 1) * twoSumWays(d+10) // 向高位借 1
+		}
+
+		// 情况二：其中一个数位填前导零
+		if i < m-1 { // 不能是最低位
+			if d != 0 {
+				// 如果 d < 0，必须向高位借 1
+				// 如果 isNum = 1，根据对称性，方案数要乘以 2
+				res += dfs(i-1, isNeg(d), 0) * (isNum + 1)
+			} else if i == 0 { // 两个数位都填 0，只有当 i = 0 的时候才有解
+				res++
 			}
-			// 如果 d < 0，必须向高位借 1
-			return dfs(i-1, isNeg(d), 0)
 		}
-
-		// 令其中一个数从当前位置开始往左都是 0（前导零）
-		if i < m-1 {
-			if d != 0 { // 另一个数不为 0
-				res = dfs(i-1, isNeg(d), 0) * 2 // 根据对称性乘以 2
-			} else if i == 0 { // 最高位被借走
-				res = 1 // 两个数都是 0
-			} // else res = 0
-		}
-
-		// 两个数位都不为 0
-		res += dfs(i-1, 0, 1) * twoSumWays(d)    // 不向 i-1 借 1
-		res += dfs(i-1, 1, 1) * twoSumWays(d+10) // 向 i-1 借 1
 		return
 	}
 
@@ -279,8 +261,8 @@ func isNeg(d int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(\log n)$。
-- 空间复杂度：$\mathcal{O}(\log n)$。
+- 时间复杂度：$\mathcal{O}(\log n)$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $n$ 的十进制长度 $\mathcal{O}(\log n)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(\log n)$。
+- 空间复杂度：$\mathcal{O}(\log n)$。保存多少状态，就需要多少空间。
 
 ## 相关题目
 
