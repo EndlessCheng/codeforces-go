@@ -1,24 +1,29 @@
-如果你从未做过类似题目，可以先做一些简单的题目，例如 [3561. 移除相邻字符](https://leetcode.cn/problems/resulting-string-after-adjacent-removals/)。
+如果你从未做过类似题目，可以先做一些简单的，比如 [3561. 移除相邻字符](https://leetcode.cn/problems/resulting-string-after-adjacent-removals/)。
 
-对于本题，我们需要在栈中维护二元组 $(b,\textit{cnt})$，其中 $b$ 表示括号字符，$\textit{cnt}$ 表示该字符的连续出现次数。
+本题也是邻项消除，但消除的不是相邻的一对字符，而是一串字符。
 
-1. 创建一个空栈。遍历 $s$。
-2. 如果栈不为空，且 $s[i]$ 与栈顶字符相同，那么把栈顶的 $\textit{cnt}$ 加一，否则把二元组 $(s[i],1)$ 入栈。
-3. 检查是否可以消除：如果栈的大小 $\ge 2$，栈顶是右括号且个数为 $k$，并且栈顶下面的左括号的个数 $\ge k$，那么找到了一个 $k$-平衡子串，将其消除。即弹出栈顶，然后把新的栈顶的 $\textit{cnt}$ 减少 $k$，如果减少 $k$ 后 $\textit{cnt}=0$，那么弹出新的栈顶。
+为方便知道能否消除，栈中不能只存字符，而是存字符连续出现的次数（相当于**压缩**了连续出现的字符）。具体来说，栈中保存二元组 $(b,\textit{cnt})$，其中 $b$ 为括号字符，$\textit{cnt}$ 为该括号的连续出现次数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+具体算法如下：
+
+1. 创建一个空栈。
+2. 从左到右遍历 $s$。
+3. **维护字符连续出现次数**：如果栈不为空，且 $s[i]$ 与栈顶字符相同，那么把栈顶的 $\textit{cnt}$ 加一，否则把二元组 $(s[i],1)$ 入栈。
+4. **检查是否可以消除**：如果栈的大小 $\ge 2$，栈顶是右括号且个数为 $k$，并且栈顶下面（倒数第二项）左括号的个数 $\ge k$，那么就找到了一个 $k$-平衡子串，将其消除。做法是弹出栈顶，然后把新的栈顶的 $\textit{cnt}$ 减少 $k$，如果减少 $k$ 后 $\textit{cnt}=0$，那么弹出新的栈顶。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1ESxKzeEt5/?t=7m48s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def removeSubstring(self, s: str, k: int) -> str:
-        st = []  # 栈中保存 [字符, 个数]
+        st = []  # 栈中保存 [字符, 连续出现次数]
         for b in s:
             if st and st[-1][0] == b:
-                st[-1][1] += 1  # 累计相同括号
+                st[-1][1] += 1  # 连续相同括号个数 +1
             else:
                 st.append([b, 1])  # 新的括号
 
-            # 栈顶的 k 个右括号与（栈顶下面的）k 个左括号抵消
+            # 栈顶的 k 个右括号与栈顶下面的 k 个左括号抵消
             if b == ')' and len(st) > 1 and st[-1][1] == k and st[-2][1] >= k:
                 st.pop()
                 st[-1][1] -= k
@@ -31,15 +36,15 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public String removeSubstring(String s, int k) {
-        List<int[]> st = new ArrayList<>(); // 栈中保存 [字符, 计数]
+        List<int[]> st = new ArrayList<>(); // 栈中保存 [字符, 连续出现次数]
         for (char b : s.toCharArray()) {
             if (!st.isEmpty() && st.getLast()[0] == b) {
-                st.getLast()[1]++; // 累计相同括号
+                st.getLast()[1]++; // 连续相同括号个数 +1
             } else {
                 st.add(new int[]{b, 1}); // 新的括号
             }
 
-            // 栈顶的 k 个右括号与（栈顶下面的）k 个左括号抵消
+            // 栈顶的 k 个右括号与栈顶下面的 k 个左括号抵消
             if (b == ')' && st.size() > 1 && st.getLast()[1] == k && st.get(st.size() - 2)[1] >= k) {
                 st.removeLast();
                 st.getLast()[1] -= k;
@@ -62,15 +67,15 @@ class Solution {
 class Solution {
 public:
     string removeSubstring(string s, int k) {
-        vector<pair<char, int>> st; // 栈中保存 {字符, 个数}
+        vector<pair<char, int>> st; // 栈中保存 pair{字符, 连续出现次数}
         for (char b : s) {
             if (!st.empty() && st.back().first == b) {
-                st.back().second++; // 累计相同括号
+                st.back().second++; // 连续相同括号个数 +1
             } else {
                 st.emplace_back(b, 1); // 新的括号
             }
 
-            // 栈顶的 k 个右括号与（栈顶下面的）k 个左括号抵消
+            // 栈顶的 k 个右括号与栈顶下面的 k 个左括号抵消
             if (b == ')' && st.size() > 1 && st.back().second == k && st[st.size() - 2].second >= k) {
                 st.pop_back();
                 st.back().second -= k;
@@ -95,15 +100,15 @@ func removeSubstring(s string, k int) string {
 		b   rune
 		cnt int
 	}
-	st := []pair{} // 栈中保存二元组 (字符, 个数)
+	st := []pair{} // 栈中保存 pair{字符, 连续出现次数}
 	for _, b := range s {
 		if len(st) > 0 && st[len(st)-1].b == b {
-			st[len(st)-1].cnt++ // 累计相同括号
+			st[len(st)-1].cnt++ // 连续相同括号个数 +1
 		} else {
 			st = append(st, pair{b, 1}) // 新的括号
 		}
 
-		// 栈顶的 k 个右括号与（栈顶下面的）k 个左括号抵消
+		// 栈顶的 k 个右括号与栈顶下面的 k 个左括号抵消
 		if b == ')' && len(st) > 1 && st[len(st)-1].cnt == k && st[len(st)-2].cnt >= k {
 			st = st[:len(st)-1]
 			st[len(st)-1].cnt -= k

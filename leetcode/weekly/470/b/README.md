@@ -1,10 +1,10 @@
-如果 $\textit{nums}$ 所有元素的异或和不为 $0$，那么全选即可，返回 $n$。
+分类讨论：
 
-否则，如果 $\textit{nums}$ 中有非零元素，那么去掉这个非零元素，就可以使异或和不为零，返回 $n-1$。
+- 如果 $\textit{nums}$ 所有元素的异或和不为 $0$，那么**全选**即可满足条件，返回 $n$。
+- 否则不能全选。如果 $\textit{nums}$ 中有非零元素，那么去掉这个非零元素，就可以使异或和不为零，返回 $n-1$。
+- 否则 $\textit{nums}$ 全为 $0$，无解，返回 $0$。
 
-否则 $\textit{nums}$ 全为 $0$，无解，返回 $0$。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ESxKzeEt5/?t=1m42s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -13,7 +13,7 @@ class Solution:
             return 0  # nums 全为 0，无解
 
         xor_sum = reduce(xor, nums)
-        # 如果 xor_sum 为 0，那么去掉 nums 的一个非零元素，就可以使 xor_sum 不为零
+        # 如果 xor_sum 为 0，那么去掉 nums 的一个非零元素，就可以使 xor_sum 不为 0
         return len(nums) - (xor_sum == 0)
 ```
 
@@ -32,7 +32,7 @@ class Solution {
 
         int ans = nums.length;
         if (xor == 0) {
-            ans--; // 去掉 nums 的一个非零元素，就可以使 xor 不为零
+            ans--; // 去掉 nums 的一个非零元素，就可以使 xor 不为 0
         }
         return ans;
     }
@@ -48,7 +48,7 @@ public:
         }
 
         int xor_sum = reduce(nums.begin(), nums.end(), 0, bit_xor<>());
-        // 如果 xor_sum 为 0，那么去掉 nums 的一个非零元素，就可以使 xor_sum 不为零
+        // 如果 xor_sum 为 0，那么去掉 nums 的一个非零元素，就可以使 xor_sum 不为 0
         return nums.size() - (xor_sum == 0);
     }
 };
@@ -67,7 +67,7 @@ func longestSubsequence(nums []int) int {
 
 	ans := len(nums)
 	if xor == 0 {
-		ans-- // 去掉 nums 的一个非零元素，就可以使 xor 不为零
+		ans-- // 去掉 nums 的一个非零元素，就可以使 xor 不为 0
 	}
 	return ans
 }
@@ -77,6 +77,14 @@ func longestSubsequence(nums []int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 变形题
+
+1. 求最长的异或和不为 $0$ 的连续子数组。
+2. 求最长的异或和等于 $0$ 的连续子数组。
+3. 求最长的异或和等于 $0$ 的子序列。
+
+欢迎在评论区分享你的思路/代码。
 
 ## 专题训练
 

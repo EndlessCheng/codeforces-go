@@ -1,37 +1,49 @@
 设 $n$ 的十进制字符串为 $s$。
 
-设 $d = s[i]$。首先，我们明确一些**基本的运算规则**：
+首先，明确一些**基本的运算规则**：
 
-- 如果低位（$i+1$）有借位，那么把 $d$ 减一，表示借给低位一个 $1$。
-- 如果减一后 $d<0$，那么必须向高位（$i-1$）借一位，把 $d$ 增加 $10$。
+- 设当前数位 $d = s[i]$。如果低位（$i+1$）发生了借位，那么把 $d$ 减少 $1$，表示借给低位一个 $1$。
+- $d$ 也可以向高位（$i-1$）借 $1$，把 $d$ 增加 $10$。
+- 特别地，如果 $d=0$，那么把 $d$ 减少 $1$ 后 $d=-1$，此时必须向高位借 $1$。
 
-首先，讨论两个数位都不为 $0$ 的情况。
+我们要把 $d$ 拆分成两数之和，有哪些情况？
 
-- $d$ 不向高位借位，我们计算的是 $[1,9]$ 中的两数之和等于 $d$ 的方案数，即 $(1,d-1]),(2,d-2),\ldots,(s[i-1],1)$，这一共有 $d-1$ 个。特别地，如果 $d < 2$，那么无解。
-- $d$ 向高位借位，我们计算的是 $[1,9]$ 中的两数之和等于 $d+10$ 的方案数，这一共有 $9-d$ 个。特别地，如果 $d=9$，那么 $d+10=19$，无解。
+### 情况一
 
-然后，讨论其中一个数 $a$ 在 $s[i]$ 这一位上是 $0$ 的情况。
-
-这意味着 $a$ 的更高位都必须是 $0$，即**前导零**。
+设 $d=a+b$，其中 $a$ 和 $b$ 都是 $[1,9]$ 中的正整数。
 
 分类讨论：
 
-- 如果 $i>0$，那么另一个数 $b$ 在这一位上必须填 $d$。
-   - 如果 $d = 0$，不合法。
-   - 否则只有一种填法。
-   - 根据对称性，$a$ 这一位填 $d$ 或者 $b$ 这一位填 $d$ 是对称的，方案数可以乘以 $2$。
-- 如果 $i=0$，那么当 $d=0$ 时，另一个数位可以为 $0$，即两个数的最高位都是 $0$。例如 $100 = 49+51$。
+- $d$ 不向高位借 $1$，我们计算的是 $[1,9]$ 中的两数之和等于 $d$ 的方案数，即 $(a,b) = (1,d-1),(2,d-2),\ldots,(d-1,1)$，一共有 $d-1$ 个。特别地，如果 $d < 2$，那么无解。
+- $d$ 向高位借 $1$，我们计算的是 $[1,9]$ 中的两数之和等于 $d+10$ 的方案数，即 $(a,b) = (d+1,9),(d+2,8),\ldots,(9,d+1)$，一共有 $9-d$ 个，或者说 $19-(d+10)$ 个。
+
+### 情况二
+
+设 $d=a+b$，其中 $a$ 和 $b$ 至少有一个是 $0$。
+
+假设 $a=0$，那么对于更高位的 $d'=a'+b'$，必须满足 $a'=0$，即**前导零**。
+
+由于 $a=0$，那么 $b$ 必须是 $d$。
+
+分类讨论：
+
+- 如果 $d\ne 0$：
+  - $b=d$，只有一种填法。如果 $d<0$ 则必须向高位借 $1$。
+  - 特别地，如果我们刚开始填前导零，那么 $(a,b) = (0,d)$ 或者 $(a,b) = (d,0)$ 是对称的。我们无需分别计算 $a=0$ 和 $b=0$ 的情况，只需计算其中一种情况，然后把方案数乘以 $2$。
+- 如果 $d = 0$，那么 $b=d=0$。
+   - 如果 $i>0$，由于我们没有向高位借 $1$，那么 $b$ 的高位至少有一个非零数字，$b$ 前面不能都是 $0$。此时无解。
+   - 否则 $i=0$，两个数的最高位都是 $0$，这是合法的。例如 $100 = 49+51$，$49$ 和 $51$ 的百位都是前导零。
 
 根据上面的讨论，定义 $\textit{dfs}(i,\textit{borrowed},\textit{isNum})$ 表示在 $[0,i]$ 中填数字，且满足如下约束时的方案数：
 
-- $\textit{borrowed}= \textit{true}$ 表示被低位（$i+1$）借位。
-- $\textit{isNum}= \textit{true}$ 表示之前填的数位，两个数都不为 $0$（无前导零）。
+- $\textit{borrowed} = \textit{true}$ 表示被低位（$i+1$）借 $1$。
+- $\textit{isNum} = \textit{true}$ 表示右边所填数位没有 $0$（无前导零）。
 
-**递归边界**：如果 $i<0$，那么 $\textit{borrowed}$ 必须是 $\textit{false}$，满足则返回 $1$，不满足则返回 $0$。
+**递归边界**：如果 $i<0$，那么 $\textit{borrowed}$ 必须是 $\textit{false}$。是 $\textit{false}$ 则返回 $1$，不是则返回 $0$。
 
-**递归入口**：从最低位开始，$\textit{dfs}(|s|-1,\texttt{false},\texttt{true})$。
+**递归入口**：为了获知低位的行为（是否借 $1$），要从最低位开始递归，即 $\textit{dfs}(|s|-1,\texttt{false},\texttt{true})$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ESxKzeEt5/?t=52m18s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 返回两个 1~9 的整数和为 target 的方案数
@@ -43,8 +55,8 @@ class Solution:
         s = list(map(int, str(n)))
         m = len(s)
 
-        # borrow = True 表示被低位（i+1）借位
-        # isNum = True 表示之前填的数位，两个数都不为 0（无前导零）
+        # borrow = True 表示被低位（i+1）借了个 1
+        # is_num = True 表示之前填的数位，两个数都无前导零
         @cache
         def dfs(i: int, borrowed: bool, is_num: bool) -> int:
             if i < 0:
@@ -58,7 +70,7 @@ class Solution:
                 # 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
                 if i > 0 and d == 0:
                     return 0
-                # 如果 d < 0，必须向高位借位
+                # 如果 d < 0，必须向高位借 1
                 return dfs(i - 1, d < 0, False)
 
             # 令其中一个数从当前位置开始往左都是 0（前导零）
@@ -68,11 +80,10 @@ class Solution:
                     res = dfs(i - 1, d < 0, False) * 2  # 根据对称性乘以 2
                 elif i == 0:  # 最高位被借走
                     res = 1  # 两个数都是 0
-                # else res = 0
 
             # 两个数位都不为 0
-            res += dfs(i - 1, False, True) * two_sum_ways(d)  # 不向 i-1 借位
-            res += dfs(i - 1, True, True) * two_sum_ways(d + 10)  # 向 i-1 借位
+            res += dfs(i - 1, False, True) * two_sum_ways(d)  # 不向 i-1 借 1
+            res += dfs(i - 1, True, True) * two_sum_ways(d + 10)  # 向 i-1 借 1
             return res
 
         return dfs(m - 1, False, True)
@@ -86,14 +97,14 @@ class Solution {
         long[][][] memo = new long[m][2][2];
         for (long[][] mat : memo) {
             for (long[] row : mat) {
-                Arrays.fill(row, -1);
+                Arrays.fill(row, -1); // -1 表示没有计算过
             }
         }
         return dfs(m - 1, false, true, s, memo);
     }
 
-    // borrow = true 表示被低位（i+1）借位
-    // isNum = true 表示之前填的数位，两个数都不为 0（无前导零）
+    // borrow = true 表示被低位（i+1）借了个 1
+    // isNum = true 表示之前填的数位，两个数都无前导零
     private long dfs(int i, boolean borrowed, boolean isNum, char[] s, long[][][] memo) {
         if (i < 0) {
             // borrowed 必须为 false
@@ -101,7 +112,7 @@ class Solution {
         }
         int ib = borrowed ? 1 : 0;
         int in = isNum ? 1 : 0;
-        if (memo[i][ib][in] != -1) {
+        if (memo[i][ib][in] != -1) { // 之前计算过
             return memo[i][ib][in];
         }
 
@@ -113,7 +124,7 @@ class Solution {
             if (i > 0 && d == 0) {
                 return memo[i][ib][in] = 0;
             }
-            // 如果 d < 0，必须向高位借位
+            // 如果 d < 0，必须向高位借 1
             return memo[i][ib][in] = dfs(i - 1, d < 0, false, s, memo);
         }
 
@@ -128,9 +139,9 @@ class Solution {
         }
 
         // 两个数位都不为 0
-        res += dfs(i - 1, false, true, s, memo) * twoSumWays(d); // 不向 i-1 借位
-        res += dfs(i - 1, true, true, s, memo) * twoSumWays(d + 10); // 向 i-1 借位
-        return memo[i][ib][in] = res;
+        res += dfs(i - 1, false, true, s, memo) * twoSumWays(d); // 不向 i-1 借 1
+        res += dfs(i - 1, true, true, s, memo) * twoSumWays(d + 10); // 向 i-1 借 1
+        return memo[i][ib][in] = res; // 记忆化
     }
 
     // 返回两个 1~9 的整数和为 target 的方案数
@@ -151,46 +162,45 @@ public:
     long long countNoZeroPairs(long long n) {
         string s = to_string(n);
         int m = s.size();
-        vector memo(m, array<array<long long, 2>, 2>({{-1, -1}, {-1, -1}}));
+        vector memo(m, array<array<long long, 2>, 2>({{-1, -1}, {-1, -1}})); // -1 表示没有计算过
 
-        // borrow = true 表示被低位（i+1）借位
-        // isNum = true 表示之前填的数位，两个数都不为 0（无前导零）
+        // borrow = true 表示被低位（i+1）借了个 1
+        // is_num = true 表示之前填的数位，两个数都无前导零
         auto dfs = [&](this auto&& dfs, int i, bool borrowed, bool is_num) -> long long {
             if (i < 0) {
                 // borrowed 必须为 false
                 return !borrowed;
             }
-            long long& res = memo[i][borrowed][is_num];
-            if (res != -1) {
+            long long& res = memo[i][borrowed][is_num]; // 注意这里是引用
+            if (res != -1) { // 之前计算过
                 return res;
             }
 
             int d = s[i] - '0' - borrowed;
 
             // 其中一个数必须填前导零
-            res = 0;
             if (!is_num) {
                 // 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
                 if (i > 0 && d == 0) {
                     return res = 0;
                 }
-                // 如果 d < 0，必须向高位借位
+                // 如果 d < 0，必须向高位借 1
                 return res = dfs(i - 1, d < 0, false);
             }
 
             // 令其中一个数从当前位置开始往左都是 0（前导零）
+            res = 0;
             if (i < m - 1) {
                 if (d != 0) { // 另一个数不为 0
                     res = dfs(i - 1, d < 0, false) * 2; // 根据对称性乘以 2
                 } else if (i == 0) { // 最高位被借走
                     res = 1; // 两个数都是 0
-                }
-                // else res = 0
+                } // else res = 0
             }
 
             // 两个数位都不为 0
-            res += dfs(i - 1, false, true) * twoSumWays(d); // 不向 i-1 借位
-            res += dfs(i - 1, true, true) * twoSumWays(d + 10); // 向 i-1 借位
+            res += dfs(i - 1, false, true) * twoSumWays(d); // 不向 i-1 借 1
+            res += dfs(i - 1, true, true) * twoSumWays(d + 10); // 向 i-1 借 1
             return res;
         };
 
@@ -213,8 +223,8 @@ func countNoZeroPairs(n int64) int64 {
 		memo[i] = [2][2]int{{-1, -1}, {-1, -1}} // -1 表示没有计算过
 	}
 
-	// borrow = 1 表示被低位（i+1）借位
-	// isNum = 1 表示之前填的数位，两个数都不为 0（无前导零）
+	// borrow = 1 表示被低位（i+1）借了个 1
+	// isNum = 1 表示之前填的数位，两个数都无前导零
 	var dfs func(int, int, int) int
 	dfs = func(i, borrowed, isNum int) (res int) {
 		if i < 0 {
@@ -229,13 +239,14 @@ func countNoZeroPairs(n int64) int64 {
 		defer func() { *p = res }() // 记忆化
 
 		d := int(s[i]-'0') - borrowed
+
 		// 其中一个数必须填前导零
 		if isNum == 0 {
 			// 在 i > 0 的情况下，另一个数必须不为 0（否则可以为 0，即两个数的最高位都是 0）
 			if i > 0 && d == 0 {
 				return 0
 			}
-			// 如果 d < 0，必须向高位借位
+			// 如果 d < 0，必须向高位借 1
 			return dfs(i-1, isNeg(d), 0)
 		}
 
@@ -249,8 +260,8 @@ func countNoZeroPairs(n int64) int64 {
 		}
 
 		// 两个数位都不为 0
-		res += dfs(i-1, 0, 1) * twoSumWays(d)    // 不向 i-1 借位
-		res += dfs(i-1, 1, 1) * twoSumWays(d+10) // 向 i-1 借位
+		res += dfs(i-1, 0, 1) * twoSumWays(d)    // 不向 i-1 借 1
+		res += dfs(i-1, 1, 1) * twoSumWays(d+10) // 向 i-1 借 1
 		return
 	}
 
@@ -270,6 +281,10 @@ func isNeg(d int) int {
 
 - 时间复杂度：$\mathcal{O}(\log n)$。
 - 空间复杂度：$\mathcal{O}(\log n)$。
+
+## 相关题目
+
+[1317. 将整数转换为两个无零整数的和](https://leetcode.cn/problems/convert-integer-to-the-sum-of-two-no-zero-integers/)
 
 ## 专题训练
 
