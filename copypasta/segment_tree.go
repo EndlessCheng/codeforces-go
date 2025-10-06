@@ -379,6 +379,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/266/E   2500 k 次幂带权前缀和
 // https://codeforces.com/problemset/problem/618/E   2500 旋转 http://poj.org/problem?id=2991
 // https://codeforces.com/problemset/problem/739/C   2500 形状设计
+// https://codeforces.com/problemset/problem/1701/F  2500 状态设计
 // https://codeforces.com/problemset/problem/240/F   2600
 // https://codeforces.com/problemset/problem/1439/C  2600 =max 求和的 O(log^2) 性质 
 // https://codeforces.com/problemset/problem/1614/E  2600
