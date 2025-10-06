@@ -1,4 +1,7 @@
-如果你从未做过类似题目，可以先做一些简单的，比如 [3561. 移除相邻字符](https://leetcode.cn/problems/resulting-string-after-adjacent-removals/)。
+如果你从未做过类似题目，推荐：
+
+1. 先做一道基础的邻项消除问题：[3561. 移除相邻字符](https://leetcode.cn/problems/resulting-string-after-adjacent-removals/)。
+2. 再做一道和本题非常像的题目：[1209. 删除字符串中的所有相邻重复项 II](https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string-ii/)。
 
 本题也是邻项消除，但消除的不是相邻的一对字符，而是一串字符。
 
