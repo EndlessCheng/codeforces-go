@@ -22,7 +22,7 @@
 ```py [sol-Python3]
 class Solution:
     def maxPartitionsAfterOperations(self, s: str, k: int) -> int:
-        @cache
+        @cache  # 缓存装饰器，避免重复计算 dfs（一行代码实现记忆化）
         def dfs(i: int, mask: int, changed: bool) -> int:
             if i == len(s):
                 return 1
@@ -55,13 +55,12 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private final Map<Long, Integer> memo = new HashMap<>();
-
     public int maxPartitionsAfterOperations(String s, int k) {
-        return dfs(0, 0, 0, s.toCharArray(), k);
+        Map<Long, Integer> memo = new HashMap<>();
+        return dfs(0, 0, 0, memo, s.toCharArray(), k);
     }
 
-    private int dfs(int i, int mask, int changed, char[] s, int k) {
+    private int dfs(int i, int mask, int changed, Map<Long, Integer> memo, char[] s, int k) {
         if (i == s.length) {
             return 1;
         }
@@ -78,9 +77,9 @@ class Solution {
         if (Integer.bitCount(newMask) > k) {
             // 分割出一个子串，这个子串的最后一个字母在 i-1
             // s[i] 作为下一段的第一个字母，也就是 bit 作为下一段的 mask 的初始值
-            res = dfs(i + 1, bit, changed, s, k) + 1;
+            res = dfs(i + 1, bit, changed, memo, s, k) + 1;
         } else { // 不分割
-            res = dfs(i + 1, newMask, changed, s, k);
+            res = dfs(i + 1, newMask, changed, memo, s, k);
         }
 
         if (changed == 0) {
@@ -90,9 +89,9 @@ class Solution {
                 if (Integer.bitCount(newMask) > k) {
                     // 分割出一个子串，这个子串的最后一个字母在 i-1
                     // j 作为下一段的第一个字母，也就是 1<<j 作为下一段的 mask 的初始值
-                    res = Math.max(res, dfs(i + 1, 1 << j, 1, s, k) + 1);
+                    res = Math.max(res, dfs(i + 1, 1 << j, 1, memo, s, k) + 1);
                 } else { // 不分割
-                    res = Math.max(res, dfs(i + 1, newMask, 1, s, k));
+                    res = Math.max(res, dfs(i + 1, newMask, 1, memo, s, k));
                 }
             }
         }
@@ -160,6 +159,7 @@ func maxPartitionsAfterOperations(s string, k int) int {
 		changed bool
 	}
 	memo := map[args]int{}
+
 	var dfs func(int, int, bool) int
 	dfs = func(i, mask int, changed bool) (res int) {
 		if i == n {
@@ -199,6 +199,7 @@ func maxPartitionsAfterOperations(s string, k int) int {
 		memo[a] = res // 记忆化
 		return res
 	}
+
 	return dfs(0, 0, false)
 }
 ```
@@ -212,7 +213,7 @@ func maxPartitionsAfterOperations(s string, k int) int {
 
 所以只有 $\mathcal{O}(n|\Sigma|^2)$ 个状态。
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|^2)$，其中 $n$ 为 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。分类讨论：
+- 时间复杂度：$\mathcal{O}(n|\Sigma|^2)$，其中 $n$ 是 $s$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。分类讨论：
    - 如果 $\textit{mask}$ 之前没有修改，这样的状态有 $\mathcal{O}(n)$ 个，单个状态的计算时间为 $\mathcal{O}(|\Sigma|)$，即枚举修改成什么字母的时间。
    - 如果 $\textit{mask}$ 之前有修改，这样的状态有 $\mathcal{O}(n|\Sigma|^2)$ 个，单个状态的计算时间为 $\mathcal{O}(1)$，因为我们只能不修改。
    - 所以时间复杂度为 $\mathcal{O}(n|\Sigma|^2)$。
@@ -443,7 +444,7 @@ func maxPartitionsAfterOperations(s string, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
@@ -455,8 +456,8 @@ func maxPartitionsAfterOperations(s string, k int) int {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
