@@ -7,16 +7,16 @@
 ```py [sol-Python3]
 class Solution:
     def alternatingSum(self, nums: List[int]) -> int:
+        return sum(nums[::2]) - sum(nums[1::2])
+```
+
+```py [sol-Python3 普通写法]
+class Solution:
+    def alternatingSum(self, nums: List[int]) -> int:
         ans = 0
         for i, x in enumerate(nums):
             ans += -x if i % 2 else x
         return ans
-```
-
-```py [sol-Python3 一行]
-class Solution:
-    def alternatingSum(self, nums: List[int]) -> int:
-        return sum(-x if i % 2 else x for i, x in enumerate(nums))
 ```
 
 ```java [sol-Java]
