@@ -712,10 +712,6 @@ func minTime(skill, mana []int) int64 {
 - 时间复杂度：$\mathcal{O}(n + m\log n)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 相似题目
-
-- [1840. 最高建筑高度](https://leetcode.cn/problems/maximum-building-height/)
-
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
