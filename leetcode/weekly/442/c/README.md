@@ -454,7 +454,7 @@ func minTime(skill, mana []int) int64 {
 - 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-#### 复杂度分析（随机情况）
+#### 复杂度分析（平均情况）
 
 力扣喜欢出随机数据，上述算法在随机数据下的性能如何？
 
@@ -478,7 +478,7 @@ $$
 
 由调和级数可知，record 的期望长度为 $\Theta(\log n)$。
 
-- 平均情况下的时间复杂度：$\Theta(n + m\log n)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
+- 时间复杂度：$\Theta(n + m\log n)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 方法四：凸包 + 二分
