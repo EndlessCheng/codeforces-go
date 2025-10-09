@@ -32,7 +32,8 @@ class Solution:
     def maximumTotalDamage(self, power: List[int]) -> int:
         cnt = Counter(power)
         a = sorted(cnt.keys())
-        @cache
+
+        @cache  # 缓存装饰器，避免重复计算 dfs（一行代码实现记忆化）
         def dfs(i: int) -> int:
             if i < 0:
                 return 0
@@ -41,6 +42,7 @@ class Solution:
             while j and a[j - 1] >= x - 2:
                 j -= 1
             return max(dfs(i - 1), dfs(j - 1) + x * cnt[x])
+
         return dfs(len(a) - 1)
 ```
 
@@ -49,7 +51,7 @@ class Solution {
     public long maximumTotalDamage(int[] power) {
         Map<Integer, Integer> cnt = new HashMap<>();
         for (int x : power) {
-            cnt.merge(x, 1, Integer::sum);
+            cnt.merge(x, 1, Integer::sum); // cnt[x]++
         }
 
         int n = cnt.size();
@@ -61,7 +63,7 @@ class Solution {
         Arrays.sort(a);
 
         long[] memo = new long[n];
-        Arrays.fill(memo, -1);
+        Arrays.fill(memo, -1); // -1 表示没有计算过
         return dfs(a, cnt, memo, n - 1);
     }
 
@@ -69,9 +71,10 @@ class Solution {
         if (i < 0) {
             return 0;
         }
-        if (memo[i] != -1) {
+        if (memo[i] != -1) { // 之前计算过
             return memo[i];
         }
+
         int x = a[i];
         int j = i;
         while (j > 0 && a[j - 1] >= x - 2) {
@@ -95,15 +98,16 @@ public:
         ranges::sort(a);
 
         int n = a.size();
-        vector<long long> memo(n, -1);
+        vector<long long> memo(n, -1); // -1 表示没有计算过
         auto dfs = [&](auto&& dfs, int i) -> long long {
             if (i < 0) {
                 return 0;
             }
             long long& res = memo[i]; // 注意这里是引用
-            if (res != -1) {
+            if (res != -1) { // 之前计算过
                 return res;
             }
+
             auto& [x, c] = a[i];
             int j = i;
             while (j && a[j - 1].first >= x - 2) {
@@ -132,7 +136,7 @@ func maximumTotalDamage(power []int) int64 {
 
 	memo := make([]int, n)
 	for i := range memo {
-		memo[i] = -1
+		memo[i] = -1 // -1 表示没有计算过
 	}
 	var dfs func(int) int
 	dfs = func(i int) int {
@@ -140,9 +144,10 @@ func maximumTotalDamage(power []int) int64 {
 			return 0
 		}
 		p := &memo[i]
-		if *p != -1 {
+		if *p != -1 { // 之前计算过
 			return *p
 		}
+
 		x := a[i]
 		j := i
 		for j > 0 && a[j-1] >= x-2 {
@@ -213,7 +218,7 @@ class Solution {
     public long maximumTotalDamage(int[] power) {
         Map<Integer, Integer> cnt = new HashMap<>();
         for (int x : power) {
-            cnt.merge(x, 1, Integer::sum);
+            cnt.merge(x, 1, Integer::sum); // cnt[x]++
         }
 
         int n = cnt.size();
@@ -297,23 +302,25 @@ func maximumTotalDamage(power []int) int64 {
 
 ## 相似题目
 
-- [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)
-- [740. 删除并获得点数](https://leetcode.cn/problems/delete-and-earn/)
-- [2320. 统计放置房子的方式数](https://leetcode.cn/problems/count-number-of-ways-to-place-houses/) 1608
-- [213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)
+[740. 删除并获得点数](https://leetcode.cn/problems/delete-and-earn/)
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
