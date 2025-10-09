@@ -179,7 +179,8 @@ func minMoves(sx, sy, x, y int) (ans int) {
 
 ## 相似题目
 
-[780. 到达终点](https://leetcode.cn/problems/reaching-points/)
+- [780. 到达终点](https://leetcode.cn/problems/reaching-points/)
+- [2543. 判断一个点是否可以到达](https://leetcode.cn/problems/check-if-point-is-reachable/)
 
 另见下面贪心与思维题单的「**§5.3 逆向思维**」。
 
