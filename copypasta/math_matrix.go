@@ -44,6 +44,9 @@ https://codeforces.com/problemset/problem/1117/D 2100 a(n) = a(n-1) + a(n-m)
 https://codeforces.com/problemset/problem/1182/E 2300
 https://codeforces.com/problemset/problem/226/C 2400
 - https://www.luogu.com.cn/problem/P1306
+https://codeforces.com/problemset/problem/593/E 2400 分段
+https://codeforces.com/problemset/problem/60/E 2600
+https://codeforces.com/problemset/problem/575/A 2700 分段 倍增
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
@@ -141,6 +144,9 @@ func solveDP(N int) (ans int) {
 
 // 广义斐波那契数列
 // a(n) = p*a(n-1) + q*a(n-2)
+// 矩阵为 [f[n], f[n-1]]^T = [[p, q], [1, 0]] * [f[n-1], f[n-2]]^T
+// 如果有常系数，例如 a(n) = p*a(n-1) + q*a(n-2) + C
+// 矩阵为 [f[n], f[n-1], C]^T = [[p, q, 1], [1, 0, 0], [0, 0, 1]] * [f[n-1], f[n-2], C]^T
 // ！数列下标从 1 开始，n 从 1 开始
 // https://www.luogu.com.cn/problem/P1349
 // https://www.luogu.com.cn/problem/P1939
@@ -149,7 +155,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 	if n == 1 {
 		return a1 % mod
 	}
-	// 变形得到 [f[n], f[n-1]] = [[p, q], [1, 0]] = [f[n-1], f[n-2]]
+	// 变形得到 [f[n], f[n-1]]^T = [[p, q], [1, 0]] * [f[n-1], f[n-2]]^T
 	// 也可以用打家劫舍的状态机写法理解，其中 f[i][0] 表示 i 可选可不选，f[i][1] 表示 i 一定不能选
 	// f[i][0] += p*f[i-1][0] 不选 i
 	// f[i][0] += q*f[i-1][1] 选 i，那么 i-1 一定不能选
