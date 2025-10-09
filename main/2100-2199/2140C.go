@@ -11,17 +11,17 @@ func cf2140C(in io.Reader, out io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		s, mx := 0, n-2+n%2
-		minPos, maxNeg := int(1e18), int(-1e18)
+		pos, neg := int(1e18), int(1e18)
 		for i := range n {
 			Fscan(in, &v)
 			if i%2 > 0 {
 				s -= v
-				mx = max(mx, i+v*2-minPos)
-				maxNeg = max(maxNeg, v*2-i)
+				mx = max(mx, i+v*2-pos)
+				neg = min(neg, i-v*2)
 			} else {
 				s += v
-				mx = max(mx, i-v*2+maxNeg)
-				minPos = min(minPos, v*2+i)
+				mx = max(mx, i-v*2-neg)
+				pos = min(pos, i+v*2)
 			}
 		}
 		Fprintln(out, s+mx)
