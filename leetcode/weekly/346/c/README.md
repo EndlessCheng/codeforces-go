@@ -8,7 +8,9 @@
 
 [视频讲解](https://www.bilibili.com/video/BV1Qm4y1t7cx/) 第三题。
 
-```python [sol-Python3]
+## 写法一：使用字符串
+
+```py [sol-Python3]
 PRE_SUM = [0] * 1001
 for i in range(1, 1001):
     s = str(i * i)
@@ -67,7 +69,7 @@ int init = []() {
     for (int i = 1; i <= 1000; i++) {
         string s = to_string(i * i);
         int n = s.length();
-        function<bool(int, int)> dfs = [&](int p, int sum) -> bool {
+        auto dfs = [&](this auto&& dfs, int p, int sum) -> bool {
             if (p == n) { // 递归终点
                 return sum == i; // i 符合要求
             }
@@ -192,10 +194,199 @@ impl Solution {
 }
 ```
 
+## 写法二：不使用字符串
+
+```py [sol-Python3]
+PRE_SUM = [0] * 1001
+for i in range(1, 1001):
+    def dfs(val: int, sum: int) -> bool:
+        if val == 0:  # 递归终点
+            return sum == i  # i 符合要求
+        x = 0
+        pow10 = 1
+        while val:
+            val, d = divmod(val, 10)
+            x += d * pow10
+            if dfs(val, sum + x):
+                return True
+            pow10 *= 10
+        return False
+    PRE_SUM[i] = PRE_SUM[i - 1] + (i * i if dfs(i * i, 0) else 0)
+
+class Solution:
+    def punishmentNumber(self, n: int) -> int:
+        return PRE_SUM[n]
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int[] PRE_SUM = new int[1001];
+
+    static {
+        for (int i = 1; i <= 1000; i++) {
+            PRE_SUM[i] = PRE_SUM[i - 1] + (dfs(i * i, i) ? i * i : 0);
+        }
+    }
+
+    private static boolean dfs(int val, int sum) {
+        if (val == 0) { // 递归终点
+            return sum == 0; // i 符合要求
+        }
+        int pow10 = 1;
+        for (int x = 0; val > 0; val /= 10) {
+            x += val % 10 * pow10;
+            if (dfs(val / 10, sum - x)) {
+                return true;
+            }
+            pow10 *= 10;
+        }
+        return false;
+    }
+
+    public int punishmentNumber(int n) {
+        return PRE_SUM[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+int PRE_SUM[1001];
+
+int init = []() {
+    for (int i = 1; i <= 1000; i++) {
+        auto dfs = [&](this auto&& dfs, int val, int sum) -> bool {
+            if (val == 0) { // 递归终点
+                return sum == i; // i 符合要求
+            }
+            int pow10 = 1;
+            for (int x = 0; val > 0; val /= 10) {
+                x += val % 10 * pow10;
+                if (dfs(val / 10, sum + x)) {
+                    return true;
+                }
+                pow10 *= 10;
+            }
+            return false;
+        };
+        PRE_SUM[i] = PRE_SUM[i - 1] + (dfs(i * i, 0) ? i * i : 0);
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    int punishmentNumber(int n) {
+        return PRE_SUM[n];
+    }
+};
+```
+
+```go [sol-Go]
+var preSum [1001]int
+
+func init() {
+	for i := 1; i <= 1000; i++ {
+		var dfs func(int, int) bool
+		dfs = func(val, sum int) bool {
+			if val == 0 { // 递归终点
+				return sum == i // i 符合要求
+			}
+			for x, pow10 := 0, 1; val > 0; val /= 10 {
+				x += val % 10 * pow10
+				if dfs(val/10, sum+x) {
+					return true
+				}
+				pow10 *= 10
+			}
+			return false
+		}
+		preSum[i] = preSum[i-1]
+		if dfs(i*i, 0) { // i 符合要求
+			preSum[i] += i * i // 计算前缀和
+		}
+	}
+}
+
+func punishmentNumber(n int) int {
+	return preSum[n]
+}
+```
+
+```js [sol-JavaScript]
+function dfs(val, sum) {
+    if (val === 0) { // 递归终点
+        return sum === 0; // i 符合要求
+    }
+    let pow10 = 1;
+    for (let x = 0; val > 0; val = Math.floor(val / 10)) {
+        x += val % 10 * pow10;
+        if (dfs(Math.floor(val / 10), sum - x)) {
+            return true;
+        }
+        pow10 *= 10;
+    }
+    return false;
+}
+
+const PRE_SUM = new Array(1001).fill(0);
+for (let i = 1; i <= 1000; i++) {
+    PRE_SUM[i] = PRE_SUM[i - 1] + (dfs(i * i, i) ? i * i : 0);
+}
+
+var punishmentNumber = function (n) {
+    return PRE_SUM[n];
+};
+```
+
+```rust [sol-Rust]
+fn dfs(mut val: i32, mut sum: i32) -> bool {
+    if val == 0 { // 递归终点
+        return sum == 0; // i 符合要求
+    }
+    let mut pow10 = 1;
+    let mut x = 0;
+    while val > 0 {
+        x += val % 10 * pow10;
+        val /= 10;
+        if (dfs(val, sum - x)) {
+            return true;
+        }
+        pow10 *= 10;
+    }
+    false
+}
+
+static mut initialized: bool = false;
+static mut pre_sum: [i32; 1001] = [0; 1001];
+
+fn init_once() {
+    unsafe {
+        if initialized { // 之前初始化过了
+            return;
+        }
+        initialized = true;
+        for i in 1..1001 {
+            pre_sum[i as usize] = pre_sum[i as usize - 1] + if dfs(i * i, i) { i * i } else { 0 };
+        }
+    }
+}
+
+impl Solution {
+    pub fn punishment_number(n: i32) -> i32 {
+        init_once();
+        unsafe { pre_sum[n as usize] }
+    }
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：预处理 $\mathcal{O}(U^{1 + 2\log_{10} 2})\approx\mathcal{O}(U^{1.602})$，其中 $U=1000$。对于数字 $i^2$，它的十进制字符串的长度为 $m=\lfloor1+2\log_{10} i\rfloor$。我在【基础算法精讲】中讲过，划分型题目的本质就是枚举子集，所以递归需要 $\mathcal{O}(2^m)=\mathcal{O}(i^{2\log_{10} 2})$ 的时间，对其积分可知，整个预处理需要 $\mathcal{O}(U^{1 + 2\log_{10} 2})$ 的时间。
-- 空间复杂度：预处理 $\mathcal{O}(U)$。
+预处理的时间：$\mathcal{O}(U^{1 + 2\log_{10} 2})\approx\mathcal{O}(U^{1.602})$，其中 $U=1000$。对于数字 $i^2$，它的十进制字符串的长度为 $m=\lfloor1+2\log_{10} i\rfloor$。我在【基础算法精讲】中讲过，划分型题目的本质就是枚举子集，所以递归需要 $\mathcal{O}(2^m)=\mathcal{O}(i^{2\log_{10} 2})$ 的时间，对其积分可知，整个预处理需要 $\mathcal{O}(U^{1 + 2\log_{10} 2})$ 的时间。
+
+力扣的计时规则是，预处理的时间不计入，所以两种写法都是 $\mathcal{O}(1)$ 时间。
+
+- 时间复杂度：$\mathcal{O}(1)$
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
 
