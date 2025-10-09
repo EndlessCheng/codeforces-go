@@ -30,6 +30,8 @@ https://codeforces.com/problemset/problem/2040/B 1000
 ⌊log2(x)⌋ = bits.Len(x) - 1
 ⌈log2(x)⌉ = bits.Len(x-1)
 
+⌊a/x⌋ = k  =>  k ≤ a/x < k+1  =>  a/(k+1) < x ≤ a/k
+
 a < b<<k  =>  a>>k < b
 https://codeforces.com/problemset/problem/2035/D 1800
 
@@ -380,6 +382,12 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1295/D 1800
 	https://codeforces.com/problemset/problem/2008/G 1800
 
+	从 (1,1) 到 (n,m)，每步可以把 x += y 或者把 y += x
+	https://codeforces.com/problemset/problem/134/B 1900
+	https://leetcode.cn/problems/reaching-points/
+	https://leetcode.cn/problems/check-if-point-is-reachable/
+	https://leetcode.cn/problems/minimum-moves-to-reach-target-in-grid/
+
 	GCD 套路：枚举倍数（调和级数复杂度）
 	https://codeforces.com/problemset/problem/264/B 1500 GCD 与质因子
 	https://codeforces.com/problemset/problem/1110/C 1500 GCD(x,x+y) = GCD(x,y)
@@ -401,6 +409,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/contest/1770/problem/C
 
 	LCM
+	https://codeforces.com/problemset/problem/678/C 1600
 	https://codeforces.com/gym/105139/problem/L 分类讨论
 
 	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
@@ -414,6 +423,8 @@ func _(abs func(int) int) {
 	- [2979. 最贵的无法购买的商品](https://leetcode.cn/problems/most-expensive-item-that-can-not-be-bought/)（会员题）
 
 	裴蜀定理 Bézout's identity
+	https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity
+	https://codeforces.com/problemset/problem/1982/D 1700
 	LC1250 https://leetcode.cn/problems/check-if-it-is-a-good-array/
 	https://www.codechef.com/problems/SJ1
 
@@ -506,13 +517,14 @@ func _(abs func(int) int) {
 	// ∑lcm(n,i)/n = A051193(n)/n = (1+∑{d|n}d*phi(d))/2 = (1+A057660(n))/2   https://oeis.org/A057661
 	// ∑∑lcm(i,j)   https://oeis.org/A064951
 
-	// 统计 a 中所有数对的 GCD 的出现次数
+	// 倍数容斥
 	// O(n + UlogU), U=max(a)
-	// LC3312 https://leetcode.cn/problems/sorted-gcd-pair-queries/
+	// LC3312 https://leetcode.cn/problems/sorted-gcd-pair-queries/ 统计 a 中所有数对的 GCD 的出现次数
 	// - https://www.codechef.com/problems/KGCD 3056 难点在输出方案
 	// - https://discuss.codechef.com/t/KGCD-editorial/
 	// https://codeforces.com/problemset/problem/803/F 2000 子序列 EDU20
 	// https://codeforces.com/problemset/problem/990/G 2400 树上路径 EDU45
+	// https://codeforces.com/problemset/problem/1043/F 2500 统计 a 中所有大小为 k 的子序列的 GCD 的出现次数
 	countGCD := func(a []int) []int {
 		mx := slices.Max(a)
 		cntX := make([]int, mx+1)
@@ -520,6 +532,7 @@ func _(abs func(int) int) {
 			cntX[x]++
 		}
 
+		// 下面计算的是 a 中所有大小为 k=2 的子序列的 GCD 的出现次数
 		cntG := make([]int, mx+1)
 		for i := mx; i > 0; i-- {
 			c := 0
@@ -913,15 +926,12 @@ func _(abs func(int) int) {
 
 	// 判断一个数是否为质数
 	isPrime := func(n int) bool {
-		if n < 2 || n >= 4 && n%2 == 0 {
-			return false
-		}
 		for i := 2; i*i <= n; i++ {
 			if n%i == 0 {
 				return false
 			}
 		}
-		return true
+		return n >= 2
 	}
 	// https://www.luogu.com.cn/problem/U82118
 	isPrime = func(n int) bool { return big.NewInt(int64(n)).ProbablyPrime(0) }
@@ -1735,6 +1745,7 @@ func _(abs func(int) int) {
 	// - [2709. 最大公约数遍历](https://leetcode.cn/problems/greatest-common-divisor-traversal/) 2172
 	// - [1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/) 2429
 	// - [1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/) 2500
+	// https://codeforces.com/problemset/problem/1766/D 1600
 	// https://codeforces.com/problemset/problem/385/C 1700
 	// https://codeforces.com/problemset/problem/594/D 2500
 	// https://codeforces.com/gym/103107/problem/F 另一种做法是欧拉筛
@@ -2066,7 +2077,10 @@ func _(abs func(int) int) {
 
 	// 预处理: [2,mx] 的不同的质因子个数 omega(n) https://oeis.org/A001221
 	// https://en.wikipedia.org/wiki/Prime_omega_function
-	// https://codeforces.com/problemset/problem/2091/E
+	// omega(n) = O(log n / log log n)  相关：质数阶乘 Primorial numbers https://oeis.org/A002110
+	//
+	// https://codeforces.com/problemset/problem/2091/E 1300
+	//
 	// 莫比乌斯反演 https://oeis.org/A062799 = Sum_{d|n} omega(d)
 	// https://oeis.org/A007875 Number of ways of writing n as p*q, with p <= q, gcd(p, q) = 1
 	//                          a(n) = 2^(omega(n)-1)
@@ -2274,6 +2288,7 @@ func _(abs func(int) int) {
 	//
 	// https://www.luogu.com.cn/problem/P5091 模板题
 	// https://codeforces.com/problemset/problem/615/D 2000 例题
+	// https://codeforces.com/problemset/problem/17/D 2400
 	// https://codeforces.com/problemset/problem/906/D 2700
 	// https://atcoder.jp/contests/abc228/tasks/abc228_e
 	// https://cses.fi/problemset/task/1712
@@ -2616,6 +2631,9 @@ func _(abs func(int) int) {
 	// https://blog.csdn.net/synapse7/article/details/9946013
 	// https://codeforces.com/blog/entry/61290
 	// 模板题 https://www.luogu.com.cn/problem/P1495
+	// https://codeforces.com/problemset/problem/1515/G 2700 
+	// - 如果模数不要求互素，那么充要条件为任意一对 (bi,bj) 关于模 gcd(mi,mj) 同余，即 bi-bj 是 gcd(mi,mj) 的倍数
+	// - https://chatgpt.com/c/68df79a4-7770-8321-9e7c-82993277164a
 	crt := func(b, m []int) (x int) {
 		M := 1
 		for _, mi := range m {
@@ -3626,7 +3644,7 @@ func _(abs func(int) int) {
 	//  推式子 https://ac.nowcoder.com/acm/contest/11171/E
 
 	// 数论分块/除法分块/整除分块
-	// https://oi-wiki.org/math/number-theory/sqrt-decomposition/
+	// 证明 https://oi-wiki.org/math/number-theory/sqrt-decomposition/
 	//     https://oeis.org/A006218
 	//     a(n) = ∑{k=1..n} floor(n/k)
 	//          = n * (log(n) + 2*gamma - 1) + O(sqrt(n))
@@ -3639,13 +3657,15 @@ func _(abs func(int) int) {
 	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法（整点计数问题）见 https://www.luogu.com.cn/problem/SP26073 https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/solution/by-hqztrue-lv4e/
 	// ∑k%i 见下面的 floorLoopK
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
-	// todo https://codeforces.com/contest/1202/problem/F
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
 	// [L,R] 内任意 k 个不同数字的 GCD 有多少种 https://ac.nowcoder.com/acm/contest/35232/C
-	// https://codeforces.com/problemset/problem/1789/E
-	// https://codeforces.com/problemset/problem/938/C
-	// https://codeforces.com/problemset/problem/449/A
-	// 数论分块优化 DP https://codeforces.com/problemset/problem/1603/C
+	// https://codeforces.com/problemset/problem/449/A 1700
+	// https://codeforces.com/problemset/problem/938/C 1700
+	// https://codeforces.com/problemset/problem/1603/C 2300 数论分块优化 DP
+	// https://codeforces.com/problemset/problem/226/C 2400 思想
+	// https://codeforces.com/problemset/problem/792/E 2500
+	// https://codeforces.com/problemset/problem/1789/E 2500 式子同时包含上取整和下取整
+	// https://codeforces.com/problemset/problem/1202/F 2700
 	// https://atcoder.jp/contests/abc132/tasks/abc132_f 2143
 	//
 	// https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
@@ -3658,6 +3678,14 @@ func _(abs func(int) int) {
 	//
 	// EXTRA: n/k (k=1..n) 的不同数字的个数 https://oeis.org/A055086
 	//        = floor(sqrt(4*n+1)) - 1
+	//
+	// 以 n=11 为例
+	// [l,r] h=n/l   备注
+	// [1,1] 11      n/6..11 都是 1
+	// [2,2]  5      n/4..5  都是 2
+	// [3,3]  3
+	// [4,5]  2
+	// [6,11] 1
 	floorLoop := func(n int) (sum int) {
 		for l, r := 1, 0; l <= n; l = r + 1 {
 			h := n / l
