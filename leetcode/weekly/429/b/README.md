@@ -1,10 +1,10 @@
-来看一个现实生活中的例子：
+一个现实中的例子：
 
-- 军训的某一天，大家在场地上，某些同学聚在一起。现在教官想让这些同学排成一排，那么最靠左的同学，就**尽量往左边移动**，腾出位置。他旁边的同学，可以**紧挨着**最靠左的同学。依此类推。
+- 军训的某一天，同学们在操场上。现在教官吹响了口哨，同学们集合，排成一排。对于最靠左的同学 $A$，他需要**尽量往左移动**，给其他同学腾出位置。$A$ 旁边的同学，可以**紧挨着** $A$。依此类推。
 
-把 $\textit{nums}$ 视作 $n$ 个人在一维数轴中的位置，从最左边的人的位置 $a$ 开始思考。
+把 $\textit{nums}$ 视作 $n$ 个同学在一维数轴中的位置，从最左边的同学（$\textit{nums}$ 的最小值）开始思考。
 
-这位同学尽量往左移，位置变成 $a-k$。
+设最左边的同学的位置为 $a$，他尽量往左移，位置变成 $a-k$。
 
 $\textit{nums}$ 的次小值 $b$ 呢？这位同学也尽量往左移：
 
@@ -29,9 +29,9 @@ $$
 
 最后答案为 $\textit{nums}$ 中的不同元素个数。我们可以在修改的同时统计，如果发现当前元素修改后的值，比上一个元素修改后的值大，那么答案加一。
 
-为了方便计算，把 $\textit{nums}$ 从小到大排序，这样从左到右遍历数组，就相当于从最左边的人开始计算了。
+为方便计算，把 $\textit{nums}$ 从小到大排序。排序后，从左到右遍历数组，就相当于从最左边的人开始计算了。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1wmkqYREnP/?t=4m20s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wmkqYREnP/?t=4m20s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -99,13 +99,13 @@ func maxDistinctElements(nums []int, k int) (ans int) {
 }
 ```
 
-### 优化
+## 优化
 
 什么情况下，可以直接返回 $n$？
 
-如果所有元素相同，那么我们只能把元素变成 $[x-k,x+k]$ 范围内的数，这一共有 $2k+1$ 个数。所以当 $2k+1 \ge n$ 时，我们可以让所有数都不同，直接返回 $n$。
+先考虑 $\textit{nums}$ 所有元素都相同的情况（同学们都挤在一起）。我们可以把元素 $x$ 变成 $[x-k,x+k]$ 中的整数，这一共有 $2k+1$ 个。如果 $2k+1 \ge n$，就可以让所有元素互不相同。
 
-如果有不同元素，那么当 $2k+1 \ge n$ 时，就更加可以把所有数都变成不同的。
+如果 $\textit{nums}$ 有不同元素，当 $2k+1 \ge n$ 时，更加可以让所有元素互不相同。
 
 所以只要 $2k+1 \ge n$，就可以直接返回 $n$。
 
@@ -198,7 +198,9 @@ func maxDistinctElements(nums []int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
-更多相似题目，见下面贪心题单中的「**§1.1 从最小/最大开始贪心**」。
+## 专题训练
+
+见下面贪心题单的「**§1.1 从最小/最大开始贪心**」。
 
 ## 分类题单
 
@@ -209,12 +211,14 @@ func maxDistinctElements(nums []int, k int) (ans int) {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. 【本题相关】[贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
