@@ -8,18 +8,15 @@ import (
 // https://github.com/EndlessCheng
 func cf2121E(in io.Reader, out io.Writer) {
 	var T int
-	var l, r string
+	var l, r []byte
+o:
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &l, &r)
-		if l == r {
-			Fprintln(out, len(l)*2)
-			continue
-		}
-		for i := range l {
-			if l[i] == r[i] {
+		for i, d := range l {
+			if d == r[i] {
 				continue
 			}
-			if r[i]-l[i] > 1 {
+			if r[i]-d > 1 {
 				Fprintln(out, i*2)
 			} else {
 				j := i + 1
@@ -27,8 +24,9 @@ func cf2121E(in io.Reader, out io.Writer) {
 				}
 				Fprintln(out, i+j)
 			}
-			break
+			continue o
 		}
+		Fprintln(out, len(l)*2)
 	}
 }
 
