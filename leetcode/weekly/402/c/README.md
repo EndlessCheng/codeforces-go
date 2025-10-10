@@ -31,7 +31,7 @@ $$
 class Solution:
     def maximumTotalDamage(self, power: List[int]) -> int:
         cnt = Counter(power)
-        a = sorted(cnt.keys())
+        a = sorted(cnt)
 
         @cache  # 缓存装饰器，避免重复计算 dfs（一行代码实现记忆化）
         def dfs(i: int) -> int:
@@ -203,7 +203,7 @@ $$
 class Solution:
     def maximumTotalDamage(self, power: List[int]) -> int:
         cnt = Counter(power)
-        a = sorted(cnt.keys())
+        a = sorted(cnt)
         f = [0] * (len(a) + 1)
         j = 0
         for i, x in enumerate(a):
