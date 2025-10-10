@@ -15,7 +15,7 @@
 
 关于二分查找的原理，请看视频讲解：[二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
 
-```Python [sol-Python3]
+```py [sol-Python3]
 class Solution:
     def fullBloomFlowers(self, flowers: List[List[int]], people: List[int]) -> List[int]:
         starts = sorted(s for s, _ in flowers)
@@ -27,8 +27,8 @@ class Solution:
 class Solution {
     public int[] fullBloomFlowers(int[][] flowers, int[] people) {
         int n = flowers.length;
-        var starts = new int[n];
-        var ends = new int[n];
+        int[] starts = new int[n];
+        int[] ends = new int[n];
         for (int i = 0; i < n; i++) {
             starts[i] = flowers[i][0];
             ends[i] = flowers[i][1];
@@ -90,22 +90,23 @@ class Solution {
 }
 ```
 
-```C++ [sol-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    vector<int> fullBloomFlowers(vector<vector<int>> &flowers, vector<int> &people) {
+    vector<int> fullBloomFlowers(vector<vector<int>>& flowers, vector<int>& people) {
         int n = flowers.size();
         vector<int> starts(n), ends(n);
         for (int i = 0; i < n; i++) {
             starts[i] = flowers[i][0];
             ends[i] = flowers[i][1];
         }
-        sort(starts.begin(), starts.end());
-        sort(ends.begin(), ends.end());
+        ranges::sort(starts);
+        ranges::sort(ends);
 
-        for (int &p: people)
-            p = (upper_bound(starts.begin(), starts.end(), p) - starts.begin()) -
-                (lower_bound(ends.begin(), ends.end(), p) - ends.begin());
+        for (int& p : people) {
+            p = (ranges::upper_bound(starts, p) - starts.begin()) -
+                (ranges::lower_bound(ends, p) - ends.begin());
+        }
         return people;
     }
 };
@@ -120,8 +121,8 @@ func fullBloomFlowers(flowers [][]int, people []int) []int {
 		starts[i] = f[0]
 		ends[i] = f[1]
 	}
-	sort.Ints(starts)
-	sort.Ints(ends)
+	slices.Sort(starts)
+	slices.Sort(ends)
 
 	for i, p := range people {
 		people[i] = sort.SearchInts(starts, p+1) - sort.SearchInts(ends, p)
@@ -131,7 +132,7 @@ func fullBloomFlowers(flowers [][]int, people []int) []int {
 ```
 
 ```js [sol-JavaScript]
-var fullBloomFlowers = function (flowers, people) {
+var fullBloomFlowers = function(flowers, people) {
     const starts = flowers.map(f => f[0]).sort((a, b) => a - b);
     const ends = flowers.map(f => f[1]).sort((a, b) => a - b);
     return people.map(p => lowerBound(starts, p + 1) - lowerBound(ends, p));
@@ -139,17 +140,18 @@ var fullBloomFlowers = function (flowers, people) {
 
 // 返回 >= x 的第一个数的下标
 // 如果不存在（所有元素都小于 x），则返回 nums.length
-var lowerBound = function (nums, x) {
+var lowerBound = function(nums, x) {
     let left = -1, right = nums.length; // 开区间 (left, right)
     while (left + 1 < right) { // 区间不为空
         // 循环不变量：
         // nums[left] < x
         // nums[right] >= x
-        const mid = left + ((right - left) >> 1);
-        if (nums[mid] < x)
+        const mid = Math.floor((left + right) / 2);
+        if (nums[mid] < x) {
             left = mid; // 区间缩小为 (mid, right)
-        else
+        } else {
             right = mid; // 区间缩小为 (left, mid)
+        }
     }
     return right; // 根据循环不变量，此时 right 就是满足 nums[right] >= x 的最小值
 };
@@ -158,14 +160,14 @@ var lowerBound = function (nums, x) {
 ```rust [sol-Rust]
 impl Solution {
     pub fn full_bloom_flowers(flowers: Vec<Vec<i32>>, people: Vec<i32>) -> Vec<i32> {
-        let mut starts: Vec<i32> = flowers.iter().map(|f| f[0]).collect();
-        let mut ends: Vec<i32> = flowers.iter().map(|f| f[1]).collect();
-        starts.sort();
-        ends.sort();
-        people.iter().map(|&p| Solution::lower_bound(&starts, p + 1) - Solution::lower_bound(&ends, p)).collect()
+        let mut starts = flowers.iter().map(|f| f[0]).collect::<Vec<_>>();
+        let mut ends = flowers.into_iter().map(|f| f[1]).collect::<Vec<_>>();
+        starts.sort_unstable();
+        ends.sort_unstable();
+        people.into_iter().map(|p| Self::lower_bound(&starts, p + 1) - Solution::lower_bound(&ends, p)).collect()
     }
 
-    fn lower_bound(nums: &Vec<i32>, x: i32) -> i32 {
+    fn lower_bound(nums: &[i32], x: i32) -> i32 {
         let mut left = 0;
         let mut right = nums.len();
         while left < right {
@@ -176,7 +178,7 @@ impl Solution {
                 right = mid;
             }
         }
-        left as i32
+        left as _
     }
 }
 ```
@@ -204,14 +206,14 @@ impl Solution {
 
 第 $i$ 个人能看到的花的数目，即为不超过 $\textit{person}[i]$ 时间点的差分累加值。为了一边累加一边计算答案，我们需要把 $\textit{person}$ 也排序（实际排序的是 $\textit{person}$ 的下标）。
 
-```Python [sol-Python3]
+```py [sol-Python3]
 class Solution:
     def fullBloomFlowers(self, flowers: List[List[int]], people: List[int]) -> List[int]:
         diff = Counter()
         for start, end in flowers:
             diff[start] += 1
             diff[end + 1] -= 1
-        times = sorted(diff.keys())
+        times = sorted(diff)
 
         j = s = 0
         for p, i in sorted(zip(people, range(len(people)))):
@@ -225,14 +227,14 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int[] fullBloomFlowers(int[][] flowers, int[] people) {
-        var diff = new TreeMap<Integer, Integer>();
-        for (var f : flowers) {
+        TreeMap<Integer, Integer> diff = new TreeMap<>();
+        for (int[] f : flowers) {
             diff.merge(f[0], 1, Integer::sum);
             diff.merge(f[1] + 1, -1, Integer::sum);
         }
 
         int n = people.length;
-        var id = new Integer[n];
+        Integer[] id = new Integer[n];
         for (int i = 0; i < n; i++) {
             id[i] = i;
         }
@@ -281,26 +283,27 @@ class Solution {
 }
 ```
 
-```C++ [sol-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    vector<int> fullBloomFlowers(vector<vector<int>> &flowers, vector<int> &people) {
+    vector<int> fullBloomFlowers(vector<vector<int>>& flowers, vector<int>& people) {
         map<int, int> diff;
-        for (auto &f : flowers) {
+        for (auto& f : flowers) {
             diff[f[0]]++;
             diff[f[1] + 1]--;
         }
 
         int n = people.size();
         vector<int> id(n);
-        iota(id.begin(), id.end(), 0); // id[i] = i
-        sort(id.begin(), id.end(), [&](int i, int j) { return people[i] < people[j]; });
+        ranges::iota(id, 0); // id[i] = i
+        ranges::sort(id, {}, [&](int i) { return people[i]; });
 
         auto it = diff.begin();
         int sum = 0;
         for (int i : id) {
-            while (it != diff.end() && it->first <= people[i])
+            while (it != diff.end() && it->first <= people[i]) {
                 sum += it++->second; // 累加不超过 people[i] 的差分值
+            }
             people[i] = sum; // 从而得到这个时刻花的数量
         }
         return people;
@@ -321,13 +324,13 @@ func fullBloomFlowers(flowers [][]int, people []int) []int {
 	for t := range diff {
 		times = append(times, t)
 	}
-	sort.Ints(times)
+	slices.Sort(times)
 
 	id := make([]int, len(people))
 	for i := range id {
 		id[i] = i
 	}
-	sort.Slice(id, func(i, j int) bool { return people[id[i]] < people[id[j]] })
+	slices.SortFunc(id, func(i, j int) int { return people[i] - people[j] })
 
 	j, sum := 0, 0
 	for _, i := range id {
@@ -341,7 +344,7 @@ func fullBloomFlowers(flowers [][]int, people []int) []int {
 ```
 
 ```js [sol-JavaScript]
-var fullBloomFlowers = function (flowers, people) {
+var fullBloomFlowers = function(flowers, people) {
     const diff = new Map();
     for (const [start, end] of flowers) {
         diff.set(start, (diff.get(start) ?? 0) + 1);
@@ -367,20 +370,20 @@ use std::collections::BTreeMap;
 impl Solution {
     pub fn full_bloom_flowers(flowers: Vec<Vec<i32>>, people: Vec<i32>) -> Vec<i32> {
         let mut diff = BTreeMap::new();
-        for f in &flowers {
+        for f in flowers {
             *diff.entry(f[0]).or_insert(0) += 1;
             *diff.entry(f[1] + 1).or_insert(0) -= 1;
         }
 
         let n = people.len();
-        let mut id: Vec<usize> = (0..n).collect();
-        id.sort_by(|&i, &j| people[i].cmp(&people[j]));
+        let mut id = (0..n).collect::<Vec<_>>();
+        id.sort_unstable_by_key(|&i| people[i]);
 
         let mut ans = vec![0; n];
         let mut it = diff.iter().peekable();
         let mut sum = 0;
-        for &i in &id {
-            while let Some((&t, &d)) = it.peek() {
+        for i in id {
+            while let Some(&(&t, &d)) = it.peek() {
                 if t > people[i] {
                     break;
                 }
@@ -403,16 +406,18 @@ impl Solution {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 

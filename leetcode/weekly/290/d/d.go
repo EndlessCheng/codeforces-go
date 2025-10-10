@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func fullBloomFlowers(flowers [][]int, people []int) []int {
@@ -15,20 +18,20 @@ func fullBloomFlowers(flowers [][]int, people []int) []int {
 	for t := range diff {
 		times = append(times, t)
 	}
-	sort.Ints(times)
+	slices.Sort(times)
 
 	id := make([]int, len(people))
 	for i := range id {
 		id[i] = i
 	}
-	sort.Slice(id, func(i, j int) bool { return people[id[i]] < people[id[j]] })
+	slices.SortFunc(id, func(i, j int) int { return people[i] - people[j] })
 
 	j, sum := 0, 0
 	for _, i := range id {
 		for ; j < n && times[j] <= people[i]; j++ {
-			sum += diff[times[j]]
+			sum += diff[times[j]] // 累加不超过 people[i] 的差分值
 		}
-		people[i] = sum
+		people[i] = sum // 从而得到这个时刻花的数量
 	}
 	return people
 }
