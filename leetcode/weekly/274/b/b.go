@@ -1,16 +1,15 @@
 package main
 
+import "strings"
+
 // github.com/EndlessCheng/codeforces-go
 func numberOfBeams(bank []string) (ans int) {
-	pre := 0
+	preCnt := 0
 	for _, row := range bank {
-		cnt := 0
-		for _, ch := range row {
-			cnt += int(ch & 1)
-		}
+		cnt := strings.Count(row, "1")
 		if cnt > 0 {
-			ans += pre * cnt
-			pre = cnt
+			ans += preCnt * cnt
+			preCnt = cnt
 		}
 	}
 	return
