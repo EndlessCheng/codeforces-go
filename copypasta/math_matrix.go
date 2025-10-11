@@ -20,6 +20,11 @@ https://atcoder.jp/contests/abc299/tasks/abc299_h
 这个开关灯问题 也涉及F2矩阵的逆矩阵（或高斯消元） https://github.com/tdzl2003/leetcode_live/blob/master/poj/1222_1753_3279.md
 F2 矩阵 int64 to int64 的散列（可逆意味着一一映射，意味着无冲突） https://github.com/tdzl2003/leetcode_live/blob/master/other/int64_hash.md
 
+Kitamasa 算法：如果只求第 n 项，可以用多项式乘法
+https://misawa.github.io/others/fast_kitamasa_method.html
+https://chatgpt.com/c/68e9ba1e-3018-8323-b2c6-51cbe98df404
+进阶是 Bostan-Mori 算法，见 math_ntt.go
+
 Advanced Matrix Multiplication Optimization on Modern Multi-Core Processors
 https://salykova.github.io/gemm-cpu
 
@@ -35,7 +40,6 @@ https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
 矩阵快速幂优化 DP
 视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
 文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
-m 项递推式，以及包含常数项的情况见《挑战》P201
 https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://codeforces.com/problemset/problem/166/E 1500
 https://codeforces.com/problemset/problem/691/E 1900
@@ -45,6 +49,7 @@ https://codeforces.com/problemset/problem/1182/E 2300
 https://codeforces.com/problemset/problem/226/C 2400
 - https://www.luogu.com.cn/problem/P1306
 https://codeforces.com/problemset/problem/593/E 2400 分段
+https://codeforces.com/problemset/problem/93/D 2500 前 n 项之和
 https://codeforces.com/problemset/problem/60/E 2600
 https://codeforces.com/problemset/problem/575/A 2700 分段 倍增
 https://atcoder.jp/contests/abc232/tasks/abc232_e
@@ -109,6 +114,12 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 // 有两种类型的矩阵快速幂优化 DP
 // 一种是多维 DP / 状态机 DP，转移系数写成一个 size*size 的矩阵，见下面的 solveDP
 // 另一种是线性 DP，转移系数写在第一行，其余行 m[i+1][i] = 1，见下面的 calcFibonacci
+// 特别地，对于多维 DP，如果要求计算前 n 项之和（前缀和），则有递推式
+//    s[i] = s[i-1] + sum(f[i])
+//         = s[i-1] + sum(M @ f[i-1])
+// 所以在矩阵最下面新增一行，最右边新增一列
+// 最下面新增 [sum(M[0]), sum(M[1]), ..., sum(M[-1]), 1]
+// 最右边新增一列，除了最下面的 1 以外，其余全为 0
 func solveDP(N int) (ans int) {
 	const size = 26
 
