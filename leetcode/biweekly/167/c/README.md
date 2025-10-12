@@ -8,8 +8,8 @@
 其中：
 
 - $\textit{left}$ 是 $\textit{times}$ 第一个 $\ge \textit{startTime}$ 的元素下标。
-- $\textit{right}-1$ 是 $\textit{times}$ 最后一个 $\le \textit{startTime}$ 的元素下标。
-- $\textit{right}$ 是 $\textit{times}$ 第一个 $> \textit{startTime}$ 的元素下标，也是第一个 $\ge \textit{startTime}+1$ 的元素下标。
+- $\textit{right}-1$ 是 $\textit{times}$ 最后一个 $\le \textit{endTime}$ 的元素下标。
+- $\textit{right}$ 是 $\textit{times}$ 第一个 $> \textit{endTime}$ 的元素下标，也是第一个 $\ge \textit{endTime}+1$ 的元素下标。
 
 知道了下标范围，根据 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 中的公式，对应的子数组和为
 
