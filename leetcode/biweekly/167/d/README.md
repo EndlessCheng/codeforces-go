@@ -37,7 +37,7 @@ $\textit{low}$ 越大，要求就越**苛刻**，越不能找到一个合法划�
 
 **答**：反证法。假设 $\textit{ans}$ 不来自 $\textit{points}$ 的某两个点的曼哈顿距离，这意味着最小曼哈顿距离 $> \textit{ans}$，也就是 $\ge \textit{ans}+1$。换句话说，$\text{check}(\textit{ans}+1)=\texttt{true}$。但根据循环不变量，二分结束后 $\text{check}(\textit{ans}+1)=\texttt{false}$，矛盾。故原命题成立。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV16E4uzLEdK/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -86,6 +86,7 @@ class Solution:
 
         # 原理见 785. 判断二分图
         def check(low: int) -> bool:
+            # 二分最小的不满足要求的 low+1，就可以得到最大的满足要求的 low
             low += 1
             colors = [0] * len(points)
 

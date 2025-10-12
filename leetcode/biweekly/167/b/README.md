@@ -1,10 +1,6 @@
 ## 方法一：暴力枚举
 
-由于斐波那契序列的增长速度是指数级的，所以斐波那契序列的长度至多为 $\mathcal{O}(\log U)$，其中 $U=\max(\textit{nums})$。
-
-所以可以枚举斐波那契子数组的左端点，暴力找最远右端点。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+枚举斐波那契子数组的左端点，暴力找最远右端点。
 
 ```py [sol-Python3]
 class Solution:
@@ -70,7 +66,7 @@ func longestSubarray(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于斐波那契序列的增长速度是指数级的，所以斐波那契子数组的长度（内层循环的循环次数）至多为 $\mathcal{O}(\log U)$，其中 $U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 方法二：一次遍历
@@ -78,6 +74,8 @@ func longestSubarray(nums []int) int {
 例如 $\textit{nums}=[1, 1, 2, 3, 5, 1, 6, 7, 13]$。我们从 $\textit{nums}[0]$ 开始遍历，可以找到一个长为 $5$ 的斐波那契子数组 $[1, 1, 2, 3, 5]$。这还意味着，从 $\textit{nums}[1]$ 开始遍历，得到的斐波那契子数组一定是 $[1, 2, 3, 5]$，比答案小。所以不需要考虑从下标 $1,2,3$ 开始，而是直接从 $\textit{nums}[4]=5$ 开始继续向后寻找。
 
 ⚠**注意**：斐波那契子数组的最后一个数，可能是下一个斐波那契子数组的第一个数。在上面的例子中，$5$ 是 $[1, 1, 2, 3, 5]$ 的最后一个数，同时也是 $[5, 1, 6, 7, 13]$ 的第一个数。
+
+[本题视频讲解](https://www.bilibili.com/video/BV16E4uzLEdK/?t=23m43s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
