@@ -51,6 +51,8 @@ $$
 
 类似 [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)，枚举右，维护左。
 
+本题计算的是最远距离，需要维护 $a[i]$ 首次出现的下标。
+
 ## 子串包含三种字母
 
 设 $\texttt{a}$ 在这个组的前缀和数组为 $S_a$，$\texttt{b}$ 在这个组的前缀和数组为 $S_b$，$\texttt{c}$ 在这个组的前缀和数组为 $S_c$。
