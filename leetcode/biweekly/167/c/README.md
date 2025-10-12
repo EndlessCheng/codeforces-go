@@ -73,7 +73,7 @@ public:
 
     long long totalScore(int startTime, int endTime) {
         int left = ranges::lower_bound(times, startTime) - times.begin();
-        int right = ranges::lower_bound(times, endTime + 1) - times.begin();
+        int right = ranges::upper_bound(times, endTime) - times.begin();
         return pre_sum[right] - pre_sum[left];
     }
 };
