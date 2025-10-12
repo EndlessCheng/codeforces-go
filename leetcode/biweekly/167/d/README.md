@@ -1,4 +1,6 @@
-## 转化
+## 方法一：二分答案 + 判断二分图
+
+### 转化
 
 假设划分因子 $\ge \textit{low}$。
 
@@ -12,7 +14,7 @@ $\textit{low}$ 越大，要求就越**苛刻**，越不能找到一个合法划�
 
 - 给定 $\textit{low}$，能否把点集分成两个非空集合，使得每个集合内部的任意点对的曼哈顿距离都 $\ge \textit{low}$？
 
-## 思路
+### 思路
 
 对于曼哈顿距离 $< \textit{low}$ 的点对（非法点对），连一条边，我们可以得到一个无向图。
 
@@ -20,7 +22,7 @@ $\textit{low}$ 越大，要求就越**苛刻**，越不能找到一个合法划�
 
 这和 [785. 判断二分图](https://leetcode.cn/problems/is-graph-bipartite/) 是完全一样的，做法见[【图解】交替染色法](https://leetcode.cn/problems/is-graph-bipartite/solutions/3803670/tu-jie-jiao-ti-ran-se-fa-pythonjavaccgoj-ov27/)。
 
-## 细节
+### 细节
 
 下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的，喜欢哪种写法就用哪种。
 
@@ -31,7 +33,7 @@ $\textit{low}$ 越大，要求就越**苛刻**，越不能找到一个合法划�
 
 注意特判 $n=2$ 的情况，此时划分因子恒为 $0$。
 
-## 答疑
+### 答疑
 
 **问**：为什么二分结束后，答案 $\textit{ans}$ 一定来自 $\textit{points}$ 的某两个点的曼哈顿距离？
 
@@ -282,6 +284,275 @@ func abs(x int) int {
 
 - 时间复杂度：$\mathcal{O}(n^2\log U)$，其中 $n$ 是 $\textit{points}$ 的长度，$U\le 4\times 10^8$ 是曼哈顿距离的最大值。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+**注**：也可以把所有曼哈顿距离存到一个列表中，排序，在列表中二分，从而做到 $\mathcal{O}(n^2\log n)$ 的时间。
+
+## 方法二：排序 + 并查集
+
+像 Kruskal 算法那样，按照曼哈顿距离从小到大处理点对。
+
+这些点对是互斥的，不能在同一个集合中。
+
+这可以用**带权并查集**解决，见 [399. 除法求值](https://leetcode.cn/problems/evaluate-division/)。
+
+本题边权为 $1$，距离算子为模 $2$ 意义下的加法，即异或运算。
+
+```py [sol-Python3]
+class UnionFind:
+    def __init__(self, n: int):
+        self.fa = list(range(n))
+        self.dis = [0] * n  # dis[x] 表示 x 到其代表元的距离
+
+    # 返回 x 所在集合的代表元
+    # 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+    def find(self, x: int) -> int:
+        fa = self.fa
+        if fa[x] != x:
+            rt = self.find(fa[x])
+            self.dis[x] ^= self.dis[fa[x]]  # 更新 x 到其代表元的距离
+            fa[x] = rt
+        return fa[x]
+
+    # 合并两个互斥的点
+    # 如果已经合并，返回是否与已知条件矛盾
+    def merge(self, from_: int, to: int) -> bool:
+        x, y = self.find(from_), self.find(to)
+        dis = self.dis
+        if x == y:  # from 和 to 在同一个集合，不合并
+            return dis[from_] != dis[to]  # 必须在不同集合
+        #    2 ------ 4
+        #   /        /
+        #  1 ------ 3
+        # 如果知道 1->2 的距离和 3->4 的距离，现在合并 1 和 3，并传入 1->3 的距离（本题等于 1）
+        # 由于 1->3->4 和 1->2->4 的距离相等
+        # 所以 2->4 的距离为 (1->3) + (3->4) - (1->2)
+        dis[x] = 1 ^ dis[to] ^ dis[from_]
+        self.fa[x] = y
+        return True
+
+
+class Solution:
+    def maxPartitionFactor(self, points: List[List[int]]) -> int:
+        manhattan_tuples = [(abs(x1 - x2) + abs(y1 - y2), i, j)
+                            for i, (x1, y1) in enumerate(points) for j, (x2, y2) in enumerate(points[:i])]
+        manhattan_tuples.sort(key=lambda t: t[0])
+
+        uf = UnionFind(len(points))
+        for dis, x, y in manhattan_tuples:
+            if not uf.merge(x, y):
+                return dis  # x 和 y 必须在同一个集合，dis 就是这一划分的最小划分因子
+        return 0
+```
+
+```java [sol-Java]
+class UnionFind {
+    private final int[] fa;
+    private final int[] dis;
+
+    public UnionFind(int n) {
+        fa = new int[n];
+        for (int i = 0; i < n; i++) {
+            fa[i] = i;
+        }
+        dis = new int[n];
+    }
+
+    // 返回 x 所在集合的代表元
+    // 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+    public int find(int x) {
+        if (fa[x] != x) {
+            int rt = find(fa[x]);
+            dis[x] ^= dis[fa[x]]; // 更新 x 到其代表元的距离
+            fa[x] = rt;
+        }
+        return fa[x];
+    }
+
+    // 合并两个互斥的点
+    // 如果已经合并，返回是否与已知条件矛盾
+    public boolean merge(int from, int to) {
+        int x = find(from);
+        int y = find(to);
+        if (x == y) { // from 和 to 在同一个集合，不合并
+            return dis[from] != dis[to]; // 必须在不同集合
+        }
+        //    2 ------ 4
+        //   /        /
+        //  1 ------ 3
+        // 如果知道 1->2 的距离和 3->4 的距离，现在合并 1 和 3，并传入 1->3 的距离（本题等于 1）
+        // 由于 1->3->4 和 1->2->4 的距离相等
+        // 所以 2->4 的距离为 (1->3) + (3->4) - (1->2)
+        dis[x] = 1 ^ dis[to] ^ dis[from];
+        fa[x] = y;
+        return true;
+    }
+}
+
+class Solution {
+    public int maxPartitionFactor(int[][] points) {
+        int n = points.length;
+        int[][] manhattanTuples = new int[n * (n - 1) / 2][]; // [dis, x, y]
+        int idx = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int dis = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+                manhattanTuples[idx++] = new int[]{dis, i, j};
+            }
+        }
+        Arrays.sort(manhattanTuples, (a, b) -> a[0] - b[0]);
+
+        UnionFind uf = new UnionFind(n);
+        for (int[] t : manhattanTuples) {
+            if (!uf.merge(t[1], t[2])) {
+                return t[0]; // x=t[1] 和 y=t[2] 必须在同一个集合，dis=t[0] 就是这一划分的最小划分因子
+            }
+        }
+        return 0;
+    }
+}
+```
+
+```cpp [sol-C++]
+class UnionFind {
+    vector<int> fa;
+    vector<int8_t> dis; // dis[x] 表示 x 到其代表元的距离
+
+public:
+    UnionFind(int n) : fa(n), dis(n) {
+        ranges::iota(fa, 0);
+    }
+
+    // 返回 x 所在集合的代表元
+    // 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+    int find(int x) {
+        if (fa[x] != x) {
+            int rt = find(fa[x]);
+            dis[x] ^= dis[fa[x]]; // 更新 x 到其代表元的距离
+            fa[x] = rt;
+        }
+        return fa[x];
+    }
+
+    // 合并两个互斥的点
+    // 如果已经合并，返回是否与已知条件矛盾
+    bool merge(int from, int to) {
+        int x = find(from), y = find(to);
+        if (x == y) { // from 和 to 在同一个集合，不合并
+            return dis[from] != dis[to]; // 必须在不同集合
+        }
+        //    2 ------ 4
+        //   /        /
+        //  1 ------ 3
+        // 如果知道 1->2 的距离和 3->4 的距离，现在合并 1 和 3，并传入 1->3 的距离（本题等于 1）
+        // 由于 1->3->4 和 1->2->4 的距离相等
+        // 所以 2->4 的距离为 (1->3) + (3->4) - (1->2)
+        dis[x] = 1 ^ dis[to] ^ dis[from];
+        fa[x] = y;
+        return true;
+    }
+};
+
+class Solution {
+public:
+    int maxPartitionFactor(vector<vector<int>>& points) {
+        int n = points.size();
+        vector<tuple<int, int, int>> manhattan_tuples;
+        manhattan_tuples.reserve(n * (n - 1) / 2); // 预分配空间
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int dis = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);
+                manhattan_tuples.emplace_back(dis, i, j);
+            }
+        }
+        ranges::sort(manhattan_tuples, {}, [](const auto& t) { return get<0>(t); });
+
+        UnionFind uf(n);
+        for (auto& [dis, x, y] : manhattan_tuples) {
+            if (!uf.merge(x, y)) {
+                return dis; // x 和 y 必须在同一个集合，dis 就是这一划分的最小划分因子
+            }
+        }
+        return 0;
+    }
+};
+```
+
+```go [sol-Go]
+type unionFind struct {
+	fa  []int
+	dis []int8 // dis[x] 表示 x 到其代表元的距离
+}
+
+func newUnionFind(n int) unionFind {
+	fa := make([]int, n)
+	dis := make([]int8, n)
+	for i := range fa {
+		fa[i] = i
+	}
+	return unionFind{fa, dis}
+}
+
+// 返回 x 所在集合的代表元
+// 同时做路径压缩，也就是把 x 所在集合中的所有元素的 fa 都改成代表元
+func (u unionFind) find(x int) int {
+	if u.fa[x] != x {
+		rt := u.find(u.fa[x])
+		u.dis[x] ^= u.dis[u.fa[x]] // 更新 x 到其代表元的距离
+		u.fa[x] = rt
+	}
+	return u.fa[x]
+}
+
+// 合并两个互斥的点
+// 如果已经合并，返回是否与已知条件矛盾
+func (u *unionFind) merge(from, to int) bool {
+	x, y := u.find(from), u.find(to)
+	if x == y { // from 和 to 在同一个集合，不合并
+		return u.dis[from] != u.dis[to] // 必须在不同集合
+	}
+	//    2 ------ 4
+	//   /        /
+	//  1 ------ 3
+	// 如果知道 1->2 的距离和 3->4 的距离，现在合并 1 和 3，并传入 1->3 的距离（本题等于 1）
+	// 由于 1->3->4 和 1->2->4 的距离相等
+	// 所以 2->4 的距离为 (1->3) + (3->4) - (1->2)
+	u.dis[x] = 1 ^ u.dis[to] ^ u.dis[from]
+	u.fa[x] = y
+	return true
+}
+
+func maxPartitionFactor(points [][]int) int {
+	n := len(points)
+	type tuple struct{ dis, x, y int }
+	manhattanTuples := make([]tuple, 0, n*(n-1)/2) // 预分配空间
+	for i, p := range points {
+		for j, q := range points[:i] {
+			manhattanTuples = append(manhattanTuples, tuple{abs(p[0]-q[0]) + abs(p[1]-q[1]), i, j})
+		}
+	}
+	slices.SortFunc(manhattanTuples, func(a, b tuple) int { return a.dis - b.dis })
+
+	uf := newUnionFind(n)
+	for _, t := range manhattanTuples {
+		if !uf.merge(t.x, t.y) {
+			return t.dis // t.x 和 t.y 必须在同一个集合，t.dis 就是这一划分的最小划分因子
+		}
+	}
+	return 0
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n^2\log n)$，其中 $n$ 是 $\textit{points}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n^2)$。
 
 ## 专题训练
 
