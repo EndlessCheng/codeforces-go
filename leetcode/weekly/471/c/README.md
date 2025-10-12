@@ -149,11 +149,10 @@ class Solution {
         ans = Math.max(ans, f(s, 'b', 'c'));
 
         // 三种字母
-        // 前缀和数组的首项是 0，位置相当于在 -1
         // 把 (x, y) 压缩成一个 long，方便保存至哈希表
         // (x, y) 变成 (x + n) << 32 | (y + n)，其中 +n 避免出现负数
         Map<Long, Integer> pos = new HashMap<>();
-        pos.put((long) n << 32 | n, -1);
+        pos.put((long) n << 32 | n, -1); // 前缀和数组的首项是 0，位置相当于在 -1
         int[] cnt = new int[3];
         for (int i = 0; i < n; i++) {
             cnt[s[i] - 'a']++;
@@ -222,10 +221,9 @@ public:
         f('b', 'c');
 
         // 三种字母
-        // 前缀和数组的首项是 0，位置相当于在 -1
         // 把 (x, y) 压缩成一个 long long，方便保存至哈希表
         // (x, y) 变成 (x + n) << 32 | (y + n)，其中 +n 避免出现负数
-        unordered_map<long long, int> pos = {{1LL * n << 32 | n, -1}};
+        unordered_map<long long, int> pos = {{1LL * n << 32 | n, -1}}; // 前缀和数组的首项是 0，位置相当于在 -1
         int cnt[3]{};
         for (int i = 0; i < n; i++) {
             cnt[s[i] - 'a']++;
@@ -256,8 +254,7 @@ func longestBalanced(s string) (ans int) {
 	// 两种字母
 	f := func(x, y byte) {
 		for i := 0; i < n; i++ {
-			// 前缀和数组的首项是 0，位置相当于在 i-1
-			pos := map[int]int{0: i - 1}
+			pos := map[int]int{0: i - 1} // 前缀和数组的首项是 0，位置相当于在 i-1
 			d := 0 // x 的个数减去 y 的个数
 			for ; i < n && (s[i] == x || s[i] == y); i++ {
 				if s[i] == x {
@@ -279,8 +276,7 @@ func longestBalanced(s string) (ans int) {
 
 	// 三种字母
 	type pair struct{ diffAB, diffBC int }
-	// 前缀和数组的首项是 0，位置相当于在 -1
-	pos := map[pair]int{{}: -1}
+	pos := map[pair]int{{}: -1} // 前缀和数组的首项是 0，位置相当于在 -1
 	cnt := [3]int{}
 	for i, b := range s {
 		cnt[b-'a']++

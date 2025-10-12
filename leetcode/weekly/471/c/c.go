@@ -15,8 +15,7 @@ func longestBalanced(s string) (ans int) {
 	// 两种字母
 	f := func(x, y byte) {
 		for i := 0; i < n; i++ {
-			// 前缀和数组的首项是 0，位置相当于在 i-1
-			pos := map[int]int{0: i - 1}
+			pos := map[int]int{0: i - 1} // 前缀和数组的首项是 0，位置相当于在 i-1
 			d := 0 // x 的个数减去 y 的个数
 			for ; i < n && (s[i] == x || s[i] == y); i++ {
 				if s[i] == x {
@@ -38,8 +37,7 @@ func longestBalanced(s string) (ans int) {
 
 	// 三种字母
 	type pair struct{ diffAB, diffBC int }
-	// 前缀和数组的首项是 0，位置相当于在 -1
-	pos := map[pair]int{{}: -1}
+	pos := map[pair]int{{}: -1} // 前缀和数组的首项是 0，位置相当于在 -1
 	cnt := [3]int{}
 	for i, b := range s {
 		cnt[b-'a']++
