@@ -77,7 +77,7 @@ $$
 
 做法同上。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1FJ4uz1EkN/?t=5m42s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -222,7 +222,7 @@ public:
         // 三种字母
         // 前缀和数组的首项是 0，位置相当于在 -1
         // 把 (x, y) 压缩成一个 long long，方便保存至哈希表
-        // (x, y) 变成 (x + n) << 32 | (y + n)，其中 +n 避免出现复数
+        // (x, y) 变成 (x + n) << 32 | (y + n)，其中 +n 避免出现负数
         unordered_map<long long, int> pos = {{1LL * n << 32 | n, -1}};
         int cnt[3]{};
         for (int i = 0; i < n; i++) {
@@ -301,7 +301,7 @@ func longestBalanced(s string) (ans int) {
 ## 专题训练
 
 1. 下面双指针题单的「**六、分组循环**」。
-2. 下面数据结构题单的「**§0.1 枚举右，维护左**」。
+2. 下面数据结构题单的「**§1.2 前缀和与哈希表**」。
 
 ## 分类题单
 

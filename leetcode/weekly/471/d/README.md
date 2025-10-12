@@ -44,9 +44,9 @@ $$
 
 做法类似 [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)。本题是在树上做这个问题，递归返回时要恢复现场，即撤销计数器 $\textit{cnt}[\text{core}(\textit{nums}[x])]$ 的加一。
 
-如何计算 $\text{core}(n)$，请看 [我的题解](https://leetcode.cn/problems/maximum-element-sum-of-a-complete-subset-of-indices/solutions/2446037/an-zhao-corei-fen-zu-pythonjavacgo-by-en-i6nu/)。
+预处理 $\text{core}(n)$ 的过程类似埃氏筛，请看 [我的题解](https://leetcode.cn/problems/maximum-element-sum-of-a-complete-subset-of-indices/solutions/2446037/an-zhao-corei-fen-zu-pythonjavacgo-by-en-i6nu/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1FJ4uz1EkN/?t=26m51s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 预处理平方剩余核

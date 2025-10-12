@@ -2,7 +2,7 @@
 
 遍历哈希表中的键值对 $(x,c)$，如果 $c$ 是 $k$ 的倍数，那么把 $c$ 个 $x$ 加入答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1FJ4uz1EkN/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
