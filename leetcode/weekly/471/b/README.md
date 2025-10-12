@@ -4,7 +4,9 @@
 
 遍历 $\textit{cnt}$，如果所有字母的出现次数均相同，用子串长度 $j-i+1$ 更新答案的最大值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1FJ4uz1EkN/?t=1m20s)，欢迎点赞关注~
+
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -30,15 +32,9 @@ class Solution {
             int[] cnt = new int[26];
             next:
             for (int j = i; j < n; j++) {
-                cnt[s[j] - 'a']++;
-                int base = 0;
+                int base = ++cnt[s[j] - 'a'];
                 for (int c : cnt) {
-                    if (c == 0) {
-                        continue;
-                    }
-                    if (base == 0) {
-                        base = c;
-                    } else if (c != base) {
+                    if (c > 0 && c != base) {
                         continue next;
                     }
                 }
@@ -59,15 +55,9 @@ public:
         for (int i = 0; i < n; i++) {
             int cnt[26]{};
             for (int j = i; j < n; j++) {
-                cnt[s[j] - 'a']++;
-                int base = 0;
+                int base = ++cnt[s[j] - 'a'];
                 for (int c : cnt) {
-                    if (c == 0) {
-                        continue;
-                    }
-                    if (base == 0) {
-                        base = c;
-                    } else if (c != base) {
+                    if (c && c != base) {
                         base = -1;
                         break;
                     }
@@ -89,14 +79,9 @@ func longestBalanced(s string) (ans int) {
 	next:
 		for j := i; j < len(s); j++ {
 			cnt[s[j]-'a']++
-			base := 0
+			base := cnt[s[j]-'a']
 			for _, c := range cnt {
-				if c == 0 {
-					continue
-				}
-				if base == 0 {
-					base = c
-				} else if c != base {
+				if c > 0 && c != base {
 					continue next
 				}
 			}
@@ -111,6 +96,106 @@ func longestBalanced(s string) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n^2|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+
+## 优化
+
+设 $\textit{mx} = \max(\textit{cnt})$，设 $\textit{kinds}$ 为子串中的不同字母个数。
+
+如果 $\textit{mx}\cdot \textit{kinds} = j-i+1$，说明子串所有字母的出现次数均为 $\textit{mx}$，均相等。
+
+```py [sol-Python3]
+# 手写 max 更快
+max = lambda a, b: b if b > a else a
+
+class Solution:
+    def longestBalanced(self, s: str) -> int:
+        ans = 0
+        for i in range(len(s)):
+            cnt = defaultdict(int)
+            mx = 0
+            for j in range(i, len(s)):
+                cnt[s[j]] += 1
+                mx = max(mx, cnt[s[j]])
+                if mx * len(cnt) == j - i + 1:
+                    ans = max(ans, j - i + 1)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestBalanced(String S) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            int[] cnt = new int[26];
+            int mx = 0, kinds = 0;
+            for (int j = i; j < n; j++) {
+                int b = s[j] - 'a';
+                if (cnt[b] == 0) {
+                    kinds++;
+                }
+                mx = Math.max(mx, ++cnt[b]);
+                if (mx * kinds == j - i + 1) {
+                    ans = Math.max(ans, j - i + 1);
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestBalanced(string s) {
+        int n = s.size();
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            int cnt[26]{};
+            int mx = 0, kinds = 0;
+            for (int j = i; j < n; j++) {
+                int b = s[j] - 'a';
+                if (cnt[b] == 0) {
+                    kinds++;
+                }
+                mx = max(mx, ++cnt[b]);
+                if (mx * kinds == j - i + 1) {
+                    ans = max(ans, j - i + 1);
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func longestBalanced(s string) (ans int) {
+	for i := range s {
+		cnt := [26]int{}
+		mx, kinds := 0, 0
+		for j := i; j < len(s); j++ {
+			b := s[j] - 'a'
+			if cnt[b] == 0 {
+				kinds++
+			}
+			cnt[b]++
+			mx = max(mx, cnt[b])
+			if mx*kinds == j-i+1 {
+				ans = max(ans, j-i+1)
+			}
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$，其中 $|\Sigma|=26$ 是字符集合的大小。
 
 ## 分类题单
 
