@@ -259,7 +259,7 @@ class Solution:
         s = [ord(c) - ord('a') for c in s]
 
         n = len(s)
-        suf_orders = [[] for _ in range(n)]
+        suf_orders = [None] * n
         order = []
         for i in range(n - 1, -1, -1):
             # 把最近出现的字母移到 order 末尾
@@ -281,11 +281,11 @@ class Solution:
                 # 注意此时 cnt 并不包含 s[i]，我们计算的是前缀 s[:i] 的信息
                 # 在子串中的字母，计算差值
                 # 不在子串中的字母，维持原样
-                tmp = cnt[:]
+                d = cnt[:]
                 for ch in suf_order[j:]:
-                    tmp[ch] -= cnt[min_ch]
+                    d[ch] -= cnt[min_ch]
                 mask |= 1 << suf_order[j]
-                p = (tuple(tmp), mask)  # mask 用来区分 tmp[ch] 是差值还是原始值
+                p = (tuple(d), mask)  # mask 用来区分 d[ch] 是差值还是原始值
                 # 记录 p 首次出现的位置
                 if p not in pos:
                     pos[p] = i - 1
@@ -300,11 +300,11 @@ class Solution:
             mask = 0
             for j in range(len(order) - 1, -1, -1):
                 min_ch = min(min_ch, order[j])
-                tmp = cnt[:]
+                d = cnt[:]
                 for ch in order[j:]:
-                    tmp[ch] -= cnt[min_ch]
+                    d[ch] -= cnt[min_ch]
                 mask |= 1 << order[j]
-                p = (tuple(tmp), mask)
+                p = (tuple(d), mask)
                 # 再次遇到完全一样的 p，说明我们找到了一个平衡子串，左端点为 pos[p]+1，右端点为 i
                 if p in pos:
                     ans = max(ans, i - pos[p])
@@ -343,13 +343,13 @@ func longestBalanced(s string) (ans int) {
 			// 注意此时 cnt 并不包含 s[i]，我们计算的是前缀 s[:i] 的信息
 			// 在子串中的字母，计算差值
 			// 不在子串中的字母，维持原样
-			tmp := cnt
+			d := cnt
 			for _, ch := range sufOrder[j:] {
-				tmp[ch] -= cnt[minCh]
+				d[ch] -= cnt[minCh]
 			}
-			// 记录 tmp 首次出现的位置
-			if _, ok := pos[tmp]; !ok {
-				pos[tmp] = i - 1
+			// 记录 d 首次出现的位置
+			if _, ok := pos[d]; !ok {
+				pos[d] = i - 1
 			}
 		}
 
@@ -362,12 +362,12 @@ func longestBalanced(s string) (ans int) {
 		for j := len(order) - 1; j >= 0; j-- {
 			cnt[26] |= 1 << order[j]
 			minCh = min(minCh, order[j])
-			tmp := cnt
+			d := cnt
 			for _, ch := range order[j:] {
-				tmp[ch] -= cnt[minCh]
+				d[ch] -= cnt[minCh]
 			}
 			// 再次遇到完全一样的状态，说明找到了一个平衡子串，左端点为 l+1，右端点为 i
-			if l, ok := pos[tmp]; ok {
+			if l, ok := pos[d]; ok {
 				ans = max(ans, i-l)
 			}
 		}
