@@ -107,7 +107,7 @@ class Solution {
             g[y].add(x);
         }
 
-        Map<Integer, Integer> cnt = new HashMap<>();
+        Map<Integer, Integer> cnt = new HashMap<>(); // 更快的写法见【Java 数组】
         return dfs(0, -1, g, nums, cnt);
     }
 
@@ -123,6 +123,55 @@ class Solution {
             }
         }
         cnt.put(cr, c); // 恢复现场
+        return res;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    private static final int MX = 100_001;
+    private static final int[] core = new int[MX];
+
+    static {
+        // 预处理平方剩余核
+        for (int i = 1; i < MX; i++) {
+            if (core[i] == 0) {
+                for (int j = 1; i * j * j < MX; j++) {
+                    core[i * j * j] = i;
+                }
+            }
+        }
+    }
+
+    public long sumOfAncestors(int n, int[][] edges, int[] nums) {
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0], y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, core[x]);
+        }
+
+        int[] cnt = new int[mx + 1];
+        return dfs(0, -1, g, nums, cnt);
+    }
+
+    private long dfs(int x, int fa, List<Integer>[] g, int[] nums, int[] cnt) {
+        int cr = core[nums[x]];
+        // 本题 x 的祖先不包括 x 自己
+        long res = cnt[cr]++;
+        for (int y : g[x]) {
+            if (y != fa) {
+                res += dfs(y, x, g, nums, cnt);
+            }
+        }
+        cnt[cr]--; // 恢复现场
         return res;
     }
 }
@@ -146,7 +195,7 @@ int init = [] {
 class Solution {
 public:
     long long sumOfAncestors(int n, vector<vector<int>>& edges, vector<int>& nums) {
-        vector g(n, vector<int>());
+        vector<vector<int>> g(n);
         for (auto& e : edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
