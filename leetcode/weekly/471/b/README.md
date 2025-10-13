@@ -233,7 +233,7 @@ $$
 
 难道要像 3714 题那样，枚举所有非空字母子集，即 $2^{26}-1$ 种情况？
 
-实际上，考虑以 $i$ 为右端点的子串，当子串左端点从 $i$ 开始向左移动（扩展）时，子串中的字母种类数要么不变，要么加一，所以（对于固定的 $i$ 来说）只有至多 $26$ 种字母集合。（这有点像 [LogTrick](https://zhuanlan.zhihu.com/p/1933215367158830792)）
+实际上，考虑以 $i$ 为右端点的子串，当子串左端点从 $i$ 开始向左移动（扩展）时，子串中的字母种类数要么不变，要么加一，所以固定右端点时，只有至多 $26$ 种字母集合。（这有点像 [LogTrick](https://zhuanlan.zhihu.com/p/1933215367158830792)）
 
 于是，对于每个右端点 $i$，我们至多枚举 $26$ 种字母集合。
 
@@ -256,7 +256,8 @@ $$
 ```py [sol-Python3]
 class Solution:
     def longestBalanced(self, s: str) -> int:
-        s = [ord(c) - ord('a') for c in s]
+        mp = {c: i for i, c in enumerate(set(s))}
+        s = [mp[c] for c in s]  # 离散化，字母 -> 数字
 
         n = len(s)
         suf_orders = [None] * n
@@ -269,7 +270,7 @@ class Solution:
             suf_orders[i] = order[:]
 
         order = []
-        cnt = [0] * 26
+        cnt = [0] * len(mp)
         pos = {}
         ans = 0
         for i, b in enumerate(s):
