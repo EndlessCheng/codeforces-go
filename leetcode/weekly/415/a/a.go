@@ -14,7 +14,7 @@ func getSneakyNumbers(nums []int) []int {
 		a += x
 		b += x * x
 	}
-	x := int((float64(a) - math.Sqrt(float64(b*2-a*a))) / 2)
+	x := (a - int(math.Sqrt(float64(b*2-a*a)))) / 2
 	return []int{x, a - x}
 }
 
