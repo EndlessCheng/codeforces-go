@@ -253,10 +253,17 @@ $$
 
 不一定。存在 $d[i]$ 相同，但字母集合不同的情况。所以我们还需要在哈希表的 key 中添加一个 $\textit{mask}$，表示字母集合（实现时用 [二进制数](https://leetcode.cn/circle/discuss/CaOJ45/) 压缩表示）。
 
+**小优化**：如果整个 $s$ 是平衡的，返回 $n$。
+
 ```py [sol-Python3]
 class Solution:
     def longestBalanced(self, s: str) -> int:
-        mp = {c: i for i, c in enumerate(set(s))}
+        n = len(s)
+        cnt = Counter(s)
+        if max(cnt.values()) * len(cnt) == n:  # s 是平衡的
+            return n
+
+        mp = {c: i for i, c in enumerate(cnt)}
         s = [mp[c] for c in s]  # 离散化，字母 -> 数字
 
         n = len(s)
