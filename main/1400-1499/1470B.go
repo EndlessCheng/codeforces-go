@@ -28,10 +28,10 @@ func cf1470B(in io.Reader, _w io.Writer) {
 			Fscan(in, &v)
 			cnt[core[v]]++
 		}
-		maxC, c1 := 0, cnt[1]
+		maxC, c1 := 0, 0
 		for v, c := range cnt {
 			maxC = max(maxC, c)
-			if v > 1 && c%2 == 0 {
+			if v == 1 || c%2 == 0 {
 				c1 += c
 			}
 		}
