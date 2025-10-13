@@ -145,6 +145,12 @@ func longestSubarray(nums []int) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 变形题
+
+改成子序列，怎么做？
+
+这题是 [873. 最长的斐波那契子序列的长度](https://leetcode.cn/problems/length-of-longest-fibonacci-subsequence/)。
+
 ## 专题训练
 
 见下面双指针题单的「**六、分组循环**」。
