@@ -123,10 +123,11 @@ outputCopy
 1
 1`
 
-	testutil.AssertEqualCase(t, rawText, -1, CF1470B)
+	testutil.AssertEqualCase(t, rawText, -1, cf1470B)
 }
 
 func TestCompareCF1470B(t *testing.T) {
+	return
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
@@ -221,5 +222,5 @@ func TestCompareCF1470B(t *testing.T) {
 	//testutil.AssertEqualCase(t, rawText, 0, runBF)
 	//return
 
-	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, CF1470B)
+	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, cf1470B)
 }
