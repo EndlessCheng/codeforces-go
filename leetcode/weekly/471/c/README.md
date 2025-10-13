@@ -25,35 +25,15 @@
 
 ## 子串只包含两种字母
 
-同样地，用分组循环分组，每组只包含两种字母。这题是 [525. 连续数组](https://leetcode.cn/problems/contiguous-array/)。
+同样地，用分组循环分组，每组只包含两种字母。
 
-对于每一组（子串），做法如下。
+对于每一组，计算含有相同数量的两种字母的最长子串。这题是 [525. 连续数组](https://leetcode.cn/problems/contiguous-array/)。
 
-假设包含的字母为 $\texttt{a}$ 和 $\texttt{b}$。
-
-设 $\texttt{a}$ 在这个组的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组为 $S_a$，$\texttt{b}$ 在这个组的前缀和数组为 $S_b$。
-
-子串 $[l,r)$ 中的字母 $\texttt{a}$ 和 $\texttt{b}$ 的出现次数相等，即
-
-$$
-S_a[r] - S_a[l] = S_b[r] - S_b[l]
-$$
-
-移项得
-
-$$
-S_a[r] - S_b[r] = S_a[l] - S_b[l]
-$$
-
-定义数组 $a[i] = S_a[i] - S_b[i]$，问题变成：
-
-- 计算数组 $a$ 中的一对相等元素的最远距离。（注意子串 $[l,r)$ 的长度是 $r-l$，无需加一。）
-
-枚举右，维护左。维护 $a[i]$ 首次出现的下标，再次遇到 $a[i]$ 时，用 $i$ 减去 $a[i]$ 首次出现的下标即为子串长度，更新答案的最大值。
+做法见 [我的题解](https://leetcode.cn/problems/contiguous-array/solutions/3805089/shi-zi-bian-xing-mei-ju-you-wei-hu-zuo-p-x9q2/)。
 
 ## 子串包含三种字母
 
-设 $\texttt{a}$ 在这个组的前缀和数组为 $S_a$，$\texttt{b}$ 在这个组的前缀和数组为 $S_b$，$\texttt{c}$ 在这个组的前缀和数组为 $S_c$。
+仿照 525 题的做法，设 $\texttt{a}$ 在这个组的**个数前缀和**数组为 $S_a$，$\texttt{b}$ 在这个组的个数前缀和数组为 $S_b$，$\texttt{c}$ 在这个组的个数前缀和数组为 $S_c$。
 
 子串 $[l,r)$ 中的字母 $\texttt{a},\texttt{b},\texttt{c}$ 的出现次数相等，可以拆分为如下两个约束：
 
