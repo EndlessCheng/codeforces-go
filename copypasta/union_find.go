@@ -554,9 +554,9 @@ func _(n int) {
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
-			ffx := find(fa[x])
-			dis[x] += dis[fa[x]] //
-			fa[x] = ffx
+			rt := find(fa[x])
+			dis[x] += dis[fa[x]] // **根据题目修改**
+			fa[x] = rt
 		}
 		return fa[x]
 	}
