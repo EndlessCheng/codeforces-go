@@ -23,7 +23,7 @@ func cf1935E(in io.Reader, _w io.Writer) {
 			for s := uint(r); s > 0; s &= s - 1 {
 				j := bits.TrailingZeros(s)
 				sum[i][j]++
-				if l < r {
+				if l>>j < r>>j {
 					variable[i][j]++
 				}
 			}
