@@ -12,7 +12,7 @@ import (
 func cf1886E(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	var n, m int
+	var n, m, b int
 	Fscan(in, &n, &m)
 	type pair struct{ v, i int }
 	a := make([]pair, n)
@@ -20,10 +20,23 @@ func cf1886E(in io.Reader, _w io.Writer) {
 		Fscan(in, &a[i].v)
 		a[i].i = i + 1
 	}
-	slices.SortFunc(a, func(a, b pair) int { return a.v - b.v })
-	b := make([]int, m)
-	for i := range b {
-		Fscan(in, &b[i])
+	slices.SortFunc(a, func(a, b pair) int { return b.v - a.v })
+
+	minI := make([][]int, m)
+	for i := range minI {
+		Fscan(in, &b)
+		mn := make([]int, n)
+		for j, p := range a {
+			mn[j] = 1e9
+			need := (b-1)/p.v + 1
+			if l := j - need + 1; l >= 0 {
+				mn[l] = min(mn[l], j)
+			}
+		}
+		for j := n - 2; j >= 0; j-- {
+			mn[j] = min(mn[j], mn[j+1])
+		}
+		minI[i] = mn
 	}
 
 	u := 1 << m
@@ -40,8 +53,8 @@ func cf1886E(in io.Reader, _w io.Writer) {
 		for t, lb := u-1^s, 0; t > 0; t ^= lb {
 			lb = t & -t
 			ns := s | lb
-			i := bits.TrailingZeros(uint(lb))
-			need := (b[i]-1)/a[man].v + 1
+			i := bits.TrailingZeros32(uint32(lb))
+			need := minI[i][man] - man + 1
 			if man+need < f[ns] {
 				f[ns] = man + need
 				from[ns] = s
@@ -57,7 +70,7 @@ func cf1886E(in io.Reader, _w io.Writer) {
 	ans := make([]pair2, m)
 	for i := u - 1; i > 0; i = from[i] {
 		j := from[i]
-		ans[bits.TrailingZeros(uint(i^j))] = pair2{f[j], f[i]}
+		ans[bits.TrailingZeros32(uint32(i^j))] = pair2{f[j], f[i]}
 	}
 
 	Fprintln(out, "YES")
