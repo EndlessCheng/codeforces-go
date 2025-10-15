@@ -39,13 +39,13 @@ func cf1598F(in io.Reader, out io.Writer) {
 			continue
 		}
 		sum := 0
-		for t := uint(s); t > 0; t &= t - 1 {
-			sum += bal[bits.TrailingZeros(t)]
+		for t := uint32(s); t > 0; t &= t - 1 {
+			sum += bal[bits.TrailingZeros32(t)]
 		}
 		for t, lb := 1<<n-1^s, 0; t > 0; t ^= lb {
 			lb = t & -t
 			ns := s | lb
-			i := bits.TrailingZeros(uint(lb))
+			i := bits.TrailingZeros32(uint32(lb))
 			if sum < len(cnt[i]) {
 				ans = max(ans, fs+cnt[i][sum])
 			}
