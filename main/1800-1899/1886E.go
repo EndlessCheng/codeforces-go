@@ -18,12 +18,12 @@ func cf1886E(in io.Reader, _w io.Writer) {
 	a := make([]pair, n)
 	for i := range a {
 		Fscan(in, &a[i].v)
-		a[i].i = i + 1
+		a[i].i = i
 	}
 	slices.SortFunc(a, func(a, b pair) int { return b.v - a.v })
 
-	minI := make([][]int, m)
-	for i := range minI {
+	minR := make([][]int, m)
+	for i := range minR {
 		Fscan(in, &b)
 		mn := make([]int, n)
 		for j, p := range a {
@@ -36,7 +36,7 @@ func cf1886E(in io.Reader, _w io.Writer) {
 		for j := n - 2; j >= 0; j-- {
 			mn[j] = min(mn[j], mn[j+1])
 		}
-		minI[i] = mn
+		minR[i] = mn
 	}
 
 	u := 1 << m
@@ -54,7 +54,7 @@ func cf1886E(in io.Reader, _w io.Writer) {
 			lb = t & -t
 			ns := s | lb
 			i := bits.TrailingZeros32(uint32(lb))
-			need := minI[i][man] - man + 1
+			need := minR[i][man] - man + 1
 			if man+need < f[ns] {
 				f[ns] = man + need
 				from[ns] = s
@@ -77,7 +77,7 @@ func cf1886E(in io.Reader, _w io.Writer) {
 	for _, p := range ans {
 		Fprint(out, p.r-p.l)
 		for _, q := range a[p.l:p.r] {
-			Fprint(out, " ", q.i)
+			Fprint(out, " ", q.i+1)
 		}
 		Fprintln(out)
 	}
