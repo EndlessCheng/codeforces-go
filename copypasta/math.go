@@ -373,6 +373,7 @@ func _(abs func(int) int) {
 
 	整除与 GCD
 	https://codeforces.com/problemset/problem/1967/B1 1400
+	https://codeforces.com/problemset/problem/2126/E 1400 证明题
 	https://codeforces.com/problemset/problem/1967/B2 2200
 
 	更相减损术
@@ -383,6 +384,10 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/2008/G 1800
 
 	从 (1,1) 到 (n,m)，每步可以把 x += y 或者把 y += x
+	关键性质：
+	如果 x > y，那么上一步一定是 x += y
+	如果 x < y，那么上一步一定是 y += x
+	如果 x = y，无解
 	https://codeforces.com/problemset/problem/134/B 1900
 	https://leetcode.cn/problems/reaching-points/
 	https://leetcode.cn/problems/check-if-point-is-reachable/
@@ -1691,8 +1696,13 @@ func _(abs func(int) int) {
 		return sf
 	}
 
-	// 时间复杂度 O(mx)
+	// 初始化无平方因子核，见后文的 core
+	// 时间复杂度 O(mx)，因为每个数都会被它的 core 恰好标记一次（类似欧拉筛）
+	// 或者 sum(sqrt(n/i)) = sqrt(n) * sum(1/sqrt(i)) = sqrt(n) * sqrt(n) = n
 	// https://atcoder.jp/contests/abc342/tasks/abc342_d
+	// https://codeforces.com/problemset/problem/1470/B 1900
+	// https://leetcode.cn/problems/maximum-element-sum-of-a-complete-subset-of-indices/
+	// https://leetcode.cn/problems/sum-of-perfect-square-ancestors/
 	initAllCore := func() {
 		const mx int = 1e6
 		core := [mx + 1]int{}
@@ -1748,6 +1758,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1766/D 1600
 	// https://codeforces.com/problemset/problem/385/C 1700
 	// https://codeforces.com/problemset/problem/594/D 2500
+	// https://codeforces.com/problemset/problem/1028/H 2900
 	// https://codeforces.com/gym/103107/problem/F 另一种做法是欧拉筛
 	lpfAll := func() {
 		const mx int = 1e6
@@ -1920,7 +1931,8 @@ func _(abs func(int) int) {
 			return ds
 		}
 
-		// 平方剩余核
+		// 无平方因子核 square-free core
+		// 另见 initAllCore
 		// EXTRA: https://oeis.org/A007913 Squarefree part of n (also called core(n))
 		// a(n) is the smallest positive number m such that n/m is a square
 		// https://oeis.org/A013928 Number of (positive) squarefree numbers < n
@@ -1931,6 +1943,7 @@ func _(abs func(int) int) {
 		// https://oeis.org/A055071 n!/core(n!) Largest square dividing n!
 		// https://codeforces.com/contest/1470/problem/B
 		// https://codeforces.com/contest/1497/problem/E2
+		// https://codeforces.com/problemset/problem/1028/H 2900
 		core := func(x int) int {
 			res := 1
 			for x > 1 {
