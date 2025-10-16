@@ -12,7 +12,7 @@ $$
 e_p(x)\bmod 2 = e_p(y)\bmod 2
 $$
 
-根据这一等式，定义**平方剩余核** $\text{core}(n)$ 为 $n$ 除去完全平方因子后的剩余结果。
+根据这一等式，定义**无平方因子核** $\text{core}(n)$ 为 $n$ 除去完全平方因子后的剩余结果。
 
 例如 $\text{core}(8)=8/4=2,\ \text{core}(12)=12/4=3, \text{core}(25)=25/25=1, \text{core}(5)=5/1=5$。
 
@@ -40,7 +40,7 @@ $$
 
 现在问题变成：
 
-- 统计点权平方剩余核相同的点对个数，其中点对必须互为祖先后代。
+- 统计点权 core 值相同的点对个数，其中点对必须互为祖先后代。
 
 做法类似 [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)。本题是在树上做这个问题，递归返回时要恢复现场，即撤销计数器 $\textit{cnt}[\text{core}(\textit{nums}[x])]$ 的加一。
 
@@ -49,7 +49,7 @@ $$
 [本题视频讲解](https://www.bilibili.com/video/BV1FJ4uz1EkN/?t=26m51s)，欢迎点赞关注~
 
 ```py [sol-Python3]
-# 预处理平方剩余核
+# 预处理 core
 MX = 100_001
 core = [0] * MX
 for i in range(1, MX):
@@ -88,7 +88,7 @@ class Solution {
     private static final int[] core = new int[MX];
 
     static {
-        // 预处理平方剩余核
+        // 预处理 core
         for (int i = 1; i < MX; i++) {
             if (core[i] == 0) {
                 for (int j = 1; i * j * j < MX; j++) {
@@ -134,7 +134,7 @@ class Solution {
     private static final int[] core = new int[MX];
 
     static {
-        // 预处理平方剩余核
+        // 预处理 core
         for (int i = 1; i < MX; i++) {
             if (core[i] == 0) {
                 for (int j = 1; i * j * j < MX; j++) {
@@ -178,9 +178,10 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-// 预处理平方剩余核
+// 预处理 core
 const int MX = 100'001;
 int core[MX];
+
 int init = [] {
     for (int i = 1; i < MX; ++i) {
         if (core[i] == 0) {
@@ -225,7 +226,7 @@ public:
 ```
 
 ```go [sol-Go]
-// 预处理平方剩余核
+// 预处理 core
 const mx = 100_001
 var core = [mx]int{}
 

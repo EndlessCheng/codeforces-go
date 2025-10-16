@@ -1,8 +1,6 @@
 package main
 
 // https://space.bilibili.com/206214
-
-// 预处理平方剩余核
 const mx = 100_001
 
 var core = [mx]int{}
