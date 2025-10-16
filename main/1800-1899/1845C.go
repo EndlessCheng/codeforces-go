@@ -7,7 +7,7 @@ import (
 )
 
 // https://github.com/EndlessCheng
-func cf1845C(in io.Reader, out io.Writer) {
+func cf1845C1(in io.Reader, out io.Writer) {
 	var T int
 	var s, l, r string
 o:
@@ -32,6 +32,29 @@ o:
 			}
 		}
 		Fprintln(out, "NO")
+	}
+}
+
+func cf1845C(in io.Reader, out io.Writer) {
+	var T, m int
+	var s, l, r string
+o:
+	for Fscan(in, &T); T > 0; T-- {
+		Fscan(in, &s, &m, &l, &r)
+		vis, j := 0, 0
+		for _, b := range s {
+			vis |= 1 << (b - '0')
+			msk := 1<<(r[j]-l[j]+1) - 1
+			if vis>>(l[j]-'0')&msk == msk {
+				j++
+				if j == m {
+					Fprintln(out, "NO")
+					continue o
+				}
+				vis = 0
+			}
+		}
+		Fprintln(out, "YES")
 	}
 }
 
