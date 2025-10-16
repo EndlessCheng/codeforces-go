@@ -2,7 +2,7 @@
 
 **前置题目**：[P1972 [SDOI2009] HH 的项链](https://www.luogu.com.cn/problem/P1972)。
 
-**前置知识**：平方剩余核（core），见 [我的题解](https://leetcode.cn/problems/sum-of-perfect-square-ancestors/solution/ping-fang-sheng-yu-he-mei-ju-you-wei-hu-bfyxy/)。
+**前置知识**：无平方因子核（core），见 [我的题解](https://leetcode.cn/problems/sum-of-perfect-square-ancestors/solution/ping-fang-sheng-yu-he-mei-ju-you-wei-hu-bfyxy/)。
 
 $f(b)$ 等于把 $b$ 中两个 core 变成相等的最小操作次数。
 
