@@ -1,61 +1,40 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func countUnguarded(m, n int, guards, walls [][]int) (ans int) {
-	// 构建网格
-	a := make([][]int, m)
-	for i := range a {
-		a[i] = make([]int, n)
-	}
-	for _, p := range guards { a[p[0]][p[1]] = 1 }
-	for _, p := range walls  { a[p[0]][p[1]] = 2 }
+var dirs = []struct{ x, y int }{{0, -1}, {0, 1}, {-1, 0}, {1, 0}} // 左右上下
 
-	// 按行模拟
-	for _, row := range a {
-		for j := 0; j < n; j++ {
-			if row[j] == 2 { continue }
-			st, has1 := j, false
-			// 注意这里的 j 和外层循环的 j 是同一个变量
-			for ; j < n && row[j] != 2; j++ {
-				if row[j] == 1 {
-					has1 = true
-				}
-			}
-			if has1 {
-				for ; st < j; st++ {
-					if row[st] == 0 {
-						row[st] = -1
-					}
-				}
+func countUnguarded(m int, n int, guards [][]int, walls [][]int) (ans int) {
+	guarded := make([][]int8, m)
+	for i := range guarded {
+		guarded[i] = make([]int8, n)
+	}
+
+	// 标记警卫格子、墙格子
+	for _, g := range guards {
+		guarded[g[0]][g[1]] = -1
+	}
+	for _, w := range walls {
+		guarded[w[0]][w[1]] = -1
+	}
+
+	// 遍历警卫
+	for _, g := range guards {
+		// 遍历视线
+		for _, d := range dirs {
+			// 视线所及之处，被保卫
+			x, y := g[0]+d.x, g[1]+d.y
+			for 0 <= x && x < m && 0 <= y && y < n && guarded[x][y] != -1 {
+				guarded[x][y] = 1 // 被保卫
+				x += d.x
+				y += d.y
 			}
 		}
 	}
 
-	// 按列模拟
-	for j := 0; j < n; j++ {
-		for i := 0; i < m; i++ {
-			if a[i][j] == 2 { continue }
-			st, has1 := i, false
-			// 注意这里的 i 和外层循环的 i 是同一个变量
-			for ; i < m && a[i][j] != 2; i++ {
-				if a[i][j] == 1 {
-					has1 = true
-				}
-			}
-			if has1 {
-				for ; st < i; st++ {
-					if a[st][j] == 0 {
-						a[st][j] = -1
-					}
-				}
-			}
-		}
-	}
-
-	// 统计答案
-	for _, row := range a {
-		for _, v := range row {
-			if v == 0 {
+	// 统计没被保卫的格子数
+	for _, row := range guarded {
+		for _, x := range row {
+			if x == 0 { // 没被保卫
 				ans++
 			}
 		}
