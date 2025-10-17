@@ -1,17 +1,16 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func minCost(s string, cost []int) (ans int) {
-	for i, n := 0, len(s); i < n; {
-		v, max := s[i], 0
-		for ; i < n && s[i] == v; i++ {
-			w := cost[i]
-			ans += w
-			if w > max {
-				max = w
-			}
+func minCost(colors string, neededTime []int) (ans int) {
+	maxT := 0
+	for i, t := range neededTime {
+		ans += t
+		maxT = max(maxT, t)
+		if i == len(colors)-1 || colors[i] != colors[i+1] {
+			// 遍历到了连续同色段的末尾
+			ans -= maxT // 不移除耗时最大的气球
+			maxT = 0    // 准备计算下一段的最大耗时
 		}
-		ans -= max
 	}
 	return
 }
