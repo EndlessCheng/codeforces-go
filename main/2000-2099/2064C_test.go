@@ -7,7 +7,7 @@ import (
 )
 
 // https://codeforces.com/problemset/problem/2064/C 1300
-// https://www.luogu.com.cn/problemset/status/2064/problem/C?friends=on
+// https://codeforces.com/problemset/status/2064/problem/C?friends=on
 func Test_cf2064C(t *testing.T) {
 	testCases := [][2]string{
 		{
