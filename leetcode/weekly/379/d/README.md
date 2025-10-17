@@ -310,7 +310,7 @@ class Solution:
         def update(i: int) -> None:
             nonlocal seg, mask, size
             bit = 1 << (ord(s[i]) - ord('a'))
-            if mask & bit:
+            if mask & bit:  # s[i] 已经在当前这一段中，无影响
                 return
             size += 1
             if size > k:
@@ -378,7 +378,7 @@ class Solution {
 
     private void update(char c, int k) {
         int bit = 1 << (c - 'a');
-        if ((mask & bit) != 0) {
+        if ((mask & bit) != 0) { // c 已经在当前这一段中，无影响
             return;
         }
         if (++size > k) {
@@ -403,7 +403,7 @@ public:
         int seg = 1, mask = 0, size = 0;
         auto update = [&](int i) -> void {
             int bit = 1 << (s[i] - 'a');
-            if (mask & bit) {
+            if (mask & bit) { // s[i] 已经在当前这一段中，无影响
                 return;
             }
             if (++size > k) {
@@ -450,7 +450,7 @@ func maxPartitionsAfterOperations(s string, k int) int {
 	seg, mask, size := 1, 0, 0
 	update := func(i int) {
 		bit := 1 << (s[i] - 'a')
-		if mask&bit > 0 {
+		if mask&bit > 0 { // s[i] 已经在当前这一段中，无影响
 			return
 		}
 		size++
