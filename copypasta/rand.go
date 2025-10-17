@@ -6,25 +6,7 @@ import (
 	"time"
 )
 
-/* 力扣
-
-- [470. 用 Rand7() 实现 Rand10()](https://leetcode.cn/problems/implement-rand10-using-rand7/)
-   我的总结 https://leetcode.cn/problems/implement-rand10-using-rand7/solutions/979495/mo-neng-gou-zao-fa-du-li-sui-ji-shi-jian-9xpz/comments/1343003
-   randA() 构造 randB() 时，需要找一个最大质因子不超过 A 的数 n (n>=B），然后对 n 分解质因子就能找到每个采样需要取多少种结果。实际到具体数字时，可以把部分质因子合并成不超过 A 的数，从而减少采样次数。
-
-- [528. 按权重随机选择](https://leetcode.cn/problems/random-pick-with-weight/)
-- [710. 黑名单中的随机数](https://leetcode.cn/problems/random-pick-with-blacklist/)
-
-*/
-
-/* 交互 + 随机
-
-https://codeforces.com/problemset/problem/843/B 2000
-https://codeforces.com/problemset/problem/1114/E 2200
-
-*/
-
-/* 随机化技巧
+/* 随机
 https://oi-wiki.org/misc/rand-technique/
 https://www.luogu.com.cn/blog/DengDuck/qian-tan-ha-xi-yu-chu-li-ha-xi-chong-tu-di-yi-suo-fang-fa
 随机梯度下降 SGD, Stochastic Gradient Descent https://en.wikipedia.org/wiki/Stochastic_gradient_descent
@@ -33,7 +15,8 @@ https://codeforces.com/problemset/problem/995/C 2300
 https://codeforces.com/problemset/problem/1314/D 2300 推荐
 https://codeforces.com/problemset/problem/1523/D 2400
 https://codeforces.com/problemset/problem/1305/F 2500 数论
-https://codeforces.com/problemset/problem/364/D 2900 todo
+https://codeforces.com/problemset/problem/995/E 2700
+https://codeforces.com/problemset/problem/364/D 2900
 https://atcoder.jp/contests/abc272/tasks/abc272_g
 https://atcoder.jp/contests/abc339/tasks/abc339_f 推荐
 https://atcoder.jp/contests/jsc2025advance-final/tasks/abc422_e
@@ -49,6 +32,15 @@ https://codeforces.com/problemset/problem/1771/F 2500
 
 多项式哈希 加法哈希
 https://codeforces.com/problemset/problem/869/E 2400
+
+交互
+https://codeforces.com/problemset/problem/843/B 2000
+https://codeforces.com/problemset/problem/1114/E 2200
+
+470. 用 Rand7() 实现 Rand10() https://leetcode.cn/problems/implement-rand10-using-rand7/
+我的总结 https://leetcode.cn/problems/implement-rand10-using-rand7/solutions/979495/mo-neng-gou-zao-fa-du-li-sui-ji-shi-jian-9xpz/comments/1343003
+randA() 构造 randB() 时，需要找一个最大质因子不超过 A 的数 n (n>=B），然后对 n 分解质因子就能找到每个采样需要取多少种结果。实际到具体数字时，可以把部分质因子合并成不超过 A 的数，从而减少采样次数。
+
 */
 
 /* 模拟退火 (Simulated Annealing, SA)
