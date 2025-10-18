@@ -35,28 +35,42 @@ func cf1860E(in io.Reader, _w io.Writer) {
 	}
 
 	vis := [26][26]int{}
+	dis := make([]int, n)
 	for x := range 26 {
 		for y := range 26 {
 			if g[x][y] == nil {
 				continue
 			}
-			dis := make([]int, n)
+			for i := range dis {
+				dis[i] = 1e9
+			}
 			now++
 			vis[x][y] = now
 			q := slices.Clone(g[x][y])
-			for step := 0; len(q) > 0; step++ {
-				tmp := q
-				q = nil
-				for _, i := range tmp {
-					dis[i] = step
-					for j := i - 1; j < i+2; j += 2 {
-						if 0 < j && j < n {
-							a, b := s[j-1]-'a', s[j]-'a'
-							if vis[a][b] < now {
-								vis[a][b] = now
-								q = append(q, g[a][b]...)
-							}
-						}
+			for _, i := range q {
+				dis[i] = 0
+			}
+			push := func(v, w int) {
+				if dis[w] == 1e9 {
+					dis[w] = dis[v] + 1
+					q = append(q, w)
+				}
+			}
+
+			for len(q) > 0 {
+				i := q[0]
+				q = q[1:]
+				if i > 1 {
+					push(i, i-1)
+				}
+				if i < n-1 {
+					push(i, i+1)
+				}
+				a, b := s[i-1]-'a', s[i]-'a'
+				if vis[a][b] < now {
+					vis[a][b] = now
+					for _, j := range g[a][b] {
+						push(i, j)
 					}
 				}
 			}
