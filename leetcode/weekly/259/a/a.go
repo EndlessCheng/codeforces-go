@@ -1,13 +1,20 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func finalValueAfterOperations(operations []string) (ans int) {
-	for _, op := range operations {
-		if op[1] == '+' {
+func finalValueAfterOperations1(operations []string) (ans int) {
+	for _, s := range operations {
+		if s[1] == '+' {
 			ans++
 		} else {
 			ans--
 		}
+	}
+	return
+}
+
+func finalValueAfterOperations(operations []string) (ans int) {
+	for _, s := range operations {
+		ans += int(s[1]>>1&1<<1) - 1
 	}
 	return
 }
