@@ -69,27 +69,26 @@ func lexGreaterPermutation(s, target string) string {
 			mx = max(mx, b)
 		}
 
-		// left 不能有负数 or 没有大于 target[i] 的字母
+		// left 有负数 or 没有大于 target[i] 的字母
 		if neg > 0 || b >= mx {
 			continue
 		}
 
-		// target[i] 增大到 j
-		for j := b + 1; ; j++ {
-			if left[j] == 0 {
-				continue
-			}
-
-			left[j]--
-			ans[i] = 'a' + byte(j)
-			ans = ans[:i+1]
-
-			for k, c := range left {
-				ch := string('a' + byte(k))
-				ans = append(ans, strings.Repeat(ch, c)...)
-			}
-			return string(ans)
+		j := b + 1
+		for left[j] == 0 {
+			j++
 		}
+
+		// target[i] 增大到 j
+		left[j]--
+		ans[i] = 'a' + byte(j)
+		ans = ans[:i+1]
+
+		for k, c := range left {
+			ch := string('a' + byte(k))
+			ans = append(ans, strings.Repeat(ch, c)...)
+		}
+		return string(ans)
 	}
 	return ""
 }
