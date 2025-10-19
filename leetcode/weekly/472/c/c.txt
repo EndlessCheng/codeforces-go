@@ -1,0 +1,14 @@
+"abc"
+"bba"
+"bca"
+
+"leet"
+"code"
+"eelt"
+
+"baba"
+"bbaa"
+""
+
+
+
