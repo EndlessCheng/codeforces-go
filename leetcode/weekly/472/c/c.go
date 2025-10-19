@@ -26,9 +26,11 @@ next:
 			if left[j] == 0 {
 				continue
 			}
+
 			left[j]--
 			ans[i] = 'a' + j
 			ans = ans[:i+1]
+
 			for k, c := range left {
 				ch := string('a' + byte(k))
 				ans = append(ans, strings.Repeat(ch, c)...)

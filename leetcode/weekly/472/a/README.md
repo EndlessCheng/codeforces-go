@@ -2,13 +2,13 @@
 
 然后枚举 $x = k,2k,3k,\ldots$ 如果 $x$ 不在哈希集合中，返回 $x$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV18GsAzuE6W/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def missingMultiple(self, nums: List[int], k: int) -> int:
         st = set(nums)
-        for x in count(k, k):
+        for x in count(k, k):  # 相当于 range(k, inf, k)
             if x not in st:
                 return x
 ```

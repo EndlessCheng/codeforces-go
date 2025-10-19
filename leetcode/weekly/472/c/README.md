@@ -1,31 +1,31 @@
-由于字典序要严格大于 $\textit{target}$，我们倒着枚举，看看能否把 $j = \textit{target}[i]$ 增大：
+由于字典序要严格大于 $\textit{target}$，且字典序越小越好，那么变大更靠右的字母是更优的。
 
-这要求：
+倒着枚举变大的位置 $i$，看看能否把 $\textit{target}[i]$ 变大。这要求：
 
-- $s$ 的 $[0,i-1]$ 中的字母和 $\textit{target}$ 的这一段是一样的，消耗掉。
-- 在 $[\textit{target}[i]+1,\texttt{z}]$ 中，$s$ 存在剩余可以用的字母。
-  - 如果存在，那么可以把 $\textit{target}[i]$ 增大。
-  - 剩余字母按照从小到大的顺序排在后面。
+- $s$ 排列后，前缀 $[0,i-1]$ 和 $\textit{target}$ 的 $[0,i-1]$ 相等，也就是要有足够的字母。把这部分字母从 $s$ 中消耗掉。
+- 消耗之后，在 $[\textit{target}[i]+1,\texttt{z}]$ 中，必须存在剩余可以用的字母。
+  - 如果存在，那么可以把 $\textit{target}[i]$ 变大。
+  - 剩余字母按照从小到大的顺序排在 $\textit{target}[i]$ 右边。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV18GsAzuE6W/?t=3m11s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def lexGreaterPermutation(self, s: str, target: str) -> str:
         left = Counter(s)
         for c in target:
-            left[c] -= 1
+            left[c] -= 1  # 消耗 s 中的一个字母 c
 
         ans = list(target)
         # 从右往左尝试
         for i in range(len(s) - 1, -1, -1):
-            b = target[i]
-            left[b] += 1
-            if any(c < 0 for c in left.values()):
-                continue  # 前面无法做到全部一样
+            c = target[i]
+            left[c] += 1  # 撤销消耗
+            if any(cnt < 0 for cnt in left.values()):
+                continue  # [0,i-1] 无法做到全部一样
 
             # target[i] 增大到 j
-            for j in range(ord(b) - ord('a') + 1, 26):
+            for j in range(ord(c) - ord('a') + 1, 26):
                 ch = ascii_lowercase[j]
                 if left[ch] == 0:
                     continue
@@ -49,7 +49,7 @@ class Solution {
         int[] left = new int[26];
         for (int i = 0; i < n; i++) {
             left[s.charAt(i) - 'a']++;
-            left[t[i] - 'a']--;
+            left[t[i] - 'a']--; // 消耗 s 中的一个字母 t[i]
         }
         StringBuilder ans = new StringBuilder(target);
 
@@ -57,9 +57,9 @@ class Solution {
         next:
         for (int i = n - 1; i >= 0; i--) {
             int b = t[i] - 'a';
-            left[b]++;
+            left[b]++; // 撤销消耗
             for (int c : left) {
-                if (c < 0) { // 前面无法做到全部一样
+                if (c < 0) { // [0,i-1] 无法做到全部一样
                     continue next;
                 }
             }
@@ -92,17 +92,17 @@ public:
         int left[26]{};
         for (int i = 0; i < s.size(); i++) {
             left[s[i] - 'a']++;
-            left[target[i] - 'a']--;
+            left[target[i] - 'a']--; // 消耗 s 中的一个字母 target[i]
         }
 
         // 从右往左尝试
         for (int i = s.size() - 1; i >= 0; i--) {
             int b = target[i] - 'a';
-            left[b]++;
+            left[b]++; // 撤销消耗
 
             bool ok = true;
             for (int c : left) {
-                if (c < 0) { // 前面无法做到全部一样
+                if (c < 0) { // [0,i-1] 无法做到全部一样
                     ok = false;
                     break;
                 }
@@ -138,16 +138,16 @@ func lexGreaterPermutation(s, target string) string {
 	left := make([]int, 26)
 	for i, b := range s {
 		left[b-'a']++
-		left[target[i]-'a']--
+		left[target[i]-'a']-- // 消耗 s 中的一个字母 target[i]
 	}
 	ans := []byte(target)
 
 next:
 	for i := len(s) - 1; i >= 0; i-- {
 		b := target[i] - 'a'
-		left[b]++
+		left[b]++ // 撤销消耗
 		for _, c := range left {
-			if c < 0 { // 前面无法做到全部一样
+			if c < 0 { // [0,i-1] 无法做到全部一样
 				continue next
 			}
 		}
@@ -177,7 +177,7 @@ next:
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
-- 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
 
 ## 专题训练
 
