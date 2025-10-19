@@ -48,118 +48,13 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV18GsAzuE6W/?t=11m54s)，欢迎点赞关注~
 
-## 方法一：分块
-
-见前置知识。
-
-每块维护块内 $\textit{sum}[i]$ 首次出现的位置，以及区间加的 Lazy 标记。
-
-```go
-func longestBalanced(nums []int) (ans int) {
-	n := len(nums)
-	B := int(math.Sqrt(float64(n+1)))/2 + 1
-	sum := make([]int, n+1)
-
-	// === 分块模板开始 ===
-	// 用分块维护 sum
-	type block struct {
-		l, r int // [l,r) 左闭右开
-		todo int
-		pos  map[int]int
-	}
-	blocks := make([]block, n/B+1)
-	calcPos := func(l, r int) map[int]int {
-		pos := map[int]int{}
-		for j := r - 1; j >= l; j-- {
-			pos[sum[j]] = j
-		}
-		return pos
-	}
-	for i := 0; i <= n; i += B {
-		r := min(i+B, n+1)
-		pos := calcPos(i, r)
-		blocks[i/B] = block{i, r, 0, pos}
-	}
-
-	// sum[l:r] 增加 v
-	rangeAdd := func(l, r, v int) {
-		for i := range blocks {
-			b := &blocks[i]
-			if b.r <= l {
-				continue
-			}
-			if b.l >= r {
-				break
-			}
-			if l <= b.l && b.r <= r { // 完整块
-				b.todo += v
-			} else { // 部分块，直接重算
-				for j := b.l; j < b.r; j++ {
-					sum[j] += b.todo
-					if l <= j && j < r {
-						sum[j] += v
-					}
-				}
-				b.pos = calcPos(b.l, b.r)
-				b.todo = 0
-			}
-		}
-	}
-
-	// 返回 sum[:r] 中第一个 v 的下标
-	// 如果没有 v，返回 n
-	findFirst := func(r, v int) int {
-		for i := range blocks {
-			b := &blocks[i]
-			if b.r <= r { // 完整块，直接查哈希表
-				if j, ok := b.pos[v-b.todo]; ok {
-					return j
-				}
-			} else { // 部分块，暴力查找
-				for j := b.l; j < r; j++ {
-					if sum[j] == v-b.todo {
-						return j
-					}
-				}
-				break
-			}
-		}
-		return n
-	}
-	// === 分块模板结束 ===
-
-	last := map[int]int{} // nums 的元素上一次出现的位置
-	for i := 1; i <= n; i++ {
-		x := nums[i-1]
-		v := x%2*2 - 1
-		if j := last[x]; j == 0 { // 首次遇到 x
-			rangeAdd(i, n+1, v) // sum[i:] 增加 v
-		} else { // 再次遇到 x
-			rangeAdd(j, i, -v) // 撤销之前对 sum[j:i] 的增加
-		}
-		last[x] = i
-
-		s := sum[i] + blocks[i/B].todo // sum[i] 的实际值
-		ans = max(ans, i-findFirst(i-ans, s)) // 优化右边界
-	}
-	return
-}
-```
-
-#### 复杂度分析
-
-- 时间复杂度：$\mathcal{O}(n\sqrt n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。
-
-## 方法二：Lazy 线段树
+## 方法一：Lazy 线段树
 
 由于 $a$ 中元素只有 $-1,0,1$，所以 $\textit{sum}$ 数组相邻元素之差 $\le 1$。根据**离散介值定理**，设 $\textit{min}$ 和 $\textit{max}$ 分别为区间的最小值和最大值，只要 $\textit{sum}[i]$ 在 $[\textit{min},\textit{max}]$ 范围中，区间就一定存在等于 $\textit{sum}[i]$ 的数。
 
 用 Lazy 线段树维护区间最小值、区间最大值、区间加的 Lazy tag。
 
-完整线段树模板见 [数据结构题单](https://leetcode.cn/circle/discuss/mOr1u6/)。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+下面只用到部分线段树模板，**完整线段树模板见** [数据结构题单](https://leetcode.cn/circle/discuss/mOr1u6/)。
 
 ```py [sol-Python3]
 # 手写 min max 更快
@@ -167,70 +62,44 @@ min = lambda a, b: b if b < a else a
 max = lambda a, b: b if b > a else a
 
 class Node:
-    __slots__ = 'val', 'todo'
+    __slots__ = 'min', 'max', 'todo'
+
+    def __init__(self):
+        self.min = self.max = self.todo = 0
 
 class LazySegmentTree:
-    # 懒标记初始值
-    _TODO_INIT = 0
-
-    def __init__(self, arr, default=0):
-        # 线段树维护一个长为 n 的数组（下标从 0 到 n-1）
-        # arr 可以是 list 或者 int
-        # 如果 arr 是 int，视作数组大小，默认值为 default
-        if isinstance(arr, int):
-            arr = [default] * arr
-        n = len(arr)
+    def __init__(self, n: int):
         self._n = n
         self._tree = [Node() for _ in range(2 << (n - 1).bit_length())]
-        self._build(arr, 1, 0, n - 1)
-
-    # 合并两个 val
-    def _merge_val(self, a, b):
-        return [min(a[0], b[0]), max(a[1], b[1])]
-
-    # 合并两个懒标记
-    def _merge_todo(self, a: int, b: int) -> int:
-        return a + b
 
     # 把懒标记作用到 node 子树
-    def _apply(self, node: int, l: int, r: int, todo: int) -> None:
+    def _apply(self, node: int, todo: int) -> None:
         cur = self._tree[node]
-        # 计算 tree[node] 区间的整体变化
-        cur.val[0] += todo
-        cur.val[1] += todo
-        cur.todo = self._merge_todo(todo, cur.todo)
+        cur.min += todo
+        cur.max += todo
+        cur.todo += todo
 
     # 把当前节点的懒标记下传给左右儿子
-    def _spread(self, node: int, l: int, r: int) -> None:
+    def _spread(self, node: int) -> None:
         todo = self._tree[node].todo
-        if todo == self._TODO_INIT:  # 没有需要下传的信息
+        if todo == 0:  # 没有需要下传的信息
             return
-        m = (l + r) // 2
-        self._apply(node * 2, l, m, todo)
-        self._apply(node * 2 + 1, m + 1, r, todo)
-        self._tree[node].todo = self._TODO_INIT  # 下传完毕
+        self._apply(node * 2, todo)
+        self._apply(node * 2 + 1, todo)
+        self._tree[node].todo = 0  # 下传完毕
 
-    # 合并左右儿子的 val 到当前节点的 val
+    # 合并左右儿子的 min max 到当前节点
     def _maintain(self, node: int) -> None:
-        self._tree[node].val = self._merge_val(self._tree[node * 2].val, self._tree[node * 2 + 1].val)
-
-    # 用 a 初始化线段树
-    # 时间复杂度 O(n)
-    def _build(self, a: List[int], node: int, l: int, r: int) -> None:
-        self._tree[node].todo = self._TODO_INIT
-        if l == r:  # 叶子
-            self._tree[node].val = [a[l], a[l]]  # 初始化叶节点的值
-            return
-        m = (l + r) // 2
-        self._build(a, node * 2, l, m)  # 初始化左子树
-        self._build(a, node * 2 + 1, m + 1, r)  # 初始化右子树
-        self._maintain(node)
+        l_node = self._tree[node * 2]
+        r_node = self._tree[node * 2 + 1]
+        self._tree[node].min = min(l_node.min, r_node.min)
+        self._tree[node].max = max(l_node.max, r_node.max)
 
     def _update(self, node: int, l: int, r: int, ql: int, qr: int, f: int) -> None:
         if ql <= l and r <= qr:  # 当前子树完全在 [ql, qr] 内
-            self._apply(node, l, r, f)
+            self._apply(node, f)
             return
-        self._spread(node, l, r)
+        self._spread(node)
         m = (l + r) // 2
         if ql <= m:  # 更新左子树
             self._update(node * 2, l, m, ql, qr, f)
@@ -239,11 +108,11 @@ class LazySegmentTree:
         self._maintain(node)
 
     def _find_first(self, node: int, l: int, r: int, ql: int, qr: int, target: int) -> int:
-        if l > qr or r < ql or not self._tree[node].val[0] <= target <= self._tree[node].val[1]:
+        if l > qr or r < ql or not self._tree[node].min <= target <= self._tree[node].max:
             return -1
         if l == r:
             return l
-        self._spread(node, l, r)
+        self._spread(node)
         m = (l + r) // 2
         idx = self._find_first(node * 2, l, m, ql, qr, target)
         if idx < 0:
@@ -251,14 +120,15 @@ class LazySegmentTree:
             idx = self._find_first(node * 2 + 1, m + 1, r, ql, qr, target)
         return idx
 
-    # 用 f 更新 [ql, qr] 中的每个 a[i]
+    # 用 f 更新 [ql, qr] 中的每个 sum[i]
     # 0 <= ql <= qr <= n-1
     # 时间复杂度 O(log n)
     def update(self, ql: int, qr: int, f: int) -> None:
         self._update(1, 0, self._n - 1, ql, qr, f)
 
-    # 查询 [ql,qr] 内第一个等于 target 的元素下标
+    # 查询 [ql, qr] 内第一个等于 target 的元素下标
     # 找不到返回 -1
+    # 0 <= ql <= qr <= n-1
     # 时间复杂度 O(log n)
     def find_first(self, ql: int, qr: int, target: int) -> int:
         return self._find_first(1, 0, self._n - 1, ql, qr, target)
@@ -280,68 +150,47 @@ class Solution:
                 t.update(j, i - 1, -v)  # 撤销之前对 sum[j:i] 的增加
             last[x] = i
 
-            j = t.find_first(0, i - 1, cur_sum)
+            # 把 i-1 优化成 i-1-ans，因为在下标 > i-1-ans 中搜索是没有意义的，不会把答案变大
+            j = t.find_first(0, i - 1 - ans, cur_sum)
             if j >= 0:
-                ans = max(ans, i - j)
+                ans = i - j  # 如果找到了，那么答案肯定会变大
         return ans
 ```
 
 ```java [sol-Java]
 class LazySegmentTree {
-    // 懒标记初始值
-    private static final int TODO_INIT = 0;
-
     private static final class Node {
-        int[] val;
+        int min;
+        int max;
         int todo;
     }
 
-    // 合并两个 val
-    private int[] mergeVal(int[] a, int[] b) {
-        return new int[]{Math.min(a[0], b[0]), Math.max(a[1], b[1])};
-    }
-
-    // 合并两个懒标记
-    private int mergeTodo(int a, int b) {
-        return a + b;
-    }
-
-    // 把懒标记作用到 node 子树（本例为区间加）
-    private void apply(int node, int l, int r, int todo) {
+    // 把懒标记作用到 node 子树
+    private void apply(int node, int todo) {
         Node cur = tree[node];
-        // 计算 tree[node] 区间的整体变化
-        cur.val[0] += todo;
-        cur.val[1] += todo;
-        cur.todo = mergeTodo(todo, cur.todo);
+        cur.min += todo;
+        cur.max += todo;
+        cur.todo += todo;
     }
 
     private final int n;
     private final Node[] tree;
 
-    // 线段树维护一个长为 n 的数组（下标从 0 到 n-1），元素初始值为 initVal
-    public LazySegmentTree(int n, int initVal) {
+    // 线段树维护一个长为 n 的数组（下标从 0 到 n-1）
+    public LazySegmentTree(int n) {
         this.n = n;
-        int[] a = new int[n];
-        Arrays.fill(a, initVal);
         tree = new Node[2 << (32 - Integer.numberOfLeadingZeros(n - 1))];
-        build(a, 1, 0, n - 1);
+        Arrays.setAll(tree, _ -> new Node());
     }
 
-    // 线段树维护数组 a
-    public LazySegmentTree(int[] a) {
-        n = a.length;
-        tree = new Node[2 << (32 - Integer.numberOfLeadingZeros(n - 1))];
-        build(a, 1, 0, n - 1);
-    }
-
-    // 用 f 更新 [ql, qr] 中的每个 a[i]
+    // 用 f 更新 [ql, qr] 中的每个 sum[i]
     // 0 <= ql <= qr <= n-1
     // 时间复杂度 O(log n)
     public void update(int ql, int qr, int f) {
         update(1, 0, n - 1, ql, qr, f);
     }
 
-    // 查询 [ql,qr] 内第一个等于 target 的元素下标
+    // 查询 [ql, qr] 内第一个等于 target 的元素下标
     // 找不到返回 -1
     // 0 <= ql <= qr <= n-1
     // 时间复杂度 O(log n)
@@ -350,43 +199,28 @@ class LazySegmentTree {
     }
 
     // 把当前节点的懒标记下传给左右儿子
-    private void spread(int node, int l, int r) {
+    private void spread(int node) {
         int todo = tree[node].todo;
-        if (todo == TODO_INIT) { // 没有需要下传的信息
+        if (todo == 0) { // 没有需要下传的信息
             return;
         }
-        int m = (l + r) / 2;
-        apply(node * 2, l, m, todo);
-        apply(node * 2 + 1, m + 1, r, todo);
-        tree[node].todo = TODO_INIT; // 下传完毕
+        apply(node * 2, todo);
+        apply(node * 2 + 1, todo);
+        tree[node].todo = 0; // 下传完毕
     }
 
     // 合并左右儿子的 val 到当前节点的 val
     private void maintain(int node) {
-        tree[node].val = mergeVal(tree[node * 2].val, tree[node * 2 + 1].val);
-    }
-
-    // 用 a 初始化线段树
-    // 时间复杂度 O(n)
-    private void build(int[] a, int node, int l, int r) {
-        tree[node] = new Node();
-        tree[node].todo = TODO_INIT;
-        if (l == r) { // 叶子
-            tree[node].val = new int[]{a[l], a[l]}; // 初始化叶节点的值
-            return;
-        }
-        int m = (l + r) / 2;
-        build(a, node * 2, l, m); // 初始化左子树
-        build(a, node * 2 + 1, m + 1, r); // 初始化右子树
-        maintain(node);
+        tree[node].min = Math.min(tree[node * 2].min, tree[node * 2 + 1].min);
+        tree[node].max = Math.max(tree[node * 2].max, tree[node * 2 + 1].max);
     }
 
     private void update(int node, int l, int r, int ql, int qr, int f) {
         if (ql <= l && r <= qr) { // 当前子树完全在 [ql, qr] 内
-            apply(node, l, r, f);
+            apply(node, f);
             return;
         }
-        spread(node, l, r);
+        spread(node);
         int m = (l + r) / 2;
         if (ql <= m) { // 更新左子树
             update(node * 2, l, m, ql, qr, f);
@@ -398,13 +232,13 @@ class LazySegmentTree {
     }
 
     private int findFirst(int node, int l, int r, int ql, int qr, int target) {
-        if (l > qr || r < ql || target < tree[node].val[0] || target > tree[node].val[1]) {
+        if (l > qr || r < ql || target < tree[node].min || target > tree[node].max) {
             return -1;
         }
         if (l == r) {
             return l;
         }
-        spread(node, l, r);
+        spread(node);
         int m = (l + r) / 2;
         int idx = findFirst(node * 2, l, m, ql, qr, target);
         if (idx < 0) {
@@ -417,27 +251,28 @@ class LazySegmentTree {
 class Solution {
     public int longestBalanced(int[] nums) {
         int n = nums.length;
-        LazySegmentTree t = new LazySegmentTree(n + 1, 0);
+        LazySegmentTree t = new LazySegmentTree(n + 1);
 
-        Map<Integer, Integer> last = new HashMap<>();
+        Map<Integer, Integer> last = new HashMap<>(); // nums 的元素上一次出现的位置
         int ans = 0;
         int curSum = 0;
 
         for (int i = 1; i <= n; i++) {
             int x = nums[i - 1];
             int v = x % 2 > 0 ? 1 : -1;
-            if (!last.containsKey(x)) {
+            if (!last.containsKey(x)) { // 首次遇到 x
                 curSum += v;
-                t.update(i, n, v);
-            } else {
+                t.update(i, n, v); // sum 的 [i,n] 增加 v
+            } else { // 再次遇到 x
                 int j = last.get(x);
-                t.update(j, i - 1, -v);
+                t.update(j, i - 1, -v); // 撤销之前对 sum 的 [j,i-1] 的增加
             }
             last.put(x, i);
 
-            int j = t.findFirst(0, i - 1, curSum);
+            // 把 i-1 优化成 i-1-ans，因为在下标 > i-1-ans 中搜索是没有意义的，不会把答案变大
+            int j = t.findFirst(0, i - 1 - ans, curSum);
             if (j >= 0) {
-                ans = Math.max(ans, i - j);
+                ans = i - j; // 如果找到了，那么答案肯定会变大
             }
         }
         return ans;
@@ -462,12 +297,12 @@ class LazySegmentTree {
     vector<Node> tree;
 
     // 合并两个 val
-    T merge_val(T a, T b) const {
+    T merge_val(const T& a, const T& b) const {
         return {min(a.first, b.first), max(a.second, b.second)};
     }
 
     // 合并两个懒标记
-    F merge_todo(F a, F b) const {
+    F merge_todo(const F& a, const F& b) const {
         return a + b;
     }
 
@@ -566,7 +401,7 @@ public:
         update(1, 0, n - 1, ql, qr, f);
     }
 
-    // 查询 [ql,qr] 内第一个等于 target 的元素下标
+    // 查询 [ql, qr] 内第一个等于 target 的元素下标
     // 找不到返回 -1
     // 0 <= ql <= qr <= n-1
     // 时间复杂度 O(log n)
@@ -592,14 +427,14 @@ public:
                 t.update(i, n, v); // sum 的 [i,n] 增加 v
             } else { // 再次遇到 x
                 int j = it->second;
-                t.update(j, i - 1, -v);  // 撤销之前对 sum 的 [j,i-1] 的增加
+                t.update(j, i - 1, -v); // 撤销之前对 sum 的 [j,i-1] 的增加
             }
             last[x] = i;
 
-            // 在 [0,i-1] 中找第一个等于 cur_sum 的下标
-            int j = t.find_first(0, i - 1, cur_sum);
+            // 把 i-1 优化成 i-1-ans，因为在下标 > i-1-ans 中搜索是没有意义的，不会把答案变大
+            int j = t.find_first(0, i - 1 - ans, cur_sum);
             if (j >= 0) {
-                ans = max(ans, i - j);
+                ans = i - j; // 如果找到了，那么答案肯定会变大
             }
         }
         return ans;
@@ -608,6 +443,7 @@ public:
 ```
 
 ```go [sol-Go]
+// 完整模板及注释见数据结构题单 https://leetcode.cn/circle/discuss/mOr1u6/
 type pair struct{ min, max int }
 type lazySeg []struct {
 	l, r int
@@ -701,9 +537,10 @@ func longestBalanced(nums []int) (ans int) {
 		}
 		last[x] = i
 
-		j := t.findFirst(1, 0, i-1, curSum)
+		// 把 i-1 优化成 i-1-ans，因为在下标 > i-1-ans 中搜索是没有意义的，不会把答案变大
+		j := t.findFirst(1, 0, i-1-ans, curSum)
 		if j >= 0 {
-			ans = max(ans, i-j)
+			ans = i - j // 如果找到了，那么答案肯定会变大
 		}
 	}
 	return
@@ -713,6 +550,111 @@ func longestBalanced(nums []int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：分块
+
+见前置知识。
+
+这个做法没有用到 $\textit{sum}$ 数组的特殊性质，支持区间更新、查询任意值首次出现的位置。
+
+每块维护块内 $\textit{sum}[i]$ 首次出现的位置，以及区间加的 Lazy tag。
+
+```go
+func longestBalanced(nums []int) (ans int) {
+	n := len(nums)
+	B := int(math.Sqrt(float64(n+1)))/2 + 1
+	sum := make([]int, n+1)
+
+	// === 分块模板开始 ===
+	// 用分块维护 sum
+	type block struct {
+		l, r int // [l,r) 左闭右开
+		todo int
+		pos  map[int]int
+	}
+	blocks := make([]block, n/B+1)
+	calcPos := func(l, r int) map[int]int {
+		pos := map[int]int{}
+		for j := r - 1; j >= l; j-- {
+			pos[sum[j]] = j
+		}
+		return pos
+	}
+	for i := 0; i <= n; i += B {
+		r := min(i+B, n+1)
+		pos := calcPos(i, r)
+		blocks[i/B] = block{i, r, 0, pos}
+	}
+
+	// sum[l:r] 增加 v
+	rangeAdd := func(l, r, v int) {
+		for i := range blocks {
+			b := &blocks[i]
+			if b.r <= l {
+				continue
+			}
+			if b.l >= r {
+				break
+			}
+			if l <= b.l && b.r <= r { // 完整块
+				b.todo += v
+			} else { // 部分块，直接重算
+				for j := b.l; j < b.r; j++ {
+					sum[j] += b.todo
+					if l <= j && j < r {
+						sum[j] += v
+					}
+				}
+				b.pos = calcPos(b.l, b.r)
+				b.todo = 0
+			}
+		}
+	}
+
+	// 返回 sum[:r] 中第一个 v 的下标
+	// 如果没有 v，返回 n
+	findFirst := func(r, v int) int {
+		for i := range blocks {
+			b := &blocks[i]
+			if b.r <= r { // 完整块，直接查哈希表
+				if j, ok := b.pos[v-b.todo]; ok {
+					return j
+				}
+			} else { // 部分块，暴力查找
+				for j := b.l; j < r; j++ {
+					if sum[j] == v-b.todo {
+						return j
+					}
+				}
+				break
+			}
+		}
+		return n
+	}
+	// === 分块模板结束 ===
+
+	last := map[int]int{} // nums 的元素上一次出现的位置
+	for i := 1; i <= n; i++ {
+		x := nums[i-1]
+		v := x%2*2 - 1
+		if j := last[x]; j == 0 { // 首次遇到 x
+			rangeAdd(i, n+1, v) // sum[i:] 增加 v
+		} else { // 再次遇到 x
+			rangeAdd(j, i, -v) // 撤销之前对 sum[j:i] 的增加
+		}
+		last[x] = i
+
+		s := sum[i] + blocks[i/B].todo // sum[i] 的实际值
+		ans = max(ans, i-findFirst(i-ans, s)) // 优化右边界
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\sqrt n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 相似题目

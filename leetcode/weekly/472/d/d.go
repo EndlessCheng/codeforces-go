@@ -189,9 +189,10 @@ func longestBalanced(nums []int) (ans int) {
 		}
 		last[x] = i
 
-		j := t.findFirst(1, 0, i-1, curSum)
+		// 把 i-1 优化成 i-1-ans，因为在下标 > i-1-ans 中搜索是没有意义的，不会把答案变大
+		j := t.findFirst(1, 0, i-1-ans, curSum)
 		if j >= 0 {
-			ans = max(ans, i-j)
+			ans = i - j // 如果找到了，那么答案肯定会变大
 		}
 	}
 	return
