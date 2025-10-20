@@ -14,7 +14,7 @@ func finalValueAfterOperations1(operations []string) (ans int) {
 
 func finalValueAfterOperations(operations []string) (ans int) {
 	for _, s := range operations {
-		ans += int(s[1]>>1&1<<1) - 1
+		ans += int(s[1]&2) - 1
 	}
 	return
 }
