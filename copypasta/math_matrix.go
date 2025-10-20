@@ -20,13 +20,6 @@ https://atcoder.jp/contests/abc299/tasks/abc299_h
 这个开关灯问题 也涉及F2矩阵的逆矩阵（或高斯消元） https://github.com/tdzl2003/leetcode_live/blob/master/poj/1222_1753_3279.md
 F2 矩阵 int64 to int64 的散列（可逆意味着一一映射，意味着无冲突） https://github.com/tdzl2003/leetcode_live/blob/master/other/int64_hash.md
 
-普通矩阵快速幂是 O(k^3 log n)
-Kitamasa 算法：如果只求第 n 项，可以用多项式乘法做到 O(k^2 log n) 或者 O(k log k log n)
-入门教程 https://codeforces.com/blog/entry/97627
-https://misawa.github.io/others/fast_kitamasa_method.html
-https://chatgpt.com/c/68e9ba1e-3018-8323-b2c6-51cbe98df404
-另见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
-
 Advanced Matrix Multiplication Optimization on Modern Multi-Core Processors
 https://salykova.github.io/gemm-cpu
 
@@ -115,7 +108,8 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 
 // 有两种类型的矩阵快速幂优化 DP
 // 一种是多维 DP / 状态机 DP，转移系数写成一个 size*size 的矩阵，见下面的 solveDP
-// 另一种是线性 DP，转移系数写在第一行，其余行 m[i+1][i] = 1，见下面的 calcFibonacci
+// 另一种是线性 DP，转移系数写在第一行，其余行 m[i+1][i] = 1，见下面的 calcFibonacci 
+// - 更快的算法见下面的 kitamasa
 //
 // 特别地，对于多维 DP，如果要求计算前 n 项之和（前缀和），我们可以在列向量末尾添加一个前缀和项 s[i]
 // 递推式 s[i] = sum(f[i]) + s[i-1] = sum(M @ f[i-1]) + s[i-1]
@@ -186,6 +180,68 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 	fn := m.powMul(n-2, f2)
 	return fn[0][0]
 }
+
+// 给定常系数其次递推式 f(n) = c[k-1] * f(n-1) + c[k-2] * f(n-2) + ... + c[0] * f(n-k)
+// 以及初始值 f(i) = a[i] (i < k)
+// 返回 f(n)
+// Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)
+// https://codeforces.com/blog/entry/97627
+// https://misawa.github.io/others/fast_kitamasa_method.html
+// https://gemini.google.com/app/1de2b2d9257e375d
+// https://chatgpt.com/c/68e9ba1e-3018-8323-b2c6-51cbe98df404
+// 另见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
+// 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
+func kitamasa(a, coef []int, n int) (ans int) {
+	k := len(a)
+	if n < k {
+		return a[n] % mod
+	}
+
+	nextCoef := func(c []int) {
+		ck := c[k-1]
+		for i := k - 1; i > 0; i-- {
+			c[i] = (c[i-1] + ck*coef[i]) % mod
+		}
+		c[0] = ck * coef[0] % mod
+	}
+
+	// 比如 f(4) = 3*f(2) + 2*f(1) + f(0)
+	// 或者说 f(n) = 3*f(n-2) + 2*f(n-3) + f(n-4)
+	// 那么 f(8) = 3*f(6) + 2*f(5) + f(4)
+	// 其中 f(5) = 3*f(3) + 2*f(2) + f(1)
+	//           = 3*(用 f(2) f(1) f(0) 表出) + 2*f(2) + f(1)
+	// f(6) 同理
+	// 这样可以用 f(2) f(1) f(0)，也就是 a[2] a[1] a[0] 表出 f(8)
+	mul := func(a, b []int) []int {
+		c := make([]int, k)
+		for _, v := range a {
+			for j, w := range b {
+				c[j] = (c[j] + v*w) % mod
+			}
+			nextCoef(b)
+		}
+		return c
+	}
+
+	// 计算 resC，以表出 f(n) = recC[k-1] * a[k-1] + recC[k-2] * a[k-2] + ... + resC[0] + a[0]
+	resC := make([]int, k)
+	resC[0] = 1
+	c := make([]int, k)
+	c[1] = 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			resC = mul(c, resC)
+		}
+		c = mul(slices.Clone(c), c)
+	}
+
+	for i, v := range a {
+		ans = (ans + resC[i]*v) % mod
+	}
+	return
+}
+
+//
 
 func newIdentityMatrix(n int) matrix {
 	a := make(matrix, n)

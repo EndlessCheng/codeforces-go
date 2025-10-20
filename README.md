@@ -137,7 +137,8 @@
   - [快速沃尔什变换 FWT math_fwt.go](/copypasta/math_fwt.go)
   - [连分数、佩尔方程 math_continued_fraction.go](/copypasta/math_continued_fraction.go)
   - [线性代数 math_matrix.go](/copypasta/math_matrix.go)
-    - 矩阵相关运算
+    - 矩阵快速幂
+    - Kitamasa 算法
     - 高斯消元
     - 行列式
     - 线性基
