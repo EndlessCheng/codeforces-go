@@ -189,10 +189,10 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // https://misawa.github.io/others/fast_kitamasa_method.html
 // https://gemini.google.com/app/1de2b2d9257e375d
 // https://chatgpt.com/c/68e9ba1e-3018-8323-b2c6-51cbe98df404
-// 另见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
+// 如果要用 NTT 做的话，见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
 // 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
 func kitamasa(a, coef []int, n int) (ans int) {
-	k := len(a)
+	k := len(coef)
 	if n < k {
 		return a[n] % mod
 	}
@@ -200,14 +200,6 @@ func kitamasa(a, coef []int, n int) (ans int) {
 	// 特判 k = 1 的情况，如果题目保证 k >= 2，可以去掉
 	if k == 1 {
 		return a[0] * pow(coef[0], n) % mod
-	}
-
-	nextCoef := func(c []int) {
-		ck := c[k-1]
-		for i := k - 1; i > 0; i-- {
-			c[i] = (c[i-1] + ck*coef[i]) % mod
-		}
-		c[0] = ck * coef[0] % mod
 	}
 
 	// 比如 f(4) = 3*f(2) + 2*f(1) + f(0)
@@ -223,7 +215,12 @@ func kitamasa(a, coef []int, n int) (ans int) {
 			for j, w := range b {
 				c[j] = (c[j] + v*w) % mod
 			}
-			nextCoef(b)
+			// 原地计算下一组系数，比如上面已知 f(4) 的各项系数，现在要计算 f(5) 的各项系数
+			bk := b[k-1]
+			for i := k - 1; i > 0; i-- {
+				b[i] = (b[i-1] + bk*coef[i]) % mod
+			}
+			b[0] = bk * coef[0] % mod
 		}
 		return c
 	}
@@ -237,11 +234,11 @@ func kitamasa(a, coef []int, n int) (ans int) {
 		if n%2 > 0 {
 			resC = mul(c, resC)
 		}
-		c = mul(slices.Clone(c), c)
+		c = mul(c, slices.Clone(c))
 	}
 
-	for i, v := range a {
-		ans = (ans + resC[i]*v) % mod
+	for i, c := range resC {
+		ans = (ans + c*a[i]) % mod
 	}
 	return
 }
