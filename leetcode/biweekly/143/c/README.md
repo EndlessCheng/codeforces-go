@@ -1,18 +1,18 @@
 ## 方法一：差分
 
-**前置知识**：[差分原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)（推荐和[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/) 一起看）。
+**前置知识**：[差分原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)。
 
-设 $x = \textit{nums}[i]$。
+设 $x = \textit{nums}[i]$。根据题意，$x$ 可以变成 $[x-k,x+k]$ 中的整数。
 
-$x$ 可以变成 $[x-k,x+k]$ 中的整数。注意对于同一个 $\textit{nums}[i]$ 至多操作一次。
+题目让我们计算操作后，最多有多少个数相同。
 
-反过来想，对于一个整数 $y$，有多少个数可以变成 $y$？
+例如 $\textit{nums}=[2,4]$，$k=1$，$\textit{numOperations}=2$。$2$ 可以变成 $[1,3]$ 中的整数，$4$ 可以变成 $[3,5]$ 中的整数。$2$ 和 $4$ 都可以变成 $3$，所以答案是 $2$。
 
-这可以用**差分**计算，也就是把 $[x-k,x+k]$ 中的每个整数的出现次数都加一。
+一般地，$x$ 可以变成 $[x-k,x+k]$ 中的整数，我们可以把 $[x-k,x+k]$ 中的每个整数的出现次数都加一，然后统计出现次数的最大值。这可以用差分实现。
 
-最后计算差分的前缀和，就得到了有 $\textit{sumD}$ 个数可以变成 $y$。
+计算差分的前缀和。设有 $\textit{sumD}$ 个数可以变成 $y$。
 
-如果 $y$ 不在 $\textit{nums}$ 中，那么 $y$ 的最大频率为 $\min(\textit{sumD}, \textit{numOperations})$。
+如果 $y$ 不在 $\textit{nums}$ 中，那么 $y$ 的最大出现次数不能超过 $\textit{numOperations}$，与 $\textit{sumD}$ 取最小值，得 $\min(\textit{sumD}, \textit{numOperations})$。
 
 如果 $y$ 在 $\textit{nums}$ 中，且出现了 $\textit{cnt}$ 次，那么有 $\textit{sumD}-\textit{cnt}$ 个其他元素（不等于 $y$ 的数）可以变成 $y$，但这不能超过 $\textit{numOperations}$，所以有
 
@@ -28,13 +28,13 @@ $$
 
 注意上式兼容 $y$ 不在 $\textit{nums}$ 中的情况，此时 $\textit{cnt}=0$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1cgmBYqEhu/?t=3m37s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1cgmBYqEhu/?t=3m37s)，欢迎点赞关注~
 
 ### 答疑
 
-**问**：为什么代码只考虑在 $\textit{diff}$ 中的数字？
+**问**：为什么代码只考虑在 $\textit{diff}$ 和 $\textit{nums}$ 中的数字？
 
-**答**：比如 $x$ 在 $\textit{diff}$ 中，$x+1$ 不在 $\textit{diff}$ 中，那么 $x+1$ 的 $\textit{sumD}$ 和 $\textit{x}$ 的是一样的，无需重复计算。此外，要想算出比 $\min(\textit{sumD}, \textit{cnt}+\textit{numOperations})$ 更大的数，要么 $\textit{sumD}$ 变大，要么 $\textit{cnt}$ 变大。「变大」时的 $x$ 必然在 $\textit{diff}$ 中。
+**答**：比如 $x$ 在 $\textit{diff}$ 中，$x+1,x+2,\ldots$ 不在 $\textit{diff}$ 中，那么 $x+1,x+2,\ldots$ 的 $\textit{sumD}$ 和 $\textit{x}$ 的是一样的，无需重复计算。此外，要想算出比 $\min(\textit{sumD}, \textit{cnt}+\textit{numOperations})$ 更大的数，要么 $\textit{sumD}$ 变大，要么 $\textit{cnt}$ 变大。「变大」时的 $x$ 必然在 $\textit{diff}$ 或 $\textit{nums}$ 中。
 
 ```py [sol-Python3]
 class Solution:
@@ -173,13 +173,13 @@ $$
 \textit{nums}[\textit{right}] - \textit{nums}[\textit{left}] \le 2k
 $$
 
-那么可以把
+下标在 $[\textit{left}, \textit{right}]$ 中的数可以变成一样的，这有
 
 $$
 \textit{right} - \textit{left} + 1
 $$
 
-个数都变成一样的。注意上式不能超过 $\textit{numOperations}$。
+个。注意上式不能超过 $\textit{numOperations}$。
 
 ### 细节
 
@@ -475,7 +475,10 @@ func maxFrequency(nums []int, k, numOperations int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
-更多相似题目，见下面滑动窗口题单中的「**§2.1 求最长/最大**」，以及数据结构题单中的「**§2.1 一维差分**」。
+## 专题训练
+
+1. 下面数据结构题单的「**§2.1 一维差分**」。
+2. 下面滑动窗口题单的「**§2.3.1 越短越合法**」和「**五、三指针**」。
 
 ## 分类题单
 
@@ -491,7 +494,7 @@ func maxFrequency(nums []int, k, numOperations int) (ans int) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
