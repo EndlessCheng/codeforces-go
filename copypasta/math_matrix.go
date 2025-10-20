@@ -197,6 +197,11 @@ func kitamasa(a, coef []int, n int) (ans int) {
 		return a[n] % mod
 	}
 
+	// 特判 k = 1 的情况，如果题目保证 k >= 2，可以去掉
+	if k == 1 {
+		return a[0] * pow(coef[0], n) % mod
+	}
+
 	nextCoef := func(c []int) {
 		ck := c[k-1]
 		for i := k - 1; i > 0; i-- {
