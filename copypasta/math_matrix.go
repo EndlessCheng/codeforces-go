@@ -20,10 +20,12 @@ https://atcoder.jp/contests/abc299/tasks/abc299_h
 这个开关灯问题 也涉及F2矩阵的逆矩阵（或高斯消元） https://github.com/tdzl2003/leetcode_live/blob/master/poj/1222_1753_3279.md
 F2 矩阵 int64 to int64 的散列（可逆意味着一一映射，意味着无冲突） https://github.com/tdzl2003/leetcode_live/blob/master/other/int64_hash.md
 
-Kitamasa 算法：如果只求第 n 项，可以用多项式乘法
+普通矩阵快速幂是 O(k^3 log n)
+Kitamasa 算法：如果只求第 n 项，可以用多项式乘法做到 O(k^2 log n) 或者 O(k log k log n)
+入门教程 https://codeforces.com/blog/entry/97627
 https://misawa.github.io/others/fast_kitamasa_method.html
 https://chatgpt.com/c/68e9ba1e-3018-8323-b2c6-51cbe98df404
-进阶是 Bostan-Mori 算法，见 math_ntt.go
+另见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
 
 Advanced Matrix Multiplication Optimization on Modern Multi-Core Processors
 https://salykova.github.io/gemm-cpu
@@ -114,12 +116,12 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 // 有两种类型的矩阵快速幂优化 DP
 // 一种是多维 DP / 状态机 DP，转移系数写成一个 size*size 的矩阵，见下面的 solveDP
 // 另一种是线性 DP，转移系数写在第一行，其余行 m[i+1][i] = 1，见下面的 calcFibonacci
-// 特别地，对于多维 DP，如果要求计算前 n 项之和（前缀和），则有递推式
-//    s[i] = s[i-1] + sum(f[i])
-//         = s[i-1] + sum(M @ f[i-1])
-// 所以在矩阵最下面新增一行，最右边新增一列
-// 最下面新增 [sum(M[0]), sum(M[1]), ..., sum(M[-1]), 1]
-// 最右边新增一列，除了最下面的 1 以外，其余全为 0
+//
+// 特别地，对于多维 DP，如果要求计算前 n 项之和（前缀和），我们可以在列向量末尾添加一个前缀和项 s[i]
+// 递推式 s[i] = sum(f[i]) + s[i-1] = sum(M @ f[i-1]) + s[i-1]
+// 对应系数矩阵，在最下面新增一行，最右边新增一列
+// 最下面新增一行：M 矩阵每一列的和，再添加一个 1，即 [sum(M[i][0]), sum(M[i][1]), ..., sum(M[i][-1]), 1]
+// 最右边新增一列：除了最下面的 1 以外，其余全为 0
 func solveDP(N int) (ans int) {
 	const size = 26
 
