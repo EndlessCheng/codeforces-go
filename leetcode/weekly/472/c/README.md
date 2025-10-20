@@ -613,10 +613,6 @@ func lexGreaterPermutation(s, target string) string {
 - 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
 
-## 如果值域更大呢？
-
-维护出现次数大于 $0$ 的最大字母，参考 Go 写法二。
-
 ## 专题训练
 
 见下面贪心题单的「**§3.1 字典序最小/最大**」。
