@@ -184,6 +184,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)，其中 k 是线性递推式的阶数，也是 coef 的长度
 // 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
 // 另见 math_ntt.go 的 Bostan-Mori 算法
+// 我的科普文章 https://zhuanlan.zhihu.com/p/1964051212304364939 Kitamasa 算法：更快地计算线性递推的第 n 项
 // https://codeforces.com/blog/entry/88760
 // https://codeforces.com/blog/entry/97627
 // https://misawa.github.io/others/fast_kitamasa_method.html
@@ -205,13 +206,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 		return a[0] * pow(coef[0], n)
 	}
 
-	// 比如 f(4) = 3*f(2) + 2*f(1) + f(0)
-	// 或者说 f(n) = 3*f(n-2) + 2*f(n-3) + f(n-4)
-	// 那么 f(8) = 3*f(6) + 2*f(5) + f(4)
-	// 其中 f(5) = 3*f(3) + 2*f(2) + f(1)
-	//           = 3*(用 f(2) f(1) f(0) 表出) + 2*f(2) + f(1)
-	// f(6) 同理
-	// 这样可以用 f(2) f(1) f(0)，也就是 a[2] a[1] a[0] 表出 f(8)
+	// 结合系数 a 表示的 f(n) 与系数 b 表示的 f(m)，算出 f(n+m) 的系数
 	mul := func(a, b []int) []int {
 		c := make([]int, k)
 		for _, v := range a {
@@ -228,7 +223,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 		return c
 	}
 
-	// 计算 resC，以表出 f(n) = recC[k-1] * a[k-1] + recC[k-2] * a[k-2] + ... + resC[0] * a[0]
+	// 计算 resC，以表出 f(n) = resC[k-1] * a[k-1] + resC[k-2] * a[k-2] + ... + resC[0] * a[0]
 	resC := make([]int, k)
 	resC[0] = 1
 	c := make([]int, k)
