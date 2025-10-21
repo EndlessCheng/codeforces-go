@@ -26,10 +26,6 @@ https://salykova.github.io/gemm-cpu
 三对角矩阵算法（托马斯算法）https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
 https://codeforces.com/contest/24/problem/D
 
-哈密尔顿–凯莱定理 Cayley–Hamilton theorem
-特征多项式是零化多项式
-https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
-
 浅谈范德蒙德(Vandermonde)方阵的逆矩阵与拉格朗日(Lagrange)插值的关系以及快速傅里叶变换(FFT)中IDFT的原理 https://www.cnblogs.com/gzy-cjoier/p/9741950.html
 
 矩阵快速幂优化 DP
@@ -256,15 +252,17 @@ func kitamasa(a, coef []int, n int) (ans int) {
 // 关键思路：利用过去的失败，修正现在的失败
 // ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
 // 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
+// 注：用 Cayley-Hamilton 定理可以证明，对于矩阵快速幂优化 DP，求出前 2k 项，就能得到递推方程（k 是系数矩阵的边长）
+//    另见 https://www.luogu.com/paste/ytpmeswf 第 88 条
 // https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
 // https://oi-wiki.org/math/berlekamp-massey/
 // https://codeforces.com/blog/entry/61306
 //
-// https://www.luogu.com.cn/problem/P5487
+// https://www.luogu.com.cn/problem/P5487 模板题
+// https://www.luogu.com.cn/problem/P7820
 // https://codeforces.com/problemset/problem/1511/F 2700
 // https://codeforces.com/problemset/problem/506/E 3000
 // https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/
-// - https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/solutions/2973816/os2logtjie-fa-bmsuan-fa-you-hua-ju-zhen-gdknh/
 func berlekampMassey(a []int) (coef []int) {
 	var preC []int
 	preI, preD := -1, 0
@@ -593,8 +591,12 @@ func (a matrix) determinant(mod int) int {
 }
 
 // 求矩阵的特征多项式
+// 哈密尔顿–凯莱定理 Cayley–Hamilton theorem
+// 特征多项式是零化多项式
+// https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
 // todo https://www.cnblogs.com/ywwyww/p/8522541.html
 //  https://www.luogu.com.cn/problem/P7776
+//  https://www.luogu.com.cn/problem/P10775
 
 // 线性基（异或空间的极大线性无关子集）
 // 可以用来解决「子序列异或和」相关问题
