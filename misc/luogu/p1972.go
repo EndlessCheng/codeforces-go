@@ -60,15 +60,15 @@ func p1972(in io.Reader, _w io.Writer) {
 	query := func(l, r int) int { return sum(r) - sum(l-1) }
 
 	ans := make([]int, q)
-	posR := [1e6 + 1]int{}
+	last := [1e6 + 1]int{}
 	i := 1
 	for _, q := range qs {
 		for ; i <= q.r; i++ {
-			if p := posR[a[i]]; p > 0 {
+			if p := last[a[i]]; p > 0 {
 				add(p, -1)
 			}
 			add(i, 1)
-			posR[a[i]] = i
+			last[a[i]] = i
 		}
 		ans[q.i] = query(q.l, q.r)
 	}
@@ -77,4 +77,4 @@ func p1972(in io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() { p1972(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { p1972(os.Stdin, os.Stdout) }
