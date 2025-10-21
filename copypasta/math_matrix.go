@@ -177,7 +177,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 	return fn[0][0]
 }
 
-// 给定常系数齐次递推式 f(n) = coef[k-1] * f(n-1) + coef[k-2] * f(n-2) + ... + coef[0] * f(n-k)
+// 给定常系数齐次线性递推式 f(n) = coef[k-1] * f(n-1) + coef[k-2] * f(n-2) + ... + coef[0] * f(n-k)
 // 以及初始值 f(i) = a[i] (0 <= i < k)
 // 返回 f(n)，其中参数 n 从 0 开始
 // 注意入参 a 和 coef 的顺序
@@ -247,7 +247,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 }
 
 // Berlekamp-Massey 算法
-// 给定数列的前 m 项，返回符合这个数列的最短常系数齐次递推式的系数 coef（设其长度为 k）
+// 给定数列的前 m 项，返回符合这个数列的最短常系数齐次线性递推式的系数 coef（设其长度为 k）
 // 当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
 // 时间复杂度 O(mL)，其中 m 是 a 的长度，L 是最终 coef 的长度
 // 关键思路：利用过去的失败，修正现在的失败
