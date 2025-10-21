@@ -181,7 +181,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // 以及初始值 f(i) = a[i] (0 <= i < k)
 // 返回 f(n)，其中参数 n 从 0 开始
 // 注意入参 a 和 coef 的顺序
-// Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)
+// Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)，其中 k 是线性递推式的阶数，也是 coef 的长度
 // https://codeforces.com/blog/entry/88760
 // https://codeforces.com/blog/entry/97627
 // https://misawa.github.io/others/fast_kitamasa_method.html
@@ -247,7 +247,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 	return
 }
 
-// Berlekamp–Massey 算法
+// Berlekamp-Massey 算法
 // 给定数列的前 m 项，返回符合这个数列的最短常系数齐次递推式的系数 coef（设其长度为 k）
 // 当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
 // 时间复杂度 O(mL)，其中 m 是 a 的长度，L 是最终 coef 的长度
