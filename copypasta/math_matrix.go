@@ -325,7 +325,7 @@ func berlekampMassey(a []int) (coef []int) {
 	return
 }
 
-// 已知数列的前 m 项，猜测一个合理的第 n 项
+// 已知数列的前 m 项，猜测一个符合最短线性递推式的第 n 项
 // https://www.luogu.com.cn/problem/P5487
 func guessNth(a []int, n int) int {
 	coef := berlekampMassey(a)
