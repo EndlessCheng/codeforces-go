@@ -219,7 +219,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 			for j, w := range b {
 				c[j] = (c[j] + v*w) % mod
 			}
-			// 原地计算下一组系数，比如上面已知 f(4) 的各项系数，现在要计算 f(5) 的各项系数
+			// 原地计算下一组系数，比如已知 f(4) 的各项系数，现在要计算 f(5) 的各项系数
 			bk := b[k-1]
 			for i := k - 1; i > 0; i-- {
 				b[i] = (b[i-1] + bk*coef[i]) % mod
