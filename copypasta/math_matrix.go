@@ -181,7 +181,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 	return fn[0][0]
 }
 
-// 给定常系数其次递推式 f(n) = c[k-1] * f(n-1) + c[k-2] * f(n-2) + ... + c[0] * f(n-k)
+// 给定常系数齐次递推式 f(n) = coef[k-1] * f(n-1) + coef[k-2] * f(n-2) + ... + coef[0] * f(n-k)
 // 以及初始值 f(i) = a[i] (i < k)
 // 返回 f(n)
 // Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)
@@ -191,6 +191,8 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // https://chatgpt.com/c/68e9ba1e-3018-8323-b2c6-51cbe98df404
 // 如果要用 NTT 做的话，见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
 // 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
+//
+// https://www.luogu.com.cn/problem/P5487
 func kitamasa(a, coef []int, n int) (ans int) {
 	k := len(coef)
 	if n < k {
@@ -505,17 +507,17 @@ func (a matrix) determinant(mod int) int {
 // todo https://www.cnblogs.com/ywwyww/p/8522541.html
 //  https://www.luogu.com.cn/problem/P7776
 
-// 最短递推式 
-// todo
-//  Berlekamp–Massey 算法 
+// Berlekamp–Massey 算法求解最短递推式 
+// 一种理解角度：基于汉克尔矩阵的在线高斯消元
 //  https://mzhang2021.github.io/cp-blog/berlekamp-massey/
 //  https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
 //  https://oi-wiki.org/math/berlekamp-massey/
 //  https://codeforces.com/blog/entry/61306
 //  https://codeforces.com/blog/entry/96199
+//
 //  https://www.luogu.com.cn/problem/P5487
 //  https://codeforces.com/problemset/problem/1511/F 2700
-//  https://codeforces.com/problemset/problem/506/E
+//  https://codeforces.com/problemset/problem/506/E 3000
 //  https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/description/
 //  - https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/solutions/2973816/os2logtjie-fa-bmsuan-fa-you-hua-ju-zhen-gdknh/
 
