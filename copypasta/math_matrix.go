@@ -297,8 +297,8 @@ func berlekampMassey(a []int) (coef []int) {
 		// 现在 a[i] = sum_j coef[j]*a[i-1-j] + d
 		// 联立得 a[i] = sum_j coef[j]*a[i-1-j] + d/preD * (a[preI] - sum_j preC[j]*a[preI-1-j])
 		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias=i-1-preI 处
-		// 注意：preI 之前的数据符合旧公式，即 0 = a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]
-		//      对于新公式，i 之前的每个公式增加了 d/preD * 0 = 0，所以也符合新公式
+		// 注意：preI 之前的数据符合旧公式，即 a[(<preI)] = sum_j preC[j]*a[(<preI)-1-j]
+		//      对于新公式，i 之前的每个公式增加了 d/preD * (a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]) = d/preD * 0 = 0，所以也符合新公式
 		delta := d * pow(preD, mod-2) % mod
 		coef[bias] = (coef[bias] + delta) % mod
 		for j, c := range preC {
