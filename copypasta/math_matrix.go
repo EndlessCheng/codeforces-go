@@ -182,13 +182,11 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // 返回 f(n)，其中参数 n 从 0 开始
 // 注意入参 a 和 coef 的顺序
 // Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)，其中 k 是线性递推式的阶数，也是 coef 的长度
+// 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
+// 另见 math_ntt.go 的 Bostan-Mori 算法
 // https://codeforces.com/blog/entry/88760
 // https://codeforces.com/blog/entry/97627
 // https://misawa.github.io/others/fast_kitamasa_method.html
-// https://gemini.google.com/app/1de2b2d9257e375d
-// https://chatgpt.com/c/68e9ba1e-3018-8323-b2c6-51cbe98df404
-// 如果要用 NTT 做的话，见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
-// 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
 //
 // https://atcoder.jp/contests/tdpc/tasks/tdpc_fibonacci
 // https://www.luogu.com.cn/problem/P5487
