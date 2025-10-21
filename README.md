@@ -138,6 +138,7 @@
   - [连分数、佩尔方程 math_continued_fraction.go](/copypasta/math_continued_fraction.go)
   - [线性代数 math_matrix.go](/copypasta/math_matrix.go)
     - 矩阵快速幂
+    - Berlekamp-Massey 算法
     - Kitamasa 算法
     - 高斯消元
     - 行列式

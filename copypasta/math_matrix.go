@@ -184,6 +184,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // 给定常系数齐次递推式 f(n) = coef[k-1] * f(n-1) + coef[k-2] * f(n-2) + ... + coef[0] * f(n-k)
 // 以及初始值 f(i) = a[i] (i < k)
 // 返回 f(n)
+// 注意入参 a 和 coef 的顺序
 // Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)
 // https://codeforces.com/blog/entry/97627
 // https://misawa.github.io/others/fast_kitamasa_method.html
@@ -194,14 +195,17 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 //
 // https://www.luogu.com.cn/problem/P5487
 func kitamasa(a, coef []int, n int) (ans int) {
-	k := len(coef)
-	if n < k {
-		return a[n] % mod
+	defer func() { ans = (ans%mod + mod) % mod }()
+	if n < len(a) {
+		return a[n]
 	}
 
-	// 特判 k = 1 的情况，如果题目保证 k >= 2，可以去掉
+	k := len(coef)
+	if k == 0 {
+		return
+	}
 	if k == 1 {
-		return a[0] * pow(coef[0], n) % mod
+		return a[0] * pow(coef[0], n)
 	}
 
 	// 比如 f(4) = 3*f(2) + 2*f(1) + f(0)
@@ -243,6 +247,91 @@ func kitamasa(a, coef []int, n int) (ans int) {
 		ans = (ans + c*a[i]) % mod
 	}
 	return
+}
+
+// Berlekamp–Massey 算法
+// 给定数列的前 m 项，返回符合这个数列的最短常系数齐次递推式的系数 coef（设其长度为 k）
+// 当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
+// 时间复杂度 O(mL)，其中 m 是 a 的长度，L 是最终 coef 的长度
+// 关键思路：利用过去的失败，修正现在的失败
+// ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
+// 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
+// https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
+// https://oi-wiki.org/math/berlekamp-massey/
+// https://codeforces.com/blog/entry/61306
+//
+// https://www.luogu.com.cn/problem/P5487
+// https://codeforces.com/problemset/problem/1511/F 2700
+// https://codeforces.com/problemset/problem/506/E 3000
+// https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/
+// - https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/solutions/2973816/os2logtjie-fa-bmsuan-fa-you-hua-ju-zhen-gdknh/
+func berlekampMassey(a []int) (coef []int) {
+	var preC []int
+	preI, preD := -1, 0
+	for i, v := range a {
+		d := v
+		for j, c := range coef {
+			d = (d - c*a[i-1-j]) % mod
+		}
+		if d == 0 {
+			continue
+		}
+
+		// 首次算错，初始化 coef
+		if preI < 0 {
+			coef = make([]int, i+1)
+			preI, preD = i, d
+			continue
+		}
+
+		bias := i - 1 - preI
+		oldSz := len(coef)
+		sz := bias + len(preC) + 1
+		var oldCoef []int
+		if sz > oldSz {
+			oldCoef = slices.Clone(coef)
+			coef = slices.Grow(coef, sz-oldSz)[:sz]
+		}
+
+		// 上一次算错告诉我们，preD = a[preI] - sum_j preC[j]*a[preI-1-j]
+		// 现在 a[i] = sum_j coef[j]*a[i-1-j] + d
+		// 联立得 a[i] = sum_j coef[j]*a[i-1-j] + d/preD * (a[preI] - sum_j preC[j]*a[preI-1-j])
+		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias=i-1-preI 处
+		// 注意：preI 之前的数据符合旧公式，即 0 = a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]
+		//      对于新公式，i 之前的每个公式增加了 d/preD * 0 = 0，所以也符合新公式
+		delta := d * pow(preD, mod-2) % mod
+		coef[bias] = (coef[bias] + delta) % mod
+		for j, c := range preC {
+			coef[bias+1+j] = (coef[bias+1+j] - delta*c) % mod
+		}
+
+		if sz > oldSz {
+			preC = oldCoef
+			preI, preD = i, d
+		}
+	}
+
+	// 去掉不必要的 0
+	for len(coef) > 0 && coef[len(coef)-1] == 0 {
+		coef = coef[:len(coef)-1]
+	}
+
+	// 把负数调整为非负数
+	// 比如后面计算递推式第 n 项，这可以保证不会产生负数（但那样的话，可以最后输出时再调整，所以下面的循环其实没必要）
+	for i, c := range coef {
+		coef[i] = (c + mod) % mod
+	}
+
+	return
+}
+
+// 已知数列的前 m 项，猜测一个合理的第 n 项
+// https://www.luogu.com.cn/problem/P5487
+func guessNth(a []int, n int) int {
+	coef := berlekampMassey(a)
+	slices.Reverse(coef) // 注意 kitamasa 入参的顺序
+	nth := kitamasa(a, coef, n)
+	return nth
 }
 
 //
@@ -506,20 +595,6 @@ func (a matrix) determinant(mod int) int {
 // 求矩阵的特征多项式
 // todo https://www.cnblogs.com/ywwyww/p/8522541.html
 //  https://www.luogu.com.cn/problem/P7776
-
-// Berlekamp–Massey 算法求解最短递推式 
-// 一种理解角度：基于汉克尔矩阵的在线高斯消元
-//  https://mzhang2021.github.io/cp-blog/berlekamp-massey/
-//  https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
-//  https://oi-wiki.org/math/berlekamp-massey/
-//  https://codeforces.com/blog/entry/61306
-//  https://codeforces.com/blog/entry/96199
-//
-//  https://www.luogu.com.cn/problem/P5487
-//  https://codeforces.com/problemset/problem/1511/F 2700
-//  https://codeforces.com/problemset/problem/506/E 3000
-//  https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/description/
-//  - https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/solutions/2973816/os2logtjie-fa-bmsuan-fa-you-hua-ju-zhen-gdknh/
 
 // 线性基（异或空间的极大线性无关子集）
 // 可以用来解决「子序列异或和」相关问题
