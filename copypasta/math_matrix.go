@@ -197,6 +197,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 	}
 
 	k := len(coef)
+	// 特判 k=0,1 的情况
 	if k == 0 {
 		return
 	}
@@ -227,7 +228,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 		return c
 	}
 
-	// 计算 resC，以表出 f(n) = recC[k-1] * a[k-1] + recC[k-2] * a[k-2] + ... + resC[0] + a[0]
+	// 计算 resC，以表出 f(n) = recC[k-1] * a[k-1] + recC[k-2] * a[k-2] + ... + resC[0] * a[0]
 	resC := make([]int, k)
 	resC[0] = 1
 	c := make([]int, k)
