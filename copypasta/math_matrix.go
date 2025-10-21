@@ -182,6 +182,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // 返回 f(n)
 // 注意入参 a 和 coef 的顺序
 // Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)
+// https://codeforces.com/blog/entry/88760
 // https://codeforces.com/blog/entry/97627
 // https://misawa.github.io/others/fast_kitamasa_method.html
 // https://gemini.google.com/app/1de2b2d9257e375d
@@ -189,8 +190,9 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // 如果要用 NTT 做的话，见 math_ntt.go 的 Bostan-Mori 算法，时间复杂度相同，但常数更小
 // 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
 //
+// https://atcoder.jp/contests/tdpc/tasks/tdpc_fibonacci
 // https://www.luogu.com.cn/problem/P5487
-func kitamasa(a, coef []int, n int) (ans int) {
+func kitamasa(coef, a []int, n int) (ans int) {
 	defer func() { ans = (ans%mod + mod) % mod }()
 	if n < len(a) {
 		return a[n]
@@ -328,7 +330,7 @@ func berlekampMassey(a []int) (coef []int) {
 func guessNth(a []int, n int) int {
 	coef := berlekampMassey(a)
 	slices.Reverse(coef) // 注意 kitamasa 入参的顺序
-	nth := kitamasa(a, coef, n)
+	nth := kitamasa(coef, a, n)
 	return nth
 }
 
