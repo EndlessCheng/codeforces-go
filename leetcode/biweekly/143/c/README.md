@@ -126,20 +126,18 @@ func maxFrequency(nums []int, k, numOperations int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 方法二：同向三指针 + 滑动窗口
+## 方法二：同向三指针 + 同向双指针
 
-**前置知识**：[滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
+### 核心思路
 
-把 $\textit{nums}$ 从小到大排序。
-
-方法一中的 $\textit{cnt}[x]$ 也可以用同向三指针/滑动窗口计算。
-
-- 如果 $x$ 在 $\textit{nums}$ 中，用**同向三指针**计算。
-- 如果 $x$ 不在 $\textit{nums}$ 中，用**滑动窗口**计算。
+1. 计算有多少个数能变成 $x$，其中 $x = \textit{nums}[i]$。用**同向三指针**实现。
+2. 计算有多少个数能变成 $x$，其中 $x$ 不一定在 $\textit{nums}$ 中。用**同向双指针**实现。
 
 ### 同向三指针
 
-遍历排序后的 $\textit{nums}$，设 $x=\textit{nums}[i]$。计算元素值在 $[x-k,x+k]$ 中的元素个数。
+把 $\textit{nums}$ 从小到大排序。
+
+遍历 $\textit{nums}$。设 $x=\textit{nums}[i]$，计算元素值在 $[x-k,x+k]$ 中的元素个数，这些元素都可以变成 $x$。
 
 遍历的同时，维护左指针 $\textit{left}$，它是最小的满足
 
@@ -157,21 +155,36 @@ $$
 
 的下标。如果不存在，则 $\textit{right}=n$。
 
-那么方法一中的 $\textit{sumD}$ 就是 
+下标在左闭右开区间 $[\textit{left},\textit{right})$ 中的元素，都可以变成 $x$。这有
 
 $$
-\textit{right} - \textit{left}
+\textit{sumD} = \textit{right} - \textit{left}
 $$
 
-### 滑动窗口
+个。
 
-枚举 $x=\textit{nums}[\textit{right}]$ 作为被修改的最大元素。计算元素值在 $[x-2k,x]$ 中的元素个数。
+遍历的同时，求出 $x$ 有 $\textit{cnt}$ 个。然后用方法一的公式，更新答案的最大值。
 
-设 $\textit{nums}[\textit{left}]$ 是被修改的最小元素，那么需要满足
+### 同向双指针
+
+同向三指针没有考虑「变成不在 $\textit{nums}$ 中的数」这种情况。
+
+然而，不在 $\textit{nums}$ 中的数太多了！怎么减少计算量？
+
+- 对于整数 $y$，只有 $[y-k,y+k]$ 中的数能变成 $y$。
+- 对于整数 $y+1$，只有 $[y-k+1,y+k+1]$ 中的数能变成 $y+1$。
+- 如果 $y+k+1$ 不在 $\textit{nums}$ 中，那么 $[y-k+1,y+k+1]$ 中的元素个数等于 $[y-k+1,y+k]$ 中的元素个数，这不会超过 $[y-k,y+k]$ 中的元素个数。
+- **结论**：我们只需考虑 $y+k$ 在 $\textit{nums}$ 中时的 $y$！
+
+于是，枚举 $x=\textit{nums}[\textit{right}]$，计算元素值在 $[x-2k,x]$ 中的元素个数，这些元素都可以变成同一个数 $y=x-k$。
+
+左指针 $\textit{left}$ 是最小的满足
 
 $$
-\textit{nums}[\textit{right}] - \textit{nums}[\textit{left}] \le 2k
+\textit{nums}[\textit{left}] \ge x-2k
 $$
+
+的下标。
 
 下标在 $[\textit{left}, \textit{right}]$ 中的数可以变成一样的，这有
 
@@ -181,9 +194,9 @@ $$
 
 个。注意上式不能超过 $\textit{numOperations}$。
 
-### 细节
+### 小优化
 
-如果同向三指针计算完毕后，发现答案已经 $\ge \textit{numOperations}$，那么无需计算滑动窗口。
+如果同向三指针计算完毕后，发现答案已经 $\ge \textit{numOperations}$，那么无需计算同向双指针。
 
 ```py [sol-Python3]
 class Solution:
@@ -478,7 +491,7 @@ func maxFrequency(nums []int, k, numOperations int) (ans int) {
 ## 专题训练
 
 1. 下面数据结构题单的「**§2.1 一维差分**」。
-2. 下面滑动窗口题单的「**§2.3.1 越短越合法**」和「**五、三指针**」。
+2. 下面双指针题单的「**§3.2 同向双指针**」和「**五、三指针**」。
 
 ## 分类题单
 
