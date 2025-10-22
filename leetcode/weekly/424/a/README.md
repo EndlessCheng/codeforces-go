@@ -124,7 +124,7 @@ var countValidSelections = function(nums) {
         } else if (pre * 2 === total) {
             ans += 2;
         } else if (Math.abs(pre * 2 - total) === 1) {
-            ans += 1;
+            ans++;
         }
     }
     return ans;
