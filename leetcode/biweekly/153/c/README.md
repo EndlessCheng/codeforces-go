@@ -159,8 +159,8 @@ func minimumCost(nums, cost []int, k int) int64 {
 
 $$
 \begin{aligned}
-f[i+1] ={} & \min_{j=0}^{i} f[j] + \textit{sumNum}[i+1] \cdot (s[i+1] - s[j]) + k\cdot (s[n] - s[j])   \\
-       ={} & \textit{sumNum}[i+1] \cdot s[i+1] + k\cdot s[n] + \min_{j=0}^{i} f[j] - (\textit{sumNum}[i+1] + k) \cdot s[j] \\
+f[i+1] &= \min_{j=0}^{i} f[j] + \textit{sumNum}[i+1] \cdot (s[i+1] - s[j]) + k\cdot (s[n] - s[j])   \\
+       &= \textit{sumNum}[i+1] \cdot s[i+1] + k\cdot s[n] + \min_{j=0}^{i} f[j] - (\textit{sumNum}[i+1] + k) \cdot s[j] \\
 \end{aligned}
 $$
 
@@ -442,8 +442,8 @@ $$
 
 $$
 \begin{aligned}
-\sum_{i=1}^{k} i b_i ={}& i S_k - \sum_{i=1}^{k-1} S_i \\
-={} & S_k + (S_k - S_1) + (S_k - S_2) + \cdots + (S_k - S_{k-1})        \\
+\sum_{i=1}^{k} i b_i &= k S_k - \sum_{i=1}^{k-1} S_i \\
+                     &= S_k + (S_k - S_1) + (S_k - S_2) + \cdots + (S_k - S_{k-1})        \\
 \end{aligned}
 $$
 
