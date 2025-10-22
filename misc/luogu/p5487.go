@@ -67,11 +67,6 @@ func berlekampMassey5487(a []int) (coef []int) {
 		}
 	}
 
-	// 去掉不必要的 0
-	for len(coef) > 0 && coef[len(coef)-1] == 0 {
-		coef = coef[:len(coef)-1]
-	}
-
 	// 把负数调整为非负数
 	// 比如后面计算递推式第 n 项，这可以保证不会产生负数（但那样的话，可以最后输出时再调整，所以下面的循环其实没必要）
 	for i, c := range coef {
