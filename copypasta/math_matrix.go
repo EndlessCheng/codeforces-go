@@ -245,7 +245,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 // Berlekamp-Massey 算法
 // 给定数列的前 m 项，返回符合这个数列的最短常系数齐次线性递推式的系数 coef（设其长度为 k）
 // 当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
-// 时间复杂度 O(mL)，其中 m 是 a 的长度，L 是最终 coef 的长度
+// 时间复杂度 O(mk)，其中 m 是 a 的长度，k 是最终 coef 的长度
 // 关键思路：利用过去的失败，修正现在的失败
 // ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
 // 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
@@ -256,6 +256,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 // https://codeforces.com/blog/entry/61306
 //
 // https://www.luogu.com.cn/problem/P5487 模板题
+// - https://www.luogu.com.cn/problem/U228146 数据加强版
 // https://www.luogu.com.cn/problem/P7820
 // https://codeforces.com/problemset/problem/1511/F 2700
 // https://codeforces.com/problemset/problem/506/E 3000
@@ -306,10 +307,10 @@ func berlekampMassey(a []int) (coef []int) {
 		}
 	}
 
-	// 去掉不必要的 0
-	for len(coef) > 0 && coef[len(coef)-1] == 0 {
-		coef = coef[:len(coef)-1]
-	}
+	// 计算完后，可能 coef 的末尾有 0，这些 0 不能去掉
+	// 比如数列 {1,2,4,2,4,2,4,...} 的系数为 [0,1,0]，表示 f_n = 0*f_{n-1} + f_{n-2} + 0*f_{n-3} = f_{n-2} (n>=3)
+	// 如果把末尾的 0 去掉，变成 [0,1]，就表示 f_n = 0*f_{n-1} + f_{n-2} = f_{n-2} (n>=2)
+	// 看上去一样，但按照这个式子算出来的数列是错误的 {1,2,1,2,1,2,...}
 
 	// 把负数调整为非负数
 	// 比如后面计算递推式第 n 项，这可以保证不会产生负数（但那样的话，可以最后输出时再调整，所以下面的循环其实没必要）
@@ -320,13 +321,12 @@ func berlekampMassey(a []int) (coef []int) {
 	return
 }
 
-// 已知数列的前 m 项，猜测一个符合最短线性递推式的第 n 项
+// 已知数列的前 m 项为 a，返回符合最短线性递推式的第 n 项
 // https://www.luogu.com.cn/problem/P5487
 func guessNth(a []int, n int) int {
 	coef := berlekampMassey(a)
 	slices.Reverse(coef) // 注意 kitamasa 入参的顺序
-	nth := kitamasa(coef, a, n)
-	return nth
+	return kitamasa(coef, a, n)
 }
 
 //
