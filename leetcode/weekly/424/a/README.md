@@ -1,14 +1,15 @@
-本题可以视作一个「打砖块」游戏，具体请看 [视频讲解](https://www.bilibili.com/video/BV1yiU6YnEfU/) 中的例子，欢迎点赞关注~
+本题可以视作一个「**小球打砖块**」游戏，具体请看 [本题视频讲解](https://www.bilibili.com/video/BV1yiU6YnEfU/) 画的图。
 
-设整个数组的元素和为 $\textit{total}$。
+每撞掉一个砖块，小球的移动方向就要反向，所以要想撞掉所有砖块，起始位置左右的砖块个数之差不能超过 $1$。
 
-遍历数组的同时，维护前缀和 $pre$。 
+设整个数组的元素和为 $\textit{total}$。遍历数组的同时，维护前缀和 $pre$。
 
-如果 $\textit{nums}[i]=0$，分类讨论：
+如果 $\textit{nums}[i]=0$，那么这个位置可以是起始位置吗？分类讨论：
 
 - 如果前缀和 $\textit{pre}$ 等于后缀和 $\textit{total}-\textit{pre}$，那么小球初始方向可以向左可以向右，答案加 $2$。
 - 如果前缀和比后缀和多 $1$，那么小球初始方向必须向左，才能打掉所有砖块，答案加 $1$。
 - 如果前缀和比后缀和少 $1$，那么小球初始方向必须向右，才能打掉所有砖块，答案加 $1$。
+- 其余情况，不能是起始位置。
 
 ```py [sol-Python3]
 class Solution:
@@ -69,6 +70,27 @@ public:
 };
 ```
 
+```c [sol-C]
+int countValidSelections(int* nums, int numsSize) {
+    int total = 0;
+    for (int i = 0; i < numsSize; i++) {
+        total += nums[i];
+    }
+
+    int ans = 0, pre = 0;
+    for (int i = 0; i < numsSize; i++) {
+        if (nums[i]) {
+            pre += nums[i];
+        } else if (pre * 2 == total) {
+            ans += 2;
+        } else if (abs(pre * 2 - total) == 1) {
+            ans++;
+        }
+    }
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func countValidSelections(nums []int) (ans int) {
 	total := 0
@@ -90,6 +112,43 @@ func countValidSelections(nums []int) (ans int) {
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+```js [sol-JavaScript]
+var countValidSelections = function(nums) {
+    const total = _.sum(nums);
+    let ans = 0, pre = 0;
+    for (const x of nums) {
+        if (x) {
+            pre += x;
+        } else if (pre * 2 === total) {
+            ans += 2;
+        } else if (Math.abs(pre * 2 - total) === 1) {
+            ans += 1;
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_valid_selections(nums: Vec<i32>) -> i32 {
+        let total = nums.iter().sum::<i32>();
+        let mut ans = 0;
+        let mut pre = 0;
+        for x in nums {
+            if x != 0 {
+                pre += x;
+            } else if pre * 2 == total {
+                ans += 2;
+            } else if (pre * 2 - total).abs() == 1 {
+                ans += 1;
+            }
+        }
+        ans
+    }
+}
 ```
 
 #### 复杂度分析
