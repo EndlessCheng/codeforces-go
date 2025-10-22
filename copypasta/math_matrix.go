@@ -179,7 +179,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 
 // 给定常系数齐次线性递推式 f(n) = coef[k-1] * f(n-1) + coef[k-2] * f(n-2) + ... + coef[0] * f(n-k)
 // 以及初始值 f(i) = a[i] (0 <= i < k)
-// 返回 f(n)，其中参数 n 从 0 开始
+// 返回 f(n) % mod，其中参数 n 从 0 开始
 // 注意入参 a 和 coef 的顺序
 // Kitamasa 算法：如果只求第 n 项，可以做到 O(k^2 log n) 或者 O(k log k log n)，其中 k 是线性递推式的阶数，也是 coef 的长度
 // 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
