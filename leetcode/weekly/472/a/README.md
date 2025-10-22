@@ -13,6 +13,13 @@ class Solution:
                 return x
 ```
 
+```py [sol-Python3 写法二]
+class Solution:
+    def missingMultiple(self, nums: List[int], k: int) -> int:
+        st = set(nums)
+        return next(x for x in count(k, k) if x not in st)
+```
+
 ```java [sol-Java]
 class Solution {
     public int missingMultiple(int[] nums, int k) {
