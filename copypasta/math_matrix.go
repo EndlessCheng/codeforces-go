@@ -198,7 +198,6 @@ func kitamasa(coef, a []int, n int) (ans int) {
 	}
 
 	k := len(coef)
-	// 特判 k=0,1 的情况
 	if k == 0 {
 		return
 	}
@@ -206,19 +205,21 @@ func kitamasa(coef, a []int, n int) (ans int) {
 		return a[0] * pow(coef[0], n)
 	}
 
-	// 结合系数 a 表示的 f(n) 与系数 b 表示的 f(m)，算出 f(n+m) 的系数
-	mul := func(a, b []int) []int {
+	// 已知 f(n) 的各项系数为 a，f(m) 的各项系数为 b
+	// 计算并返回 f(n+m) 的各项系数 c
+	compose := func(a, b []int) []int {
 		c := make([]int, k)
 		for _, v := range a {
+			// 累加 a[i] * f(m+i) 的各项系数
 			for j, w := range b {
 				c[j] = (c[j] + v*w) % mod
 			}
-			// 原地计算下一组系数，比如已知 f(4) 的各项系数，现在要计算 f(5) 的各项系数
-			bk := b[k-1]
-			for i := k - 1; i > 0; i-- {
-				b[i] = (b[i-1] + bk*coef[i]) % mod
+			// 从 f(m+i) 到 f(m+i+1)
+			bk1 := b[k-1]
+			for j := k - 1; j > 0; j-- {
+				b[j] = (b[j-1] + bk1*coef[j]) % mod
 			}
-			b[0] = bk * coef[0] % mod
+			b[0] = bk1 * coef[0] % mod
 		}
 		return c
 	}
@@ -230,9 +231,9 @@ func kitamasa(coef, a []int, n int) (ans int) {
 	c[1] = 1
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			resC = mul(c, resC)
+			resC = compose(c, resC)
 		}
-		c = mul(c, slices.Clone(c))
+		c = compose(c, slices.Clone(c))
 	}
 
 	for i, c := range resC {
