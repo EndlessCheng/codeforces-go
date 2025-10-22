@@ -1,12 +1,14 @@
-**题意**：返回 $\ge n$ 的二进制全为 $1$ 的最小整数。
+**题意**：返回 $\ge n$ 且二进制全为 $1$ 的最小整数。
 
-**思路**：计算 $n$ 的二进制长度 $m$，返回长为 $m$ 的全为 $1$ 的二进制数，也就是
+**思路**：计算 $n$ 的二进制长度 $m$，那么答案的二进制长度至少是 $m$。由于长为 $m$ 的全为 $1$ 的二进制数 $\ge n$，满足要求，所以答案的二进制长度就是 $m$，所以答案为
 
 $$
 2^m - 1
 $$
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1tAzoY1EUN/)，欢迎点赞关注~
+上式的意思是，把 $1$ 左移 $m$，得到 $1\underbrace{00\cdots 0}_{m\ 个\ 0}$，然后减一，得到 $\underbrace{11\cdots 1}_{m\ 个\ 1}$。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1tAzoY1EUN/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -17,8 +19,8 @@ class Solution:
 ```java [sol-Java 写法一]
 class Solution {
     public int smallestNumber(int n) {
-        int m = 32 - Integer.numberOfLeadingZeros(n);
-        return (1 << m) - 1;
+        int bitLength = 32 - Integer.numberOfLeadingZeros(n);
+        return (1 << bitLength) - 1;
     }
 }
 ```
@@ -40,9 +42,32 @@ public:
 };
 ```
 
+```c [sol-C]
+int smallestNumber(int n) {
+    int bit_length = 32 - __builtin_clz(n);
+    return (1 << bit_length) - 1;
+}
+```
+
 ```go [sol-Go]
 func smallestNumber(n int) int {
 	return 1<<bits.Len(uint(n)) - 1
+}
+```
+
+```js [sol-JavaScript]
+var smallestNumber = function(n) {
+    const bitLength = 32 - Math.clz32(n);
+    return (1 << bitLength) - 1;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn smallest_number(n: i32) -> i32 {
+        let bit_length = 32 - n.leading_zeros();
+        (1 << bit_length) - 1
+    }
 }
 ```
 
