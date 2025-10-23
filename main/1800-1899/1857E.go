@@ -1,16 +1,13 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 	"slices"
 )
 
 // https://github.com/EndlessCheng
-func cf1857E(in io.Reader, _w io.Writer) {
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
+func cf1857E(in io.Reader, out io.Writer) {
 	var T, n int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
