@@ -675,7 +675,7 @@ func hasSameDigits(s string) bool {
 预处理的时间和空间忽略不计。
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $s$ 的长度。计算 $\texttt{lucas}$ 的时间为 $\mathcal{O}(\log_{p} n)$。
-- 空间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(\log_{p} n)$。递归需要 $\mathcal{O}(\log_{p} n)$ 的栈空间。
 
 ## 思考题（Hack）
 
