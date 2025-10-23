@@ -8,13 +8,15 @@ func modifiedList(nums []int, head *ListNode) *ListNode {
 	for _, x := range nums {
 		has[x] = true
 	}
+
 	dummy := &ListNode{Next: head}
 	cur := dummy
 	for cur.Next != nil {
-		if has[cur.Next.Val] {
-			cur.Next = cur.Next.Next // 删除
+		nxt := cur.Next
+		if has[nxt.Val] {
+			cur.Next = nxt.Next // 从链表中删除 nxt 节点
 		} else {
-			cur = cur.Next // 向后移动
+			cur = nxt // 不删除 nxt，继续向后遍历链表
 		}
 	}
 	return dummy.Next
