@@ -540,6 +540,7 @@ func _(n int) {
 	// https://codeforces.com/problemset/problem/986/B 1800
 	// https://codeforces.com/problemset/problem/61/E 1900 三元逆序对
 	// https://codeforces.com/problemset/problem/362/C 1900 扩展
+	// https://codeforces.com/problemset/problem/1430/E 1900 reverse
 	// https://codeforces.com/problemset/problem/1585/D 1900
 	// https://codeforces.com/problemset/problem/540/E 2100 1e9 范围逆序对
 	// https://codeforces.com/problemset/problem/1096/F 2300 扩展：某些位置上的数待定时的逆序对的期望值 
