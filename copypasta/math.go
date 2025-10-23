@@ -326,6 +326,28 @@ func powM(x, n, p int) (res int) {
 	return
 }
 
+// 光速幂
+// https://loj.ac/p/162
+func fixedBasePow(x int) func(int) int {
+	const B = 1 << 16 // 块长
+	px := [B]int{1}
+	for i := 1; i < B; i++ {
+		px[i] = px[i-1] * x % mod
+	}
+
+	x2 := px[B-1] * x % mod
+	px2 := [B]int{1}
+	for i := 1; i < B; i++ {
+		px2[i] = px2[i-1] * x2 % mod
+	}
+
+	// O(1) 计算 x^n % mod
+	pow := func(n int) int {
+		return px2[n/B] * px[n%B] % mod
+	}
+	return pow
+}
+
 // 等比数列求和取模
 // 返回 (x^0 + x^1 + ... + x^n) % mod
 // https://atcoder.jp/contests/abc293/tasks/abc293_e
