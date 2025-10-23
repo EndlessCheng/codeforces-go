@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
@@ -66,14 +67,26 @@ func GenCodeforcesContestTemplates(cmdName, rootPath, contestID string, overwrit
 
 // 生成单道题目的模板（Codeforces）
 func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
-	urlObj, err := url.Parse(problemURL)
-	if err != nil {
+	if _, err := url.Parse(problemURL); err != nil {
 		return err
 	}
 
-	contestID, problemID, isGYM := parseCodeforcesProblemURL(problemURL)
-	if _, err := strconv.Atoi(contestID); err != nil {
-		return fmt.Errorf("invalid URL: %v", err)
+	var contestID, problemID string
+	isGYM := false
+	if strings.Contains(problemURL, "luogu.") {
+		sp := strings.Split(problemURL, "/")
+		s := sp[len(sp)-1][2:] // 2064C
+		for i, c := range s {
+			if !unicode.IsDigit(c) {
+				contestID = s[:i]
+				problemID = s[i:]
+			}
+		}
+	} else {
+		contestID, problemID, isGYM = parseCodeforcesProblemURL(problemURL)
+		if _, err := strconv.Atoi(contestID); err != nil {
+			return fmt.Errorf("invalid URL: %v", err)
+		}
 	}
 
 	// 拿到题目的难度分
@@ -91,9 +104,9 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 
 	var statusURL string
 	if isGYM {
-		statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s?friends=on", urlObj.Host, contestID, problemID)
+		statusURL = fmt.Sprintf("https://codeforces.com/gym/%s/status/%s?friends=on", contestID, problemID)
 	} else {
-		statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s?friends=on", urlObj.Host, contestID, problemID)
+		statusURL = fmt.Sprintf("https://codeforces.com/problemset/status/%s/problem/%s?friends=on", contestID, problemID)
 	}
 	if openWebsite {
 		open.Run(statusURL)
