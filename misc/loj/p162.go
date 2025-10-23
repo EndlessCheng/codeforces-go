@@ -36,18 +36,19 @@ func p162(in io.Reader, _w io.Writer) {
 
 	const mod = 998244352
 	x := rd()
-	px := [1 << 16]int{1}
-	for i := 1; i < len(px); i++ {
+	const B = 1 << 16
+	px := [B]int{1}
+	for i := 1; i < B; i++ {
 		px[i] = px[i-1] * x % mod
 	}
-	x2 := px[len(px)-1] * x % mod
-	px2 := [1 << 16]int{1}
-	for i := 1; i < len(px); i++ {
+	x2 := px[B-1] * x % mod
+	px2 := [B]int{1}
+	for i := 1; i < B; i++ {
 		px2[i] = px2[i-1] * x2 % mod
 	}
 	for n := rd(); n > 0; n-- {
 		e := rd()
-		Fprint(out, px2[e>>16]*px[e&0xffff]%mod, " ")
+		Fprint(out, px2[e/B]*px[e%B]%mod, " ")
 	}
 }
 
