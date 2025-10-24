@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -32,3 +33,17 @@ func Test(t *testing.T) {
 	}
 }
 // https://leetcode-cn.com/contest/weekly-contest-264/problems/next-greater-numerically-balanced-number/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() int {
+		//return
+		rg.Clear()
+		n := rg.Int(1, 1e6)
+		return n
+	}
+
+	testutil.CompareInf(_t, inputGenerator, nextBeautifulNumber1, nextBeautifulNumber)
+}

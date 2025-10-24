@@ -40,7 +40,7 @@ func zeroOneKnapsack(a []int, target int) []int {
 		for j := target; j >= v; j-- {
 			if f[j-v] {
 				f[j] = true
-				from[i][j] = j - v
+				from[i][j] = j - v // 记录转移来源
 			}
 		}
 	}
@@ -57,7 +57,8 @@ func zeroOneKnapsack(a []int, target int) []int {
 }
 
 func nextBeautifulNumber(n int) int {
-	s := "0" + strconv.Itoa(n) // 补一个前导零，方便处理答案十进制比 n 的十进制长的情况
+	// 补一个前导零，方便处理答案十进制比 n 的十进制长的情况
+	s := "0" + strconv.Itoa(n)
 	m := len(s)
 
 	const mx = 10
@@ -67,7 +68,7 @@ func nextBeautifulNumber(n int) int {
 	}
 
 	// 从右往左尝试
-	for i := m - 1; ; i-- {
+	for i := m - 1; i >= 0; i-- {
 		if i > 0 {
 			cnt[s[i]-'0']-- // 撤销
 		}
@@ -109,13 +110,12 @@ func nextBeautifulNumber(n int) int {
 				cnt[v] = -v // 用负数表示可以随便填的数
 			}
 
-			t := []byte(s)
+			t := []byte(s[:i+1])
 			t[i] = '0' + byte(j)
-			t = t[:i+1]
 			for k, c := range cnt {
 				if c > 0 {
 					c = k - c
-				} else if c < 0 {
+				} else {
 					c = -c
 				}
 				d := []byte{'0' + byte(k)}
@@ -125,4 +125,5 @@ func nextBeautifulNumber(n int) int {
 			return ans
 		}
 	}
+	return -1 // 无解（本题不会发生，但为了可扩展性保留）
 }
