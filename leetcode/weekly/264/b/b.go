@@ -28,30 +28,35 @@ next:
 // 无解返回 nil
 func zeroOneKnapsack(a []int, target int) []int {
 	n := len(a)
-	f := make([]bool, target+1)
-	f[0] = true
-	from := make([][]int, n)
-	for i := range from {
-		from[i] = make([]int, target+1)
+	f := make([][]bool, n+1)
+	for i := range f {
+		f[i] = make([]bool, target+1)
 	}
+	f[n][0] = true
 
+	// 倒着 DP，这样后面可以正着（从小到大）选
 	for i := n - 1; i >= 0; i-- {
 		v := a[i]
-		for j := target; j >= v; j-- {
-			if f[j-v] {
-				f[j] = true
-				from[i][j] = j - v // 记录转移来源
+		for j := range f[i] {
+			if j < v {
+				f[i][j] = f[i+1][j]
+			} else {
+				f[i][j] = f[i+1][j] || f[i+1][j-v]
 			}
 		}
 	}
 
-	if !f[target] {
+	if !f[0][target] {
 		return nil
 	}
 
 	ans := []int{}
-	for i, j := 0, target; j > 0; i, j = i+1, from[i][j] {
-		ans = append(ans, j-from[i][j])
+	j := target
+	for i, v := range a {
+		if j >= v && f[i+1][j-v] {
+			ans = append(ans, v)
+			j -= v
+		}
 	}
 	return ans
 }
