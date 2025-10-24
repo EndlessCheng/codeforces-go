@@ -1,11 +1,11 @@
 package main
 
-// Go 模拟
-
 // github.com/EndlessCheng/codeforces-go
 type Bank []int64
 
-func Constructor(balance []int64) Bank { return balance }
+func Constructor(balance []int64) Bank {
+	return balance
+}
 
 func (b Bank) Transfer(account1, account2 int, money int64) bool {
 	if account1 > len(b) || account2 > len(b) || b[account1-1] < money {
