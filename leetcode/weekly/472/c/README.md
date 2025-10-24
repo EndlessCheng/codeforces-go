@@ -53,7 +53,6 @@ class Solution {
             left[s.charAt(i) - 'a']++;
             left[t[i] - 'a']--; // 消耗 s 中的一个字母 t[i]
         }
-        StringBuilder ans = new StringBuilder(target);
 
         // 从右往左尝试
         next:
@@ -73,8 +72,8 @@ class Solution {
                 }
 
                 left[j]--;
+                StringBuilder ans = new StringBuilder(target.substring(0, i + 1));
                 ans.setCharAt(i, (char) ('a' + j));
-                ans.setLength(i + 1);
 
                 for (int k = 0; k < 26; k++) {
                     ans.repeat('a' + k, left[k]);
@@ -255,8 +254,6 @@ class Solution {
             }
         }
 
-        StringBuilder ans = new StringBuilder(target);
-        next:
         for (int i = n - 1; i >= 0; i--) {
             int b = t[i] - 'a';
             left[b]++; // 撤销消耗
@@ -279,8 +276,8 @@ class Solution {
 
             // target[i] 增大到 j
             left[j]--;
+            StringBuilder ans = new StringBuilder(target.substring(0, i + 1));
             ans.setCharAt(i, (char) ('a' + j));
-            ans.setLength(i + 1);
 
             for (int k = 0; k < 26; k++) {
                 ans.repeat('a' + k, left[k]);
@@ -473,8 +470,6 @@ class Solution {
             }
         }
 
-        StringBuilder ans = new StringBuilder(target);
-        next:
         for (int i = n - 1; i >= 0; i--) {
             int b = t[i] - 'a';
             left[b]++; // 撤销消耗
@@ -494,8 +489,8 @@ class Solution {
             mask &= ~((1 << (b + 1)) - 1);
             int j = Integer.numberOfTrailingZeros(mask); // 也可以写循环找 j
             left[j]--;
+            StringBuilder ans = new StringBuilder(target.substring(0, i + 1));
             ans.setCharAt(i, (char) ('a' + j));
-            ans.setLength(i + 1);
 
             for (int k = 0; k < 26; k++) {
                 ans.repeat('a' + k, left[k]);
