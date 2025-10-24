@@ -185,7 +185,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // 注：Kitamasa 译为「北正」，碰巧谐音「倍增」
 // 另见 math_ntt.go 的 Bostan-Mori 算法
 // 我的科普文章 https://zhuanlan.zhihu.com/p/1964051212304364939 Kitamasa 算法：更快地计算线性递推的第 n 项
-// https://codeforces.com/blog/entry/88760
+// https://codeforces.com/blog/entry/88760 与多项式取模的关联
 // https://codeforces.com/blog/entry/97627
 // https://misawa.github.io/others/fast_kitamasa_method.html
 //
