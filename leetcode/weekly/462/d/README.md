@@ -1,3 +1,5 @@
+## 方法一：枚举全排列
+
 由于 $0$ 出现 $0$ 次，不算，所以回文数由 $1$ 到 $9$ 中的数字组成。
 
 如果回文数包含奇数，那么奇数出现奇数次，必须在回文中心放一个奇数。如果有多个奇数，无法对称放置，所以**至多有一个奇数**。
@@ -14,7 +16,7 @@
 
 具体请看 [本题视频讲解](https://www.bilibili.com/video/BV1QNbNzxEtZ/?t=27m24s)，欢迎点赞关注~
 
-## 写法一
+### 写法一
 
 ```py [sol-Python3]
 ODD_MASK = 0x155
@@ -344,7 +346,7 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 - 时间复杂度：$\mathcal{O}(K\cdot (m/2)!\cdot m)$，其中 $K=10$，$m=\log n$。至多有 $K$ 个子集，能生成长度恰好为 $m$ 的回文串。每个子集需要 $\mathcal{O}((m/2)!)$ 的时间枚举排列。对于长度等于 $m+1$ 的子集，算出最小的回文数后，就立刻结束了。最后，对于每个回文数，需要 $\mathcal{O}(m)$ 的时间计算（反转左半）。注：如果在回溯过程中同时计算反转后的结果，可以把 $\mathcal{O}(m)$ 优化为 $\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(m)$。
 
-## 写法二：预处理
+### 写法二：预处理
 
 预处理所有长度 $\le 16$ 的特殊数列表，这只有 $2296$ 个。
 
@@ -653,17 +655,718 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 - 时间复杂度：$\mathcal{O}(\log N)$，其中 $N=2296$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 如果数据范围更大呢？
+## 方法二：倒序贪心 + 0-1 背包
 
-有类似数位 DP 的搜索做法，见题解下面我的评论。
+做法同 [2048. 下一个更大的数值平衡数](https://leetcode.cn/problems/next-greater-numerically-balanced-number/)，[我的题解](https://leetcode.cn/problems/next-greater-numerically-balanced-number/solutions/3814255/liang-chong-fang-fa-mei-ju-dao-xu-tan-xi-164n/)。那题是从最右边开始遍历，本题是从中间开始往左遍历。
+
+当字符串是奇数长度时，可以枚举正中间填的数字，这样逻辑就和 2048 题一样了。
+
+```py [sol-Python3]
+class Solution:
+    # 从 a 中选一个字典序最小的、元素和等于 target 的子序列
+    # a 已经从小到大排序
+    # 无解返回 None
+    def zeroOneKnapsack(self, a: List[int], target: int) -> Optional[List[int]]:
+        n = len(a)
+        f = [[False] * (target + 1) for _ in range(n + 1)]
+        f[n][0] = True
+
+        # 倒着 DP，这样后面可以正着（从小到大）选
+        for i in range(n - 1, -1, -1):
+            v = a[i]
+            for j in range(target + 1):
+                if j < v:
+                    f[i][j] = f[i + 1][j]
+                else:
+                    f[i][j] = f[i + 1][j] or f[i + 1][j - v]
+
+        if not f[0][target]:
+            return None
+
+        ans = []
+        j = target
+        for i, v in enumerate(a):
+            if j >= v and f[i + 1][j - v]:
+                ans.append(v)
+                j -= v
+        return ans
+
+    def specialPalindrome(self, num: int) -> int:
+        s_num = str(num)
+        s = list(map(int, s_num))
+        m = len(s)
+        mid = (m - 1) // 2
+
+        MX = 10
+        cnt = [0] * MX
+        for d in s[:mid + 1]:
+            cnt[d] += 2
+
+        def valid() -> bool:
+            return all(c == 0 or c == i for i, c in enumerate(cnt))
+
+        # 首先，单独处理中间位置
+        left = s_num[:mid + 1]
+        pal = int(left + left[::-1][m % 2:]) if left else num
+        if m % 2 == 0:
+            # 不修改
+            if pal > num and valid():
+                return pal
+        else:
+            # 修改正中间
+            cnt[s[mid]] -= 2
+            base = 10 ** (m // 2)
+            for j in range(s[mid], MX):
+                cnt[j] += 1
+                if pal > num and valid():
+                    return pal
+                cnt[j] -= 1
+                pal += base
+
+        # 下面正式开始枚举
+
+        # 生成答案
+        def build_ans(t: List[int], missing: List[int], mid_d: int) -> int:
+            for v in missing:
+                cnt[v * 2] = -v * 2  # 用负数表示可以随便填的数
+
+            for k, c in enumerate(cnt):
+                if c > 0:
+                    c = k - c
+                else:
+                    c = -c
+                    cnt[k] = 0  # 还原
+                t += [k] * (c // 2)  # 只考虑左半
+
+            right = t[::-1]
+            if mid_d:
+                t.append(mid_d)
+            t += right
+            return int(''.join(map(str, t)))
+
+        # 下标 i 填 j 且正中间填 mid_d（如果 m 是偶数则 mid_d 是 0）
+        def solve(i: int, j: int, mid_d: int) -> int:
+            # 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
+            free = m // 2 - 1 - i  # 统计左半（不含正中间）可以随便填的数位个数
+            odd = 0
+            for k, c in enumerate(cnt):
+                if k < c:  # 不合法
+                    free = -1
+                    break
+                if c > 0:
+                    odd += k % 2
+                    free -= (k - c) // 2
+            if free < 0 or odd > m % 2:
+                return -1
+
+            # 对于可以随便填的数位，计算字典序最小的填法
+            # 左半需要填 k/2 个数
+            a = [k // 2 for k in range(2, MX, 2) if cnt[k] == 0]
+            missing = self.zeroOneKnapsack(a, free)
+            if missing is None:
+                return -1
+
+            t = s[:i + 1]
+            t[i] = j
+            return build_ans(t, missing, mid_d)
+
+        # 从右往左尝试
+        for i in range(m // 2 - 1, -1, -1):
+            cnt[s[i]] -= 2  # 撤销
+
+            # 增大 s[i] 为 j
+            for j in range(s[i] + 1, MX):
+                cnt[j] += 2
+                if m % 2 == 0:
+                    ans = solve(i, j, 0)
+                    if ans != -1:
+                        return ans
+                else:
+                    ans = inf
+                    # 枚举正中间填 d
+                    for d in range(1, MX, 2):
+                        cnt[d] += 1
+                        res = solve(i, j, d)
+                        if res != -1:
+                            ans = min(ans, res)
+                        cnt[d] -= 1
+                    if ans != inf:
+                        return ans
+                cnt[j] -= 2
+
+        # 没找到，返回长为 m+1 的最小回文数
+        return self.specialPalindrome(10 ** m)
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MX = 10;
+
+    public long specialPalindrome(long num) {
+        String numS = String.valueOf(num);
+        char[] s = numS.toCharArray();
+        int m = s.length;
+        int mid = (m - 1) / 2;
+
+        int[] cnt = new int[MX];
+        for (int i = 0; i <= mid; i++) {
+            cnt[s[i] - '0'] += 2;
+        }
+
+        // 首先，单独处理中间位置
+        StringBuilder tmp = new StringBuilder(numS.substring(0, m / 2)).reverse();
+        long pal = Long.parseLong(numS.substring(0, mid + 1) + tmp);
+        if (m % 2 == 0) {
+            // 不修改
+            if (pal > num && isValid(cnt)) {
+                return pal;
+            }
+        } else {
+            // 修改正中间
+            cnt[s[mid] - '0'] -= 2;
+            for (int j = s[mid] - '0'; j < MX; j++) {
+                cnt[j]++;
+                if (pal > num && isValid(cnt)) {
+                    return pal;
+                }
+                cnt[j]--;
+                pal += (long) Math.pow(10, m / 2);
+            }
+        }
+
+        // 从右往左尝试
+        for (int i = m / 2 - 1; i >= 0; i--) {
+            cnt[s[i] - '0'] -= 2; // 撤销
+
+            // 增大 s[i] 为 j
+            for (int j = s[i] - '0' + 1; j < MX; j++) {
+                cnt[j] += 2;
+                if (m % 2 == 0) {
+                    long ans = solve(i, j, 0, s, cnt);
+                    if (ans != -1) {
+                        return ans;
+                    }
+                } else {
+                    long ans = Long.MAX_VALUE;
+                    // 枚举正中间填 d
+                    for (int d = 1; d < MX; d += 2) {
+                        cnt[d]++;
+                        long res = solve(i, j, d, s, cnt);
+                        if (res != -1) {
+                            ans = Math.min(ans, res);
+                        }
+                        cnt[d]--;
+                    }
+                    if (ans != Long.MAX_VALUE) {
+                        return ans;
+                    }
+                }
+                cnt[j] -= 2;
+            }
+        }
+
+        // 没找到，返回长为 m+1 的最小回文数
+        return specialPalindrome((long) Math.pow(10, m));
+    }
+
+    private boolean isValid(int[] cnt) {
+        for (int i = 0; i < cnt.length; i++) {
+            if (cnt[i] > 0 && cnt[i] != i) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 下标 i 填 j 且正中间填 midD（如果 m 是偶数则 midD 是 0）
+    private long solve(int i, int j, int midD, char[] s, int[] cnt) {
+        int m = s.length;
+        // 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
+        int free = m / 2 - 1 - i; // 统计左半（不含正中间）可以随便填的数位个数
+        int odd = 0;
+        for (int k = 0; k < MX; k++) {
+            int c = cnt[k];
+            if (k < c) { // 不合法
+                free = -1;
+                break;
+            }
+            if (c > 0) {
+                odd += k % 2;
+                free -= (k - c) / 2;
+            }
+        }
+        if (free < 0 || odd > m % 2) {
+            return -1;
+        }
+
+        // 对于可以随便填的数位，计算字典序最小的填法
+        List<Integer> a = new ArrayList<>();
+        for (int k = 2; k < MX; k += 2) {
+            if (cnt[k] == 0) {
+                a.add(k / 2); // 左半需要填 k/2 个数
+            }
+        }
+        List<Integer> missing = zeroOneKnapsack(a, free);
+        if (missing == null) {
+            return -1;
+        }
+
+        StringBuilder t = new StringBuilder();
+        for (int k = 0; k < i; k++) {
+            t.append(s[k]);
+        }
+        t.append((char) ('0' + j));
+        return buildAns(cnt, t, missing, midD);
+    }
+
+    // 生成答案
+    private long buildAns(int[] cnt, StringBuilder t, List<Integer> missing, int midD) {
+        for (int v : missing) {
+            cnt[v * 2] = -v * 2; // 用负数表示可以随便填的数
+        }
+
+        for (int k = 0; k < MX; k++) {
+            int c = cnt[k];
+            if (c > 0) {
+                c = k - c;
+            } else {
+                c = -c;
+                cnt[k] = 0; // 还原
+            }
+            t.repeat('0' + k, c / 2); // 只考虑左半
+        }
+
+        StringBuilder right = new StringBuilder(t).reverse();
+        if (midD > 0) {
+            t.append((char) ('0' + midD));
+        }
+        t.append(right);
+        return Long.parseLong(t.toString());
+    }
+
+    // 从 a 中选一个字典序最小的、元素和等于 target 的子序列
+    // a 已经从小到大排序
+    // 无解返回 null
+    private List<Integer> zeroOneKnapsack(List<Integer> a, int target) {
+        int n = a.size();
+        boolean[][] f = new boolean[n + 1][target + 1];
+        f[n][0] = true;
+
+        // 倒着 DP，这样后面可以正着（从小到大）选
+        for (int i = n - 1; i >= 0; i--) {
+            int v = a.get(i);
+            for (int j = 0; j <= target; j++) {
+                if (j < v) {
+                    f[i][j] = f[i + 1][j];
+                } else {
+                    f[i][j] = f[i + 1][j] || f[i + 1][j - v];
+                }
+            }
+        }
+
+        if (!f[0][target]) {
+            return null;
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        int j = target;
+        for (int i = 0; i < n; i++) {
+            int v = a.get(i);
+            if (j >= v && f[i + 1][j - v]) {
+                ans.add(v);
+                j -= v;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 从 a 中选一个字典序最小的、元素和等于 target 的子序列
+    // a 已经从小到大排序
+    // 无解返回 {} 和 false
+    pair<vector<int>, bool> zeroOneKnapsack(vector<int>& a, int target) {
+        int n = a.size();
+        vector f(n + 1, vector<int8_t>(target + 1));
+        f[n][0] = true;
+
+        // 倒着 DP，这样后面可以正着（从小到大）选
+        for (int i = n - 1; i >= 0; i--) {
+            int v = a[i];
+            for (int j = 0; j <= target; j++) {
+                if (j < v) {
+                    f[i][j] = f[i + 1][j];
+                } else {
+                    f[i][j] = f[i + 1][j] || f[i + 1][j - v];
+                }
+            }
+        }
+
+        if (!f[0][target]) {
+            return {};
+        }
+
+        vector<int> ans;
+        int j = target;
+        for (int i = 0; i < n; i++) {
+            int v = a[i];
+            if (j >= v && f[i + 1][j - v]) {
+                ans.push_back(v);
+                j -= v;
+            }
+        }
+        return {ans, true};
+    }
+
+public:
+    long long specialPalindrome(long long num) {
+        string s = to_string(num);
+        int m = s.size();
+        int mid = (m - 1) / 2;
+
+        constexpr int MX = 10;
+        int cnt[MX]{};
+        for (int i = 0; i <= mid; i++) {
+            cnt[s[i] - '0'] += 2;
+        }
+
+        auto valid = [&]() -> bool {
+            for (int i = 0; i < MX; i++) {
+                if (cnt[i] > 0 && cnt[i] != i) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        // 首先，单独处理中间位置
+        string tmp = s.substr(0, m / 2);
+        ranges::reverse(tmp);
+        long long pal = stoll(s.substr(0, mid + 1) + tmp);
+        if (m % 2 == 0) {
+            // 不修改
+            if (pal > num && valid()) {
+                return pal;
+            }
+        } else {
+            // 修改正中间
+            cnt[s[mid] - '0'] -= 2;
+            for (int j = s[mid] - '0'; j < MX; j++) {
+                cnt[j]++;
+                if (pal > num && valid()) {
+                    return pal;
+                }
+                cnt[j]--;
+                pal += (long long) pow(10, m / 2);
+            }
+        }
+
+        // 下面正式开始枚举
+
+        // 生成答案
+        auto build_ans = [&](string& t, vector<int>& missing, int mid_d) -> long long {
+            for (int v : missing) {
+                cnt[v * 2] = -v * 2; // 用负数表示可以随便填的数
+            }
+
+            for (int k = 0; k < MX; k++) {
+                int c = cnt[k];
+                if (c > 0) {
+                    c = k - c;
+                } else {
+                    c = -c;
+                    cnt[k] = 0; // 还原
+                }
+                for (int i = 0; i < c / 2; i++) {
+                    t.push_back('0' + k); // 只考虑左半
+                }
+            }
+
+            string right = t;
+            ranges::reverse(right);
+            if (mid_d > 0) {
+                t.push_back('0' + mid_d);
+            }
+            t += right;
+            return stoll(t);
+        };
+
+        // 下标 i 填 j 且正中间填 mid_d（如果 m 是偶数则 mid_d 是 0）
+        auto solve = [&](int i, int j, int mid_d) -> long long {
+            // 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
+            int free = m / 2 - 1 - i; // 统计左半（不含正中间）可以随便填的数位个数
+            int odd = 0;
+            for (int k = 0; k < MX; k++) {
+                int c = cnt[k];
+                if (k < c) { // 不合法
+                    free = -1;
+                    break;
+                }
+                if (c > 0) {
+                    odd += k % 2;
+                    free -= (k - c) / 2;
+                }
+            }
+            if (free < 0 || odd > m % 2) {
+                return -1;
+            }
+
+            // 对于可以随便填的数位，计算字典序最小的填法
+            vector<int> a;
+            for (int k = 2; k < MX; k += 2) {
+                if (cnt[k] == 0) {
+                    a.push_back(k / 2); // 左半需要填 k/2 个数
+                }
+            }
+            auto [missing, ok] = zeroOneKnapsack(a, free);
+            if (!ok) {
+                return -1;
+            }
+
+            string t = s.substr(0, i + 1);
+            t[i] = '0' + j;
+            return build_ans(t, missing, mid_d);
+        };
+
+        // 从右往左尝试
+        for (int i = m / 2 - 1; i >= 0; i--) {
+            cnt[s[i] - '0'] -= 2; // 撤销
+
+            // 增大 s[i] 为 j
+            for (int j = s[i] - '0' + 1; j < MX; j++) {
+                cnt[j] += 2;
+                if (m % 2 == 0) {
+                    long long ans = solve(i, j, 0);
+                    if (ans != -1) {
+                        return ans;
+                    }
+                } else {
+                    long long ans = LLONG_MAX;
+                    // 枚举正中间填 d
+                    for (int d = 1; d < MX; d += 2) {
+                        cnt[d]++;
+                        long long res = solve(i, j, d);
+                        if (res != -1) {
+                            ans = min(ans, res);
+                        }
+                        cnt[d]--;
+                    }
+                    if (ans != LLONG_MAX) {
+                        return ans;
+                    }
+                }
+                cnt[j] -= 2;
+            }
+        }
+
+        // 没找到，返回长为 m+1 的最小回文数
+        return specialPalindrome((long long) pow(10, m));
+    }
+};
+```
+
+```go [sol-Go]
+// 从 a 中选一个字典序最小的、元素和等于 target 的子序列
+// a 已经从小到大排序
+// 无解返回 nil
+func zeroOneKnapsack(a []int, target int) []int {
+	n := len(a)
+	f := make([][]bool, n+1)
+	for i := range f {
+		f[i] = make([]bool, target+1)
+	}
+	f[n][0] = true
+
+	// 倒着 DP，这样后面可以正着（从小到大）选
+	for i := n - 1; i >= 0; i-- {
+		v := a[i]
+		for j := range f[i] {
+			if j < v {
+				f[i][j] = f[i+1][j]
+			} else {
+				f[i][j] = f[i+1][j] || f[i+1][j-v]
+			}
+		}
+	}
+
+	if !f[0][target] {
+		return nil
+	}
+
+	ans := []int{}
+	j := target
+	for i, v := range a {
+		if j >= v && f[i+1][j-v] {
+			ans = append(ans, v)
+			j -= v
+		}
+	}
+	return ans
+}
+
+func specialPalindrome(num int64) int64 {
+	s := strconv.FormatInt(num, 10)
+	m := len(s)
+	mid := (m - 1) / 2
+
+	const mx = 10
+	cnt := make([]int, mx)
+	for _, d := range s[:mid+1] {
+		cnt[d-'0'] += 2
+	}
+	valid := func() bool {
+		for i, c := range cnt {
+			if c > 0 && c != i {
+				return false
+			}
+		}
+		return true
+	}
+
+	// 首先，单独处理中间位置
+	tmp := []byte(s[:m/2])
+	slices.Reverse(tmp)
+	pal, _ := strconv.ParseInt(s[:mid+1]+string(tmp), 10, 64)
+	if m%2 == 0 {
+		// 不修改
+		if pal > num && valid() {
+			return pal
+		}
+	} else {
+		// 修改正中间
+		cnt[s[mid]-'0'] -= 2
+		for j := s[mid] - '0'; j < mx; j++ {
+			cnt[j]++
+			if pal > num && valid() {
+				return pal
+			}
+			cnt[j]--
+			pal += int64(math.Pow10(m / 2))
+		}
+	}
+
+	// 下面正式开始枚举
+
+	// 生成答案
+	buildAns := func(t []byte, missing []int, midD byte) int64 {
+		for _, v := range missing {
+			cnt[v*2] = -v * 2 // 用负数表示可以随便填的数
+		}
+
+		for k, c := range cnt {
+			if c > 0 {
+				c = k - c
+			} else {
+				c = -c
+				cnt[k] = 0 // 还原
+			}
+			d := []byte{'0' + byte(k)}
+			t = append(t, bytes.Repeat(d, c/2)...) // 只考虑左半
+		}
+
+		right := slices.Clone(t)
+		slices.Reverse(right)
+
+		if midD > 0 {
+			t = append(t, '0'+midD)
+		}
+
+		t = append(t, right...)
+
+		ans, _ := strconv.ParseInt(string(t), 10, 64)
+		return ans
+	}
+
+	// 下标 i 填 j 且正中间填 midD（如果 m 是偶数则 midD 是 0）
+	solve := func(i int, j, midD byte) int64 {
+		// 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
+		free := m/2 - 1 - i // 统计左半（不含正中间）可以随便填的数位个数
+		odd := 0
+		for k, c := range cnt {
+			if k < c { // 不合法
+				free = -1
+				break
+			}
+			if c > 0 {
+				odd += k % 2
+				free -= (k - c) / 2
+			}
+		}
+		if free < 0 || odd > m%2 {
+			return -1
+		}
+
+		// 对于可以随便填的数位，计算字典序最小的填法
+		a := []int{}
+		for k := 2; k < mx; k += 2 {
+			if cnt[k] == 0 {
+				a = append(a, k/2) // 左半需要填 k/2 个数
+			}
+		}
+		missing := zeroOneKnapsack(a, free)
+		if missing == nil {
+			return -1
+		}
+
+		t := []byte(s[:i+1])
+		t[i] = '0' + j
+		return buildAns(t, missing, midD)
+	}
+
+	// 从右往左尝试
+	for i := m/2 - 1; i >= 0; i-- {
+		cnt[s[i]-'0'] -= 2 // 撤销
+
+		// 增大 s[i] 为 j
+		for j := s[i] - '0' + 1; j < mx; j++ {
+			cnt[j] += 2
+			if m%2 == 0 {
+				ans := solve(i, j, 0)
+				if ans != -1 {
+					return ans
+				}
+			} else {
+				ans := int64(math.MaxInt)
+				// 枚举正中间填 d
+				for d := byte(1); d < mx; d += 2 {
+					cnt[d]++
+					res := solve(i, j, d)
+					if res != -1 {
+						ans = min(ans, res)
+					}
+					cnt[d]--
+				}
+				if ans != math.MaxInt {
+					return ans
+				}
+			}
+			cnt[j] -= 2
+		}
+	}
+
+	// 没找到，返回长为 m+1 的最小回文数
+	return specialPalindrome(int64(math.Pow10(m)))
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(D^3\log^2 n)$，其中 $D=10$，$\log n$ 是 $n$ 的十进制长度。枚举 $\mathcal{O}(D\log n)$ 种把 $s[i]$ 增大的情况，枚举 $\mathcal{O}(D)$ 种修改正中间数字的情况，每次需要 $\mathcal{O}(D\log n)$ 的时间计算 0-1 背包。
+- 空间复杂度：$\mathcal{O}(D\log n)$。0-1 背包需要的空间。
 
 ## 相似题目
 
-[564. 寻找最近的回文数](https://leetcode.cn/problems/find-the-closest-palindrome/)
+- [3720. 大于目标字符串的最小字典序排列](https://leetcode.cn/problems/lexicographically-smallest-permutation-greater-than-target/) 1953
+- [2048. 下一个更大的数值平衡数](https://leetcode.cn/problems/next-greater-numerically-balanced-number/) 非暴力做法
+- [3348. 最小可整除数位乘积 II](https://leetcode.cn/problems/smallest-divisible-digit-product-ii/) 3101
+
+以及：[564. 寻找最近的回文数](https://leetcode.cn/problems/find-the-closest-palindrome/)
 
 ## 专题训练
 
-见下面回溯题单的「**§4.6 有重复元素的回溯**」。
+见下面贪心题单的「**§3.1 字典序最小/最大**」。
 
 ## 分类题单
 
@@ -679,7 +1382,9 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

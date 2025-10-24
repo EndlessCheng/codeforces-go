@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"math"
 	"math/bits"
 	"slices"
@@ -9,7 +10,217 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func specialPalindrome(Num int64) int64 {
+// 从 a 中选一个字典序最小的、元素和等于 target 的子序列
+// a 已经从小到大排序
+// 无解返回 nil
+func zeroOneKnapsack(a []int, target int) []int {
+	n := len(a)
+	f := make([][]bool, n+1)
+	for i := range f {
+		f[i] = make([]bool, target+1)
+	}
+	f[n][0] = true
+
+	// 倒着 DP，这样后面可以正着（从小到大）选
+	for i := n - 1; i >= 0; i-- {
+		v := a[i]
+		for j := range f[i] {
+			if j < v {
+				f[i][j] = f[i+1][j]
+			} else {
+				f[i][j] = f[i+1][j] || f[i+1][j-v]
+			}
+		}
+	}
+
+	if !f[0][target] {
+		return nil
+	}
+
+	ans := []int{}
+	j := target
+	for i, v := range a {
+		if j >= v && f[i+1][j-v] {
+			ans = append(ans, v)
+			j -= v
+		}
+	}
+	return ans
+}
+
+func specialPalindrome(num int64) int64 {
+	s := strconv.FormatInt(num, 10)
+	m := len(s)
+	mid := (m - 1) / 2
+
+	const mx = 10
+	cnt := make([]int, mx)
+	for _, d := range s[:mid+1] {
+		cnt[d-'0'] += 2
+	}
+	valid := func() bool {
+		for i, c := range cnt {
+			if c > 0 && c != i {
+				return false
+			}
+		}
+		return true
+	}
+
+	// 首先，单独处理中间位置
+	tmp := []byte(s[:m/2])
+	slices.Reverse(tmp)
+	pal, _ := strconv.ParseInt(s[:mid+1]+string(tmp), 10, 64)
+	if m%2 == 0 {
+		// 不修改
+		if pal > num && valid() {
+			return pal
+		}
+	} else {
+		// 修改正中间
+		cnt[s[mid]-'0'] -= 2
+		for j := s[mid] - '0'; j < mx; j++ {
+			cnt[j]++
+			if pal > num && valid() {
+				return pal
+			}
+			cnt[j]--
+			pal += int64(math.Pow10(m / 2))
+		}
+	}
+
+	// 下面正式开始枚举
+
+	// 生成答案
+	buildAns := func(t []byte, missing []int, midD byte) int64 {
+		for _, v := range missing {
+			cnt[v*2] = -v * 2 // 用负数表示可以随便填的数
+		}
+
+		for k, c := range cnt {
+			if c > 0 {
+				c = k - c
+			} else {
+				c = -c
+				cnt[k] = 0 // 还原
+			}
+			d := []byte{'0' + byte(k)}
+			t = append(t, bytes.Repeat(d, c/2)...) // 只考虑左半
+		}
+
+		right := slices.Clone(t)
+		slices.Reverse(right)
+
+		if midD > 0 {
+			t = append(t, '0'+midD)
+		}
+
+		t = append(t, right...)
+
+		ans, _ := strconv.ParseInt(string(t), 10, 64)
+		return ans
+	}
+
+	// 下标 i 填 j 且正中间填 midD（如果 m 是偶数则 midD 是 0）
+	solve := func(i int, j, midD byte) int64 {
+		// 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
+		free := m/2 - 1 - i // 统计左半（不含正中间）可以随便填的数位个数
+		odd := 0
+		for k, c := range cnt {
+			if k < c { // 不合法
+				free = -1
+				break
+			}
+			if c > 0 {
+				odd += k % 2
+				free -= (k - c) / 2
+			}
+		}
+		if free < 0 || odd > m%2 { // 不合法，继续枚举
+			return -1
+		}
+
+		// 对于可以随便填的数位，计算字典序最小的填法
+		a := []int{}
+		for k := 2; k < mx; k += 2 {
+			if cnt[k] == 0 {
+				a = append(a, k/2) // 左半需要填 k/2 个数
+			}
+		}
+		missing := zeroOneKnapsack(a, free)
+		if missing == nil {
+			return -1
+		}
+
+		t := []byte(s[:i+1])
+		t[i] = '0' + j
+		return buildAns(t, missing, midD)
+	}
+
+	// 从右往左尝试
+	for i := m/2 - 1; i >= 0; i-- {
+		cnt[s[i]-'0'] -= 2 // 撤销
+
+		// 增大 s[i] 为 j
+		for j := s[i] - '0' + 1; j < mx; j++ {
+			cnt[j] += 2
+			if m%2 == 0 {
+				ans := solve(i, j, 0)
+				if ans != -1 {
+					return ans
+				}
+			} else {
+				ans := int64(math.MaxInt)
+				// 枚举正中间填 d
+				for d := byte(1); d < mx; d += 2 {
+					cnt[d]++
+					res := solve(i, j, d)
+					if res != -1 {
+						ans = min(ans, res)
+					}
+					cnt[d]--
+				}
+				if ans != math.MaxInt {
+					return ans
+				}
+			}
+			cnt[j] -= 2
+		}
+	}
+
+	// 没找到，返回长为 m+1 的最小回文数
+	return specialPalindrome(int64(math.Pow10(m)))
+}
+
+// 没找到，返回长为 m+1 的最小回文数
+//a := make([]int, (mx-1)/2)
+//for i := range a {
+//	a[i] = i + 1
+//}
+//
+//// m+1 是偶数
+//if m%2 > 0 {
+//	missing := zeroOneKnapsack(a, (m+1)/2)
+//	return buildAns(nil, missing, 0)
+//}
+//
+//// m+1 是奇数
+//ans := int64(math.MaxInt)
+//// 枚举正中间填 midD
+//for midD := 1; midD < mx && midD/2 <= m/2; midD += 2 {
+//	cnt[midD] = -midD
+//	missing := zeroOneKnapsack(a, m/2-midD/2)
+//	res := buildAns(nil, missing, byte(midD))
+//	if res != -1 {
+//		ans = min(ans, res)
+//	}
+//	cnt[midD] = 0
+//}
+//return ans
+
+//
+
+func specialPalindrome3(Num int64) int64 {
 	subSum := make([]int, 1<<9)
 	a := []int{1, 9, 8, 7, 6, 5, 4, 3, 2}
 	mp := [10]int{}
@@ -250,6 +461,8 @@ func permutations(n, r int, do func(ids []int) (Break bool)) {
 		}
 	}
 }
+
+//
 
 var size [512]int
 
