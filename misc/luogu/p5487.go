@@ -25,50 +25,55 @@ func berlekampMassey5487(a []int) (coef []int) {
 	var preC []int
 	preI, preD := -1, 0
 	for i, v := range a {
+		// d = a[i] - 递推式算出来的值
 		d := v
 		for j, c := range coef {
 			d = (d - c*a[i-1-j]) % mod5487
 		}
-		if d == 0 {
+		if d == 0 { // 递推式正确
 			continue
 		}
 
-		// 首次算错，初始化 coef
+		// 首次算错，初始化 coef 为 i+1 个 0
 		if preI < 0 {
 			coef = make([]int, i+1)
 			preI, preD = i, d
 			continue
 		}
 
-		bias := i - 1 - preI
+		bias := i - preI
 		oldSz := len(coef)
-		sz := bias + len(preC) + 1
-		var oldCoef []int
-		if sz > oldSz {
-			oldCoef = slices.Clone(coef)
+		sz := bias + len(preC)
+		var tmp []int
+		if sz > oldSz { // 递推式变长了
+			tmp = slices.Clone(coef)
 			coef = slices.Grow(coef, sz-oldSz)[:sz]
 		}
 
 		// 上一次算错告诉我们，preD = a[preI] - sum_j preC[j]*a[preI-1-j]
 		// 现在 a[i] = sum_j coef[j]*a[i-1-j] + d
 		// 联立得 a[i] = sum_j coef[j]*a[i-1-j] + d/preD * (a[preI] - sum_j preC[j]*a[preI-1-j])
-		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias=i-1-preI 处
-		// 注意：preI 之前的数据符合旧公式，即 0 = a[<preI] - sum_j preC[j]*a[<preI-1-j]
-		//      对于新公式，i 之前的每一项增加了 d/preD * 0 = 0，所以也符合新公式
+		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias-1 = i-preI-1 处
+		// 注意：preI 之前的数据符合旧公式，即 a[(<preI)] = sum_j preC[j]*a[(<preI)-1-j]
+		//      对于新公式，i 之前的每个公式增加了 d/preD * (a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]) = d/preD * 0 = 0，所以也符合新公式
 		delta := d * pow5487(preD, mod5487-2) % mod5487
-		coef[bias] = (coef[bias] + delta) % mod5487
+		coef[bias-1] = (coef[bias-1] + delta) % mod5487
 		for j, c := range preC {
-			coef[bias+1+j] = (coef[bias+1+j] - delta*c) % mod5487
+			coef[bias+j] = (coef[bias+j] - delta*c) % mod5487
 		}
 
 		if sz > oldSz {
-			preC = oldCoef
+			preC = tmp
 			preI, preD = i, d
 		}
 	}
 
-	// 把负数调整为非负数
-	// 比如后面计算递推式第 n 项，这可以保证不会产生负数（但那样的话，可以最后输出时再调整，所以下面的循环其实没必要）
+	// 计算完后，可能 coef 的末尾有 0，这些 0 不能去掉
+	// 比如数列 {1,2,4,2,4,2,4,...} 的系数为 [0,1,0]，表示 f_n = 0*f_{n-1} + f_{n-2} + 0*f_{n-3} = f_{n-2} (n>=3)
+	// 如果把末尾的 0 去掉，变成 [0,1]，就表示 f_n = 0*f_{n-1} + f_{n-2} = f_{n-2} (n>=2)
+	// 看上去一样，但按照这个式子算出来的数列是错误的 {1,2,1,2,1,2,...}
+
+	// 把负数调整为非负数（可以省略）
 	for i, c := range coef {
 		coef[i] = (c + mod5487) % mod5487
 	}
