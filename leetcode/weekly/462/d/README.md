@@ -723,28 +723,7 @@ class Solution:
                 cnt[j] -= 1
                 pal += base
 
-        # 下面正式开始枚举
-
-        # 生成答案
-        def build_ans(t: List[int], missing: List[int], mid_d: int) -> int:
-            for v in missing:
-                cnt[v * 2] = -v * 2  # 用负数表示可以随便填的数
-
-            for k, c in enumerate(cnt):
-                if c > 0:
-                    c = k - c
-                else:
-                    c = -c
-                    cnt[k] = 0  # 还原
-                t += [k] * (c // 2)  # 只考虑左半
-
-            right = t[::-1]
-            if mid_d:
-                t.append(mid_d)
-            t += right
-            return int(''.join(map(str, t)))
-
-        # 下标 i 填 j 且正中间填 mid_d（如果 m 是偶数则 mid_d 是 0）
+        # 下标 i 填 j，正中间填 mid_d（如果 m 是偶数则 mid_d 是 0）
         def solve(i: int, j: int, mid_d: int) -> int:
             # 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
             free = m // 2 - 1 - i  # 统计左半（不含正中间）可以随便填的数位个数
@@ -766,9 +745,26 @@ class Solution:
             if missing is None:
                 return -1
 
+            for v in missing:
+                cnt[v * 2] = -v * 2  # 用负数表示可以随便填的数
+
             t = s[:i + 1]
             t[i] = j
-            return build_ans(t, missing, mid_d)
+
+            for k, c in enumerate(cnt):
+                if c > 0:
+                    c = k - c
+                else:
+                    c = -c
+                    cnt[k] = 0  # 还原
+                t += [k] * (c // 2)  # 只考虑左半
+
+            right = t[::-1]
+            if mid_d:
+                t.append(mid_d)
+            t += right
+ 
+            return int(''.join(map(str, t)))
 
         # 从右往左尝试
         for i in range(m // 2 - 1, -1, -1):
@@ -866,7 +862,7 @@ class Solution {
         }
 
         // 没找到，返回长为 m+1 的最小回文数
-        return specialPalindrome((long) Math.pow(10, m));
+        return specialPalindrome(Math.pow(10, m));
     }
 
     private boolean isValid(int[] cnt) {
@@ -878,7 +874,7 @@ class Solution {
         return true;
     }
 
-    // 下标 i 填 j 且正中间填 midD（如果 m 是偶数则 midD 是 0）
+    // 下标 i 填 j，正中间填 midD（如果 m 是偶数则 midD 是 0）
     private long solve(int i, int j, int midD, char[] s, int[] cnt) {
         int m = s.length;
         // 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
@@ -911,19 +907,15 @@ class Solution {
             return -1;
         }
 
+        for (int v : missing) {
+            cnt[v * 2] = -v * 2; // 用负数表示可以随便填的数
+        }
+
         StringBuilder t = new StringBuilder();
         for (int k = 0; k < i; k++) {
             t.append(s[k]);
         }
         t.append((char) ('0' + j));
-        return buildAns(cnt, t, missing, midD);
-    }
-
-    // 生成答案
-    private long buildAns(int[] cnt, StringBuilder t, List<Integer> missing, int midD) {
-        for (int v : missing) {
-            cnt[v * 2] = -v * 2; // 用负数表示可以随便填的数
-        }
 
         for (int k = 0; k < MX; k++) {
             int c = cnt[k];
@@ -941,6 +933,7 @@ class Solution {
             t.append((char) ('0' + midD));
         }
         t.append(right);
+
         return Long.parseLong(t.toString());
     }
 
@@ -1063,37 +1056,7 @@ public:
             }
         }
 
-        // 下面正式开始枚举
-
-        // 生成答案
-        auto build_ans = [&](string& t, vector<int>& missing, int mid_d) -> long long {
-            for (int v : missing) {
-                cnt[v * 2] = -v * 2; // 用负数表示可以随便填的数
-            }
-
-            for (int k = 0; k < MX; k++) {
-                int c = cnt[k];
-                if (c > 0) {
-                    c = k - c;
-                } else {
-                    c = -c;
-                    cnt[k] = 0; // 还原
-                }
-                for (int i = 0; i < c / 2; i++) {
-                    t.push_back('0' + k); // 只考虑左半
-                }
-            }
-
-            string right = t;
-            ranges::reverse(right);
-            if (mid_d > 0) {
-                t.push_back('0' + mid_d);
-            }
-            t += right;
-            return stoll(t);
-        };
-
-        // 下标 i 填 j 且正中间填 mid_d（如果 m 是偶数则 mid_d 是 0）
+        // 下标 i 填 j，正中间填 mid_d（如果 m 是偶数则 mid_d 是 0）
         auto solve = [&](int i, int j, int mid_d) -> long long {
             // 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
             int free = m / 2 - 1 - i; // 统计左半（不含正中间）可以随便填的数位个数
@@ -1125,9 +1088,34 @@ public:
                 return -1;
             }
 
+            for (int v : missing) {
+                cnt[v * 2] = -v * 2; // 用负数表示可以随便填的数
+            }
+
             string t = s.substr(0, i + 1);
             t[i] = '0' + j;
-            return build_ans(t, missing, mid_d);
+
+            for (int k = 0; k < MX; k++) {
+                int c = cnt[k];
+                if (c > 0) {
+                    c = k - c;
+                } else {
+                    c = -c;
+                    cnt[k] = 0; // 还原
+                }
+                for (int i = 0; i < c / 2; i++) {
+                    t.push_back('0' + k); // 只考虑左半
+                }
+            }
+
+            string right = t;
+            ranges::reverse(right);
+            if (mid_d > 0) {
+                t.push_back('0' + mid_d);
+            }
+            t += right;
+
+            return stoll(t);
         };
 
         // 从右往左尝试
@@ -1162,7 +1150,7 @@ public:
         }
 
         // 没找到，返回长为 m+1 的最小回文数
-        return specialPalindrome((long long) pow(10, m));
+        return specialPalindrome(pow(10, m));
     }
 };
 ```
@@ -1247,39 +1235,7 @@ func specialPalindrome(num int64) int64 {
 		}
 	}
 
-	// 下面正式开始枚举
-
-	// 生成答案
-	buildAns := func(t []byte, missing []int, midD byte) int64 {
-		for _, v := range missing {
-			cnt[v*2] = -v * 2 // 用负数表示可以随便填的数
-		}
-
-		for k, c := range cnt {
-			if c > 0 {
-				c = k - c
-			} else {
-				c = -c
-				cnt[k] = 0 // 还原
-			}
-			d := []byte{'0' + byte(k)}
-			t = append(t, bytes.Repeat(d, c/2)...) // 只考虑左半
-		}
-
-		right := slices.Clone(t)
-		slices.Reverse(right)
-
-		if midD > 0 {
-			t = append(t, '0'+midD)
-		}
-
-		t = append(t, right...)
-
-		ans, _ := strconv.ParseInt(string(t), 10, 64)
-		return ans
-	}
-
-	// 下标 i 填 j 且正中间填 midD（如果 m 是偶数则 midD 是 0）
+	// 下标 i 填 j，正中间填 midD（如果 m 是偶数则 midD 是 0）
 	solve := func(i int, j, midD byte) int64 {
 		// 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
 		free := m/2 - 1 - i // 统计左半（不含正中间）可以随便填的数位个数
@@ -1310,9 +1266,33 @@ func specialPalindrome(num int64) int64 {
 			return -1
 		}
 
+		for _, v := range missing {
+			cnt[v*2] = -v * 2 // 用负数表示可以随便填的数
+		}
+
 		t := []byte(s[:i+1])
 		t[i] = '0' + j
-		return buildAns(t, missing, midD)
+
+		for k, c := range cnt {
+			if c > 0 {
+				c = k - c
+			} else {
+				c = -c
+				cnt[k] = 0 // 还原
+			}
+			d := []byte{'0' + byte(k)}
+			t = append(t, bytes.Repeat(d, c/2)...) // 只考虑左半
+		}
+
+		right := slices.Clone(t)
+		slices.Reverse(right)
+		if midD > 0 {
+			t = append(t, '0'+midD)
+		}
+		t = append(t, right...)
+
+		ans, _ := strconv.ParseInt(string(t), 10, 64)
+		return ans
 	}
 
 	// 从右往左尝试

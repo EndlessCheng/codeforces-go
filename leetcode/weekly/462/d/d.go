@@ -89,39 +89,7 @@ func specialPalindrome(num int64) int64 {
 		}
 	}
 
-	// 下面正式开始枚举
-
-	// 生成答案
-	buildAns := func(t []byte, missing []int, midD byte) int64 {
-		for _, v := range missing {
-			cnt[v*2] = -v * 2 // 用负数表示可以随便填的数
-		}
-
-		for k, c := range cnt {
-			if c > 0 {
-				c = k - c
-			} else {
-				c = -c
-				cnt[k] = 0 // 还原
-			}
-			d := []byte{'0' + byte(k)}
-			t = append(t, bytes.Repeat(d, c/2)...) // 只考虑左半
-		}
-
-		right := slices.Clone(t)
-		slices.Reverse(right)
-
-		if midD > 0 {
-			t = append(t, '0'+midD)
-		}
-
-		t = append(t, right...)
-
-		ans, _ := strconv.ParseInt(string(t), 10, 64)
-		return ans
-	}
-
-	// 下标 i 填 j 且正中间填 midD（如果 m 是偶数则 midD 是 0）
+	// 下标 i 填 j，正中间填 midD（如果 m 是偶数则 midD 是 0）
 	solve := func(i int, j, midD byte) int64 {
 		// 中间 [i+1, m-2-i] 需要补满 0 < cnt[k] < k 的数字 k，然后左半剩余数位可以随便填
 		free := m/2 - 1 - i // 统计左半（不含正中间）可以随便填的数位个数
@@ -152,9 +120,33 @@ func specialPalindrome(num int64) int64 {
 			return -1
 		}
 
+		for _, v := range missing {
+			cnt[v*2] = -v * 2 // 用负数表示可以随便填的数
+		}
+
 		t := []byte(s[:i+1])
 		t[i] = '0' + j
-		return buildAns(t, missing, midD)
+
+		for k, c := range cnt {
+			if c > 0 {
+				c = k - c
+			} else {
+				c = -c
+				cnt[k] = 0 // 还原
+			}
+			d := []byte{'0' + byte(k)}
+			t = append(t, bytes.Repeat(d, c/2)...) // 只考虑左半
+		}
+
+		right := slices.Clone(t)
+		slices.Reverse(right)
+		if midD > 0 {
+			t = append(t, '0'+midD)
+		}
+		t = append(t, right...)
+
+		ans, _ := strconv.ParseInt(string(t), 10, 64)
+		return ans
 	}
 
 	// 从右往左尝试
