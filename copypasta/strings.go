@@ -672,6 +672,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/1326/D2 1800 去掉子串后，剩余部分是回文串
 	// https://codeforces.com/problemset/problem/7/D 2200
 	// - https://codeforces.com/problemset/problem/835/D 1900
+	// https://codeforces.com/problemset/problem/1080/E 2400
 	// https://codeforces.com/problemset/problem/1827/C 2600
 	// https://codeforces.com/problemset/problem/30/E 2800
 	// https://codeforces.com/problemset/problem/159/D 同 17E    思考：改成选 k 个怎么做
@@ -1357,7 +1358,7 @@ func _() {
 		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
 		isSubseq, subsequenceAutomaton, // 子序列自动机
-		manacher, manacherOdd, manacherEven,
+		manacher, manacherOdd, manacherEven, // 马拉车
 		suffixArray, suffixArrayInt, suffixArrayInt2, // 后缀数组
 		lcpArray,
 	}
