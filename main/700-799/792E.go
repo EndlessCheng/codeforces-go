@@ -6,8 +6,6 @@ import (
 	"slices"
 )
 
-// https://gemini.google.com/app/4c413db204a68a63
-
 // https://github.com/EndlessCheng
 func cf792E(in io.Reader, out io.Writer) {
 	var n int

@@ -6,8 +6,6 @@ import (
 	"io"
 )
 
-// https://gemini.google.com/app/8a6504a2d3dfb2c8
-
 // https://github.com/EndlessCheng
 func cf1916H2(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)

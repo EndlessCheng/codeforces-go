@@ -6,8 +6,6 @@ import (
 	"testing"
 )
 
-// https://gemini.google.com/app/84de068764ac883e
-
 // https://codeforces.com/problemset/problem/665/F 2400
 // https://codeforces.com/problemset/status/665/problem/F?friends=on
 func Test_cf665F(t *testing.T) {

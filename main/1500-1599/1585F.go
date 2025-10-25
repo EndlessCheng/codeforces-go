@@ -5,8 +5,6 @@ import (
 	"io"
 )
 
-// https://gemini.google.com/app/7c1758c819da92af
-
 // https://github.com/EndlessCheng
 func cf1585F(in io.Reader, out io.Writer) {
 	const mod = 998244353

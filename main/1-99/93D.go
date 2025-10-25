@@ -5,8 +5,6 @@ import (
 	"io"
 )
 
-// https://gemini.google.com/app/b7d4162bcc20cac8
-
 // https://github.com/EndlessCheng
 const mod93 = 1_000_000_007
 
