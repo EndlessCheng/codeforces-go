@@ -51,6 +51,7 @@ https://codeforces.com/problemset/problem/670/D2 1500
 https://codeforces.com/problemset/problem/760/B 1500
 https://codeforces.com/problemset/problem/812/C 1500 同时记录一个副产物
 https://codeforces.com/problemset/problem/1610/C 1600
+https://codeforces.com/problemset/problem/1856/C 1600 也可以不用二分
 https://codeforces.com/problemset/problem/1946/C 1600
 https://codeforces.com/problemset/problem/1260/D 1900 区间合并
 https://codeforces.com/problemset/problem/1996/F 1900 二分间接值
@@ -525,6 +526,7 @@ func sortCollections() {
 	// https://codeforces.com/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 模板题 https://ac.nowcoder.com/acm/contest/64272/c
+	// https://codeforces.com/problemset/problem/605/C 2400
 	// https://atcoder.jp/contests/abc130/tasks/abc130_f 也可以用整数三分
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearchF := func(l, r float64, f func(x float64) float64) float64 {
