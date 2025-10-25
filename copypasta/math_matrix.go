@@ -249,7 +249,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 // 关键思路：利用过去的失败，修正现在的失败
 // ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
 // 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
-// 注：用 Cayley-Hamilton 定理可以证明，对于矩阵快速幂优化 DP，求出前 2k 项，就能得到递推方程（k 是系数矩阵的边长）
+// 注：用 Cayley-Hamilton 定理可以证明，对于矩阵快速幂优化 DP，求出前 2k 项，就能得到递推方程（k 是矩阵的行数和列数）
 //    另见 https://www.luogu.com/paste/ytpmeswf 第 88 条
 // https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
 // https://oi-wiki.org/math/berlekamp-massey/
@@ -265,44 +265,45 @@ func berlekampMassey(a []int) (coef []int) {
 	var preC []int
 	preI, preD := -1, 0
 	for i, v := range a {
+		// d = a[i] - 递推式算出来的值
 		d := v
 		for j, c := range coef {
 			d = (d - c*a[i-1-j]) % mod
 		}
-		if d == 0 {
+		if d == 0 { // 递推式正确
 			continue
 		}
 
-		// 首次算错，初始化 coef
+		// 首次算错，初始化 coef 为 i+1 个 0
 		if preI < 0 {
 			coef = make([]int, i+1)
 			preI, preD = i, d
 			continue
 		}
 
-		bias := i - 1 - preI
-		oldSz := len(coef)
-		sz := bias + len(preC) + 1
-		var oldCoef []int
-		if sz > oldSz {
-			oldCoef = slices.Clone(coef)
-			coef = slices.Grow(coef, sz-oldSz)[:sz]
+		bias := i - preI
+		oldLen := len(coef)
+		newLen := bias + len(preC)
+		var tmp []int
+		if newLen > oldLen { // 递推式变长了
+			tmp = slices.Clone(coef)
+			coef = slices.Grow(coef, newLen-oldLen)[:newLen]
 		}
 
 		// 上一次算错告诉我们，preD = a[preI] - sum_j preC[j]*a[preI-1-j]
 		// 现在 a[i] = sum_j coef[j]*a[i-1-j] + d
 		// 联立得 a[i] = sum_j coef[j]*a[i-1-j] + d/preD * (a[preI] - sum_j preC[j]*a[preI-1-j])
-		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias=i-1-preI 处
+		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias-1 = i-preI-1 处
 		// 注意：preI 之前的数据符合旧公式，即 a[(<preI)] = sum_j preC[j]*a[(<preI)-1-j]
 		//      对于新公式，i 之前的每个公式增加了 d/preD * (a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]) = d/preD * 0 = 0，所以也符合新公式
 		delta := d * pow(preD, mod-2) % mod
-		coef[bias] = (coef[bias] + delta) % mod
+		coef[bias-1] = (coef[bias-1] + delta) % mod
 		for j, c := range preC {
-			coef[bias+1+j] = (coef[bias+1+j] - delta*c) % mod
+			coef[bias+j] = (coef[bias+j] - delta*c) % mod
 		}
 
-		if sz > oldSz {
-			preC = oldCoef
+		if newLen > oldLen {
+			preC = tmp
 			preI, preD = i, d
 		}
 	}
@@ -312,8 +313,7 @@ func berlekampMassey(a []int) (coef []int) {
 	// 如果把末尾的 0 去掉，变成 [0,1]，就表示 f_n = 0*f_{n-1} + f_{n-2} = f_{n-2} (n>=2)
 	// 看上去一样，但按照这个式子算出来的数列是错误的 {1,2,1,2,1,2,...}
 
-	// 把负数调整为非负数
-	// 比如后面计算递推式第 n 项，这可以保证不会产生负数（但那样的话，可以最后输出时再调整，所以下面的循环其实没必要）
+	// 把负数调整为非负数（可以省略）
 	for i, c := range coef {
 		coef[i] = (c + mod) % mod
 	}
@@ -842,8 +842,9 @@ https://atcoder.jp/contests/abc323/tasks/abc323_g
 //  https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearProgramming.java.html
 //  https://web.mit.edu/lpsolve/doc/Python.htm
 //
-// todo https://uoj.ac/problem/179
-//  https://codeforces.com/problemset/problem/1430/G https://codeforces.com/blog/entry/83614?#comment-709868
-//  https://codeforces.com/problemset/problem/375/E
-//  NOI08 志愿者招募 https://www.luogu.com.cn/problem/P3980
-//       整数线性规划与全幺模矩阵 https://www.acwing.com/file_system/file/content/whole/index/content/2197334/
+// https://uoj.ac/problem/179
+// https://codeforces.com/problemset/problem/605/C 2400 对偶
+// https://codeforces.com/problemset/problem/1430/G 2600 https://codeforces.com/blog/entry/83614?#comment-709868
+// https://codeforces.com/problemset/problem/375/E 3000
+// https://www.luogu.com.cn/problem/P3980 NOI08 志愿者招募 
+// 整数线性规划与全幺模矩阵 https://www.acwing.com/file_system/file/content/whole/index/content/2197334/
