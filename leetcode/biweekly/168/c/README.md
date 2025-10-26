@@ -14,7 +14,7 @@
 
 - 如果 $\textit{target}$ 在 $x$ 和 $y$ 之间，由于每次操作只能把 $x$ 增大/减少 $1$，只能一步一步挪动，所以可以在 $x$ 变成 $\textit{target}$ 的那一刻，把 $\textit{target}$ 追加到 $\textit{nums}_1$ 的末尾。
 - 如果 $\textit{target} < x$，那么先把 $x$ 追加到 $\textit{nums}_1$ 的末尾，再花费 $x-\textit{target}$ 的操作次数。
-- 如果 $\textit{target} > x$，那么先把 $x$ 变成 $y$，把 $y$ 追加到 $\textit{nums}_1$ 的末尾，再花费 $\textit{target}-y$ 的操作次数。
+- 如果 $\textit{target} > y$，那么先把 $x$ 变成 $y$，把 $y$ 追加到 $\textit{nums}_1$ 的末尾，再花费 $\textit{target}-y$ 的操作次数。
 
 对于每一对 $(x,y)$，计算处理 $\textit{target}$ 操作次数，取最小值。
 
