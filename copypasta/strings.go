@@ -2,7 +2,6 @@ package copypasta
 
 import (
 	"index/suffixarray"
-	"math/bits"
 	"math/rand"
 	"reflect"
 	"slices"
@@ -711,7 +710,7 @@ func _() {
 		// boxM 为该最大回文子串的中心位置，二者的关系为 boxR = boxM + halfLen[boxM]
 		boxM, boxR := 0, 0
 		for i := 2; i < len(halfLen); i++ { // 循环的起止位置对应着原串的首尾字符
-			hl := 1
+			hl := 1 // 注：如果题目比较的是抽象意义的值，单个值可能不满足要求，此时应初始化 hl = 0
 			if i < boxR {
 				// 记 i 关于 boxM 的对称位置 i'=boxM*2-i
 				// 若以 i' 为中心的最长回文子串范围超出了以 boxM 为中心的回文串的范围（即 i+halfLen[i'] >= boxR）
@@ -768,7 +767,7 @@ func _() {
 		}
 
 		// 计算 s 中的回文子串的个数
-		// 答案为 ∑(halfLen[i]/2)，因为每个 halfLen[i] 对应的回文子串集合中，有一半是左右两端点是 '#' 的回文子串
+		// 答案为 ∑(halfLen[i]/2)，除以 2 是因为每个 halfLen[i] 对应的回文子串集合中，有一半是左右两端点是 '#' 的回文子串，不能计入
 		// LC647 https://leetcode.cn/problems/palindromic-substrings/
 		{
 			totPal := 0
@@ -1054,7 +1053,7 @@ func _() {
 			_  []byte
 			sa []int32
 		}
-		sa := (*_tp)(unsafe.Pointer(suffixarray.New([]byte(s)))).sa
+		sa := (*_tp)(unsafe.Pointer(suffixarray.New([]byte(s)))).sa // 注意这里的参数名称是 s，如果改了，下面的也得改
 
 		// 其他写法
 		// sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
@@ -1071,7 +1070,7 @@ func _() {
 
 		// 计算高度数组（也叫 LCP 数组）
 		// height[0] = 0（哨兵）
-		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
+		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])   (i > 0)
 		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
 		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 		// 	  https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/E
@@ -1098,22 +1097,10 @@ func _() {
 			height[rk] = h
 		}
 
-		// 任意两后缀的 LCP
+		st := newSparseTable(height, func(a int, b int) int { return min(a, b) })
+		// 返回 LCP(s[i:], s[j:])，即两个后缀的最长公共前缀
 		// 注：若允许离线可以用 Trie+Tarjan 做到线性
-		// st := make([][17]int, n) // 131072, 262144, 524288, 1048576
 		// https://codeforces.com/problemset/problem/822/E
-		logN := bits.Len(uint(len(sa)))
-		st := make([][]int, len(sa))
-		for i, v := range height {
-			st[i] = make([]int, logN)
-			st[i][0] = v
-		}
-		for j := 1; 1<<j <= len(sa); j++ {
-			for i := 0; i+1<<j <= len(sa); i++ {
-				st[i][j] = min(st[i][j-1], st[i+1<<(j-1)][j-1])
-			}
-		}
-		_q := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return min(st[l][k], st[r-1<<k][k]) }
 		lcp := func(i, j int) int {
 			if i == j {
 				return len(sa) - i
@@ -1124,14 +1111,15 @@ func _() {
 				ri, rj = rj, ri
 			}
 			// ri+1 是因为 height 的定义是 sa[i] 和 sa[i-1]
-			// rj+1 是因为 _q 是左闭右开
-			return _q(ri+1, rj+1)
+			// rj+1 是因为 query 是左闭右开
+			return st.query(ri+1, rj+1)
 		}
 
 		// EXTRA: 比较两个子串，返回 strings.Compare(s[l1:r1], s[l2:r2])，注意是左闭右开区间
 		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
 		// https://codeforces.com/problemset/problem/611/D
 		// LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/
+		// https://leetcode.cn/problems/lexicographically-smallest-string-after-reverse/
 		compareSubstring := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
@@ -1140,7 +1128,7 @@ func _() {
 				return len1 - len2
 			}
 			// 此时两个子串一定不相等
-			return rank[l1] - rank[l2] // int(s[l1+l]) - int(s[l2+l])
+			return rank[l1] - rank[l2] // 也可以写 int(s[l1+l]) - int(s[l2+l])
 		}
 
 		// EXTRA: 可重叠最长重复子串
