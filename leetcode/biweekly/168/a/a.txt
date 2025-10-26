@@ -1,0 +1,11 @@
+"dcab"
+"acdb"
+
+"abba"
+"aabb"
+
+"zxy"
+"xzy"
+
+
+
