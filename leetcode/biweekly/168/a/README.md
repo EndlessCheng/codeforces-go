@@ -1,6 +1,6 @@
 枚举 $k=1,2,\ldots,n$，反转长为 $k$ 的前缀/后缀，用得到的字符串更新答案的最小值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1zxxNzcERu/)，顺带讲了非暴力做法，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -78,7 +78,7 @@ func lexSmallest(s string) string {
 
 构造字符串 $t = \textit{rev}(s) + \texttt{#} + s$，上面的做法相当于比较 $t$ 中两个子串的字典序大小。
 
-这可以用**后缀数组**（或者字符串哈希）快速比较。
+这可以用**后缀数组**（或者字符串哈希+二分）快速比较。
 
 对于后缀数组，在经过 $\mathcal{O}(n\log n)$ 的预处理后，可以 $\mathcal{O}(1)$ 比较任意两个子串的字典序大小。
 
@@ -203,11 +203,11 @@ func lexSmallest(s string) string {
 	slices.Reverse(pre)
 	ans := string(pre) + s[ansK:]
 
-	// 反转后缀
-	// 剪枝：如果 s[0] > ans[0]，那么反转后缀一定不优
+	// 反转真后缀
+	// 剪枝：如果 s[0] > ans[0]，那么反转真后缀一定不优
 	if s[0] == ans[0] {
 		ansK = 1
-		for k := 2; k <= n; k++ {
+		for k := 2; k < n; k++ {
 			c := compareSubstring(0, k-ansK, n*2+1-k, n*2+1-ansK)
 			if c < 0 || c == 0 && compareSubstring(k-ansK, k, 0, ansK) < 0 {
 				ansK = k
@@ -228,7 +228,7 @@ func lexSmallest(s string) string {
 
 ## 专题训练
 
-见下面字符串题单的「**八、后缀数组/后缀自动机**」。
+见下面字符串题单的「**八、后缀数组/后缀自动机**」和「**四、字符串哈希**」。
 
 ## 分类题单
 
@@ -246,5 +246,3 @@ func lexSmallest(s string) string {
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
-
-[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)

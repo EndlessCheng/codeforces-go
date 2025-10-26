@@ -37,7 +37,7 @@ $$
 
 具体请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1zxxNzcERu/?t=13m51s)，两种方法都讲了，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -464,7 +464,9 @@ func countCoprime(mat [][]int) int {
 
 ### 优化
 
-对于每一行，**预处理**每个数的因子的出现次数，避免反复遍历 $\textit{mat}$。
+`if x % i == 0: cnt += 1` 本质是在统计 $x$ 的因子 $i$ 的个数。
+
+所以对于每一行，可以先**预处理**每个数的因子的出现次数，避免反复遍历 $\textit{mat}$。
 
 ```py [sol-Python3]
 MX = 151
@@ -676,6 +678,8 @@ func countCoprime(mat [][]int) int {
 
 - 时间复杂度：$\mathcal{O}(mn\cdot d(U) + mU + U\log U)$，其中 $m$ 和 $n$ 分别是 $\textit{mat}$ 的行数和列数，$U$ 是 $\textit{mat}[i][j]$ 的最大值，$d(U)\le 16$ 是单个数的最大因子个数。
 - 空间复杂度：$\mathcal{O}(mU)$。
+
+**注**：在统计因子时，可以先统计 $\textit{row}$ 每个元素的出现次数，这样每行可以做到 $\mathcal{O}(n + U\log U)$ 时间，总体时间复杂度为 $\mathcal{O}(m(n + U\log U))$。对于本题的数据范围，这个优化不明显。
 
 ## 专题训练
 

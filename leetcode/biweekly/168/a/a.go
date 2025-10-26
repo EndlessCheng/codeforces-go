@@ -145,11 +145,11 @@ func lexSmallest(s string) string {
 	slices.Reverse(pre)
 	ans := string(pre) + s[ansK:]
 
-	// 反转后缀
-	// 剪枝：如果 s[0] > ans[0]，那么反转后缀一定不优
+	// 反转真后缀
+	// 剪枝：如果 s[0] > ans[0]，那么反转真后缀一定不优
 	if s[0] == ans[0] {
 		ansK = 1
-		for k := 2; k <= n; k++ {
+		for k := 2; k < n; k++ {
 			c := compareSubstring(0, k-ansK, n*2+1-k, n*2+1-ansK)
 			if c < 0 || c == 0 && compareSubstring(k-ansK, k, 0, ansK) < 0 {
 				ansK = k

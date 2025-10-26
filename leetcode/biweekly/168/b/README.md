@@ -2,13 +2,15 @@
 
 首先判断无解的情况。如果所有位置都填 $9$，数位和 $9n$ 仍然小于 $\textit{sum}$，那么无解，返回空串。
 
-否则有解。为了最大化答案的字典序，我们可以：
+否则有解。把 $9$ 拆分成 $9+0$ 还是 $5+4$？由于 $9^2 > 5^2 + 4^2$，拆分成 $9+0$ 更好。一般地，由于 $f(x)=x^2$ 是凸函数，当元素分布最不均匀时，平方和最大。
+
+为了最大化答案的字典序，我们可以：
 
 - 先填 $\left\lfloor\dfrac{\textit{sum}}{9}\right\rfloor$ 个 $9$。
 - 如果 $\textit{sum}\bmod 9 > 0$，那么再填一个 $\textit{sum}\bmod 9$。
 - 最后填入 $n-|\textit{ans}|$ 个 $0$，其中 $|\textit{ans}|$ 表示当前答案的长度。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1zxxNzcERu/?t=6m16s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

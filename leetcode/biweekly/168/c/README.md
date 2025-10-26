@@ -18,7 +18,7 @@
 
 对于每一对 $(x,y)$，计算处理 $\textit{target}$ 操作次数，取最小值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1zxxNzcERu/?t=9m22s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 手写 min max 更快
@@ -110,6 +110,11 @@ func minOperations(nums1, nums2 []int) int64 {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}_1$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 思考题
+
+1. 如果 $\textit{nums}_2$ 的长度是 $m\ (m>n)$，怎么做？
+2. 如果 $\textit{nums}_2$ 的长度是 $n+1$，但操作三改成可以插在 $\textit{nums}_1$ 的任意位置，怎么做？
 
 ## 分类题单
 
