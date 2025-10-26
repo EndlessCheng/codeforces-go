@@ -15,7 +15,13 @@
 
 所以**只有当子数组只包含一种元素时，才会出现相同的子数组**。
 
+如何统计连续相同段中的合法子数组呢？
+
+例如在 $\textit{nums}=[1,2,2,3,3,3]$ 中找 $[3,3]$，只要限定子数组的左端点在第一个 $3$ 或者更靠左的位置，就不会错误地统计两个 $[3,3]$ 子数组了。
+
 我们可以在 974 题的做法上修改：对于连续相同元素段，要保证哈希表暂时不包含这一段对应的前缀和，**等我们遍历完这一段，再把对应的前缀和加到哈希表中**。
+
+例如 $\textit{nums}=[1,2,2,3,3,3]$，在遍历 $3$ 的过程中，哈希表只保存 $[1,2,2]$ 中的前缀和，此时去哈希表查询，就相当于限定子数组的左端点在第一个 $3$ 或者更靠左的位置。这样就能保证统计的子数组无重复。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
@@ -146,5 +152,3 @@ func numGoodSubarrays(nums []int, k int) (ans int64) {
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
-
-[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
