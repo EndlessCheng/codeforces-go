@@ -37,7 +37,8 @@ class Solution:
             # 如果 target 在 [x,y] 中，那么在从 x 变成 y 的过程中，可以顺带把 target 追加到 nums1 的末尾，代价为 0
             # 如果 target < x，代价为 x-target
             # 如果 target > y，代价为 target-y
-            mn = min(mn, max(x - target, target - y))
+            if mn > 0:  # 如果 target 还不在任何 [x,y] 中，则计算
+                mn = min(mn, max(x - target, target - y))
         return ans + max(mn, 0)  # 如果 target 在 [x,y] 中，上面可能会算出负数
 ```
 
