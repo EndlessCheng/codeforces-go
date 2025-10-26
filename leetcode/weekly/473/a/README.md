@@ -2,7 +2,7 @@
 
 对于不为零的数位 $d$，通过 $d\cdot 10^k$ 组合起来，其中 $k$ 是当前答案的十进制长度。$k$ 从 $0$ 开始，每添加一个数位就加一。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1eqxNzXE8v/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

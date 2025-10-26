@@ -1,8 +1,8 @@
 把 $\textit{nums}$ 每一项平方，然后从小到大排序。
 
-设 $m = \left\lfloor\dfrac{n}{2}\right\rfloor$。贪心地，把前 $m$ 小作为奇数项，剩余 $n-m$ 大作为偶数项，这样算出来的交替和是最大的。
+设 $m = \left\lfloor\dfrac{n}{2}\right\rfloor$。贪心地，把前 $m$ 小作为奇数项（减去），后 $n-m$ 大作为偶数项（加上），这样算出来的交替和是最大的。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1eqxNzXE8v/?t=4m35s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -56,18 +56,12 @@ public:
         for (int& x : nums) {
             x *= x;
         }
-        int n = nums.size(), m = n / 2;
+        int m = nums.size() / 2;
         ranges::nth_element(nums, nums.begin() + m);
 
         // 交替和：减去小的，加上大的
-        long long ans = 0;
-        for (int i = 0; i < m; i++) {
-            ans -= nums[i];
-        }
-        for (int i = m; i < n; i++) {
-            ans += nums[i];
-        }
-        return ans;
+        return -accumulate(nums.begin(), nums.begin() + m, 0LL)
+               +accumulate(nums.begin() + m, nums.end(), 0LL);
     }
 };
 ```
@@ -116,5 +110,3 @@ func maxAlternatingSum(nums []int) (ans int64) {
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
-
-[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)

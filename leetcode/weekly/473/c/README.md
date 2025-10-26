@@ -1,6 +1,6 @@
 **前置题目**：[560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/)，[我的题解](https://leetcode.cn/problems/subarray-sum-equals-k/solutions/2781031/qian-zhui-he-ha-xi-biao-cong-liang-ci-bi-4mwr/)。
 
-设 $\textit{capacity}$ 的前缀和数组为 $s$。
+设 $\textit{capacity}$ 的前缀和数组为 $s$。关于 $s$ 的定义，见 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
 题目要求的式子，等价于
 
@@ -19,7 +19,7 @@ $$
 
 枚举 $r$，问题变成：
 
-- 有多少个 $l$ 满足 $r-l+1\ge 3$，且二元组 $(\textit{capacity}[l],\textit{capacity}[l] + s[l+1])$ 等于二元组 $(\textit{capacity}[r],s[r])$？
+- 有多少个左端点 $l$ 满足子数组长度 $r-l+1\ge 3$，且二元组 $(\textit{capacity}[l],\textit{capacity}[l] + s[l+1])$ 等于二元组 $(\textit{capacity}[r],s[r])$？
 
 枚举 $r$，用哈希表维护左边的 $(\textit{capacity}[l],\textit{capacity}[l] + s[l+1])$ 的个数。
 
@@ -27,7 +27,7 @@ $$
 
 此外，按照上述方式更新哈希表，$s$ 可以简化成一个变量。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1eqxNzXE8v/?t=10m52s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -51,10 +51,10 @@ class Solution {
         Map<Pair, Integer> cnt = new HashMap<>();
         long sum = capacity[0]; // 前缀和
         long ans = 0;
-        for (int i = 1; i < capacity.length; i++) {
-            ans += cnt.getOrDefault(new Pair(capacity[i], sum), 0);
-            cnt.merge(new Pair(capacity[i - 1], capacity[i - 1] + sum), 1, Integer::sum);
-            sum += capacity[i];
+        for (int r = 1; r < capacity.length; r++) {
+            ans += cnt.getOrDefault(new Pair(capacity[r], sum), 0);
+            cnt.merge(new Pair(capacity[r - 1], capacity[r - 1] + sum), 1, Integer::sum);
+            sum += capacity[r];
         }
         return ans;
     }
@@ -68,10 +68,10 @@ public:
         map<pair<int, long long>, int> cnt; // 另见【C++ 自定义哈希】
         long long sum = capacity[0]; // 前缀和
         long long ans = 0;
-        for (int i = 1; i < capacity.size(); i++) {
-            ans += cnt[{capacity[i], sum}];
-            cnt[{capacity[i - 1], capacity[i - 1] + sum}]++;
-            sum += capacity[i];
+        for (int r = 1; r < capacity.size(); r++) {
+            ans += cnt[{capacity[r], sum}];
+            cnt[{capacity[r - 1], capacity[r - 1] + sum}]++;
+            sum += capacity[r];
         }
         return ans;
     }
@@ -108,10 +108,10 @@ public:
         unordered_map<tuple<int, long long>, int, TupleHash> cnt;
         long long sum = capacity[0]; // 前缀和
         long long ans = 0;
-        for (int i = 1; i < capacity.size(); i++) {
-            ans += cnt[{capacity[i], sum}];
-            cnt[{capacity[i - 1], capacity[i - 1] + sum}]++;
-            sum += capacity[i];
+        for (int r = 1; r < capacity.size(); r++) {
+            ans += cnt[{capacity[r], sum}];
+            cnt[{capacity[r - 1], capacity[r - 1] + sum}]++;
+            sum += capacity[r];
         }
         return ans;
     }
@@ -123,10 +123,10 @@ func countStableSubarrays(capacity []int) (ans int64) {
 	type pair struct{ x, s int }
 	cnt := map[pair]int{}
 	sum := capacity[0] // 前缀和
-	for i := 1; i < len(capacity); i++ {
-		ans += int64(cnt[pair{capacity[i], sum}])
-		cnt[pair{capacity[i-1], capacity[i-1] + sum}]++
-		sum += capacity[i]
+	for r := 1; r < len(capacity); r++ {
+		ans += int64(cnt[pair{capacity[r], sum}])
+		cnt[pair{capacity[r-1], capacity[r-1] + sum}]++
+		sum += capacity[r]
 	}
 	return
 }
@@ -136,6 +136,10 @@ func countStableSubarrays(capacity []int) (ans int64) {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{capacity}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 思考题
+
+把最小长度 $3$ 改成 $4$，代码应该如何修改？改成 $k$ 呢？
 
 ## 专题训练
 
