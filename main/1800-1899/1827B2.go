@@ -5,8 +5,6 @@ import (
 	"io"
 )
 
-// (n-1)*n*(n+1)/6 的两种组合视角 https://chatgpt.com/c/68d4e480-0634-8324-ad29-15877e539f81
-
 // https://github.com/EndlessCheng
 func cf1827B2(in io.Reader, out io.Writer) {
 	var T, n int

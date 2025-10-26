@@ -5,9 +5,6 @@ import (
 	"io"
 )
 
-// https://chatgpt.com/c/68e8f447-7ec8-8320-b8ea-7dfbe496a959
-// https://www.luogu.com.cn/article/muox5g44
-
 // https://github.com/EndlessCheng
 func cf1808E3(in io.Reader, out io.Writer) {
 	gcd := func(a, b int) int {
