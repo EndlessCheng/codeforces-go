@@ -484,14 +484,11 @@ class Solution {
         return (int) (ans * 2 % MOD);
     }
 
-    private void reverse(int[] arr) {
-        int i = 0, j = arr.length - 1;
-        while (i < j) {
-            int tmp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = tmp;
-            i++;
-            j--;
+    private void reverse(int[] a) {
+        for (int i = 0, j = a.length - 1; i < j; i++, j--) {
+            int tmp = a[i];
+            a[i] = a[j];
+            a[j] = tmp;
         }
     }
 }
