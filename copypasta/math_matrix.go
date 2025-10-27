@@ -243,8 +243,9 @@ func kitamasa(coef, a []int, n int) (ans int) {
 }
 
 // Berlekamp-Massey 算法
-// 给定数列的前 m 项，返回符合这个数列的最短常系数齐次线性递推式的系数 coef（设其长度为 k）
-// 当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
+// 给定数列的前 m 项 a，返回符合 a 的最短常系数齐次线性递推式的系数 coef（模 mod 意义下）
+// 设 coef 长为 k，当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
+// 初始值 f(n) = a[n]  (0 <= n < k)
 // 时间复杂度 O(mk)，其中 m 是 a 的长度，k 是最终 coef 的长度
 // 关键思路：利用过去的失败，修正现在的失败
 // ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
@@ -287,10 +288,10 @@ func berlekampMassey(a []int) (coef []int) {
 		var tmp []int
 		if newLen > oldLen { // 递推式变长了
 			tmp = slices.Clone(coef)
-			coef = slices.Grow(coef, newLen-oldLen)[:newLen]
+			coef = slices.Grow(coef, newLen-oldLen)[:newLen] // coef.resize(newLen)
 		}
 
-		// 上一次算错告诉我们，preD = a[preI] - sum_j preC[j]*a[preI-1-j]
+		// 历史错误为 preD = a[preI] - sum_j preC[j]*a[preI-1-j]
 		// 现在 a[i] = sum_j coef[j]*a[i-1-j] + d
 		// 联立得 a[i] = sum_j coef[j]*a[i-1-j] + d/preD * (a[preI] - sum_j preC[j]*a[preI-1-j])
 		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias-1 = i-preI-1 处
@@ -309,13 +310,18 @@ func berlekampMassey(a []int) (coef []int) {
 	}
 
 	// 计算完后，可能 coef 的末尾有 0，这些 0 不能去掉
-	// 比如数列 {1,2,4,2,4,2,4,...} 的系数为 [0,1,0]，表示 f_n = 0*f_{n-1} + f_{n-2} + 0*f_{n-3} = f_{n-2} (n>=3)
-	// 如果把末尾的 0 去掉，变成 [0,1]，就表示 f_n = 0*f_{n-1} + f_{n-2} = f_{n-2} (n>=2)
-	// 看上去一样，但按照这个式子算出来的数列是错误的 {1,2,1,2,1,2,...}
+	// 比如数列 (1,2,4,2,4,2,4,...) 的系数为 [0,1,0]，表示 f(n) = 0*f(n-1) + 1*f(n-2) + 0*f(n-3) = f(n-2)   (n >= 3)
+	// 如果把末尾的 0 去掉，变成 [0,1]，就表示 f(n) = 0*f(n-1) + f(n-2) = f(n-2)   (n >= 2)
+	// 看上去一样，但按照这个式子算出来的数列是错误的 (1,2,1,2,1,2,...)
 
-	// 把负数调整为非负数（可以省略）
+	// 手动找规律用
 	for i, c := range coef {
-		coef[i] = (c + mod) % mod
+		if c < -mod/2 {
+			c += mod
+		} else if c > mod/2 {
+			c -= mod
+		}
+		coef[i] = c
 	}
 
 	return
