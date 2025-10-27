@@ -53,7 +53,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long numGoodSubarrays(int[] nums, int k) {
-        Map<Integer, Integer> cnt = new HashMap<>();
+        Map<Integer, Integer> cnt = new HashMap<>(nums.length, 1);
         cnt.put(0, 1); // 见 560 题
         long sum = 0; // 前缀和
         int lastStart = 0; // 上一个连续相同段的起始下标
