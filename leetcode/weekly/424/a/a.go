@@ -11,13 +11,11 @@ func countValidSelections(nums []int) (ans int) {
 	for _, x := range nums {
 		if x > 0 {
 			pre += x
-		} else if pre*2 == total {
-			ans += 2
-		} else if abs(pre*2-total) == 1 {
-			ans += 1
+		} else {
+			ans += max(2-abs(pre*2-total), 0)
 		}
 	}
-	return ans
+	return
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }

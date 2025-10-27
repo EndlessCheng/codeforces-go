@@ -1,4 +1,4 @@
-本题可以视作一个「**小球打砖块**」游戏，具体请看 [本题视频讲解](https://www.bilibili.com/video/BV1yiU6YnEfU/) 画的图。
+本题可以视作一个「**小球打砖块**」游戏，具体请看 [视频讲解](https://www.bilibili.com/video/BV1yiU6YnEfU/) 画的图。
 
 每打掉一个砖块，小球的移动方向就要反向，所以要想打掉所有砖块，起始位置左右的砖块个数之差不能超过 $1$。
 
@@ -10,6 +10,8 @@
 - 如果前缀和比后缀和多 $1$，那么小球初始方向必须向左，才能打掉所有砖块，答案加 $1$。
 - 如果前缀和比后缀和少 $1$，那么小球初始方向必须向右，才能打掉所有砖块，答案加 $1$。
 - 其余情况，不能是起始位置。
+
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -144,6 +146,138 @@ impl Solution {
                 ans += 2;
             } else if (pre * 2 - total).abs() == 1 {
                 ans += 1;
+            }
+        }
+        ans
+    }
+}
+```
+
+## 写法二
+
+```py [sol-Python3]
+class Solution:
+    def countValidSelections(self, nums: List[int]) -> int:
+        total = sum(nums)
+        ans = pre = 0
+        for x in nums:
+            if x:
+                pre += x
+            else:
+                ans += max(2 - abs(pre * 2 - total), 0)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int countValidSelections(int[] nums) {
+        int total = 0;
+        for (int x : nums) {
+            total += x;
+        }
+
+        int ans = 0;
+        int pre = 0;
+        for (int x : nums) {
+            if (x > 0) {
+                pre += x;
+            } else {
+                int diff = Math.abs(pre * 2 - total);
+                ans += Math.max(2 - diff, 0);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countValidSelections(vector<int>& nums) {
+        int total = reduce(nums.begin(), nums.end());
+        int ans = 0, pre = 0;
+        for (int x : nums) {
+            if (x) {
+                pre += x;
+            } else {
+                ans += max(2 - abs(pre * 2 - total), 0);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
+
+int countValidSelections(int* nums, int numsSize) {
+    int total = 0;
+    for (int i = 0; i < numsSize; i++) {
+        total += nums[i];
+    }
+
+    int ans = 0, pre = 0;
+    for (int i = 0; i < numsSize; i++) {
+        if (nums[i]) {
+            pre += nums[i];
+        } else {
+            ans += MAX(2 - abs(pre * 2 - total), 0);
+        }
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func countValidSelections(nums []int) (ans int) {
+	total := 0
+	for _, x := range nums {
+		total += x
+	}
+
+	pre := 0
+	for _, x := range nums {
+		if x > 0 {
+			pre += x
+		} else {
+			ans += max(2-abs(pre*2-total), 0)
+		}
+	}
+	return
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+```js [sol-JavaScript]
+var countValidSelections = function(nums) {
+    const total = _.sum(nums);
+    let ans = 0, pre = 0;
+    for (const x of nums) {
+        if (x) {
+            pre += x;
+        } else {
+            const diff = Math.abs(pre * 2 - total);
+            ans += Math.max(2 - diff, 0);
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_valid_selections(nums: Vec<i32>) -> i32 {
+        let total = nums.iter().sum::<i32>();
+        let mut ans = 0;
+        let mut pre = 0;
+        for x in nums {
+            if x != 0 {
+                pre += x;
+            } else {
+                ans += 0.max(2 - (pre * 2 - total).abs());
             }
         }
         ans
