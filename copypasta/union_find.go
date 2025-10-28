@@ -528,6 +528,7 @@ func _(n int) {
 //
 // 模板题 https://codeforces.com/problemset/problem/1850/H 1700
 //       https://codeforces.com/problemset/problem/1074/D 2400? 1700!
+//       https://atcoder.jp/contests/arc015/tasks/arc015_3
 //       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
 // https://www.luogu.com.cn/problem/P2024 [NOI2001] 食物链
 // https://www.luogu.com.cn/problem/P1955 [NOI2015] 程序自动分析
@@ -536,6 +537,7 @@ func _(n int) {
 // https://codeforces.com/problemset/problem/1594/D 1700 种类并查集
 // https://codeforces.com/problemset/problem/766/D 2000 种类并查集
 // https://codeforces.com/problemset/problem/1615/D 2200
+// https://codeforces.com/problemset/problem/1147/D 2400
 // https://codeforces.com/problemset/problem/1290/C 2400 种类并查集 + 维护集合大小 
 // https://codeforces.com/problemset/problem/1713/E 2400 转化
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
