@@ -249,12 +249,13 @@ func kitamasa(coef, a []int, n int) (ans int) {
 // 时间复杂度 O(mk)，其中 m 是 a 的长度，k 是最终 coef 的长度
 // 关键思路：利用过去的失败，修正现在的失败
 // ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
-// 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
-// 注：用 Cayley-Hamilton 定理可以证明，对于矩阵快速幂优化 DP，求出前 2k 项，就能得到递推方程（k 是矩阵的行数和列数）
-//    另见 https://www.luogu.com/paste/ytpmeswf 第 88 条
+// 我的科普文章 https://zhuanlan.zhihu.com/p/1966417899825665440 如何预测数列的下一项？Berlekamp-Massey 算法
 // https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
 // https://oi-wiki.org/math/berlekamp-massey/
 // https://codeforces.com/blog/entry/61306
+// 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
+// 注：用 Cayley-Hamilton 定理可以证明，对于矩阵快速幂优化 DP，求出前 2k 项，就能得到递推方程（k 是矩阵的行数和列数）
+//    另见 https://www.luogu.com/paste/ytpmeswf 第 88 条
 //
 // https://www.luogu.com.cn/problem/P5487 模板题
 // - https://www.luogu.com.cn/problem/U228146 数据加强版
