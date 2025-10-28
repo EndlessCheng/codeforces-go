@@ -5,7 +5,7 @@
 1. [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/)，[我的题解](https://leetcode.cn/problems/subarray-sum-equals-k/solutions/2781031/qian-zhui-he-ha-xi-biao-cong-liang-ci-bi-4mwr/)。
 2. [974. 和可被 K 整除的子数组](https://leetcode.cn/problems/subarray-sums-divisible-by-k/)，[我的题解](https://leetcode.cn/problems/subarray-sums-divisible-by-k/solutions/3815616/qian-zhui-he-yu-ha-xi-biao-shi-zi-bian-x-qxc5/)。
 
-## 思路
+## 分析
 
 如果本题不要求子数组互不相同，那么就是 974 题。
 
@@ -15,11 +15,187 @@
 
 所以**只有当子数组只包含一种元素时，才会出现相同的子数组**。
 
-如何统计连续相同段中的合法子数组呢？
+## 方法一：减去重复的子数组个数
+
+首先，用 974 题的方法，计算所有元素和能被 $k$ 整除的子数组个数。
+
+这里面有重复的，减掉就是答案。
+
+比如某一段 $a = [2,2,2,2,2]$，找能被 $k=4$ 整除的子数组。
+
+其中子数组 $[2,2]$ 和为 $4$，由于 $a$ 中所有元素都相同，此时我们要算的是：
+
+- 计算 $a$ 中长为 $2$ 的子数组的个数。
+
+子数组右端点可以从 $1$ 到 $4$，所以有 $4$ 个 $[2,2]$，其中有 $3$ 个是重复的，从答案中减掉。
+
+子数组 $[2,2,2,2]$ 和为 $8$，由于 $a$ 中所有元素都相同，此时我们要算的是：
+
+- 计算 $a$ 中长为 $4$ 的子数组的个数。
+
+子数组右端点可以从 $3$ 到 $4$，所以有 $2$ 个 $[2,2,2,2]$，其中有 $1$ 个是重复的，从答案中减掉。
+
+```py [sol-Python3]
+class Solution:
+    # 974. 和可被 K 整除的子数组
+    # 由于本题 nums 没有负数，无需调整
+    def subarraysDivByK(self, nums: List[int], k: int) -> int:
+        cnt = defaultdict(int)
+        ans = s = 0
+        for x in nums:
+            cnt[s] += 1
+            s = (s + x) % k
+            ans += cnt[s]
+        return ans
+
+    def numGoodSubarrays(self, nums: List[int], k: int) -> int:
+        ans = self.subarraysDivByK(nums, k)
+        start = 0
+        for i, x in enumerate(nums):
+            if i < len(nums) - 1 and x == nums[i + 1]:
+                continue
+            # 遍历到了连续相同元素段的末尾
+            size = i - start + 1  # 这一段的长度
+            for sz in range(1, size + 1):
+                if x * sz % k == 0:
+                    # 长为 sz 的子数组元素和能被 k 整除
+                    # 一共有 size-sz+1 个长为 sz 的子数组，其中有 size-sz 个重复的
+                    ans -= size - sz
+            start = i + 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long numGoodSubarrays(int[] nums, int k) {
+        long ans = subarraysDivByK(nums, k);
+        int n = nums.length;
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            if (i < n - 1 && x == nums[i + 1]) {
+                continue;
+            }
+            // 遍历到了连续相同元素段的末尾
+            int size = i - start + 1; // 这一段的长度
+            for (int sz = 1; sz <= size; sz++) {
+                if ((long) x * sz % k == 0) {
+                    // 长为 sz 的子数组元素和能被 k 整除
+                    // 一共有 size-sz+1 个长为 sz 的子数组，其中有 size-sz 个重复的
+                    ans -= size - sz;
+                }
+            }
+            start = i + 1;
+        }
+        return ans;
+    }
+
+    // 974. 和可被 K 整除的子数组
+    // 由于本题 nums 没有负数，无需调整
+    private long subarraysDivByK(int[] nums, int k) {
+        Map<Integer, Integer> cnt = new HashMap<>(nums.length, 1); // 预分配空间
+        int s = 0;
+        long ans = 0;
+        for (int x : nums) {
+            cnt.merge(s, 1, Integer::sum); // cnt[s]++
+            s = (s + x) % k;
+            ans += cnt.getOrDefault(s, 0);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 974. 和可被 K 整除的子数组
+    // 由于本题 nums 没有负数，无需调整
+    long long subarraysDivByK(vector<int>& nums, int k) {
+        unordered_map<int, int> cnt;
+        int s = 0;
+        long long ans = 0;
+        for (int x : nums) {
+            cnt[s]++;
+            s = (s + x) % k;
+            ans += cnt[s];
+        }
+        return ans;
+    }
+    
+public:
+    long long numGoodSubarrays(vector<int>& nums, int k) {
+        long long ans = subarraysDivByK(nums, k);
+        int n = nums.size();
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            if (i < n - 1 && x == nums[i + 1]) {
+                continue;
+            }
+            // 遍历到了连续相同元素段的末尾
+            int size = i - start + 1; // 这一段的长度
+            for (int sz = 1; sz <= size; sz++) {
+                if (1LL * x * sz % k == 0) {
+                    // 长为 sz 的子数组元素和能被 k 整除
+                    // 一共有 size-sz+1 个长为 sz 的子数组，其中有 size-sz 个重复的
+                    ans -= size - sz;
+                }
+            }
+            start = i + 1;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+// 974. 和可被 K 整除的子数组
+// 由于本题 nums 没有负数，无需调整
+func subarraysDivByK(nums []int, k int) (ans int64) {
+	cnt := make(map[int]int, len(nums)) // 预分配空间
+	s := 0
+	for _, x := range nums {
+		cnt[s]++
+		s = (s + x) % k
+		ans += int64(cnt[s])
+	}
+	return
+}
+
+func numGoodSubarrays(nums []int, k int) int64 {
+	ans := subarraysDivByK(nums, k)
+	start := 0
+	for i, x := range nums {
+		if i < len(nums)-1 && x == nums[i+1] {
+			continue
+		}
+		// 遍历到了连续相同元素段的末尾
+		size := i - start + 1 // 这一段的长度
+		for sz := 1; sz <= size; sz++ {
+			if x*sz%k == 0 {
+				// 长为 sz 的子数组元素和能被 k 整除
+				// 一共有 size-sz+1 个长为 sz 的子数组，其中有 size-sz 个重复的
+				ans -= int64(size - sz)
+			}
+		}
+		start = i + 1
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然我们写了个二重循环，但内层循环的总循环次数不超过 $n$，所以总的循环次数不超过 $2n$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：避免重复统计
+
+直接在 974 题的做法上修改。
 
 例如在 $\textit{nums}=[1,2,2,3,3,3]$ 中找 $[3,3]$，只要限定子数组的左端点在第一个 $3$ 或者更靠左的位置，就不会错误地统计两个 $[3,3]$ 子数组了。
 
-我们可以在 974 题的做法上修改：对于连续相同元素段，要保证哈希表暂时不包含这一段对应的前缀和，**等我们遍历完这一段，再把对应的前缀和加到哈希表中**。
+换句话说，对于连续相同元素段，我们要保证哈希表暂时不包含这一段对应的前缀和，**等遍历完这一段，再把对应的前缀和加到哈希表中**。
 
 例如 $\textit{nums}=[1,2,2,3,3,3]$，在遍历 $3$ 的过程中，哈希表只保存 $[1,2,2]$ 中的前缀和，此时在哈希表中查询，就相当于限定子数组的左端点在第一个 $3$ 或者更靠左的位置。这样就能保证统计的子数组无重复。
 
