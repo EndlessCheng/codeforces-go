@@ -260,6 +260,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 // https://www.luogu.com.cn/problem/P5487 模板题
 // - https://www.luogu.com.cn/problem/U228146 数据加强版
 // https://www.luogu.com.cn/problem/P7820
+// https://codeforces.com/problemset/problem/93/D 2500
 // https://codeforces.com/problemset/problem/1511/F 2700
 // https://codeforces.com/problemset/problem/506/E 3000
 // https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/
