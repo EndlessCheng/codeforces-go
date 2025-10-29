@@ -78,6 +78,7 @@ import "math/bits"
 // https://codeforces.com/problemset/problem/438/D 2300 取模
 // https://codeforces.com/problemset/problem/1093/G 2300 k 维曼哈顿（单点修改+区间最大值）
 // https://codeforces.com/problemset/problem/498/D 2400
+// https://codeforces.com/problemset/problem/524/E 2400 扫描线
 // https://codeforces.com/problemset/problem/1187/D 2400 转换的好题
 // https://codeforces.com/problemset/problem/1401/F 2400 区间 swap & reverse
 // - 联想 reverse bit 的递归思路
