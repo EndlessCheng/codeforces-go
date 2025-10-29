@@ -473,6 +473,7 @@ func totalNQueens(n int) (ans int) {
 // 格雷码 https://oeis.org/A003188 https://oeis.org/A014550
 // https://en.wikipedia.org/wiki/Gray_code
 // LC89 https://leetcode.cn/problems/gray-code/
+// LC1611 https://leetcode.cn/problems/minimum-one-bit-operations-to-make-integers-zero/
 // 转换 https://codeforces.com/problemset/problem/1419/E
 func grayCode(length int) []int {
 	ans := make([]int, 1<<length)
