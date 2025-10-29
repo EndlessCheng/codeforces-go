@@ -44,9 +44,9 @@ $$
 ```py [sol-Python3]
 class Solution:
     def maximumSubarraySum(self, nums: List[int], k: int) -> int:
-        ans = -inf
         min_s = defaultdict(lambda: inf)
         s = 0
+        ans = -inf
         for x in nums:
             ans = max(ans, s + x - min(min_s[x - k], min_s[x + k]))
             min_s[x] = min(min_s[x], s)
@@ -57,9 +57,34 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long maximumSubarraySum(int[] nums, int k) {
-        long ans = Long.MIN_VALUE;
-        long sum = 0;
         Map<Integer, Long> minS = new HashMap<>();
+        long sum = 0;
+        long ans = Long.MIN_VALUE;
+        for (int x : nums) {
+            Long s = minS.get(x - k);
+            if (s != null) {
+                ans = Math.max(ans, sum + x - s);
+            }
+
+            s = minS.get(x + k);
+            if (s != null) {
+                ans = Math.max(ans, sum + x - s);
+            }
+
+            minS.merge(x, sum, Math::min); // minS[x] = Math.min(minS[x], sum)
+            sum += x;
+        }
+        return ans == Long.MIN_VALUE ? 0 : ans;
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    public long maximumSubarraySum(int[] nums, int k) {
+        Map<Integer, Long> minS = new HashMap<>();
+        long sum = 0;
+        long ans = Long.MIN_VALUE;
         for (int x : nums) {
             long s1 = minS.getOrDefault(x - k, Long.MAX_VALUE / 2);
             long s2 = minS.getOrDefault(x + k, Long.MAX_VALUE / 2);
@@ -75,10 +100,10 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long maximumSubarraySum(vector<int> &nums, int k) {
-        long long ans = LLONG_MIN, sum = 0;
+    long long maximumSubarraySum(vector<int>& nums, int k) {
         unordered_map<int, long long> min_s;
-        for (int x: nums) {
+        long long ans = LLONG_MIN, sum = 0;
+        for (int x : nums) {
             auto it = min_s.find(x + k);
             if (it != min_s.end()) {
                 ans = max(ans, sum + x - it->second);
@@ -103,9 +128,9 @@ public:
 
 ```go [sol-Go]
 func maximumSubarraySum(nums []int, k int) int64 {
-	ans := math.MinInt
 	minS := map[int]int{}
 	sum := 0
+	ans := math.MinInt
 	for _, x := range nums {
 		s, ok := minS[x+k]
 		if ok {
@@ -133,23 +158,30 @@ func maximumSubarraySum(nums []int, k int) int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $a$ 的长度。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 练习：前缀和与哈希表
+## 专题训练
 
-- [930. 和相同的二元子数组](https://leetcode.cn/problems/binary-subarrays-with-sum/) 1592
-- [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/)
-- [1524. 和为奇数的子数组数目](https://leetcode.cn/problems/number-of-sub-arrays-with-odd-sum/) 1611
-- [974. 和可被 K 整除的子数组](https://leetcode.cn/problems/subarray-sums-divisible-by-k/) 1676
-- [523. 连续的子数组和](https://leetcode.cn/problems/continuous-subarray-sum/)
-- [525. 连续数组](https://leetcode.cn/problems/contiguous-array/)
-- [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908
-- [2488. 统计中位数为 K 的子数组](https://leetcode.cn/problems/count-subarrays-with-median-k/) 1999
-- [1590. 使数组和能被 P 整除](https://leetcode.cn/problems/make-sum-divisible-by-p/) 2039
-- [2949. 统计美丽子字符串 II](https://leetcode.cn/problems/count-beautiful-substrings-ii/) 2445
-- [面试题 17.05. 字母与数字](https://leetcode.cn/problems/find-longest-subarray-lcci/)
-- [1983. 范围和相等的最宽索引对](https://leetcode.cn/problems/widest-pair-of-indices-with-equal-range-sum/)（会员题）
-- [2489. 固定比率的子字符串数](https://leetcode.cn/problems/number-of-substrings-with-fixed-ratio/)（会员题）
+见下面数据结构题单的「**§1.2 前缀和与哈希表**」。
 
-[2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
