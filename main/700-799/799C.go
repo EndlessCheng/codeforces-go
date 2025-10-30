@@ -33,13 +33,10 @@ func cf799C(in io.Reader, out io.Writer) {
 			}
 			preMax[i+1] = max(preMax[i], p.b)
 			mx = preMax[i+1]
-		}
-		maxB = append(maxB, mx)
-
-		for i, p := range a {
 			j := sort.Search(i, func(j int) bool { return a[j].p > c-p.p })
 			ans = max(ans, p.b+preMax[j])
 		}
+		maxB = append(maxB, mx)
 	}
 	f(a, c)
 	f(b, d)
