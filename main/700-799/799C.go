@@ -4,7 +4,6 @@ import (
 	. "fmt"
 	"io"
 	"slices"
-	"sort"
 )
 
 // https://github.com/EndlessCheng
@@ -27,13 +26,20 @@ func cf799C(in io.Reader, out io.Writer) {
 		preMax := make([]int, len(a)+1)
 		preMax[0] = -1e9
 		mx := int(-1e9)
+		j := 0
 		for i, p := range a {
-			if p.p > c {
+			d := c - p.p
+			if d < 0 {
 				break
 			}
 			preMax[i+1] = max(preMax[i], p.b)
 			mx = preMax[i+1]
-			j := sort.Search(i, func(j int) bool { return a[j].p > c-p.p })
+			if j < i && a[j].p <= d {
+				j++
+			}
+			for j > 0 && a[j-1].p > d {
+				j--
+			}
 			ans = max(ans, p.b+preMax[j])
 		}
 		maxB = append(maxB, mx)
