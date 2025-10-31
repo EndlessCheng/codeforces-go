@@ -1,6 +1,9 @@
 package copypasta
 
-import "math"
+import (
+	"math"
+	"math/big"
+)
 
 // 数值分析
 // https://en.wikipedia.org/wiki/Numerical_analysis
@@ -55,6 +58,7 @@ func Asr(a, b, eps float64, f mathF) float64 {
 // https://codeforces.com/problemset/problem/1155/E 2200 交互 找零点
 // https://codeforces.com/problemset/problem/622/F 2600 等幂和
 // https://codeforces.com/problemset/problem/995/F 2700
+// https://projecteuler.net/problem=101
 func lagrangePolynomialInterpolation(xs, ys []int, k int) (fk int) {
 	for i, xi := range xs {
 		a, b := 1, 1
@@ -68,4 +72,19 @@ func lagrangePolynomialInterpolation(xs, ys []int, k int) (fk int) {
 	}
 	fk = (fk%mod + mod) % mod
 	return
+}
+
+func lagrangePolynomialInterpolationBig(xs, ys []int, k int) *big.Rat {
+	fk := big.NewRat(0, 1)
+	for i, xi := range xs {
+		a, b := big.NewInt(int64(ys[i])), big.NewInt(1)
+		for j, xj := range xs {
+			if j != i {
+				a.Mul(a, big.NewInt(int64(k-xj)))  // 分子
+				b.Mul(b, big.NewInt(int64(xi-xj))) // 分母
+			}
+		}
+		fk.Add(fk, new(big.Rat).SetFrac(a, b))
+	}
+	return fk
 }
