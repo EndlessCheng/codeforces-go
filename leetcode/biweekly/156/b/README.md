@@ -22,7 +22,7 @@
 
 又例如 $\textit{nums}=[1,2,3,2,1]$：
 
-- 遍历到第二个 $2$ 时，可以知道 $3$ 左右两侧都有小于 $3$ 的数，所以 $3$ 必须要操作一次，答案加一。注意这不表示第一次操作的是 $3$，而是某次操作会把 $3$ 变成 $0$。
+- 遍历到**第二个** $2$ 时，可以知道 $3$ 左右两侧都有小于 $3$ 的数，所以 $3$ 必须要操作一次，答案加一。注意这不表示第一次操作的是 $3$，而是某次操作会把 $3$ 变成 $0$。
 - 遍历到末尾 $1$ 时，可以知道中间的两个 $2$，左边有 $1$，右边也有 $1$，必须操作一次，答案加一。比如选择 $[2,3,2]$ 可以把这两个 $2$ 都变成 $0$。
 - 最后，数组中的 $1$ 需要操作一次都变成 $0$。
 
@@ -139,8 +139,6 @@ func minOperations(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个元素至多入栈出栈各一次，所以二重循环的循环次数是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。原地做法可以做到 $\mathcal{O}(1)$ 空间。
 
-更多相似题目，见下面单调栈题单。
-
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
@@ -155,7 +153,9 @@ func minOperations(nums []int) (ans int) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
