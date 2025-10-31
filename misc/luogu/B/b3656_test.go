@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Testb3656(t *testing.T) {
+func Test_b3656(t *testing.T) {
 	var cases = [][2]string{
 		{
 			`10
