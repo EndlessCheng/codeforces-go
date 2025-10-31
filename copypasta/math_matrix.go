@@ -47,6 +47,7 @@ https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
 https://www.luogu.com.cn/problem/P3216 12345678910111213...n % m
+https://www.luogu.com.cn/problem/P5364
 https://www.luogu.com.cn/problem/P10310
 https://ac.nowcoder.com/acm/contest/9247/A
 https://blog.csdn.net/zyz_bz/article/details/88993616 TR 的数列
@@ -110,7 +111,7 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 // 特别地，对于多维 DP，如果要求计算前 n 项之和（前缀和），我们可以在列向量末尾添加一个前缀和项 s[i]
 // 递推式 s[i] = sum(f[i]) + s[i-1] = sum(M @ f[i-1]) + s[i-1]
 // 对应系数矩阵，在最下面新增一行，最右边新增一列
-// 最下面新增一行：M 矩阵每一列的和，再添加一个 1，即 [sum(M[i][0]), sum(M[i][1]), ..., sum(M[i][-1]), 1]
+// 最下面新增一行：M 矩阵每一列的和，以及一个 1，即 [sum(M[i][0]), sum(M[i][1]), ..., sum(M[i][-1]), 1]
 // 最右边新增一列：除了最下面的 1 以外，其余全为 0
 func solveDP(N int) (ans int) {
 	const size = 26
@@ -260,6 +261,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 // https://www.luogu.com.cn/problem/P5487 模板题
 // - https://www.luogu.com.cn/problem/U228146 数据加强版
 // https://www.luogu.com.cn/problem/P7820
+// https://www.luogu.com.cn/problem/P5364
 // https://codeforces.com/problemset/problem/93/D 2500
 // https://codeforces.com/problemset/problem/1511/F 2700
 // https://codeforces.com/problemset/problem/506/E 3000
@@ -329,8 +331,9 @@ func berlekampMassey(a []int) (coef []int) {
 	return
 }
 
-// 已知数列的前 m 项为 a，返回符合最短线性递推式的第 n 项
+// 已知数列的前 m 项为 a，返回符合最短线性递推式的第 n 项（n 从 0 开始）
 // https://www.luogu.com.cn/problem/P5487
+// https://www.luogu.com.cn/problem/P5364
 func guessNth(a []int, n int) int {
 	coef := berlekampMassey(a)
 	slices.Reverse(coef) // 注意 kitamasa 入参的顺序
