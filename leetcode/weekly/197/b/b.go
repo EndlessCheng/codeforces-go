@@ -1,13 +1,14 @@
 package main
 
 func numSub(s string) (ans int) {
-	p := -1
-	for i, b := range s {
-		if b == '0' {
-			p = i
+	const mod = 1_000_000_007
+	last0 := -1
+	for i, ch := range s {
+		if ch == '0' {
+			last0 = i // 记录上个 0 的位置
 		} else {
-			ans += i - p
+			ans += i - last0 // 右端点为 i 的全 1 子串个数
 		}
 	}
-	return ans % (1e9 + 7)
+	return ans % mod
 }
