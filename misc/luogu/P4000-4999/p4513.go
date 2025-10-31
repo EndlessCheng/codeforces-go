@@ -7,15 +7,15 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-type data4513 struct{ ans, sum, pre, suf int }
-type seg4513 []struct {
+type data513 struct{ ans, sum, pre, suf int }
+type seg513 []struct {
 	l, r int
-	data4513
+	data513
 }
 
-func (t seg4513) set(o, v int) { t[o].data4513 = data4513{v, v, v, v} }
+func (t seg513) set(o, v int) { t[o].data513 = data513{v, v, v, v} }
 
-func (t seg4513) do(lo, ro data4513) (o data4513) {
+func (t seg513) do(lo, ro data513) (o data513) {
 	o.ans = max(lo.ans, ro.ans, lo.suf+ro.pre)
 	o.sum = lo.sum + ro.sum
 	o.pre = max(lo.pre, lo.sum+ro.pre)
@@ -23,9 +23,9 @@ func (t seg4513) do(lo, ro data4513) (o data4513) {
 	return
 }
 
-func (t seg4513) maintain(o int) { t[o].data4513 = t.do(t[o<<1].data4513, t[o<<1|1].data4513) }
+func (t seg513) maintain(o int) { t[o].data513 = t.do(t[o<<1].data513, t[o<<1|1].data513) }
 
-func (t seg4513) build(a []int, o, l, r int) {
+func (t seg513) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t.set(o, a[l-1])
@@ -37,7 +37,7 @@ func (t seg4513) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg4513) update(o, i, val int) {
+func (t seg513) update(o, i, val int) {
 	if t[o].l == t[o].r {
 		t.set(o, val)
 		return
@@ -50,9 +50,9 @@ func (t seg4513) update(o, i, val int) {
 	t.maintain(o)
 }
 
-func (t seg4513) query(o, l, r int) (d data4513) {
+func (t seg513) query(o, l, r int) (d data513) {
 	if l <= t[o].l && t[o].r <= r {
-		return t[o].data4513
+		return t[o].data513
 	}
 	m := (t[o].l + t[o].r) >> 1
 	if r <= m {
@@ -75,7 +75,7 @@ func p4513(_r io.Reader, _w io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	t := make(seg4513, 4*n)
+	t := make(seg513, 4*n)
 	t.build(a, 1, 1, n)
 	for ; q > 0; q-- {
 		Fscan(in, &op, &l, &r)

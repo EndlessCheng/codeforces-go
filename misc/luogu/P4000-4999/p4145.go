@@ -9,17 +9,17 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type seg4145 []struct {
+type seg145 []struct {
 	l, r, s int
 	fixed   bool
 }
 
-func (t seg4145) maintain(o int) {
+func (t seg145) maintain(o int) {
 	t[o].s = t[o<<1].s + t[o<<1|1].s
 	t[o].fixed = t[o<<1].fixed && t[o<<1|1].fixed
 }
 
-func (t seg4145) build(a []int, o, l, r int) {
+func (t seg145) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].s = a[l]
@@ -32,7 +32,7 @@ func (t seg4145) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg4145) update(o, l, r int) {
+func (t seg145) update(o, l, r int) {
 	to := &t[o]
 	if to.fixed {
 		return
@@ -52,7 +52,7 @@ func (t seg4145) update(o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg4145) query(o, l, r int) int {
+func (t seg145) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].s
 	}
@@ -75,7 +75,7 @@ func p4145(in io.Reader, _w io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	t := make(seg4145, 2<<bits.Len(uint(n-1)))
+	t := make(seg145, 2<<bits.Len(uint(n-1)))
 	t.build(a, 1, 0, n-1)
 	for Fscan(in, &m); m > 0; m-- {
 		Fscan(in, &op, &l, &r)

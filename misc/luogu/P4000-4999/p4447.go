@@ -8,15 +8,6 @@ import (
 	"sort"
 )
 
-type hp4447 struct{ sort.IntSlice }
-
-func (h *hp4447) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp4447) Pop() (v interface{}) {
-	n := len(h.IntSlice)
-	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
-	return
-}
-
 // github.com/EndlessCheng/codeforces-go
 func p4447(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
@@ -30,7 +21,7 @@ func p4447(_r io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 	sort.Ints(a)
-	endsWith := map[int]*hp4447{}
+	endsWith := map[int]*hp447{}
 	for _, v := range a {
 		minLen := 0
 		if h, ok := endsWith[v-1]; ok {
@@ -40,7 +31,7 @@ func p4447(_r io.Reader, _w io.Writer) {
 			}
 		}
 		if _, ok := endsWith[v]; !ok {
-			endsWith[v] = &hp4447{}
+			endsWith[v] = &hp447{}
 		}
 		Push(endsWith[v], minLen+1)
 	}
@@ -54,3 +45,11 @@ func p4447(_r io.Reader, _w io.Writer) {
 }
 
 //func main() { p4447(os.Stdin, os.Stdout) }
+
+type hp447 struct{ sort.IntSlice }
+func (h *hp447) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp447) Pop() (v interface{}) {
+	n := len(h.IntSlice)
+	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
+	return
+}

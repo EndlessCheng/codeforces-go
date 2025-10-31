@@ -7,9 +7,9 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type xorBasis4151 [60]int
+type xorBasis151 [60]int
 
-func (b *xorBasis4151) insert(v int) {
+func (b *xorBasis151) insert(v int) {
 	for i := len(b) - 1; i >= 0; i-- {
 		if v>>i&1 == 0 {
 			continue
@@ -22,7 +22,7 @@ func (b *xorBasis4151) insert(v int) {
 	}
 }
 
-func (b *xorBasis4151) maxXor(xor int) int {
+func (b *xorBasis151) maxXor(xor int) int {
 	for i := len(b) - 1; i >= 0; i-- {
 		if xor^b[i] > xor {
 			xor ^= b[i]
@@ -44,7 +44,7 @@ func p4151(_r io.Reader, out io.Writer) {
 		g[w] = append(g[w], nb{v, wt})
 	}
 
-	b := xorBasis4151{}
+	b := xorBasis151{}
 	dis := make([]int, n+1)
 	for i := range dis {
 		dis[i] = -1

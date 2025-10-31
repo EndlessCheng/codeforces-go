@@ -1,4 +1,4 @@
-package P2000_2999
+package main
 
 import (
 	"bufio"

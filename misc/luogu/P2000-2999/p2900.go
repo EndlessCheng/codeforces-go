@@ -8,11 +8,11 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type vec2900 struct{ x, y int }
+type vec900 struct{ x, y int }
 
-func (a vec2900) sub(b vec2900) vec2900 { return vec2900{a.x - b.x, a.y - b.y} }
-func (a vec2900) dot(b vec2900) int     { return a.x*b.x + a.y*b.y }
-func (a vec2900) det(b vec2900) int     { return a.x*b.y - a.y*b.x }
+func (a vec900) sub(b vec900) vec900 { return vec900{a.x - b.x, a.y - b.y} }
+func (a vec900) dot(b vec900) int    { return a.x*b.x + a.y*b.y }
+func (a vec900) det(b vec900) int    { return a.x*b.y - a.y*b.x }
 
 func p2900(in io.Reader, out io.Writer) {
 	var n int
@@ -32,16 +32,16 @@ func p2900(in io.Reader, out io.Writer) {
 		st = append(st, p)
 	}
 
-	q := []vec2900{}
+	q := []vec900{}
 	f := 0
 	for _, p := range st {
-		vj := vec2900{-p.y, f}
+		vj := vec900{-p.y, f}
 		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(vj.sub(q[len(q)-1])) <= 0 {
 			q = q[:len(q)-1]
 		}
 		q = append(q, vj)
 
-		pi := vec2900{-p.x, 1}
+		pi := vec900{-p.x, 1}
 		for len(q) > 1 && pi.dot(q[0]) >= pi.dot(q[1]) {
 			q = q[1:]
 		}

@@ -8,52 +8,52 @@ import (
 )
 
 // https://space.bilibili.com/206214
-const mod3373 = 571373
+const mod373 = 571373
 
-type pair3373 struct{ k, c int }
+type pair373 struct{ k, c int }
 
-type seg3373 []struct {
+type seg373 []struct {
 	l, r int
 	sum  int
-	todo pair3373
+	todo pair373
 }
 
-func (seg3373) mergeInfo(a, b int) int {
-	return (a + b) % mod3373
+func (seg373) mergeInfo(a, b int) int {
+	return (a + b) % mod373
 }
 
-var todoInit3373 = pair3373{1, 0}
+var todoInit373 = pair373{1, 0}
 
-func (seg3373) mergeTodo(f, old pair3373) pair3373 {
-	return pair3373{f.k * old.k % mod3373, (f.k*old.c + f.c) % mod3373}
+func (seg373) mergeTodo(f, old pair373) pair373 {
+	return pair373{f.k * old.k % mod373, (f.k*old.c + f.c) % mod373}
 }
 
-func (t seg3373) apply(o int, f pair3373) {
+func (t seg373) apply(o int, f pair373) {
 	cur := &t[o]
 
 	sz := cur.r - cur.l + 1
-	cur.sum = (f.k*cur.sum + f.c*sz) % mod3373
+	cur.sum = (f.k*cur.sum + f.c*sz) % mod373
 
 	cur.todo = t.mergeTodo(f, cur.todo)
 }
 
-func (t seg3373) maintain(o int) {
+func (t seg373) maintain(o int) {
 	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
 }
 
-func (t seg3373) spread(o int) {
+func (t seg373) spread(o int) {
 	f := t[o].todo
-	if f == todoInit3373 {
+	if f == todoInit373 {
 		return
 	}
 	t.apply(o<<1, f)
 	t.apply(o<<1|1, f)
-	t[o].todo = todoInit3373
+	t[o].todo = todoInit373
 }
 
-func (t seg3373) build(a []int, o, l, r int) {
+func (t seg373) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
-	t[o].todo = todoInit3373
+	t[o].todo = todoInit373
 	if l == r {
 		t[o].sum = a[l]
 		return
@@ -64,7 +64,7 @@ func (t seg3373) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg3373) update(o, l, r int, f pair3373) {
+func (t seg373) update(o, l, r int, f pair373) {
 	if l <= t[o].l && t[o].r <= r {
 		t.apply(o, f)
 		return
@@ -80,7 +80,7 @@ func (t seg3373) update(o, l, r int, f pair3373) {
 	t.maintain(o)
 }
 
-func (t seg3373) query(o, l, r int) int {
+func (t seg373) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
@@ -104,7 +104,7 @@ func p3373(in io.Reader, _w io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	t := make(seg3373, 2<<bits.Len(uint(n-1)))
+	t := make(seg373, 2<<bits.Len(uint(n-1)))
 	t.build(a, 1, 0, n-1)
 	for ; q > 0; q-- {
 		Fscan(in, &op, &l, &r)
@@ -112,10 +112,10 @@ func p3373(in io.Reader, _w io.Writer) {
 		r--
 		if op == 1 {
 			Fscan(in, &k)
-			t.update(1, l, r, pair3373{k, 0})
+			t.update(1, l, r, pair373{k, 0})
 		} else if op == 2 {
 			Fscan(in, &k)
-			t.update(1, l, r, pair3373{1, k})
+			t.update(1, l, r, pair373{1, k})
 		} else {
 			Fprintln(out, t.query(1, l, r))
 		}

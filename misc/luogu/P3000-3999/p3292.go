@@ -8,12 +8,12 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type xorBasis3292 struct {
+type xorBasis292 struct {
 	b [61]int
 	d [61]int16
 }
 
-func (b *xorBasis3292) insert(v int, d int16) bool {
+func (b *xorBasis292) insert(v int, d int16) bool {
 	for i := len(b.b) - 1; i >= 0; i-- {
 		if v>>i == 0 {
 			continue
@@ -32,7 +32,7 @@ func (b *xorBasis3292) insert(v int, d int16) bool {
 	return false
 }
 
-func (b *xorBasis3292) maxXor(lower int16) (res int) {
+func (b *xorBasis292) maxXor(lower int16) (res int) {
 	for i := len(b.b) - 1; i >= 0; i-- {
 		if res>>i&1 == 0 && b.d[i] >= lower {
 			res = max(res, res^b.b[i])
@@ -41,7 +41,7 @@ func (b *xorBasis3292) maxXor(lower int16) (res int) {
 	return
 }
 
-func (b *xorBasis3292) merge(other *xorBasis3292) {
+func (b *xorBasis292) merge(other *xorBasis292) {
 	for i := len(other.b) - 1; i >= 0; i-- {
 		x := other.b[i]
 		if x > 0 {
@@ -72,7 +72,7 @@ func p3292(in io.Reader, _w io.Writer) {
 	const mx = 15
 	pa := make([][mx]int, n)
 	dep := make([]int16, n)
-	xb := make([]xorBasis3292, n)
+	xb := make([]xorBasis292, n)
 	var dfs func(int, int)
 	dfs = func(v, p int) {
 		xb[v].insert(a[v], dep[v])

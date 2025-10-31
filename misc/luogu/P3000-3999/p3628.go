@@ -6,11 +6,11 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type vec3628 struct{ x, y int }
+type vec628 struct{ x, y int }
 
-func (a vec3628) sub(b vec3628) vec3628 { return vec3628{a.x - b.x, a.y - b.y} }
-func (a vec3628) dot(b vec3628) int     { return a.x*b.x + a.y*b.y }
-func (a vec3628) det(b vec3628) int     { return a.x*b.y - a.y*b.x }
+func (a vec628) sub(b vec628) vec628 { return vec628{a.x - b.x, a.y - b.y} }
+func (a vec628) dot(b vec628) int    { return a.x*b.x + a.y*b.y }
+func (a vec628) det(b vec628) int    { return a.x*b.y - a.y*b.x }
 
 func p3628(in io.Reader, out io.Writer) {
 	buf := make([]byte, 4096)
@@ -54,10 +54,10 @@ func p3628(in io.Reader, out io.Writer) {
 	}
 
 	n, a, b, c := rd(), rn(), rn(), rn()
-	q := []vec3628{{}}
+	q := []vec628{{}}
 	for s := 0; ; n-- {
 		s += rd()
-		pi := vec3628{-2 * a * s, 1}
+		pi := vec628{-2 * a * s, 1}
 		for len(q) > 1 && pi.dot(q[0]) <= pi.dot(q[1]) {
 			q = q[1:]
 		}
@@ -66,7 +66,7 @@ func p3628(in io.Reader, out io.Writer) {
 			Fprint(out, f)
 			return
 		}
-		vj := vec3628{s, a*s*s - b*s + f}
+		vj := vec628{s, a*s*s - b*s + f}
 		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(vj.sub(q[len(q)-1])) >= 0 {
 			q = q[:len(q)-1]
 		}

@@ -7,11 +7,11 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type vec5017 struct{ x, y int }
+type vec17 struct{ x, y int }
 
-func (a vec5017) sub(b vec5017) vec5017 { return vec5017{a.x - b.x, a.y - b.y} }
-func (a vec5017) dot(b vec5017) int     { return a.x*b.x + a.y*b.y }
-func (a vec5017) det(b vec5017) int     { return a.x*b.y - a.y*b.x }
+func (a vec17) sub(b vec17) vec17 { return vec17{a.x - b.x, a.y - b.y} }
+func (a vec17) dot(b vec17) int   { return a.x*b.x + a.y*b.y }
+func (a vec17) det(b vec17) int   { return a.x*b.y - a.y*b.x }
 
 func p5017(in io.Reader, out io.Writer) {
 	var n, m, mx int
@@ -27,7 +27,7 @@ func p5017(in io.Reader, out io.Writer) {
 	}
 
 	f := make([]int, mx+m)
-	q := []vec5017{}
+	q := []vec17{}
 	c, s := 0, 0
 	c2, s2 := 0, 0
 	for i, v := range cnt {
@@ -40,13 +40,13 @@ func p5017(in io.Reader, out io.Writer) {
 
 		c2 += cnt[i-m]
 		s2 += cnt[i-m] * (i - m)
-		p := vec5017{c2, s2 + f[i-m]}
+		p := vec17{c2, s2 + f[i-m]}
 		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 			q = q[:len(q)-1]
 		}
 		q = append(q, p)
 
-		p = vec5017{-i, 1}
+		p = vec17{-i, 1}
 		for len(q) > 1 && p.dot(q[0]) >= p.dot(q[1]) {
 			q = q[1:]
 		}

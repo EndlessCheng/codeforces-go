@@ -7,21 +7,21 @@ import (
 )
 
 // https://space.bilibili.com/206214
-const mod = 1_000_000_007
+const mod364 = 1_000_000_007
 
-func pow(x, n int) int {
+func pow364(x, n int) int {
 	res := 1
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			res = res * x % mod
+			res = res * x % mod364
 		}
-		x = x * x % mod
+		x = x * x % mod364
 	}
 	return res
 }
 
 func kitamasa(coef, a []int, n int) (ans int) {
-	defer func() { ans = (ans%mod + mod) % mod }()
+	defer func() { ans = (ans%mod364 + mod364) % mod364 }()
 	if n < len(a) {
 		return a[n]
 	}
@@ -31,7 +31,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 		return
 	}
 	if k == 1 {
-		return a[0] * pow(coef[0], n)
+		return a[0] * pow364(coef[0], n)
 	}
 
 	// 已知 f(n) 的各项系数为 a，f(m) 的各项系数为 b
@@ -41,14 +41,14 @@ func kitamasa(coef, a []int, n int) (ans int) {
 		for _, v := range a {
 			// 累加 a[i] * f(m+i) 的各项系数
 			for j, w := range b {
-				c[j] = (c[j] + v*w) % mod
+				c[j] = (c[j] + v*w) % mod364
 			}
 			// 从 f(m+i) 到 f(m+i+1)
 			bk1 := b[k-1]
 			for j := k - 1; j > 0; j-- {
-				b[j] = (b[j-1] + bk1*coef[j]) % mod
+				b[j] = (b[j-1] + bk1*coef[j]) % mod364
 			}
-			b[0] = bk1 * coef[0] % mod
+			b[0] = bk1 * coef[0] % mod364
 		}
 		return c
 	}
@@ -66,7 +66,7 @@ func kitamasa(coef, a []int, n int) (ans int) {
 	}
 
 	for i, c := range resC {
-		ans = (ans + c*a[i]) % mod
+		ans = (ans + c*a[i]) % mod364
 	}
 	return
 }
@@ -78,7 +78,7 @@ func berlekampMassey(a []int) (coef []int) {
 		// d = a[i] - 递推式算出来的值
 		d := v
 		for j, c := range coef {
-			d = (d - c*a[i-1-j]) % mod
+			d = (d - c*a[i-1-j]) % mod364
 		}
 		if d == 0 { // 递推式正确
 			continue
@@ -106,10 +106,10 @@ func berlekampMassey(a []int) (coef []int) {
 		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias-1 = i-preI-1 处
 		// 注意：preI 之前的数据符合旧公式，即 a[(<preI)] = sum_j preC[j]*a[(<preI)-1-j]
 		//      对于新公式，i 之前的每个公式增加了 d/preD * (a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]) = d/preD * 0 = 0，所以也符合新公式
-		delta := d * pow(preD, mod-2) % mod
-		coef[bias-1] = (coef[bias-1] + delta) % mod
+		delta := d * pow364(preD, mod364-2) % mod364
+		coef[bias-1] = (coef[bias-1] + delta) % mod364
 		for j, c := range preC {
-			coef[bias+j] = (coef[bias+j] - delta*c) % mod
+			coef[bias+j] = (coef[bias+j] - delta*c) % mod364
 		}
 
 		if newLen > oldLen {
@@ -125,10 +125,10 @@ func berlekampMassey(a []int) (coef []int) {
 
 	// 手动找规律用
 	for i, c := range coef {
-		if c < -mod/2 {
-			c += mod
-		} else if c > mod/2 {
-			c -= mod
+		if c < -mod364/2 {
+			c += mod364
+		} else if c > mod364/2 {
+			c -= mod364
 		}
 		coef[i] = c
 	}
@@ -148,8 +148,8 @@ func p5364(in io.Reader, out io.Writer) {
 	a := []int{}
 	s := 0
 	for i := 1; i <= k*2+2; i++ {
-		a = append(a, (s+pow(i, k))%mod)
-		s = (s + a[len(a)-1]) % mod
+		a = append(a, (s+pow364(i, k))%mod364)
+		s = (s + a[len(a)-1]) % mod364
 	}
 	Fprint(out, guessNth(a, n-1))
 }

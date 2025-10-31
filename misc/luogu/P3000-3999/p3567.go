@@ -8,12 +8,12 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type seg3567 []struct {
+type seg567 []struct {
 	l, r int
 	v, c int
 }
 
-func (t seg3567) do(v, c, w, d int) (int, int) {
+func (t seg567) do(v, c, w, d int) (int, int) {
 	if v == w {
 		return v, c + d
 	}
@@ -23,12 +23,12 @@ func (t seg3567) do(v, c, w, d int) (int, int) {
 	return w, d - c
 }
 
-func (t seg3567) maintain(o int) {
+func (t seg567) maintain(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	t[o].v, t[o].c = t.do(lo.v, lo.c, ro.v, ro.c)
 }
 
-func (t seg3567) build(a []int, o, l, r int) {
+func (t seg567) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].v, t[o].c = a[l-1], 1
@@ -40,7 +40,7 @@ func (t seg3567) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg3567) query(o, l, r int) (int, int) {
+func (t seg567) query(o, l, r int) (int, int) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].v, t[o].c
 	}
@@ -86,7 +86,7 @@ func p3567(_r io.Reader, _w io.Writer) {
 		a[i] = ri()
 		ps[a[i]] = append(ps[a[i]], i+1)
 	}
-	t := make(seg3567, 4*len(a))
+	t := make(seg567, 4*len(a))
 	t.build(a, 1, 1, len(a))
 	for ; q > 0; q-- {
 		l, r := ri(), ri()

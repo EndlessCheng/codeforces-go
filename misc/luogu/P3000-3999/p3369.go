@@ -9,24 +9,24 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type node3369 struct {
-	son      [2]*node3369
+type node369 struct {
+	son      [2]*node369
 	priority uint
 	key      int32
 	keyCnt   int
 	subSize  int
 }
 
-func (o *node3369) size() int {
+func (o *node369) size() int {
 	if o != nil {
 		return o.subSize
 	}
 	return 0
 }
 
-func (o *node3369) maintain() { o.subSize = o.keyCnt + o.son[0].size() + o.son[1].size() }
+func (o *node369) maintain() { o.subSize = o.keyCnt + o.son[0].size() + o.son[1].size() }
 
-func (o *node3369) rotate(d int) *node3369 {
+func (o *node369) rotate(d int) *node369 {
 	x := o.son[d^1]
 	o.son[d^1] = x.son[d]
 	x.son[d] = o
@@ -35,23 +35,23 @@ func (o *node3369) rotate(d int) *node3369 {
 	return x
 }
 
-type treap3369 struct {
+type treap369 struct {
 	rd   uint
-	root *node3369
+	root *node369
 }
 
-func (t *treap3369) fastRand() uint {
+func (t *treap369) fastRand() uint {
 	t.rd ^= t.rd << 13
 	t.rd ^= t.rd >> 17
 	t.rd ^= t.rd << 5
 	return t.rd
 }
 
-func (t *treap3369) size() int { return t.root.size() }
+func (t *treap369) size() int { return t.root.size() }
 
-func (t *treap3369) _put(o *node3369, key int32) *node3369 {
+func (t *treap369) _put(o *node369, key int32) *node369 {
 	if o == nil {
-		return &node3369{priority: t.fastRand(), key: key, keyCnt: 1, subSize: 1}
+		return &node369{priority: t.fastRand(), key: key, keyCnt: 1, subSize: 1}
 	}
 	if c := o.cmp(key); c != 0 {
 		d := (c + 1) / 2
@@ -66,9 +66,9 @@ func (t *treap3369) _put(o *node3369, key int32) *node3369 {
 	return o
 }
 
-func (t *treap3369) put(key int32) { t.root = t._put(t.root, key) }
+func (t *treap369) put(key int32) { t.root = t._put(t.root, key) }
 
-func (t *treap3369) _delete(o *node3369, key int32) *node3369 {
+func (t *treap369) _delete(o *node369, key int32) *node369 {
 	if o == nil {
 		return nil
 	}
@@ -97,16 +97,16 @@ func (t *treap3369) _delete(o *node3369, key int32) *node3369 {
 	return o
 }
 
-func (t *treap3369) delete(key int32) { t.root = t._delete(t.root, key) }
+func (t *treap369) delete(key int32) { t.root = t._delete(t.root, key) }
 
-func newTreap3369() *treap3369 { return &treap3369{rd: uint(time.Now().UnixNano())/2 + 1} }
+func newTreap3369() *treap369 { return &treap369{rd: uint(time.Now().UnixNano())/2 + 1} }
 
-func (t *treap3369) min() *node3369 { return t.kth(0) }
-func (t *treap3369) max() *node3369 { return t.kth(t.size() - 1) }
+func (t *treap369) min() *node369 { return t.kth(0) }
+func (t *treap369) max() *node369 { return t.kth(t.size() - 1) }
 
 // < key 的元素个数
 // 如果统计 > 改 cmp
-func (t *treap3369) lowerBoundIndex(key int32) (kth int) {
+func (t *treap369) lowerBoundIndex(key int32) (kth int) {
 	for o := t.root; o != nil; {
 		c := o.cmp(key)
 		if c == -1 {
@@ -125,7 +125,7 @@ func (t *treap3369) lowerBoundIndex(key int32) (kth int) {
 // 第 k 小：有 k 个元素小于 o.key（k 从 0 开始）
 // 也可以把 treap 当作一个有序数组，返回下标为 k 的 node
 // 如果统计 > 改 cmp
-func (t *treap3369) kth(k int) (o *node3369) {
+func (t *treap369) kth(k int) (o *node369) {
 	if k < 0 || k >= t.root.size() {
 		return // NOTE: check nil
 	}
@@ -145,7 +145,7 @@ func (t *treap3369) kth(k int) (o *node3369) {
 }
 
 // -1 去左边，1 去右边
-func (o *node3369) cmp(key int32) int {
+func (o *node369) cmp(key int32) int {
 	return cmp.Compare(key, o.key)
 }
 

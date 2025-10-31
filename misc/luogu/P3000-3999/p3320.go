@@ -10,26 +10,26 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type nodeM3320[K comparable, V any] struct {
-	son      [2]*nodeM3320[K, V]
+type nodeM320[K comparable, V any] struct {
+	son      [2]*nodeM320[K, V]
 	priority uint
 	key      K
 	value    V
 	subSize  int
 }
 
-func (o *nodeM3320[K, V]) size() int {
+func (o *nodeM320[K, V]) size() int {
 	if o != nil {
 		return o.subSize
 	}
 	return 0
 }
 
-func (o *nodeM3320[K, V]) maintain() {
+func (o *nodeM320[K, V]) maintain() {
 	o.subSize = 1 + o.son[0].size() + o.son[1].size()
 }
 
-func (o *nodeM3320[K, V]) rotate(d int) *nodeM3320[K, V] {
+func (o *nodeM320[K, V]) rotate(d int) *nodeM320[K, V] {
 	x := o.son[d^1]
 	o.son[d^1] = x.son[d]
 	x.son[d] = o
@@ -38,25 +38,25 @@ func (o *nodeM3320[K, V]) rotate(d int) *nodeM3320[K, V] {
 	return x
 }
 
-type treapM3320[K comparable, V any] struct {
+type treapM320[K comparable, V any] struct {
 	rd         uint
-	root       *nodeM3320[K, V]
+	root       *nodeM320[K, V]
 	comparator func(a, b K) int
 }
 
-func (t *treapM3320[K, V]) fastRand() uint {
+func (t *treapM320[K, V]) fastRand() uint {
 	t.rd ^= t.rd << 13
 	t.rd ^= t.rd >> 17
 	t.rd ^= t.rd << 5
 	return t.rd
 }
 
-func (t *treapM3320[K, V]) size() int   { return t.root.size() }
-func (t *treapM3320[K, V]) empty() bool { return t.size() == 0 }
+func (t *treapM320[K, V]) size() int   { return t.root.size() }
+func (t *treapM320[K, V]) empty() bool { return t.size() == 0 }
 
-func (t *treapM3320[K, V]) _put(o *nodeM3320[K, V], key K, value V) *nodeM3320[K, V] {
+func (t *treapM320[K, V]) _put(o *nodeM320[K, V], key K, value V) *nodeM320[K, V] {
 	if o == nil {
-		o = &nodeM3320[K, V]{priority: t.fastRand(), key: key, value: value}
+		o = &nodeM320[K, V]{priority: t.fastRand(), key: key, value: value}
 	} else {
 		c := t.comparator(key, o.key)
 		if c == 0 {
@@ -76,9 +76,9 @@ func (t *treapM3320[K, V]) _put(o *nodeM3320[K, V], key K, value V) *nodeM3320[K
 	return o
 }
 
-func (t *treapM3320[K, V]) put(key K, value V) { t.root = t._put(t.root, key, value) }
+func (t *treapM320[K, V]) put(key K, value V) { t.root = t._put(t.root, key, value) }
 
-func (t *treapM3320[K, V]) _delete(o *nodeM3320[K, V], key K) *nodeM3320[K, V] {
+func (t *treapM320[K, V]) _delete(o *nodeM320[K, V], key K) *nodeM320[K, V] {
 	if o == nil {
 		return nil
 	}
@@ -106,12 +106,12 @@ func (t *treapM3320[K, V]) _delete(o *nodeM3320[K, V], key K) *nodeM3320[K, V] {
 	return o
 }
 
-func (t *treapM3320[K, V]) delete(key K) { t.root = t._delete(t.root, key) }
+func (t *treapM320[K, V]) delete(key K) { t.root = t._delete(t.root, key) }
 
-func (t *treapM3320[K, V]) min() *nodeM3320[K, V] { return t.kth(0) }
-func (t *treapM3320[K, V]) max() *nodeM3320[K, V] { return t.kth(t.size() - 1) }
+func (t *treapM320[K, V]) min() *nodeM320[K, V] { return t.kth(0) }
+func (t *treapM320[K, V]) max() *nodeM320[K, V] { return t.kth(t.size() - 1) }
 
-func (t *treapM3320[K, V]) lowerBoundIndex(key K) (kth int) {
+func (t *treapM320[K, V]) lowerBoundIndex(key K) (kth int) {
 	for o := t.root; o != nil; {
 		c := t.comparator(key, o.key)
 		if c < 0 {
@@ -127,7 +127,7 @@ func (t *treapM3320[K, V]) lowerBoundIndex(key K) (kth int) {
 	return
 }
 
-func (t *treapM3320[K, V]) upperBoundIndex(key K) (kth int) {
+func (t *treapM320[K, V]) upperBoundIndex(key K) (kth int) {
 	for o := t.root; o != nil; {
 		c := t.comparator(key, o.key)
 		if c < 0 {
@@ -143,7 +143,7 @@ func (t *treapM3320[K, V]) upperBoundIndex(key K) (kth int) {
 	return
 }
 
-func (t *treapM3320[K, V]) kth(k int) (o *nodeM3320[K, V]) {
+func (t *treapM320[K, V]) kth(k int) (o *nodeM320[K, V]) {
 	if k < 0 || k >= t.root.size() {
 		return
 	}
@@ -162,10 +162,10 @@ func (t *treapM3320[K, V]) kth(k int) (o *nodeM3320[K, V]) {
 	return
 }
 
-func (t *treapM3320[K, V]) prev(key K) *nodeM3320[K, V] { return t.kth(t.lowerBoundIndex(key) - 1) }
-func (t *treapM3320[K, V]) next(key K) *nodeM3320[K, V] { return t.kth(t.upperBoundIndex(key)) }
+func (t *treapM320[K, V]) prev(key K) *nodeM320[K, V] { return t.kth(t.lowerBoundIndex(key) - 1) }
+func (t *treapM320[K, V]) next(key K) *nodeM320[K, V] { return t.kth(t.upperBoundIndex(key)) }
 
-func (t *treapM3320[K, V]) find(key K) *nodeM3320[K, V] {
+func (t *treapM320[K, V]) find(key K) *nodeM320[K, V] {
 	o := t.kth(t.lowerBoundIndex(key))
 	if o == nil || o.key != key {
 		return nil
@@ -173,8 +173,8 @@ func (t *treapM3320[K, V]) find(key K) *nodeM3320[K, V] {
 	return o
 }
 
-func newMap3320[K cmp.Ordered, V any]() *treapM3320[K, V] {
-	return &treapM3320[K, V]{
+func newMap320[K cmp.Ordered, V any]() *treapM320[K, V] {
+	return &treapM320[K, V]{
 		rd:         uint(time.Now().UnixNano())/2 + 1,
 		comparator: cmp.Compare[K],
 	}
@@ -249,7 +249,7 @@ func p3320(in io.Reader, _w io.Writer) {
 	getDis := func(v, w int) int { return dis[v] + dis[w] - dis[getLCA(v, w)]*2 }
 
 	ans := 0
-	t := newMap3320[int, int]()
+	t := newMap320[int, int]()
 	has := make([]bool, n)
 	for ; m > 0; m-- {
 		var v int

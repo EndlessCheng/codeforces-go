@@ -8,27 +8,27 @@ import (
 )
 
 // https://space.bilibili.com/206214
-const mod5487 = 998244353
+const mod487 = 998244353
 
-func pow5487(x, n int) int {
+func pow487(x, n int) int {
 	res := 1
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			res = res * x % mod5487
+			res = res * x % mod487
 		}
-		x = x * x % mod5487
+		x = x * x % mod487
 	}
 	return res
 }
 
-func berlekampMassey5487(a []int) (coef []int) {
+func berlekampMassey487(a []int) (coef []int) {
 	var preC []int
 	preI, preD := -1, 0
 	for i, v := range a {
 		// d = a[i] - 递推式算出来的值
 		d := v
 		for j, c := range coef {
-			d = (d - c*a[i-1-j]) % mod5487
+			d = (d - c*a[i-1-j]) % mod487
 		}
 		if d == 0 { // 递推式正确
 			continue
@@ -56,10 +56,10 @@ func berlekampMassey5487(a []int) (coef []int) {
 		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias-1 = i-preI-1 处
 		// 注意：preI 之前的数据符合旧公式，即 a[(<preI)] = sum_j preC[j]*a[(<preI)-1-j]
 		//      对于新公式，i 之前的每个公式增加了 d/preD * (a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]) = d/preD * 0 = 0，所以也符合新公式
-		delta := d * pow5487(preD, mod5487-2) % mod5487
-		coef[bias-1] = (coef[bias-1] + delta) % mod5487
+		delta := d * pow487(preD, mod487-2) % mod487
+		coef[bias-1] = (coef[bias-1] + delta) % mod487
 		for j, c := range preC {
-			coef[bias+j] = (coef[bias+j] - delta*c) % mod5487
+			coef[bias+j] = (coef[bias+j] - delta*c) % mod487
 		}
 
 		if sz > oldSz {
@@ -75,14 +75,14 @@ func berlekampMassey5487(a []int) (coef []int) {
 
 	// 把负数调整为非负数（可以省略）
 	for i, c := range coef {
-		coef[i] = (c + mod5487) % mod5487
+		coef[i] = (c + mod487) % mod487
 	}
 
 	return
 }
 
-func kitamasa5487(a, coef []int, n int) (ans int) {
-	defer func() { ans = (ans%mod5487 + mod5487) % mod5487 }()
+func kitamasa487(a, coef []int, n int) (ans int) {
+	defer func() { ans = (ans%mod487 + mod487) % mod487 }()
 	if n < len(a) {
 		return a[n]
 	}
@@ -92,7 +92,7 @@ func kitamasa5487(a, coef []int, n int) (ans int) {
 		return
 	}
 	if k == 1 {
-		return a[0] * pow5487(coef[0], n)
+		return a[0] * pow487(coef[0], n)
 	}
 
 	// 比如 f(4) = 3*f(2) + 2*f(1) + f(0)
@@ -106,14 +106,14 @@ func kitamasa5487(a, coef []int, n int) (ans int) {
 		c := make([]int, k)
 		for _, v := range a {
 			for j, w := range b {
-				c[j] = (c[j] + v*w) % mod5487
+				c[j] = (c[j] + v*w) % mod487
 			}
 			// 原地计算下一组系数，比如上面已知 f(4) 的各项系数，现在要计算 f(5) 的各项系数
 			bk := b[k-1]
 			for i := k - 1; i > 0; i-- {
-				b[i] = (b[i-1] + bk*coef[i]) % mod5487
+				b[i] = (b[i-1] + bk*coef[i]) % mod487
 			}
-			b[0] = bk * coef[0] % mod5487
+			b[0] = bk * coef[0] % mod487
 		}
 		return c
 	}
@@ -131,7 +131,7 @@ func kitamasa5487(a, coef []int, n int) (ans int) {
 	}
 
 	for i, c := range resC {
-		ans = (ans + c*a[i]) % mod5487
+		ans = (ans + c*a[i]) % mod487
 	}
 	return
 }
@@ -146,14 +146,14 @@ func p5487(in io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 
-	coef := berlekampMassey5487(a)
+	coef := berlekampMassey487(a)
 	for _, v := range coef {
 		Fprint(out, v, " ")
 	}
 	Fprintln(out)
 
 	slices.Reverse(coef)
-	Fprint(out, kitamasa5487(a, coef, m))
+	Fprint(out, kitamasa487(a, coef, m))
 }
 
 //func main() { p5487(bufio.NewReader(os.Stdin), os.Stdout) }

@@ -1,4 +1,4 @@
-package B
+package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/main/testutil"

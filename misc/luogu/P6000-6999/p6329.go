@@ -8,15 +8,15 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type fenwick6329 []int
+type fenwick329 []int
 
-func (f fenwick6329) update(i, val int) {
+func (f fenwick329) update(i, val int) {
 	for ; i < len(f); i += i & -i {
 		f[i] += val
 	}
 }
 
-func (f fenwick6329) pre(i int) (res int) {
+func (f fenwick329) pre(i int) (res int) {
 	for i = min(i, len(f)-1); i > 0; i &= i - 1 {
 		res += f[i]
 	}
@@ -65,15 +65,15 @@ func p6329(_r io.Reader, out io.Writer) {
 
 	type disInfo struct{ ct, sonI, ctDis int }
 	paCts := make([][]disInfo, len(g))
-	mergeSonInfo := make([]fenwick6329, len(g))
-	sonInfo := make([][]fenwick6329, len(g))
+	mergeSonInfo := make([]fenwick329, len(g))
+	sonInfo := make([][]fenwick329, len(g))
 
 	var dfs func(int, int, int)
 	dfs = func(v, fa, compSize int) {
 		_, ct, faCt := findCentroid(v, fa, compSize)
 
-		totA := make(fenwick6329, compSize+1)
-		sonInfo[ct] = make([]fenwick6329, len(g[ct]))
+		totA := make(fenwick329, compSize+1)
+		sonInfo[ct] = make([]fenwick329, len(g[ct]))
 		for i, w := range g[ct] {
 			if deleted[w] {
 				continue
@@ -84,7 +84,7 @@ func p6329(_r io.Reader, out io.Writer) {
 			} else {
 				sizeW = compSize - size[ct]
 			}
-			sumA := make(fenwick6329, sizeW+1)
+			sumA := make(fenwick329, sizeW+1)
 			var f func(int, int, int)
 			f = func(v, fa, d int) {
 				paCts[v] = append(paCts[v], disInfo{ct, i, d})

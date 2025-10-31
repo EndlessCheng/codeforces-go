@@ -8,9 +8,9 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type seg2894 []struct{ l, r, pre0, suf0, max0, todo int }
+type seg894 []struct{ l, r, pre0, suf0, max0, todo int }
 
-func (t seg2894) do(i, v int) {
+func (t seg894) do(i, v int) {
 	o := &t[i]
 	size := 0
 	if v <= 0 {
@@ -22,7 +22,7 @@ func (t seg2894) do(i, v int) {
 	o.todo = v
 }
 
-func (t seg2894) spread(o int) {
+func (t seg894) spread(o int) {
 	v := t[o].todo
 	if v != -1 {
 		t.do(o<<1, v)
@@ -31,7 +31,7 @@ func (t seg2894) spread(o int) {
 	}
 }
 
-func (t seg2894) build(o, l, r int) {
+func (t seg894) build(o, l, r int) {
 	t[o].l, t[o].r = l, r
 	t.do(o, -1)
 	if l == r {
@@ -42,7 +42,7 @@ func (t seg2894) build(o, l, r int) {
 	t.build(o<<1|1, m+1, r)
 }
 
-func (t seg2894) update(o, l, r, v int) {
+func (t seg894) update(o, l, r, v int) {
 	if l <= t[o].l && t[o].r <= r {
 		t.do(o, v)
 		return
@@ -68,7 +68,7 @@ func (t seg2894) update(o, l, r, v int) {
 	t[o].max0 = max(lo.max0, ro.max0, lo.suf0+ro.pre0)
 }
 
-func (t seg2894) findFirst(o, size int) int {
+func (t seg894) findFirst(o, size int) int {
 	if t[o].max0 < size {
 		return 0
 	}
@@ -92,7 +92,7 @@ func p2894(in io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var n, m, op, x, c int
 	Fscan(in, &n, &m)
-	t := make(seg2894, 2<<bits.Len(uint(n)))
+	t := make(seg894, 2<<bits.Len(uint(n)))
 	t.build(1, 1, n)
 	for ; m > 0; m-- {
 		Fscan(in, &op, &x)

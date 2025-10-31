@@ -8,21 +8,21 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type seg3178 []struct {
+type seg178 []struct {
 	l, r, sum, todo int
 }
 
-func (t seg3178) apply(o, f int) {
+func (t seg178) apply(o, f int) {
 	cur := &t[o]
 	cur.sum += f * (cur.r - cur.l + 1)
 	cur.todo += f
 }
 
-func (t seg3178) maintain(o int) {
+func (t seg178) maintain(o int) {
 	t[o].sum = t[o<<1].sum + t[o<<1|1].sum
 }
 
-func (t seg3178) spread(o int) {
+func (t seg178) spread(o int) {
 	f := t[o].todo
 	if f == 0 {
 		return
@@ -32,7 +32,7 @@ func (t seg3178) spread(o int) {
 	t[o].todo = 0
 }
 
-func (t seg3178) build(a []int, o, l, r int) {
+func (t seg178) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].sum = a[l]
@@ -44,7 +44,7 @@ func (t seg3178) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg3178) update(o, l, r, f int) {
+func (t seg178) update(o, l, r, f int) {
 	if l <= t[o].l && t[o].r <= r {
 		t.apply(o, f)
 		return
@@ -60,7 +60,7 @@ func (t seg3178) update(o, l, r, f int) {
 	t.maintain(o)
 }
 
-func (t seg3178) query(o, l, r int) int {
+func (t seg178) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
@@ -135,7 +135,7 @@ func p3178(in io.Reader, _w io.Writer) {
 	for i, v := range vals {
 		dfnVals[nodes[i].dfn] = v
 	}
-	t := make(seg3178, 2<<bits.Len(uint(n-1)))
+	t := make(seg178, 2<<bits.Len(uint(n-1)))
 	t.build(dfnVals, 1, 0, n-1)
 
 	doPath := func(v, w int, do func(l, r int)) {
