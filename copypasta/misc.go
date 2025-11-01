@@ -836,7 +836,10 @@ func josephusProblem(n, k int) int {
 }
 
 // 均分纸牌 https://www.luogu.com.cn/problem/P1031
-// 环形 https://www.luogu.com.cn/problem/P2512 https://www.luogu.com.cn/problem/P3051 https://www.luogu.com.cn/problem/P4016 UVa11300 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2275
+// 环形 https://www.luogu.com.cn/problem/P2512 
+//      https://www.luogu.com.cn/problem/P3051 
+//      https://www.luogu.com.cn/problem/P4016 
+//      UVa11300 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2275
 // 环形+打印方案 https://www.luogu.com.cn/problem/P2125
 // 二维环形 https://www.acwing.com/problem/content/107/
 func minMoveToAllSameInCircle(a []int, abs func(int) int) (ans int) {
@@ -913,18 +916,22 @@ func parseExpression(s string) {
 }
 
 // 钱珀瑙恩数 Champernowne constant
+// 返回小数点后第 k 位数字
+// 例如 k=1 就是小数点后第 1 位，即 1
 // https://en.wikipedia.org/wiki/Champernowne_constant
 // https://oeis.org/A033307
-// 返回第 k 位数字
+//
 // https://leetcode.cn/contest/espressif-2021/problems/fSghVj/
 // https://projecteuler.net/problem=40
 func champernowneConstant(k int) int {
-	for i, p10 := 1, 10; ; i++ {
-		if i*p10 > k {
-			return int(strconv.Itoa(k / i)[k%i] & 15)
+	const base = 10
+	for width, pw := 1, base; ; width++ {
+		if width*pw > k {
+			s := strconv.FormatUint(uint64(k/width), base)
+			return int(s[k%width] - '0')
 		}
-		k += p10
-		p10 *= 10
+		k += pw
+		pw *= base
 	}
 }
 
