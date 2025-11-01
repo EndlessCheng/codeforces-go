@@ -917,6 +917,7 @@ func parseExpression(s string) {
 // https://oeis.org/A033307
 // 返回第 k 位数字
 // https://leetcode.cn/contest/espressif-2021/problems/fSghVj/
+// https://projecteuler.net/problem=40
 func champernowneConstant(k int) int {
 	for i, p10 := 1, 10; ; i++ {
 		if i*p10 > k {
