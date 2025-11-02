@@ -13,14 +13,13 @@ func cf1926E(in io.Reader, _w io.Writer) {
 	var T, n, k int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &k)
-		for mul := 1; ; mul *= 2 {
-			m := (n + 1) / 2
+		for i := 0; ; i++ {
+			m := (n>>i + 1) / 2
 			if k <= m {
-				Fprintln(out, (k*2-1)*mul)
+				Fprintln(out, (k*2-1)<<i)
 				break
 			}
 			k -= m
-			n /= 2
 		}
 	}
 }
