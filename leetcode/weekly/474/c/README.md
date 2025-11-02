@@ -152,7 +152,7 @@ public:
     long long minimumTime(vector<int>& d, vector<int>& r) {
         int d1 = d[0], d2 = d[1];
         int r1 = r[0], r2 = r[1];
-        int l = lcm(r1, r2);
+        int l = lcm(r1, r2); // 注：如果计算结果是 long long，可以把 r1 r2 的类型改成 long long 避免溢出
 
         auto check = [&](long long t) -> bool {
             return d1 <= t - t / r1 && d2 <= t - t / r2 && d1 + d2 <= t - t / l;
@@ -260,7 +260,7 @@ class Solution {
         int d1 = d[0], d2 = d[1];
         int r1 = r[0], r2 = r[1];
         int l = lcm(r1, r2);
-        return Math.max(f(d1, r1), Math.max(f(d2, r2), f(d1 + d2, l)));
+        return Math.max(Math.max(f(d1, r1), f(d2, r2)), f(d1 + d2, l));
     }
 
     private long f(int d, int r) {
@@ -292,7 +292,7 @@ public:
     long long minimumTime(vector<int>& d, vector<int>& r) {
         int d1 = d[0], d2 = d[1];
         int r1 = r[0], r2 = r[1];
-        int l = lcm(r1, r2);
+        int l = lcm(r1, r2); // 注：如果计算结果是 long long，可以把 r1 r2 的类型改成 long long 避免溢出
         return max({f(d1, r1), f(d2, r2), f(d1 + d2, l)});
     }
 };
