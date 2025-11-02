@@ -177,7 +177,7 @@ next:
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
 
 ## 优化
@@ -398,7 +398,7 @@ func lexGreaterPermutation(s, target string) string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
 
 ## 另一种写法
@@ -605,8 +605,15 @@ func lexGreaterPermutation(s, target string) string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
+
+## 相似题目
+
+- [3734. 大于目标字符串的最小字典序回文排列](https://leetcode.cn/problems/lexicographically-smallest-palindromic-permutation-greater-than-target/)
+- [2048. 下一个更大的数值平衡数](https://leetcode.cn/problems/next-greater-numerically-balanced-number/)
+- [3646. 下一个特殊回文数](https://leetcode.cn/problems/next-special-palindrome-number/)
+- [3348. 最小可整除数位乘积 II](https://leetcode.cn/problems/smallest-divisible-digit-product-ii/)
 
 ## 专题训练
 
