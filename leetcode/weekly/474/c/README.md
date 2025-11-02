@@ -1,3 +1,7 @@
+这题和 [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 是一样的，可以看 [我的题解](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/solutions/2031827/er-fen-da-an-by-endlesscheng-y8fp/)。
+
+下面介绍另外一种思考方式，目标是推导出方法二的结论。
+
 ## 方法一：二分答案
 
 ### 转化
