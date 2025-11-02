@@ -1,12 +1,10 @@
-请先完成更简单的 [3720. 大于目标字符串的最小字典序排列](https://leetcode.cn/problems/lexicographically-smallest-permutation-greater-than-target/)。
+首先，$s$ 不能有超过一个字母出现奇数次，否则无法形成回文串。
 
-对于本题，首先 $s$ 不能有超过一个字母出现奇数次，否则无法形成回文串。
+回文串的特点是，一旦确定了左半的字母，就确定了右半的字母，所以只需考虑左半字母如何排列。也就是对于左半，计算 [3720. 大于目标字符串的最小字典序排列](https://leetcode.cn/problems/lexicographically-smallest-permutation-greater-than-target/)。
 
-我们可以先把 $\textit{target}$ 左半翻转到右半，看看能否比 $\textit{target}$ 大。如果可以且 $s$ 字母足够，直接返回 $\textit{target}$ 左半翻转到右半的结果。
+特殊情况：如果把 $\textit{target}$ 的左半翻转到右半，就比 $\textit{target}$ 大，那么 $\textit{target}$ 的左半是不需要变的（而 3720 题必须变大）。我们特判这种情况，其余代码逻辑同 3720 题。
 
-否则和 3720 题一样，倒序贪心。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1MgyfBoEuX/?t=47m49s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -39,7 +37,7 @@ class Solution:
         if mid_ch:
             ans[n // 2] = mid_ch
 
-        # 把 target 左半翻转到右半，能否比 target 大？
+        # 特殊情况：把 target 左半翻转到右半，能否比 target 大？
         if valid() and (t := ''.join(ans)) > target:
             return t
 
@@ -116,7 +114,7 @@ class Solution {
         }
 
         if (valid(left)) {
-            // 把 target 左半翻转到右半，能否比 target 大？
+            // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
             String t = ans.toString();
             if (t.compareTo(target) > 0) {
                 return t;
@@ -220,7 +218,7 @@ public:
             ans[n / 2] = mid_ch;
         }
 
-        // 把 target 左半翻转到右半，能否比 target 大？
+        // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
         if (valid() && ans > target) {
             return ans;
         }
@@ -309,7 +307,7 @@ func lexPalindromicPermutation(s, target string) string {
 	}
 
 	if valid() {
-		// 把 target 左半翻转到右半，能否比 target 大？
+		// 特殊情况：把 target 左半翻转到右半，能否比 target 大？
 		t := string(ans)
 		if t > target {
 			return t
@@ -342,7 +340,7 @@ func lexPalindromicPermutation(s, target string) string {
 			}
 
 			// 把 t、midCh、Reverse(t) 依次填在 ans[i] 的右边
-			a := append(ans[:i+1], t...)
+			a := append(ans[:i+1], t...) // 注意修改 a 也会修改 ans
 			if midCh > 0 {
 				a = append(a, midCh)
 			}
@@ -359,7 +357,7 @@ func lexPalindromicPermutation(s, target string) string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
 
 ## 优化
@@ -367,9 +365,9 @@ func lexPalindromicPermutation(s, target string) string {
 我们可以减少不必要的循环，快速判断能否增大 $\textit{target}[i]$：
 
 1. 维护 $\textit{left}$ 中的负数个数 $\textit{neg}$。
-2. 维护 $\textit{left}$ 中的正数个数对应的字母最大值 $\textit{mx}$。
+2. 维护 $\textit{left}$ 中的正数个数对应的字母最大值 $\textit{leftMax}$。
 
-如果 $\textit{neg} < 0$ 且 $\textit{target}[i] \ge \textit{mx}$，那么无法增大 $\textit{target}[i]$。
+如果 $\textit{neg} < 0$ 且 $\textit{leftMax} \le \textit{target}[i]$，那么无法增大 $\textit{target}[i]$。
 
 ```py [sol-Python3]
 class Solution:
@@ -407,7 +405,7 @@ class Solution:
             elif cnt > 0:
                 left_max = max(left_max, c)  # 剩余可用字母的最大值
 
-        # 把 target 左半翻转到右半，能否比 target 大？
+        # 特殊情况：把 target 左半翻转到右半，能否比 target 大？
         if neg == 0 and (t := ''.join(ans)) > target:
             return t
 
@@ -498,7 +496,7 @@ class Solution {
         }
 
         if (neg == 0) {
-            // 把 target 左半翻转到右半，能否比 target 大？
+            // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
             String t = ans.toString();
             if (t.compareTo(target) > 0) {
                 return t;
@@ -600,7 +598,7 @@ public:
             }
         }
 
-        // 把 target 左半翻转到右半，能否比 target 大？
+        // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
         if (neg == 0 && ans > target) {
             return ans;
         }
@@ -696,7 +694,7 @@ func lexPalindromicPermutation(s, target string) string {
 	}
 
 	if neg == 0 {
-		// 把 target 左半翻转到右半，能否比 target 大？
+		// 特殊情况：把 target 左半翻转到右半，能否比 target 大？
 		t := string(ans)
 		if t > target {
 			return t
@@ -737,7 +735,7 @@ func lexPalindromicPermutation(s, target string) string {
 		}
 
 		// 把 t、midCh、Reverse(t) 依次填在 ans[i] 的右边
-		a := append(ans[:i+1], t...)
+		a := append(ans[:i+1], t...) // 注意修改 a 也会修改 ans
 		if midCh > 0 {
 			a = append(a, midCh)
 		}
@@ -752,7 +750,7 @@ func lexPalindromicPermutation(s, target string) string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
 
 ## 专题训练

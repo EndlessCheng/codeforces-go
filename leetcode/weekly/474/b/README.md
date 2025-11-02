@@ -1,12 +1,12 @@
 计算绝对值前二大元素。
 
-如果这两个元素取绝对值之前的乘积是负数，那么可以乘以 $-10^5$。
+如果这两个元素取绝对值之前的乘积是负数，那么把第三个数变成 $-10^5$。
 
-否则，乘以 $10^5$。
+否则，把第三个数变成 $10^5$。
 
-所以答案为绝对值前二大元素的乘积乘以 $10^5$。
+所以答案为绝对值前二大元素的乘积，再乘以 $10^5$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1MgyfBoEuX/?t=1m34s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -15,10 +15,10 @@ class Solution:
         for x in nums:
             x = abs(x)
             if x > mx:
-                mx2 = mx
-                mx = x
+                mx2 = mx  # 原来的最大变成次大
+                mx = x  # x 是新的最大
             elif x > mx2:
-                mx2 = x
+                mx2 = x  # 最大不变，x 是新的次大
         return mx * mx2 * 10 ** 5
 ```
 
@@ -29,10 +29,10 @@ class Solution {
         for (int x : nums) {
             x = Math.abs(x);
             if (x > mx) {
-                mx2 = mx;
-                mx = x;
+                mx2 = mx; // 原来的最大变成次大
+                mx = x; // x 是新的最大
             } else if (x > mx2) {
-                mx2 = x;
+                mx2 = x; // 最大不变，x 是新的次大
             }
         }
         return 100000L * mx * mx2;
@@ -48,10 +48,10 @@ public:
         for (int x : nums) {
             x = abs(x);
             if (x > mx) {
-                mx2 = mx;
-                mx = x;
+                mx2 = mx; // 原来的最大变成次大
+                mx = x; // x 是新的最大
             } else if (x > mx2) {
-                mx2 = x;
+                mx2 = x; // 最大不变，x 是新的次大
             }
         }
         return 100000LL * mx * mx2;
@@ -65,10 +65,10 @@ func maxProduct(nums []int) int64 {
 	for _, x := range nums {
 		x = abs(x)
 		if x > mx {
-			mx2 = mx
-			mx = x
+			mx2 = mx // 原来的最大变成次大
+			mx = x // x 是新的最大
 		} else if x > mx2 {
-			mx2 = x
+			mx2 = x // 最大不变，x 是新的次大
 		}
 	}
 	return int64(mx * mx2 * 1e5)
