@@ -3,64 +3,62 @@ package main
 import (
 	. "fmt"
 	"io"
+	"slices"
 )
 
 // https://github.com/EndlessCheng
 const mod17 = 1_000_000_007
 
-type matrix17 [][]int
-
-func newMatrix17(n, m int) matrix17 {
-	a := make(matrix17, n)
-	for i := range a {
-		a[i] = make([]int, m)
+func kitamasa17(coef, a []int, n int) (ans int) {
+	defer func() { ans = (ans%mod17 + mod17) % mod17 }()
+	if n < len(a) {
+		return a[n]
 	}
-	return a
-}
 
-func (a matrix17) mul(b matrix17) matrix17 {
-	c := newMatrix17(len(a), len(b[0]))
-	for i, row := range a {
-		for k, x := range row {
-			if x == 0 {
-				continue
+	k := len(coef)
+	compose := func(a, b []int) []int {
+		c := make([]int, k)
+		for _, v := range a {
+			for j, w := range b {
+				c[j] = (c[j] + v*w) % mod17
 			}
-			for j, y := range b[k] {
-				c[i][j] = (c[i][j] + x*y) % mod17
+			bk1 := b[k-1]
+			for j := k - 1; j > 0; j-- {
+				b[j] = (b[j-1] + bk1*coef[j]) % mod17
 			}
+			b[0] = bk1 * coef[0] % mod17
 		}
+		return c
 	}
-	return c
-}
 
-// a^n * f0
-func (a matrix17) powMul(n int, f0 matrix17) matrix17 {
-	res := f0
+	resC := make([]int, k)
+	resC[0] = 1
+	c := make([]int, k)
+	c[1] = 1
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			res = a.mul(res)
+			resC = compose(c, resC)
 		}
-		a = a.mul(a)
+		c = compose(c, slices.Clone(c))
 	}
-	return res
+
+	for i, c := range resC {
+		ans = (ans + c*a[i]) % mod17
+	}
+	return
 }
 
 func cf1117D(in io.Reader, out io.Writer) {
-	var n, k int
-	Fscan(in, &n, &k)
- 
-	m := newMatrix17(k, k)
-	m[0][0] = 1
-	m[0][k-1] = 1
-	for i := range k - 1 {
-		m[i+1][i] = 1
+	var n, m int
+	Fscan(in, &n, &m)
+	a := make([]int, m)
+	for i := range a {
+		a[i] = 1
 	}
-
-	f0 := newMatrix17(k, 1)
-	f0[0][0] = 1
- 
-	fn := m.powMul(n, f0)
-	Fprint(out, fn[0][0])
+	coef := make([]int, m)
+	coef[0] = 1
+	coef[m-1] = 1
+	Fprint(out, kitamasa17(coef, a, n))
 }
 
 //func main() { cf1117D(os.Stdin, os.Stdout) }
