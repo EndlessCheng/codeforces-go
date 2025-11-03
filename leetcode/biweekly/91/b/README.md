@@ -306,7 +306,7 @@ impl Solution {
 
 ## 优化
 
-如果 $\textit{zero}$ 和 $\textit{one}$ 都是偶数，比如都是 $2$，由于偶数+偶数=偶数，无论如何，我们都不可能得到长为奇数的字符串。
+举个例子。如果 $\textit{zero}$ 和 $\textit{one}$ 都是偶数，比如都是 $2$，由于偶数+偶数=偶数，无论如何，我们都不可能得到长为奇数的字符串。
 
 如果此时 $\textit{low}=3,\ \textit{high}=7$，那么我们只需要计算字符串长度为 $4$ 和 $6$ 的情况。或者说，问题的规模可以缩小为 $\textit{low}'=2,\ \textit{high}'=3,\ \textit{zero}'=1,\ \textit{one}'=1$。
 
@@ -320,6 +320,8 @@ $$
 \textit{one}' = \dfrac{\textit{one}}{g} \\
 \end{cases}
 $$
+
+比如 $\dfrac{\textit{low}}{g}=1.5$，由于字符串长度必须是整数，所以上取整到最近的整数 $2$。下取整同理。
 
 关于上取整的计算，当 $a$ 和 $b$ 均为正整数时，我们有
 
