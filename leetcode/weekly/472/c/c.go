@@ -7,29 +7,28 @@ func lexGreaterPermutation1(s, target string) string {
 	left := make([]int, 26)
 	for i, b := range s {
 		left[b-'a']++
-		left[target[i]-'a']--
+		left[target[i]-'a']-- // 消耗 s 中的一个字母 target[i]
 	}
-	ans := []byte(target)
 
 next:
 	for i := len(s) - 1; i >= 0; i-- {
 		b := target[i] - 'a'
-		left[b]++
+		left[b]++ // 撤销消耗
 		for _, c := range left {
-			if c < 0 { // 前面不能全部一样
+			if c < 0 { // [0,i-1] 无法做到全部一样
 				continue next
 			}
 		}
 
-		// target[i] 增大到 j
+		// 把 target[i] 增大到 j
 		for j := b + 1; j < 26; j++ {
 			if left[j] == 0 {
 				continue
 			}
 
 			left[j]--
+			ans := []byte(target[:i+1])
 			ans[i] = 'a' + j
-			ans = ans[:i+1]
 
 			for k, c := range left {
 				ch := string('a' + byte(k))
@@ -58,7 +57,6 @@ func lexGreaterPermutation(s, target string) string {
 		}
 	}
 
-	ans := []byte(target)
 	for i := len(s) - 1; i >= 0; i-- {
 		b := target[i] - 'a'
 		left[b]++ // 撤销消耗
@@ -79,10 +77,10 @@ func lexGreaterPermutation(s, target string) string {
 			j++
 		}
 
-		// target[i] 增大到 j
+		// 把 target[i] 增大到 j
 		left[j]--
+		ans := []byte(target[:i+1])
 		ans[i] = 'a' + byte(j)
-		ans = ans[:i+1]
 
 		for k, c := range left {
 			ch := string('a' + byte(k))

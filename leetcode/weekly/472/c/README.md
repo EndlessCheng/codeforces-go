@@ -18,7 +18,6 @@ class Solution:
         for c in target:
             left[c] -= 1  # 消耗 s 中的一个字母 c
 
-        ans = list(target)
         # 从右往左尝试
         for i in range(len(s) - 1, -1, -1):
             c = target[i]
@@ -26,20 +25,23 @@ class Solution:
             if any(cnt < 0 for cnt in left.values()):
                 continue  # [0,i-1] 无法做到全部一样
 
-            # target[i] 增大到 j
+            # 把 target[i] 增大到 j
             for j in range(ord(c) - ord('a') + 1, 26):
                 ch = ascii_lowercase[j]
                 if left[ch] == 0:
                     continue
 
+                # 找到答案（下面的循环在整个算法中只会跑一次）
                 left[ch] -= 1
+                ans = list(target[:i + 1])
                 ans[i] = ch
-                del ans[i + 1:]
 
+                # 中间可以随便填
                 for ch in ascii_lowercase:
                     ans.extend(ch * left[ch])
                 return ''.join(ans)
             # 增大失败，继续枚举
+
         return ""
 ```
 
@@ -65,7 +67,7 @@ class Solution {
                 }
             }
 
-            // target[i] 增大到 j
+            // 把 target[i] 增大到 j
             for (int j = b + 1; j < 26; j++) {
                 if (left[j] == 0) {
                     continue;
@@ -112,7 +114,7 @@ public:
                 continue;
             }
 
-            // target[i] 增大到 j
+            // 把 target[i] 增大到 j
             for (int j = b + 1; j < 26; j++) {
                 if (left[j] == 0) {
                     continue;
@@ -141,7 +143,6 @@ func lexGreaterPermutation(s, target string) string {
 		left[b-'a']++
 		left[target[i]-'a']-- // 消耗 s 中的一个字母 target[i]
 	}
-	ans := []byte(target)
 
 next:
 	for i := len(s) - 1; i >= 0; i-- {
@@ -153,15 +154,15 @@ next:
 			}
 		}
 
-		// target[i] 增大到 j
+		// 把 target[i] 增大到 j
 		for j := b + 1; j < 26; j++ {
 			if left[j] == 0 {
 				continue
 			}
 
 			left[j]--
+			ans := []byte(target[:i+1])
 			ans[i] = 'a' + j
-			ans = ans[:i+1]
 
 			for k, c := range left {
 				ch := string('a' + byte(k))
@@ -203,7 +204,6 @@ class Solution:
             elif cnt > 0:
                 mx = max(mx, c)
 
-        ans = list(target)
         for i in range(len(s) - 1, -1, -1):
             c = target[i]
             left[c] += 1  # 撤销消耗
@@ -217,19 +217,21 @@ class Solution:
             if neg > 0 or c >= mx:
                 continue
 
+            # 找到答案（下面的循环在整个算法中只会跑一次）
             j = ord(c) - ord('a') + 1
             while left[ascii_lowercase[j]] == 0:
                 j += 1
 
-            # target[i] 增大到 ch
+            # 把 target[i] 增大到 ch
             ch = ascii_lowercase[j]
             left[ch] -= 1
+            ans = list(target[:i + 1])
             ans[i] = ch
-            del ans[i + 1:]
 
             for ch in ascii_lowercase:
                 ans.extend(ch * left[ch])
             return ''.join(ans)
+
         return ""
 ```
 
@@ -274,7 +276,7 @@ class Solution {
                 j++;
             }
 
-            // target[i] 增大到 j
+            // 把 target[i] 增大到 j
             left[j]--;
             StringBuilder ans = new StringBuilder(target.substring(0, i + 1));
             ans.setCharAt(i, (char) ('a' + j));
@@ -328,7 +330,7 @@ public:
                 j++;
             }
 
-            // target[i] 增大到 j
+            // 把 target[i] 增大到 j
             left[j]--;
             target[i] = 'a' + j;
             target.resize(i + 1);
@@ -360,7 +362,6 @@ func lexGreaterPermutation(s, target string) string {
 		}
 	}
 
-	ans := []byte(target)
 	for i := len(s) - 1; i >= 0; i-- {
 		b := target[i] - 'a'
 		left[b]++ // 撤销消耗
@@ -381,10 +382,10 @@ func lexGreaterPermutation(s, target string) string {
 			j++
 		}
 
-		// target[i] 增大到 j
+		// 把 target[i] 增大到 j
 		left[j]--
+		ans := []byte(target[:i+1])
 		ans[i] = 'a' + byte(j)
-		ans = ans[:i+1]
 
 		for k, c := range left {
 			ch := string('a' + byte(k))
@@ -419,7 +420,6 @@ class Solution:
             elif cnt > 0:
                 mask |= 1 << (ord(c) - ord('a'))
 
-        ans = list(target)
         for i in range(len(s) - 1, -1, -1):
             c = target[i]
             left[c] += 1  # 撤销消耗
@@ -437,15 +437,15 @@ class Solution:
             mask &= ~((1 << (idx + 1)) - 1)
             j = (mask & -mask).bit_length() - 1  # 也可以写循环找 j
 
-            # target[i] 增大到 ch
             ch = ascii_lowercase[j]
             left[ch] -= 1
+            ans = list(target[:i + 1])
             ans[i] = ch
-            del ans[i + 1:]
 
             for ch in ascii_lowercase:
                 ans.extend(ch * left[ch])
             return ''.join(ans)
+
         return ""
 ```
 
@@ -485,7 +485,7 @@ class Solution {
                 continue;
             }
 
-            // target[i] 增大到 j
+            // 把 target[i] 增大到 j
             mask &= ~((1 << (b + 1)) - 1);
             int j = Integer.numberOfTrailingZeros(mask); // 也可以写循环找 j
             left[j]--;
@@ -536,7 +536,7 @@ public:
                 continue;
             }
 
-            // target[i] 增大到 j
+            // 把 target[i] 增大到 j
             mask &= ~((1 << (b + 1)) - 1);
             int j = countr_zero((unsigned) mask); // 也可以写循环找 j
             left[j]--;
@@ -570,7 +570,6 @@ func lexGreaterPermutation(s, target string) string {
 		}
 	}
 
-	ans := []byte(target)
 	for i := len(s) - 1; i >= 0; i-- {
 		b := target[i] - 'a'
 		left[b]++ // 撤销消耗
@@ -586,12 +585,12 @@ func lexGreaterPermutation(s, target string) string {
 			continue
 		}
 
-		// target[i] 增大到 j
+		// 把 target[i] 增大到 j
 		mask &^= 1<<(b+1) - 1
 		j := bits.TrailingZeros(uint(mask)) // 也可以写循环找 j
 		left[j]--
+		ans := []byte(target[:i+1])
 		ans[i] = 'a' + byte(j)
-		ans = ans[:i+1]
 
 		for k, c := range left {
 			ch := string('a' + byte(k))
