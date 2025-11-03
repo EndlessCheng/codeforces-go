@@ -31,6 +31,7 @@ https://codeforces.com/contest/24/problem/D
 矩阵快速幂优化 DP
 视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
 文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
+筛选 matrices & dp & 1900+ 就是矩阵快速幂优化 DP 的题了 https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2Cmatrices%2C1900-
 https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://codeforces.com/problemset/problem/166/E 1500
 https://codeforces.com/problemset/problem/691/E 1900
@@ -42,6 +43,7 @@ https://codeforces.com/problemset/problem/226/C 2400
 https://codeforces.com/problemset/problem/593/E 2400 分段
 https://codeforces.com/problemset/problem/93/D 2500 前 n 项之和
 https://codeforces.com/problemset/problem/60/E 2600
+https://codeforces.com/problemset/problem/1895/F 2600 如何容斥（正难则反）
 https://codeforces.com/problemset/problem/575/A 2700 分段 倍增
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
