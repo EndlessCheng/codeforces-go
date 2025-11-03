@@ -31,13 +31,15 @@ https://codeforces.com/contest/24/problem/D
 矩阵快速幂优化 DP
 视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
 文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
-筛选 matrices & dp & 1900+ 就是矩阵快速幂优化 DP 的题了 https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2Cmatrices%2C1900-
+
+筛选 matrices & dp & 1900+ 就能大概率找到矩阵快速幂优化 DP 的题了（部分题目是线段树+广义矩阵乘法优化 DP 等）
+https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2Cmatrices%2C1900-
 https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://codeforces.com/problemset/problem/166/E 1500
 https://codeforces.com/problemset/problem/691/E 1900
 https://codeforces.com/problemset/problem/954/F 2100 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步
-https://codeforces.com/problemset/problem/1117/D 2100 a(n) = a(n-1) + a(n-m)
-https://codeforces.com/problemset/problem/1182/E 2300
+https://codeforces.com/problemset/problem/1117/D 2100 f(n) = f(n-1) + f(n-m)
+https://codeforces.com/problemset/problem/1182/E 2300 关注指数
 https://codeforces.com/problemset/problem/226/C 2400
 - https://www.luogu.com.cn/problem/P1306
 https://codeforces.com/problemset/problem/593/E 2400 分段
@@ -48,7 +50,7 @@ https://codeforces.com/problemset/problem/575/A 2700 分段 倍增
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
-https://www.luogu.com.cn/problem/P3216 12345678910111213...n % m
+https://www.luogu.com.cn/problem/P3216 (12345678910111213...n) % m
 https://www.luogu.com.cn/problem/P5364
 https://www.luogu.com.cn/problem/P10310
 https://ac.nowcoder.com/acm/contest/9247/A
@@ -192,6 +194,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 // https://codeforces.com/blog/entry/97627
 // https://misawa.github.io/others/fast_kitamasa_method.html
 //
+// https://codeforces.com/problemset/problem/1117/D 2100
 // https://atcoder.jp/contests/tdpc/tasks/tdpc_fibonacci
 // https://www.luogu.com.cn/problem/P5487
 func kitamasa(coef, a []int, n int) (ans int) {
