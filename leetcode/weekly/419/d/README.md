@@ -1,24 +1,30 @@
-请先完成本题的简单版本 [3013. 将数组分成最小总代价的子数组 II](https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/)。
+**前置题目**：
 
-本题需要在 3013 的基础上变形，额外用一个哈希表 $\textit{cnt}$ 维护窗口中的元素及其出现次数。
+1. [295. 数据流的中位数](https://leetcode.cn/problems/find-median-from-data-stream/)，[我的题解](https://leetcode.cn/problems/find-median-from-data-stream/solutions/3015873/ru-he-zi-ran-yin-ru-da-xiao-dui-jian-ji-4v22k/)。
+2. [480. 滑动窗口中位数](https://leetcode.cn/problems/sliding-window-median/)，[我的题解](https://leetcode.cn/problems/sliding-window-median/solutions/3628827/295-ti-lan-shan-chu-dui-pythonjavacgojsr-66ch/)。
+3. [3013. 将数组分成最小总代价的子数组 II](https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/)，[我的题解](https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/solutions/2614067/liang-ge-you-xu-ji-he-wei-hu-qian-k-1-xi-zdzx/)。
 
-两个**有序集合**维护的是二元组 $(\textit{cnt}[x], x)$。
+在 3013 题中，我们用两个有序集合维护前 $k-1$ 小元素及其总和。
+
+本题要维护前 $x$ 大的二元组 $(\textit{cnt}[x], x)$，以及 $\textit{cnt}[x]\cdot x$ 的总和。其中 $\textit{cnt}[x]$ 表示 $x$ 在子数组（滑动窗口）中的出现次数。
 
 当元素进入窗口时：
 
-- 先把 $(\textit{cnt}[x], x)$ 从有序集合中移除。
-- 然后把 $\textit{cnt}[x]$ 加一。
-- 最后把 $(\textit{cnt}[x], x)$ 加入有序集合。
+1. 把 $(\textit{cnt}[x], x)$ 从有序集合中移除。
+2. 把 $\textit{cnt}[x]$ 加一。
+3. 把 $(\textit{cnt}[x], x)$ 加入有序集合。
 
 当元素离开窗口时：
 
-- 先把 $(\textit{cnt}[x], x)$ 从有序集合中移除。
-- 然后把 $\textit{cnt}[x]$ 减一。
-- 最后把 $(\textit{cnt}[x], x)$ 加入有序集合。
+1. 把 $(\textit{cnt}[x], x)$ 从有序集合中移除。
+2. 把 $\textit{cnt}[x]$ 减一。
+3. 把 $(\textit{cnt}[x], x)$ 加入有序集合。
 
-其余做法同 3013 题。
+添加删除的同时维护 $\textit{cnt}[x]\cdot x$ 的总和。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1zU2zYiEa4/) 第四题，欢迎点赞关注~
+**其余逻辑同 3013 题**。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1zU2zYiEa4/?t=32m55s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 from sortedcontainers import SortedList
@@ -344,7 +350,9 @@ func findXSum(nums []int, k, x int) []int64 {
 - 时间复杂度：$\mathcal{O}(n\log k)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-更多相似题目，见下面数据结构题单中的「**对顶堆**」。
+## 专题训练
+
+见下面数据结构题单的「**§5.7 对顶堆**」。
 
 ## 分类题单
 
@@ -355,12 +363,14 @@ func findXSum(nums []int, k, x int) []int64 {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
