@@ -28,18 +28,16 @@ class Solution:
             left[ch] -= 1
 
         n = len(s)
-        ans = list(target)
         # 先假设答案左半与 t 的左半（不含正中间）相同
         for i, b in enumerate(target[:n // 2]):
             left[b] -= 2
-            ans[-1 - i] = b  # 把 target 左半翻转到右半
-        # 正中间只能填那个出现奇数次的字母
-        if mid_ch:
-            ans[n // 2] = mid_ch
 
-        # 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-        if valid() and (t := ''.join(ans)) > target:
-            return t
+        if valid():
+            # 特殊情况：把 target 左半翻转到右半，能否比 target 大？
+            left_s = target[:n // 2]
+            right_s = mid_ch + left_s[::-1]
+            if right_s > target[n // 2:]:  # 由于左半是一样的，所以只需比右半
+                return left_s + right_s
 
         for i in range(n // 2 - 1, -1, -1):
             b = target[i]
@@ -47,7 +45,7 @@ class Solution:
             if not valid():  # [0,i-1] 无法做到全部一样
                 continue
 
-            # 把 target[i] 和 target[n-1-i] 都增大到 j
+            # 把 target[i] 增大到 j
             for j in range(ord(b) - ord('a') + 1, 26):
                 ch = ascii_lowercase[j]
                 if left[ch] == 0:
@@ -55,22 +53,21 @@ class Solution:
 
                 # 找到答案（下面的循环在整个算法中只会跑一次）
                 left[ch] -= 2
-                ans[i] = ans[-1 - i] = ch
-                right = ans[-1 - i:]
-                del ans[i + 1:]
+                ans = list(target[:i + 1])
+                ans[i] = ch
 
-                # 中间的空位可以随便填
-                t = []
+                # 中间可以随便填
                 for ch in ascii_lowercase:
-                    t.extend(ch * (left[ch] // 2))
+                    ans.extend(ch * (left[ch] // 2))
 
-                ans += t
-                if mid_ch:
-                    ans.append(mid_ch)
-                ans += t[::-1]
-                ans += right
+                # 镜像翻转
+                right_s = ans[::-1]
+                ans.append(mid_ch)
+                ans.extend(right_s)
 
                 return ''.join(ans)
+            # 增大失败，继续枚举
+
         return ""
 ```
 
@@ -85,39 +82,33 @@ class Solution {
             return "";
         }
 
-        char midCh = 0;
+        String midCh = "";
         for (int i = 0; i < 26; i++) {
             int c = left[i];
             if (c % 2 == 0) {
                 continue;
             }
             // s 不能有超过一个字母出现奇数次
-            if (midCh > 0) {
+            if (!midCh.isEmpty()) {
                 return "";
             }
             // 记录填在正中间的字母
-            midCh = (char) ('a' + i);
+            midCh = "" + (char) ('a' + i);
             left[i]--;
         }
 
         int n = s.length();
-        StringBuilder ans = new StringBuilder(target);
         // 先假设答案左半与 target 的左半（不含正中间）相同
         for (int i = 0; i < n / 2; i++) {
-            char b = target.charAt(i);
-            left[b - 'a'] -= 2;
-            ans.setCharAt(n - 1 - i, b); // 把 target 左半翻转到右半
-        }
-        // 正中间只能填那个出现奇数次的字母
-        if (midCh > 0) {
-            ans.setCharAt(n / 2, midCh);
+            left[target.charAt(i) - 'a'] -= 2;
         }
 
         if (valid(left)) {
             // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-            String t = ans.toString();
-            if (t.compareTo(target) > 0) {
-                return t;
+            String leftS = target.substring(0, n / 2);
+            String rightS = midCh + new StringBuilder(leftS).reverse();
+            if (rightS.compareTo(target.substring(n / 2)) > 0) { // 由于左半是一样的，所以只需比右半
+                return leftS + rightS;
             }
         }
 
@@ -128,7 +119,7 @@ class Solution {
                 continue;
             }
 
-            // 把 target[i] 和 target[n-1-i] 都增大到 j
+            // 把 target[i] 增大到 j
             for (int j = b + 1; j < 26; j++) {
                 if (left[j] == 0) {
                     continue;
@@ -136,26 +127,17 @@ class Solution {
 
                 // 找到答案（下面的循环在整个算法中只会跑一次）
                 left[j] -= 2;
+                StringBuilder ans = new StringBuilder(target.substring(0, i + 1));
                 ans.setCharAt(i, (char) ('a' + j));
-                ans.setCharAt(n - 1 - i, (char) ('a' + j));
-
-                String right = ans.substring(n - 1 - i);
-                ans.setLength(i + 1);
-
-                // 中间的空位可以随便填
-                StringBuilder t = new StringBuilder();
+    
+                // 中间可以随便填
                 for (int k = 0; k < 26; k++) {
-                    t.repeat('a' + k, left[k] / 2);
+                    ans.repeat('a' + k, left[k] / 2);
                 }
-
-                ans.append(t);
-                if (midCh > 0) {
-                    ans.append(midCh);
-                }
-                ans.append(t.reverse());
-                ans.append(right);
-
-                return ans.toString();
+    
+                // 镜像翻转
+                StringBuilder rightS = new StringBuilder(ans).reverse();
+                return ans.append(midCh).append(rightS).toString();
             }
             // 增大失败，继续枚举
         }
@@ -190,14 +172,14 @@ public:
             return true;
         };
 
-        char mid_ch = 0;
+        string mid_ch;
         for (int i = 0; i < 26; i++) {
             int c = left[i];
             if (c % 2 == 0) {
                 continue;
             }
             // s 不能有超过一个字母出现奇数次
-            if (mid_ch) {
+            if (!mid_ch.empty()) {
                 return "";
             }
             // 记录填在正中间的字母
@@ -206,21 +188,19 @@ public:
         }
 
         int n = s.size();
-        string ans = target;
         // 先假设答案左半与 t 的左半（不含正中间）相同
         for (int i = 0; i < n / 2; i++) {
-            char b = target[i];
-            left[b - 'a'] -= 2;
-            ans[n - 1 - i] = b; // 把 target 左半翻转到右半
-        }
-        // 正中间只能填那个出现奇数次的字母
-        if (mid_ch > 0) {
-            ans[n / 2] = mid_ch;
+            left[target[i] - 'a'] -= 2;
         }
 
-        // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-        if (valid() && ans > target) {
-            return ans;
+        if (valid()) {
+            // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
+            string right_s = target.substr(0, n / 2);
+            ranges::reverse(right_s);
+            right_s = mid_ch + right_s;
+            if (right_s > target.substr(n / 2)) { // 由于左半是一样的，所以只需比右半
+                return target.substr(0, n / 2) + right_s;
+            }
         }
 
         for (int i = n / 2 - 1; i >= 0; i--) {
@@ -230,7 +210,7 @@ public:
                 continue;
             }
 
-            // 把 target[i] 和 target[n-1-i] 都增大到 j
+            // 把 target[i] 增大到 j
             for (int j = b + 1; j < 26; j++) {
                 if (left[j] == 0) {
                     continue;
@@ -238,25 +218,21 @@ public:
 
                 // 找到答案（下面的循环在整个算法中只会跑一次）
                 left[j] -= 2;
-                ans[i] = ans[n - 1 - i] = 'a' + j;
-                string right = ans.substr(n - 1 - i);
-                ans.resize(i + 1);
-
+                target.resize(i + 1);
+                target[i] = 'a' + j;
+    
                 // 中间的空位可以随便填
-                string t;
                 for (int k = 0; k < 26; k++) {
-                    t += string(left[k] / 2, 'a' + k);
+                    target += string(left[k] / 2, 'a' + k);
                 }
-
-                ans += t;
-                if (mid_ch) {
-                    ans += mid_ch;
-                }
-                ranges::reverse(t);
-                ans += t;
-                ans += right;
-
-                return ans;
+    
+                // 镜像翻转
+                string right_s = target;
+                ranges::reverse(right_s);
+                target += mid_ch;
+                target += right_s;
+    
+                return target;
             }
             // 增大失败，继续枚举
         }
@@ -280,48 +256,45 @@ func lexPalindromicPermutation(s, target string) string {
 		return true
 	}
 
-	midCh := byte(0)
+	midCh := ""
 	for i, c := range left {
 		if c%2 == 0 {
 			continue
 		}
 		// s 不能有超过一个字母出现奇数次
-		if midCh > 0 {
+		if midCh != "" {
 			return ""
 		}
 		// 记录填在正中间的字母
-		midCh = 'a' + byte(i)
+		midCh = string('a' + byte(i))
 		left[i]--
 	}
 
 	n := len(s)
-	ans := []byte(target)
 	// 先假设答案左半与 t 的左半（不含正中间）相同
-	for i, b := range target[:n/2] {
+	for _, b := range target[:n/2] {
 		left[b-'a'] -= 2
-		ans[n-1-i] = byte(b) // 把 target 左半翻转到右半
-	}
-	// 正中间只能填那个出现奇数次的字母
-	if midCh > 0 {
-		ans[n/2] = midCh
 	}
 
 	if valid() {
 		// 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-		t := string(ans)
-		if t > target {
-			return t
+		leftS := target[:n/2]
+		tmp := []byte(leftS)
+		slices.Reverse(tmp)
+		rightS := midCh + string(tmp)
+		if rightS > target[n/2:] { // 由于左半是一样的，所以只需比右半
+			return leftS + rightS
 		}
 	}
 
 	for i := n/2 - 1; i >= 0; i-- {
 		b := target[i] - 'a'
-		left[b] += 2 // 撤销消耗
+		left[b] += 2  // 撤销消耗
 		if !valid() { // [0,i-1] 无法做到全部一样
 			continue
 		}
 
-		// 把 target[i] 和 target[n-1-i] 都增大到 j
+		// 把 target[i] 增大到 j
 		for j := b + 1; j < 26; j++ {
 			if left[j] == 0 {
 				continue
@@ -329,23 +302,20 @@ func lexPalindromicPermutation(s, target string) string {
 
 			// 找到答案（下面的循环在整个算法中只会跑一次）
 			left[j] -= 2
+			ans := []byte(target[:i+1])
 			ans[i] = 'a' + j
-			ans[n-1-i] = ans[i]
 
-			// 中间的空位可以随便填
-			t := make([]byte, 0, n-(i+1)*2)
+			// 中间可以随便填
 			for k, c := range left {
 				ch := string('a' + byte(k))
-				t = append(t, strings.Repeat(ch, c/2)...)
+				ans = append(ans, strings.Repeat(ch, c/2)...)
 			}
 
-			// 把 t、midCh、Reverse(t) 依次填在 ans[i] 的右边
-			a := append(ans[:i+1], t...) // 注意修改 a 也会修改 ans
-			if midCh > 0 {
-				a = append(a, midCh)
-			}
-			slices.Reverse(t)
-			a = append(a, t...)
+			// 镜像翻转
+			rightS := slices.Clone(ans)
+			slices.Reverse(rightS)
+			ans = append(ans, midCh...)
+			ans = append(ans, rightS...)
 
 			return string(ans)
 		}
@@ -358,7 +328,7 @@ func lexPalindromicPermutation(s, target string) string {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
-- 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
+- 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
 
 ## 优化
 
@@ -389,14 +359,9 @@ class Solution:
             left[ch] -= 1
 
         n = len(s)
-        ans = list(target)
         # 先假设答案左半与 t 的左半（不含正中间）相同
         for i, b in enumerate(target[:n // 2]):
             left[b] -= 2
-            ans[-1 - i] = b  # 把 target 左半翻转到右半
-        # 正中间只能填那个出现奇数次的字母
-        if mid_ch:
-            ans[n // 2] = mid_ch
 
         neg, left_max = 0, ''
         for c, cnt in left.items():
@@ -405,9 +370,12 @@ class Solution:
             elif cnt > 0:
                 left_max = max(left_max, c)  # 剩余可用字母的最大值
 
-        # 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-        if neg == 0 and (t := ''.join(ans)) > target:
-            return t
+        if neg == 0:
+            # 特殊情况：把 target 左半翻转到右半，能否比 target 大？
+            left_s = target[:n // 2]
+            right_s = mid_ch + left_s[::-1]
+            if right_s > target[n // 2:]:  # 由于左半是一样的，所以只需比右半
+                return left_s + right_s
 
         for i in range(n // 2 - 1, -1, -1):
             b = target[i]
@@ -427,25 +395,23 @@ class Solution:
             while left[ascii_lowercase[j]] == 0:
                 j += 1
 
-            # 把 target[i] 和 target[n-1-i] 增大到 ch
+            # 把 target[i] 增大到 ch
             ch = ascii_lowercase[j]
             left[ch] -= 2
-            ans[i] = ans[-1 - i] = ch
-            right = ans[-1 - i:]
-            del ans[i + 1:]
+            ans = list(target[:i + 1])
+            ans[i] = ch
 
-            # 中间的空位可以随便填
-            t = []
+            # 中间可以随便填
             for ch in ascii_lowercase:
-                t.extend(ch * (left[ch] // 2))
+                ans.extend(ch * (left[ch] // 2))
 
-            ans += t
-            if mid_ch:
-                ans.append(mid_ch)
-            ans += t[::-1]
-            ans += right
+            # 镜像翻转
+            right_s = ans[::-1]
+            ans.append(mid_ch)
+            ans.extend(right_s)
 
             return ''.join(ans)
+
         return ""
 ```
 
@@ -457,32 +423,25 @@ class Solution {
             left[b - 'a']++;
         }
 
-        char midCh = 0;
+        String midCh = "";
         for (int i = 0; i < 26; i++) {
             int c = left[i];
             if (c % 2 == 0) {
                 continue;
             }
             // s 不能有超过一个字母出现奇数次
-            if (midCh > 0) {
+            if (!midCh.isEmpty()) {
                 return "";
             }
             // 记录填在正中间的字母
-            midCh = (char) ('a' + i);
+            midCh = "" + (char) ('a' + i);
             left[i]--;
         }
 
         int n = s.length();
-        StringBuilder ans = new StringBuilder(target);
         // 先假设答案左半与 target 的左半（不含正中间）相同
         for (int i = 0; i < n / 2; i++) {
-            char b = target.charAt(i);
-            left[b - 'a'] -= 2;
-            ans.setCharAt(n - 1 - i, b); // 把 target 左半翻转到右半
-        }
-        // 正中间只能填那个出现奇数次的字母
-        if (midCh > 0) {
-            ans.setCharAt(n / 2, midCh);
+            left[target.charAt(i) - 'a'] -= 2;
         }
 
         int neg = 0;
@@ -497,9 +456,10 @@ class Solution {
 
         if (neg == 0) {
             // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-            String t = ans.toString();
-            if (t.compareTo(target) > 0) {
-                return t;
+            String leftS = target.substring(0, n / 2);
+            String rightS = midCh + new StringBuilder(leftS).reverse();
+            if (rightS.compareTo(target.substring(n / 2)) > 0) { // 由于左半是一样的，所以只需比右半
+                return leftS + rightS;
             }
         }
 
@@ -524,28 +484,19 @@ class Solution {
                 j++;
             }
 
-            // 把 target[i] 和 target[n-1-i] 增大到 j
+            // 把 target[i] 增大到 j
             left[j] -= 2;
+            StringBuilder ans = new StringBuilder(target.substring(0, i + 1));
             ans.setCharAt(i, (char) ('a' + j));
-            ans.setCharAt(n - 1 - i, (char) ('a' + j));
 
-            String right = ans.substring(n - 1 - i);
-            ans.setLength(i + 1);
-
-            // 中间的空位可以随便填
-            StringBuilder t = new StringBuilder();
+            // 中间可以随便填
             for (int k = 0; k < 26; k++) {
-                t.repeat('a' + k, left[k] / 2);
+                ans.repeat('a' + k, left[k] / 2);
             }
 
-            ans.append(t);
-            if (midCh > 0) {
-                ans.append(midCh);
-            }
-            ans.append(t.reverse());
-            ans.append(right);
-
-            return ans.toString();
+            // 镜像翻转
+            StringBuilder rightS = new StringBuilder(ans).reverse();
+            return ans.append(midCh).append(rightS).toString();
         }
         return "";
     }
@@ -561,14 +512,14 @@ public:
             left[b - 'a']++;
         }
 
-        char mid_ch = 0;
+        string mid_ch;
         for (int i = 0; i < 26; i++) {
             int c = left[i];
             if (c % 2 == 0) {
                 continue;
             }
             // s 不能有超过一个字母出现奇数次
-            if (mid_ch) {
+            if (!mid_ch.empty()) {
                 return "";
             }
             // 记录填在正中间的字母
@@ -577,16 +528,9 @@ public:
         }
 
         int n = s.size();
-        string ans = target;
         // 先假设答案左半与 t 的左半（不含正中间）相同
         for (int i = 0; i < n / 2; i++) {
-            char b = target[i];
-            left[b - 'a'] -= 2;
-            ans[n - 1 - i] = b; // 把 target 左半翻转到右半
-        }
-        // 正中间只能填那个出现奇数次的字母
-        if (mid_ch > 0) {
-            ans[n / 2] = mid_ch;
+            left[target[i] - 'a'] -= 2;
         }
 
         int neg = 0, left_max = 0;
@@ -598,9 +542,14 @@ public:
             }
         }
 
-        // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-        if (neg == 0 && ans > target) {
-            return ans;
+        if (neg == 0) {
+            // 特殊情况：把 target 左半翻转到右半，能否比 target 大？
+            string right_s = target.substr(0, n / 2);
+            ranges::reverse(right_s);
+            right_s = mid_ch + right_s;
+            if (right_s > target.substr(n / 2)) { // 由于左半是一样的，所以只需比右半
+                return target.substr(0, n / 2) + right_s;
+            }
         }
 
         for (int i = n / 2 - 1; i >= 0; i--) {
@@ -624,27 +573,23 @@ public:
                 j++;
             }
 
-            // 把 target[i] 和 target[n-1-i] 增大到 j
+            // 把 target[i] 增大到 j
             left[j] -= 2;
-            ans[i] = ans[n - 1 - i] = 'a' + j;
-            string right = ans.substr(n - 1 - i);
-            ans.resize(i + 1);
+            target.resize(i + 1);
+            target[i] = 'a' + j;
 
             // 中间的空位可以随便填
-            string t;
             for (int k = 0; k < 26; k++) {
-                t += string(left[k] / 2, 'a' + k);
+                target += string(left[k] / 2, 'a' + k);
             }
 
-            ans += t;
-            if (mid_ch) {
-                ans += mid_ch;
-            }
-            ranges::reverse(t);
-            ans += t;
-            ans += right;
+            // 镜像翻转
+            string right_s = target;
+            ranges::reverse(right_s);
+            target += mid_ch;
+            target += right_s;
 
-            return ans;
+            return target;
         }
         return "";
     }
@@ -658,30 +603,24 @@ func lexPalindromicPermutation(s, target string) string {
 		left[b-'a']++
 	}
 
-	midCh := byte(0)
+	midCh := ""
 	for i, c := range left {
 		if c%2 == 0 {
 			continue
 		}
 		// s 不能有超过一个字母出现奇数次
-		if midCh > 0 {
+		if midCh != "" {
 			return ""
 		}
 		// 记录填在正中间的字母
-		midCh = 'a' + byte(i)
+		midCh = string('a' + byte(i))
 		left[i]--
 	}
 
 	n := len(s)
-	ans := []byte(target)
 	// 先假设答案左半与 t 的左半（不含正中间）相同
-	for i, b := range target[:n/2] {
+	for _, b := range target[:n/2] {
 		left[b-'a'] -= 2
-		ans[n-1-i] = byte(b) // 把 target 左半翻转到右半
-	}
-	// 正中间只能填那个出现奇数次的字母
-	if midCh > 0 {
-		ans[n/2] = midCh
 	}
 
 	neg, leftMax := 0, byte(0)
@@ -695,9 +634,12 @@ func lexPalindromicPermutation(s, target string) string {
 
 	if neg == 0 {
 		// 特殊情况：把 target 左半翻转到右半，能否比 target 大？
-		t := string(ans)
-		if t > target {
-			return t
+		leftS := target[:n/2]
+		tmp := []byte(leftS)
+		slices.Reverse(tmp)
+		rightS := midCh + string(tmp)
+		if rightS > target[n/2:] { // 由于左半是一样的，所以只需比右半
+			return leftS + rightS
 		}
 	}
 
@@ -722,25 +664,22 @@ func lexPalindromicPermutation(s, target string) string {
 			j++
 		}
 
-		// 把 target[i] 和 target[n-1-i] 增大到 j
+		// 把 target[i] 增大到 j
 		left[j] -= 2
+		ans := []byte(target[:i+1])
 		ans[i] = 'a' + j
-		ans[n-1-i] = ans[i]
 
-		// 中间的空位可以随便填
-		t := make([]byte, 0, n-(i+1)*2)
+		// 中间可以随便填
 		for k, c := range left {
 			ch := string('a' + byte(k))
-			t = append(t, strings.Repeat(ch, c/2)...)
+			ans = append(ans, strings.Repeat(ch, c/2)...)
 		}
 
-		// 把 t、midCh、Reverse(t) 依次填在 ans[i] 的右边
-		a := append(ans[:i+1], t...) // 注意修改 a 也会修改 ans
-		if midCh > 0 {
-			a = append(a, midCh)
-		}
-		slices.Reverse(t)
-		a = append(a, t...)
+		// 镜像翻转
+		rightS := slices.Clone(ans)
+		slices.Reverse(rightS)
+		ans = append(ans, midCh...)
+		ans = append(ans, rightS...)
 
 		return string(ans)
 	}
@@ -751,7 +690,7 @@ func lexPalindromicPermutation(s, target string) string {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
-- 空间复杂度：$\mathcal{O}(|\Sigma|)$。返回值不计入。
+- 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
 
 ## 专题训练
 
