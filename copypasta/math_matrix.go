@@ -36,6 +36,7 @@ https://codeforces.com/contest/24/problem/D
 https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2Cmatrices%2C1900-
 https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://codeforces.com/problemset/problem/166/E 1500
+https://codeforces.com/problemset/problem/222/E 1900
 https://codeforces.com/problemset/problem/691/E 1900
 https://codeforces.com/problemset/problem/954/F 2100 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步
 https://codeforces.com/problemset/problem/1117/D 2100 f(n) = f(n-1) + f(n-m)
