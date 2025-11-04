@@ -42,6 +42,7 @@ https://codeforces.com/problemset/problem/621/E 2000
 https://codeforces.com/problemset/problem/821/E 2100 分段
 https://codeforces.com/problemset/problem/954/F 2100 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步
 https://codeforces.com/problemset/problem/1117/D 2100 f(n) = f(n-1) + f(n-m)
+https://codeforces.com/problemset/problem/514/E 2200 常数项
 https://codeforces.com/problemset/problem/1182/E 2300 关注指数
 https://codeforces.com/problemset/problem/226/C 2400
 - https://www.luogu.com.cn/problem/P1306
@@ -156,9 +157,10 @@ func solveDP(N int) (ans int) {
 
 // 广义斐波那契数列
 // a(n) = p*a(n-1) + q*a(n-2)
-// 矩阵为 [f[n], f[n-1]]^T = [[p, q], [1, 0]] * [f[n-1], f[n-2]]^T
+// 递推式 [f[n], f[n-1]]^T = [[p, q], [1, 0]] * [f[n-1], f[n-2]]^T
 // 如果有常系数，例如 a(n) = p*a(n-1) + q*a(n-2) + C
-// 矩阵为 [f[n], f[n-1], C]^T = [[p, q, 1], [1, 0, 0], [0, 0, 1]] * [f[n-1], f[n-2], C]^T
+// 递推式 [f[n], f[n-1], C]^T = [[p, q, 1], [1, 0, 0], [0, 0, 1]] * [f[n-1], f[n-2], C]^T
+// 初始值 [..., ..., C]^T
 // ！数列下标从 1 开始，n 从 1 开始
 // https://www.luogu.com.cn/problem/P1349
 // https://www.luogu.com.cn/problem/P1939
