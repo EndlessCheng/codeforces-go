@@ -10,17 +10,17 @@ import (
 func cf2168C(in io.Reader, out io.Writer) {
 	pos := []int{3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20}
 	var tp string
-	var T, n, v int
+	var T, n, x int
 	Fscan(in, &tp, &T)
 	if tp[0] == 'f' {
 		for range T {
-			Fscan(in, &v)
+			Fscan(in, &x)
 			a := []any{}
 			s := 0
-			for t := uint(v - 1); t > 0; t &= t - 1 {
-				i := bits.TrailingZeros(t)
-				a = append(a, pos[i])
-				s ^= pos[i]
+			for t := uint(x - 1); t > 0; t &= t - 1 {
+				v := pos[bits.TrailingZeros(t)]
+				a = append(a, v)
+				s ^= v
 			}
 			for ; s > 0; s &= s - 1 {
 				a = append(a, s&-s)
@@ -34,11 +34,12 @@ func cf2168C(in io.Reader, out io.Writer) {
 			has := [21]bool{}
 			s := 0
 			for range n {
-				Fscan(in, &v)
-				has[v] = true
-				s ^= v
+				Fscan(in, &x)
+				has[x] = true
+				s ^= x
 			}
 			has[s] = !has[s]
+
 			ans := 0
 			for i, p := range pos {
 				if has[p] {
