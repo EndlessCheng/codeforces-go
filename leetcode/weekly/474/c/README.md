@@ -239,7 +239,7 @@ $$
 d + \left\lfloor\dfrac{d-1}{r-1}\right\rfloor
 $$
 
-三个不等式分别计算 $t$，取最大值。
+方法一的三个不等式，算出三个 $t$，其中最大的 $t$ 可以同时满足三个不等式。
 
 ```py [sol-Python3]
 class Solution:
