@@ -123,7 +123,7 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 // 最下面新增一行：M 矩阵每一列的和，以及一个 1，即 [sum(M[i][0]), sum(M[i][1]), ..., sum(M[i][-1]), 1]
 // 最右边新增一列：除了最下面的 1 以外，其余全为 0
 //
-// 有常数项的情况见后面
+// 有常数项的情况见下面 calcFibonacci 的注释
 func solveDP(N int) (ans int) {
 	const size = 26
 
@@ -189,6 +189,8 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 	fn := m.powMul(n-2, f2)
 	return fn[0][0]
 }
+
+// 注：如果递推式包含常数项，可以用 Berlekamp-Massey 算法转换成不含常数项的递推式
 
 // 给定常系数齐次线性递推式 f(n) = coef[k-1] * f(n-1) + coef[k-2] * f(n-2) + ... + coef[0] * f(n-k)
 // 以及初始值 f(i) = a[i] (0 <= i < k)
