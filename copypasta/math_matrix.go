@@ -191,6 +191,93 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 }
 
 // 注：如果递推式包含常数项，可以用 Berlekamp-Massey 算法转换成不含常数项的递推式
+// 见 https://codeforces.com/problemset/problem/514/E 2200
+
+// Berlekamp-Massey 算法
+// 给定数列的前 m 项 a，返回符合 a 的最短常系数齐次线性递推式的系数 coef（模 mod 意义下）
+// 设 coef 长为 k，当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
+// 初始值 f(n) = a[n]  (0 <= n < k)
+// 时间复杂度 O(mk)，其中 m 是 a 的长度，k 是最终 coef 的长度
+// 关键思路：利用过去的失败，修正现在的失败
+// ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
+// 我的科普文章 https://zhuanlan.zhihu.com/p/1966417899825665440 如何预测数列的下一项？Berlekamp-Massey 算法
+// https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
+// https://oi-wiki.org/math/berlekamp-massey/
+// https://codeforces.com/blog/entry/61306
+// 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
+// 注：用 Cayley-Hamilton 定理可以证明，对于矩阵快速幂优化 DP，求出前 2k 项，就能得到递推方程（k 是矩阵的行数和列数）
+//    另见 https://www.luogu.com/paste/ytpmeswf 第 88 条
+//
+// https://www.luogu.com.cn/problem/P5487 模板题
+// - https://www.luogu.com.cn/problem/U228146 数据加强版
+// https://www.luogu.com.cn/problem/P7820
+// https://www.luogu.com.cn/problem/P5364
+// https://codeforces.com/problemset/problem/93/D 2500
+// https://codeforces.com/problemset/problem/1511/F 2700
+// https://codeforces.com/problemset/problem/506/E 3000
+// https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/
+func berlekampMassey(a []int) (coef []int) {
+	var preC []int
+	preI, preD := -1, 0
+	for i, v := range a {
+		d := v
+		for j, c := range coef {
+			d = (d - c*a[i-1-j]) % mod
+		}
+		if d == 0 {
+			continue
+		}
+
+		if preI < 0 {
+			coef = make([]int, i+1)
+			preI, preD = i, d
+			continue
+		}
+
+		bias := i - preI
+		oldLen := len(coef)
+		newLen := bias + len(preC)
+		var tmp []int
+		if newLen > oldLen {
+			tmp = slices.Clone(coef)
+			coef = slices.Grow(coef, newLen-oldLen)[:newLen]
+		}
+
+		// 历史错误为 preD = a[preI] - sum_j preC[j]*a[preI-1-j]
+		// 现在 a[i] = sum_j coef[j]*a[i-1-j] + d
+		// 联立得 a[i] = sum_j coef[j]*a[i-1-j] + d/preD * (a[preI] - sum_j preC[j]*a[preI-1-j])
+		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias-1 = i-preI-1 处
+		// 注意：preI 之前的数据符合旧公式，即 a[(<preI)] = sum_j preC[j]*a[(<preI)-1-j]
+		//      对于新公式，i 之前的每个公式增加了 d/preD * (a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]) = d/preD * 0 = 0，所以也符合新公式
+		delta := d * pow(preD, mod-2) % mod
+		coef[bias-1] = (coef[bias-1] + delta) % mod
+		for j, c := range preC {
+			coef[bias+j] = (coef[bias+j] - delta*c) % mod
+		}
+
+		if newLen > oldLen {
+			preC = tmp
+			preI, preD = i, d
+		}
+	}
+
+	// 计算完后，可能 coef 的末尾有 0，这些 0 不能去掉
+	// 比如数列 (1,2,4,2,4,2,4,...) 的系数为 [0,1,0]，表示 f(n) = 0*f(n-1) + 1*f(n-2) + 0*f(n-3) = f(n-2)   (n >= 3)
+	// 如果把末尾的 0 去掉，变成 [0,1]，就表示 f(n) = 0*f(n-1) + f(n-2) = f(n-2)   (n >= 2)
+	// 看上去一样，但按照这个式子算出来的数列是错误的 (1,2,1,2,1,2,...)
+
+	// 手动找规律用
+	for i, c := range coef {
+		if c < -mod/2 {
+			c += mod
+		} else if c > mod/2 {
+			c -= mod
+		}
+		coef[i] = c
+	}
+
+	return
+}
 
 // 给定常系数齐次线性递推式 f(n) = coef[k-1] * f(n-1) + coef[k-2] * f(n-2) + ... + coef[0] * f(n-k)
 // 以及初始值 f(i) = a[i] (0 <= i < k)
@@ -255,94 +342,6 @@ func kitamasa(coef, a []int, n int) (ans int) {
 	for i, c := range resC {
 		ans = (ans + c*a[i]) % mod
 	}
-	return
-}
-
-// Berlekamp-Massey 算法
-// 给定数列的前 m 项 a，返回符合 a 的最短常系数齐次线性递推式的系数 coef（模 mod 意义下）
-// 设 coef 长为 k，当 n >= k 时，有递推式 f(n) = coef[0] * f(n-1) + coef[1] * f(n-2) + ... + coef[k-1] * f(n-k)  （注意 coef 的顺序）
-// 初始值 f(n) = a[n]  (0 <= n < k)
-// 时间复杂度 O(mk)，其中 m 是 a 的长度，k 是最终 coef 的长度
-// 关键思路：利用过去的失败，修正现在的失败
-// ！如果模数不是质数，需要用 exgcd 或者其他方法求逆元
-// 我的科普文章 https://zhuanlan.zhihu.com/p/1966417899825665440 如何预测数列的下一项？Berlekamp-Massey 算法
-// https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
-// https://oi-wiki.org/math/berlekamp-massey/
-// https://codeforces.com/blog/entry/61306
-// 注：一种理解角度是，基于汉克尔矩阵的在线高斯消元
-// 注：用 Cayley-Hamilton 定理可以证明，对于矩阵快速幂优化 DP，求出前 2k 项，就能得到递推方程（k 是矩阵的行数和列数）
-//    另见 https://www.luogu.com/paste/ytpmeswf 第 88 条
-//
-// https://www.luogu.com.cn/problem/P5487 模板题
-// - https://www.luogu.com.cn/problem/U228146 数据加强版
-// https://www.luogu.com.cn/problem/P7820
-// https://www.luogu.com.cn/problem/P5364
-// https://codeforces.com/problemset/problem/93/D 2500
-// https://codeforces.com/problemset/problem/1511/F 2700
-// https://codeforces.com/problemset/problem/506/E 3000
-// https://leetcode.cn/problems/total-characters-in-string-after-transformations-ii/
-func berlekampMassey(a []int) (coef []int) {
-	var preC []int
-	preI, preD := -1, 0
-	for i, v := range a {
-		// d = a[i] - 递推式算出来的值
-		d := v
-		for j, c := range coef {
-			d = (d - c*a[i-1-j]) % mod
-		}
-		if d == 0 { // 递推式正确
-			continue
-		}
-
-		// 首次算错，初始化 coef 为 i+1 个 0
-		if preI < 0 {
-			coef = make([]int, i+1)
-			preI, preD = i, d
-			continue
-		}
-
-		bias := i - preI
-		oldLen := len(coef)
-		newLen := bias + len(preC)
-		var tmp []int
-		if newLen > oldLen { // 递推式变长了
-			tmp = slices.Clone(coef)
-			coef = slices.Grow(coef, newLen-oldLen)[:newLen] // coef.resize(newLen)
-		}
-
-		// 历史错误为 preD = a[preI] - sum_j preC[j]*a[preI-1-j]
-		// 现在 a[i] = sum_j coef[j]*a[i-1-j] + d
-		// 联立得 a[i] = sum_j coef[j]*a[i-1-j] + d/preD * (a[preI] - sum_j preC[j]*a[preI-1-j])
-		// 其中 a[preI] 的系数 d/preD 位于当前（i）的 bias-1 = i-preI-1 处
-		// 注意：preI 之前的数据符合旧公式，即 a[(<preI)] = sum_j preC[j]*a[(<preI)-1-j]
-		//      对于新公式，i 之前的每个公式增加了 d/preD * (a[(<preI)] - sum_j preC[j]*a[(<preI)-1-j]) = d/preD * 0 = 0，所以也符合新公式
-		delta := d * pow(preD, mod-2) % mod
-		coef[bias-1] = (coef[bias-1] + delta) % mod
-		for j, c := range preC {
-			coef[bias+j] = (coef[bias+j] - delta*c) % mod
-		}
-
-		if newLen > oldLen {
-			preC = tmp
-			preI, preD = i, d
-		}
-	}
-
-	// 计算完后，可能 coef 的末尾有 0，这些 0 不能去掉
-	// 比如数列 (1,2,4,2,4,2,4,...) 的系数为 [0,1,0]，表示 f(n) = 0*f(n-1) + 1*f(n-2) + 0*f(n-3) = f(n-2)   (n >= 3)
-	// 如果把末尾的 0 去掉，变成 [0,1]，就表示 f(n) = 0*f(n-1) + f(n-2) = f(n-2)   (n >= 2)
-	// 看上去一样，但按照这个式子算出来的数列是错误的 (1,2,1,2,1,2,...)
-
-	// 手动找规律用
-	for i, c := range coef {
-		if c < -mod/2 {
-			c += mod
-		} else if c > mod/2 {
-			c -= mod
-		}
-		coef[i] = c
-	}
-
 	return
 }
 
