@@ -118,18 +118,18 @@ func cf514E(in io.Reader, out io.Writer) {
 		cnt[v]++
 	}
 
-	a := make([]int, mx*2+2)
-	a[0] = 1
-	for i := 1; i < len(a); i++ {
-		a[i] = 1
+	f := make([]int, mx*2+2)
+	f[0] = 1
+	for i := 1; i < len(f); i++ {
+		f[i] = 1
 		for j, c := range cnt[1 : min(i, mx)+1] {
-			a[i] += c * a[i-1-j]
+			f[i] += c * f[i-1-j]
 		}
-		a[i] %= mod14
+		f[i] %= mod14
 	}
-	coef := berlekampMassey14(a)
+	coef := berlekampMassey14(f)
 	slices.Reverse(coef)
-	Fprint(out, kitamasa14(coef, a, x))
+	Fprint(out, kitamasa14(coef, f, x))
 }
 
 //func main() { cf514E(bufio.NewReader(os.Stdin), os.Stdout) }
