@@ -3,45 +3,109 @@ package main
 import (
 	. "fmt"
 	"io"
+	"slices"
 )
 
 // https://github.com/EndlessCheng
 const mod14 = 1_000_000_007
 
-type matrix14 [][]int
-
-func newMatrix14(n, m int) matrix14 {
-	a := make(matrix14, n)
-	for i := range a {
-		a[i] = make([]int, m)
-	}
-	return a
-}
-
-func (a matrix14) mul(b matrix14) matrix14 {
-	c := newMatrix14(len(a), len(b[0]))
-	for i, row := range a {
-		for k, x := range row {
-			if x == 0 {
-				continue
-			}
-			for j, y := range b[k] {
-				c[i][j] = (c[i][j] + x*y) % mod14
-			}
-		}
-	}
-	return c
-}
-
-func (a matrix14) powMul(n int, f1 matrix14) matrix14 {
-	res := f1
+func pow14(x, n int) int {
+	res := 1
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			res = a.mul(res)
+			res = res * x % mod14
 		}
-		a = a.mul(a)
+		x = x * x % mod14
 	}
 	return res
+}
+
+func berlekampMassey14(a []int) (coef []int) {
+	var preC []int
+	preI, preD := -1, 0
+	for i, v := range a {
+		d := v
+		for j, c := range coef {
+			d = (d - c*a[i-1-j]) % mod14
+		}
+		if d == 0 {
+			continue
+		}
+
+		if preI < 0 {
+			coef = make([]int, i+1)
+			preI, preD = i, d
+			continue
+		}
+
+		bias := i - preI
+		oldLen := len(coef)
+		newLen := bias + len(preC)
+		var tmp []int
+		if newLen > oldLen {
+			tmp = slices.Clone(coef)
+			coef = slices.Grow(coef, newLen-oldLen)[:newLen]
+		}
+
+		delta := d * pow14(preD, mod14-2) % mod14
+		coef[bias-1] = (coef[bias-1] + delta) % mod14
+		for j, c := range preC {
+			coef[bias+j] = (coef[bias+j] - delta*c) % mod14
+		}
+
+		if newLen > oldLen {
+			preC = tmp
+			preI, preD = i, d
+		}
+	}
+
+	return
+}
+
+func kitamasa14(coef, a []int, n int) (ans int) {
+	defer func() { ans = (ans%mod14 + mod14) % mod14 }()
+	if n < len(a) {
+		return a[n]
+	}
+
+	k := len(coef)
+	if k == 0 {
+		return
+	}
+	if k == 1 {
+		return a[0] * pow14(coef[0], n)
+	}
+
+	compose := func(a, b []int) []int {
+		c := make([]int, k)
+		for _, v := range a {
+			for j, w := range b {
+				c[j] = (c[j] + v*w) % mod14
+			}
+			bk1 := b[k-1]
+			for j := k - 1; j > 0; j-- {
+				b[j] = (b[j-1] + bk1*coef[j]) % mod14
+			}
+			b[0] = bk1 * coef[0] % mod14
+		}
+		return c
+	}
+
+	resC := make([]int, k)
+	resC[0] = 1
+	c := make([]int, k)
+	c[1] = 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			resC = compose(c, resC)
+		}
+		c = compose(c, slices.Clone(c))
+	}
+
+	for i, c := range resC {
+		ans = (ans + c*a[i]) % mod14
+	}
+	return
 }
 
 func cf514E(in io.Reader, out io.Writer) {
@@ -54,19 +118,18 @@ func cf514E(in io.Reader, out io.Writer) {
 		cnt[v]++
 	}
 
-	m := newMatrix14(mx+1, mx+1)
-	m[0] = append(cnt[1:], 1)
-	for j := 1; j < mx; j++ {
-		m[j][j-1] = 1
+	a := make([]int, mx*2+2)
+	a[0] = 1
+	for i := 1; i < len(a); i++ {
+		a[i] = 1
+		for j, c := range cnt[1 : min(i, mx)+1] {
+			a[i] += c * a[i-1-j]
+		}
+		a[i] %= mod14
 	}
-	m[mx][mx] = 1
-
-	f0 := newMatrix14(mx+1, 1)
-	f0[0][0] = 1
-	f0[mx][0] = 1
-
-	fn := m.powMul(x, f0)
-	Fprint(out, fn[0][0])
+	coef := berlekampMassey14(a)
+	slices.Reverse(coef)
+	Fprint(out, kitamasa14(coef, a, x))
 }
 
 //func main() { cf514E(bufio.NewReader(os.Stdin), os.Stdout) }
