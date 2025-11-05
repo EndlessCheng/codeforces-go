@@ -1,17 +1,21 @@
 package main
 
+import "math/bits"
+
 // github.com/EndlessCheng/codeforces-go
-func minimumOneBitOperations(n int) (ans int) {
-	bits := []int{}
-	for ; n > 0; n >>= 1 {
-		bits = append(bits, n&1)
+func minimumOneBitOperations1(n int) int {
+	if n == 0 {
+		return 0
 	}
-	sign := 1
-	for i := len(bits) - 1; i >= 0; i-- {
-		if bits[i] > 0 {
-			ans += sign * (1<<(i+1) - 1)
-			sign = -sign
-		}
+	k := bits.Len(uint(n))
+	return 1<<k - 1 - minimumOneBitOperations(n-1<<(k-1))
+}
+
+func minimumOneBitOperations(n int) (ans int) {
+	for n > 0 {
+		lb := n & -n
+		ans = lb<<1 - 1 - ans
+		n ^= lb
 	}
 	return
 }
