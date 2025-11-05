@@ -41,7 +41,7 @@ public:
 ```
 
 ```c [sol-C]
-int accountBalanceAfterPurchase(int purchaseAmount){
+int accountBalanceAfterPurchase(int purchaseAmount) {
     return 100 - (purchaseAmount + 5) / 10 * 10;
 }
 ```
