@@ -51,6 +51,7 @@ https://codeforces.com/problemset/problem/93/D 2500 前 n 项之和
 https://codeforces.com/problemset/problem/60/E 2600
 https://codeforces.com/problemset/problem/1895/F 2600 如何容斥（正难则反）
 https://codeforces.com/problemset/problem/575/A 2700 分段 倍增
+https://codeforces.com/problemset/problem/1511/F 2700 字典树 todo 什么情况下系数矩阵阶数最大？
 https://codeforces.com/problemset/problem/1152/F2 3000 状态设计
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数

@@ -30,6 +30,7 @@ https://codeforces.com/problemset/problem/965/E 2200 与贪心堆结合
 https://codeforces.com/problemset/problem/557/E 2300
 https://codeforces.com/problemset/problem/778/C 2500
 https://codeforces.com/problemset/problem/1312/G 2600 注：输入就是一个 trie
+https://codeforces.com/problemset/problem/1511/F 2700 矩阵快速幂优化 DP
 https://atcoder.jp/contests/abc273/tasks/abc273_e 深刻理解
 https://atcoder.jp/contests/abc353/tasks/abc353_e
 */
