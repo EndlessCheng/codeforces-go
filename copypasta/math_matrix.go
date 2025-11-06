@@ -192,6 +192,7 @@ func calcFibonacci(p, q, a1, a2, n int) int {
 }
 
 // 注：如果递推式包含常数项，可以用 Berlekamp-Massey 算法转换成不含常数项的递推式
+// 这样的递推式是一定存在的，因为可以用 an = ... + C 减去 a_{n-1} = ... + C，消掉 C
 // 见 https://codeforces.com/problemset/problem/514/E 2200
 
 // Berlekamp-Massey 算法
