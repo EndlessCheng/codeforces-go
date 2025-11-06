@@ -12,17 +12,18 @@ func halveArray(nums []int) (ans int) {
 		nums[i] <<= 20
 		half += nums[i]
 	}
+
 	h := hp{nums}
 	heap.Init(&h)
-	for half >>= 1; half > 0; ans++ {
-		half -= h.IntSlice[0] >> 1
-		h.IntSlice[0] >>= 1
+	for half /= 2; half > 0; ans++ {
+		half -= h.IntSlice[0] / 2
+		h.IntSlice[0] /= 2
 		heap.Fix(&h, 0)
 	}
 	return
 }
 
-type hp struct{ sort.IntSlice }
-func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
-func (hp) Push(interface{})     {}
-func (hp) Pop() (_ interface{}) { return }
+type hp struct{ sort.IntSlice } // 继承 sort.IntSlice 的方法
+func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
+func (hp) Push(any)             {}
+func (hp) Pop() (_ any)         { return }
