@@ -32,7 +32,7 @@ https://codeforces.com/contest/24/problem/D
 视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
 文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
 
-筛选 matrices & dp & 1900+ 就能大概率找到矩阵快速幂优化 DP 的题了（部分题目是线段树+广义矩阵乘法优化 DP 等）
+筛选 matrices & dp & 1900+ 就能大概率找到矩阵快速幂优化 DP 的题了（部分题目是线段树维护矩阵等）
 https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2Cmatrices%2C1900-
 https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://codeforces.com/problemset/problem/166/E 1500
@@ -43,7 +43,9 @@ https://codeforces.com/problemset/problem/821/E 2100 分段
 https://codeforces.com/problemset/problem/954/F 2100 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步
 https://codeforces.com/problemset/problem/1117/D 2100 f(n) = f(n-1) + f(n-m)
 https://codeforces.com/problemset/problem/514/E 2200 常数项
+https://codeforces.com/problemset/problem/1970/E3 2200
 https://codeforces.com/problemset/problem/1182/E 2300 关注指数
+https://codeforces.com/problemset/problem/107/D 2400
 https://codeforces.com/problemset/problem/226/C 2400
 - https://www.luogu.com.cn/problem/P1306
 https://codeforces.com/problemset/problem/593/E 2400 分段
