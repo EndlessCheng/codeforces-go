@@ -68,7 +68,7 @@ class Solution:
                 built += m
                 if built > k:  # 不满足要求
                     return False
-                # 把区间 [i, i+2r] 加一
+                # 把区间 [i, i+2r] 增加 m
                 sum_d += m  # 由于 diff[i] 后面不会再访问，我们直接加到 sum_d 中
                 if (right := i + r * 2 + 1) < n:
                     diff[right] -= m
@@ -108,7 +108,7 @@ class Solution:
                 built += m
                 if built > k:  # 不满足要求
                     return True
-                # 把区间 [i, i+2r] 加一
+                # 把区间 [i, i+2r] 增加 m
                 sum_d += m  # 由于 diff[i] 后面不会再访问，我们直接加到 sum_d 中
                 if (right := i + r * 2 + 1) < n:
                     diff[right] -= m
@@ -167,7 +167,7 @@ class Solution {
             if (built > k) { // 不满足要求
                 return false;
             }
-            // 把区间 [i, i+2r] 加一
+            // 把区间 [i, i+2r] 增加 m
             sumD += m; // 由于 diff[i] 后面不会再访问，我们直接加到 sumD 中
             diff[Math.min(i + r * 2 + 1, n)] -= m;
         }
@@ -209,7 +209,7 @@ public:
                 if (built > k) { // 不满足要求
                     return false;
                 }
-                // 把区间 [i, i+2r] 加一
+                // 把区间 [i, i+2r] 增加 m
                 sum_d += m; // 由于 diff[i] 后面不会再访问，我们直接加到 sum_d 中
                 diff[min(i + r * 2 + 1, n)] -= m;
             }
@@ -263,7 +263,7 @@ func maxPower(stations []int, r int, k int) int64 {
 			if built > k { // 不满足要求
 				return true
 			}
-			// 把区间 [i, i+2r] 加一
+			// 把区间 [i, i+2r] 增加 m
 			sumD += m // 由于 diff[i] 后面不会再访问，我们直接加到 sumD 中
 			diff[min(i+r*2+1, n)] -= m
 		}
@@ -310,7 +310,7 @@ class Solution:
                 built += m
                 if built > k:  # 不满足要求
                     return False
-                # 把区间 [i, i+2r] 加一
+                # 把区间 [i, i+2r] 增加 m
                 sum_d += m  # 由于 diff[i] 后面不会再访问，我们直接加到 sum_d 中
                 if (right := i + r * 2 + 1) < n:
                     diff[right] -= m
@@ -357,7 +357,7 @@ class Solution:
                 built += m
                 if built > k:  # 不满足要求
                     return True
-                # 把区间 [i, i+2r] 加一
+                # 把区间 [i, i+2r] 增加 m
                 sum_d += m  # 由于 diff[i] 后面不会再访问，我们直接加到 sum_d 中
                 if (right := i + r * 2 + 1) < n:
                     diff[right] -= m
@@ -423,7 +423,7 @@ class Solution {
             if (built > k) { // 不满足要求
                 return false;
             }
-            // 把区间 [i, i+2r] 加一
+            // 把区间 [i, i+2r] 增加 m
             sumD += m; // 由于 diff[i] 后面不会再访问，我们直接加到 sumD 中
             diff[Math.min(i + r * 2 + 1, n)] -= m;
         }
@@ -469,7 +469,7 @@ public:
                 if (built > k) { // 不满足要求
                     return false;
                 }
-                // 把区间 [i, i+2r] 加一
+                // 把区间 [i, i+2r] 增加 m
                 sum_d += m; // 由于 diff[i] 后面不会再访问，我们直接加到 sum_d 中
                 diff[min(i + r * 2 + 1, n)] -= m;
             }
@@ -530,7 +530,7 @@ func maxPower(stations []int, r int, k int) int64 {
 			if built > k { // 不满足要求
 				return true
 			}
-			// 把区间 [i, i+2r] 加一
+			// 把区间 [i, i+2r] 增加 m
 			sumD += m // 由于 diff[i] 后面不会再访问，我们直接加到 sumD 中
 			diff[min(i+r*2+1, n)] -= m
 		}
