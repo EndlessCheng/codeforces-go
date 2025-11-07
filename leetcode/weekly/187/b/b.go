@@ -1,16 +1,15 @@
 package main
 
-func kLengthApart(a []int, k int) (ans bool) {
-	pos := []int{}
-	for i, v := range a {
-		if v == 1 {
-			pos = append(pos, i)
+func kLengthApart(nums []int, k int) bool {
+	last1 := -k - 1
+	for i, x := range nums {
+		if x != 1 {
+			continue
 		}
-	}
-	for i := 1; i < len(pos); i++ {
-		if pos[i]-pos[i-1]-1 < k {
+		if i-last1 <= k {
 			return false
 		}
+		last1 = i
 	}
 	return true
 }
