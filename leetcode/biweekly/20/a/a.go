@@ -1,13 +1,15 @@
 package main
 
 import (
+	"cmp"
 	"math/bits"
-	"sort"
+	"slices"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func sortByBits(a []int) (ans []int) {
-	sort.Ints(a)
-	sort.SliceStable(a, func(i, j int) bool { return bits.OnesCount(uint(a[i])) < bits.OnesCount(uint(a[j])) })
-	return a
+func sortByBits(arr []int) []int {
+	slices.SortFunc(arr, func(a, b int) int {
+		return cmp.Or(bits.OnesCount(uint(a))-bits.OnesCount(uint(b)), a-b)
+	})
+	return arr
 }
