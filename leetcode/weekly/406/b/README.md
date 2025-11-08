@@ -62,6 +62,7 @@ public:
             ListNode* nxt = cur->next;
             if (st.contains(nxt->val)) {
                 cur->next = nxt->next; // 从链表中删除 nxt 节点
+                // 注：这题不能写 delete
             } else {
                 cur = nxt; // 不删除 nxt，继续向后遍历链表
             }
