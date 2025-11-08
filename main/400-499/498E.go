@@ -6,8 +6,6 @@ import (
 )
 
 // https://github.com/EndlessCheng
-const mod98 = 1_000_000_007
-
 type matrix98 [][]int
 
 func newMatrix98(n, m int) matrix98 {
@@ -26,7 +24,7 @@ func (a matrix98) mul(b matrix98) matrix98 {
 				continue
 			}
 			for j, y := range b[k] {
-				c[i][j] = (c[i][j] + x*y) % mod98
+				c[i][j] = (c[i][j] + x*y) % 1_000_000_007
 			}
 		}
 	}
@@ -54,7 +52,7 @@ func cf498E(in io.Reader, out io.Writer) {
 				f0, f1 := 0, 1
 				for i := range h {
 					s := f0 + f1
-					if left>>i&1 > 0 && right>>i&1 > 0 {
+					if left&right>>i&1 > 0 {
 						f1 = f0
 					} else {
 						f1 = s
