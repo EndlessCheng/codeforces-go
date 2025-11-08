@@ -57,6 +57,7 @@ https://codeforces.com/problemset/problem/1511/F 2700 字典树 todo 什么情�
 https://codeforces.com/problemset/problem/497/E 2900 数位 DP
 https://codeforces.com/problemset/problem/917/C 2900 分段
 https://codeforces.com/problemset/problem/1152/F2 3000 状态设计
+https://codeforces.com/problemset/problem/618/G 3300 期望 DP
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
