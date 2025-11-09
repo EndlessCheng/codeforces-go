@@ -1,6 +1,9 @@
 package main
 
-import "math"
+import (
+	"math"
+	"slices"
+)
 
 // https://space.bilibili.com/206214
 func maxPathScore1(grid [][]int, k int) int {
@@ -44,8 +47,34 @@ func maxPathScore1(grid [][]int, k int) int {
 	return ans
 }
 
+//
+
+// 64. 最小路径和
+func minPathSum(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	f := make([][]int, m+1)
+	for i := range f {
+		f[i] = make([]int, n+1)
+	}
+	for j := 2; j <= n; j++ {
+		f[0][j] = math.MaxInt
+	}
+	for i, row := range grid {
+		f[i+1][0] = math.MaxInt
+		for j, x := range row {
+			f[i+1][j+1] = min(f[i+1][j], f[i][j+1]) + min(x, 1) // 值大于 0 的单元格花费 1
+		}
+	}
+	return f[m][n]
+}
+
 func maxPathScore(grid [][]int, K int) int {
+	if minPathSum(grid) > K {
+		return -1
+	}
+
 	n, m := len(grid[0]), len(grid)
+	K = min(K, m+n-2) // 至多花费 m+n-2
 	f := make([][][]int, m+1)
 	for i := range f {
 		f[i] = make([][]int, n+1)
@@ -56,13 +85,11 @@ func maxPathScore(grid [][]int, K int) int {
 			}
 		}
 	}
-	for k := 1; k < K+2; k++ {
-		f[0][1][k] = 0
-	}
+	f[0][1][1] = 0
 
 	for i, row := range grid {
 		for j, x := range row {
-			for k := range K + 1 {
+			for k := range min(K, i+j) + 1 { // 从 (0,0) 到 (i,j) 至多花费 i+j
 				newK := k
 				if x > 0 {
 					newK--
@@ -72,9 +99,5 @@ func maxPathScore(grid [][]int, K int) int {
 		}
 	}
 
-	ans := f[m][n][K+1]
-	if ans < 0 {
-		return -1
-	}
-	return ans
+	return slices.Max(f[m][n])
 }

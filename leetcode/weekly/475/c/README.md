@@ -155,6 +155,8 @@ func maxPathScore(grid [][]int, k int) int {
 
 ## 递推
 
+把 $f[0][1]$（或者 $f[1][0]$）除了首项都初始化成 $0$，这样 $f[1][1]$ 可以用递推式计算，无需特判。
+
 ```py [sol-Python3]
 # 手写 max 更快
 max = lambda a, b: b if b > a else a
@@ -163,7 +165,7 @@ class Solution:
     def maxPathScore(self, grid: List[List[int]], K: int) -> int:
         m, n = len(grid), len(grid[0])
         f = [[[-inf] * (K + 2) for _ in range(n + 1)] for _ in range(m + 1)]
-        f[0][1][1:] = [0] * (K + 1)  # 保证 f[1][1][k] 计算正确
+        f[0][1][1:] = [0] * (K + 1)
 
         for i, row in enumerate(grid):
             for j, x in enumerate(row):
@@ -186,7 +188,7 @@ class Solution {
                 Arrays.fill(row, Integer.MIN_VALUE);
             }
         }
-        Arrays.fill(f[0][1], 1, K + 2, 0); // 保证 f[1][1][k] 计算正确
+        Arrays.fill(f[0][1], 1, K + 2, 0);
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -210,7 +212,7 @@ public:
     int maxPathScore(vector<vector<int>>& grid, int K) {
         int m = grid.size(), n = grid[0].size();
         vector f(m + 1, vector(n + 1, vector<int>(K + 2, INT_MIN)));
-        ranges::fill(f[0][1].begin() + 1, f[0][1].end(), 0); // 保证 f[1][1][k] 计算正确
+        ranges::fill(f[0][1].begin() + 1, f[0][1].end(), 0);
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -242,7 +244,7 @@ func maxPathScore(grid [][]int, K int) int {
 		}
 	}
 	for k := 1; k < K+2; k++ {
-		f[0][1][k] = 0 // 保证 f[1][1][k] 计算正确
+		f[0][1][k] = 0
 	}
 
 	for i, row := range grid {
@@ -270,7 +272,211 @@ func maxPathScore(grid [][]int, K int) int {
 - 时间复杂度：$\mathcal{O}(mnk)$，其中 $m$ 和 $n$ 分别是 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(mnk)$。
 
-**注**：用滚动数组可以把空间复杂度优化至 $\mathcal{O}(nk)$。
+## 优化循环次数
+
+从 $(0,0)$ 移动到 $(m-1,n-1)$，至多花费 $m+n-2$（注意题目保证 $\textit{grid}[0][0] = 0$）。所以可以把 $k$ 更新为 $\min(k, m+n-2)$。
+
+此外，从 $(0,0)$ 移动到 $(i,j)$ 至多花费 $i+j$，所以最内层循环至多循环到 $\min(k,i+j)$。
+
+改成这种写法后，由于 $f$ 的定义是「至多」，$f[i][j][>i+j]$ 的状态本该更新，但没有更新。所以最后返回的是 $\max(f[m][n])$。
+
+也可以把 $f$ 的定义改成「恰好」，这样只需要把 $f[0][1][1]$ 初始化成 $0$，其余均为 $-\infty$。
+
+此外，可以加一个特判，如果从起点到终点的最小花费都大于 $k$，那么不存在有效路径，返回 $-1$。做法类似 [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)。
+
+> **注**：更精细的写法是，写一个额外的 DP，计算起点到每个位置的最大花费。
+
+```py [sol-Python3]
+# 手写 min max 更快
+fmin = lambda a, b: b if b < a else a
+fmax = lambda a, b: b if b > a else a
+
+class Solution:
+    # 64. 最小路径和
+    def minPathSum(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        f = [[inf] * (n + 1) for _ in range(m + 1)]
+        f[0][1] = 0
+        for i, row in enumerate(grid):
+            for j, x in enumerate(row):
+                f[i + 1][j + 1] = fmin(f[i + 1][j], f[i][j + 1]) + fmin(x, 1)  # 值大于 0 的单元格花费 1
+        return f[m][n]
+
+    def maxPathScore(self, grid: List[List[int]], K: int) -> int:
+        if self.minPathSum(grid) > K:
+            return -1
+
+        m, n = len(grid), len(grid[0])
+        K = fmin(K, m + n - 2)  # 至多花费 m+n-2
+        f = [[[-inf] * (K + 2) for _ in range(n + 1)] for _ in range(m + 1)]
+        f[0][1][1] = 0
+
+        for i, row in enumerate(grid):
+            for j, x in enumerate(row):
+                for k in range(fmin(K, i + j) + 1):  # 从 (0,0) 到 (i,j) 至多花费 i+j
+                    new_k = k - 1 if x else k
+                    f[i + 1][j + 1][k + 1] = fmax(f[i][j + 1][new_k + 1], f[i + 1][j][new_k + 1]) + x
+
+        return max(f[m][n])
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxPathScore(int[][] grid, int K) {
+        if (minPathSum(grid) > K) {
+            return -1;
+        }
+
+        int m = grid.length;
+        int n = grid[0].length;
+        K = Math.min(K, m + n - 2); // 至多花费 m+n-2
+        int[][][] f = new int[m + 1][n + 1][K + 2];
+        for (int[][] mat : f) {
+            for (int[] row : mat) {
+                Arrays.fill(row, Integer.MIN_VALUE);
+            }
+        }
+        f[0][1][1] = 0;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int x = grid[i][j];
+                int maxK = Math.min(K, i + j); // 从 (0,0) 到 (i,j) 至多花费 i+j
+                for (int k = 0; k <= maxK; k++) {
+                    int newK = x > 0 ? k - 1 : k;
+                    f[i + 1][j + 1][k + 1] = Math.max(f[i][j + 1][newK + 1], f[i + 1][j][newK + 1]) + x;
+                }
+            }
+        }
+
+        int ans = 0;
+        for (int x : f[m][n]) {
+            ans = Math.max(ans, x);
+        }
+        return ans;
+    }
+
+    // 64. 最小路径和
+    private int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] f = new int[m + 1][n + 1];
+        Arrays.fill(f[0], Integer.MAX_VALUE);
+        f[0][1] = 0;
+        for (int i = 0; i < m; i++) {
+            f[i + 1][0] = Integer.MAX_VALUE;
+            for (int j = 0; j < n; j++) {
+                f[i + 1][j + 1] = Math.min(f[i + 1][j], f[i][j + 1]) + Math.min(grid[i][j], 1); // 值大于 0 的单元格花费 1
+            }
+        }
+        return f[m][n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 64. 最小路径和
+    int minPathSum(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        vector f(m + 1, vector<int>(n + 1, INT_MAX));
+        f[0][1] = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                f[i + 1][j + 1] = min(f[i + 1][j], f[i][j + 1]) + min(grid[i][j], 1); // 值大于 0 的单元格花费 1
+            }
+        }
+        return f[m][n];
+    }
+
+public:
+    int maxPathScore(vector<vector<int>>& grid, int K) {
+        if (minPathSum(grid) > K) {
+            return -1;
+        }
+    
+        int m = grid.size(), n = grid[0].size();
+        K = min(K, m + n - 2); // 至多花费 m+n-2
+        vector f(m + 1, vector(n + 1, vector<int>(K + 2, INT_MIN)));
+        f[0][1][1] = 0;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int x = grid[i][j];
+                int max_k = min(K, i + j); // 从 (0,0) 到 (i,j) 至多花费 i+j
+                for (int k = 0; k <= max_k; k++) {
+                    int new_k = k - (x > 0);
+                    f[i + 1][j + 1][k + 1] = max(f[i][j + 1][new_k + 1], f[i + 1][j][new_k + 1]) + x;
+                }
+            }
+        }
+
+        return ranges::max(f[m][n]);
+    }
+};
+```
+
+```go [sol-Go]
+// 64. 最小路径和
+func minPathSum(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	f := make([][]int, m+1)
+	for i := range f {
+		f[i] = make([]int, n+1)
+	}
+	for j := 2; j <= n; j++ {
+		f[0][j] = math.MaxInt
+	}
+	for i, row := range grid {
+		f[i+1][0] = math.MaxInt
+		for j, x := range row {
+			f[i+1][j+1] = min(f[i+1][j], f[i][j+1]) + min(x, 1) // 值大于 0 的单元格花费 1
+		}
+	}
+	return f[m][n]
+}
+
+func maxPathScore(grid [][]int, K int) int {
+	if minPathSum(grid) > K {
+		return -1
+	}
+
+	n, m := len(grid[0]), len(grid)
+	K = min(K, m+n-2) // 至多花费 m+n-2
+	f := make([][][]int, m+1)
+	for i := range f {
+		f[i] = make([][]int, n+1)
+		for j := range f[i] {
+			f[i][j] = make([]int, K+2)
+			for p := range f[i][j] {
+				f[i][j][p] = math.MinInt
+			}
+		}
+	}
+	f[0][1][1] = 0
+
+	for i, row := range grid {
+		for j, x := range row {
+			for k := range min(K, i+j) + 1 { // 从 (0,0) 到 (i,j) 至多花费 i+j
+				newK := k
+				if x > 0 {
+					newK--
+				}
+				f[i+1][j+1][k+1] = max(f[i][j+1][newK+1], f[i+1][j][newK+1]) + x
+			}
+		}
+	}
+
+	return slices.Max(f[m][n])
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn\cdot\min(k,m+n))$，其中 $m$ 和 $n$ 分别是 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(mn\cdot\min(k,m+n))$。
+
+**注**：用滚动数组可以把空间复杂度优化至 $\mathcal{O}(n\cdot\min(k,m+n))$。
 
 ## 专题训练
 
