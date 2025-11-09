@@ -20,11 +20,11 @@ $$
 
 **递归入口**：$\textit{dfs}(m-1,n-1,k)$，这是原问题，也是答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ## 记忆化搜索
 
 原理见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，包含把记忆化搜索 1:1 翻译成递推的技巧。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1oskQBLEsY/?t=4m3s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 手写 max 更快

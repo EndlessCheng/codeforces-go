@@ -2,7 +2,7 @@
 
 设 $M = \textit{nums}[i]$ 是 $\textit{nums}$ 的最大值。
 
-假设我们得到了一个最优划分方案。考察其中包含 $M$ 的子数组，设该子数组的最小值为 $m = \textit{nums}[j]$。
+假设我们得到了一个最优划分方案。考察其中包含 $M$ 的子数组，设该子数组的最小值在下标 $j$。
 
 分类讨论：
 
@@ -11,20 +11,22 @@
 
 所以一定存在一个最优划分方案，其中 $M$ 在某个子数组的最左边或者最右边。
 
-换句话说，我们可以把环形数组从 $(i-1,i)$ 处断开，或者从 $(i,i+1)$ 处断开，转化成非环形的问题。
+换句话说，我们可以把环形数组在 $(i-1,i)$ 处断开，或者在 $(i,i+1)$ 处断开，转化成非环形的问题。两种断环方式的计算结果取最大值。
 
 ## 非环形数组
 
 对于划分出的一段子数组：
 
 - 如果子数组最小值在最大值左边，可以视作**低买高卖**。
-- 如果子数组最大值在最小值左边，可以视作**高卖低买**（高位做空，低位平空）。
+- 如果子数组最大值在最小值左边，可以视作**高借低还**（高位做空，低位平空）。
 
 题目限定至多分出 $k$ 个子数组，这对应着至多 $k$ 次交易。
 
 这和 [3573. 买卖股票的最佳时机 V](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-v/) **完全一样**，请看 [我的题解](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-v/solutions/3695611/zhuang-tai-ji-dpzai-188-ti-de-ji-chu-sha-aozb/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+> **注**：换句话说，3573 题可以更抽象的描述为，划分成至多 $k$ 段子数组的绝对差之和的最大值。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1oskQBLEsY/?t=13m38s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 手写 max 更快
@@ -45,8 +47,8 @@ class Solution:
 
     def maximumScore(self, nums: List[int], k: int) -> int:
         max_i = nums.index(max(nums))
-        ans1 = self.maximumProfit(nums[max_i:] + nums[:max_i], k)
-        ans2 = self.maximumProfit(nums[max_i + 1:] + nums[:max_i + 1], k)
+        ans1 = self.maximumProfit(nums[max_i:] + nums[:max_i], k)  # nums[max_i] 是第一个数
+        ans2 = self.maximumProfit(nums[max_i + 1:] + nums[:max_i + 1], k)  # nums[max_i] 是最后一个数
         return fmax(ans1, ans2)
 ```
 
@@ -61,8 +63,8 @@ class Solution {
             }
         }
 
-        long ans1 = maximumProfit(nums, maxI, maxI + n, k);
-        long ans2 = maximumProfit(nums, maxI + 1, maxI + 1 + n, k);
+        long ans1 = maximumProfit(nums, maxI, maxI + n, k); // nums[maxI] 是第一个数
+        long ans2 = maximumProfit(nums, maxI + 1, maxI + 1 + n, k); // nums[maxI] 是最后一个数
         return Math.max(ans1, ans2);
     }
 
@@ -111,8 +113,8 @@ public:
     long long maximumScore(vector<int>& nums, int k) {
         int n = nums.size();
         int max_i = ranges::max_element(nums) - nums.begin();
-        long long ans1 = maximumProfit(nums, max_i, max_i + n, k);
-        long long ans2 = maximumProfit(nums, max_i + 1, max_i + 1 + n, k);
+        long long ans1 = maximumProfit(nums, max_i, max_i + n, k); // nums[max_i] 是第一个数
+        long long ans2 = maximumProfit(nums, max_i + 1, max_i + 1 + n, k); // nums[max_i] 是最后一个数
         return max(ans1, ans2);
     }
 };
@@ -148,8 +150,8 @@ func maximumScore(nums []int, k int) int64 {
 		}
 	}
 
-	ans1 := maximumProfit(nums, maxI, maxI+n, k)
-	ans2 := maximumProfit(nums, maxI+1, maxI+1+n, k)
+	ans1 := maximumProfit(nums, maxI, maxI+n, k) // nums[maxI] 是第一个数
+	ans2 := maximumProfit(nums, maxI+1, maxI+1+n, k) // nums[maxI] 是最后一个数
 	return max(ans1, ans2)
 }
 ```

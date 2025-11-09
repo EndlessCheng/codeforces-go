@@ -6,7 +6,7 @@
 
 计算上式的最大值，即为答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1oskQBLEsY/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
