@@ -51,21 +51,18 @@ func maxPathScore1(grid [][]int, k int) int {
 
 // 64. 最小路径和
 func minPathSum(grid [][]int) int {
-	m, n := len(grid), len(grid[0])
-	f := make([][]int, m+1)
-	for i := range f {
-		f[i] = make([]int, n+1)
+	n := len(grid[0])
+	f := make([]int, n+1)
+	for j := range f {
+		f[j] = math.MaxInt
 	}
-	for j := 2; j <= n; j++ {
-		f[0][j] = math.MaxInt
-	}
-	for i, row := range grid {
-		f[i+1][0] = math.MaxInt
+	f[1] = 0
+	for _, row := range grid {
 		for j, x := range row {
-			f[i+1][j+1] = min(f[i+1][j], f[i][j+1]) + min(x, 1) // 值大于 0 的单元格花费 1
+			f[j+1] = min(f[j], f[j+1]) + min(x, 1) // 值大于 0 的单元格花费 1
 		}
 	}
-	return f[m][n]
+	return f[n]
 }
 
 func maxPathScore(grid [][]int, K int) int {
@@ -73,31 +70,28 @@ func maxPathScore(grid [][]int, K int) int {
 		return -1
 	}
 
-	n, m := len(grid[0]), len(grid)
+	m, n := len(grid), len(grid[0])
 	K = min(K, m+n-2) // 至多花费 m+n-2
-	f := make([][][]int, m+1)
-	for i := range f {
-		f[i] = make([][]int, n+1)
-		for j := range f[i] {
-			f[i][j] = make([]int, K+2)
-			for p := range f[i][j] {
-				f[i][j][p] = math.MinInt
-			}
+	f := make([][]int, n+1)
+	for j := range f {
+		f[j] = make([]int, K+2)
+		for k := range f[j] {
+			f[j][k] = math.MinInt
 		}
 	}
-	f[0][1][1] = 0
+	f[1][1] = 0
 
 	for i, row := range grid {
 		for j, x := range row {
-			for k := range min(K, i+j) + 1 { // 从 (0,0) 到 (i,j) 至多花费 i+j
+			for k := min(K, i+j); k >= 0; k-- { // 从 (0,0) 到 (i,j) 至多花费 i+j
 				newK := k
 				if x > 0 {
 					newK--
 				}
-				f[i+1][j+1][k+1] = max(f[i][j+1][newK+1], f[i+1][j][newK+1]) + x
+				f[j+1][k+1] = max(f[j+1][newK+1], f[j][newK+1]) + x
 			}
 		}
 	}
 
-	return slices.Max(f[m][n])
+	return slices.Max(f[n])
 }
