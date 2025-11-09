@@ -1,4 +1,4 @@
-$m = \max(\textit{nums})$。
+设 $m = \max(\textit{nums})$。
 
 由于元素只能变大，所以必须都变成 $\ge m$ 的数，否则无法都相等。
 
