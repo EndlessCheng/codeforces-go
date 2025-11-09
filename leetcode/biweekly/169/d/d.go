@@ -187,23 +187,20 @@ func newMultisetWith[K comparable](comp func(a, b K) int) *treapMS[K] {
 	}
 }
 
-func countMajoritySubarrays1(a []int, tar int) int64 {
-	ans64 := func() (ans int) {
-		t := newMultiset[int]()
-		t.put(0)
-		s := 0
-		for _, v := range a {
-			if v == tar {
-				s++
-			} else {
-				s--
-			}
-			ans += t.lowerBoundIndex(s)
-			t.put(s)
+func countMajoritySubarrays1(nums []int, target int) (ans int64) {
+	t := newMultiset[int]()
+	t.put(0) // 为什么加个 0？见 525 题我的题解
+	s := 0
+	for _, x := range nums {
+		if x == target {
+			s++
+		} else {
+			s--
 		}
-		return
-	}()
-	return int64(ans64)
+		ans += int64(t.lowerBoundIndex(s))
+		t.put(s)
+	}
+	return
 }
 
 //

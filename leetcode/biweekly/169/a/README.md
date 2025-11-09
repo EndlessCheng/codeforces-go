@@ -13,7 +13,7 @@ $$
 \end{aligned}
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV19bkQBkEhG/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -58,6 +58,12 @@ func minMoves(nums []int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 思考题
+
+改成每次操作增加 $1$ 或者 $2$。
+
+欢迎在评论区分享你的思路/代码。
 
 ## 分类题单
 

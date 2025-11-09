@@ -20,9 +20,9 @@
 
 在有序集合中查找第一个 $\ge s[j]$ 的数的位置，即为 $s[i] < s[j]$ 的个数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV19bkQBkEhG/?t=24m30s)，欢迎点赞关注~
 
-```py
+```py [sol-Python3]
 class Solution:
     def countMajoritySubarrays(self, nums: List[int], target: int) -> int:
         sl = SortedList([0])  # 为什么加个 0？见 525 题我的题解
@@ -32,6 +32,233 @@ class Solution:
             ans += sl.bisect_left(s)
             sl.add(s)
         return ans
+```
+
+```cpp [sol-C++]
+#include <ext/pb_ds/assoc_container.hpp>
+
+using namespace __gnu_pbds;
+// 使用 pair<key, index> 支持重复 key
+using ordered_set = tree<pair<int, int>, null_type, less<>, rb_tree_tag, tree_order_statistics_node_update>;
+
+class Solution {
+public:
+    long long countMajoritySubarrays(vector<int>& nums, int target) {
+        int idx = 0; // 插入时自增，用来保证 st 中的元素互不相同
+        ordered_set* st = new ordered_set();
+        st->insert({0, ++idx});
+        long long ans = 0;
+        int s = 0;
+        for (int x : nums) {
+            s += x == target ? 1 : -1;
+            // order_of_key(key) 计算 st 中的严格小于 key 的元素个数
+            ans += st->order_of_key({s, 0});
+            st->insert({s, ++idx});
+        }
+        delete st;
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+// 我的 Treap 模板之一，相当于 std::multiset + 名次树
+type nodeMS[K comparable] struct {
+	son      [2]*nodeMS[K]
+	priority uint
+	key      K
+	keyCnt   int
+	subSize  int
+}
+
+func (o *nodeMS[K]) size() int {
+	if o != nil {
+		return o.subSize
+	}
+	return 0
+}
+
+func (o *nodeMS[K]) maintain() {
+	o.subSize = o.keyCnt + o.son[0].size() + o.son[1].size()
+}
+
+func (o *nodeMS[K]) rotate(d int) *nodeMS[K] {
+	x := o.son[d^1]
+	o.son[d^1] = x.son[d]
+	x.son[d] = o
+	o.maintain()
+	x.maintain()
+	return x
+}
+
+type treapMS[K comparable] struct {
+	rd         uint
+	root       *nodeMS[K]
+	comparator func(a, b K) int
+}
+
+func (t *treapMS[K]) fastRand() uint {
+	t.rd ^= t.rd << 13
+	t.rd ^= t.rd >> 17
+	t.rd ^= t.rd << 5
+	return t.rd
+}
+
+func (t *treapMS[K]) size() int   { return t.root.size() }
+func (t *treapMS[K]) empty() bool { return t.size() == 0 }
+
+func (t *treapMS[K]) _put(o *nodeMS[K], key K) *nodeMS[K] {
+	if o == nil {
+		o = &nodeMS[K]{priority: t.fastRand(), key: key, keyCnt: 1}
+	} else {
+		c := t.comparator(key, o.key)
+		if c == 0 {
+			o.keyCnt++
+		} else {
+			d := 0
+			if c > 0 {
+				d = 1
+			}
+			o.son[d] = t._put(o.son[d], key)
+			if o.son[d].priority > o.priority {
+				o = o.rotate(d ^ 1)
+			}
+		}
+	}
+	o.maintain()
+	return o
+}
+
+func (t *treapMS[K]) put(key K) { t.root = t._put(t.root, key) }
+
+func (t *treapMS[K]) _delete(o *nodeMS[K], key K) *nodeMS[K] {
+	if o == nil {
+		return nil
+	}
+	if c := t.comparator(key, o.key); c != 0 {
+		d := 0
+		if c > 0 {
+			d = 1
+		}
+		o.son[d] = t._delete(o.son[d], key)
+	} else {
+		if o.keyCnt > 1 {
+			o.keyCnt--
+		} else {
+			if o.son[1] == nil {
+				return o.son[0]
+			}
+			if o.son[0] == nil {
+				return o.son[1]
+			}
+			d := 0
+			if o.son[0].priority > o.son[1].priority {
+				d = 1
+			}
+			o = o.rotate(d)
+			o.son[d] = t._delete(o.son[d], key)
+		}
+	}
+	o.maintain()
+	return o
+}
+
+func (t *treapMS[K]) delete(key K) { t.root = t._delete(t.root, key) }
+
+func (t *treapMS[K]) min() *nodeMS[K] { return t.kth(0) }
+func (t *treapMS[K]) max() *nodeMS[K] { return t.kth(t.size() - 1) }
+
+func (t *treapMS[K]) lowerBoundIndex(key K) (kth int) {
+	for o := t.root; o != nil; {
+		c := t.comparator(key, o.key)
+		if c < 0 {
+			o = o.son[0]
+		} else if c > 0 {
+			kth += o.son[0].size() + o.keyCnt
+			o = o.son[1]
+		} else {
+			kth += o.son[0].size()
+			break
+		}
+	}
+	return
+}
+
+func (t *treapMS[K]) upperBoundIndex(key K) (kth int) {
+	for o := t.root; o != nil; {
+		c := t.comparator(key, o.key)
+		if c < 0 {
+			o = o.son[0]
+		} else if c > 0 {
+			kth += o.son[0].size() + o.keyCnt
+			o = o.son[1]
+		} else {
+			kth += o.son[0].size() + o.keyCnt
+			break
+		}
+	}
+	return
+}
+
+func (t *treapMS[K]) kth(k int) (o *nodeMS[K]) {
+	if k < 0 || k >= t.root.size() {
+		return
+	}
+	for o = t.root; o != nil; {
+		leftSize := o.son[0].size()
+		if k < leftSize {
+			o = o.son[0]
+		} else {
+			k -= leftSize + o.keyCnt
+			if k < 0 {
+				break
+			}
+			o = o.son[1]
+		}
+	}
+	return
+}
+
+func (t *treapMS[K]) prev(key K) *nodeMS[K] { return t.kth(t.lowerBoundIndex(key) - 1) }
+func (t *treapMS[K]) next(key K) *nodeMS[K] { return t.kth(t.upperBoundIndex(key)) }
+
+func (t *treapMS[K]) find(key K) *nodeMS[K] {
+	o := t.kth(t.lowerBoundIndex(key))
+	if o == nil || o.key != key {
+		return nil
+	}
+	return o
+}
+
+func newMultiset[K cmp.Ordered]() *treapMS[K] {
+	return &treapMS[K]{
+		rd:         uint(time.Now().UnixNano()),
+		comparator: cmp.Compare[K],
+	}
+}
+
+func newMultisetWith[K comparable](comp func(a, b K) int) *treapMS[K] {
+	return &treapMS[K]{
+		rd:         uint(time.Now().UnixNano()),
+		comparator: comp,
+	}
+}
+
+func countMajoritySubarrays(nums []int, target int) (ans int64) {
+	t := newMultiset[int]()
+	t.put(0) // 为什么加个 0？见 525 题我的题解
+	s := 0
+	for _, x := range nums {
+		if x == target {
+			s++
+		} else {
+			s--
+		}
+		ans += int64(t.lowerBoundIndex(s))
+		t.put(s)
+	}
+	return
+}
 ```
 
 #### 复杂度分析
@@ -242,6 +469,12 @@ func countMajoritySubarrays(nums []int, target int) (ans int64) {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 思考题
+
+改成计算**存在**绝对众数（出现次数严格大于子数组长度的一半）的子数组个数。
+
+欢迎在评论区分享你的思路/代码。
 
 ## 专题训练
 
