@@ -291,7 +291,8 @@ public:
         }
         for (int p : prices) {
             for (int j = k + 1; j > 0; j--) {
-                f[j][0] = max({f[j][0], f[j][1] + p, f[j][2] - p});
+                // f[j][0] = max({f[j][0], f[j][1] + p, f[j][2] - p}); 这种写法比下面的慢
+                f[j][0] = max(f[j][0], max(f[j][1] + p, f[j][2] - p));
                 f[j][1] = max(f[j][1], f[j - 1][0] - p);
                 f[j][2] = max(f[j][2], f[j - 1][0] + p);
             }
@@ -325,7 +326,9 @@ func maximumProfit(prices []int, k int) int64 {
 - 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{prices}$ 的长度。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-更多相似题目，见下面动态规划题单的「**六、状态机 DP**」。
+## 专题训练
+
+见下面动态规划题单的「**六、状态机 DP**」。
 
 ## 分类题单
 
@@ -341,7 +344,7 @@ func maximumProfit(prices []int, k int) int64 {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
