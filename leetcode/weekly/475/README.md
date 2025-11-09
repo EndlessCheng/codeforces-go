@@ -9,3 +9,9 @@
 - Q4 https://leetcode.cn/problems/maximize-cyclic-partition-score/solution/zhao-dao-zui-jia-duan-huan-wei-zhi-zhuan-k2ip/
 
 [本题视频讲解](https://www.bilibili.com/video/BV1oskQBLEsY/)，欢迎点赞关注~
+
+---
+
+LCUS：
+
+- Q4 https://leetcode.com/problems/maximize-cyclic-partition-score/solutions/7337261/transform-to-best-time-to-buy-and-sell-s-zpn0/
