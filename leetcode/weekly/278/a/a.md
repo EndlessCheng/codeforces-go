@@ -215,6 +215,8 @@ impl Solution {
 
 这可以通过位运算 $\mathcal{O}(1)$ 地计算出来：把 $\textit{mask}$ 取反，找最低位的 $1$，其对应的二进制数 $\textit{lowbit}$ 即为答案中的 $2^k$。再乘以 $\textit{original}$，得到最终答案。
 
+> **注**：找最低 $0$ 对应的 $2^k$，也可以直接计算 `(mask + 1) & ~mask`。
+
 ```py [sol-Python3]
 class Solution:
     def findFinalValue(self, nums: List[int], original: int) -> int:
