@@ -16,7 +16,7 @@ In other words, we can break the circular array either between $(i-1, i)$ or bet
 For each partitioned subarray:
 
 - If the minimum value is **to the left** of the maximum value, it can be viewed as a **buy low, sell high** transaction.
-- If the maximum value is **to the left** of the minimum value, it can be viewed as a **short high, cover low** operation.
+- If the maximum value is **to the left** of the minimum value, it can be viewed as a **short high, cover low** transaction.
 
 The problem restricts the total number of subarrays to at most $k$, which corresponds to at most $k$ transactions. 
 
