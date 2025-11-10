@@ -6,6 +6,9 @@ import "math"
 func minimumDistance(nums []int) int {
 	pos := map[int][]int{}
 	for i, x := range nums {
+		if i >= 2 && x == nums[i-1] && x == nums[i-2] {
+			return 4
+		}
 		pos[x] = append(pos[x], i)
 	}
 

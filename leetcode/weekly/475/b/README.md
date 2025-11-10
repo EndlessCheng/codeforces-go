@@ -85,6 +85,96 @@ func minimumDistance(nums []int) int {
 }
 ```
 
+**小优化**：如果 $\textit{nums}$ 包含 $3$ 个连续相同的数，直接返回最小答案 $4$。
+
+```py [sol-Python3]
+class Solution:
+    def minimumDistance(self, nums: List[int]) -> int:
+        pos = defaultdict(list)
+        for i, x in enumerate(nums):
+            if i >= 2 and x == nums[i - 1] == nums[i - 2]:
+                return 4
+            pos[x].append(i)
+
+        ans = inf
+        for p in pos.values():
+            for i in range(2, len(p)):
+                ans = min(ans, (p[i] - p[i - 2]) * 2)
+
+        return -1 if ans == inf else ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumDistance(int[] nums) {
+        Map<Integer, List<Integer>> pos = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (i >= 2 && nums[i] == nums[i - 1] && nums[i] == nums[i - 2]) {
+                return 4;
+            }
+            pos.computeIfAbsent(nums[i], _ -> new ArrayList<>()).add(i);
+        }
+
+        int ans = Integer.MAX_VALUE;
+        for (List<Integer> p : pos.values()) {
+            for (int i = 2; i < p.size(); i++) {
+                ans = Math.min(ans, (p.get(i) - p.get(i - 2)) * 2);
+            }
+        }
+
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumDistance(vector<int>& nums) {
+        unordered_map<int, vector<int>> pos;
+        for (int i = 0; i < nums.size(); i++) {
+            if (i >= 2 && nums[i] == nums[i - 1] && nums[i] == nums[i - 2]) {
+                return 4;
+            }
+            pos[nums[i]].push_back(i);
+        }
+
+        int ans = INT_MAX;
+        for (auto& [_, p] : pos) {
+            for (int i = 2; i < p.size(); i++) {
+                ans = min(ans, (p[i] - p[i - 2]) * 2);
+            }
+        }
+
+        return ans == INT_MAX ? -1 : ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumDistance(nums []int) int {
+	pos := map[int][]int{}
+	for i, x := range nums {
+		if i >= 2 && x == nums[i-1] && x == nums[i-2] {
+			return 4
+		}
+		pos[x] = append(pos[x], i)
+	}
+
+	ans := math.MaxInt
+	for _, p := range pos {
+		for i := 2; i < len(p); i++ {
+			ans = min(ans, (p[i]-p[i-2])*2)
+		}
+	}
+
+	if ans == math.MaxInt {
+		return -1
+	}
+	return ans
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
