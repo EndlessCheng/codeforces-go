@@ -1,9 +1,6 @@
 package copypasta
 
-import (
-	"math/bits"
-	"slices"
-)
+import "math/bits"
 
 // 线段树讲解 by 灵茶山艾府（13:30 开始）https://www.bilibili.com/video/BV15D4y1G7ms
 
@@ -847,11 +844,18 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 	solve = func(o, l, r int, f []int) {
 		if g[o] != nil {
 			// 触发操作
-			f = slices.Clone(f)
+			//f = slices.Clone(f)
 			for _, p := range g[o] {
 				_ = p
 				// ...
 			}
+			defer func() {
+				// 撤销
+				for _, p := range g[o] {
+					_ = p
+					// ...
+				}
+			}()
 		}
 
 		if l == r {
