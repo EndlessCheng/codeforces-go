@@ -809,11 +809,18 @@ func (o *stNode) kth(k int) int {
 //
 
 // 线段树分治 / 时间线段树
+// 适用于包含三类操作的题目：添加 删除 查询
 // https://oi-wiki.org/topic/segment-tree-offline/
 //
-// todo https://www.luogu.com.cn/problem/P5787
-//  https://codeforces.com/problemset/problem/1140/F 2600
-// https://codeforces.com/problemset/problem/601/E 2800
+// https://www.luogu.com.cn/problem/list?tag=446
+// https://www.luogu.com.cn/problem/P5787 种类并查集
+// https://codeforces.com/problemset/problem/1140/F 2600
+// https://codeforces.com/problemset/problem/2104/G 2700
+// https://codeforces.com/problemset/problem/601/E 2800 入门题
+// https://codeforces.com/problemset/problem/2069/F 2800
+// https://codeforces.com/problemset/problem/938/G 2900
+//
+// 另见 union_find.go 的 dynamicConnectivity
 func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 	type pair struct{ v, w int }
 	g := make([][]pair, 2<<bits.Len(uint(numQ-1))) // ！保证 numQ > 0
