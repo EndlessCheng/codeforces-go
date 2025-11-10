@@ -43,10 +43,10 @@
     - 线段树二分
     - 延迟标记（懒标记）
       - [矩形面积并（扫描线）segment_tree_rect.go](/copypasta/segment_tree_rect.go)
-    - 线段树分治 / 时间线段树
     - 动态开点
     - 线段树合并
     - 线段树分裂
+    - 线段树分治 / 时间线段树
     - 持久化（主席树）
   - [0-1 线段树 segment_tree01.go](/copypasta/segment_tree01.go)
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
