@@ -789,9 +789,8 @@ func (b *xorBasis) maxXorWithLowerIndex(lowerIndex int) (res int) {
 	return
 }
 
-// 考虑插入的过程，因为每一次跳转操作，x 的二进制最高位必定单调降低，所以不可能插入两个二进制最高位相同的数。
-// 而此时，线性基中最小值异或上其他数，必定会增大。
-// 所以，直接输出线性基中的最小值即可。
+// 最小异或和
+// 即线性基中的最小值
 func (b *xorBasis) minXor() int {
 	if b.canBeZero {
 		return 0
