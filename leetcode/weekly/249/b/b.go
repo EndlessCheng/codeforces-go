@@ -10,22 +10,54 @@ import "math/bits"
 */
 
 // github.com/EndlessCheng/codeforces-go
-func countPalindromicSubsequence(s string) (ans int) {
-	var pre, suf, has [26]int
-	for _, b := range s[1:] {
-		suf[b-'a']++
+func countPalindromicSubsequence1(s string) (ans int) {
+	n := len(s)
+	// 统计每个后缀有哪些字母
+	suf := make([]int, n+1)
+	for i := n - 1; i >= 0; i-- {
+		suf[i] = suf[i+1] | 1<<(s[i]-'a')
 	}
-	for i := 1; i < len(s)-1; i++ { // 枚举回文子序列的中间字符
-		pre[s[i-1]-'a']++
-		suf[s[i]-'a']--
-		for j := 0; j < 26; j++ { // 枚举中间字符的左右字符
-			if pre[j] > 0 && suf[j] > 0 { // 找到了一个回文子序列
-				has[s[i]-'a'] |= 1 << j
-			}
-		}
+
+	pre := 0
+	has := [26]int{}
+	// 枚举回文子序列的中间字母 s[i]
+	for i := 1; i < n-1; i++ {
+		pre |= 1 << (s[i-1] - 'a') // 统计前缀有哪些字母
+		// pre & suf[i+1] O(1) 计算在 s[i] 左右两侧都有的字母，添加到 has[s[i]-'a'] 中
+		has[s[i]-'a'] |= pre & suf[i+1]
 	}
+
+	// 比如 has[1] = 1101 表示 s 中有回文子序列 aba、cbc 和 dbd
 	for _, mask := range has {
-		ans += bits.OnesCount(uint(mask)) // 累加二进制中 1 的个数即为答案
+		ans += bits.OnesCount(uint(mask))
+	}
+	return
+}
+
+func countPalindromicSubsequence(s string) (ans int) {
+	n := len(s)
+	sufCnt := [26]int{} // 统计后缀每个字母的个数
+	suf := 0
+	for _, ch := range s[1:] {
+		ch -= 'a'
+		sufCnt[ch]++
+		suf |= 1 << ch
+	}
+
+	pre := 0
+	has := [26]int{}
+	for i := 1; i < n-1; i++ {
+		pre |= 1 << (s[i-1] - 'a')
+		ch := s[i] - 'a'
+		sufCnt[ch]--
+		if sufCnt[ch] == 0 { // 现在，后缀 [i+1,n-1] 不包含字母 ch
+			suf ^= 1 << ch // 从 suf 中去掉 ch
+		}
+		has[ch] |= pre & suf
+	}
+
+	for _, mask := range has {
+		ans += bits.OnesCount(uint(mask))
 	}
 	return
 }
