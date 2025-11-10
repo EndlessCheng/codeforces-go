@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/bits"
+import (
+	"math/bits"
+	"slices"
+)
 
 // 线段树讲解 by 灵茶山艾府（13:30 开始）https://www.bilibili.com/video/BV15D4y1G7ms
 
@@ -90,6 +93,7 @@ import "math/bits"
 // https://codeforces.com/problemset/problem/1609/E 2400 单点修改 + 不含子序列 abc
 // https://codeforces.com/problemset/problem/295/E 2500 难度虚高
 // https://codeforces.com/problemset/problem/1665/E 2500 区间最小的 31 个数
+// https://codeforces.com/problemset/problem/2117/H 2500
 // https://codeforces.com/problemset/problem/2042/F 2600 两段最大子段和
 // https://codeforces.com/problemset/problem/19/D 2800
 // https://codeforces.com/problemset/problem/280/D 2800
@@ -807,9 +811,62 @@ func (o *stNode) kth(k int) int {
 
 //
 
-// 线段树分治
+// 线段树分治 / 时间线段树
+// https://oi-wiki.org/topic/segment-tree-offline/
+//
 // todo https://www.luogu.com.cn/problem/P5787
 //  https://codeforces.com/problemset/problem/1140/F 2600
+// https://codeforces.com/problemset/problem/601/E 2800
+func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
+	type pair struct{ v, w int }
+	g := make([][]pair, 2<<bits.Len(uint(numQ-1))) // ！保证 numQ > 0
+	var update func(o, l, r, ql, qr int, p pair)
+	update = func(o, l, r, ql, qr int, p pair) {
+		if ql <= l && r <= qr {
+			g[o] = append(g[o], p) // 聚合信息
+			return
+		}
+		m := (l + r) / 2
+		if ql <= m {
+			update(o*2, l, m, ql, qr, p)
+		}
+		if m < qr {
+			update(o*2+1, m+1, r, ql, qr, p)
+		}
+	}
+	// 操作 i 在第 p.l 个询问之后发生，在第 p.r 个询问之后结束
+	// 所以 p 天然是左闭右开
+	// 特别地，如果 p.l=0 或者 p.r=0，说明操作在第一个询问之前发生/结束
+	for i, p := range ranges {
+		if p.l < p.r {
+			update(1, 0, numQ-1, p.l, p.r-1, a[i])
+		} // 否则 l=r，操作 i 不影响询问
+	}
+
+	var solve func(o, l, r int, f []int)
+	solve = func(o, l, r int, f []int) {
+		if g[o] != nil {
+			// 触发操作
+			f = slices.Clone(f)
+			for _, p := range g[o] {
+				_ = p
+				// ...
+			}
+		}
+
+		if l == r {
+			// 在询问 l 之前的操作已应用
+			// 可以回答询问 l 了
+			// ...
+			return
+		}
+
+		m := (l + r) / 2
+		solve(o*2, l, m, f)
+		solve(o*2+1, m+1, r, f)
+	}
+	solve(1, 0, numQ-1, make([]int, k+1))
+}
 
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
 // https://oi-wiki.org/ds/persistent-seg/
