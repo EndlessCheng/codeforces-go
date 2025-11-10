@@ -24,7 +24,7 @@
 
 这和 [3573. 买卖股票的最佳时机 V](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-v/) **完全一样**，请看 [我的题解](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-v/solutions/3695611/zhuang-tai-ji-dpzai-188-ti-de-ji-chu-sha-aozb/)。
 
-> **注**：换句话说，3573 题可以更抽象地描述为，划分成至多 $k$ 段子数组的绝对差之和的最大值。
+> **注**：换句话说，3573 题可以更抽象地描述为，划分成至多 $k$ 段子数组的极差之和的最大值。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1oskQBLEsY/?t=13m38s)，欢迎点赞关注~
 
