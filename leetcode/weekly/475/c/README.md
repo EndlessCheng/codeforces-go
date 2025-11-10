@@ -389,15 +389,15 @@ func maxPathScore(grid [][]int, K int) int {
 
 ## 优化循环次数
 
-从 $(0,0)$ 移动到 $(m-1,n-1)$，至多花费 $m+n-2$（注意题目保证 $\textit{grid}[0][0] = 0$）。所以可以把 $k$ 更新为 $\min(k, m+n-2)$。
+从 $(0,0)$ 移动到 $(m-1,n-1)$，至多花费 $m+n-2$（注意题目保证 $\textit{grid}[0][0] = 0$）。所以可以把 $K$ 更新为 $\min(K, m+n-2)$。
 
-此外，从 $(0,0)$ 移动到 $(i,j)$ 至多花费 $i+j$，所以最内层循环的 $k$ 最大是 $\min(k,i+j)$。
+此外，从 $(0,0)$ 移动到 $(i,j)$ 至多花费 $i+j$，所以最内层循环的 $k$ 最大是 $\min(K,i+j)$。
 
 改成这种写法后，由于 $f$ 的定义是「至多」，$f[i][j][>i+j]$ 的状态本该更新，但没有更新。所以最后返回的是 $\max(f[m][n])$。
 
 也可以把 $f$ 的定义改成「恰好」，这样只需要把 $f[0][1][1]$ 初始化成 $0$，其余均为 $-\infty$。
 
-此外，可以加一个特判，如果从起点到终点的最小花费都大于 $k$，那么不存在有效路径，返回 $-1$。做法类似 [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)，[我的题解](https://leetcode.cn/problems/minimum-path-sum/solutions/3045828/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-zfb2/)。
+此外，可以加一个特判，如果从起点到终点的最小花费都大于 $K$，那么不存在有效路径，返回 $-1$。做法类似 [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)，[我的题解](https://leetcode.cn/problems/minimum-path-sum/solutions/3045828/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-zfb2/)。
 
 > **注**：更精细的写法是，写一个额外的 DP，计算起点到每个位置的最大花费。
 
@@ -503,7 +503,7 @@ public:
         if (minPathSum(grid) > K) {
             return -1;
         }
-    
+
         int m = grid.size(), n = grid[0].size();
         K = min(K, m + n - 2); // 至多花费 m+n-2
         vector f(n + 1, vector<int>(K + 2, INT_MIN));
