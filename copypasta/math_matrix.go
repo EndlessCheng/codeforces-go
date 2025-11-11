@@ -49,7 +49,7 @@ https://codeforces.com/problemset/problem/107/D 2400
 https://codeforces.com/problemset/problem/226/C 2400 https://www.luogu.com.cn/problem/P1306
 https://codeforces.com/problemset/problem/593/E 2400 分段
 https://codeforces.com/problemset/problem/93/D 2500 前 n 项之和
-https://codeforces.com/problemset/problem/351/C 2500 min +
+https://codeforces.com/problemset/problem/351/C 2500 min + 也有 O(nlogn) 做法
 https://codeforces.com/problemset/problem/60/E 2600
 https://codeforces.com/problemset/problem/1895/F 2600 如何容斥（正难则反）
 https://codeforces.com/problemset/problem/498/E 2700 分段 DP套DP
