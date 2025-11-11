@@ -358,7 +358,8 @@ https://codeforces.com/problemset/problem/853/D 2400
 https://codeforces.com/problemset/problem/442/C 2500
 - 如果 x>=y<=z，那么删除 y 最优
 - 结束后剩下一个长为 m 的 /\ 形状的序列，由于无法取到最大值和次大值，那么加上剩下最小的 m-2 个数
-https://atcoder.jp/contests/arc147/tasks/arc147_e 难
+https://codeforces.com/problemset/problem/1601/D 2700
+https://atcoder.jp/contests/arc147/tasks/arc147_e
 https://www.luogu.com.cn/problem/P1016
 https://www.luogu.com.cn/problem/P2127
 https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
