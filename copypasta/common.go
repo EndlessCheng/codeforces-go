@@ -368,8 +368,9 @@ https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?opti
 https://codeforces.com/problemset/problem/1969/E 2400
 
 交换论证法
-https://atcoder.jp/contests/arc149/tasks/arc149_b
 https://codeforces.com/problemset/problem/437/C 1400 排序不等式
+https://codeforces.com/problemset/problem/1601/D 2700
+https://atcoder.jp/contests/arc149/tasks/arc149_b
 
 数学思维
 https://codeforces.com/problemset/problem/23/C 2500
