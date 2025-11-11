@@ -98,6 +98,7 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	if rating > 0 {
 		ratingS = " " + strconv.Itoa(rating)
 	}
+	fmt.Println(contestID+problemID, ratingS)
 
 	// 标准化
 	problemURL = fmt.Sprintf("https://codeforces.com/problemset/problem/%s/%s", contestID, problemID)
