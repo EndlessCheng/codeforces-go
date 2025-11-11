@@ -31,10 +31,12 @@ https://codeforces.com/problemset/problem/600/B 1300
 https://codeforces.com/problemset/problem/1538/C 1300
 https://codeforces.com/problemset/problem/165/B 1500
 https://codeforces.com/problemset/problem/1971/E 1500
+https://codeforces.com/problemset/problem/799/C 1800
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 https://atcoder.jp/contests/abc334/tasks/abc334_d 前缀和
 
 ### 二分答案：求最小
+https://codeforces.com/problemset/problem/604/B 1400 也有 O(n) 做法
 https://codeforces.com/problemset/problem/1701/C 1400
 https://codeforces.com/problemset/problem/991/C 1500
 https://codeforces.com/problemset/problem/1208/B 1500
@@ -81,6 +83,7 @@ https://www.luogu.com.cn/problem/P2680
 
 ### 最大化最小值（二分下界 low+1，如果满足要求，例如所有元素最后都 >= low+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 https://codeforces.com/problemset/problem/1623/C 1600
+https://codeforces.com/problemset/problem/2167/E 1600
 https://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/2046/C 2100
 https://codeforces.com/problemset/problem/1550/E 2500
