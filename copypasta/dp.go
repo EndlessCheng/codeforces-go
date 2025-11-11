@@ -66,6 +66,7 @@ https://codeforces.com/problemset/problem/796/E 2400 状态设计
 https://codeforces.com/problemset/problem/946/F 2400 状态设计 todo
 https://codeforces.com/problemset/problem/983/C 2400
 https://codeforces.com/problemset/problem/360/C 2500
+https://codeforces.com/problemset/problem/771/D 2500 逆序对
 https://codeforces.com/problemset/problem/6/D 2600
 https://codeforces.com/problemset/problem/93/E 2600 记忆化搜索 时间换空间
 https://codeforces.com/problemset/problem/367/E 2700 状态设计
@@ -180,7 +181,7 @@ https://codeforces.com/problemset/problem/346/D 2600
 状态个数优化
 https://www.luogu.com.cn/problem/P7961
 
-如何设计状态
+状态设计
 https://codeforces.com/problemset/problem/1461/B 1400
 https://codeforces.com/problemset/problem/553/A 1500
 https://codeforces.com/problemset/problem/1286/A 1800
@@ -207,6 +208,7 @@ https://codeforces.com/problemset/problem/939/F 2400
 https://codeforces.com/problemset/problem/1093/F 2400 容斥
 https://codeforces.com/problemset/problem/1348/E 2400 做到 O(nk) todo 需要复习
 https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元素不同
+https://codeforces.com/problemset/problem/1152/F2 3000 值域 插入法
 https://atcoder.jp/contests/abc237/tasks/abc237_f
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/arc097/tasks/arc097_c 混合逆序对
@@ -214,11 +216,11 @@ https://atcoder.jp/contests/arc116/tasks/arc116_d 寻找子问题
 https://atcoder.jp/contests/arc107/tasks/arc107_d 2099=CF2299 状态设计 todo 容斥做法
 todo https://atcoder.jp/contests/abc200/tasks/abc200_e
 SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
-LC2919 https://leetcode.cn/problems/minimum-increment-operations-to-make-array-beautiful/ 2031
+LC2919 https://leetcode.cn/problems/minimum-increment-operations-to-make-array-beautiful/
 LC3193 https://leetcode.cn/problems/count-the-number-of-inversions/ 利用排列的性质
-LC956 https://leetcode.cn/problems/tallest-billboard/ 2381
-LC1388 https://leetcode.cn/problems/pizza-with-3n-slices/ 2410
-LC903 DI 序列的有效排列 https://leetcode.cn/problems/valid-permutations-for-di-sequence/ 2433
+LC956 https://leetcode.cn/problems/tallest-billboard/
+LC1388 https://leetcode.cn/problems/pizza-with-3n-slices/
+LC903 DI 序列的有效排列 https://leetcode.cn/problems/valid-permutations-for-di-sequence/
 LC2638 https://leetcode.cn/problems/count-the-number-of-k-free-subsets/
 https://www.luogu.com.cn/problem/P9688?contestId=133572
 《挑战》pp.62-64 多重部分和问题
@@ -807,10 +809,11 @@ func _(abs func(int) int) {
 	// O(n^2) - 定义 f[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
 	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
-	// 转换 http://acm.hdu.edu.cn/showproblem.php?pid=1950
-	// 变体 https://codeforces.com/problemset/problem/1350/B 1400
-	// todo 转换 https://codeforces.com/problemset/problem/1562/E
+	// https://codeforces.com/problemset/problem/1350/B 1400
+	// https://codeforces.com/problemset/problem/2167/G 1600
+	// https://codeforces.com/problemset/problem/1562/E 2500
 	//【网络流 24 题】能取出多少个长为 len(LIS) 的不相交子序列 https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766
+	// http://acm.hdu.edu.cn/showproblem.php?pid=1950
 	lisSlow := func(a []int) int {
 		n := len(a)
 		f := make([]int, n)
@@ -1170,6 +1173,7 @@ func _(abs func(int) int) {
 	// https://leetcode.cn/problems/distinct-subsequences-ii/
 	// https://leetcode.cn/problems/number-of-unique-good-subsequences/
 	// https://codeforces.com/problemset/problem/645/E 2200 需要一点构造能力
+	// https://codeforces.com/problemset/problem/497/E 2900
 	// 另见下面的 distinctSubsequenceWithFixedLength
 	distinctSubsequence := func(s string) int {
 		f := [26]int{}
@@ -2055,6 +2059,7 @@ func _(abs func(int) int) {
 	- LC1278 https://leetcode.cn/problems/palindrome-partitioning-iii/
 	https://codeforces.com/problemset/problem/643/C 2400 斜率优化
 	https://codeforces.com/problemset/problem/822/E 2400 双序列 状态设计 刷表法
+	https://codeforces.com/problemset/problem/321/E 2600
 	https://codeforces.com/problemset/problem/797/F 2600
 	https://www.luogu.com.cn/problem/P2679 2023.11.30 茶
 	EXTRA: 相邻相关 LC3538 https://leetcode.cn/problems/merge-operations-for-minimum-travel-time/
@@ -2419,6 +2424,7 @@ func _(abs func(int) int) {
 	- https://atcoder.jp/contests/abc396/tasks/abc396_g
 	https://codeforces.com/problemset/problem/1430/G 2600
 	https://codeforces.com/problemset/problem/79/D 2800 BFS
+	https://codeforces.com/problemset/problem/1152/F2 3000 状态设计 值域 插入法
 	https://atcoder.jp/contests/abc359/tasks/abc359_d
 	https://www.luogu.com.cn/problem/P5369 状态设计
 
@@ -2442,6 +2448,10 @@ func _(abs func(int) int) {
 	// 适用于不需要知道上一个数的场景
 	// 时间复杂度通常是 O(n*2^n)
 	// 下面的写法常数是 1/2
+	//
+	// 注意：测试发现 TrailingZeros32  421 ms https://codeforces.com/problemset/submission/1886/343783230
+	//              TrailingZeros64 1031 ms https://codeforces.com/problemset/submission/1886/343782490
+	//
 	// LC526 https://leetcode.cn/problems/beautiful-arrangement/
 	//    - https://oeis.org/A320843 Number of permutations sigma of {1,2,...,n} such that sigma(i) divides i or i divides sigma(i) for 1 <= i <= n
 	// https://atcoder.jp/contests/dp/tasks/dp_o
@@ -2453,6 +2463,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1238/E 2200 式子变形
 	// https://codeforces.com/problemset/problem/327/E 2300 卡常优化 另一种做法是折半枚举
 	// https://codeforces.com/problemset/problem/744/C 2400 状态设计 todo
+	// https://codeforces.com/problemset/problem/1886/E 2400 状态设计 打印具体方案
 	// https://codeforces.com/problemset/problem/1598/F 2400 合法括号字符串
 	// https://codeforces.com/problemset/problem/1550/E 2500 状态设计
 	// https://www.luogu.com.cn/problem/P3694 前缀和
@@ -2467,12 +2478,12 @@ func _(abs func(int) int) {
 			if fs == 0 { // 剪枝：用在计数题目上
 				continue
 			}
-			i := bits.OnesCount(uint(s))
+			i := bits.OnesCount32(uint32(s))
 			for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
 				lb = cus & -cus
 				ns := s | lb
 				// 枚举第 i 个位置填 a[p]
-				p := bits.TrailingZeros(uint(lb))
+				p := bits.TrailingZeros32(uint32(lb))
 				v := a[p]
 				if check(i, v) {
 					f[ns] = (f[ns] + fs) % mod
@@ -2501,8 +2512,8 @@ func _(abs func(int) int) {
 			f[1<<j][j] = 1 // 排列的第一个数
 		}
 		for s, fs := range f {
-			for _s := uint(s); _s > 0; _s &= _s - 1 {
-				i := bits.TrailingZeros(_s)
+			for _s := uint32(s); _s > 0; _s &= _s - 1 {
+				i := bits.TrailingZeros32(_s)
 				if fs[i] == 0 { // 剪枝：用于计数题目，或子集排列题目
 					continue
 				}
@@ -2510,7 +2521,7 @@ func _(abs func(int) int) {
 				for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
 					lb = cus & -cus
 					ns := s | lb
-					j := bits.TrailingZeros(uint(lb))
+					j := bits.TrailingZeros32(uint32(lb))
 					cur := a[j] // 枚举当前选的数
 					if check(pre, cur) {
 						f[ns][j] = (f[ns][j] + fs[i]) % mod
@@ -2562,15 +2573,15 @@ func _(abs func(int) int) {
 		f[1<<st][st] = 0
 		for s, fs := range f {
 			// 利用位运算快速求出 s 中 1 的位置 i，以及 s 中 0 的位置 j（通过 s 的补集中的 1 的位置求出）
-			for _s := uint(s); _s > 0; _s &= _s - 1 {
-				i := bits.TrailingZeros(_s)
+			for _s := uint32(s); _s > 0; _s &= _s - 1 {
+				i := bits.TrailingZeros32(_s)
 				if fs[i] == inf {
 					continue
 				}
 				for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
 					lb = cus & -cus
 					ns := s | lb
-					j := bits.TrailingZeros(uint(lb))
+					j := bits.TrailingZeros32(uint32(lb))
 					f[ns][j] = min(f[ns][j], fs[i]+dist[i][j])
 				}
 			}
@@ -2592,15 +2603,15 @@ func _(abs func(int) int) {
 		}
 		ans := 1
 		for s, fs := range f {
-			for _s := uint(s); _s > 0; _s &= _s - 1 {
-				i := bits.TrailingZeros(_s)
+			for _s := uint32(s); _s > 0; _s &= _s - 1 {
+				i := bits.TrailingZeros32(_s)
 				if fs[i] == 0 {
 					continue
 				}
 				for cus, lb := g[i]&^s, 0; cus > 0; cus ^= lb {
 					lb = cus & -cus
 					ns := s | lb
-					j := bits.TrailingZeros(uint(lb))
+					j := bits.TrailingZeros32(uint32(lb))
 					f[ns][j] = max(f[ns][j], fs[i]+1)
 					ans = max(ans, f[ns][j])
 				}
@@ -2977,6 +2988,7 @@ func _(abs func(int) int) {
 	https://zhuanlan.zhihu.com/p/348851463
 	https://www.bilibili.com/video/BV1MT4y1376C
 
+	启蒙题（不是数位 DP）https://codeforces.com/problemset/problem/2121/E 1500
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
 	      https://codeforces.com/problemset/problem/1036/C
@@ -3033,6 +3045,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1710/C 2500
 	https://codeforces.com/problemset/problem/908/G 2800 排序后的数字之和
 	- 相似题目 https://codeforces.com/problemset/problem/2104/F
+	https://codeforces.com/problemset/problem/497/E 2900
 	https://codeforces.com/gym/104337/problem/B 【妙】数位众数，把 freq 排序作为 key
 	https://atcoder.jp/contests/arc133/tasks/arc133_d 2658 【转换】选两个不超过 U 的数，满足异或和为 target
 	https://www.luogu.com.cn/problem/P6669 两个上界约束
@@ -3236,8 +3249,67 @@ func _(abs func(int) int) {
 	}
 
 	// 只能从低到高计算的场景
+	// 各个位的约束不是互相独立，涉及借位、前导零
+	// https://leetcode.cn/problems/count-no-zero-pairs-that-sum-to-n/
+	digitDPRightToLeft := func(highS string) int {
+		twoSumWays := func(target int) int {
+			return max(min(target-1, 19-target), 0) // 保证结果非负
+		}
+		isNeg := func(x int) int {
+			if x < 0 {
+				return 1
+			}
+			return 0
+		}
+
+		m := len(highS)
+		memo := make([][2][2]int, m)
+
+		// borrowed = 1 表示被低位（i+1）借了个 1
+		// isNum = 1 表示之前填的数位，两个数都无前导零
+		var dfs func(int, int, int) int
+		dfs = func(i, borrowed, isNum int) (res int) {
+			if i < 0 {
+				// borrowed 必须为 0
+				return borrowed ^ 1
+			}
+
+			p := &memo[i][borrowed][isNum]
+			if *p > 0 {
+				return *p - 1
+			}
+			defer func() { *p = res + 1 }() // 保证保存的内容是正数
+
+			d := int(highS[i]-'0') - borrowed
+
+			// 情况一：两个数位都不为 0
+			if isNum > 0 {
+				res = dfs(i-1, 0, 1) * twoSumWays(d)     // 不向高位借 1
+				res += dfs(i-1, 1, 1) * twoSumWays(d+10) // 向高位借 1
+			}
+
+			// 情况二：其中一个数位填前导零
+			if i < m-1 { // 不能是最低位
+				if d != 0 {
+					// 如果 d < 0，必须向高位借 1
+					// 如果 isNum = 1，根据对称性，方案数要乘以 2
+					res += dfs(i-1, isNeg(d), 0) * (isNum + 1)
+				} else if i == 0 { // 两个数位都填 0，只有当 i = 0 的时候才有解
+					res++
+				}
+			}
+
+			res %= mod
+			return
+		}
+
+		ans := dfs(m-1, 0, 1)
+		return ans
+	}
+
+	// 另一种情况
 	// https://codeforces.com/problemset/problem/1670/F
-	digitDPRightToLeft := func(high, k int) int {
+	digitDPRightToLeft2 := func(high, k int) int {
 		m := bits.Len(uint(high))
 		dp := make([][][2]int, m)
 		for i := range dp {
@@ -3493,7 +3565,7 @@ func _(abs func(int) int) {
 		// 从 i 开始，往左跳 k 步的最远位置
 		jumpK := func(i, k int) int {
 			for ; k > 0; k &= k - 1 {
-				i = pa[i][bits.TrailingZeros(uint(k))]
+				i = pa[i][bits.TrailingZeros32(uint32(k))]
 			}
 			return i
 		}
@@ -3579,6 +3651,7 @@ func _(abs func(int) int) {
 	- https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
 	https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列个数
 	https://codeforces.com/problemset/problem/66/E 2000
+	https://codeforces.com/problemset/problem/1117/D 2100 矩阵快速幂
 	https://codeforces.com/problemset/problem/1667/B 2100
 	https://codeforces.com/problemset/problem/833/B 2200
 	- k=3 https://atcoder.jp/contests/abc397/tasks/abc397_f
@@ -3899,6 +3972,7 @@ func _(abs func(int) int) {
 	// todo 决策单调性优化总结 https://www.luogu.com.cn/blog/command-block/dp-di-jue-ce-dan-diao-xing-you-hua-zong-jie
 	// https://codeforces.com/problemset/problem/229/D 2100
 	// https://codeforces.com/problemset/problem/1101/F 2400 看似二分，但实际上只是对状态定义有帮助（最大间距的最小值）
+	// https://codeforces.com/problemset/problem/868/F 2500 分治+莫队均摊 todo
 
 	// 四边形不等式优化 Knuth's Optimization / Knuth-Yao Speedup
 	// 满足该性质的 DAG 叫做 Monge 图
@@ -3907,7 +3981,7 @@ func _(abs func(int) int) {
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937 算法竞赛专题解析（10）：DP优化(1)--四边形不等式
 	//      决策单调性优化讲解 https://www.luogu.com.cn/blog/83547/zong-dong-tai-gui-hua-di-ben-zhi-kan-si-bian-xing-fou-deng-shi-you-hua
 	// 扔蛋问题 LC887 https://leetcode.cn/problems/super-egg-drop/
-	// https://codeforces.com/problemset/problem/321/E
+	// https://codeforces.com/problemset/problem/321/E 2600
 	// todo 看看划分型 DP 题单有没有可以优化的题目
 
 	// CDQ 分治优化 DP
@@ -4765,7 +4839,7 @@ func _(abs func(int) int) {
 		subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
 		// 数位 DP
-		digitDP, digitDP2, digitDPRightToLeft, calcSum, digitDP2D, kth666,
+		digitDP, digitDP2, digitDPRightToLeft, digitDPRightToLeft2, calcSum, digitDP2D, kth666,
 
 		// 倍增
 		binaryLifting, binaryLifting2,
