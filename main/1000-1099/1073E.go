@@ -24,14 +24,14 @@ func CF1073E(in io.Reader, out io.Writer) {
 			}
 		}
 		var f func(int, uint16, bool, bool) pair
-		f = func(p int, mask uint16, limitUp, hasD bool) (res pair) {
+		f = func(p int, mask uint16, limit, isNum bool) (res pair) {
 			if p == n {
-				if !hasD {
+				if !isNum {
 					return
 				}
 				return pair{1, 0}
 			}
-			if !limitUp && hasD {
+			if !limit && isNum {
 				dv := &dp[p][mask]
 				if dv.cnt >= 0 {
 					return *dv
@@ -39,16 +39,16 @@ func CF1073E(in io.Reader, out io.Writer) {
 				defer func() { *dv = res }()
 			}
 			up := 9
-			if limitUp {
+			if limit {
 				up = int(s[p] & 15)
 			}
 			for ch := 0; ch <= up; ch++ {
 				tmp := mask
-				if hasD || ch > 0 {
+				if isNum || ch > 0 {
 					tmp |= 1 << ch
 				}
 				if bits.OnesCount16(tmp) <= k {
-					pr := f(p+1, tmp, limitUp && ch == up, hasD || ch > 0)
+					pr := f(p+1, tmp, limit && ch == up, isNum || ch > 0)
 					res.cnt = (res.cnt + pr.cnt) % mod
 					res.sum = (res.sum + int64(math.Pow10(n-1-p))%mod*pr.cnt%mod*int64(ch) + pr.sum) % mod
 				}
