@@ -38,6 +38,9 @@ https://atcoder.jp/contests/abc197/tasks/abc197_c
 https://atcoder.jp/contests/abc396/tasks/abc396_d 图
 https://www.luogu.com.cn/problem/P2567 优化搜索顺序：从大的数开始，可以提前退出；如果从小的数开始，后面会做大量无用功
 
+最优性剪枝
+https://codeforces.com/problemset/problem/68/D 2500
+
 https://oeis.org/A038206 Can express a(n) with the digits of a(n)^2 in order, only adding plus signs
 - LC2698 https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/
 https://oeis.org/A104113 Numbers which when chopped into one, two or more parts, added and squared result in the same number
@@ -697,13 +700,15 @@ func backtracking() {
 	// 集合划分（贝尔数）https://oeis.org/A000110
 	// 前缀和即递归次数  https://oeis.org/A005001 看 n+1 项
 
-	// 写法一
+	// 写法一：具体分组
 	// https://atcoder.jp/contests/abc390/tasks/abc390_d
+	// https://pe-cn.github.io/88/
 	partitionSet := func(a []int) (ans int) {
 		groupRes := []int{}
 		var dfs func(int)
 		dfs = func(i int) {
 			if i == len(a) {
+				// 根据题目修改
 				tot := 0
 				for _, res := range groupRes {
 					tot += res * res
@@ -721,7 +726,7 @@ func backtracking() {
 			// v 加到已有集合
 			for j := range groupRes {
 				old := groupRes[j]
-				groupRes[j] += v
+				groupRes[j] += v // 根据题目修改
 				dfs(i + 1)
 				groupRes[j] = old
 			}
@@ -730,7 +735,7 @@ func backtracking() {
 		return
 	}
 
-	// 写法二
+	// 写法二：记录每个下标所属集合（的编号）
 	// https://codeforces.com/problemset/problem/954/I 2200
 	partitionSet2 := func(limit int) {
 		roots := make([]int, limit)
@@ -740,10 +745,10 @@ func backtracking() {
 				// ...
 				return
 			}
-			roots[i] = numOfSets // 元素 i 单独组成一个集合
+			roots[i] = numOfSets // 下标 i 单独组成一个集合
 			dfs(i+1, numOfSets+1)
 			for j := range numOfSets {
-				roots[i] = j // 元素 i 加到集合 j 中
+				roots[i] = j // 下标 i 加到编号为 j 的集合中
 				dfs(i+1, numOfSets)
 			}
 		}
@@ -898,7 +903,7 @@ func backtracking() {
 		iterWithLimits, iterWithLimitsAndSum,
 		combinations, combinationsWithRepetition,
 		permutations, permuteAll, nextPermutation, rankPermutation, kthPermutation,
-		partitionSet, partitionSet2,
+		partitionSet, partitionSet2, // 集合划分
 		meetInTheMiddle,
 		bigKnapsack, bigKnapsack2,
 	}
