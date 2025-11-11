@@ -11,4 +11,8 @@ https://codeforces.com/problemset/problem/1950/F 1700
 
 式子变形
 https://codeforces.com/problemset/problem/293/C 2400
+
+取模减半
+https://codeforces.com/problemset/problem/1073/D 1700
+
 */
