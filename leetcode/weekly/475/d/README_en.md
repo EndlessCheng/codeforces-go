@@ -9,7 +9,7 @@ Suppose we already have an optimal partition. Consider the subarray that contain
 
 Therefore, there always exists an optimal partition in which $M$ is either at the leftmost or rightmost end of a subarray.
 
-In other words, we can break the circular array either between $(i-1, i)$ or between $(i, i+1)$, thus converting it into a non-circular problem. The final answer is the maximum result obtained from these two breaking options.
+In other words, we can break the circular array either between $(i-1, i)$ or between $(i, i+1)$, thus converting it into a non-circular array. The final answer is the maximum result obtained from these two breaking options.
 
 ## Non-Circular Array
 
