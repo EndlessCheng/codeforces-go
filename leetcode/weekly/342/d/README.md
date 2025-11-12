@@ -10,7 +10,7 @@
 
 如果有多个 $1$，那么每个 $1$ 只需要向左修改，最后一个 $1$ 向右修改剩余的数字。
 
-例如 $[2,1,2,1,2]\rightarrow[\underline{1},1,2,1,2]\rightarrow[1,1,\underline{1},1,2]\rightarrow[1,1,1,1,\underline{1}]$，一共 $n-\textit{cnt}_1=5-2=3$ 次操作。这里 $\textit{cnt}_1$ 表示 $\textit{nums}$ 中 $1$ 的个数。
+例如 $[2,1,2,1,2]\rightarrow[\underline{1},1,2,1,2]\rightarrow[1,1,\underline{1},1,2]\rightarrow[1,1,1,1,\underline{1}]$，一共 $n-\textit{cnt}_1=5-2=3$ 次操作，其中 $\textit{cnt}_1$ 表示 $\textit{nums}$ 中 $1$ 的个数。
 
 所以如果 $\textit{nums}$ 中有 $1$，答案为
 
@@ -44,7 +44,7 @@ class Solution:
         if gcd(*nums) > 1:
             return -1
         n = len(nums)
-        cnt1 = sum(x == 1 for x in nums)
+        cnt1 = nums.count(1)
         if cnt1:
             return n - cnt1
 
@@ -182,7 +182,7 @@ class Solution:
         if gcd(*nums) > 1:
             return -1
         n = len(nums)
-        cnt1 = sum(x == 1 for x in nums)
+        cnt1 = nums.count(1)
         if cnt1:
             return n - cnt1
 
