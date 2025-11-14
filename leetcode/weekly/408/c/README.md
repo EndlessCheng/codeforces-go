@@ -117,11 +117,11 @@ class Solution:
 class Solution {
     public int numberOfSubstrings(String s) {
         int n = s.length();
-        int ans = 0;
-        int total1 = 0; // [0,r] 中的 1 的个数
         int[] pos0 = new int[n + 1]; // 0 的下标
         pos0[0] = -1; // 加个 -1 哨兵，方便处理 cnt0 达到最大时的计数
         int size = 1;
+        int total1 = 0; // [0,r] 中的 1 的个数
+        int ans = 0;
 
         for (int r = 0; r < n; r++) {
             if (s.charAt(r) == '0') {
