@@ -154,8 +154,7 @@ public:
         int total1 = 0; // [0,r] 中的 1 的个数
         int ans = 0;
         for (int r = 0; r < s.size(); r++) {
-            char ch = s[r];
-            if (ch == '0') {
+            if (s[r] == '0') {
                 pos0.push_back(r); // 记录 0 的下标
             } else {
                 total1++;
