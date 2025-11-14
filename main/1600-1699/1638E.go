@@ -169,15 +169,15 @@ func newMap[K cmp.Ordered, V any]() *treapM[K, V] {
 	}
 }
 
-type fenwick []int
+type fenwick38 []int
 
-func (t fenwick) update(i, v int) {
+func (t fenwick38) update(i, v int) {
 	for ; i < len(t); i += i & -i {
 		t[i] += v
 	}
 }
 
-func (t fenwick) pre(i int) (s int) {
+func (t fenwick38) pre(i int) (s int) {
 	for ; i > 0; i &= i - 1 {
 		s += t[i]
 	}
@@ -203,7 +203,7 @@ func cf1638E(in io.Reader, _w io.Writer) {
 		}
 	}
 
-	f := make(fenwick, n+1)
+	f := make(fenwick38, n+1)
 	inc := make([]int, n+1)
 
 	for range m {
