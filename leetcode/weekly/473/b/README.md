@@ -66,6 +66,23 @@ public:
 };
 ```
 
+```cpp [sol-C++ 写法二]
+class Solution {
+public:
+    long long maxAlternatingSum(vector<int>& nums) {
+        for (int& x : nums) {
+            x *= x;
+        }
+        int m = nums.size() / 2;
+        ranges::nth_element(nums, nums.begin() + m);
+
+        // 交替和：减去小的，加上大的
+        return -reduce(nums.begin(), nums.begin() + m, 0LL, plus<long long>())
+               +reduce(nums.begin() + m, nums.end(), 0LL, plus<long long>());
+    }
+};
+```
+
 ```go [sol-Go]
 func maxAlternatingSum(nums []int) (ans int64) {
 	for i, x := range nums {
