@@ -32,7 +32,7 @@ func cf2161D(in io.Reader, _w io.Writer) {
 					j--
 				}
 				sufMax++
-				// 一定选 x + max(选 x-1, 不选 x-1)
+				// max(选 x-1, 不选 x-1)
 				f[u[i]] = max(sufMax, mx+len(u)-i)
 			}
 			for _, i := range d {
