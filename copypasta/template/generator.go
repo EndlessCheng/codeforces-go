@@ -196,7 +196,7 @@ func Test_cf%s(t *testing.T) {
 	mainFilePath := dir + problemID + ".go"
 	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
 		open.Run(absPath(mainFilePath))
-		return fmt.Errorf("文件已存在！")
+		return fmt.Errorf("文件已存在")
 	}
 	if err := os.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
 		return err
