@@ -14,7 +14,7 @@
   - $[\textit{left}_1, \textit{left}_2)$，其中 $\textit{left}_2$ 是包含 $r$ 的递增段的左端点。我们可以计算 $[\textit{left}_1, \textit{left}_2)$ 中的每个递增段的子数组个数，预处理子数组个数的**前缀和**数组 $s$，就可以 $\mathcal{O}(1)$ 算出 $[\textit{left}_1, \textit{left}_2)$ 中的递增子数组个数。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
   - $[\textit{left}_2,r]$。设 $m_2=r-\textit{left}_2+1$，一共有 $\dfrac{m_2(m_2+1)}{2}$ 个递增子数组。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ZuCQBJEjD/?t=17m55s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

@@ -21,12 +21,13 @@ func countDistinct(n int64) int64 {
 			break
 		}
 		// 这一位填 1 到 d-1，后面的数位可以随便填 1 到 9
-		v := int64(d - '1')
+		v := d - '1'
 		if i == m-1 {
 			v++ // 最后一位可以等于 d
 		}
 		pow9 /= 9
-		ans += v * pow9
+		ans += int64(v) * pow9
+		// 然后，这一位填 d，继续遍历
 	}
 	return ans
 }

@@ -2,7 +2,7 @@
 
 把 $\textit{nums}$ 从小到大排序，取 $a= \textit{nums}[n-1],b=\textit{nums}[n-2],c=\textit{nums}[0]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ZuCQBJEjD/)，欢迎点赞关注~
 
 ## 优化前
 
