@@ -26,7 +26,7 @@ class Solution:
         m = len(s)
 
         # 计算长度小于 m 的不含 0 的整数个数
-        # 9 + 9^9 + ... + 9^(m-1) = (9^m - 9) / 8
+        # 9^1 + 9^2 + ... + 9^(m-1) = (9^m - 9) / 8
         pow9 = 9 ** m
         ans = (pow9 - 9) // 8
 
@@ -52,7 +52,7 @@ class Solution {
         int m = s.length;
 
         // 计算长度小于 m 的不含 0 的整数个数
-        // 9 + 9^9 + ... + 9^(m-1) = (9^m - 9) / 8
+        // 9^1 + 9^2 + ... + 9^(m-1) = (9^m - 9) / 8
         long pow9 = (long) Math.pow(9, m);
         long ans = (pow9 - 9) / 8;
 
@@ -85,7 +85,7 @@ public:
         int m = s.size();
 
         // 计算长度小于 m 的不含 0 的整数个数
-        // 9 + 9^9 + ... + 9^(m-1) = (9^m - 9) / 8
+        // 9^1 + 9^2 + ... + 9^(m-1) = (9^m - 9) / 8
         long long pow9 = pow(9, m);
         long long ans = (pow9 - 9) / 8;
 
@@ -116,7 +116,7 @@ func countDistinct(n int64) int64 {
 	m := len(s)
 
 	// 计算长度小于 m 的不含 0 的整数个数
-	// 9 + 9^9 + ... + 9^(m-1) = (9^m - 9) / 8
+	// 9^1 + 9^2 + ... + 9^(m-1) = (9^m - 9) / 8
 	pow9 := int64(math.Pow(9, float64(m)))
 	ans := (pow9 - 9) / 8
 
