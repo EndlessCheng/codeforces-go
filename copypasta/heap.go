@@ -40,15 +40,16 @@ https://www.luogu.com.cn/problem/P5930
 https://www.luogu.com.cn/problem/P2859
 https://www.luogu.com.cn/problem/P4952 枚举中位数
 LC857 https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/
-https://codeforces.com/contest/713/problem/C 使序列严格递增的最小操作次数 (+1/-1)
-    https://codeforces.com/blog/entry/47094?#comment-315068
-    https://codeforces.com/blog/entry/77298 Slope trick
-https://codeforces.com/problemset/problem/884/D 从结果倒推（类似霍夫曼编码）
-https://codeforces.com/problemset/problem/912/D 贡献
-https://codeforces.com/problemset/problem/1251/E2
+https://codeforces.com/problemset/problem/912/D 2100 贡献
+https://codeforces.com/problemset/problem/713/C 2300 使序列严格递增的最小操作次数 (+1/-1)
+- https://codeforces.com/blog/entry/47094?#comment-315068
+- https://codeforces.com/blog/entry/77298 Slope trick
+https://codeforces.com/problemset/problem/884/D 2300 从结果倒推（类似霍夫曼编码）
+https://codeforces.com/problemset/problem/1251/E2 2400
 - 按 (mi,pi) 排序，然后把 (i,mi) 画在平面直角坐标系上
 - 初始时，在 y=x 直线下方的点都可以视作是「免费」的，如果有不能免费的点，应考虑从最后一个不能免费的到末尾这段中的最小 pi，然后将 y=x 抬高成 y=x+1 继续比较
 - 维护最小 pi 可以用最小堆
+https://codeforces.com/problemset/problem/505/E 2900
 https://atcoder.jp/contests/agc057/tasks/agc057_b
 https://ac.nowcoder.com/acm/contest/65157/C
 https://www.luogu.com.cn/problem/P7840
@@ -83,6 +84,7 @@ https://codeforces.com/problemset/problem/1974/G 2000
 https://atcoder.jp/contests/abc249/tasks/abc249_f 1786=CF2062
 https://codeforces.com/problemset/problem/1428/E 2200 用堆来不断修正最优决策
 https://atcoder.jp/contests/aising2020/tasks/aising2020_e 2133=CF2324 洛谷 P2949 的加强版
+https://codeforces.com/problemset/problem/767/E 2400 Change-free
 https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/1852/C 2400 差分思想
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
