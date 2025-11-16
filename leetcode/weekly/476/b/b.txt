@@ -1,0 +1,11 @@
+"aabbab"
+0
+
+"aaaa"
+4
+
+"aaabb"
+1
+
+
+
