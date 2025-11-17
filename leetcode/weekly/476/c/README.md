@@ -19,6 +19,8 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1ZuCQBJEjD/?t=5m35s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def countDistinct(self, n: int) -> int:
@@ -37,7 +39,7 @@ class Solution:
             # 这一位填 1 到 d-1，后面的数位可以随便填 1 到 9
             v = int(d) - 1
             if i == m - 1:
-                v += 1  # 最后一位可以等于 d
+                v += 1  # 最低位可以等于 d
             pow9 //= 9
             ans += v * pow9
             # 然后，这一位填 d，继续遍历
@@ -65,7 +67,7 @@ class Solution {
             // 这一位填 1 到 d-1，后面的数位可以随便填 1 到 9
             int v = d - '1';
             if (i == m - 1) {
-                v++; // 最后一位可以等于 d
+                v++; // 最低位可以等于 d
             }
             pow9 /= 9;
             ans += v * pow9;
@@ -98,7 +100,7 @@ public:
             // 这一位填 1 到 d-1，后面的数位可以随便填 1 到 9
             int v = d - '1';
             if (i == m - 1) {
-                v++; // 最后一位可以等于 d
+                v++; // 最低位可以等于 d
             }
             pow9 /= 9;
             ans += v * pow9;
@@ -128,7 +130,7 @@ func countDistinct(n int64) int64 {
 		// 这一位填 1 到 d-1，后面的数位可以随便填 1 到 9
 		v := d - '1'
 		if i == m-1 {
-			v++ // 最后一位可以等于 d
+			v++ // 最低位可以等于 d
 		}
 		pow9 /= 9
 		ans += int64(v) * pow9
@@ -143,6 +145,93 @@ func countDistinct(n int64) int64 {
 
 - 时间复杂度：$\mathcal{O}(\log n)$。$n$ 的十进制长度是 $\mathcal{O}(\log n)$。
 - 空间复杂度：$\mathcal{O}(\log n)$。
+
+## 优化
+
+对于长为 $m$ 的不含 0 的整数个数，也可以从低到高遍历，遇到为 $0$ 的数位，就把个数置为 $0$。从而达到和上面的代码一样的效果。
+
+```py [sol-Python3]
+class Solution:
+    def countDistinct(self, n: int) -> int:
+        ans = 0
+        pow9 = 1
+        while n > 0:
+            n, d = divmod(n, 10)
+            if d == 0:
+                ans = 0
+            else:
+                if pow9 > 1:
+                    d -= 1
+                ans += d * pow9
+            pow9 *= 9
+        return ans + (pow9 - 9) // 8
+```
+
+```java [sol-Java]
+class Solution {
+    public long countDistinct(long n) {
+        long ans = 0;
+        long pow9 = 1;
+        for (; n > 0; n /= 10, pow9 *= 9) {
+            long d = n % 10;
+            if (d == 0) {
+                ans = 0;
+                continue;
+            }
+            if (pow9 > 1) {
+                d--;
+            }
+            ans += d * pow9;
+        }
+        return ans + (pow9 - 9) / 8;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countDistinct(long long n) {
+        long long ans = 0, pow9 = 1;
+        for (; n > 0; n /= 10, pow9 *= 9) {
+            long long d = n % 10;
+            if (d == 0) {
+                ans = 0;
+                continue;
+            }
+            if (pow9 > 1) {
+                d--;
+            }
+            ans += d * pow9;
+        }
+        return ans + (pow9 - 9) / 8;
+    }
+};
+```
+
+```go [sol-Go]
+func countDistinct(n int64) (ans int64) {
+	pow9 := int64(1)
+	for ; n > 0; n /= 10 {
+		d := n % 10
+		if d == 0 {
+			ans = 0
+		} else {
+			if pow9 > 1 {
+				d--
+			}
+			ans += d * pow9
+		}
+		pow9 *= 9
+	}
+	return ans + (pow9-9)/8
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\log n)$。$n$ 的十进制长度是 $\mathcal{O}(\log n)$。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
 
