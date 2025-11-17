@@ -96,6 +96,9 @@ LC974 和可被 K 整除的子数组 https://leetcode.cn/problems/subarray-sums-
 - 变形：乘积可以被 k 整除
 - a[i] = gcd(a[i], k) 之后窗口乘积是 k 的倍数就行，不会乘爆
 
+前缀和与有序集合
+https://codeforces.com/problemset/problem/1982/C 1200 也可以滑窗
+
 前缀和思想 LC1523 https://leetcode.cn/problems/count-odd-numbers-in-an-interval-range/
 有点数形结合 https://codeforces.com/problemset/problem/1748/C
 
@@ -176,6 +179,9 @@ https://codeforces.com/problemset/problem/224/B 1500 和最小
 https://codeforces.com/problemset/problem/701/C 1500
 https://codeforces.com/problemset/problem/1777/C 1700
 https://codeforces.com/problemset/problem/2093/G 1900
+
+不定长滑动窗口：上下界
+https://codeforces.com/problemset/problem/1982/C 1200
 
 不定长滑动窗口：求子数组个数
 https://codeforces.com/problemset/problem/550/B 1400 变形：改成子数组
@@ -461,6 +467,7 @@ https://codeforces.com/problemset/problem/2124/D 1700
 https://codeforces.com/problemset/problem/911/D 1800 逆序对
 https://codeforces.com/problemset/problem/1442/A 1800
 https://codeforces.com/problemset/problem/558/C  1900
+https://codeforces.com/problemset/problem/1644/E 1900
 https://codeforces.com/problemset/problem/1747/D 1900 不变量
 https://codeforces.com/problemset/problem/1744/F 2000
 https://codeforces.com/problemset/problem/1610/E 2300
@@ -873,19 +880,12 @@ https://codeforces.com/problemset/problem/1932/C 1400
 https://atcoder.jp/contests/abc375/tasks/abc375_f
 https://atcoder.jp/contests/abc379/tasks/abc379_f
 
-逆向思维 / 正难则反
-不可行方案通常比可行方案好求
-- [2171. 拿出最少数目的魔法豆](https://leetcode.cn/problems/removing-minimum-number-of-magic-beans/) 1748
-- [1354. 多次求和构造目标数组](https://leetcode.cn/problems/construct-target-array-with-multiple-sums/) 2015
-LC803 https://leetcode.cn/problems/bricks-falling-when-hit/
-LC936 https://leetcode.cn/problems/stamping-the-sequence/
-LC1199 https://leetcode.cn/problems/minimum-time-to-build-blocks/
-LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
-LCP52 https://leetcode.cn/problems/QO5KpG/
+逆向思维 / 正难则反（不可行方案通常比可行方案好求）
 https://codeforces.com/problemset/problem/1792/C 1500
 - 相似题目 https://codeforces.com/problemset/problem/1367/F1 2100
 https://codeforces.com/problemset/problem/1882/B
 https://codeforces.com/problemset/problem/712/C 1600
+https://codeforces.com/problemset/problem/295/B 1700
 https://codeforces.com/problemset/problem/621/C 1700
 https://codeforces.com/problemset/problem/1301/C 1700
 https://codeforces.com/problemset/problem/1644/D 1700
@@ -896,10 +896,7 @@ https://codeforces.com/problemset/problem/571/A 2100
 https://codeforces.com/problemset/problem/1919/D 2100
 https://codeforces.com/problemset/problem/369/E 2200
 https://codeforces.com/problemset/problem/1677/D 2500
-
-删除变添加
-https://codeforces.com/problemset/problem/295/B
-https://leetcode.cn/problems/maximum-segment-sum-after-removals/
+https://codeforces.com/problemset/problem/505/E 2900
 
 奇偶性
 https://codeforces.com/problemset/problem/763/B
