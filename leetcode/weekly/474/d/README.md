@@ -63,7 +63,7 @@ class Solution:
                 # 镜像翻转
                 right_s = ans[::-1]
                 ans.append(mid_ch)
-                ans.extend(right_s)
+                ans += right_s
 
                 return ''.join(ans)
             # 增大失败，继续枚举
@@ -337,7 +337,7 @@ func lexPalindromicPermutation(s, target string) string {
 1. 维护 $\textit{left}$ 中的负数个数 $\textit{neg}$。
 2. 维护 $\textit{left}$ 中的正数个数对应的字母最大值 $\textit{leftMax}$。
 
-如果 $\textit{neg} < 0$ 且 $\textit{leftMax} \le \textit{target}[i]$，那么无法增大 $\textit{target}[i]$。
+如果 $\textit{neg} > 0$ 且 $\textit{leftMax} \le \textit{target}[i]$，那么无法增大 $\textit{target}[i]$。
 
 ```py [sol-Python3]
 class Solution:
@@ -408,7 +408,7 @@ class Solution:
             # 镜像翻转
             right_s = ans[::-1]
             ans.append(mid_ch)
-            ans.extend(right_s)
+            ans += right_s
 
             return ''.join(ans)
 
