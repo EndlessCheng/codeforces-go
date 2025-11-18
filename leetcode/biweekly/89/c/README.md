@@ -22,8 +22,10 @@ class Solution:
         def check(limit: int) -> bool:
             extra = 0
             for i in range(len(nums) - 1, 0, -1):
-                extra = max(nums[i] + extra - limit, 0)
+                new_num = nums[i] + extra  # 把多出的积木堆到 nums[i] 上
+                extra = max(new_num - limit, 0)  # 如果 new_num - limit > 0，那么多出的积木继续丢给左边
             return nums[0] + extra <= limit
+
         return bisect_left(range(max(nums)), True, lo=min(nums), key=check)
 ```
 
@@ -50,7 +52,8 @@ class Solution {
     private boolean check(int[] nums, int limit) {
         long extra = 0;
         for (int i = nums.length - 1; i > 0; i--) {
-            extra = Math.max(nums[i] + extra - limit, 0);
+            long newNum = nums[i] + extra; // 把多出的积木堆到 nums[i] 上
+            extra = Math.max(newNum - limit, 0); // 如果 newNum - limit > 0，那么多出的积木继续丢给左边
         }
         return nums[0] + extra <= limit;
     }
@@ -60,14 +63,16 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minimizeArrayValue(vector<int> &nums) {
+    int minimizeArrayValue(vector<int>& nums) {
         auto check = [&](int limit) -> bool {
             long long extra = 0;
             for (int i = nums.size() - 1; i > 0; i--) {
-                extra = max(nums[i] + extra - limit, 0LL);
+                long long new_num = nums[i] + extra; // 把多出的积木堆到 nums[i] 上
+                extra = max(new_num - limit, 0LL); // 如果 new_num - limit > 0，那么多出的积木继续丢给左边
             }
             return nums[0] + extra <= limit;
         };
+
         // 开区间二分，原理见 https://www.bilibili.com/video/BV1AP41137w7/
         int left = -1, right = ranges::max(nums);
         while (left + 1 < right) {
@@ -84,7 +89,8 @@ func minimizeArrayValue(nums []int) int {
 	return sort.Search(slices.Max(nums), func(limit int) bool {
 		extra := 0
 		for i := len(nums) - 1; i > 0; i-- {
-			extra = max(nums[i]+extra-limit, 0)
+			newNum := nums[i] + extra    // 把多出的积木堆到 nums[i] 上
+			extra = max(newNum-limit, 0) // 如果 newNum-limit > 0，那么多出的积木继续丢给左边
 		}
 		return nums[0]+extra <= limit
 	})
@@ -143,7 +149,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minimizeArrayValue(vector<int> &nums) {
+    int minimizeArrayValue(vector<int>& nums) {
         long long ans = 0, s = 0;
         for (int i = 0; i < nums.size(); i++) {
             s += nums[i];
@@ -184,7 +190,7 @@ func minimizeArrayValue(nums []int) (ans int) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
