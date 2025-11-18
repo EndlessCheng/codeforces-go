@@ -1,14 +1,12 @@
-题目要求元素和 $s$ 能被 $k$ 整除。
+题目要求 $\textit{nums}$ 的元素和 $s$ 能被 $k$ 整除。
 
-每次操作可以把元素和减少 $1$。
+每次操作可以把 $s$ 减少 $1$。目标是把 $s$ 变成一个 $k$ 的倍数，且操作次数越小越好。
 
-所以问题变成：
+比如 $s=8,k=3$，需要操作 $2$ 次，把 $s$ 变成 $6$。
 
-- 找到一个 $\le s$ 的，能被 $k$ 整除的整数。越大越好。
+一般地，至少要操作 $s\bmod k$ 次，才能把 $s$ 变成 $k$ 的倍数。
 
-至少要操作 $s\bmod k$ 次，才能把 $s$ 变成 $k$ 的倍数。
-
-[视频讲解](https://www.bilibili.com/video/BV1dSdBYEEW6/)
+[本题视频讲解](https://www.bilibili.com/video/BV1dSdBYEEW6/)
 
 ```py [sol-Python3]
 class Solution:
@@ -17,6 +15,18 @@ class Solution:
 ```
 
 ```java [sol-Java]
+class Solution {
+    public int minOperations(int[] nums, int k) {
+        int s = 0;
+        for (int x : nums) {
+            s += x;
+        }
+        return s % k;
+    }
+}
+```
+
+```java [sol-Java Stream]
 class Solution {
     public int minOperations(int[] nums, int k) {
         return Arrays.stream(nums).sum() % k;
@@ -33,6 +43,16 @@ public:
 };
 ```
 
+```c [sol-C]
+int minOperations(int* nums, int numsSize, int k) {
+    int s = 0;
+    for (int i = 0; i < numsSize; i++) {
+        s += nums[i];
+    }
+    return s % k;
+}
+```
+
 ```go [sol-Go]
 func minOperations(nums []int, k int) int {
 	s := 0
@@ -40,6 +60,20 @@ func minOperations(nums []int, k int) int {
 		s += x
 	}
 	return s % k
+}
+```
+
+```js [sol-JavaScript]
+var minOperations = function(nums, k) {
+    return _.sum(nums) % k;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_operations(nums: Vec<i32>, k: i32) -> i32 {
+        nums.iter().sum::<i32>() % k
+    }
 }
 ```
 
@@ -57,12 +91,14 @@ func minOperations(nums []int, k int) int {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
