@@ -69,7 +69,7 @@ class Solution {
 class Solution {
 public:
     int findMinimumTime(vector<vector<int>>& tasks) {
-        ranges::sort(tasks, [](auto& a, auto& b) { return a[1] < b[1]; });
+        ranges::sort(tasks, {}, [](auto& a) { return a[1]; }); // 按照右端点从小到大排序
         int ans = 0;
         vector<int> run(tasks.back()[1] + 1);
         for (auto& t : tasks) {
@@ -286,7 +286,7 @@ class Solution {
 
 public:
     int findMinimumTime(vector<vector<int>>& tasks) {
-        ranges::sort(tasks, [](auto& a, auto& b) { return a[1] < b[1]; });
+        ranges::sort(tasks, {}, [](auto& a) { return a[1]; }); // 按照右端点从小到大排序
         int u = tasks.back()[1];
         int m = 2 << (32 - __builtin_clz(u));
         cnt.resize(m);
@@ -403,7 +403,7 @@ func findMinimumTime(tasks [][]int) (ans int) {
 
 如果还需要新增时间点，那么就从右到左合并，具体细节见代码。
 
-关于二分算法的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
+关于二分算法的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 ```py [sol-Python3]
 class Solution:
@@ -466,7 +466,7 @@ class Solution {
                 right = mid; // 范围缩小到 (left, mid)
             }
         }
-        return right; // 或者 left+1
+        return right;
     }
 }
 ```
@@ -475,9 +475,9 @@ class Solution {
 class Solution {
 public:
     int findMinimumTime(vector<vector<int>>& tasks) {
-        ranges::sort(tasks, [](auto& a, auto& b) { return a[1] < b[1]; });
+        ranges::sort(tasks, {}, [](auto& a) { return a[1]; }); // 按照右端点从小到大排序
         // 栈中保存闭区间左右端点，栈底到栈顶的区间长度的和
-        vector<array<int, 3>> st{{-2, -2, 0}}; // 哨兵，保证不和任何区间相交
+        vector<array<int, 3>> st = {{-2, -2, 0}}; // 哨兵，保证不和任何区间相交
         for (auto& t : tasks) {
             int start = t[0], end = t[1], d = t[2];
             auto [_, r, s] = *--ranges::lower_bound(st, start, {}, [](auto& x) { return x[0]; });
@@ -532,6 +532,10 @@ func findMinimumTime(tasks [][]int) int {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{tasks}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 相似题目
+
+见下面贪心题单的「**§2.3 区间选点**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
@@ -546,7 +550,7 @@ func findMinimumTime(tasks [][]int) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
