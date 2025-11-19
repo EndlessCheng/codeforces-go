@@ -209,7 +209,7 @@ func (*graph) dfs(g [][]int, st int) {
 				return vis[v] > 0
 			}
 			// 到达终点
-			if g[v] == nil { 
+			if g[v] == nil {
 				vis[v] = 1
 				return true
 			}
@@ -421,11 +421,13 @@ https://codeforces.com/problemset/problem/1721/D 1800 带撤销的 BFS
 https://codeforces.com/problemset/problem/1851/F 1800 带撤销的 BFS
 https://codeforces.com/problemset/problem/1272/E 1900 建模
 https://codeforces.com/problemset/problem/1790/G 2300 锻炼分类讨论能力
+https://codeforces.com/problemset/problem/1860/E 2400 中转点 Fast Travel Text Editor
 https://codeforces.com/problemset/problem/1874/B 2400
 https://codeforces.com/problemset/problem/605/D 2500 线段树二分优化 BFS
 https://codeforces.com/problemset/problem/79/D 2800
 https://atcoder.jp/contests/abc160/tasks/abc160_d
 https://atcoder.jp/contests/abc394/tasks/abc394_e
+https://atcoder.jp/contests/abc429/tasks/abc429_e 中转点
 https://atcoder.jp/contests/abc132/tasks/abc132_e 分层图
 https://atcoder.jp/contests/abc277/tasks/abc277_e 分层图
 https://leetcode.cn/problems/minimum-reverse-operations/ 并查集优化 BFS
@@ -2303,6 +2305,9 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // TIPS: 混合点权边权的问题，可以创建一个超级源点，把每个点 i 和超级源点相连，边权为点 i 的点权。这样就转换成了 MST 问题。
 // LC1168 https://leetcode.cn/problems/optimize-water-distribution-in-a-village/
 //
+// Maintaining mst with online edge insertions — no LCT needed
+// https://codeforces.com/blog/entry/130107
+//
 // 模板题 https://www.luogu.com.cn/problem/P3366 
 //       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 //       https://atcoder.jp/contests/abc218/tasks/abc218_e
@@ -3098,8 +3103,10 @@ func (*graph) inverseGraphComponents(g [][]int) [][]int {
 // https://cp-algorithms.com/graph/bipartite-check.html
 // 辅助证明 https://codeforces.com/contest/1839/problem/E
 //
+// 模板题 LC785 https://leetcode.cn/problems/is-graph-bipartite/
 // 模板题 LC886 https://leetcode.cn/problems/possible-bipartition/
 // https://atcoder.jp/contests/abc282/tasks/abc282_d 考察定义
+// https://atcoder.jp/contests/abc427/tasks/abc427_c 逆向思维：先定颜色，再定边
 // https://codeforces.com/problemset/problem/862/B 1300 考察定义 树至多加多少条边仍然是二分图
 // https://codeforces.com/problemset/problem/1093/D 1700
 // https://codeforces.com/problemset/problem/1354/E 2100 与分组背包结合
@@ -3114,13 +3121,13 @@ func (*graph) inverseGraphComponents(g [][]int) [][]int {
 // 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
 func (*graph) isBipartite(g [][]int) bool {
 	colors := make([]int8, len(g)) // 0 表示未访问该节点
-	var f func(int, int8) bool
-	f = func(v int, c int8) bool {
+	var dfs func(int, int8) bool
+	dfs = func(v int, c int8) bool {
 		colors[v] = c
 		for _, w := range g[v] {
 			// 如果要分组，传入 3^c，后续可以当成下标
 			// 如果要根据颜色来确定正负号，传入 -c
-			if colors[w] == c || colors[w] == 0 && !f(w, 3^c) {
+			if colors[w] == c || colors[w] == 0 && !dfs(w, 3^c) {
 				return false
 			}
 		}
@@ -3131,7 +3138,7 @@ func (*graph) isBipartite(g [][]int) bool {
 		if c != 0 {
 			continue
 		}
-		if !f(i, 1) {
+		if !dfs(i, 1) {
 			return false
 		}
 	}
@@ -3190,7 +3197,7 @@ https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%
 独立集+顶点覆盖 https://codeforces.com/problemset/problem/1470/D
 
 最大匹配+最小边覆盖=n （图中无孤立点）
-最大独立集+最小顶点覆盖=n https://www.geeksforgeeks.org/vertex-cover-problem-set-1-introduction-approximate-algorithm-2/
+最大独立集+最小顶点覆盖（最小点覆盖）=n https://www.geeksforgeeks.org/vertex-cover-problem-set-1-introduction-approximate-algorithm-2/
     最大独立集与最小顶点覆盖互为对方关于 V 的补集（V 是图的顶点集合）
 Kőnig's theorem https://en.wikipedia.org/wiki/K%C5%91nig%27s_theorem_(graph_theory)
     对于二分图，最小顶点覆盖=最大匹配
@@ -3325,6 +3332,9 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 }
 
 // 带权二分图最大完美匹配 - 任务分配问题/婚姻匹配问题 - KM (Kuhn–Munkres) 算法
+// 系数矩阵看成一个二分图：
+//    站在左部上的一个点看右部，就是在看矩阵的一行
+//    站在右部上的一个点看左部，就是在看矩阵的一列
 // 注意：下面的代码是 O(n^4) 的, O(n^3) 的在后面
 // https://en.wikipedia.org/wiki/Assignment_problem
 // https://en.wikipedia.org/wiki/Hungarian_algorithm
@@ -3346,6 +3356,7 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // LC2172 https://leetcode.cn/problems/maximum-and-sum-of-array/
 // LC2403 https://leetcode.cn/problems/minimum-time-to-kill-all-monsters/
 // todo GCJ21 Round2D https://codingcompetitions.withgoogle.com/codejam/round/0000000000435915/00000000007dc2de
+// https://projecteuler.net/problem=345
 func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int) (match []int, sum int) {
 	const inf int = 1e18
 	// NOTE: wt 中不存在的边应初始化为 -inf
@@ -3423,7 +3434,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int) (match []i
 }
 
 // O(n^3)
-// 下标需要从 1 开始
+// ！下标要从 1 开始
+// 建议用最大费用最大流 minCostFlowSPFA，更灵活
 func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, sum int) {
 	const inf int = 1e18
 	// NOTE: wt 中不存在的边应初始化为 -inf
@@ -4288,6 +4300,7 @@ Worst-Case Graphs for Maximum Flow Algorithms
 https://codeforces.com/blog/entry/145343
 
 网络流建模方式总结
+Solving Problems with Min Cut Max Flow Duality https://codeforces.com/blog/entry/136761
 最小割问题秒杀三板斧 https://www.bilibili.com/video/BV1jt4y1t7pd/
 https://atcoder.jp/contests/abc326/tasks/abc326_g
 套三板斧：
@@ -4981,6 +4994,7 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // 如果要限制总共至多选 lim 个元素，可以在超级源点前面再加一个节点 S0，连到超级源点，容量为 lim，费用为 0（相当于超级源点的流出量至多为 lim）
 //     如果满流，则表示恰好选了 lim 个元素
 //
+// 完全二分图 + 一对一 https://projecteuler.net/problem=345
 // 完全二分图 + 一对一 LC3376 https://leetcode.cn/problems/minimum-time-to-break-locks-i/
 // 完全二分图 + 一对多 LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
 // 完全二分图 + 至多选 k=3 个数 LC3257 https://leetcode.cn/problems/maximum-value-sum-by-placing-three-rooks-ii/
@@ -5246,34 +5260,61 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // 图 G 中的团和图 G 的补图中的独立集是一一对应的
 // 图 G 中的独立集和图 G 的补图中的团是一一对应的（等价说法）
 // https://en.wikipedia.org/wiki/Clique_(graph_theory)
-
-// 最大独立集 maximal independent set (MIS)
-// 等价于在补图上找最大团 maximal cliques (MC)
-// An independent set of EDGES is a set of edges of which no two have a vertex in common. It is usually called a matching. https://en.wikipedia.org/wiki/Independent_set_(graph_theory)#See_also
+//
+// 求最大权独立集 maximal weight independent set (MWIS)    节点的独立集     注意独立集不能有自环
 // https://en.wikipedia.org/wiki/Clique_problem
 // 另见 Bron–Kerbosch 算法 https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
 // Measure and Conquer: A Simple O(2^0.288n) Independent Set Algorithm http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.321.6920&rep=rep1&type=pdf
-// todo 剪枝写法
-// https://codeforces.com/problemset/problem/1105/E
-// todo https://codeforces.com/problemset/problem/1767/E
-func (*graph) maximalCliques(g []int) int {
-	// 一种求最大团的做法，适用于点数不超过 50 的图
-	// 传入的 g 为状压后的邻接矩阵
-	// 定义 f(s) 为 s 的所有子集中最大团的大小
-	// 则转移时要么不取 lb（lowbit），要么取 lb 并去掉不与 lb 相邻的点（包括 lb）
-	// 将这一过程记忆化可大幅减少运行时间，理由如下：
-	// 由于每次都会去掉 lb，所以至多 k=len(g)/2 次递归后会进入右半部分没有 1 的状态
-	// 将这 k 次递归过程视作一棵二叉树，则其耗时为 O(2^k)
-	// 之后记忆化占主导，耗时也为 O(2^k)
-	// 主要注意的是，k 次递归的结果是否记忆化并不重要，因为这部分最多也只有 O(2^k) 个状态
-	// 总的来说，记忆化将计算量由原来的「二叉树规模」变成了「meet in the middle 规模」
+//
+// https://codeforces.com/problemset/problem/1105/E 2200
+// https://codeforces.com/problemset/problem/1767/E 2500 最小点覆盖 = 所有点 - 最大独立集
+func (*graph) maximalWeightIndependentSet(g []int, a []int) int {
+	// g 为状压后的邻接矩阵
+	// a 为点权
+	// 返回最大权独立集
+	// 时间复杂度分析见下面的 maximalCliques
+	memo := map[int]int{0: 0}
+	// s 表示剩余节点集合
+	var dfs func(int) int
+	dfs = func(s int) int {
+		if v, ok := memo[s]; ok {
+			return v
+		}
+		tz := bits.TrailingZeros(uint(s))
+		lb := 1 << tz
+		res := dfs(s ^ lb) // 不选 tz
+		if g[tz]&lb == 0 { // tz 无自环，可以选
+			// 所有与 tz 相邻的节点都不能选，从 s 中去掉
+			// tz 我们选了，后面无需考虑，也从 s 中去掉
+			res = max(res, dfs(s&^g[tz]^lb)+a[tz]) // 如果只算点的个数，把 a[tz] 改成 1
+		}
+		memo[s] = res
+		return res
+	}
+	ans := dfs(1<<len(g) - 1)
+	return ans
+}
+
+// 一种求最大团的做法，适用于点数不超过 50 的图
+// 传入的 g 为状压后的邻接矩阵（对于最大独立集来说，g 是补图）
+// 定义 f(s) 为 s 的所有子集中最大团的大小
+// 则转移时要么不取 lowbit，要么取 lowbit 并去掉不与 lowbit 相邻的点（包括 lowbit）
+// 将这一过程记忆化可大幅减少运行时间，理由如下：
+// 由于每次都会去掉 lowbit，所以至多 k=len(g)/2 次递归后会进入二进制右半部分没有 1 的状态
+// 前 k 次递归过程视作一棵二叉树，耗时为 O(2^k)
+// 后 k 次递归过程记忆化占主导，耗时也为 O(2^k)
+// 需要注意的是，前 k 次递归的结果是否记忆化并不重要，因为这部分只有 O(2^k) 个状态
+// 总的来说，记忆化将计算量由原来的「二叉树规模」变成了「meet in the middle 规模」
+// 注：求最大独立集等价于求补图的最大团 maximal cliques (MC)
+func (*graph) maximalCliques(g []int, a []int) int {
 	memo := map[int]int{0: 0}
 	var dfs func(int) int
 	dfs = func(s int) int {
 		if v, ok := memo[s]; ok {
 			return v
 		}
-		memo[s] = max(dfs(s&(s-1)), 1+dfs(s&g[bits.TrailingZeros(uint(s))]))
+		tz := bits.TrailingZeros(uint(s))
+		memo[s] = max(dfs(s&(s-1)), dfs(s&g[tz])+a[tz]) // 如果只算点的个数把 a[tz] 改成 1
 		return memo[s]
 	}
 	ans := dfs(1<<len(g) - 1)
@@ -5281,12 +5322,10 @@ func (*graph) maximalCliques(g []int) int {
 }
 
 // todo 极大团计数
-
 // 分团覆盖问题 Clique cover
 // https://en.wikipedia.org/wiki/Clique_cover
 
 // todo 图的同构
-
 // 树的同构见 graph_tree.go
 
 // 支配树 Lengauer−Tarjan 算法
