@@ -2818,6 +2818,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/449/D 2400 容斥 
 	// https://codeforces.com/problemset/problem/1523/D 2400
 	// https://codeforces.com/problemset/problem/1679/E 2400
+	// https://codeforces.com/problemset/problem/1903/D2 2500
 	// https://codeforces.com/problemset/problem/1208/F 2600
 	//    求 ai|(aj&ak) 的最大值，其中 i<j<k
 	//    根据 a|b = (^a)&b + a
