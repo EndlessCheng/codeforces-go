@@ -7,6 +7,7 @@ import (
 	"slices"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 /* 动态规划（Dynamic Programming，DP）
@@ -209,6 +210,7 @@ https://codeforces.com/problemset/problem/939/F 2400
 https://codeforces.com/problemset/problem/1093/F 2400 容斥
 https://codeforces.com/problemset/problem/1348/E 2400 做到 O(nk) todo 需要复习
 https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元素不同
+https://codeforces.com/problemset/problem/845/F 2500 状态设计
 https://codeforces.com/problemset/problem/938/F 2700 扩散至超集的写法
 https://codeforces.com/problemset/problem/1152/F2 3000 值域 插入法
 https://atcoder.jp/contests/abc237/tasks/abc237_f
@@ -2421,7 +2423,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/698/C 2400 概率
 	https://codeforces.com/problemset/problem/744/C 2400 状态设计
 	https://codeforces.com/problemset/problem/543/C 2500 状态转移
-	https://codeforces.com/problemset/problem/845/F 2500 一个格子一个格子地算
+	https://codeforces.com/problemset/problem/845/F 2500 状态设计 一个格子一个格子地算
 	https://codeforces.com/problemset/problem/1209/E2 2500 循环移位
 	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压
 	https://codeforces.com/problemset/problem/662/C 2600 状态设计 也可以 FWT
@@ -3042,7 +3044,7 @@ func _(abs func(int) int) {
 	数位乘积个数 (n*(n+1)/2)^2 = O(n^4) https://oeis.org/A000537
 	- 详细公式推导 https://leetcode.cn/problems/count-beautiful-numbers/solutions/3613931/mo-ban-shu-wei-dp-v21pythonjavacgo-by-en-fdzz/
 	https://atcoder.jp/contests/abc194/tasks/abc194_f 2197=CF2373 恰好用到了 k 个不同数位
-	todo https://codeforces.com/problemset/problem/1245/F 2300
+	https://codeforces.com/problemset/problem/1245/F 2300 二维（互相独立）
 	https://codeforces.com/problemset/problem/1670/F 2400
 	- 类似套路 https://leetcode.cn/problems/find-sum-of-array-product-of-magical-sequences/
 	https://codeforces.com/problemset/problem/55/D 2500 被每个非零数位都整除的数字个数
@@ -3403,59 +3405,55 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P6669
 	//  - https://www.luogu.com.cn/problem/P8688 需要优化
 	//  - https://codeforces.com/problemset/problem/582/D 3300 模数为 p^a
-	digitDP2D := func(n, m, k int) int {
-		// 以 https://www.luogu.com.cn/problem/P6669 为例
-		// 要求 0 <= i <= n 且 0 <= j <= min(i, m)
-		// 统计 k 进制下，至少有一位 j[p] > i[p] 的数字个数
-		// 前导零不影响答案
-		m = min(m, n)
-		a := [][2]int{}
-		for ; n > 0; n /= k {
-			a = append(a, [2]int{n % k, m % k})
-			m /= k
-		}
+	digitDP2D := func(n, m int) int {
+		m = min(m, n) // 保证 m <= n
+		// ！要求 0 <= i <= n 且 0 <= j <= min(i, m)
+		// ！要求前导零不影响答案
+
+		highN := strconv.Itoa(n)
+		highM := strconv.Itoa(m)
+		highM = strings.Repeat("0", len(highN)-len(highM)) + highM // 补前导零，和 highN 右对齐
+
 		// 如果 map 慢，可以改成 int 数组 + vis 数组的写法
-		// 注：如果想用全局 memo，可以记忆化 p, greater, limI
+		// 注：如果想用全局 memo，可以记忆化 p, greater, limitI
 		type args struct {
-			p                    int
-			gr, limI, limN, limM bool
+			p, xorSum  int
+			b1, b2, b3 bool
 		}
 		memo := map[args]int{}
-		var dfs func(int, bool, bool, bool, bool) int
-		dfs = func(p int, greater, limI, limN, limM bool) int {
-			if p < 0 {
-				if greater {
+		var dfs func(int, int, bool, bool, bool) int
+		dfs = func(p int, xorSum int, limitN, limitM, limitI bool) (res int) {
+			if p == len(highN) {
+				if xorSum == 0 { // 统计数位异或和为 0 的 (i,j) 个数，也就是 i 的数位异或和 XOR j 的数位异或和 = 0
 					return 1
 				}
 				return 0
 			}
-			t := args{p, greater, limI, limN, limM}
+			t := args{p, xorSum, limitN, limitM, limitI}
 			if v, ok := memo[t]; ok {
 				return v
 			}
 
-			hiN := k - 1
-			if limN {
-				hiN = a[p][0]
+			hi := 9
+			if limitN {
+				hi = int(highN[p] - '0')
 			}
-			hiM := k - 1
-			if limM {
-				hiM = a[p][1]
+			hi2 := 9
+			if limitM {
+				hi2 = int(highM[p] - '0')
 			}
 
-			res := 0
-			for i := 0; i <= hiN; i++ {
-				// 如果之前出现 j < i 的情况，那么当前位不受到 i 的约束
-				for j := 0; (!limI || j <= i) && j <= hiM; j++ {
-					res += dfs(p-1, greater || j > i, limI && j == i, limN && i == hiN, limM && j == hiM)
+			for i := 0; i <= hi; i++ {
+				// 如果之前出现 j < i 的情况，那么当前位不受到 i 的约束，否则不能超过 i
+				for j := 0; j <= hi2 && (!limitI || j <= i); j++ {
+					res += dfs(p+1, xorSum^i^j, limitN && i == hi, limitM && j == hi2, limitI && j == i)
 				}
 			}
 			res %= mod
 			memo[t] = res
-			return res
+			return
 		}
-		// 因为 a 是从低位到高位，所以入口是 len(a)-1
-		ans := dfs(len(a)-1, false, true, true, true)
+		ans := dfs(0, 0, true, true, true)
 		return ans
 	}
 
