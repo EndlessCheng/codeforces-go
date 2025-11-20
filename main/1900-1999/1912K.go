@@ -16,15 +16,10 @@ func cf1912K(in io.Reader, out io.Writer) {
 	for range n {
 		Fscan(in, &v)
 		v %= 2
-		if v == 0 {
-			f[0] = (f[0]*2 + cnt2[0]) % mod
-			f[2] = (f[2] + f[3] + cnt2[3]) % mod
-		} else {
-			f[3] = (f[3] + f[1] + cnt2[1]) % mod
-			f[1] = (f[1] + f[2] + cnt2[2]) % mod
-		}
-		cnt2[v] = (cnt2[v] + cnt[0]) % mod
+		f[2|v] = (f[2|v] + f[(v^1)<<1|1] + cnt2[(v^1)<<1|1]) % mod
+		f[v] = (f[v] + f[v<<1] + cnt2[v<<1]) % mod
 		cnt2[2|v] = (cnt2[2|v] + cnt[1]) % mod
+		cnt2[v] = (cnt2[v] + cnt[0]) % mod
 		cnt[v]++
 	}
 	Fprint(out, (f[0]+f[1]+f[2]+f[3])%mod)
