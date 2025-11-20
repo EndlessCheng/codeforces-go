@@ -26,11 +26,12 @@ LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
 - https://atcoder.jp/contests/dp/tasks/dp_b
 - 有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
 LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
+- 矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C 1400
 - 值域打家劫舍 LC740 https://leetcode.cn/problems/delete-and-earn/
-   - 分组+值域打家劫舍 https://atcoder.jp/contests/abc403/tasks/abc403_d
-   - 类似思路的题目 https://leetcode.cn/problems/the-number-of-beautiful-subsets/
+- 值域打家劫舍 https://codeforces.com/problemset/problem/2161/D 2100
+- 分组+值域打家劫舍 https://atcoder.jp/contests/abc403/tasks/abc403_d
+- 类似思路的题目 https://leetcode.cn/problems/the-number-of-beautiful-subsets/
 - 恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
-- 矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
 - 环形 LC213 https://leetcode.cn/problems/house-robber-ii/
 - 环形 https://atcoder.jp/contests/abc251/tasks/abc251_e
 LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/ 1780
@@ -208,6 +209,7 @@ https://codeforces.com/problemset/problem/939/F 2400
 https://codeforces.com/problemset/problem/1093/F 2400 容斥
 https://codeforces.com/problemset/problem/1348/E 2400 做到 O(nk) todo 需要复习
 https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元素不同
+https://codeforces.com/problemset/problem/938/F 2700 扩散至超集的写法
 https://codeforces.com/problemset/problem/1152/F2 3000 值域 插入法
 https://atcoder.jp/contests/abc237/tasks/abc237_f
 https://atcoder.jp/contests/abc232/tasks/abc232_e
@@ -2398,17 +2400,18 @@ func _(abs func(int) int) {
 	https://ac.nowcoder.com/acm/problem/collection/808
 	https://ac.nowcoder.com/acm/problem/collection/810
 
-	https://codeforces.com/problemset/problem/991/D 迷你状压
-	https://atcoder.jp/contests/abc142/tasks/abc142_e 基础状压 DP
+	https://codeforces.com/problemset/problem/991/D 1500 迷你状压
+	https://atcoder.jp/contests/abc142/tasks/abc142_e 基础状压
 	https://atcoder.jp/contests/abc359/tasks/abc359_d
 	LC1125 状压 0-1 背包 https://leetcode.cn/problems/smallest-sufficient-team/
 	todo LCP82 https://leetcode.cn/problems/cnHoX6/
 	https://www.luogu.com.cn/problem/P1879
-	https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压 DP（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
+	https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
 	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
 	    - 对于二进制来说，那个 3^m 中的 3 就是空集的子集个数 1 + 一个元素的子集个数 2
 	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
 	https://codeforces.com/problemset/problem/16/E 1900 与概率 DP 结合
+	https://codeforces.com/problemset/problem/417/D 1900 基础状压
 	https://codeforces.com/problemset/problem/401/D 2000
 	https://codeforces.com/problemset/problem/453/B 2000 与质因数分解结合
 	https://codeforces.com/problemset/problem/895/C 2000
@@ -2418,8 +2421,9 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/698/C 2400 概率
 	https://codeforces.com/problemset/problem/744/C 2400 状态设计
 	https://codeforces.com/problemset/problem/543/C 2500 状态转移
+	https://codeforces.com/problemset/problem/845/F 2500 一个格子一个格子地算
 	https://codeforces.com/problemset/problem/1209/E2 2500 循环移位
-	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压 DP
+	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压
 	https://codeforces.com/problemset/problem/662/C 2600 状态设计 也可以 FWT
 	- https://atcoder.jp/contests/abc396/tasks/abc396_g
 	https://codeforces.com/problemset/problem/1430/G 2600
@@ -2808,6 +2812,7 @@ func _(abs func(int) int) {
 	//    求满足 ai&aj=0 的 ai|aj 的二进制 1 的个数的最大值
 	//    由于 ai 的补集一定满足和 ai 的 & = 0
 	//    所以转换成求每个 ai 的补集的 SOS，维护子集二进制 1 的个数的最大值
+	// https://codeforces.com/problemset/problem/1995/D 2300
 	// https://codeforces.com/problemset/problem/449/D 2400 容斥 
 	// https://codeforces.com/problemset/problem/1523/D 2400
 	// https://codeforces.com/problemset/problem/1679/E 2400
@@ -3681,6 +3686,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/46/E 1900 前缀最大值/后缀最大值
 	https://codeforces.com/problemset/problem/479/E 1900
 	- https://atcoder.jp/contests/abc253/tasks/abc253_e
+	https://codeforces.com/problemset/problem/958/C2 2000
 	https://codeforces.com/problemset/problem/1943/D1 2400 结论
 	https://codeforces.com/problemset/problem/115/D 2600
 	https://codeforces.com/problemset/problem/183/D 2700
@@ -3707,6 +3713,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1603/C 2300
 
 	其他
+	https://codeforces.com/problemset/problem/958/C3 2500 同余 找最优决策点
 	https://codeforces.com/problemset/problem/1863/F 2600
 
 	动态 DP
@@ -4584,11 +4591,11 @@ func _(abs func(int) int) {
 				if w == fa {
 					continue
 				}
-				down := p.fi
+				otherDown := p.fi
 				if w == p.fiW {
-					down = p.se // 对于 w 来说，上面要选次大的
+					otherDown = p.se // 对于 w 来说，上面要选次大的
 				}
-				reroot(w, v, max(up, down)+e.wt)
+				reroot(w, v, max(up, otherDown)+e.wt)
 			}
 		}
 		reroot(0, -1, 0)
