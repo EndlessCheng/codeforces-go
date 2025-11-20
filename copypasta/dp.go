@@ -2396,21 +2396,7 @@ func _(abs func(int) int) {
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
 
-	题单
-	https://www.luogu.com.cn/training/215#problems
-	https://ac.nowcoder.com/acm/problem/collection/808
-	https://ac.nowcoder.com/acm/problem/collection/810
-
 	https://codeforces.com/problemset/problem/991/D 1500 迷你状压
-	https://atcoder.jp/contests/abc142/tasks/abc142_e 基础状压
-	https://atcoder.jp/contests/abc359/tasks/abc359_d
-	LC1125 状压 0-1 背包 https://leetcode.cn/problems/smallest-sufficient-team/
-	todo LCP82 https://leetcode.cn/problems/cnHoX6/
-	https://www.luogu.com.cn/problem/P1879
-	https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
-	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
-	    - 对于二进制来说，那个 3^m 中的 3 就是空集的子集个数 1 + 一个元素的子集个数 2
-	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
 	https://codeforces.com/problemset/problem/16/E 1900 与概率 DP 结合
 	https://codeforces.com/problemset/problem/417/D 1900 基础状压
 	https://codeforces.com/problemset/problem/401/D 2000
@@ -2423,6 +2409,11 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/744/C 2400 状态设计
 	https://codeforces.com/problemset/problem/543/C 2500 状态转移
 	https://codeforces.com/problemset/problem/845/F 2500 状态设计 一个格子一个格子地算
+	- LCP76. 魔法棋盘 https://leetcode.cn/problems/1ybDKD/
+	- https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
+	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
+	    - 对于二进制来说，那个 3^m 中的 3 就是空集的子集个数 1 + 一个元素的子集个数 2
+	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
 	https://codeforces.com/problemset/problem/1209/E2 2500 循环移位
 	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压
 	https://codeforces.com/problemset/problem/662/C 2600 状态设计 也可以 FWT
@@ -2430,8 +2421,16 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1430/G 2600
 	https://codeforces.com/problemset/problem/79/D 2800 BFS
 	https://codeforces.com/problemset/problem/1152/F2 3000 状态设计 值域 插入法
+	https://atcoder.jp/contests/abc142/tasks/abc142_e 基础状压
 	https://atcoder.jp/contests/abc359/tasks/abc359_d
+	https://www.luogu.com.cn/problem/P1879
 	https://www.luogu.com.cn/problem/P5369 状态设计
+	LC1125 状压 0-1 背包 https://leetcode.cn/problems/smallest-sufficient-team/
+	LCP82 https://leetcode.cn/problems/cnHoX6/ todo
+	题单
+	https://www.luogu.com.cn/training/215#problems
+	https://ac.nowcoder.com/acm/problem/collection/808
+	https://ac.nowcoder.com/acm/problem/collection/810
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
