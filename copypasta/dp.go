@@ -2409,8 +2409,8 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/744/C 2400 状态设计
 	https://codeforces.com/problemset/problem/543/C 2500 状态转移
 	https://codeforces.com/problemset/problem/845/F 2500 状态设计 一个格子一个格子地算
-	- LCP76. 魔法棋盘 https://leetcode.cn/problems/1ybDKD/
-	- https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
+	- LCP76 魔法棋盘 https://leetcode.cn/problems/1ybDKD/
+	- NOI01 炮兵阵地 https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
 	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
 	    - 对于二进制来说，那个 3^m 中的 3 就是空集的子集个数 1 + 一个元素的子集个数 2
 	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
