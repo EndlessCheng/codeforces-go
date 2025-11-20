@@ -53,7 +53,7 @@ def pop_depth(x: int) -> int:
 class Solution:
     def popcountDepth(self, nums: List[int], queries: List[List[int]]) -> List[int]:
         n = len(nums)
-        f = [FenwickTree(n + 1) for _ in range(6)]
+        f = [FenwickTree(n) for _ in range(6)]
 
         def update(i: int, delta: int) -> None:
             d = pop_depth(nums[i])
@@ -114,7 +114,7 @@ class Solution {
     public int[] popcountDepth(long[] nums, long[][] queries) {
         int n = nums.length;
         FenwickTree[] f = new FenwickTree[6];
-        Arrays.setAll(f, _ -> new FenwickTree(n + 1));
+        Arrays.setAll(f, _ -> new FenwickTree(n));
 
         for (int i = 0; i < n; i++) {
             update(i, nums[i], 1, f); // 添加
@@ -208,7 +208,7 @@ class Solution {
 public:
     vector<int> popcountDepth(vector<long long>& nums, vector<vector<long long>>& queries) {
         int n = nums.size();
-        vector f(6, FenwickTree<int>(n + 1));
+        vector f(6, FenwickTree<int>(n));
         auto update = [&](int i, int delta) -> void {
             int d = pop_depth(nums[i]);
             f[d].update(i + 1, delta);
@@ -352,7 +352,7 @@ def pop_depth(x: int) -> int:
 class Solution:
     def popcountDepth(self, nums: List[int], queries: List[List[int]]) -> List[int]:
         n = len(nums)
-        f = [FenwickTree(n + 1) for _ in range(6)]
+        f = [FenwickTree(n) for _ in range(6)]
 
         def update(i: int, delta: int) -> None:
             d = pop_depth(nums[i])
@@ -421,7 +421,7 @@ class Solution {
     public int[] popcountDepth(long[] nums, long[][] queries) {
         int n = nums.length;
         FenwickTree[] f = new FenwickTree[6];
-        Arrays.setAll(f, _ -> new FenwickTree(n + 1));
+        Arrays.setAll(f, _ -> new FenwickTree(n));
 
         for (int i = 0; i < n; i++) {
             update(i, nums[i], 1, f); // 添加
@@ -513,7 +513,7 @@ class Solution {
 public:
     vector<int> popcountDepth(vector<long long>& nums, vector<vector<long long>>& queries) {
         int n = nums.size();
-        vector f(6, FenwickTree<int>(n + 1));
+        vector f(6, FenwickTree<int>(n));
         auto update = [&](int i, int delta) -> void {
             int d = pop_depth(nums[i]);
             f[d].update(i + 1, delta);

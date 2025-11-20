@@ -461,7 +461,7 @@ class Solution:
         qs.sort(key=lambda q: (q[0], q[2] if q[0] % 2 == 0 else -q[2]))
 
         m = len(b)
-        t = FenwickTree(m + 1)
+        t = FenwickTree(m)
         cnt = [0] * (m + 1)
 
         def move(i: int, delta: int) -> None:
@@ -576,7 +576,7 @@ class Solution {
         });
 
         int[] cnt = new int[n + 1];
-        FenwickTree t = new FenwickTree(n + 1);
+        FenwickTree t = new FenwickTree(n);
 
         int[] ans = new int[nq];
         int l = 0, r = 0;
@@ -709,7 +709,7 @@ public:
         });
 
         int m = b.size();
-        FenwickTree<int> t(m + 1);
+        FenwickTree<int> t(m);
         vector<int> cnt(m + 1);
         auto move = [&](int i, int delta) {
             int v = a[i];
