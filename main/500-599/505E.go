@@ -18,11 +18,12 @@ func cf505E(in io.Reader, out io.Writer) {
 		cnt := make([]int, m)
 		left := m * k
 		for _, p := range a {
-			t := max((p.h+p.grow*m-mx+dec-1)/dec, 0)
+			t := max((p.h+p.grow*m-mx+dec-1)/dec, 0) // 需要捶打的次数
 			left -= t
 			if left < 0 {
 				return false
 			}
+			// 初始高度是固定的，不会随着时间变大，只要在 m 天内的任意一天砍掉它即可
 			for i := range t {
 				if d := (mx + i*dec) / p.grow; d < m {
 					cnt[d]++
