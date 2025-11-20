@@ -1,21 +1,27 @@
-**前置知识**：[前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
+子数组和问题，考虑**前缀和**。
 
-计算 $\textit{nums}$ 的前缀和数组 $s$。
+计算 $\textit{nums}$ 的前缀和数组 $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
+
+子数组 $[i,j)$ 的元素和为 $s[j]-s[i]$，长度为 $j-i$。
 
 问题相当于：
 
-- 给定前缀和数组 $s$，计算最大的 $s[j]-s[i]$，满足 $i < j$ 且 $j-i$ 是 $k$ 的倍数。
+- 计算最大的 $s[j]-s[i]$，满足 $i < j$ 且 $j-i$ 是 $k$ 的倍数。
 
-要使 $s[j]-s[i]$ 尽量大，$s[i]$ 要尽量小。
+> 注：限制 $i<j$ 是为了让子数组非空，符合题目要求。
+
+枚举 $j$，要使 $s[j]-s[i]$ 尽量大，$s[i]$ 要尽量小。
+
+要枚举 $i$ 吗？那样太慢了。
 
 比如 $k=2$：
 
-- 当 $j$ 是偶数时，比如 $j=6$，那么 $i$ 也必须是偶数 $0,2,4$。所以只需维护偶数下标的 $s[i]$ 的最小值，而不是遍历所有 $s[i]$。
-- 当 $j$ 是奇数时，比如 $j=7$，那么 $i$ 也必须是奇数 $1,3,5$。所以只需维护奇数下标的 $s[i]$ 的最小值，而不是遍历所有 $s[i]$。
+- 当 $j$ 是偶数时，比如 $j=6$，要使长度是 $k=2$ 的倍数，那么 $i$ 也必须是偶数 $0,2,4$。所以只需维护偶数下标的 $s[i]$ 的最小值，而不是遍历所有 $s[i]$。
+- 当 $j$ 是奇数时，比如 $j=7$，要使长度是 $k=2$ 的倍数，那么 $i$ 也必须是奇数 $1,3,5$。所以只需维护奇数下标的 $s[i]$ 的最小值，而不是遍历所有 $s[i]$。
 
-一般地，在遍历前缀和的同时，维护：
+一般地，在遍历前缀和数组 $s$ 的同时，维护：
 
-- 满足 $i < j$ 且 $i$ 与 $j$ 模 $k$ **同余**的 $s[i]$ 的最小值。
+- 满足 $i < j$ 且 $i$ 与 $j$ 关于模 $k$ **同余**的 $s[i]$ 的最小值。
 
 关于同余的概念，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
@@ -103,6 +109,11 @@ func maxSubarraySum(nums []int, k int) int64 {
 }
 ```
 
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
 ## 优化
 
 一边计算前缀和，一边维护 $\textit{minS}$。
@@ -185,7 +196,9 @@ func maxSubarraySum(nums []int, k int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-更多相似题目，见下面数据结构题单中的「**§1.2 前缀和与哈希表**」。
+## 专题训练
+
+见下面数据结构题单的「**§1.2 前缀和与哈希表**」。
 
 ## 分类题单
 
@@ -196,12 +209,14 @@ func maxSubarraySum(nums []int, k int) int64 {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. 【本题相关】[常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
