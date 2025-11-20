@@ -898,6 +898,41 @@ func _(abs func(int) int) {
 		return len(f)
 	}
 
+	// 返回一个具体的 LIS
+	// 如果有多个 LIS，返回的是下标字典序最大的
+	// 时间复杂度 O(nlogn)
+	lisGetOne := func(a []int) (res []int) {
+		n := len(a)
+		if n == 0 {
+			return
+		}
+
+		type pair struct{ v, i int }
+		f := []pair{} // 对比上面的 lis，不仅记录值，还记录值对应的下标
+		last := make([]int, n)
+		for i := range last {
+			last[i] = -1
+		}
+		for i, v := range a {
+			j := sort.Search(len(f), func(j int) bool { return f[j].v >= v }) // >= v 是严格递增，改成 > v 是非严格递增
+			if j > 0 {
+				last[i] = f[j-1].i // 记录 a[i] 添加到了哪个数的末尾
+			}
+			if j < len(f) {
+				f[j] = pair{v, i}
+			} else {
+				f = append(f, pair{v, i})
+			}
+		}
+
+		// LIS 的最后一个数是 a[f[len(f)-1].i]，顺着 last 倒着找上一个数
+		for i := f[len(f)-1].i; i >= 0; i = last[i] {
+			res = append(res, a[i])
+		}
+		slices.Reverse(res)
+		return
+	}
+
 	// 方法二：线段树优化 DP
 	// 在值域上建一棵线段树，单点维护的是 a[i] 对应的 dp 值，区间维护的就是一段值域的 dp 的最大值
 	// 转移时，查询 < a[i] 的最大值，单点更新到线段树的 a[i] 上
@@ -1073,7 +1108,7 @@ func _(abs func(int) int) {
 	}
 
 	// LCIS 打印方案
-	lcisPath := func(a, b []int) (ans int, lcis []int) {
+	lcisGetOne := func(a, b []int) (lcis []int) {
 		n, m := len(a), len(b)
 		f := make([][]int, n+1)
 		fa := make([][]int, n+1)
@@ -1102,7 +1137,6 @@ func _(abs func(int) int) {
 				ansJ = j
 			}
 		}
-		ans = f[n][ansJ]
 		var getLCIS func(i, j int)
 		getLCIS = func(i, j int) {
 			if i == 0 || j < 0 {
@@ -2462,6 +2496,7 @@ func _(abs func(int) int) {
 	// https://atcoder.jp/contests/abc381/tasks/abc381_f 1739=CF2026 状态设计
 	// https://atcoder.jp/contests/abc199/tasks/abc199_e 1814=CF2083
 	// https://codeforces.com/problemset/problem/377/C 2200 枚举来源
+	// https://codeforces.com/problemset/problem/385/D 2200 计算几何
 	// https://codeforces.com/problemset/problem/743/E 2200 状态设计
 	// https://codeforces.com/problemset/problem/1215/E 2200
 	// https://codeforces.com/problemset/problem/1238/E 2200 式子变形
@@ -4820,7 +4855,7 @@ func _(abs func(int) int) {
 		minimumArea,
 
 		lcs, lcsCount,
-		lisSlow, lis, lisAll, lisModify, lisRollback, cntLIS, cntIS, lcis, lcisPath, countLIS,
+		lisSlow, lis, lisGetOne, lisAll, lisModify, lisRollback, cntLIS, cntIS, lcis, lcisGetOne, countLIS,
 		distinctSubsequence, distinctSubsequenceWithFixedLength,
 		palindromeO1Space, isPalindrome, minPalindromeCut,
 
