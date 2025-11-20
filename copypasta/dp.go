@@ -79,10 +79,6 @@ https://www.luogu.com.cn/problem/P2258
 https://codeforces.com/problemset/problem/2034/C 1400
 LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
 
-合法子序列 DP
-https://www.luogu.com.cn/problem/P4933
-- LC446 https://leetcode.cn/problems/arithmetic-slices-ii-subsequence/
-
 输出具体方案
 做这一道题就够了 https://codeforces.com/problemset/problem/56/D 2100
 https://codeforces.com/problemset/problem/31/E 2400
@@ -1171,6 +1167,9 @@ func _(abs func(int) int) {
 	}
 
 	// 合法子序列 DP
+	// https://codeforces.com/problemset/problem/1912/K 1800
+	// https://www.luogu.com.cn/problem/P4933
+	// - LC446 https://leetcode.cn/problems/arithmetic-slices-ii-subsequence/
 
 	// 本质不同非空子序列个数
 	// 详细讲解见 https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/
