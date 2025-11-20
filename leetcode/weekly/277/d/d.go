@@ -15,9 +15,7 @@ next:
 				cnt++
 			}
 		}
-		if cnt > ans {
-			ans = cnt
-		}
+		ans = max(ans, cnt)
 	}
 	return
 }
