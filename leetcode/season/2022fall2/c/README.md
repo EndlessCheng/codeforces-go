@@ -1,7 +1,5 @@
 [视频讲解](https://www.bilibili.com/video/BV1rT411P7NA) 已出炉，**包括本题滑窗的原理和时间复杂度分析**，欢迎点赞三连，在评论区分享你对这场力扣杯的看法~
 
-**注**：本题测试数据比较弱，不取模也能过。正确做法是需要取模的，因为 $10^5$ 个 $1$ 算出的答案会 $\ge 10^9+7$。
-
 ```py [sol-Python3]
 class Solution:
     def beautifulBouquet(self, flowers: List[int], cnt: int) -> int:
@@ -9,29 +7,29 @@ class Solution:
         c = defaultdict(int)
         for right, x in enumerate(flowers):
             c[x] += 1
-            while c[x] > cnt:
+            while c[x] > cnt:  # x 太多了
                 c[flowers[left]] -= 1
-                left += 1
+                left += 1  # 缩小窗口
             ans += right - left + 1
-        return ans % 1_000_000_007
+        return ans
 ```
 
 ```java [sol-Java]
 class Solution {
     public int beautifulBouquet(int[] flowers, int cnt) {
-        long ans = 0;
         Map<Integer, Integer> c = new HashMap<>();
+        int ans = 0;
         int left = 0;
         for (int right = 0; right < flowers.length; right++) {
             int x = flowers[right];
             c.merge(x, 1, Integer::sum); // c[x]++
-            while (c.get(x) > cnt) {
+            while (c.get(x) > cnt) { // x 太多了
                 c.merge(flowers[left], -1, Integer::sum);
-                left++;
+                left++; // 缩小窗口
             }
             ans += right - left + 1;
         }
-        return (int) (ans % 1_000_000_007);
+        return ans;
     }
 }
 ```
@@ -40,19 +38,18 @@ class Solution {
 class Solution {
 public:
     int beautifulBouquet(vector<int>& flowers, int cnt) {
-        long long ans = 0;
         unordered_map<int, int> c;
-        int left = 0;
+        int ans = 0, left = 0;
         for (int right = 0; right < flowers.size(); right++) {
             int x = flowers[right];
             c[x]++;
-            while (c[x] > cnt) {
+            while (c[x] > cnt) { // x 太多了
                 c[flowers[left]]--;
-                left++;
+                left++; // 缩小窗口
             }
             ans += right - left + 1;
         }
-        return ans % 1'000'000'007;
+        return ans;
     }
 };
 ```
@@ -63,13 +60,13 @@ func beautifulBouquet(flowers []int, cnt int) (ans int) {
 	left := 0
 	for right, x := range flowers {
 		c[x]++
-		for c[x] > cnt {
+		for c[x] > cnt { // x 太多了
 			c[flowers[left]]--
-			left++
+			left++ // 缩小窗口
 		}
 		ans += right - left + 1
 	}
-	return ans % 1_000_000_007
+	return ans
 }
 ```
 
@@ -92,10 +89,9 @@ func beautifulBouquet(flowers []int, cnt int) (ans int) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
 欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
-
