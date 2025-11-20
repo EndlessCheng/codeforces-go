@@ -487,7 +487,7 @@ class Solution:
                 for s in range(k):
                     new_s = (s + x) % k
                     new_f[s] = (f[j + 1][new_s] + f[j][new_s]) % MOD
-                f[j + 1][:] = new_f  # 复制到 f[j+1] 中
+                f[j + 1][:] = new_f  # 把 new_f 复制到 f[j+1] 中
         return f[n][0]
 ```
 
@@ -506,7 +506,7 @@ class Solution {
                     int newS = (s + row[j]) % k;
                     newF[s] = (f[j + 1][newS] + f[j][newS]) % MOD;
                 }
-                System.arraycopy(newF, 0, f[j + 1], 0, k); // 复制到 f[j+1] 中
+                System.arraycopy(newF, 0, f[j + 1], 0, k); // 把 newF 复制到 f[j+1] 中
             }
         }
         return f[n][0];
@@ -529,7 +529,7 @@ public:
                     int new_s = (s + row[j]) % k;
                     new_f[s] = (f[j + 1][new_s] + f[j][new_s]) % MOD;
                 }
-                f[j + 1] = new_f; // 复制到 f[j+1] 中
+                ranges::copy(new_f, f[j + 1].begin()); // 把 new_f 复制到 f[j+1] 中
             }
         }
         return f[n][0];
@@ -553,7 +553,7 @@ func numberOfPaths(grid [][]int, k int) int {
 				newS := (s + x) % k
 				newF[s] = (f[j+1][newS] + f[j][newS]) % mod
 			}
-			copy(f[j+1], newF) // 复制到 f[j+1] 中
+			copy(f[j+1], newF) // 把 newF 复制到 f[j+1] 中
 		}
 	}
 	return f[n][0]
