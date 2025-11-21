@@ -18,7 +18,7 @@ func (t fenwick71) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res = max(res, t[i])
 	}
-	return res
+	return
 }
 
 func cf2171H(in io.Reader, out io.Writer) {
