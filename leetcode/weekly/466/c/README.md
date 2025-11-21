@@ -1,22 +1,14 @@
 从易到难，先思考原问题的一个简单版本：
 
-- 只统计满足 $\textit{nums}[l] \ge \textit{nums}[r]$ 的合法子数组的数量。
+- 只统计满足 $\textit{nums}[l] \ge \textit{nums}[r]$ 的合法子数组的数量。相当于这个碗是「**左高右低**」的。
 
-此时 $\min(\textit{nums}[l], \textit{nums}[r]) = \textit{nums}[r]$。
+由于中间的数都比 $\textit{nums}[r]$ 小，从形状（$\textit{nums}$ 的折线图）上看，$\textit{nums}[l]$ 是 $\textit{nums}[r]$ 左侧**最近**的大于等于 $\textit{nums}[r]$ 的数。
 
-合法子数组必须满足
+为什么是最近？左端点还能再往左吗？
 
-$$
-\textit{nums}[r] > \max(\textit{nums}[l+1],\ldots, \textit{nums}[r-1])
-$$
+不能。如果继续向左，让子数组包含更多元素，那么 $\textit{nums}[l]$ 就会变成子数组的中间元素。题目要求中间元素必须小于两端元素，但 $\textit{nums}[l] \ge \textit{nums}[r]$，不符合题目要求。
 
-上式表明，$[l+1,r-1]$ 中的所有数都小于 $\textit{nums}[r]$。
-
-换句话说，$\textit{nums}[l]$ 是 $\textit{nums}[r]$ 左侧**最近**的大于等于 $\textit{nums}[r]$ 的数。
-
-为什么是最近？反证法，如果继续向左，让子数组包含更多元素，那么 $\textit{nums}[l]$ 就会变成子数组的中间元素，由于 $\textit{nums}[l] \ge \textit{nums}[r]$，不符合要求。
-
-所以对于每个右端点 $r$，我们只需要找 $\textit{nums}[r]$ 左侧最近的大于等于 $\textit{nums}[r]$ 的数的下标 $l$。如果 $l$ 存在且 $i-l+1\ge 3$，那么找到了一个合法子数组，把答案加一。
+所以对于每个右端点 $r$，我们只需要找 $\textit{nums}[r]$ 左侧最近的大于等于 $\textit{nums}[r]$ 的数的下标 $l$。如果 $l$ 存在且 $r-l+1\ge 3$，那么找到了一个合法子数组，把答案加一。
 
 这是**单调栈**的标准应用，请看 [单调栈【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)。
 
@@ -26,7 +18,7 @@ $$
 
 > 此外，上述结论表明，答案的上界是 $2n$（粗略估计），所以返回值用 $\texttt{int}$ 就够了。本题没有重复元素，答案的上界是 $n$（见写法二）。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1heYGzWEUa/?t=7m35s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1heYGzWEUa/?t=7m35s)，欢迎点赞关注~
 
 ## 写法一
 
