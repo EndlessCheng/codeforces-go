@@ -72,7 +72,7 @@
 ||[1155. 掷骰子等于目标和的方法数](https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solution/ji-bai-100cong-ji-yi-hua-sou-suo-dao-di-421ab/)|1654|
 ||[2304. 网格中的最小路径代价](https://leetcode.cn/problems/minimum-path-cost-in-a-grid/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/minimum-path-cost-in-a-grid/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-bd25/)|1658|
 ||[1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/greatest-sum-divisible-by-three/solution/liang-chong-suan-fa-tan-xin-dong-tai-gui-tsll/)|1762|
-||[918. 环形子数组的最大和](https://leetcode.cn/problems/maximum-sum-circular-subarray/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/maximum-sum-circular-subarray/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-ilqh/)|1777|
+||[918. 环形子数组的最大和](https://leetcode.cn/problems/maximum-sum-circular-subarray/)|[【图解】正难则反，一张图秒懂！](https://leetcode.cn/problems/maximum-sum-circular-subarray/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-ilqh/)|1777|
 ||[1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)|1799|
 ||[790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)|[【图解】找不到规律？请看图！](https://leetcode.cn/problems/domino-and-tromino-tiling/solution/by-endlesscheng-umpp/)|1830|
 ||[1227. 飞机座位分配概率](https://leetcode.cn/problems/airplane-seat-assignment-probability/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/airplane-seat-assignment-probability/solution/tu-jie-mei-xiang-ming-bai-yi-zhang-tu-mi-8bn4/)|中等|
