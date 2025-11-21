@@ -251,7 +251,7 @@ class Solution:
                 ans.append(m * (m + 1) // 2)
             else:  # l 和 r 在不同区间
                 # 分成 [l, l2) + [l2, r]
-                # 由于 [l2, r] 中的每个右端点对应的左端点都在 [l2, r] 内，所以可以用前缀和计算
+                # 由于 [l2, r] 中的每个右端点所在递增段的左端点都在 [l2, r] 内，所以可以用前缀和计算
                 m = l2 - l
                 ans.append(m * (m + 1) // 2 + s[r + 1] - s[l2])
         return ans
@@ -293,7 +293,7 @@ class Solution {
                 ans[k] = m * (m + 1) / 2;
             } else { // l 和 r 在不同区间
                 // 分成 [l, l2) + [l2, r]
-                // 由于 [l2, r] 中的每个右端点对应的左端点都在 [l2, r] 内，所以可以用前缀和计算
+                // 由于 [l2, r] 中的每个右端点所在递增段的左端点都在 [l2, r] 内，所以可以用前缀和计算
                 long m = l2 - l;
                 ans[k] = m * (m + 1) / 2 + sum[r + 1] - sum[l2];
             }
@@ -338,7 +338,7 @@ public:
                 ans.push_back(m * (m + 1) / 2);
             } else { // l 和 r 在不同区间
                 // 分成 [l, l2) + [l2, r]
-                // 由于 [l2, r] 中的每个右端点对应的左端点都在 [l2, r] 内，所以可以用前缀和计算
+                // 由于 [l2, r] 中的每个右端点所在递增段的左端点都在 [l2, r] 内，所以可以用前缀和计算
                 long long m = l2 - l;
                 ans.push_back(m * (m + 1) / 2 + sum[r + 1] - sum[l2]);
             }
@@ -383,7 +383,7 @@ func countStableSubarrays(nums []int, queries [][]int) []int64 {
 			ans[k] = m * (m + 1) / 2
 		} else { // l 和 r 在不同区间
 			// 分成 [l, l2) + [l2, r]
-			// 由于 [l2, r] 中的每个右端点对应的左端点都在 [l2, r] 内，所以可以用前缀和计算
+			// 由于 [l2, r] 中的每个右端点所在递增段的左端点都在 [l2, r] 内，所以可以用前缀和计算
 			m := int64(l2 - l)
 			ans[k] = m*(m+1)/2 + sum[r+1] - sum[l2]
 		}
