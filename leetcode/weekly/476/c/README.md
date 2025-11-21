@@ -233,6 +233,44 @@ func countDistinct(n int64) (ans int64) {
 - 时间复杂度：$\mathcal{O}(\log n)$。$n$ 的十进制长度是 $\mathcal{O}(\log n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 附：数位 DP 写法
+
+把我 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/)「十、数位 DP」的模板代码抄过来，调用即可。
+
+```py [sol-Python3]
+class Solution:
+    def countDistinct(self, n: int) -> int:
+        return digitDP(1, n, 0)  # 见动态规划题单「十、数位 DP」
+```
+
+```java [sol-Java]
+class Solution {
+    public long countDistinct(long n) {
+        return digitDP(1, n, 0); // 见动态规划题单「十、数位 DP」
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countDistinct(long long n) {
+        return digitDP(1, n, 0); // 见动态规划题单「十、数位 DP」
+    }
+};
+```
+
+```go [sol-Go]
+func countDistinct(n int64) int64 {
+    return int64(digitDP(1, int(n), 0)) // 见动态规划题单「十、数位 DP」
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\log n)$。$n$ 的十进制长度是 $\mathcal{O}(\log n)$。
+- 空间复杂度：$\mathcal{O}(\log n)$。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
