@@ -40,7 +40,7 @@ func init() { debug.SetGCPercent(-1) }
 
 type trie01Node struct {
 	son [2]*trie01Node
-	cnt int // 子树叶子数
+	cnt int // 子树叶子数（元素个数）
 	min int // 子树最小值
 }
 
@@ -340,6 +340,24 @@ func (t *trie01) maxXorWithLimitXor(v, limit int) (ans int) {
 		b := v >> i & 1
 		if o.son[b^1] != nil {
 			ans |= 1 << i
+			b ^= 1
+		}
+		o = o.son[b]
+	}
+	return
+}
+
+// 计算 trie 中所有元素与 xor 异或后的 mex
+// 如果只是计算 trie 中所有元素的 mex，传入 xor = 0
+// ！需要保证 trie 中没有重复元素
+// https://codeforces.com/problemset/problem/842/D 2000
+func (t *trie01) mex(xor int) (mex int) {
+	o := t.root
+	for i := trieBitLen - 1; i >= 0 && o != nil; i-- {
+		b := xor >> i & 1
+		// cnt 表示子树叶子数，即元素个数
+		if o.son[b] != nil && o.son[b].cnt == 1<<i {
+			mex |= 1 << i
 			b ^= 1
 		}
 		o = o.son[b]
