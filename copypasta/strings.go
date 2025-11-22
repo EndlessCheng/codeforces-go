@@ -574,12 +574,12 @@ func _() {
 	// 讲解 https://leetcode.cn/problems/is-subsequence/solutions/2813031/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/
 	// 如果值域很大，可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
 	// LC392 https://leetcode.cn/problems/is-subsequence/
-	// https://codeforces.com/problemset/problem/1845/C 1400
+	// LC2350 不在 s 中的最短子序列 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
+	// - https://codeforces.com/problemset/problem/1845/C 1400
+	// - https://codeforces.com/problemset/problem/2104/E 1700
 	// https://codeforces.com/problemset/problem/91/A 1500
 	// - https://www.luogu.com.cn/problem/P9572?contestId=124047
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
-	// https://codeforces.com/problemset/problem/2104/E 1700
-	// - 相似题目 LC2350 不可能得到的最短骰子序列 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
 	// https://codeforces.com/problemset/problem/1789/F 2700
 	// - 相关 LC2350 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
 	// https://atcoder.jp/contests/abc138/tasks/abc138_e
@@ -1004,6 +1004,11 @@ func _() {
 		第 k 小子串 todo
 			https://www.luogu.com.cn/problem/P3975 不同位置的相同子串算作一个/多个
 			https://codeforces.com/problemset/problem/128/B 2100
+			https://atcoder.jp/contests/arc097/tasks/arc097_a
+		所有子串排序拼起来的第 k 个字母 todo
+			https://qoj.ac/problem/4631 第 k 个字母在原串的下标
+			https://www.codechef.com/problems/ALG1705 子串去重后再拼接
+			https://codeforces.com/gym/103409/problem/J 子串去重后再拼接，先按照长度排序再按照字典序
 	两个字符串
 		最长公共子串 LC718 https://leetcode.cn/problems/maximum-length-of-repeated-subarray/
 	               LC3135 https://leetcode.cn/problems/equalize-strings-by-adding-or-removing-characters-at-ends/
@@ -1071,6 +1076,7 @@ func _() {
 		// 计算高度数组（也叫 LCP 数组）
 		// height[0] = 0（哨兵）
 		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])   (i > 0)
+		// 获取 s[i] 所在位置的高度：height[rank[i]]
 		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
 		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 		// 	  https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/E
