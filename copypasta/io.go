@@ -283,10 +283,14 @@ func lineIO() {
 	defer out.Flush()
 
 	for in.Scan() {
-		line := in.Bytes()
-		sp := bytes.Split(line, []byte{' '})
-		// ...
+		rd := bytes.NewReader(in.Bytes())
+		for {
+			var v int
+			n, _ := Fscan(rd, &v)
+			if n == 0 {
+				break
+			}
 
-		_ = sp
+		}
 	}
 }
