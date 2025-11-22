@@ -16,15 +16,16 @@ import (
 // https://codeforces.com/problemset/problem/923/C 1800 字典序最小
 // https://codeforces.com/problemset/problem/1446/C 2100
 // https://codeforces.com/problemset/problem/282/E 2200 数组前缀异或数组后缀的最大值（前后缀不重叠，但这要求可以无视）
+// https://codeforces.com/problemset/problem/1720/D2 2400 转换 
 // https://codeforces.com/problemset/problem/1777/F 2400 启发式合并
+// https://codeforces.com/problemset/problem/1849/F 2700
+// https://codeforces.com/problemset/problem/1055/F 2900
 // https://codeforces.com/problemset/problem/1616/H 3000
-// todo https://codeforces.com/problemset/problem/1055/F
-//  转换 https://codeforces.com/contest/1720/problem/D2
-//  https://codeforces.com/problemset/problem/1849/F
-//  https://www.luogu.com.cn/problem/P10218
-//  异或和 ≥k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
+// https://www.luogu.com.cn/problem/P10218
+// https://acm.hdu.edu.cn/showproblem.php?pid=6955 异或和 ≥k 的最短区间
 
-// 指针写法关闭 GC 可以得到明显加速
+// 指针写法，关闭 GC 可以得到明显加速
+// 如果仍然超时，可以改成纯数组写法
 func init() { debug.SetGCPercent(-1) }
 
 type trie01Node struct {
@@ -151,7 +152,7 @@ func (t *trie01) maxXor(v int) (ans int) {
 // 返回 v 与 trie 上所有数的第 k 大异或值
 // k 从 1 开始
 // 如果 k 超过 trie 中元素个数，返回 0
-// https://www.luogu.com.cn/problem/P5283 [十二省联考 2019] 异或粽子
+// https://www.luogu.com.cn/problem/P5283 [十二省联考 2019] 异或粽子（堆）
 // https://atcoder.jp/contests/abc252/tasks/abc252_h
 func (t *trie01) maxXorKth(v, k int) (ans int) {
 	o := t.root
@@ -216,7 +217,7 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 	return
 }
 
-// 求与 v 异或值 <= limit 的元素个数
+// 求与 v 异或值 <= limit 的元素个数（遍历 v=a[i]，累加，可以得到 limit 的 rank）
 // 核心原理是，当 limit+1 的某一位是 1 的时候，若该位异或值取 0，则后面的位是可以取任意数字的
 // 为什么要这样写呢？如果在 limit 而不是 limit+1 上讨论，就要单独处理走到叶子的情况了（恰好等于 limit）
 // 如果求的是 >= limit，那就用 trie 中元素中个数，减去 < limit 的个数
