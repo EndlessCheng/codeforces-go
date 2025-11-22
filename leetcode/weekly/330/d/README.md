@@ -78,7 +78,7 @@ class Solution:
 
         ans = 0
         less = [0] * (n + 1)
-        for j in range(1, n - 1):
+        for j in range(1, n - 2):
             for x in range(nums[j - 1] + 1, n + 1):
                 less[x] += 1
             for k in range(j + 1, n - 1):
@@ -207,7 +207,7 @@ class Solution:
                 great[k][x] += 1
 
         ans = 0
-        for j in range(1, n - 1):
+        for j in range(1, n - 2):
             for k in range(j + 1, n - 1):
                 x = nums[k]
                 if nums[j] > x:
