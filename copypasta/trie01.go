@@ -12,12 +12,22 @@ import (
 // LC1707 https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/
 // LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
 // LC2479 利用先序遍历的特点 https://leetcode.cn/problems/maximum-xor-of-two-non-overlapping-subtrees/
+// https://codeforces.com/problemset/problem/1847/C 1400
 // https://codeforces.com/problemset/problem/706/D 1800
 // https://codeforces.com/problemset/problem/923/C 1800 字典序最小
+// https://codeforces.com/problemset/problem/2093/G 1900
+// https://codeforces.com/problemset/problem/817/E 2000
+// https://codeforces.com/problemset/problem/842/D 2000
+// https://codeforces.com/problemset/problem/665/E 2100
+// - LC3632 https://leetcode.cn/problems/subarrays-with-xor-at-least-k/ （会员题）
 // https://codeforces.com/problemset/problem/1446/C 2100
 // https://codeforces.com/problemset/problem/282/E 2200 数组前缀异或数组后缀的最大值（前后缀不重叠，但这要求可以无视）
+// https://codeforces.com/problemset/problem/979/D 2200
+// https://codeforces.com/problemset/problem/888/G 2300
 // https://codeforces.com/problemset/problem/1720/D2 2400 转换 
 // https://codeforces.com/problemset/problem/1777/F 2400 启发式合并
+// https://codeforces.com/problemset/problem/1983/F 2500
+// https://codeforces.com/problemset/problem/241/B 2700 求个数以及和
 // https://codeforces.com/problemset/problem/1849/F 2700
 // https://codeforces.com/problemset/problem/1055/F 2900
 // https://codeforces.com/problemset/problem/1616/H 3000
@@ -68,7 +78,7 @@ func (t *trie01) put(v int) *trie01Node {
 	return o
 }
 
-// https://codeforces.com/problemset/problem/282/E
+// https://codeforces.com/problemset/problem/282/E 2200
 // LC1938 https://leetcode.cn/problems/maximum-genetic-difference-query/
 func (t *trie01) del(v int) *trie01Node {
 	o := t.root
