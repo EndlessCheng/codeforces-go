@@ -179,6 +179,7 @@ https://codeforces.com/problemset/problem/224/B 1500 和最小
 https://codeforces.com/problemset/problem/701/C 1500
 https://codeforces.com/problemset/problem/1777/C 1700
 https://codeforces.com/problemset/problem/2093/G 1900
+https://www.luogu.com.cn/problem/P9474 值域滑窗
 
 不定长滑动窗口：上下界
 https://codeforces.com/problemset/problem/1982/C 1200
@@ -262,6 +263,7 @@ LC1180（会员）https://leetcode.cn/problems/count-substrings-with-only-one-di
 LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 - https://atcoder.jp/contests/abc317/tasks/abc317_e
 LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-having-even-product/
+https://codeforces.com/problemset/problem/2094/D 1100
 https://codeforces.com/problemset/problem/2111/C 1100
 https://codeforces.com/problemset/problem/1272/C 1200
 https://codeforces.com/problemset/problem/1343/C 1200
@@ -369,6 +371,14 @@ https://atcoder.jp/contests/arc147/tasks/arc147_e
 https://www.luogu.com.cn/problem/P1016
 https://www.luogu.com.cn/problem/P2127
 https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
+
+区间贪心
+LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ 区间选点问题
+- https://www.luogu.com.cn/problem/P1250
+- https://www.luogu.com.cn/problem/P1645
+- https://www.luogu.com.cn/problem/P1986
+- https://www.luogu.com.cn/problem/P10934
+- https://www.luogu.com.cn/problem/SP116
 
 划分型贪心
 https://codeforces.com/problemset/problem/1969/E 2400
@@ -643,6 +653,8 @@ https://codeforces.com/problemset/problem/1931/C 1000
 https://codeforces.com/problemset/problem/2039/B 1000
 https://codeforces.com/problemset/problem/262/B 1200
 https://codeforces.com/problemset/problem/1364/A 1200
+https://codeforces.com/problemset/problem/1860/B 1200
+https://codeforces.com/problemset/problem/2053/B 1200
 https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
 https://codeforces.com/problemset/problem/2065/C2 1300
@@ -759,6 +771,7 @@ https://codeforces.com/problemset/problem/2063/E 2300
 https://codeforces.com/problemset/problem/749/E 2400
 https://codeforces.com/problemset/problem/915/F 2400
 https://codeforces.com/problemset/problem/1673/E 2500
+https://codeforces.com/problemset/problem/2140/E2 2500 minmax 状压 DP    x = sum_{i=1}^m [x >= i]
 https://codeforces.com/problemset/problem/2004/F 2600
 https://atcoder.jp/contests/abc356/tasks/abc356_e 1506=CF1700
 https://atcoder.jp/contests/abc390/tasks/abc390_f 1801=CF2073
@@ -1307,6 +1320,7 @@ func _() {
 
 	// 前缀和
 	// 模板题 LC303 https://leetcode.cn/problems/range-sum-query-immutable/
+	// https://codeforces.com/problemset/problem/2053/B 1200
 	// https://codeforces.com/problemset/problem/1922/C 1300
 	// https://codeforces.com/problemset/problem/2033/D 1300
 	// https://codeforces.com/problemset/problem/1923/C 1400 构造
@@ -1897,6 +1911,7 @@ func _() {
 	https://codeforces.com/problemset/problem/1700/C 1700
 	https://codeforces.com/problemset/problem/1884/C 1700 结论
 	https://codeforces.com/problemset/problem/1955/E 1700
+	https://codeforces.com/problemset/problem/1707/B 1900 复杂度分析
 	https://codeforces.com/problemset/problem/2037/F 2100
 	https://codeforces.com/problemset/problem/1852/C 2400 差分思想
 	- 一图解释 https://cdn.luogu.com.cn/upload/image_hosting/3k25nf8y.png
