@@ -55,6 +55,7 @@ func cf917C(in io.Reader, out io.Writer) {
 		Fscan(in, &c[i])
 	}
 
+	// 不用 mp 是 1280ms，用 mp 是 280ms，刚好优化 1000ms！
 	mp := make([]int, 1<<k)
 	for i := range mp {
 		if bits.OnesCount(uint(i)) == x {
