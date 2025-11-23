@@ -74,22 +74,20 @@ for i in range(1, MAX_N):
 
 class Solution:
     def countEffective(self, nums: List[int]) -> int:
-        or_all = reduce(or_, nums)
-        for x in nums:
-            or_all |= x
-
         # 优化：如果 nums 只有一种数字，可以把整个数组去掉，按位或 = 0 < or_all
         if len(set(nums)) == 1:
             return 1
 
+        or_all = reduce(or_, nums)
         w = or_all.bit_length()
         u = 1 << w
+
         f = [0] * u
         for x in nums:
             f[x] += 1
         for i in range(w):
             bit = 1 << i  # 避免在循环中反复计算 1 << i
-            if or_all & bit == 0:  # 优化：or_all 中是 0 的比特位无需计算
+            if or_all & bit == 0:  # 优化：or_all 中是 0 但 s 中是 1 的 f[s] 后面容斥用不到，无需计算
                 continue
             s = 0
             while s < u:
@@ -145,7 +143,7 @@ class Solution {
             f[x]++;
         }
         for (int i = 0; i < w; i++) {
-            if ((or >> i & 1) == 0) { // 优化：or 中是 0 的比特位无需计算
+            if ((or >> i & 1) == 0) { // 优化：or 中是 0 但 s 中是 1 的 f[s] 后面容斥用不到，无需计算
                 continue;
             }
             for (int s = 0; s < (1 << w); s++) {
@@ -193,7 +191,7 @@ public:
             f[x]++;
         }
         for (int i = 0; i < w; i++) {
-            if ((or_ >> i & 1) == 0) { // 优化：or_ 中是 0 的比特位无需计算
+            if ((or_ >> i & 1) == 0) { // 优化：or_ 中是 0 但 s 中是 1 的 f[s] 后面容斥用不到，无需计算
                 continue;
             }
             for (int s = 0; s < (1 << w); s++) {
@@ -241,7 +239,7 @@ func countEffective(nums []int) int {
 		f[x]++
 	}
 	for i := range w {
-		if or>>i&1 == 0 { // 优化：or 中是 0 的比特位无需计算
+		if or>>i&1 == 0 { // 优化：or 中是 0 但 s 中是 1 的 f[s] 后面容斥用不到，无需计算
 			continue
 		}
 		for s := 0; s < 1<<w; s++ {
