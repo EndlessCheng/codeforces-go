@@ -129,7 +129,7 @@ public:
             for (int d = lo; d <= hi; d++) {
                 // 当前填的数不是最高位，cmp 才有意义
                 int cmp = is_num ? (d > last_digit) - (d < last_digit) : 0;
-                int w = waviness + (cmp != 0 && cmp == -last_cmp); // cmp 不为 0 时，必须与上一次比大小的结果相反
+                int w = waviness + (cmp * last_cmp < 0);
                 res += dfs(i + 1, w, cmp, d, limit_low && d == lo, limit_high && d == hi);
             }
 
