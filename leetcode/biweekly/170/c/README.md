@@ -24,7 +24,7 @@ $$
 
 所以 $S - \textit{target}$ 必须是偶数。
 
-又由于 $0\le \textit{negS}\le S$，所以还要满足 $-S\le \textit{target} \le S$。
+又由于 $0\le \textit{negS}\le S$，所以还要满足 $-S\le \textit{target} \le S$，即 $|\textit{target}|\le S$。
 
 ⚠**注意**：要让字典序最小，第一个数越小越好。所以负数要填在前面，所以本题是**负数主导**的，应围绕 $\textit{negS}$ 贪心，而不是 $\textit{posS}$。
 
