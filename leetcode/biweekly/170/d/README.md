@@ -20,7 +20,7 @@
 枚举当前填的数字为 $d$，分类讨论：
 
 - 如果当前我们填是最高有效位（或者说，之前没有填过非零数字），那么不产生峰谷，继续递归，$\textit{lastCmp}=0$，$\textit{lastDigit}=d$。累加返回值。
-- 如果之前填过非零数字，那么设 $c$ 为 $d$ 和 $\textit{lastDigit}$ 的大小关系，如果 $c\ne 0$ 且 $c = -\textit{lastCmp}$，那么形成了一个峰或谷，把波动值 $\textit{waviness}$ 加一，继续递归，$\textit{lastCmp}=c$，$\textit{lastDigit}=d$。累加返回值。
+- 如果之前填过非零数字，那么设 $c$ 为 $d$ 和 $\textit{lastDigit}$ 的大小关系，如果 $c\ne 0$ 且 $c = -\textit{lastCmp}$（或者 $c\cdot \textit{lastCmp} = -1$），那么形成了一个峰或谷，把波动值 $\textit{waviness}$ 加一，继续递归，$\textit{lastCmp}=c$，$\textit{lastDigit}=d$。累加返回值。
 - 注意上面的逻辑兼容前导零，所以无需单独处理前导零。
 
 递归边界：如果 $i=n$，那么成功构造出一个数字，这个数字的波动值（峰谷个数）为 $\textit{waviness}$，返回 $\textit{waviness}$。
@@ -50,11 +50,12 @@ class Solution:
             hi = high_s[i] if limit_high else 9
 
             res = 0
+            is_num = not limit_low or i > diff_lh  # 前面是否填过数字
             for d in range(lo, hi + 1):
-                w = waviness
                 # 当前填的数不是最高位，c 才有意义
-                c = 0 if limit_low and i <= diff_lh else (d > last_digit) - (d < last_digit)
-                if c and c == -last_cmp:  # 形成了一个峰或谷
+                c = (d > last_digit) - (d < last_digit) if is_num else 0
+                w = waviness
+                if c * last_cmp < 0:  # 形成了一个峰或谷
                     w += 1
                 res += dfs(i + 1, w, c, d, limit_low and d == lo, limit_high and d == hi)
             return res
@@ -85,10 +86,11 @@ class Solution {
         int hi = limitHigh ? highS[i] - '0' : 9;
 
         long res = 0;
+        boolean isNum = !limitLow || i > diffLh; // 前面是否填过数字
         for (int d = lo; d <= hi; d++) {
             // 当前填的数不是最高位，cmp 才有意义
-            int cmp = limitLow && i <= diffLh ? 0 : Integer.compare(d, lastDigit);
-            int w = waviness + (cmp != 0 && cmp == -lastCmp ? 1 : 0); // cmp 不为 0 时，必须与上一次比大小的结果相反
+            int cmp = isNum ? Integer.compare(d, lastDigit) : 0;
+            int w = waviness + (cmp * lastCmp < 0 ? 1 : 0);
             res += dfs(i + 1, w, cmp, d, limitLow && d == lo, limitHigh && d == hi, lowS, highS, memo);
         }
 
@@ -123,9 +125,10 @@ public:
             int hi = limit_high ? high_s[i] - '0' : 9;
 
             long long res = 0;
+            bool is_num = !limit_low || i > diff_lh; // 前面是否填过数字
             for (int d = lo; d <= hi; d++) {
                 // 当前填的数不是最高位，cmp 才有意义
-                int cmp = limit_low && i <= diff_lh ? 0 : (d > last_digit) - (d < last_digit);
+                int cmp = is_num ? (d > last_digit) - (d < last_digit) : 0;
                 int w = waviness + (cmp != 0 && cmp == -last_cmp); // cmp 不为 0 时，必须与上一次比大小的结果相反
                 res += dfs(i + 1, w, cmp, d, limit_low && d == lo, limit_high && d == hi);
             }
@@ -174,13 +177,14 @@ func totalWaviness(num1, num2 int64) int64 {
 			hi = int(highS[i] - '0')
 		}
 
+		isNum := !limitLow || i > diffLH // 前面是否填过数字
 		for d := lo; d <= hi; d++ {
-			w := waviness
 			c := 0
-			if !limitLow || i > diffLH { // 当前填的数不是最高位
+			if isNum { // 当前填的数不是最高位
 				c = cmp.Compare(d, lastDigit)
 			}
-			if c != 0 && c == -lastCmp { // 形成了一个峰或谷
+			w := waviness
+			if c*lastCmp < 0 { // 形成了一个峰或谷
 				w++
 			}
 			res += dfs(i+1, w, c, d, limitLow && d == lo, limitHigh && d == hi)

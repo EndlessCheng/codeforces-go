@@ -38,13 +38,14 @@ func totalWaviness(num1, num2 int64) int64 {
 			hi = int(highS[i] - '0')
 		}
 
+		isNum := !limitLow || i > diffLH // 前面是否填过数字
 		for d := lo; d <= hi; d++ {
 			w := waviness
 			c := 0
-			if !limitLow || i > diffLH { // 当前填的数不是最高位
+			if isNum { // 当前填的数不是最高位
 				c = cmp.Compare(d, lastDigit)
 			}
-			if c != 0 && c == -lastCmp { // 形成了一个峰或谷
+			if c*lastCmp < 0 { // 形成了一个峰或谷
 				w++
 			}
 			res += dfs(i+1, w, c, d, limitLow && d == lo, limitHigh && d == hi)
