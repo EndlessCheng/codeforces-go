@@ -37,9 +37,9 @@
 ||[1385. 两个数组间的距离值](https://leetcode.cn/problems/find-the-distance-value-between-two-arrays/)|[代码](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/solutions/1595712/by-endlesscheng-1kbp/)|*课后作业|
 ||[2080. 区间内查询数字的频率](https://leetcode.cn/problems/range-frequency-queries/)|[代码](https://leetcode.cn/problems/range-frequency-queries/solution/tong-ji-wei-zhi-er-fen-wei-zhi-by-endles-8l9u/)|*课后作业|
 ||[2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/)|[代码](https://leetcode.cn/problems/count-the-number-of-fair-pairs/solution/er-fen-cha-zhao-de-ling-huo-yun-yong-by-wplbj/)|*课后作业|
-||[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[代码](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|*课后作业|
 ||[875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)|[代码](https://leetcode.cn/problems/koko-eating-bananas/solution/er-fen-da-an-fu-ti-dan-pythonjavacgojsru-eb18/)|*课后作业|
 ||[2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)|[代码](https://leetcode.cn/problems/minimum-time-to-complete-trips/solution/er-fen-da-an-python-yi-xing-gao-ding-by-xwvs8/)|*课后作业|
+||[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[代码](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|*课后作业|
 ||[2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/)|[代码](https://leetcode.cn/problems/maximum-number-of-alloys/solution/er-fen-da-an-fu-ti-dan-by-endlesscheng-3jdr/)|*课后作业|
 ||[2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)|[代码](https://leetcode.cn/problems/minimize-maximum-of-array/solution/liang-chong-zuo-fa-er-fen-da-an-fen-lei-qhee6/)|*课后作业|
 ||[2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)|[代码](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/solution/er-fen-da-an-by-endlesscheng-r418/)|*课后作业|
