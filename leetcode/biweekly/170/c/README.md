@@ -81,7 +81,7 @@ class Solution {
     public int[] lexSmallestNegatedPerm(int n, long target) {
         long mx = (long) n * (n + 1) / 2;
         if (Math.abs(target) > mx || (mx - target) % 2 != 0) {
-            return new int[0];
+            return new int[]{};
         }
         long negS = (mx - target) / 2; // 取负号的元素（的绝对值）之和
 
