@@ -22,9 +22,9 @@
 
 在组合数学中，至多型问题（或者至少型问题）往往比恰好型问题更好算。
 
-下面会把二进制数视作集合，原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+为方便描述，下面把二进制数视作集合，原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
-比如 $\textit{or}=11$（二进制，下同）：
+例如 $\textit{or}=11$（二进制，下同）：
 
 - 首先计算从 $\textit{nums}$ 中选择一个子序列 $b$，满足 $b$ 的按位或是 $11$ 的**子集**的方案数。哪些数可以在 $b$ 中？如果一个数 $\textit{nums}[i]$ 不是 $11$ 的子集，那么参与或运算后，结果必然不是 $11$ 的子集。所以**只有是 $11$ 的子集的数，才能在子序列 $b$ 中**。设 $\textit{nums}$ 有 $f[11]$ 个数是 $11$ 的子集，这些数选或不选都可以，有 $2^{f[11]}$ 种方案。
 - 这 $2^{f[11]}$ 种方案中，有些子序列的按位或不是恰好等于 $11$，有可能是 $10$、$01$ 或者 $00$，需要减掉。
@@ -78,6 +78,11 @@ class Solution:
         for x in nums:
             or_all |= x
 
+        # 优化：如果 nums 只有一种数字，
+        # 那么当这个数大于 0 时，可以把整个数组去掉，得到 OR=0，否则无法去掉任何子序列
+        if len(set(nums)) == 1:
+            return 1 if or_all else 0
+
         mx = or_all.bit_length()
         u = 1 << mx
         f = [0] * u
@@ -109,8 +114,15 @@ class Solution {
     private static final int MOD = 1_000_000_007;
     private static final int MAX_N = 100_001;
     private static final int[] pow2 = new int[MAX_N];
+    private static boolean initialized = false;
 
-    static {
+    // 这样写比 static block 快
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         // 预处理 2 的幂
         pow2[0] = 1;
         for (int i = 1; i < MAX_N; i++) {
@@ -119,6 +131,8 @@ class Solution {
     }
 
     public int countEffective(int[] nums) {
+        init();
+
         int or = 0;
         for (int x : nums) {
             or |= x;
@@ -140,7 +154,6 @@ class Solution {
         long ans = pow2[nums.length]; // 所有子序列的个数
         // 枚举 or 的所有子集（包括空集）
         int sub = or;
-        boolean ok = true;
         do {
             int sign = Integer.bitCount(or ^ sub) % 2 > 0 ? -1 : 1;
             ans -= sign * pow2[f[sub]];
@@ -251,7 +264,8 @@ func countEffective(nums []int) int {
 
 ## 专题训练
 
-见下面动态规划题单的「**§9.5 SOS DP**」。
+1. 数学题单的「**§2.4 容斥原理**」。
+2. 动态规划题单的「**§9.5 SOS DP**」。
 
 ## 分类题单
 
