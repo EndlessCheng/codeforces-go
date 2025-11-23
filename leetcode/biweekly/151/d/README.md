@@ -89,7 +89,7 @@ class Solution {
         // k 改成从 0 开始，方便计算
         k--;
         if (n < f.size() && k >= f.get(n) * (2 - n % 2)) { // n 是偶数的时候，方案数乘以 2
-            return new int[0];
+            return new int[]{};
         }
 
         // cand 表示剩余未填入 ans 的数字
