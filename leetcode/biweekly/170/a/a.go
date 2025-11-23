@@ -7,9 +7,9 @@ import (
 
 // https://space.bilibili.com/206214
 func minimumFlips(num int) int {
-	n := uint32(num)
-	rev := bits.Reverse32(n) >> bits.LeadingZeros32(n)
-	return bits.OnesCount32(n ^ rev)
+	n := uint(num)
+	rev := bits.Reverse(n) >> bits.LeadingZeros(n)
+	return bits.OnesCount(n ^ rev)
 }
 
 func minimumFlips1(n int) (ans int) {

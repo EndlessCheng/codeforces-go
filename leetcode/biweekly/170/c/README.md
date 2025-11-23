@@ -28,7 +28,7 @@ $$
 
 ⚠**注意**：要让字典序最小，第一个数越小越好。所以负数要填在前面，所以本题是**负数主导**的，应围绕 $\textit{negS}$ 贪心，而不是 $\textit{posS}$。
 
-## 贪心构造
+## 字典序贪心
 
 如果 $\textit{negS} > 0$，那么第一个数可以选 $\le \textit{negS}$ 的最大的数 $x$，这样 $-x$ 就是最小的。
 
@@ -50,13 +50,13 @@ $$
 
 一般地，可以用**数学归纳法**证明，我们可以得到 $[0,S]$ 中的任意整数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1fbUKBqEa7/?t=3m54s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def lexSmallestNegatedPerm(self, n: int, target: int) -> List[int]:
         mx = n * (n + 1) // 2
-        if not -mx <= target <= mx or (mx - target) % 2:
+        if abs(target) > mx or (mx - target) % 2:
             return []
         neg_s = (mx - target) // 2  # 取负号的元素（的绝对值）之和
 
@@ -80,7 +80,7 @@ class Solution:
 class Solution {
     public int[] lexSmallestNegatedPerm(int n, long target) {
         long mx = (long) n * (n + 1) / 2;
-        if (target > mx || -target > mx || (mx - target) % 2 != 0) {
+        if (Math.abs(target) > mx || (mx - target) % 2 != 0) {
             return new int[0];
         }
         long negS = (mx - target) / 2; // 取负号的元素（的绝对值）之和
@@ -109,7 +109,7 @@ class Solution {
 public:
     vector<int> lexSmallestNegatedPerm(int n, long long target) {
         long long mx = 1LL * n * (n + 1) / 2;
-        if (target > mx || -target > mx || (mx - target) % 2) {
+        if (abs(target) > mx || (mx - target) % 2) {
             return {};
         }
         long long neg_s = (mx - target) / 2; // 取负号的元素（的绝对值）之和
@@ -171,7 +171,7 @@ func lexSmallestNegatedPerm(n int, target int64) []int {
 
 ## 专题训练
 
-见下面贪心与思维题单的「**§3.1 字典序最小/最大**」和「**六、构造题**」。
+见下面贪心与思维题单的「**§3.1 字典序最小/最大**」。
 
 ## 分类题单
 

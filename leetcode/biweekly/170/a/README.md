@@ -8,7 +8,7 @@
 
 示例 2 在 $i=0$ 和 $i=1$ 处都满足 $s[i]\ne s[n-1-i]$，答案增加两次 $2$，得到答案 $4$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1fbUKBqEa7/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -121,9 +121,9 @@ public:
 
 ```go [sol-Go]
 func minimumFlips(num int) int {
-	n := uint32(num)
-	rev := bits.Reverse32(n) >> bits.LeadingZeros32(n)
-	return bits.OnesCount32(n ^ rev)
+	n := uint(num)
+	rev := bits.Reverse(n) >> bits.LeadingZeros(n)
+	return bits.OnesCount(n ^ rev)
 }
 ```
 
