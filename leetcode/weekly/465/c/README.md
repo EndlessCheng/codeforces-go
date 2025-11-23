@@ -330,7 +330,7 @@ $$
 
 最后 $f[w-1][S]$ 就是 $S$ 的所有子集的对应二进制的最大值。其中 $w$ 是 $\textit{nums}$ 中的最大二进制长度。
 
-代码实现时，$f$ 的第一个维度可以优化掉。
+代码实现时，$f$ 的第一个维度可以优化掉。优化后，只需计算 $S$ 包含 $i$ 的状态。换句话说，计算到 $f[i][S]$ 时，我们没有覆盖 $S$ 不包含 $i$ 的状态 $f[i-1][S\setminus \{i\}]$（值没变）。这意味着**从小到大枚举 $S$ 还是从大到小枚举 $S$ 都可以**。
 
 ⚠**注意**：方法一和方法二的代码很像，只有先枚举 $s$ 还是先枚举 $i$ 的区别，然而完全不一样！如果把求最大值改成求和，方法一的状态转移有重叠，会重复计算，方法二则不会。读者可以类比 [377. 组合总和 Ⅳ](https://leetcode.cn/problems/combination-sum-iv/)（排列）和 [518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/)（组合）的区别，加深体会。
 
@@ -729,9 +729,9 @@ func maxProduct(nums []int) int64 {
 - 时间复杂度：$\mathcal{O}(\min(n^2, n + U\log U))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(U)$。
 
-## 相似题目
+## 专题训练
 
-[2732. 找到矩阵中的好子集](https://leetcode.cn/problems/find-a-good-subset-of-the-matrix/)
+见下面动态规划题单的「**§9.5 SOS DP**」。
 
 ## 分类题单
 
