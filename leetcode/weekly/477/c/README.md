@@ -8,9 +8,9 @@
 
 我们可以先计算 $s$ 的每个前缀（包括空前缀）对应的数字，即 $\textit{preNum} = [0,1,12,123,1234,12345]$。
 
-想一想，如何得到 $34$？
+想一想，如何从这些数中得到 $34$？
 
-我们可以计算 $1234 - 12\cdot 10^2 = 1234-1200 = 34$。其中 $2$ 是子串的长度。
+我们可以计算 $1234 - 12\cdot 10^2 = 1234-1200 = 34$。其中 $2$ 是子串 $34$ 的长度。
 
 一般地，子串 $[l,r]$ 对应的数字为
 
@@ -22,11 +22,11 @@ $$
 
 这意味着我们还需要计算子串中的非零字符个数，代替上式中的 $r-l+1$。
 
-维护把非零字符视作 $1$，计算其前缀和。
+把 $s$ 中的非零字符视作 $1$，计算其前缀和。
 
-注意取模，原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+代码实现时，注意取模。为什么可以在中途取模？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1arUKBbEks/?t=52m5s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
@@ -40,9 +40,9 @@ for i in range(1, MAX_N):
 class Solution:
     def sumAndMultiply(self, s: str, queries: List[List[int]]) -> List[int]:
         n = len(s)
-        sum_d = [0] * (n + 1)  # s 的前缀和
-        pre_num = [0] * (n + 1)  # s 的前缀对应的数字（模 MOD）
-        sum_non_zero = [0] * (n + 1)  # s 的前缀的非零数字个数
+        sum_d = [0] * (n + 1)         # s 的前缀和
+        pre_num = [0] * (n + 1)       # s 的前缀对应的数字（模 MOD）
+        sum_non_zero = [0] * (n + 1)  # s 的前缀中的非零数字个数
         for i, d in enumerate(map(int, s)):
             sum_d[i + 1] = sum_d[i] + d
             pre_num[i + 1] = (pre_num[i] * 10 + d) % MOD if d else pre_num[i]
@@ -50,7 +50,7 @@ class Solution:
 
         ans = []
         for l, r in queries:
-            r += 1  # 注意这里把 r 加一了
+            r += 1  # 避免下面多次计算 r+1
             length = sum_non_zero[r] - sum_non_zero[l]
             x = pre_num[r] - pre_num[l] * pow10[length]
             ans.append(x * (sum_d[r] - sum_d[l]) % MOD)
@@ -62,8 +62,15 @@ class Solution {
     private static final int MOD = 1_000_000_007;
     private static final int MAX_N = 100_001;
     private static final int[] pow10 = new int[MAX_N];
+    private static boolean initialized = false;
 
-    static {
+    // 这样写比 static block 快
+    private void init() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         // 预处理 10 的幂
         pow10[0] = 1;
         for (int i = 1; i < MAX_N; i++) {
@@ -72,24 +79,26 @@ class Solution {
     }
 
     public int[] sumAndMultiply(String s, int[][] queries) {
+        init();
+
         int n = s.length();
         int[] sumD = new int[n + 1];       // s 的前缀和
         int[] preNum = new int[n + 1];     // s 的前缀对应的数字（模 mod）
-        int[] sumNonZero = new int[n + 1]; // s 的前缀的非零数字个数
+        int[] sumNonZero = new int[n + 1]; // s 的前缀中的非零数字个数
         for (int i = 0; i < n; i++) {
             int d = s.charAt(i) - '0';
-            sumD[i + 1] = sumD[i] + d; // s 的前缀和
-            preNum[i + 1] = d > 0 ? (int) ((preNum[i] * 10L + d) % MOD) : preNum[i]; // s 的前缀对应的数字（模 MOD）
-            sumNonZero[i + 1] = sumNonZero[i] + (d > 0 ? 1 : 0); // s 的前缀的非零数字个数
+            sumD[i + 1] = sumD[i] + d;
+            preNum[i + 1] = d > 0 ? (int) ((preNum[i] * 10L + d) % MOD) : preNum[i];
+            sumNonZero[i + 1] = sumNonZero[i] + (d > 0 ? 1 : 0);
         }
 
         int[] ans = new int[queries.length];
         for (int i = 0; i < queries.length; i++) {
             int l = queries[i][0];
-            int r = queries[i][1] + 1; // 注意这里把 r 加一了
+            int r = queries[i][1] + 1; // 注意这里已经把 r 加一了
             int length = sumNonZero[r] - sumNonZero[l];
-            long x = preNum[r] - (long) preNum[l] * pow10[length] % MOD; // 注意结果可能是负数，所以下面 +MOD
-            ans[i] = (int) ((x + MOD) * (sumD[r] - sumD[l]) % MOD);
+            long x = preNum[r] - (long) preNum[l] * pow10[length] % MOD + MOD; // +MOD 保证结果非负
+            ans[i] = (int) (x * (sumD[r] - sumD[l]) % MOD);
         }
         return ans;
     }
@@ -119,16 +128,16 @@ public:
             int d = s[i] - '0';
             sum_d[i + 1] = sum_d[i] + d; // s 的前缀和
             pre_num[i + 1] = d > 0 ? (pre_num[i] * 10LL + d) % MOD : pre_num[i]; // s 的前缀对应的数字（模 MOD）
-            sum_non_zero[i + 1] = sum_non_zero[i] + (d > 0); // s 的前缀的非零数字个数
+            sum_non_zero[i + 1] = sum_non_zero[i] + (d > 0); // s 的前缀中的非零数字个数
         }
 
         vector<int> ans;
         ans.reserve(queries.size()); // 预分配空间
         for (auto& q : queries) {
-            int l = q[0], r = q[1] + 1; // 注意这里把 r 加一了
+            int l = q[0], r = q[1] + 1; // 注意这里已经把 r 加一了
             int length = sum_non_zero[r] - sum_non_zero[l];
-            long long x = pre_num[r] - 1LL * pre_num[l] * pow10[length] % MOD; // 注意结果可能是负数，所以下面 +mod
-            ans.push_back((x + MOD) * (sum_d[r] - sum_d[l]) % MOD);
+            long long x = pre_num[r] - 1LL * pre_num[l] * pow10[length] % MOD + MOD; // +MOD 保证结果非负
+            ans.push_back(x * (sum_d[r] - sum_d[l]) % MOD);
         }
         return ans;
     }
@@ -152,7 +161,7 @@ func sumAndMultiply(s string, queries [][]int) []int {
 	n := len(s)
 	sumD := make([]int, n+1)       // s 的前缀和
 	preNum := make([]int, n+1)     // s 的前缀对应的数字（模 mod）
-	sumNonZero := make([]int, n+1) // s 的前缀的非零数字个数
+	sumNonZero := make([]int, n+1) // s 的前缀中的非零数字个数
 	for i, ch := range s {
 		d := int(ch - '0')
 		sumD[i+1] = sumD[i] + d
@@ -168,8 +177,8 @@ func sumAndMultiply(s string, queries [][]int) []int {
 	for i, q := range queries {
 		l, r := q[0], q[1]+1
 		length := sumNonZero[r] - sumNonZero[l]
-		x := preNum[r] - preNum[l]*pow10[length]%mod // 注意结果可能是负数，所以下面 +mod
-		ans[i] = (x + mod) * (sumD[r] - sumD[l]) % mod
+		x := preNum[r] - preNum[l]*pow10[length]%mod + mod // +mod 保证结果非负
+		ans[i] = x * (sumD[r] - sumD[l]) % mod
 	}
 	return ans
 }
@@ -181,6 +190,10 @@ func sumAndMultiply(s string, queries [][]int) []int {
 
 - 时间复杂度：$\mathcal{O}(n+q)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
+
+## 相似题目
+
+[2156. 查找给定哈希值的子串](https://leetcode.cn/problems/find-substring-with-given-hash-value/)
 
 ## 专题训练
 

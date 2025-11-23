@@ -17,7 +17,7 @@ func sumAndMultiply(s string, queries [][]int) []int {
 	n := len(s)
 	sumD := make([]int, n+1)       // s 的前缀和
 	preNum := make([]int, n+1)     // s 的前缀对应的数字（模 mod）
-	sumNonZero := make([]int, n+1) // s 的前缀的非零数字个数
+	sumNonZero := make([]int, n+1) // s 的前缀中的非零数字个数
 	for i, ch := range s {
 		d := int(ch - '0')
 		sumD[i+1] = sumD[i] + d
@@ -33,8 +33,8 @@ func sumAndMultiply(s string, queries [][]int) []int {
 	for i, q := range queries {
 		l, r := q[0], q[1]+1
 		length := sumNonZero[r] - sumNonZero[l]
-		x := preNum[r] - preNum[l]*pow10[length]%mod // 注意结果可能是负数，所以下面 +mod
-		ans[i] = (x + mod) * (sumD[r] - sumD[l]) % mod
+		x := preNum[r] - preNum[l]*pow10[length]%mod + mod // +mod 保证结果非负
+		ans[i] = x * (sumD[r] - sumD[l]) % mod
 	}
 	return ans
 }

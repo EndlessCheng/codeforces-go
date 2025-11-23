@@ -20,8 +20,6 @@ $s[r]\oplus s[l] = 0$ 意味着 $s[r] = s[l]$。
 - 如果在哈希表中查询到二元组，那么用当前下标减去哈希表中保存的下标，即为子数组长度，更新答案的最大值。
 - 否则，把二元组及当前下标保存到哈希表中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def maxBalancedSubarray(self, nums: List[int]) -> int:
@@ -120,7 +118,7 @@ func maxBalancedSubarray(nums []int) (ans int) {
 
 ## 专题训练
 
-见下面动态规划题单的「**§1.2 前缀和与哈希表**」。
+见下面数据结构题单的「**§1.2 前缀和与哈希表**」。
 
 ## 分类题单
 

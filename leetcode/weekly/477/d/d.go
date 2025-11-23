@@ -21,13 +21,16 @@ func countEffective(nums []int) int {
 		or |= x
 	}
 
-	mx := bits.Len(uint(or))
-	f := make([]int, 1<<mx)
+	w := bits.Len(uint(or))
+	f := make([]int, 1<<w)
 	for _, x := range nums {
 		f[x]++
 	}
-	for i := range mx {
-		for s := 0; s < 1<<mx; s++ {
+	for i := range w {
+		if or>>i&1 == 0 { // 优化：or 中是 0 的比特位无需计算
+			continue
+		}
+		for s := 0; s < 1<<w; s++ {
 			s |= 1 << i
 			f[s] += f[s^1<<i]
 		}

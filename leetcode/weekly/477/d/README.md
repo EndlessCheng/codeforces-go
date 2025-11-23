@@ -61,7 +61,7 @@ $$
 
 代码实现时，注意取模。为什么可以在中途取模？见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1arUKBbEks/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
@@ -78,18 +78,19 @@ class Solution:
         for x in nums:
             or_all |= x
 
-        # 优化：如果 nums 只有一种数字，
-        # 那么当这个数大于 0 时，可以把整个数组去掉，得到 OR=0，否则无法去掉任何子序列
+        # 优化：如果 nums 只有一种数字，可以把整个数组去掉，按位或 = 0 < or_all
         if len(set(nums)) == 1:
-            return 1 if or_all else 0
+            return 1
 
-        mx = or_all.bit_length()
-        u = 1 << mx
+        w = or_all.bit_length()
+        u = 1 << w
         f = [0] * u
         for x in nums:
             f[x] += 1
-        for i in range(mx):
+        for i in range(w):
             bit = 1 << i  # 避免在循环中反复计算 1 << i
+            if or_all & bit == 0:  # 优化：or_all 中是 0 的比特位无需计算
+                continue
             s = 0
             while s < u:
                 s |= bit  # 快速跳到第 i 位是 1 的 s
@@ -138,13 +139,16 @@ class Solution {
             or |= x;
         }
 
-        int mx = 32 - Integer.numberOfLeadingZeros(or);
-        int[] f = new int[1 << mx];
+        int w = 32 - Integer.numberOfLeadingZeros(or);
+        int[] f = new int[1 << w];
         for (int x : nums) {
             f[x]++;
         }
-        for (int i = 0; i < mx; i++) {
-            for (int s = 0; s < (1 << mx); s++) {
+        for (int i = 0; i < w; i++) {
+            if ((or >> i & 1) == 0) { // 优化：or 中是 0 的比特位无需计算
+                continue;
+            }
+            for (int s = 0; s < (1 << w); s++) {
                 s |= 1 << i;
                 f[s] += f[s ^ (1 << i)];
             }
@@ -181,18 +185,18 @@ int init = [] {
 class Solution {
 public:
     int countEffective(vector<int>& nums) {
-        int or_ = 0;
-        for (int x : nums) {
-            or_ |= x;
-        }
+        int or_ = reduce(nums.begin(), nums.end(), 0, bit_or<>());
+        int w = bit_width((uint32_t) or_);
 
-        int mx = bit_width((uint32_t) or_);
-        vector<int> f(1 << mx);
+        vector<int> f(1 << w);
         for (int x : nums) {
             f[x]++;
         }
-        for (int i = 0; i < mx; i++) {
-            for (int s = 0; s < (1 << mx); s++) {
+        for (int i = 0; i < w; i++) {
+            if ((or_ >> i & 1) == 0) { // 优化：or_ 中是 0 的比特位无需计算
+                continue;
+            }
+            for (int s = 0; s < (1 << w); s++) {
                 s |= 1 << i;
                 f[s] += f[s ^ (1 << i)];
             }
@@ -231,13 +235,16 @@ func countEffective(nums []int) int {
 		or |= x
 	}
 
-	mx := bits.Len(uint(or))
-	f := make([]int, 1<<mx)
+	w := bits.Len(uint(or))
+	f := make([]int, 1<<w)
 	for _, x := range nums {
 		f[x]++
 	}
-	for i := range mx {
-		for s := 0; s < 1<<mx; s++ {
+	for i := range w {
+		if or>>i&1 == 0 { // 优化：or 中是 0 的比特位无需计算
+			continue
+		}
+		for s := 0; s < 1<<w; s++ {
 			s |= 1 << i
 			f[s] += f[s^1<<i]
 		}
