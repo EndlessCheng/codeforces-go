@@ -44,7 +44,9 @@ $$
 \sum_{S \subseteq \textit{or}} (-1)^{|\complement_{\textit{or}}S|}2^{f[S]}
 $$
 
-其中 $\complement_{\textit{or}}S$ 表示 $S$ 关于 $\textit{or}$ 的补集，$|\complement_{\textit{or}}S|$ 即这个补集的大小（元素个数），说人话就是：
+其中 $\complement_{\textit{or}}S$ 表示 $S$ 关于 $\textit{or}$ 的补集，$|\complement_{\textit{or}}S|$ 即这个补集的大小（元素个数）。
+
+通俗地说：
 
 - 如果 $S$ 与 $\textit{or}$ 相差偶数个数，那么加上 $2^{f[S]}$。
 - 如果 $S$ 与 $\textit{or}$ 相差奇数个数，那么减去 $2^{f[S]}$。
@@ -102,9 +104,9 @@ class Solution:
         while True:
             p2 = pow2[f[sub]]
             ans -= -p2 if (or_all ^ sub).bit_count() % 2 else p2
-            sub = (sub - 1) & or_all
-            if sub == or_all:
+            if sub == 0:
                 break
+            sub = (sub - 1) & or_all
         return ans % MOD
 ```
 
