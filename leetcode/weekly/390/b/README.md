@@ -19,7 +19,7 @@ $$
 \left\lceil\dfrac{k}{m}\right\rceil-1 = \left\lfloor\dfrac{k-1}{m}\right\rfloor
 $$
 
-次，才能让元素和至少为 $k$。上式可以分类讨论 $k$ 是 $m$ 的倍数，和 $k$ 不是 $m$ 的倍数两种情况证明。
+次，才能让元素和至少为 $k$。上式的证明见 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)。
 
 所以答案为
 
