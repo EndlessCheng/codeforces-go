@@ -26,7 +26,7 @@ $s[r]\oplus s[l] = 0$ 意味着 $s[r] = s[l]$。
 class Solution:
     def maxBalancedSubarray(self, nums: List[int]) -> int:
         ans = 0
-        pos = {(0, 0): -1}  # 空前缀视作 -1
+        pos = {(0, 0): -1}  # 空前缀的位置视作 -1
         xor = diff = 0
         for i, x in enumerate(nums):
             xor ^= x
@@ -44,17 +44,18 @@ class Solution {
     public int maxBalancedSubarray(int[] nums) {
         int n = nums.length;
         int ans = 0;
-        int xorVal = 0;
+        int xor = 0;
         int diff = n; // 保证 diff 非负
         Map<Long, Integer> pos = new HashMap<>();
         // 把 xor 和 diff 合并为一个 long
-        pos.put((long) xorVal << 32 | diff, -1); // 空前缀视作 -1
+        pos.put((long) xor << 32 | diff, -1); // 空前缀的位置视作 -1
         for (int i = 0; i < n; i++) {
-            xorVal ^= nums[i];
+            xor ^= nums[i];
             diff += nums[i] % 2 == 1 ? 1 : -1;
-            long key = (long) xorVal << 32 | diff;
-            if (pos.containsKey(key)) {
-                ans = Math.max(ans, i - pos.get(key));
+            long key = (long) xor << 32 | diff;
+            Integer j = pos.get(key);
+            if (j != null) {
+                ans = Math.max(ans, i - j);
             } else {
                 pos.put(key, i);
             }
@@ -69,14 +70,14 @@ class Solution {
 public:
     int maxBalancedSubarray(vector<int>& nums) {
         int n = nums.size();
-        int ans = 0, xor_val = 0, diff = n; // 保证 diff 非负
+        int ans = 0, xor_ = 0, diff = n; // 保证 diff 非负
         unordered_map<long long, int> pos;
-        // 把 xor 和 diff 合并为一个 long long
-        pos[1LL * xor_val << 32 | diff] = -1; // 空前缀视作 -1
+        // 把 xor_ 和 diff 合并为一个 long long
+        pos[1LL * xor_ << 32 | diff] = -1; // 空前缀的位置视作 -1
         for (int i = 0; i < n; i++) {
-            xor_val ^= nums[i];
+            xor_ ^= nums[i];
             diff += nums[i] % 2 ? 1 : -1;
-            long long key = 1LL * xor_val << 32 | diff;
+            long long key = 1LL * xor_ << 32 | diff;
             if (auto it = pos.find(key); it != pos.end()) {
                 ans = max(ans, i - it->second);
             } else {
@@ -91,12 +92,11 @@ public:
 ```go [sol-Go]
 func maxBalancedSubarray(nums []int) (ans int) {
 	type pair struct{ xor, diff int }
-	pos := map[pair]int{{}: -1} // 空前缀的下标视作 -1
-	xor, diff := 0, 0
+	pos := map[pair]int{{}: -1} // 空前缀的位置视作 -1
+	p := pair{}
 	for i, x := range nums {
-		xor ^= x
-		diff += x%2*2 - 1
-		p := pair{xor, diff}
+		p.xor ^= x
+		p.diff += x%2*2 - 1
 		if j, ok := pos[p]; ok {
 			ans = max(ans, i-j)
 		} else {
