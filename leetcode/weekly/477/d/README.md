@@ -63,6 +63,8 @@ $$
 
 代码实现时，注意取模。为什么可以在中途取模？见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
+**优化**：如果 $\textit{nums}$ 所有元素都相同，那么只有空子序列的按位或比 $\textit{or}$ 小。注意题目保证 $\textit{nums}[i] \ge 1$。
+
 [本题视频讲解](https://www.bilibili.com/video/BV1arUKBbEks/)，欢迎点赞关注~
 
 ```py [sol-Python3]
@@ -76,8 +78,8 @@ for i in range(1, MAX_N):
 
 class Solution:
     def countEffective(self, nums: List[int]) -> int:
-        # 优化：如果 nums 只有一种数字，可以把整个数组去掉，按位或 = 0 < or_all
-        if len(set(nums)) == 1:
+        # 优化：如果 nums 只有一种数字，那么非空子序列的按位或都是 or_all，只有空子序列的按位或比 or_all 小
+        if all(x == nums[0] for x in nums):
             return 1
 
         or_all = reduce(or_, nums)
@@ -135,8 +137,16 @@ class Solution {
         init();
 
         int or = 0;
+        boolean same = true;
         for (int x : nums) {
             or |= x;
+            if (x != nums[0]) {
+                same = false;
+            }
+        }
+        // 优化：如果 nums 只有一种数字，那么非空子序列的按位或都是 or，只有空子序列的按位或比 or 小
+        if (same) {
+            return 1;
         }
 
         int w = 32 - Integer.numberOfLeadingZeros(or);
@@ -185,6 +195,11 @@ int init = [] {
 class Solution {
 public:
     int countEffective(vector<int>& nums) {
+        // 优化：如果 nums 只有一种数字，那么非空子序列的按位或都是 or_，只有空子序列的按位或比 or_ 小
+        if (ranges::all_of(nums, [&](int x) { return x == nums[0]; })) {
+            return 1;
+        }
+
         int or_ = reduce(nums.begin(), nums.end(), 0, bit_or<>());
         int w = bit_width((uint32_t) or_);
 
@@ -231,8 +246,16 @@ func init() {
 
 func countEffective(nums []int) int {
 	or := 0
+	same := true
 	for _, x := range nums {
 		or |= x
+		if x != nums[0] {
+			same = false
+		}
+	}
+	// 优化：如果 nums 只有一种数字，那么非空子序列的按位或都是 or，只有空子序列的按位或比 or 小
+	if same {
+		return 1
 	}
 
 	w := bits.Len(uint(or))
