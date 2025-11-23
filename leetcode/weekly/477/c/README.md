@@ -83,7 +83,7 @@ class Solution {
 
         int n = s.length();
         int[] sumD = new int[n + 1];       // s 的前缀和
-        int[] preNum = new int[n + 1];     // s 的前缀对应的数字（模 mod）
+        int[] preNum = new int[n + 1];     // s 的前缀对应的数字（模 MOD）
         int[] sumNonZero = new int[n + 1]; // s 的前缀中的非零数字个数
         for (int i = 0; i < n; i++) {
             int d = s.charAt(i) - '0';
