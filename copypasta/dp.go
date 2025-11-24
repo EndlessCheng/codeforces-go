@@ -2865,28 +2865,27 @@ func _(abs func(int) int) {
 	//    思路和上面类似，转换成求每个 ai 的补集的 SOS
 	//    注：另一种解法是求 FWT(cnt)[0]
 	// https://www.luogu.com.cn/problem/P6442
+	// - LC3757 https://leetcode.cn/problems/number-of-effective-subsequences/
 	sosDP := func(a []int) []int {
 		// 从子集转移的写法
-		mx := bits.Len(uint(slices.Max(a)))
-		f := make([]int, 1<<mx)
+		w := bits.Len(uint(slices.Max(a)))
+		f := make([]int, 1<<w)
 		for _, v := range a {
 			f[v]++ // 初始值
 		}
-		for i := range mx {
-			for s := 0; s < 1<<mx; s++ {
-				s |= 1 << i // 直接跳到下一个目标位置
-				// 将 s 的子集 s^1<<i 的统计量合并到 s 中
+		for i := range w {
+			for s := 0; s < 1<<w; s++ {
+				s |= 1 << i // 优化：快速跳到 i 位是 1 的 s
 				f[s] += f[s^1<<i]
 			}
 		}
 
 		{
 			// 从超集转移的写法
-			for i := range mx {
-				for s := 1<<mx - 1; s >= 0; s-- {
-					if s>>i&1 == 0 {
-						f[s] += f[s|1<<i]
-					}
+			for i := range w {
+				for s := 1<<w - 1; s >= 0; s-- {
+					s &^= 1 << i // 优化：快速跳到 i 位是 0 的 s
+					f[s] += f[s|1<<i]
 				}
 			}
 		}
@@ -2896,10 +2895,10 @@ func _(abs func(int) int) {
 			// 对于位运算的题，直接把 a[i] 当作 T
 			// https://codeforces.com/problemset/problem/1554/B
 			type pair struct{ mx, mx2 int }
-			f := make([]pair, 1<<mx)
+			f := make([]pair, 1<<w)
 			// f[a[i]] = i ...
-			for i := range mx {
-				for s := 0; s < 1<<mx; s++ {
+			for i := range w {
+				for s := 0; s < 1<<w; s++ {
 					s |= 1 << i
 					p, q := f[s], f[s^1<<i]
 					if q.mx > p.mx {
@@ -3108,7 +3107,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/946/E 2200 重排成回文串
 	*/
 
-	// 上下界数位 DP（v2.1 模板）
+	// 上下界数位 DP（v2.1 模板），计数型
 	// 比如统计恰好包含 target 个 0 的数字个数，需要区分【前导零】和【数字中的零】，前导零不能计入，而数字中的零需要计入
 	// 由于 limitLow && i < diffLH 等价于 !isNum，所以 isNum 是多余的
 	//
@@ -3168,6 +3167,8 @@ func _(abs func(int) int) {
 				res = dfs(i+1, cnt0, true, false)
 				d = 1
 			}
+
+			//preNum := !limitLow || i > diffLH // 前面是否填了数字
 			for ; d <= hi; d++ {
 				c0 := cnt0
 				if d == 0 {
@@ -3289,6 +3290,80 @@ func _(abs func(int) int) {
 		return ans
 	}
 
+	// 上下界数位 DP（v2.1 模板），价值总和型
+	// 每个元素 x 有一个对应的价值 f(x)，比如 f(x) = x，或者 f(x) = x 中的峰谷个数
+	// 返回 [low, high] 中的所有元素的价值总和
+	// https://codeforces.com/problemset/problem/1073/E 2300
+	// LC3753 https://leetcode.cn/problems/total-waviness-of-numbers-in-range-ii/
+	digitDPContribution := func(low, high int, k int) int {
+		lowS := strconv.Itoa(low)
+		highS := strconv.Itoa(high)
+		n := len(highS)
+		diffLH := n - len(lowS)
+		type pair struct{ cnt, sum int }
+		memo := make([][]pair, n)
+		for i := range memo {
+			memo[i] = make([]pair, 1<<10)
+			for j := range memo[i] {
+				memo[i][j].cnt = -1
+			}
+		}
+
+		var dfs func(int, int, bool, bool) pair
+		dfs = func(i, mask int, limitLow, limitHigh bool) (res pair) {
+			if i == n {
+				// 不合法就直接 return
+
+				// 合法
+				return pair{1, 0}
+			}
+			if !limitLow && !limitHigh {
+				dv := &memo[i][mask]
+				if dv.cnt >= 0 {
+					return *dv
+				}
+				defer func() { *dv = res }()
+			}
+
+			lo := 0
+			if limitLow && i >= diffLH {
+				lo = int(lowS[i-diffLH] - '0')
+			}
+			hi := 9 // 十进制
+			if limitHigh {
+				hi = int(highS[i] - '0')
+			}
+
+			d := lo
+			// 如果前导零不影响答案，可以去掉这个 if block
+			if limitLow && i < diffLH {
+				// 不填数字，参数不变
+				res = dfs(i+1, mask, true, false)
+				d = 1
+			}
+
+			for ; d <= hi; d++ {
+				newMask := mask | 1<<d
+				if bits.OnesCount(uint(newMask)) > k { // 不合法
+					continue
+				}
+				sub := dfs(i+1, newMask,
+					limitLow && d == lo, limitHigh && d == hi)
+				res.cnt = (res.cnt + sub.cnt) % mod
+				res.sum = (res.sum + sub.sum) % mod
+				// if d 合法
+				{
+					//v := 1
+					v := d * int(math.Pow10(n-1-i)) % mod
+					res.sum = (res.sum + v*sub.cnt) % mod
+				}
+			}
+			return
+		}
+		ans := dfs(0, 0, true, true).sum
+		return ans
+	}
+
 	// 只能从低到高计算的场景
 	// 各个位的约束不是互相独立，涉及借位、前导零
 	// https://leetcode.cn/problems/count-no-zero-pairs-that-sum-to-n/
@@ -3387,52 +3462,6 @@ func _(abs func(int) int) {
 			return
 		}
 		return f(0, 0, 1)
-	}
-
-	// 若需要计算的不是合法数字个数，而是合法数字之和，则需要在计算时考虑单个数位的贡献
-	// 以下代码以 https://codeforces.com/problemset/problem/1073/E 为例
-	calcSum := func(s string, k int) int {
-		n := len(s)
-		type pair struct{ cnt, sum int }
-		memo := make([][1 << 10]pair, n)
-		for i := range memo {
-			for j := range memo[i] {
-				memo[i][j] = pair{-1, -1}
-			}
-		}
-		var f func(int, uint16, bool, bool) pair
-		f = func(p int, mask uint16, limitUp, fill bool) (res pair) {
-			if p == n {
-				if !fill {
-					return
-				}
-				return pair{1, 0}
-			}
-			if !limitUp && fill {
-				dv := &memo[p][mask]
-				if dv.cnt >= 0 {
-					return *dv
-				}
-				defer func() { *dv = res }()
-			}
-			up := 9
-			if limitUp {
-				up = int(s[p] & 15)
-			}
-			for d := 0; d <= up; d++ {
-				tmp := mask
-				if fill || d > 0 {
-					tmp |= 1 << d
-				}
-				if bits.OnesCount16(tmp) <= k {
-					pr := f(p+1, tmp, limitUp && d == up, fill || d > 0)
-					res.cnt = (res.cnt + pr.cnt) % mod
-					res.sum = (res.sum + int(math.Pow10(n-1-p))%mod*pr.cnt%mod*int(d) + pr.sum) % mod
-				}
-			}
-			return
-		}
-		return f(0, 0, true, false).sum
 	}
 
 	// 二维数位 DP
@@ -4878,7 +4907,7 @@ func _(abs func(int) int) {
 		subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
 		// 数位 DP
-		digitDP, digitDP2, digitDPRightToLeft, digitDPRightToLeft2, calcSum, digitDP2D, kth666,
+		digitDP, digitDP2, digitDPContribution, digitDPRightToLeft, digitDPRightToLeft2, digitDP2D, kth666,
 
 		// 倍增
 		binaryLifting, binaryLifting2,
