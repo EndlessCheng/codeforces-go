@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func goodSubsetofBinaryMatrix(grid [][]int) []int {
+func goodSubsetofBinaryMatrix1(grid [][]int) []int {
 	n := len(grid[0])
 	maskToIdx := make([]int, 1<<n)
 	for i := range maskToIdx {
@@ -32,7 +32,7 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 	return nil
 }
 
-func goodSubsetofBinaryMatrix1(grid [][]int) []int {
+func goodSubsetofBinaryMatrix(grid [][]int) []int {
 	n := len(grid[0])
 	f := make([]int, 1<<n)
 	for i := range f {
@@ -50,11 +50,9 @@ func goodSubsetofBinaryMatrix1(grid [][]int) []int {
 	}
 
 	u := 1<<n - 1
-	for s := 1; s < u; s++ {
-		for b := 0; b < n; b++ {
-			if s>>b&1 == 0 {
-				continue
-			}
+	for b := range n {
+		for s := 1; s < u; s++ {
+			s |= 1 << b
 			f[s] = max(f[s], f[s^1<<b])
 			i := f[s]
 			if i < 0 {

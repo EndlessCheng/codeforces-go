@@ -146,8 +146,6 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 
 如何枚举一个集合的子集？请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
-> 截至本文发布时，该方法的 Python 和 Java 实现可以击败 100%。
-
 ```py [sol-Python3]
 class Solution:
     def goodSubsetofBinaryMatrix(self, grid: List[List[int]]) -> List[int]:
@@ -277,36 +275,32 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 - 时间复杂度：$\mathcal{O}(mn+3^n)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。由于元素个数为 $k$ 的集合有 $C(n,k)$ 个，其子集有 $2^k$ 个，根据二项式定理，$\sum\limits_{k=0}^n C(n,k)2^k = (2+1)^n = 3^n$，所以二重循环的时间复杂度为 $O(3^n)$。
 - 空间复杂度：$\mathcal{O}(2^n)$。
 
-## 方法三：SOSDP（选读）
-
-⚠**提醒**：该方法为竞赛算法，阅读前最好有一些状压 DP 的经验。
+## 方法三：SOS DP
 
 回顾方法二，相当于寻找一个**子集的子集** $Y$，满足 $\textit{maskToIdx}[Y]\ge 0$。
 
-这可以用 **SOSDP**（Sum over Subsets Dynamic Programming）更快地计算出来。
+这可以用 **SOS DP**（Sum over Subsets Dynamic Programming）更快地计算出来。
 
-设全集 $U=\{0,1,2,\cdots,n-1\}$。
+原理见 [3670 我的题解](https://leetcode.cn/problems/maximum-product-of-two-integers-with-no-common-bits/solutions/3768219/mo-ban-gao-wei-qian-zhui-he-sos-dppython-78fz/) 的方法二。
+
+设全集 $U=\{0,1,2,\ldots,n-1\}$。
 
 设 $S$ 为 $U$ 的子集，$f[S]$ 定义如下：
 
 - 如果 $S$ 不存在子集 $Y$，满足 $\textit{maskToIdx}[Y]\ge 0$，则 $f[S]=-1$。
 - 如果 $S$ 存在子集 $Y$，满足 $\textit{maskToIdx}[Y]\ge 0$，则 $f[S]$ 等于任意满足要求的 $\textit{maskToIdx}[Y]$。
 
-为方便编程，不妨取最大值，即定义
+为方便实现，不妨取最大值，即定义
 
 $$
 f[S] = \max\limits_{Y\subseteq S} \textit{maskToIdx}[Y]
 $$
 
-先来说怎么用 $f[S]$ 计算答案。我们可以枚举 $U$ 的所有非空真子集 $S$，如果 $f[S]\ge 0$ 且 $\textit{maskToIdx}[\complement_US]\ge 0$，根据 $f$ 的定义，这意味着 $S$ 的某个子集的 $\textit{maskToIdx}$ 值和补集 $\complement_US$ 的 $\textit{maskToIdx}$ 值均为非负数，且这两个集合不相交，符合要求，返回答案。
-
-然后来说怎么递推计算 $f[S]$。我们可以枚举 $S$ 中的元素 $b$，从 $S$ 中去掉 $b$，问题规模变小，这样就可以递推计算了，即
-
-$$
-f[S] = \max\limits_{b\in S} f[S\setminus \{b\}]
-$$
-
 初始值 $f[i] = \textit{maskToIdx}[i]$。
+
+其余同 3670 题。
+
+怎么用 $f[S]$ 计算答案？我们可以枚举 $U$ 的所有非空真子集 $S$，如果 $f[S]\ge 0$ 且 $\textit{maskToIdx}[\complement_US]\ge 0$，根据 $f$ 的定义，这意味着 $S$ 的某个子集的 $\textit{maskToIdx}$ 值和补集 $\complement_US$ 的 $\textit{maskToIdx}$ 值均为非负数，且这两个集合不相交，符合要求，返回答案。
 
 代码实现时，可以把 $\textit{maskToIdx}$ 去掉，直接在遍历 $\textit{grid}$ 的过程中初始化 $f$。
 
@@ -324,8 +318,8 @@ class Solution:
             f[mask] = i
 
         u = (1 << n) - 1
-        for s in range(1, u):
-            for b in range(n):
+        for b in range(n):
+            for s in range(1, u):
                 if (s >> b & 1) == 0:
                     continue
                 i = f[s] = max(f[s], f[s ^ (1 << b)])
@@ -355,11 +349,9 @@ class Solution {
         }
 
         int u = (1 << n) - 1;
-        for (int s = 1; s < u; s++) {
-            for (int b = 0; b < n; b++) {
-                if ((s >> b & 1) == 0) {
-                    continue;
-                }
+        for (int b = 0; b < n; b++) {
+            for (int s = 1; s < u; s++) {
+                s |= 1 << b;
                 f[s] = Math.max(f[s], f[s ^ (1 << b)]);
                 int i = f[s];
                 if (i < 0) {
@@ -394,11 +386,9 @@ public:
         }
 
         int u = (1 << n) - 1;
-        for (int s = 1; s < u; s++) {
-            for (int b = 0; b < n; b++) {
-                if ((s >> b & 1) == 0) {
-                    continue;
-                }
+        for (int b = 0; b < n; b++) {
+            for (int s = 1; s < u; s++) {
+                s |= 1 << b;
                 f[s] = max(f[s], f[s ^ (1 << b)]);
                 int i = f[s];
                 if (i < 0) {
@@ -434,11 +424,9 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 	}
 
 	u := 1<<n - 1
-	for s := 1; s < u; s++ {
-		for b := 0; b < n; b++ {
-			if s>>b&1 == 0 {
-				continue
-			}
+	for b := range n {
+		for s := 1; s < u; s++ {
+			s |= 1 << b
 			f[s] = max(f[s], f[s^1<<b])
 			i := f[s]
 			if i < 0 {
@@ -461,17 +449,20 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
