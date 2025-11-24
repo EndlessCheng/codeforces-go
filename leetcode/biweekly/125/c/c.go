@@ -27,7 +27,6 @@ func countPairsOfConnectableServers(edges [][]int, signalSpeed int) []int {
 					dfs(e.to, x, sum+e.wt)
 				}
 			}
-			return
 		}
 		sum := 0
 		for _, e := range gi {
