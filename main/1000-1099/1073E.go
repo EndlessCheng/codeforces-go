@@ -5,63 +5,65 @@ import (
 	"io"
 	"math"
 	"math/bits"
-	"strconv"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF1073E(in io.Reader, out io.Writer) {
+// https://github.com/EndlessCheng
+func cf1073E(in io.Reader, out io.Writer) {
 	const mod = 998244353
-	var l, r int64
+	var lowS, highS string
 	var k int
-	Fscan(in, &l, &r, &k)
-	calc := func(s string) int64 {
-		n := len(s)
-		type pair struct{ cnt, sum int64 }
-		dp := make([][1024]pair, n)
-		for i := range dp {
-			for j := range dp[i] {
-				dp[i][j] = pair{-1, -1}
-			}
+	Fscan(in, &lowS, &highS, &k)
+	n := len(highS)
+	diffLH := n - len(lowS)
+	type pair struct{ num, sum int }
+	memo := make([][1 << 10]pair, n)
+	for i := range memo {
+		for j := range memo[i] {
+			memo[i][j].num = -1
 		}
-		var f func(int, uint16, bool, bool) pair
-		f = func(p int, mask uint16, limit, isNum bool) (res pair) {
-			if p == n {
-				if !isNum {
-					return
-				}
-				return pair{1, 0}
-			}
-			if !limit && isNum {
-				dv := &dp[p][mask]
-				if dv.cnt >= 0 {
-					return *dv
-				}
-				defer func() { *dv = res }()
-			}
-			up := 9
-			if limit {
-				up = int(s[p] & 15)
-			}
-			for ch := 0; ch <= up; ch++ {
-				tmp := mask
-				if isNum || ch > 0 {
-					tmp |= 1 << ch
-				}
-				if bits.OnesCount16(tmp) <= k {
-					pr := f(p+1, tmp, limit && ch == up, isNum || ch > 0)
-					res.cnt = (res.cnt + pr.cnt) % mod
-					res.sum = (res.sum + int64(math.Pow10(n-1-p))%mod*pr.cnt%mod*int64(ch) + pr.sum) % mod
-				}
-			}
-			return
-		}
-		return f(0, 0, true, false).sum
 	}
-	ansLower := calc(strconv.FormatInt(l-1, 10))
-	ansUpper := calc(strconv.FormatInt(r, 10))
-	ans := ansUpper - ansLower
-	ans = (ans%mod + mod) % mod
-	Fprint(out, ans)
+
+	var dfs func(int, int, bool, bool) pair
+	dfs = func(i, mask int, limitLow, limitHigh bool) (res pair) {
+		if i == n {
+			return pair{1, 0}
+		}
+		if !limitLow && !limitHigh {
+			dv := &memo[i][mask]
+			if dv.num >= 0 {
+				return *dv
+			}
+			defer func() { *dv = res }()
+		}
+
+		lo := 0
+		if limitLow && i >= diffLH {
+			lo = int(lowS[i-diffLH] - '0')
+		}
+		hi := 9
+		if limitHigh {
+			hi = int(highS[i] - '0')
+		}
+
+		d := lo
+		if limitLow && i < diffLH {
+			res = dfs(i+1, 0, true, false)
+			d = 1
+		}
+
+		for ; d <= hi; d++ {
+			newMask := mask | 1<<d
+			if bits.OnesCount(uint(newMask)) > k {
+				continue
+			}
+			sub := dfs(i+1, newMask, limitLow && d == lo, limitHigh && d == hi)
+			res.num = (res.num + sub.num) % mod
+			v := d * int(math.Pow10(n-1-i)) % mod
+			res.sum = (res.sum + sub.sum + v*sub.num) % mod
+		}
+		return
+	}
+	Fprint(out, dfs(0, 0, true, true).sum)
 }
 
-//func main() { CF1073E(os.Stdin, os.Stdout) }
+//func main() { cf1073E(os.Stdin, os.Stdout) }
