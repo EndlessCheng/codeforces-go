@@ -4,7 +4,7 @@
 
 [数位 DP v2.0 模板讲解](https://www.bilibili.com/video/BV1Fg4y1Q7wv/?t=31m28s)（上下界数位 DP）
 
-## 思路
+## 写法一：波动值作为参数
 
 在递归的过程中，我们需要知道：
 
@@ -199,6 +199,208 @@ func totalWaviness(num1, num2 int64) int64 {
 
 - 时间复杂度：$\mathcal{O}(D^2n^2)$，其中 $n = \mathcal{O}(\log \textit{num}_2)$ 是 $\textit{num}_2$ 的十进制长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(Dn^2)$，单个状态的计算时间为 $\mathcal{O}(D)$，所以总的时间复杂度为 $\mathcal{O}(D^2n^2)$。
 - 空间复杂度：$\mathcal{O}(Dn^2)$。
+
+## 写法二：贡献法
+
+去掉 $\textit{dfs}$ 中的 $\textit{waviness}$ 参数，写在返回值中。也就是**自底向上**计算所有 $\textit{waviness}$ 的总和。
+
+回想一下如何统计一棵二叉树的节点个数：
+
+- 递归左子树，拿到左子树的节点个数 $\textit{leftSize}$。
+- 递归右子树，拿到右子树的节点个数 $\textit{rightSize}$。
+- 加上当前节点（$1$ 个），得到当前子树的节点个数 $\textit{leftSize} + \textit{rightSize} + 1$。
+
+本题如果只考虑每个数位怎么填，可以视作一棵十叉树。
+
+统计波动值的总和：
+
+- 递归子树，累加子树中产生的波动值。
+- 对于当前数位 $i$，如果 $i-2,i-1,i$ 产生了一个峰谷，那么这个峰谷会对后面所有剩余数位的填法都**贡献**一次。比如剩余数位有 $42$ 种填法，那么这 $42$ 个数都在 $i-2,i-1,i$ 处产生了一个峰谷，所以波动值增加 $42$，累加到 $\textit{dfs}$ 的返回值中。
+
+从上面的讨论中，我们还需要知道剩余数位有多少种填法，**每种填法都对应着十叉树的一个叶子**。虽然本题数位可以随便填没有特殊的约束，但为了代码的可扩展性，我把剩余数位的合法填法也作为返回值。
+
+也就是说，$\textit{dfs}$ 返回两个数，第一个数是波动值，第二个数是剩余数位的合法填法方案数。这个方案数的计算方式与统计十叉树的**叶子**个数的计算方式是一样的。
+
+```py [sol-Python3]
+class Solution:
+    def totalWaviness(self, num1: int, num2: int) -> int:
+        low_s = list(map(int, str(num1)))  # 避免在 dfs 中频繁调用 int()
+        high_s = list(map(int, str(num2)))
+        n = len(high_s)
+        diff_lh = n - len(low_s)
+
+        # dfs 返回两个数：子树波动值总和，子树合法数字个数
+        @cache
+        def dfs(i: int, last_cmp: int, last_digit: int, limit_low: bool, limit_high: bool) -> Tuple[int, int]:
+            if i == n:
+                return 0, 1  # 本题无特殊约束，能递归到终点的都是合法数字
+
+            lo = low_s[i - diff_lh] if limit_low and i >= diff_lh else 0
+            hi = high_s[i] if limit_high else 9
+
+            waviness_sum = num_cnt = 0
+            is_num = not limit_low or i > diff_lh  # 前面是否填过数字
+            for d in range(lo, hi + 1):
+                # 当前填的数不是最高位，c 才有意义
+                c = (d > last_digit) - (d < last_digit) if is_num else 0
+                sub_waviness_sum, sub_num_cnt = dfs(i + 1, c, d, limit_low and d == lo, limit_high and d == hi)
+                waviness_sum += sub_waviness_sum  # 累加子树的波动值
+                num_cnt += sub_num_cnt  # 累加子树的合法数字个数
+                if c * last_cmp < 0:  # 形成了一个峰或谷
+                    waviness_sum += sub_num_cnt  # 这个峰谷会出现在 sub_num_cnt 个数字中
+            return waviness_sum, num_cnt
+
+        return dfs(0, 0, 0, True, True)[0]
+```
+
+```java [sol-Java]
+class Solution {
+    public long totalWaviness(long num1, long num2) {
+        char[] lowS = Long.toString(num1).toCharArray();
+        char[] highS = Long.toString(num2).toCharArray();
+        int n = highS.length;
+        long[][][][] memo = new long[n][3][10][];
+        return dfs(0, 0, 0, true, true, lowS, highS, memo)[0];
+    }
+
+    // dfs 返回两个数：子树波动值总和，子树合法数字个数
+    private long[] dfs(int i, int lastCmp, int lastDigit, boolean limitLow, boolean limitHigh, char[] lowS, char[] highS, long[][][][] memo) {
+        if (i == highS.length) {
+            return new long[]{0, 1}; // 本题无特殊约束，能递归到终点的都是合法数字
+        }
+        if (!limitLow && !limitHigh && memo[i][lastCmp + 1][lastDigit] != null) {
+            return memo[i][lastCmp + 1][lastDigit];
+        }
+
+        int diffLh = highS.length - lowS.length;
+        int lo = limitLow && i >= diffLh ? lowS[i - diffLh] - '0' : 0;
+        int hi = limitHigh ? highS[i] - '0' : 9;
+
+        long wavinessSum = 0;
+        long numCnt = 0;
+        boolean isNum = !limitLow || i > diffLh; // 前面是否填过数字
+        for (int d = lo; d <= hi; d++) {
+            // 当前填的数不是最高位，cmp 才有意义
+            int cmp = isNum ? Integer.compare(d, lastDigit) : 0;
+            long[] sub = dfs(i + 1, cmp, d, limitLow && d == lo, limitHigh && d == hi, lowS, highS, memo);
+            wavinessSum += sub[0]; // 累加子树的波动值
+            numCnt += sub[1]; // 累加子树的合法数字个数
+            if (cmp * lastCmp < 0) { // 形成了一个峰或谷
+                wavinessSum += sub[1]; // 这个峰谷会出现在 sub[1] 个数字中
+            }
+        }
+
+        long[] res = new long[]{wavinessSum, numCnt};
+        if (!limitLow && !limitHigh) {
+            memo[i][lastCmp + 1][lastDigit] = res;
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long totalWaviness(long long num1, long long num2) {
+        string low_s = to_string(num1);
+        string high_s = to_string(num2);
+        int n = high_s.size();
+        int diff_lh = n - low_s.size();
+        vector<array<array<pair<long long, long long>, 10>, 3>> memo(n);
+
+        // dfs 返回两个数：子树波动值总和，子树合法数字个数
+        auto dfs = [&](this auto&& dfs, int i, int last_cmp, int last_digit, bool limit_low, bool limit_high) -> pair<long long, long long> {
+            if (i == n) {
+                return {0, 1}; // 本题无特殊约束，能递归到终点的都是合法数字
+            }
+            auto& ref = memo[i][last_cmp + 1][last_digit];
+            if (!limit_low && !limit_high && ref.second) {
+                return ref;
+            }
+
+            int lo = limit_low && i >= diff_lh ? low_s[i - diff_lh] - '0' : 0;
+            int hi = limit_high ? high_s[i] - '0' : 9;
+
+            long long waviness_sum = 0, num_cnt = 0;
+            bool is_num = !limit_low || i > diff_lh; // 前面是否填过数字
+            for (int d = lo; d <= hi; d++) {
+                // 当前填的数不是最高位，cmp 才有意义
+                int cmp = is_num ? (d > last_digit) - (d < last_digit) : 0;
+                auto [sub_waviness_sum, sub_num_cnt] = dfs(i + 1, cmp, d, limit_low && d == lo, limit_high && d == hi);
+                waviness_sum += sub_waviness_sum; // 累加子树的波动值
+                num_cnt += sub_num_cnt; // 累加子树的合法数字个数
+                if (cmp * last_cmp < 0) { // 形成了一个峰或谷
+                    waviness_sum += sub_num_cnt; // 这个峰谷会出现在 sub_num_cnt 个数字中
+                }
+            }
+
+            pair<long long, long long> res = {waviness_sum, num_cnt};
+            if (!limit_low && !limit_high) {
+                ref = res;
+            }
+            return res;
+        };
+
+        return dfs(0, 0, 0, true, true).first;
+    }
+};
+```
+
+```go [sol-Go]
+func totalWaviness(num1, num2 int64) int64 {
+	lowS := strconv.FormatInt(num1, 10)
+	highS := strconv.FormatInt(num2, 10)
+	n := len(highS)
+	diffLH := n - len(lowS)
+	type pair struct{ wavinessSum, numCnt int }
+	memo := make([][3][10]pair, n)
+
+	var dfs func(int, int, int, bool, bool) pair
+	dfs = func(i, lastCmp, lastDigit int, limitLow, limitHigh bool) (res pair) {
+		if i == n {
+			return pair{0, 1} // 本题无特殊约束，能递归到终点的都是合法数字
+		}
+		if !limitLow && !limitHigh {
+			p := &memo[i][lastCmp+1][lastDigit]
+			if p.numCnt > 0 {
+				return *p
+			}
+			defer func() { *p = res }()
+		}
+
+		lo := 0
+		if limitLow && i >= diffLH {
+			lo = int(lowS[i-diffLH] - '0')
+		}
+		hi := 9
+		if limitHigh {
+			hi = int(highS[i] - '0')
+		}
+
+		isNum := !limitLow || i > diffLH // 前面是否填过数字
+		for d := lo; d <= hi; d++ {
+			c := 0
+			if isNum { // 当前填的数不是最高位
+				c = cmp.Compare(d, lastDigit)
+			}
+			sub := dfs(i+1, c, d, limitLow && d == lo, limitHigh && d == hi)
+			res.wavinessSum += sub.wavinessSum // 累加子树的波动值
+			res.numCnt += sub.numCnt // 累加子树的合法数字个数
+			if c*lastCmp < 0 { // 形成了一个峰或谷
+				res.wavinessSum += sub.numCnt // 这个峰谷会出现在 sub.numCnt 个数字中
+			}
+		}
+		return
+	}
+	return int64(dfs(0, 0, 0, true, true).wavinessSum)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(D^2n)$，其中 $n = \mathcal{O}(\log \textit{num}_2)$ 是 $\textit{num}_2$ 的十进制长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(Dn)$，单个状态的计算时间为 $\mathcal{O}(D)$，所以总的时间复杂度为 $\mathcal{O}(D^2n)$。
+- 空间复杂度：$\mathcal{O}(Dn)$。
 
 ## 专题训练
 
