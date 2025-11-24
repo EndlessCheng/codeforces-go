@@ -8,7 +8,6 @@ import (
 
 // https://github.com/EndlessCheng
 func cf1921D(in io.Reader, out io.Writer) {
-	var T, n, m int
 	f := func(n int) []int {
 		a := make([]int, n+1)
 		for i := 1; i <= n; i++ {
@@ -20,6 +19,7 @@ func cf1921D(in io.Reader, out io.Writer) {
 		}
 		return a
 	}
+	var T, n, m int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m)
 		sa, sb := f(n), f(m)
