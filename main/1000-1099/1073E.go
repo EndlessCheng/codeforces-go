@@ -15,11 +15,11 @@ func cf1073E(in io.Reader, out io.Writer) {
 	Fscan(in, &lowS, &highS, &k)
 	n := len(highS)
 	diffLH := n - len(lowS)
-	type pair struct{ num, sum int }
+	type pair struct{ cnt, sum int }
 	memo := make([][1 << 10]pair, n)
 	for i := range memo {
 		for j := range memo[i] {
-			memo[i][j].num = -1
+			memo[i][j].cnt = -1
 		}
 	}
 
@@ -30,7 +30,7 @@ func cf1073E(in io.Reader, out io.Writer) {
 		}
 		if !limitLow && !limitHigh {
 			dv := &memo[i][mask]
-			if dv.num >= 0 {
+			if dv.cnt >= 0 {
 				return *dv
 			}
 			defer func() { *dv = res }()
@@ -57,9 +57,9 @@ func cf1073E(in io.Reader, out io.Writer) {
 				continue
 			}
 			sub := dfs(i+1, newMask, limitLow && d == lo, limitHigh && d == hi)
-			res.num = (res.num + sub.num) % mod
+			res.cnt = (res.cnt + sub.cnt) % mod
 			v := d * int(math.Pow10(n-1-i)) % mod
-			res.sum = (res.sum + sub.sum + v*sub.num) % mod
+			res.sum = (res.sum + sub.sum + v*sub.cnt) % mod
 		}
 		return
 	}
