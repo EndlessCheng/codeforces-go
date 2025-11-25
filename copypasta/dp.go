@@ -1255,26 +1255,6 @@ func _(abs func(int) int) {
 		return sumF
 	}
 
-	// 回文串：中心扩展法
-	// 原理见 https://leetcode.cn/problems/palindromic-substrings/solutions/379987/hui-wen-zi-chuan-by-leetcode-solution/
-	// LC647 https://leetcode.cn/problems/palindromic-substrings/
-	// LC2472 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
-	// https://codeforces.com/problemset/problem/557/E
-	// https://ac.nowcoder.com/acm/contest/64272/D
-	palindromeO1Space := func(s string) {
-		n := len(s)
-		// i 为偶数表示奇回文串，i 为奇数表示偶回文串
-		for i := range 2*n - 1 {
-			// 从闭区间 [l,r] 开始向左右扩展
-			l, r := i/2, (i+1)/2
-			for l >= 0 && r < n && s[l] == s[r] {
-				//cnt[r]++
-				l--
-				r++
-			}
-		}
-	}
-
 	// O(n^2) 求每个子串是否是回文的
 	// 一般用于 DP 预处理
 	// LC132 https://leetcode.cn/problems/palindrome-partitioning-ii/
@@ -2853,7 +2833,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1995/D 2300
 	// https://codeforces.com/problemset/problem/449/D 2400 容斥 
 	// https://codeforces.com/problemset/problem/1523/D 2400
-	// https://codeforces.com/problemset/problem/1620/G 2400
+	// https://codeforces.com/problemset/problem/1620/G 2400 容斥
 	// https://codeforces.com/problemset/problem/1679/E 2400
 	// https://codeforces.com/problemset/problem/1903/D2 2500
 	// https://codeforces.com/problemset/problem/1208/F 2600
@@ -4911,7 +4891,7 @@ func _(abs func(int) int) {
 		lcs, lcsCount,
 		lisSlow, lis, lisGetOne, lisAll, lisModify, lisRollback, cntLIS, cntIS, lcis, lcisGetOne, countLIS,
 		distinctSubsequence, distinctSubsequenceWithFixedLength,
-		palindromeO1Space, isPalindrome, minPalindromeCut,
+		isPalindrome, minPalindromeCut,
 
 		// 背包
 		zeroOneKnapsack, zeroOneKnapsackExactlyFull, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,

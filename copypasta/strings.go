@@ -646,6 +646,26 @@ func _() {
 		_ = match
 	}
 
+	// 回文串：中心扩展法
+	// 原理见 https://leetcode.cn/problems/palindromic-substrings/solutions/379987/hui-wen-zi-chuan-by-leetcode-solution/
+	// LC647 https://leetcode.cn/problems/palindromic-substrings/
+	// LC2472 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
+	// https://codeforces.com/problemset/problem/557/E
+	// https://ac.nowcoder.com/acm/contest/64272/D
+	palindromeExpandAroundCenter := func(s string) {
+		n := len(s)
+		// i 为偶数表示奇回文串，i 为奇数表示偶回文串
+		for i := range 2*n - 1 {
+			// 从闭区间 [l,r] 开始向左右扩展
+			l, r := i/2, (i+1)/2
+			for l >= 0 && r < n && s[l] == s[r] {
+				//cnt[r]++
+				l--
+				r++
+			}
+		}
+	}
+	
 	// 最长回文子串 Manacher（马拉车算法）
 	// 视频讲解：https://www.bilibili.com/video/BV1UcyYY4EnQ/
 	// https://blog.csdn.net/synapse7/article/details/18908413
@@ -1352,7 +1372,7 @@ func _() {
 		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
 		isSubseq, subsequenceAutomaton, // 子序列自动机
-		manacher, manacherOdd, manacherEven, // 马拉车
+		palindromeExpandAroundCenter, manacher, manacherOdd, manacherEven, // 中心扩展法、马拉车
 		suffixArray, suffixArrayInt, suffixArrayInt2, // 后缀数组
 		lcpArray,
 	}
