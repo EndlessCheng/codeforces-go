@@ -26,21 +26,12 @@ func p1654() {
 	for _, v := range a {
 		f[v]++
 	}
+	g := slices.Clone(f)
 	for i := range w {
 		for s := 0; s < 1<<w; s++ {
 			s |= 1 << i
 			f[s] += f[s^1<<i]
-		}
-	}
-
-	g := make([]int, 1<<w)
-	for _, v := range a {
-		g[v]++
-	}
-	for i := range w {
-		for s := 1<<w - 1; s >= 0; s-- {
-			s &^= 1 << i
-			g[s] += g[s|1<<i]
+			g[s^1<<i] += g[s]
 		}
 	}
 
