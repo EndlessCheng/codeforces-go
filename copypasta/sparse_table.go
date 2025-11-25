@@ -154,7 +154,7 @@ func newDisjointSparseTable[T any](a []T, op func(T, T) T) disjointSparseTable[T
 // [l,r] 闭区间，下标从 0 开始
 func (s disjointSparseTable[T]) query(l, r int) T {
 	if l > r {
-		panic("l > r")
+		panic("入参不合法：l > r")
 	}
 	if l == r {
 		return s.st[0][l] // % mod
