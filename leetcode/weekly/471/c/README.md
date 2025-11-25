@@ -128,13 +128,13 @@ class Solution {
 
         // 三种字母
         // 把 (x, y) 压缩成一个 long，方便保存至哈希表
-        // (x, y) 变成 (x + n) << 32 | (y + n)，其中 +n 避免出现负数
+        // (x, y) 变成 (x + n) << 20 | (y + n)，其中 +n 避免出现负数
         Map<Long, Integer> pos = new HashMap<>();
-        pos.put((long) n << 32 | n, -1); // 前缀和数组的首项是 0，位置相当于在 -1
+        pos.put((long) n << 20 | n, -1); // 前缀和数组的首项是 0，位置相当于在 -1
         int[] cnt = new int[3];
         for (int i = 0; i < n; i++) {
             cnt[s[i] - 'a']++;
-            long p = (long) (cnt[0] - cnt[1] + n) << 32 | (cnt[1] - cnt[2] + n);
+            long p = (long) (cnt[0] - cnt[1] + n) << 20 | (cnt[1] - cnt[2] + n);
             if (pos.containsKey(p)) {
                 ans = Math.max(ans, i - pos.get(p));
             } else {

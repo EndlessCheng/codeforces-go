@@ -44,13 +44,14 @@ class Solution {
         int ans = 0;
         int xor = 0;
         int diff = n; // 保证 diff 非负
-        Map<Long, Integer> pos = new HashMap<>();
+        Map<Long, Integer> pos = new HashMap<>(n + 1, 1); // 预分配空间
         // 把 xor 和 diff 合并为一个 long
-        pos.put((long) xor << 32 | diff, -1); // 空前缀的位置视作 -1
+        pos.put((long) xor << 20 | diff, -1); // 空前缀的位置视作 -1
         for (int i = 0; i < n; i++) {
             xor ^= nums[i];
-            diff += nums[i] % 2 == 1 ? 1 : -1;
-            long key = (long) xor << 32 | diff;
+            diff += nums[i] % 2 != 0 ? 1 : -1;
+            // 把 xor 和 diff 合并为一个 long
+            long key = (long) xor << 20 | diff;
             Integer j = pos.get(key);
             if (j != null) {
                 ans = Math.max(ans, i - j);
