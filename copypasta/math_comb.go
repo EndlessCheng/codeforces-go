@@ -32,6 +32,7 @@ https://codeforces.com/problemset/problem/617/B 1300
 https://atcoder.jp/contests/abc202/tasks/abc202_d 入门
 https://atcoder.jp/contests/abc178/tasks/abc178_d
 https://codeforces.com/problemset/problem/1879/C 1300
+https://codeforces.com/problemset/problem/131/C 1400
 https://codeforces.com/problemset/problem/677/C 1500
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
@@ -77,6 +78,7 @@ https://codeforces.com/problemset/problem/1838/E 2500
 https://codeforces.com/problemset/problem/140/E 2600 推荐
 https://codeforces.com/problemset/problem/1437/F 2600
 https://codeforces.com/problemset/problem/1924/D 2700 证明方式类似卡特兰数
+https://codeforces.com/problemset/problem/1808/E3 2800 做法不止一种，包括二项式反演
 https://codeforces.com/problemset/problem/425/E 更快的做法 https://chatgpt.com/c/684b7418-ff80-8011-bd87-3a664dfcbb97
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 https://atcoder.jp/contests/abc290/tasks/abc290_f
@@ -424,6 +426,7 @@ func (c *comb) p(n, k int) int {
 // - [3130. 找出所有稳定的二进制数组 II](https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/) 2825
 //    - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
 // https://codeforces.com/problemset/problem/630/K 1500
+// https://codeforces.com/problemset/problem/678/C 1600
 // https://codeforces.com/problemset/problem/1750/D 1800
 // https://codeforces.com/problemset/problem/900/D 2000 因子容斥
 // https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
