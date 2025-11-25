@@ -2832,11 +2832,14 @@ func _(abs func(int) int) {
 	// 给一个全集 U，对 U 的所有子集 S，计算 S 的所有子集 T 之和（这个「和」不一定是加法，可以是其它的满足合并性质的统计量，例如 max 等）
 	// 特别地，对于计算个数的问题，我们可以对每个子集 S，计算有多少个子集 T 包含于 S（如 CF383E）
 	// 核心思路：把 S 的所有子集按照最高位是否为 1 分成两组，每组内部再按照次高位是否为 1 分成两组，依此类推
+	// 【讲解】https://leetcode.cn/problems/maximum-product-of-two-integers-with-no-common-bits/solution/mo-ban-gao-wei-qian-zhui-he-sos-dppython-78fz/
 	// 可以看这篇文章里面的图 https://codeforces.com/blog/entry/45223
 	// 本质理解 https://codeforces.com/blog/entry/72488 Tutorial on Zeta Transform, Mobius Transform and Subset Sum Convolution
 	// Some SOS DP Insights https://codeforces.com/blog/entry/105247
 	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
 	//
+	// 入门题 https://cses.fi/problemset/task/1654/
+	// 高维差分 https://cses.fi/problemset/task/3141/
 	// LC3670 https://leetcode.cn/problems/maximum-product-of-two-integers-with-no-common-bits/
 	//    求满足 ai&aj=0 的最大 ai*aj
 	// LC2732 https://leetcode.cn/problems/find-a-good-subset-of-the-matrix/
@@ -2850,6 +2853,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1995/D 2300
 	// https://codeforces.com/problemset/problem/449/D 2400 容斥 
 	// https://codeforces.com/problemset/problem/1523/D 2400
+	// https://codeforces.com/problemset/problem/1620/G 2400
 	// https://codeforces.com/problemset/problem/1679/E 2400
 	// https://codeforces.com/problemset/problem/1903/D2 2500
 	// https://codeforces.com/problemset/problem/1208/F 2600
@@ -2868,6 +2872,7 @@ func _(abs func(int) int) {
 	// - LC3757 https://leetcode.cn/problems/number-of-effective-subsequences/
 	sosDP := func(a []int) []int {
 		// 从子集转移的写法
+		// f[S] 表示 a 中是 S 的子集的元素个数，这些元素的 OR 也是 S 的子集
 		w := bits.Len(uint(slices.Max(a)))
 		f := make([]int, 1<<w)
 		for _, v := range a {
@@ -2880,12 +2885,32 @@ func _(abs func(int) int) {
 			}
 		}
 
+		// 计算子序列个数（包含空子序列）
+		pow2 := make([]int, len(a)+1)
+		pow2[0] = 1
+		for i := 1; i < len(pow2); i++ {
+			pow2[i] = pow2[i-1] * 2 % mod
+		}
+		for i, fv := range f {
+			f[i] = pow2[fv] // 如果要非空子序列，这里额外减一
+		}
+
+		// 高维差分
+		// 从 f[s] 中减去 f[s^1<<i]，得到 OR 恰好等于 S 的子序列个数
+		for i := range w {
+			for s := 0; s < 1<<w; s++ {
+				s |= 1 << i
+				f[s] = (f[s] - f[s^1<<i] + mod) % mod
+			}
+		}
+
 		{
 			// 从超集转移的写法
+			// f[S] 表示 a 中是 S 的超集的元素个数，这些元素的 AND 也是 S 的超集
 			for i := range w {
-				for s := 1<<w - 1; s >= 0; s-- {
-					s &^= 1 << i // 优化：快速跳到 i 位是 0 的 s
-					f[s] += f[s|1<<i]
+				for s := 0; s < 1<<w; s++ {
+					s |= 1 << i
+					f[s^1<<i] += f[s]
 				}
 			}
 		}
@@ -3107,7 +3132,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/946/E 2200 重排成回文串
 	*/
 
-	// 上下界数位 DP（v2.1 模板），计数型
+	// 上下界数位 DP · 计数型 （v2.1 模板）
 	// 比如统计恰好包含 target 个 0 的数字个数，需要区分【前导零】和【数字中的零】，前导零不能计入，而数字中的零需要计入
 	// 由于 limitLow && i < diffLH 等价于 !isNum，所以 isNum 是多余的
 	//
@@ -3290,7 +3315,7 @@ func _(abs func(int) int) {
 		return ans
 	}
 
-	// 上下界数位 DP（v2.1 模板），价值总和型
+	// 上下界数位 DP · 求和型 （v2.1 模板）
 	// 每个元素 x 有一个对应的价值 f(x)，比如 f(x) = x，或者 f(x) = x 中的峰谷个数
 	// 返回 [low, high] 中的所有元素的价值总和
 	// https://codeforces.com/problemset/problem/1073/E 2300
