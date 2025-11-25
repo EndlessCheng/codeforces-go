@@ -66,7 +66,7 @@ class Solution:
 
         ans = [0] * n
         l, r = 0, n - 1
-        # 从 1,2,...,n 中选一些数，元素和等于 neg
+        # 从 1,2,...,n 中选一些数，元素和等于 neg_s
         # 为了让负数部分的字典序尽量小，从大往小选
         for x in range(n, 0, -1):
             if neg_s >= x:
@@ -92,7 +92,7 @@ class Solution {
         int[] ans = new int[n];
         int l = 0;
         int r = n - 1;
-        // 从 1,2,...,n 中选一些数，元素和等于 neg
+        // 从 1,2,...,n 中选一些数，元素和等于 negS
         // 为了让负数部分的字典序尽量小，从大往小选
         for (int x = n; x > 0; x--) {
             if (negS >= x) {
@@ -120,7 +120,7 @@ public:
 
         vector<int> ans(n);
         int l = 0, r = n - 1;
-        // 从 1,2,...,n 中选一些数，元素和等于 neg
+        // 从 1,2,...,n 中选一些数，元素和等于 neg_s
         // 为了让负数部分的字典序尽量小，从大往小选
         for (int x = n; x > 0; x--) {
             if (neg_s >= x) {
@@ -147,7 +147,7 @@ func lexSmallestNegatedPerm(n int, target int64) []int {
 
 	ans := make([]int, n)
 	l, r := 0, n-1
-	// 从 1,2,...,n 中选一些数，元素和等于 neg
+	// 从 1,2,...,n 中选一些数，元素和等于 negS
 	// 为了让负数部分的字典序尽量小，从大往小选
 	for x := n; x > 0; x-- {
 		if negS >= x {
