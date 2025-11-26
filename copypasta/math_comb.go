@@ -419,18 +419,14 @@ func (c *comb) p(n, k int) int {
 // https://codeforces.com/blog/entry/64625
 // https://ac.nowcoder.com/acm/contest/6219/C
 //
-// - [2929. 给小朋友们分糖果 II](https://leetcode.cn/problems/distribute-candies-among-children-ii/)
-//    - 扩展 https://codeforces.com/problemset/problem/451/E 2300
-// - [2930. 重新排列后包含指定子字符串的字符串数目](https://leetcode.cn/problems/number-of-strings-which-can-be-rearranged-to-contain-substring/)
-// - [3116. 单面值组合的第 K 小金额](https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/) 2388
-// - [3130. 找出所有稳定的二进制数组 II](https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/) 2825
-//    - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
+// https://codeforces.com/problemset/problem/2125/C 1100
 // https://codeforces.com/problemset/problem/630/K 1500
 // https://codeforces.com/problemset/problem/678/C 1600
 // https://codeforces.com/problemset/problem/1750/D 1800
 // https://codeforces.com/problemset/problem/900/D 2000 因子容斥
 // https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
 // https://codeforces.com/problemset/problem/451/E 2300 例题
+// - LC2929 https://leetcode.cn/problems/distribute-candies-among-children-ii/
 // https://codeforces.com/problemset/problem/1228/E 2300 如何将问题转化成可以容斥的结构 
 // https://codeforces.com/problemset/problem/1342/E 2300
 // https://codeforces.com/problemset/problem/449/D 2400 与 SOS DP 结合 
@@ -439,9 +435,10 @@ func (c *comb) p(n, k int) int {
 // https://codeforces.com/problemset/problem/1043/F 2500 DP
 // https://codeforces.com/problemset/problem/1400/G 2600
 // https://atcoder.jp/contests/arc115/tasks/arc115_e 辅助思考 DP 
+// LC3130 https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/ n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
 // https://www.luogu.com.cn/problem/P2567 暴搜+优化搜索顺序
 // https://www.luogu.com.cn/problem/P5505
-// todo https://www.luogu.com.cn/problem/P1450
+// https://www.luogu.com.cn/problem/P1450
 func solveInclusionExclusion(a []int) int {
 	ans := 0 // 无限制时的答案，根据题目修改
 	// 枚举所有非空子集
