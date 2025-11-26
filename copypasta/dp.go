@@ -1730,12 +1730,13 @@ func _(abs func(int) int) {
 	}
 
 	// 分组背包·每组至多选一个（恰好选一个见后面）
-	// https://atcoder.jp/contests/abc248/tasks/abc248_c 也可以用容斥或者生成函数做
-	// https://www.luogu.com.cn/problem/P1757
-	// LC2218 https://leetcode.cn/problems/maximum-value-of-k-coins-from-piles/
 	// https://codeforces.com/problemset/problem/148/E 1900
 	// https://codeforces.com/problemset/problem/2000/F 1900 至少
-	// todo 进一步优化 https://codeforces.com/problemset/problem/1442/D 2800
+	// https://codeforces.com/problemset/problem/1442/D 2800 todo 进一步优化
+	// https://atcoder.jp/contests/abc248/tasks/abc248_c 也可以用容斥或者生成函数做
+	// LC2218 https://leetcode.cn/problems/maximum-value-of-k-coins-from-piles/
+	// https://www.luogu.com.cn/problem/P1757
+	// https://www.luogu.com.cn/problem/P5322
 	// 方案数（可以用前缀和优化）https://www.luogu.com.cn/problem/P1077
 	groupKnapsack := func(groups [][]struct{ value, weight int }, maxW int) int {
 		f := make([]int, maxW+1)
@@ -2673,7 +2674,7 @@ func _(abs func(int) int) {
 	}
 
 	// 枚举子集的子集
-	// 复杂度 O(3^n)，证明：元素个数为 k 的集合有 C(n,k) 个，其子集有 2^k 个，故有 ∑C(n,k)*2^k = (2+1)^n = 3^n
+	// 复杂度 O(3^n)，证明：元素个数为 k 的集合有 C(n,k) 个，其子集有 2^k 个，故有 ∑_k C(n,k) * 2^k = (2+1)^n = 3^n
 	// 例如：f[set] = max{f[set^sub] + sum of sub} for all valid sub
 	//
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_u
@@ -2693,6 +2694,7 @@ func _(abs func(int) int) {
 	// 训练指南第一章例题 32，WF10，UVa1099 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=245&page=show_problem&problem=3540
 	// https://codeforces.com/problemset/problem/599/E 2600 树上子集状压 DP
 	// https://atcoder.jp/contests/arc171/tasks/arc171_d 转换 图染色
+	// https://www.luogu.com.cn/problem/P10949
 	subsubDP := func(a []int) int {
 		n := len(a)
 		m := 1 << n
