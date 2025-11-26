@@ -32,7 +32,7 @@ func cf1620G(in io.Reader, out io.Writer) {
 			}
 		}
 
-		res := bits.OnesCount(uint(mask))%2*2 - 1
+		res := bits.OnesCount(uint(mask))%2*2 - 1 + mod
 		for i := range 26 {
 			res = res * (mn[i] + 1) % mod
 		}
@@ -52,7 +52,7 @@ func cf1620G(in io.Reader, out io.Writer) {
 			sum += bits.TrailingZeros(m)
 		}
 		k := bits.OnesCount(uint(mask))
-		ans ^= (int(v) + mod) % mod * k * (sum + k)
+		ans ^= int(v) * k * (sum + k)
 	}
 	Fprint(out, ans)
 }
