@@ -45,6 +45,7 @@ func p10949(in io.Reader, out io.Writer) {
 		for i := range fa {
 			fa[i] = i
 		}
+		cnt := 0
 		for _, e := range es {
 			v, w := e.v, e.w
 			if mask>>v&1 == 0 || mask>>w&1 == 0 {
@@ -54,7 +55,11 @@ func p10949(in io.Reader, out io.Writer) {
 			if fv != fw {
 				fa[fv] = fw
 				sum[mask] += e.wt
+				cnt++
 			}
+		}
+		if cnt < bits.OnesCount(uint(mask))-1 {
+			sum[mask] = 1e9
 		}
 	}
 	f := make([]int, m)
