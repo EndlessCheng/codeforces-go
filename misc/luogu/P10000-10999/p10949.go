@@ -20,7 +20,7 @@ func p10949(in io.Reader, out io.Writer) {
 	for i := range es {
 		Fscan(in, &es[i].v, &es[i].w, &es[i].wt)
 	}
-	slices.SortFunc(es, func(a, b tuple) int { return a.w - b.w })
+	slices.SortFunc(es, func(a, b tuple) int { return a.wt - b.wt })
 
 	m = 1 << n
 	sum := make([]int, m)
@@ -46,14 +46,14 @@ func p10949(in io.Reader, out io.Writer) {
 			fa[i] = i
 		}
 		for _, e := range es {
-			v, w, wt := e.v, e.w, e.wt
+			v, w := e.v, e.w
 			if mask>>v&1 == 0 || mask>>w&1 == 0 {
 				continue
 			}
 			fv, fw := find(v), find(w)
 			if fv != fw {
 				fa[fv] = fw
-				sum[mask] += wt
+				sum[mask] += e.wt
 			}
 		}
 	}
@@ -68,7 +68,11 @@ func p10949(in io.Reader, out io.Writer) {
 			f[ss] = min(f[ss], fs+sum[sub])
 		}
 	}
-	Fprint(out, f[m-1])
+	if f[m-1] == 1e9 {
+		Fprint(out, "Impossible")
+	} else {
+		Fprint(out, f[m-1])
+	}
 }
 
 //func main() { p10949(bufio.NewReader(os.Stdin), os.Stdout) }
