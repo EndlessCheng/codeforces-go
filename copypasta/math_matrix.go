@@ -63,6 +63,7 @@ https://qoj.ac/contest/2567/problem/14707 2025 ICPC 成都 B
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/abc236/tasks/abc236_g max min
 https://atcoder.jp/contests/dp/tasks/dp_r 有向图中长为 k 的路径数
+https://atcoder.jp/contests/fps-24/tasks/fps_24_f
 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
 https://www.luogu.com.cn/problem/P3216 (12345678910111213...n) % m
 https://www.luogu.com.cn/problem/P5364
