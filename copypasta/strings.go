@@ -518,6 +518,7 @@ func _() {
 			}
 
 			if s[i+k] < s[j+k] { // 改成 > 则返回字典序最大的
+				// 比如从 i 开始是 "aaab"，从 j 开始是 "aaac"
 				// 从 i 开始比从 j 开始更小，排除 j
 				// 此外：
 				// 从 i+1 开始比从 j+1 开始更小，所以从 j+1 开始不可能是答案，排除
@@ -654,18 +655,18 @@ func _() {
 	// https://ac.nowcoder.com/acm/contest/64272/D
 	palindromeExpandAroundCenter := func(s string) {
 		n := len(s)
-		// i 为偶数表示奇回文串，i 为奇数表示偶回文串
+		// i 为偶数表示奇回文串，从 [i/2,i/2] 开始向左右扩展
+		// i 为奇数表示偶回文串，从 [(i-1)/2,(i+1)/2] 开始向左右扩展
 		for i := range 2*n - 1 {
-			// 从闭区间 [l,r] 开始向左右扩展
 			l, r := i/2, (i+1)/2
 			for l >= 0 && r < n && s[l] == s[r] {
-				//cnt[r]++
+				//
 				l--
 				r++
 			}
 		}
 	}
-	
+
 	// 最长回文子串 Manacher（马拉车算法）
 	// 视频讲解：https://www.bilibili.com/video/BV1UcyYY4EnQ/
 	// https://blog.csdn.net/synapse7/article/details/18908413
