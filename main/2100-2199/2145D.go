@@ -11,7 +11,8 @@ func cf2145D(in io.Reader, out io.Writer) {
 	f := [mx + 1][mx*(mx+1)/2 + 1]bool{0: {true}}
 	for i := 1; i <= mx; i++ {
 		for sz := 1; sz <= i; sz++ {
-			for v, ok := range f[i-sz] {
+			j := i - sz
+			for v, ok := range f[j][:j*(j+1)/2+1] {
 				if ok {
 					f[i][v+sz*(sz+1)/2] = true
 				}
