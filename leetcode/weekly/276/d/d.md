@@ -1,12 +1,14 @@
 ## 方法一：二分答案
 
-假设我们可以让 $n$ 台电脑同时运行 $x$ 分钟，那么对于电量大于 $x$ 的电池，其只能被使用 $x$ 分钟。因此每个电池的使用时间至多为 $\min(\textit{batteries}[i], x)$，我们将其累加起来，记作 $\textit{sum}$。那么要让 $n$ 台电脑同时运行 $x$ 分钟，必要条件是 $n\cdot x\le \textit{sum}$。
+假设可以让 $n$ 台电脑同时运行 $x$ 分钟，那么对于电量大于 $x$ 的电池，其只能被使用 $x$ 分钟，因此每个电池的使用时间至多为 $\min(\textit{batteries}[i], x)$。累加所有电池的使用时间，记作 $\textit{sum}$。那么要让 $n$ 台电脑同时运行 $x$ 分钟，**必要条件**是 $n\cdot x\le \textit{sum}$。
 
-下面证明该条件是充分的，即当 $n\cdot x\le \textit{sum}$ 成立时，必然可以让 $n$ 台电脑同时运行 $x$ 分钟。
+下面证明该条件也是**充分**的，即如果 $n\cdot x\le \textit{sum}$ 成立，那么一定存在一种安排电池的方式，可以让 $n$ 台电脑同时运行 $x$ 分钟。
 
-对于电量不小于 $x$ 的电池，我们可以让其给一台电脑供电 $x$ 分钟。由于一个电池不能同时给多台电脑供电，因此该电池若给一台电脑供电 $x$ 分钟，那它就不能用于其他电脑了（因为电脑运行时间就是 $x$ 分钟）。我们可以将所有电量不小于 $x$ 的电池各给一台电脑供电。
+构造方法如下：
 
-对于其余的电池，设其电量和为 $\textit{sum}'$，剩余 $n'$ 台电脑未被供电。我们可以随意选择剩下的电池，供给剩余的第一台电脑（用完一个电池就换下一个电池），多余的电池电量与剩下的电池一起供给剩余的第二台电脑，依此类推。注意由于这些电池的电量均小于 $x$，按照这种做法是不会出现**同一个电池在同一时间**供给多台电脑的（如果某个电池供给了两台电脑，可以将这个电池的供电时间划分到第一台电脑的末尾和第二台电脑的开头）。
+对于电量 $\ge x$ 的电池，我们可以让其给一台电脑供电 $x$ 分钟。由于一个电池不能同时给多台电脑供电，因此该电池若给一台电脑供电 $x$ 分钟，那它就不能用于其他电脑了（因为电脑运行时间就是 $x$ 分钟）。我们可以将所有电量 $\ge x$ 的电池各给一台电脑供电。
+
+对于其余电池，设其电量和为 $\textit{sum}'$，剩余 $n'$ 台电脑未被供电。我们可以随意选择剩下的电池，供给剩余的第一台电脑（用完一个电池就换下一个电池），多余的电池电量与剩下的电池一起供给剩余的第二台电脑，依此类推。注意由于这些电池的电量均小于 $x$，按照这种做法是不会出现同一个电池在同一时间供给多台电脑的（如果某个电池供给了两台电脑，可以将这个电池的供电时间**划分到第一台电脑的末尾和第二台电脑的开头**）。
 
 由于 $\textit{sum}'=\textit{sum}-(n-n')\cdot x$，结合 $n\cdot x\le \textit{sum}$ 可以得到 $n'\cdot x\le \textit{sum}'$，按照上述供电方案（用完一个电池就换下一个电池），这 $n'$ 台电脑可以运行至少 $x$ 分钟。充分性得证。
 
@@ -48,10 +50,11 @@ class Solution {
         for (int b : batteries) {
             tot += b;
         }
+
         long l = 0;
         long r = tot / n + 1;
         while (l + 1 < r) {
-            long x = (l + r) >>> 1;
+            long x = l + (r - l) / 2;
             long sum = 0;
             for (int b : batteries) {
                 sum += Math.min(b, x);
@@ -70,8 +73,8 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long maxRunTime(int n, vector<int> &batteries) {
-        long long tot = reduce(batteries.begin(), batteries.end(), 0L);
+    long long maxRunTime(int n, vector<int>& batteries) {
+        long long tot = reduce(batteries.begin(), batteries.end(), 0LL);
         long long l = 0, r = tot / n + 1;
         while (l + 1 < r) {
             long long x = l + (r - l) / 2;
@@ -92,6 +95,7 @@ func maxRunTime(n int, batteries []int) int64 {
 	for _, b := range batteries {
 		tot += b
 	}
+
 	return int64(sort.Search(tot/n, func(x int) bool {
 		x++
 		sum := 0
@@ -141,10 +145,12 @@ class Solution:
 class Solution {
     public long maxRunTime(int n, int[] batteries) {
         Arrays.sort(batteries);
+
         long sum = 0;
         for (int b : batteries) {
             sum += b;
         }
+
         for (int i = batteries.length - 1; ; i--) {
             if (batteries[i] <= sum / n) {
                 return sum / n;
@@ -161,7 +167,7 @@ class Solution {
 public:
     long long maxRunTime(int n, vector<int>& batteries) {
         ranges::sort(batteries, greater());
-        long long sum = reduce(batteries.begin(), batteries.end(), 0L);
+        long long sum = reduce(batteries.begin(), batteries.end(), 0LL);
         for (int i = 0; ; i++) {
             if (batteries[i] <= sum / n) {
                 return sum / n;
