@@ -51,6 +51,7 @@ https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum
 https://codeforces.com/problemset/problem/1270/B 1200 式子变形 或者 脑筋急转弯
 https://codeforces.com/problemset/problem/1420/B 1200
 https://codeforces.com/problemset/problem/318/B 1300 子串
+https://codeforces.com/problemset/problem/1931/D 1300 pair
 https://codeforces.com/problemset/problem/1926/D 1300
 https://codeforces.com/problemset/problem/1974/C 1400
 https://codeforces.com/problemset/problem/159/D 1500 回文子串
@@ -62,11 +63,6 @@ https://codeforces.com/problemset/problem/1800/F 1900 异或
 https://codeforces.com/problemset/problem/1592/E 2400
 https://atcoder.jp/contests/abc353/tasks/abc353_d 844=CF1349
 https://atcoder.jp/contests/abc342/tasks/abc342_d 944=CF1425
-
-枚举右，维护左：需要维护两种值（pair）
-https://codeforces.com/problemset/problem/1931/D 1300
-https://leetcode.cn/problems/longest-balanced-substring-ii/
-https://leetcode.cn/problems/count-beautiful-substrings-ii/
 
 枚举中间
 https://codeforces.com/problemset/problem/1957/D 1900 前后缀分解 从高到低思考
@@ -124,6 +120,7 @@ https://codeforces.com/problemset/problem/1296/C
   - https://codeforces.com/problemset/problem/180/C 1400
   - https://codeforces.com/problemset/problem/846/A 1500
 https://atcoder.jp/contests/abc346/tasks/abc346_d
+https://codeforces.com/problemset/problem/1921/D 1100
 https://codeforces.com/problemset/problem/1006/C 1200 也可以相向双指针
 https://codeforces.com/problemset/problem/234/C 1300
 https://codeforces.com/problemset/problem/1178/B 1300
@@ -562,6 +559,7 @@ https://codeforces.com/problemset/problem/1978/C  1300
 https://codeforces.com/problemset/problem/2031/C  1300 数学
 https://codeforces.com/problemset/problem/2146/C  1300
 https://codeforces.com/problemset/problem/803/A   1400
+https://codeforces.com/problemset/problem/1102/B  1400
 https://codeforces.com/problemset/problem/1838/C  1400
 https://codeforces.com/problemset/problem/1844/D  1400
 https://codeforces.com/problemset/problem/1863/D  1400 棋盘+多米诺染色
@@ -651,6 +649,7 @@ https://codeforces.com/problemset/problem/862/A 1000
 https://codeforces.com/problemset/problem/1550/B 1000
 https://codeforces.com/problemset/problem/1931/C 1000
 https://codeforces.com/problemset/problem/2039/B 1000
+https://codeforces.com/problemset/problem/2043/B 1100
 https://codeforces.com/problemset/problem/262/B 1200
 https://codeforces.com/problemset/problem/1364/A 1200
 https://codeforces.com/problemset/problem/1860/B 1200
@@ -804,6 +803,10 @@ https://atcoder.jp/contests/abc279/tasks/abc279_f
 
 中模拟
 https://atcoder.jp/contests/abc319/tasks/abc319_f
+
+物理模拟
+https://codeforces.com/problemset/problem/1392/F 2400 山体滑坡
+https://codeforces.com/problemset/problem/780/G  2700 小球下落
 
 其他
 删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
@@ -1321,6 +1324,7 @@ func _() {
 	// 前缀和
 	// 模板题 LC303 https://leetcode.cn/problems/range-sum-query-immutable/
 	// https://codeforces.com/problemset/problem/2053/B 1200
+	// https://codeforces.com/problemset/problem/932/B 1300
 	// https://codeforces.com/problemset/problem/1922/C 1300
 	// https://codeforces.com/problemset/problem/2033/D 1300
 	// https://codeforces.com/problemset/problem/1923/C 1400 构造
