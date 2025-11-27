@@ -1,12 +1,6 @@
-## 前置知识：相向双指针
+从数组中选两个数，**我们只关心这两个数的和是否小于** $\textit{target}$。由于 $a+b=b+a$，无论如何排列数组元素，都不会影响加法的结果。比如 $\textit{nums}=[1,2],\ \textit{target}=4$ 和 $\textit{nums}=[2,1],\ \textit{target}=4$ 算出来的答案都是 $1$，可见**排序不影响答案**。
 
-请看[【基础算法精讲】](https://www.bilibili.com/video/BV1bP411c7oJ/)。
-
-## 思路
-
-题目相当于从数组中选两个数，**我们只关心这两个数的和是否小于** $\textit{target}$，由于 $a+b=b+a$，无论如何排列数组元素，都不会影响加法的结果，所以**排序不影响答案**。比如 $\textit{nums}=[1,2],\ \textit{target}=4$ 和 $\textit{nums}=[2,1],\ \textit{target}=4$ 算出来的答案都是 $1$，可见排序并不影响结果。
-
-排序后：
+排序后，类似 [167. 两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)，用**相向双指针**解决，见[【基础算法精讲 01】](https://www.bilibili.com/video/BV1bP411c7oJ/)。
 
 1. 初始化左右指针 $\textit{left}=0,\ \textit{right}=n-1$。
 2. 如果 $\textit{nums}[\textit{left}]+\textit{nums}[\textit{right}] < \textit{target}$，由于数组是有序的，$\textit{nums}[\textit{left}]$ 与下标 $i$ 在区间 $[\textit{left}+1,\textit{right}]$ 中的任何 $\textit{nums}[i]$ 相加，都是 $<\textit{target}$ 的，因此直接找到了 $\textit{right}-\textit{left}$ 个合法数对，加到答案中，然后将 $\textit{left}$ 加一。
@@ -142,25 +136,24 @@ impl Solution {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
-- 空间复杂度：$\mathcal{O}(1)$。不计入排序的栈开销，仅用到若干额外变量。
-
-注：由于本题数据范围小，评测机对运行时间的影响更大（运行时间存在一定波动）。如果你发现击败百分比不高，可以无视。也可以多提交几次试试。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
