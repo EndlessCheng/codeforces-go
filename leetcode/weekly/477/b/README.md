@@ -1,4 +1,4 @@
-这种题型最近周赛出过很多次了（见文末的相似题目）。
+## 处理异或和
 
 计算 $\textit{nums}$ 的**前缀异或和** $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
@@ -6,9 +6,19 @@
 
 $s[r]\oplus s[l] = 0$ 意味着 $s[r] = s[l]$。
 
-把奇数视作 $1$，偶数视作 $-1$，得到数组 $b$。
+## 处理奇偶
+
+请先完成这题：[525. 连续数组](https://leetcode.cn/problems/contiguous-array/)。
+
+525 题告诉我们，可以把奇数视作 $1$，偶数视作 $-1$，得到数组 $b$。
 
 奇数偶数数量相等，等价于奇数个数减去偶数个数为 $0$，等价于 $b$ 的子数组和等于 $0$。这同样可以用前缀和处理。
+
+## 合二为一
+
+如果只要求前缀和异或和相同，做法类似 [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)。
+
+本题有两个要求，把哈希表的 key **从 int 改成 pair** 即可。
 
 为了计算子数组长度，用一个哈希表记录二元组 $(\textit{xor}, \textit{diff})$ 首次出现的位置，其中：
 
