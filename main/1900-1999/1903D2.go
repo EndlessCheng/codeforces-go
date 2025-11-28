@@ -16,14 +16,15 @@ func cf1903D2(in io.Reader, _w io.Writer) {
 	const w = 20
 	const u = 1 << w
 	low := n << w
-	f := [u][w][2]int{}
+	cnt := [u]int{}
+	f := [u][w]int{}
 	for range n {
 		Fscan(in, &v)
 		low -= v
+		cnt[v]++
 		for j := uint32(u - 1 ^ v); j > 0; j &= j - 1 {
 			i := bits.TrailingZeros32(j)
-			f[v][i][0]++ // 恰好满足 v 但 i 位是 0 的数的个数
-			f[v][i][1] += v & (1<<i - 1)
+			f[v][i] += v & (1<<i - 1) // 恰好满足 v 但 i 位是 0 的数，低 i 位已经有多少
 		}
 	}
 
@@ -31,9 +32,9 @@ func cf1903D2(in io.Reader, _w io.Writer) {
 	for i := range w {
 		for s := 0; s < u; s++ {
 			s |= 1 << i
+			cnt[s^1<<i] += cnt[s]
 			for j := range w {
-				f[s^1<<i][j][0] += f[s][j][0]
-				f[s^1<<i][j][1] += f[s][j][1]
+				f[s^1<<i][j] += f[s][j]
 			}
 		}
 	}
@@ -44,13 +45,11 @@ func cf1903D2(in io.Reader, _w io.Writer) {
 			Fprintln(out, u+(v-low)/n)
 			continue
 		}
-		ans, cnt := 0, 0
+		ans := 0
 		for i := w - 1; i >= 0; i-- {
-			p := f[ans][i] // 至少满足 ans 但 i 位是 0 的数的个数
-			c := (cnt+p[0])<<i - p[1] // 减掉已经有的
+			c := (n-cnt[ans|1<<i])<<i - f[ans][i] // 减掉已经有的
 			if c <= v {
 				v -= c
-				cnt += p[0]
 				ans |= 1 << i
 			}
 		}
