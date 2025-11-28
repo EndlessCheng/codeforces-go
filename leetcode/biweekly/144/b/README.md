@@ -1,13 +1,13 @@
 字符串相当于值域为 $[0,25]$ 的数组。如果把本题改成值域为 $[0,10^5]$ 的数组，暴力做法就无法通过了，如何解决这种更一般的情况呢？
 
-我们可以预处理 $\textit{nextCost}$ 和 $\textit{previousCost}$ 的**前缀和**数组 $\textit{nxtSum}$ 和 $\textit{preSum}$，从而加速操作代价和的计算。关于前缀和数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
+我们可以预处理 $\textit{nextCost}$ 的前缀和数组 $\textit{nxtSum}$，以及 $\textit{previousCost}$ 的前缀和数组 $\textit{preSum}$，从而加速操作代价和的计算。关于前缀和数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
 考虑到字母表是环形的，可以把前缀和数组延长一倍，从而变成非环形的。
 
 - 对于第一种操作，如果 $x\le y$，从 $x$ 切换到 $y$ 的代价等于 $\textit{nextCost}$ 的子数组 $[x,y-1]$ 的元素和，即 $\textit{nxtSum}[y] - \textit{nxtSum}[x]$。如果 $x > y$，那么把 $y$ 变成 $y+26$。
-- 对于第二种操作，如果 $x\ge y$，从 $x$ 切换到 $y$ 的代价等于 $\textit{previousCost}$ 的子数组 $[y+1,x]$ 的元素和，即 $\textit{nxtSum}[x+1] - \textit{nxtSum}[y+1]$。如果 $x < y$，那么把 $x$ 变成 $x+26$。
+- 对于第二种操作，如果 $x\ge y$，从 $x$ 切换到 $y$ 的代价等于 $\textit{previousCost}$ 的子数组 $[y+1,x]$ 的元素和，即 $\textit{preSum}[x+1] - \textit{preSum}[y+1]$。如果 $x < y$，那么把 $x$ 变成 $x+26$。
 
-> 代码实现时，也可以不在 $\textit{preSum}$ 的前面添加 $0$，这样第二种操作的下标就不需要加一了，即 $\textit{nxtSum}[x] - \textit{nxtSum}[y]$。
+> 代码实现时，也可以不在 $\textit{preSum}$ 的前面添加 $0$，这样第二种操作的下标就不需要加一了，即 $\textit{preSum}[x] - \textit{preSum}[y]$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1uzBxYoEJC/?t=1m24s)，欢迎点赞关注~
 
