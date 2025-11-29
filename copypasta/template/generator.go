@@ -124,7 +124,7 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	}
 
 	exampleStr := ""
-	multiOutput := false
+	multiOutput := emptyExample
 	for _, p := range example {
 		in := strings.TrimSpace(p[0])
 		out := strings.TrimSpace(p[1])
