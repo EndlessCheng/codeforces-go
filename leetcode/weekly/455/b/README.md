@@ -41,7 +41,6 @@
 ```py [sol-Python3]
 class Solution:
     def findCoins(self, numWays: List[int]) -> List[int]:
-        mx = max(numWays)
         n = len(numWays)
         f = [1] + [0] * n
         ans = []
