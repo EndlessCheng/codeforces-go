@@ -2231,7 +2231,8 @@ func (*graph) shortestPathMod(a []int, limit int) (ans int) {
 // https://en.wikipedia.org/wiki/Steiner_tree_problem
 // https://oi-wiki.org/graph/steiner-tree/
 // 模板题 https://www.luogu.com.cn/problem/P6192
-// todo 输出方案 WC08 游览计划 https://www.luogu.com.cn/problem/P4294
+// https://codeforces.com/problemset/problem/152/E 2500 输出方案
+// - https://www.luogu.com.cn/problem/P4294 WC08 游览计划
 func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 	type nb struct{ to, wt int }
 	g := make([][]nb, n)
@@ -2341,6 +2342,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // - https://www.luogu.com.cn/problem/P8074
 // https://atcoder.jp/contests/typical90/tasks/typical90_ai 子树 MST 必须包含特殊点
 // https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/ EXTRA: 与树链剖分结合可以在线查询两点间路径最大边权的最小值
+// https://www.luogu.com.cn/problem/P10949
 func (*graph) mstKruskal(n int, edges [][]int) int {
 	// 边权范围小的话也可以用桶排
 	slices.SortFunc(edges, func(a, b []int) int { return a[2] - b[2] })
@@ -2366,7 +2368,7 @@ func (*graph) mstKruskal(n int, edges [][]int) int {
 		if fv != fw {
 			fa[fv] = fw
 			sum += wt
-			cntE++
+			cntE++ // 用来判断图是否连通，不连通算出的 sum 无意义
 		}
 	}
 
@@ -4010,14 +4012,14 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 	}
 
 	// 注意可能有多棵基环树
-	for i0, d := range deg {
+	for start, d := range deg {
 		if d == 0 {
 			continue
 		}
 
 		// 收集基环上的点
-		ring := []int{i0}
-		for v := g[i0]; v != i0; v = g[v] {
+		ring := []int{start}
+		for v := g[start]; v != start; v = g[v] {
 			deg[v] = 0
 			ring = append(ring, v)
 		}
@@ -4299,22 +4301,22 @@ https://seineo.github.io/%E5%9B%BE%E8%AE%BA%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%B5%81%
 Worst-Case Graphs for Maximum Flow Algorithms
 https://codeforces.com/blog/entry/145343
 
-网络流建模方式总结
+最大权闭合子图
+  左部为我们需要决策选或不选（或者其他）的点，选择点 i 的收益为 earn[i]
+  右部为点 i 的依赖，即选择点 i，也同时必须选点 g[i][j]
+  选择右部的点 j 的收益为 -cost[j]
+建图方式：
+  超级源点 S 连 i，容量为 earn[i]
+  j 连超集汇点 T，容量为 cost[j]
+  g[i][j] 的容量为 inf
+利润 = sum(earn) - sum(没有选的 earn) - sum(选的点对应的 cost)
+     = sum(earn) - 割掉没有选的 earn 以及选的点对应的 cost
+最大权闭合子图 = sum(earn) - 最小割
+https://codeforces.com/problemset/problem/2026/E 2500
+https://atcoder.jp/contests/abc326/tasks/abc326_g
+
 Solving Problems with Min Cut Max Flow Duality https://codeforces.com/blog/entry/136761
 最小割问题秒杀三板斧 https://www.bilibili.com/video/BV1jt4y1t7pd/
-https://atcoder.jp/contests/abc326/tasks/abc326_g
-套三板斧：
-先把所有收益都拿到，然后减去放弃的成就和花费
-这样问题变成计算最小代价
-第一板斧：
-skill 属于 S 集合表示不选择这个技能，属于 T 集合表示选择这个技能
-achieve 属于 T 集合表示不放弃这个成就，属于 S 集合表示放弃这个成就
-第二板斧：
-skill 的每个等级依赖自己的上一个等级，也就是如果该等级选择而上一等级未选择，不合法；此时上一等级属于 S 而下一等级属于 T，因此可以建上一等级到下一等级的边，流量 inf
-achieve 属于 T 合而依赖的 skill 属于 S 集合不合法，因此可以建对应的 skill 到 achieve 的边，流量 inf
-第三板斧：
-S 到 skill 建边，代价为选择这个技能（等级）的代价
-achieve 到 T 建边，流量为其收益
 
 todo
  https://www.cnblogs.com/victorique/p/8560656.html
@@ -4351,6 +4353,7 @@ https://en.wikipedia.org/wiki/Maximum_flow
 模板题 https://www.luogu.com.cn/problem/P3386
 代码 https://www.luogu.com.cn/record/123020820
 https://codeforces.com/problemset/problem/489/B 1200
+https://codeforces.com/problemset/problem/2026/E 2500 最大权闭合子图 / Hall 定理
 
 最大流·建模·转换
 将点拆为入点和出点（v 和 v+n），即可把点上的约束变成边上的约束
@@ -4620,14 +4623,19 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 		// 超级源点连左部，右部连超级汇点，所有边的容量均为 1，最大流即为最大匹配
 		for i, v := range a {
 			for j, w := range b {
-				if v+w < 100 { // 和题目有关，满足该约束即可匹配 a[i] 和 b[j]
+				// 和题目有关，满足该约束即可匹配 a[i] 和 b[j]
+				if v+w < 100 {
 					addEdge(i, j+len(a), 1)
 				}
 			}
-			addEdge(st, i, 1) // 如果题目允许一对多，比如一对二，把 1 改成 2
+			// cap=1 表示每个 a[i] 只能选一次（匹配一次）
+			// 如果题目允许一对多，比如一对二，把 1 改成 2
+			addEdge(st, i, 1) 
 		}
 		for j := range b {
-			addEdge(j+len(a), end, 1) // 如果题目允许多对一，比如二对一，把 1 改成 2
+			// cap=1 表示 b[j] 只能被一个 a[i] 独占（匹配）
+			// 如果题目允许多对一，比如二对一，把 1 改成 2
+			addEdge(j+len(a), end, 1)
 		}
 
 		// 算完最大流后，如果要输出具体方案，可以遍历左部 -> 右部的边，cap == 0 的边就是在最大匹配中的边
