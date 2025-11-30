@@ -3,7 +3,7 @@
 1. **同余**：[模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 2. **中位数贪心**：把区间内的数都变成区间的**中位数**是最优的。[证明](https://zhuanlan.zhihu.com/p/1922938031687595039)。
 3. **距离和**：[图解距离和](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/)。
-4. **可持久化线段树**求区间中位数（第 $k$ 小）：[可持久化线段树](https://oi-wiki.org/ds/persistent-seg/)。
+4. **可持久化线段树**求区间中位数（第 $k$ 小）：[视频讲解](https://www.bilibili.com/video/BV1D4SiB5Ee3/)。
 
 ## 什么情况下无解？
 
@@ -46,13 +46,17 @@ $$
 
 ## 可持久化线段树
 
-用 [可持久化线段树](https://oi-wiki.org/ds/persistent-seg/) 可以快速求出区间第 $k$ 小（$k$ 从 $1$ 开始）。
+类似 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)，考虑对 $\textit{nums}$ 的每个前缀建立一棵**值域线段树**。两棵线段树的差，就是一个子数组对应的的线段树。我们可以在这棵线段树上求出第 $k$ 小（$k$ 从 $1$ 开始）。
+
+但对每个前缀都建立一棵值域线段树，时间空间都是 $\mathcal{O}(n^2)$ 的，这太大了。
+
+类似 Git，考虑我们**在上一个版本的基础上，修改了什么**。在线段树上把一个数的出现次数加一（单点修改），只会更新 $\mathcal{O}(\log n)$ 个节点，其余节点保存的内容是不变的。所以每次只发生了 $\mathcal{O}(\log n)$ 个变动。把这些变动记录下来。
 
 设区间的长度为 $\textit{sz} =r-l+1$，那么区间中位数就是区间第 $\left\lfloor\dfrac{sz}{2}\right\rfloor+1$ 小。如果有两个中位数，取左边的还是右边的都可以，这里算的是右边那个。
 
-本题还需要算距离和，从 [图解距离和](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/) 中我们知道，关键是求出有多少个数 $\le $ 中位数，以及这些数的元素和。这同样可以用可持久化线段树解决，具体见代码。
+本题还需要算距离和，从 [图解距离和](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/) 中我们知道，关键是求出有多少个数 $\le $ 中位数，以及这些数的元素和，这同样可以用可持久化线段树解决。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲可持久化线段树，欢迎关注~
+[本题视频讲解（3D 视角）](https://www.bilibili.com/video/BV1D4SiB5Ee3/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Node:
@@ -410,12 +414,12 @@ public:
 
             // 计算区间中位数
             int sz = r - l;
-            int pos = t[r]->kth(t[l], sz / 2 + 1);
-            long long median = sorted_nums[pos]; // 离散化后的值 -> 原始值
+            int i = t[r]->kth(t[l], sz / 2 + 1);
+            long long median = sorted_nums[i]; // 离散化后的值 -> 原始值
 
             // 计算区间所有元素到中位数的距离和
             long long total = t[r]->sum - t[l]->sum; // 区间元素和
-            auto [cnt_left, sum_left] = t[r]->query(t[l], pos);
+            auto [cnt_left, sum_left] = t[r]->query(t[l], i);
             long long sum = median * cnt_left - sum_left; // 蓝色面积
             sum += total - sum_left - median * (sz - cnt_left); // 绿色面积
             ans.push_back(sum / k); // 操作次数 = 距离和 / k

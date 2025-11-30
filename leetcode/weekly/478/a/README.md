@@ -4,7 +4,7 @@
 
 特判 $k=0$，所有元素都满足要求，返回 $n$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1D4SiB5Ee3/?t=50m32s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -91,6 +91,17 @@ func countElements(nums []int, k int) int {
 
 - 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。快速选择可以做到 $\mathcal{O}(n)$，见 C++ 第二份代码。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+
+## 附表
+
+| **需求**  | **写法**  |
+|---|---|
+| $< x$ 的元素个数  | $\texttt{lowerBound}(\textit{nums},x)$  | 
+| $\le x$ 的元素个数 | $\texttt{lowerBound}(\textit{nums},x+1)$  | 
+| $\ge x$ 的元素个数  | $n - \texttt{lowerBound}(\textit{nums},x)$  | 
+| $> x$ 的元素个数  | $n - \texttt{lowerBound}(\textit{nums},x+1)$  | 
+
+注意 $< x$ 和 $\ge x$ 互为补集，元素个数之和为 $n$。$\le x$ 和 $> x$ 同理。
 
 ## 分类题单
 

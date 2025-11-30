@@ -2,7 +2,7 @@
 
 如果哈希表中有 $\textit{nums}[j]$，获取对应的下标 $i$，用 $j-i$ 更新答案的最小值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1D4SiB5Ee3/?t=56m18s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

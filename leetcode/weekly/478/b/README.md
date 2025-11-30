@@ -2,7 +2,7 @@
 
 可以达到理论最大值吗？可以，在每种字母首次出现的位置前切一刀即可。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1D4SiB5Ee3/?t=54m08s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -55,7 +55,7 @@ func maxDistinct(s string) (ans int) {
 
 ## 优化
 
-用二进制数表示集合/布尔数组。
+用二进制数表示集合/布尔数组，用位运算实现元素的添加。
 
 请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
