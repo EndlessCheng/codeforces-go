@@ -1,16 +1,24 @@
-用 [埃氏筛](https://www.bilibili.com/video/BV1GCNRzgEYp/)（或者欧拉筛）预处理一个布尔数组，表示哪些数是质数。注意 $1$ 不是质数。
+窗口（子数组）越长，所包含的质数的最大值越大，最小值越小，质数极差越大；反之，窗口越短，质数极差越小。
 
-本题与不久前的周赛题 [3578. 统计极差最大为 K 的分割方式数](https://leetcode.cn/problems/count-partitions-with-max-min-difference-at-most-k/) 一样，用两个单调队列维护滑动窗口的最小质数和最大质数。
+有这样的性质，可以用**不定长滑动窗口**解决，原理请看视频[【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
-对于本题，我们需要知道上上个质数的位置 $\textit{last}_2$。当右端点**固定**为 $i$ 时，左端点的合法范围为 $[\textit{left},\textit{last}_2]$，有
+设 $[0,i]$ 中的倒数第二个质数的下标为 $\textit{last}_2$。
+
+设滑动窗口的右端点为 $i$，左端点为 $\textit{left}$。
+
+当窗口右端点**固定**为 $i$ 时，合法子数组左端点的范围为 $[\textit{left},\textit{last}_2]$。这有
 
 $$
 \textit{last}_2 - \textit{left} + 1
 $$
 
-个合法左端点，加入答案。
+个，所以我们找到了 $\textit{last}_2 - \textit{left} + 1$ 个右端点固定为 $i$ 的合法子数组，加入答案。
 
 **注**：当 $\textit{left} = \textit{last}_2+1$ 时，窗口中至多有一个质数，一定满足要求，所以 $\textit{left} \le  \textit{last}_2+1$ 恒成立，即 $\textit{last}_2 - \textit{left} + 1\ge 0$ 恒成立。另请注意，$\textit{last}_2=-1$ 这一初始值同样满足这一性质。
+
+维护窗口内的质数最大值和最小值可以用两个**单调队列**。原理讲解：[单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
+
+代码实现时，可以用 [埃氏筛](https://www.bilibili.com/video/BV1GCNRzgEYp/)（或者欧拉筛）预处理一个布尔数组，表示哪些数是质数。注意 $1$ 不是质数。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1qeNRzjEEk/?t=13m22s)，欢迎点赞关注~
 
@@ -254,7 +262,8 @@ func primeSubarray(nums []int, k int) (ans int) {
 
 ## 相似题目
 
-[1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
+- [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
+- [3578. 统计极差最大为 K 的分割方式数](https://leetcode.cn/problems/count-partitions-with-max-min-difference-at-most-k/)
 
 更多相似题目，见
 
