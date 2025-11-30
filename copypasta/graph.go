@@ -4301,7 +4301,7 @@ https://seineo.github.io/%E5%9B%BE%E8%AE%BA%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%B5%81%
 Worst-Case Graphs for Maximum Flow Algorithms
 https://codeforces.com/blog/entry/145343
 
-最大权闭合子图
+最大权闭合子图 “收益-依赖-代价”
   左部为我们需要决策选或不选（或者其他）的点，选择点 i 的收益为 earn[i]
   右部为点 i 的依赖，即选择点 i，也同时必须选点 g[i][j]
   选择右部的点 j 的代价为 cost[j]（或者说收益为 -cost[j]）
