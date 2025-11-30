@@ -42,21 +42,31 @@ $$
 
 - [2602. 使数组元素全部相等的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/)
 
-本题询问的是 $\textit{nums}$ 的子数组，子数组内的元素并不是有序的。在这种情况下，如何计算区间的中位数？如何计算区间内的元素到中位数的距离之和？
+本题询问的是 $\textit{nums}$ 的子数组，子数组内的元素并不是有序的。在这种情况下，如何计算子数组的中位数？如何计算子数组内的元素到中位数的距离之和？
 
 ## 可持久化线段树
 
-类似 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)，考虑对 $\textit{nums}$ 的每个前缀建立一棵**值域线段树**。两棵线段树的差，就是一个子数组对应的的线段树。我们可以在这棵线段树上求出第 $k$ 小（$k$ 从 $1$ 开始）。
+把子数组排序？如果直接对每个子数组都排序，就太慢了。
 
-但对每个前缀都建立一棵值域线段树，时间空间都是 $\mathcal{O}(n^2)$ 的，这太大了。
+能不能借鉴 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 的想法呢？子数组是两个前缀的差值。
 
-类似 Git，考虑我们**在上一个版本的基础上，修改了什么**。在线段树上把一个数的出现次数加一（单点修改），只会更新 $\mathcal{O}(\log n)$ 个节点，其余节点保存的内容是不变的。所以每次只发生了 $\mathcal{O}(\log n)$ 个变动。把这些变动记录下来。
+对 $\textit{nums}$ 的每个前缀排序？但这有什么用呢，没法做减法呀。
+
+如果用**计数排序**呢？对 $\textit{nums}$ 的每个前缀，统计每个元素的出现次数，不就可以做减法了吗！
+
+为了快速找到中位数，我们可以用**值域线段树**维护元素的出现次数。这样可以在值域线段树上**二分**找中位数（第 $k$ 小）。
+
+这条路看上去行得通，但暴力统计每个前缀，时间复杂度是 $\mathcal{O}(n^2)$ 的，太慢了。
+
+可以**增量地**统计吗？在前缀 $[0,i-1]$ 的统计结果上，添加 $\textit{nums}[i]$，就得到了前缀 $[0,i]$ 的统计结果。
+
+类似 Git，考虑**在上一个版本的基础上，修改了什么**。在线段树上把一个数的出现次数加一（单点修改），只会更新从叶子到根这条链上的 $\mathcal{O}(\log n)$ 个节点，其余节点是不变的。所以每次只发生了 $\mathcal{O}(\log n)$ 个变动。把这些变动记录下来：对于被修改的节点，我们把这个节点复制一份再修改，如果其左儿子没被修改，但右儿子被修改了，那么左儿子指向旧的线段树节点，右儿子指向新的节点。具体可以看 [视频讲解](https://www.bilibili.com/video/BV1D4SiB5Ee3/) 中画的图。最终得到的结构叫做**可持久化线段树**。如果说普通线段树是二维的，那么可持久化线段树就是一个三维的结构。
+
+两个前缀线段树的差，就是一个子数组的线段树。但我们不能直接计算两个前缀线段树的差，那样是 $\mathcal{O}(n)$ 的。更聪明的想法是，由于查询只会访问 $\mathcal{O}(\log n)$ 个节点，我们可以**在查询的过程中计算差值**。这样每次查询的时间复杂度和普通线段树是一样的，都是 $\mathcal{O}(\log n)$。
 
 设区间的长度为 $\textit{sz} =r-l+1$，那么区间中位数就是区间第 $\left\lfloor\dfrac{sz}{2}\right\rfloor+1$ 小。如果有两个中位数，取左边的还是右边的都可以，这里算的是右边那个。
 
-本题还需要算距离和，从 [图解距离和](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/) 中我们知道，关键是求出有多少个数 $\le $ 中位数，以及这些数的元素和，这同样可以用可持久化线段树解决。
-
-[本题视频讲解（3D 视角）](https://www.bilibili.com/video/BV1D4SiB5Ee3/)，欢迎点赞关注~
+本题还需要算距离和，从 [图解距离和](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/) 中我们知道，关键是求出有多少个数 $\le $ 中位数（或者 $<$ 中位数），以及这些数的元素和，这同样可以用可持久化线段树解决。
 
 ## 写法一
 
@@ -794,8 +804,8 @@ class Node {
 public:
     long long sum;
 
-    Node(int l, int r, Node* lo = nullptr, Node* ro = nullptr, long long cnt = 0, long long sum = 0)
-        : l(l), r(r), lo(lo), ro(ro), cnt(cnt), sum(sum) {}
+    Node(int l, int r, Node* lo = nullptr, Node* ro = nullptr, long long cnt = 0, long long sum = 0) :
+        l(l), r(r), lo(lo), ro(ro), cnt(cnt), sum(sum) {}
 
     static Node* build(int l, int r) {
         Node* o = new Node(l, r);
@@ -904,8 +914,8 @@ struct Node {
 
     Node() = default;
 
-    Node(int l, int r, Node* lo = nullptr, Node* ro = nullptr, int cnt = 0, long long sum = 0) : 
-         l(l), r(r), lo(lo), ro(ro), cnt(cnt), sum(sum) {}
+    Node(int l, int r, Node* lo = nullptr, Node* ro = nullptr, int cnt = 0, long long sum = 0) :
+        l(l), r(r), lo(lo), ro(ro), cnt(cnt), sum(sum) {}
 
     void maintain() {
         cnt = lo->cnt + ro->cnt;
