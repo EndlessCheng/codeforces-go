@@ -2,11 +2,11 @@
 
 有这样的性质，可以用**不定长滑动窗口**解决，原理请看视频[【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
-设 $[0,i]$ 中的倒数第二个质数的下标为 $\textit{last}_2$。
+设 $[0,i]$ 中的倒数第二个质数的下标为 $\textit{last}_2$。若不存在，则 $\textit{last}_2=-1$。
 
-设滑动窗口的右端点为 $i$，左端点为 $\textit{left}$。
+设滑动窗口的右端点为 $i$，左端点为 $\textit{left}$。注意这意味着 $[\textit{left},i]$ 是一个合法子数组，且左端点不能再小了。
 
-当窗口右端点**固定**为 $i$ 时，合法子数组左端点的范围为 $[\textit{left},\textit{last}_2]$。这有
+当窗口右端点**固定**为 $i$ 时，合法子数组**左端点**的范围为 $[\textit{left},\textit{last}_2]$。这有
 
 $$
 \textit{last}_2 - \textit{left} + 1
