@@ -4304,13 +4304,13 @@ https://codeforces.com/blog/entry/145343
 最大权闭合子图
   左部为我们需要决策选或不选（或者其他）的点，选择点 i 的收益为 earn[i]
   右部为点 i 的依赖，即选择点 i，也同时必须选点 g[i][j]
-  选择右部的点 j 的收益为 -cost[j]
+  选择右部的点 j 的代价为 cost[j]（或者说收益为 -cost[j]）
 建图方式：
   超级源点 S 连 i，容量为 earn[i]
   j 连超集汇点 T，容量为 cost[j]
   g[i][j] 的容量为 inf
 利润 = sum(earn) - sum(没有选的 earn) - sum(选的点对应的 cost)
-     = sum(earn) - 割掉没有选的 earn 以及选的点对应的 cost
+     = sum(earn) - 割掉没有选的 earn 以及左部选的点对应的右部点的 cost      割完后刚好可以把图分成两部分
 最大权闭合子图 = sum(earn) - 最小割
 https://codeforces.com/problemset/problem/2026/E 2500
 https://atcoder.jp/contests/abc326/tasks/abc326_g
