@@ -58,6 +58,8 @@ $$
 
 [本题视频讲解（3D 视角）](https://www.bilibili.com/video/BV1D4SiB5Ee3/)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Node:
     __slots__ = 'l', 'r', 'lo', 'ro', 'cnt', 'sum'
@@ -100,7 +102,7 @@ class Node:
         o.maintain()
         return o
 
-    # 查询 old 和 self 对应区间的第 k 小，k 从 1 开始
+    # 查询 old 和 self 对应子数组的第 k 小，k 从 1 开始
     def kth(self, old: 'Node', k: int) -> int:
         if self.l == self.r:
             return self.l
@@ -109,7 +111,7 @@ class Node:
             return self.lo.kth(old.lo, k)
         return self.ro.kth(old.ro, k - cnt_l)  # 答案在右子树中
 
-    # 查询 old 和 self 对应区间，有多少个数 <= i，这些数的元素和是多少
+    # 查询 old 和 self 对应子数组，有多少个数 <= i，这些数的元素和是多少
     def query(self, old: 'Node', i: int) -> Tuple[int, int]:
         if self.r <= i:
             return self.cnt - old.cnt, self.sum - old.sum
@@ -219,7 +221,7 @@ class Node {
         return o;
     }
 
-    // 查询 old 和 this 对应区间的第 k 小，k 从 1 开始
+    // 查询 old 和 this 对应子数组的第 k 小，k 从 1 开始
     public int kth(Node old, int k) {
         if (l == r) {
             return l;
@@ -231,7 +233,7 @@ class Node {
         return ro.kth(old.ro, k - cntL); // 答案在右子树中
     }
 
-    // 查询 old 和 this 对应区间，有多少个数 <= i，这些数的元素和是多少
+    // 查询 old 和 this 对应子数组，有多少个数 <= i，这些数的元素和是多少
     public long[] query(Node old, int i) {
         if (r <= i) {
             return new long[]{cnt - old.cnt, sum - old.sum};
@@ -349,7 +351,7 @@ public:
         return o;
     }
 
-    // 查询 old 和当前节点对应区间的第 k 小，k 从 1 开始
+    // 查询 old 和 this 对应子数组的第 k 小，k 从 1 开始
     int kth(Node* old, int k) {
         if (l == r) {
             return l;
@@ -361,7 +363,7 @@ public:
         return ro->kth(old->ro, k - cnt_l); // 答案在右子树中
     }
 
-    // 查询 old 和当前节点对应区间，有多少个数 <= i，这些数的元素和是多少
+    // 查询 old 和 this 对应子数组，有多少个数 <= i，这些数的元素和是多少
     pair<int, long long> query(Node* old, int i) {
         if (r <= i) {
             return {cnt - old->cnt, sum - old->sum};
@@ -475,7 +477,7 @@ func (o node) add(i, val int) *node {
 	return &o
 }
 
-// 查询 old 和 o 对应区间的第 k 小，k 从 1 开始
+// 查询 old 和 o 对应子数组的第 k 小，k 从 1 开始
 func (o *node) kth(old *node, k int) int {
 	if o.l == o.r {
 		return o.l
@@ -487,7 +489,7 @@ func (o *node) kth(old *node, k int) int {
 	return o.ro.kth(old.ro, k-cntL) // 答案在右子树中
 }
 
-// 查询 old 和 o 对应区间，有多少个数 <= i，这些数的元素和是多少
+// 查询 old 和 o 对应子数组，有多少个数 <= i，这些数的元素和是多少
 func (o *node) query(old *node, i int) (int, int) {
 	if o.r <= i {
 		return o.cnt - old.cnt, o.sum - old.sum
@@ -551,9 +553,454 @@ func minOperations(nums []int, k int, queries [][]int) []int64 {
 }
 ```
 
+## 写法二
+
+$\texttt{kth}$ 和 $\texttt{query}$ 可以合并成一个函数。
+
+另外可以改成计算小于中位数的元素个数（以及元素和），这样递归边界返回 $0$ 就行。
+
+```py [sol-Python3]
+class Node:
+    __slots__ = 'l', 'r', 'lo', 'ro', 'cnt', 'sum'
+
+    def __init__(self, l: int, r: int, lo=None, ro=None, cnt=0, sum=0):
+        self.l = l
+        self.r = r
+        self.lo = lo
+        self.ro = ro
+        self.cnt = cnt
+        self.sum = sum
+
+    def maintain(self):
+        self.cnt = self.lo.cnt + self.ro.cnt
+        self.sum = self.lo.sum + self.ro.sum
+
+    @staticmethod
+    def build(l: int, r: int) -> 'Node':
+        o = Node(l, r)
+        if l == r:
+            return o
+        mid = (l + r) // 2
+        o.lo = Node.build(l, mid)
+        o.ro = Node.build(mid + 1, r)
+        return o
+
+    # 在线段树的位置 i 添加 val
+    def add(self, i: int, val: int) -> 'Node':
+        # 复制一份当前节点
+        o = Node(self.l, self.r, self.lo, self.ro, self.cnt, self.sum)
+        if o.l == o.r:
+            o.cnt += 1
+            o.sum += val
+            return o
+        mid = (o.l + o.r) // 2
+        if i <= mid:
+            o.lo = o.lo.add(i, val)
+        else:
+            o.ro = o.ro.add(i, val)
+        o.maintain()
+        return o
+
+    # 查询 old 和 self 对应子数组的第 k 小，有多少个数小于第 k 小，这些数的元素和是多少
+    def query(self, old: 'Node', k: int) -> Tuple[int, int, int]:
+        if self.l == self.r:
+            return self.l, 0, 0
+        cnt_l = self.lo.cnt - old.lo.cnt
+        if k <= cnt_l:
+            return self.lo.query(old.lo, k)
+        i, c, s = self.ro.query(old.ro, k - cnt_l)
+        sum_l = self.lo.sum - old.lo.sum
+        return i, cnt_l + c, sum_l + s
+
+
+class Solution:
+    def minOperations(self, nums: List[int], k: int, queries: List[List[int]]) -> List[int]:
+        n = len(nums)
+        left = [0] * n
+        for i in range(1, n):
+            left[i] = left[i - 1] if nums[i] % k == nums[i - 1] % k else i
+
+        # 准备离散化
+        sorted_nums = sorted(set(nums))
+        mp = {x: i for i, x in enumerate(sorted_nums)}
+
+        # 构建可持久化线段树
+        t = [None] * (n + 1)
+        t[0] = Node.build(0, len(sorted_nums) - 1)
+        for i, x in enumerate(nums):
+            j = mp[x]  # 离散化
+            t[i + 1] = t[i].add(j, x)
+
+        ans = []
+        for l, r in queries:
+            if left[r] > l:  # 无解
+                ans.append(-1)
+                continue
+
+            r += 1  # 改成左闭右开，方便计算
+
+            # 计算区间中位数
+            sz = r - l
+            i, cnt_left, sum_left = t[r].query(t[l], sz // 2 + 1)
+            median = sorted_nums[i]  # 离散化后的值 -> 原始值
+
+            # 计算区间所有元素到中位数的距离和
+            total = t[r].sum - t[l].sum  # 区间元素和
+            s = median * cnt_left - sum_left  # 蓝色面积
+            s += total - sum_left - median * (sz - cnt_left)  # 绿色面积
+            ans.append(s // k)  # 操作次数 = 距离和 / k
+
+        return ans
+```
+
+```java [sol-Java]
+class Node {
+    private final int l;
+    private final int r;
+    private Node lo;
+    private Node ro;
+    private int cnt;
+    public long sum;
+
+    private void maintain() {
+        cnt = lo.cnt + ro.cnt;
+        sum = lo.sum + ro.sum;
+    }
+
+    public Node(int l, int r, Node lo, Node ro, int cnt, long sum) {
+        this.l = l;
+        this.r = r;
+        this.lo = lo;
+        this.ro = ro;
+        this.cnt = cnt;
+        this.sum = sum;
+    }
+
+    public Node(int l, int r) {
+        this(l, r, null, null, 0, 0);
+    }
+
+    public static Node build(int l, int r) {
+        Node o = new Node(l, r);
+        if (l == r) {
+            return o;
+        }
+        int mid = (l + r) / 2;
+        o.lo = build(l, mid);
+        o.ro = build(mid + 1, r);
+        return o;
+    }
+
+    // 在线段树的位置 i 添加 val
+    public Node add(int i, int val) {
+        Node o = new Node(l, r, lo, ro, cnt, sum); // 复制当前节点
+        if (l == r) {
+            o.cnt++;
+            o.sum += val;
+            return o;
+        }
+        int mid = (l + r) / 2;
+        if (i <= mid) {
+            o.lo = o.lo.add(i, val);
+        } else {
+            o.ro = o.ro.add(i, val);
+        }
+        o.maintain();
+        return o;
+    }
+
+    // 查询 old 和 this 对应子数组的第 k 小，有多少个数小于第 k 小，这些数的元素和是多少
+    public long[] query(Node old, int k) {
+        if (l == r) {
+            return new long[]{l, 0, 0};
+        }
+        int cntL = lo.cnt - old.lo.cnt;
+        if (k <= cntL) {
+            return lo.query(old.lo, k);
+        }
+        long[] res = ro.query(old.ro, k - cntL);
+        res[1] += cntL;
+        res[2] += lo.sum - old.lo.sum;
+        return res;
+    }
+}
+
+class Solution {
+    public long[] minOperations(int[] nums, int k, int[][] queries) {
+        int n = nums.length;
+        int[] left = new int[n];
+        for (int i = 1; i < n; i++) {
+            left[i] = nums[i] % k == nums[i - 1] % k ? left[i - 1] : i;
+        }
+
+        // 准备离散化
+        int[] sorted = nums.clone();
+        Arrays.sort(sorted);
+
+        // 构建可持久化线段树
+        Node[] t = new Node[n + 1];
+        t[0] = Node.build(0, n - 1);
+        for (int i = 0; i < n; i++) {
+            int j = Arrays.binarySearch(sorted, nums[i]);
+            t[i + 1] = t[i].add(j, nums[i]);
+        }
+
+        long[] ans = new long[queries.length];
+
+        for (int qi = 0; qi < queries.length; qi++) {
+            int[] q = queries[qi];
+            int l = q[0];
+            int r = q[1];
+            if (left[r] > l) { // 无解
+                ans[qi] = -1;
+                continue;
+            }
+
+            r++; // 改成左闭右开
+
+            // 计算区间中位数
+            int sz = r - l;
+            long[] res = t[r].query(t[l], sz / 2 + 1);
+            long median = sorted[(int) res[0]]; // 离散化后的值 -> 原始值
+
+            // 计算区间所有元素到中位数的距离和
+            long totalSum = t[r].sum - t[l].sum;
+            long cntLeft = res[1];
+            long sumLeft = res[2];
+            long sum = median * cntLeft - sumLeft; // 蓝色面积
+            sum += totalSum - sumLeft - median * (sz - cntLeft); // 绿色面积
+            ans[qi] = sum / k; // 操作次数 = 距离和 / k
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Node {
+    int l, r;
+    Node* lo;
+    Node* ro;
+    int cnt;
+
+    void maintain() {
+        cnt = lo->cnt + ro->cnt;
+        sum = lo->sum + ro->sum;
+    }
+
+public:
+    long long sum;
+
+    Node(int l, int r, Node* lo = nullptr, Node* ro = nullptr, long long cnt = 0, long long sum = 0)
+        : l(l), r(r), lo(lo), ro(ro), cnt(cnt), sum(sum) {}
+
+    static Node* build(int l, int r) {
+        Node* o = new Node(l, r);
+        if (l == r) {
+            return o;
+        }
+        int mid = (l + r) / 2;
+        o->lo = build(l, mid);
+        o->ro = build(mid + 1, r);
+        return o;
+    }
+
+    // 在线段树的位置 i 添加 val
+    Node* add(int i, int val) {
+        Node* o = new Node(l, r, lo, ro, cnt, sum); // 复制当前节点
+        if (l == r) {
+            o->cnt++;
+            o->sum += val;
+            return o;
+        }
+        int mid = (l + r) / 2;
+        if (i <= mid) {
+            o->lo = o->lo->add(i, val);
+        } else {
+            o->ro = o->ro->add(i, val);
+        }
+        o->maintain();
+        return o;
+    }
+
+    // 查询 old 和 this 对应子数组的第 k 小，有多少个数小于第 k 小，这些数的元素和是多少
+    tuple<int, int, long long> query(Node* old, int k) {
+        if (l == r) {
+            return {l, cnt - old->cnt, sum - old->sum};
+        }
+        int cnt_l = lo->cnt - old->lo->cnt;
+        if (k <= cnt_l) {
+            return lo->query(old->lo, k);
+        }
+        auto [i, c, s] = ro->query(old->ro, k - cnt_l);
+        long long sum_l = lo->sum - old->lo->sum;
+        return {i, cnt_l + c, sum_l + s};
+    }
+};
+
+class Solution {
+public:
+    vector<long long> minOperations(vector<int>& nums, int k, vector<vector<int>>& queries) {
+        int n = nums.size();
+        vector<int> left(n);
+        for (int i = 1; i < n; i++) {
+            left[i] = nums[i] % k == nums[i - 1] % k ? left[i - 1] : i;
+        }
+
+        // 准备离散化
+        vector<int> sorted_nums = nums;
+        ranges::sort(sorted_nums);
+        sorted_nums.erase(ranges::unique(sorted_nums).begin(), sorted_nums.end());
+        int m = sorted_nums.size();
+
+        // 构建可持久化线段树
+        vector<Node*> t(n + 1);
+        t[0] = Node::build(0, m - 1);
+        for (int i = 0; i < n; i++) {
+            int j = ranges::lower_bound(sorted_nums, nums[i]) - sorted_nums.begin();
+            t[i + 1] = t[i]->add(j, nums[i]);
+        }
+
+        vector<long long> ans;
+        ans.reserve(queries.size()); // 预分配空间
+
+        for (auto& q : queries) {
+            int l = q[0], r = q[1];
+            if (left[r] > l) { // 无解
+                ans.push_back(-1);
+                continue;
+            }
+
+            r++; // 改成左闭右开，方便计算
+
+            // 计算区间中位数
+            int sz = r - l;
+            auto [i, cnt_left, sum_left] = t[r]->query(t[l], sz / 2 + 1);
+            long long median = sorted_nums[i]; // 离散化后的值 -> 原始值
+
+            // 计算区间所有元素到中位数的距离和
+            long long total = t[r]->sum - t[l]->sum; // 区间元素和
+            long long sum = median * cnt_left - sum_left; // 蓝色面积
+            sum += total - sum_left - median * (sz - cnt_left); // 绿色面积
+            ans.push_back(sum / k); // 操作次数 = 距离和 / k
+        }
+
+        // 省略 delete 线段树节点的代码
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+// 有大量指针的题目，关闭 GC 更快
+func init() { debug.SetGCPercent(-1) }
+
+type node struct {
+	lo, ro   *node
+	l, r     int
+	cnt, sum int
+}
+
+func (o *node) maintain() {
+	o.cnt = o.lo.cnt + o.ro.cnt
+	o.sum = o.lo.sum + o.ro.sum
+}
+
+func build(l, r int) *node {
+	o := &node{l: l, r: r}
+	if l == r {
+		return o
+	}
+	mid := (l + r) / 2
+	o.lo = build(l, mid)
+	o.ro = build(mid+1, r)
+	return o
+}
+
+// 在线段树的位置 i 添加 val
+// 注意这里传的不是指针，会把 node 复制一份，而这正好是我们需要的
+func (o node) add(i, val int) *node {
+	if o.l == o.r {
+		o.cnt++
+		o.sum += val
+		return &o
+	}
+	mid := (o.l + o.r) / 2
+	if i <= mid {
+		o.lo = o.lo.add(i, val)
+	} else {
+		o.ro = o.ro.add(i, val)
+	}
+	o.maintain()
+	return &o
+}
+
+// 查询 old 和 o 对应子数组的第 k 小，有多少个数小于第 k 小，这些数的元素和是多少
+func (o *node) query(old *node, k int) (int, int, int) {
+	if o.l == o.r {
+		return o.l, 0, 0
+	}
+	cntL := o.lo.cnt - old.lo.cnt
+	if k <= cntL {
+		return o.lo.query(old.lo, k)
+	}
+	i, c, s := o.ro.query(old.ro, k-cntL)
+	sumL := o.lo.sum - old.lo.sum
+	return i, cntL + c, sumL + s
+}
+
+func minOperations(nums []int, k int, queries [][]int) []int64 {
+	n := len(nums)
+	left := make([]int, n)
+	for i := 1; i < n; i++ {
+		if nums[i]%k != nums[i-1]%k {
+			left[i] = i
+		} else {
+			left[i] = left[i-1]
+		}
+	}
+
+	// 准备离散化
+	sorted := slices.Clone(nums)
+	slices.Sort(sorted)
+	sorted = slices.Compact(sorted)
+
+	t := make([]*node, n+1)
+	t[0] = build(0, len(sorted)-1)
+	for i, x := range nums {
+		j := sort.SearchInts(sorted, x) // 离散化
+		t[i+1] = t[i].add(j, x)         // 构建可持久化线段树
+	}
+
+	ans := make([]int64, len(queries))
+	for qi, q := range queries {
+		l, r := q[0], q[1]
+		if left[r] > l { // 无解
+			ans[qi] = -1
+			continue
+		}
+
+		r++ // 改成左闭右开，方便计算
+
+		// 计算区间中位数
+		sz := r - l
+		i, cntLeft, sumLeft := t[r].query(t[l], sz/2+1)
+		median := sorted[i] // 离散化后的值 -> 原始值
+
+		// 计算区间所有元素到中位数的距离和
+		total := t[r].sum - t[l].sum                 // 区间元素和
+		sum := median*cntLeft - sumLeft              // 蓝色面积
+		sum += total - sumLeft - median*(sz-cntLeft) // 绿色面积
+		ans[qi] = int64(sum / k)                     // 操作次数 = 距离和 / k
+	}
+	return ans
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n + q\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 时间复杂度：$\mathcal{O}((n+q)\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n\log n)$。返回值不计入。
 
 ## 专题训练

@@ -8,7 +8,7 @@ import (
 
 // https://space.bilibili.com/206214
 // 有大量指针的题目，关闭 GC 更快
-func init() { debug.SetGCPercent(-1) } 
+func init() { debug.SetGCPercent(-1) }
 
 type node struct {
 	lo, ro   *node
@@ -50,31 +50,18 @@ func (o node) add(i, val int) *node {
 	return &o
 }
 
-// 查询 old 和 o 对应区间的第 k 小，k 从 1 开始
-func (o *node) kth(old *node, k int) int {
+// 查询 old 和 o 对应子数组的第 k 小，有多少个数小于第 k 小，这些数的元素和是多少
+func (o *node) query(old *node, k int) (int, int, int) {
 	if o.l == o.r {
-		return o.l
+		return o.l, 0, 0
 	}
 	cntL := o.lo.cnt - old.lo.cnt
-	if k <= cntL { // 答案在左子树中
-		return o.lo.kth(old.lo, k)
+	if k <= cntL {
+		return o.lo.query(old.lo, k)
 	}
-	return o.ro.kth(old.ro, k-cntL) // 答案在右子树中
-}
-
-// 查询 old 和 o 对应区间，有多少个数 <= i，这些数的元素和是多少
-func (o *node) query(old *node, i int) (int, int) {
-	if o.r <= i {
-		return o.cnt - old.cnt, o.sum - old.sum
-	}
-	cnt, tot := o.lo.query(old.lo, i)
-	mid := (o.l + o.r) / 2
-	if i > mid {
-		c, t := o.ro.query(old.ro, i)
-		cnt += c
-		tot += t
-	}
-	return cnt, tot
+	i, c, s := o.ro.query(old.ro, k-cntL)
+	sumL := o.lo.sum - old.lo.sum
+	return i, cntL + c, sumL + s
 }
 
 func minOperations(nums []int, k int, queries [][]int) []int64 {
@@ -112,12 +99,11 @@ func minOperations(nums []int, k int, queries [][]int) []int64 {
 
 		// 计算区间中位数
 		sz := r - l
-		i := t[r].kth(t[l], sz/2+1)
+		i, cntLeft, sumLeft := t[r].query(t[l], sz/2+1)
 		median := sorted[i] // 离散化后的值 -> 原始值
 
 		// 计算区间所有元素到中位数的距离和
-		total := t[r].sum - t[l].sum // 区间元素和
-		cntLeft, sumLeft := t[r].query(t[l], i)
+		total := t[r].sum - t[l].sum                 // 区间元素和
 		sum := median*cntLeft - sumLeft              // 蓝色面积
 		sum += total - sumLeft - median*(sz-cntLeft) // 绿色面积
 		ans[qi] = int64(sum / k)                     // 操作次数 = 距离和 / k
