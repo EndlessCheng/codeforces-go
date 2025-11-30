@@ -305,6 +305,7 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
+// 更快的写法见写法二的【C++ 内存池】
 class Node {
     int l, r;
     Node* lo;
@@ -778,6 +779,7 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
+// 更快的写法见【C++ 内存池】
 class Node {
     int l, r;
     Node* lo;
@@ -887,6 +889,132 @@ public:
         }
 
         // 省略 delete 线段树节点的代码
+        return ans;
+    }
+};
+```
+
+```cpp [sol-C++ 内存池]
+struct Node {
+    int l, r;
+    Node* lo;
+    Node* ro;
+    int cnt;
+    long long sum;
+
+    Node() = default;
+
+    Node(int l, int r, Node* lo = nullptr, Node* ro = nullptr, int cnt = 0, long long sum = 0) : 
+         l(l), r(r), lo(lo), ro(ro), cnt(cnt), sum(sum) {}
+
+    void maintain() {
+        cnt = lo->cnt + ro->cnt;
+        sum = lo->sum + ro->sum;
+    }
+
+    static Node* build(int l, int r);
+    Node* add(int i, int val);
+    tuple<int, int, long long> query(Node* old, int k);
+};
+
+Node nodes[40000 * 20];
+int ptr = 0;
+
+Node* newNode(int l, int r, Node* lo = nullptr, Node* ro = nullptr, int cnt = 0, long long sum = 0) {
+    // 从内存池分配节点
+    nodes[ptr] = Node(l, r, lo, ro, cnt, sum);
+    return &nodes[ptr++];
+}
+
+Node* Node::build(int l, int r) {
+    Node* o = newNode(l, r);
+    if (l == r) {
+        return o;
+    }
+    int mid = (l + r) / 2;
+    o->lo = build(l, mid);
+    o->ro = build(mid + 1, r);
+    return o;
+}
+
+Node* Node::add(int i, int val) {
+    Node* o = newNode(l, r, lo, ro, cnt, sum);
+    if (l == r) {
+        o->cnt++;
+        o->sum += val;
+        return o;
+    }
+    int mid = (l + r) / 2;
+    if (i <= mid) {
+        o->lo = o->lo->add(i, val);
+    } else {
+        o->ro = o->ro->add(i, val);
+    }
+    o->maintain();
+    return o;
+}
+
+tuple<int, int, long long> Node::query(Node* old, int k) {
+    if (l == r) {
+        return {l, cnt - old->cnt, sum - old->sum};
+    }
+    int cnt_l = lo->cnt - old->lo->cnt;
+    if (k <= cnt_l) {
+        return lo->query(old->lo, k);
+    }
+    auto [i, c, s] = ro->query(old->ro, k - cnt_l);
+    long long sum_l = lo->sum - old->lo->sum;
+    return {i, cnt_l + c, sum_l + s};
+}
+
+class Solution {
+public:
+    vector<long long> minOperations(vector<int>& nums, int k, vector<vector<int>>& queries) {
+        int n = nums.size();
+        vector<int> left(n);
+        for (int i = 1; i < n; i++) {
+            left[i] = nums[i] % k == nums[i - 1] % k ? left[i - 1] : i;
+        }
+
+        // 准备离散化
+        vector<int> sorted_nums = nums;
+        ranges::sort(sorted_nums);
+        sorted_nums.erase(ranges::unique(sorted_nums).begin(), sorted_nums.end());
+        int m = sorted_nums.size();
+
+        // 构建可持久化线段树
+        ptr = 0;
+        vector<Node*> t(n + 1);
+        t[0] = Node::build(0, m - 1);
+        for (int i = 0; i < n; i++) {
+            int j = ranges::lower_bound(sorted_nums, nums[i]) - sorted_nums.begin();
+            t[i + 1] = t[i]->add(j, nums[i]);
+        }
+
+        vector<long long> ans;
+        ans.reserve(queries.size()); // 预分配空间
+
+        for (auto& q : queries) {
+            int l = q[0], r = q[1];
+            if (left[r] > l) { // 无解
+                ans.push_back(-1);
+                continue;
+            }
+
+            r++; // 改成左闭右开，方便计算
+
+            // 计算区间中位数
+            int sz = r - l;
+            auto [i, cnt_left, sum_left] = t[r]->query(t[l], sz / 2 + 1);
+            long long median = sorted_nums[i]; // 离散化后的值 -> 原始值
+
+            // 计算区间所有元素到中位数的距离和
+            long long total = t[r]->sum - t[l]->sum; // 区间元素和
+            long long sum = median * cnt_left - sum_left; // 蓝色面积
+            sum += total - sum_left - median * (sz - cnt_left); // 绿色面积
+            ans.push_back(sum / k); // 操作次数 = 距离和 / k
+        }
+
         return ans;
     }
 };
