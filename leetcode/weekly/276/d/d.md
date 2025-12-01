@@ -1,5 +1,9 @@
 ## 方法一：二分答案
 
+如果可以让 $n$ 台电脑同时运行 $x$ 分钟，那么必然可以同时运行 $x-1,x-2,\ldots$ 分钟（要求更宽松）；如果无法让 $n$ 台电脑同时运行 $x$ 分钟，那么必然无法同时运行 $x+1,x+2,\ldots$ 分钟（要求更苛刻）。
+
+据此，可以**二分猜答案**。关于二分算法的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+
 假设可以让 $n$ 台电脑同时运行 $x$ 分钟，那么对于电量大于 $x$ 的电池，其只能被使用 $x$ 分钟，因此每个电池的使用时间至多为 $\min(\textit{batteries}[i], x)$。累加所有电池的使用时间，记作 $\textit{sum}$。那么要让 $n$ 台电脑同时运行 $x$ 分钟，**必要条件**是 $n\cdot x\le \textit{sum}$。
 
 下面证明该条件也是**充分**的，即如果 $n\cdot x\le \textit{sum}$ 成立，那么一定存在一种安排电池的方式，可以让 $n$ 台电脑同时运行 $x$ 分钟。
@@ -12,13 +16,11 @@
 
 由于 $\textit{sum}'=\textit{sum}-(n-n')\cdot x$，结合 $n\cdot x\le \textit{sum}$ 可以得到 $n'\cdot x\le \textit{sum}'$，按照上述供电方案（用完一个电池就换下一个电池），这 $n'$ 台电脑可以运行至少 $x$ 分钟。充分性得证。
 
-如果我们可以让 $n$ 台电脑同时运行 $x$ 分钟，那么必然也可以同时运行低于 $x$ 分钟，因此答案满足单调性，可以二分答案，通过判断 $n\cdot x\le \textit{sum}$ 来求解。
-
 ### 细节
 
 下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的。
 
-- 开区间左端点初始值：$0$。一定满足要求。
+- 开区间左端点初始值：$0$。不运行任何电脑，一定满足要求。
 - 开区间右端点初始值：平均值加一，即 $\left\lfloor\dfrac{\sum \textit{batteries}[i]}{n}\right\rfloor + 1$。一定无法满足要求。
 
 ```py [sol-Python3]
@@ -109,7 +111,7 @@ func maxRunTime(n int, batteries []int) int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(m\log U)$，其中 $m$ 是 $\textit{batteries}$ 的长度，$U$ 是二分的初始范围。
+- 时间复杂度：$\mathcal{O}(m\log (S/n))$，其中 $m$ 是 $\textit{batteries}$ 的长度，$S$ 是 $\textit{batteries}$ 的元素和。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 方法二：排序 + 贪心
@@ -200,6 +202,11 @@ func maxRunTime(n int, batteries []int) int64 {
 
 - 时间复杂度：$\mathcal{O}(m\log m)$，其中 $m$ 是 $\textit{batteries}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+
+## 专题训练
+
+1. 二分题单的「**§2.2 求最大**」。
+2. 贪心题单的「**§1.1 从最小/最大开始贪心**」。
 
 ## 分类题单
 
