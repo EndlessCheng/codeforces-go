@@ -4308,12 +4308,12 @@ https://codeforces.com/blog/entry/145343
 建图方式：
   超级源点 S 连 i，容量为 earn[i]
   j 连超集汇点 T，容量为 cost[j]
-  g[i][j] 的容量为 inf
+  g[i][j] 的容量为 inf（两部之间的边不能割）
 利润 = sum(earn) - sum(没有选的 earn) - sum(选的点对应的 cost)
      = sum(earn) - 割掉没有选的 earn 以及左部选的点对应的右部点的 cost      割完后刚好可以把图分成两部分
 最大权闭合子图 = sum(earn) - 最小割
 https://codeforces.com/problemset/problem/2026/E 2500
-https://atcoder.jp/contests/abc326/tasks/abc326_g
+https://atcoder.jp/contests/abc326/tasks/abc326_g 2470=CF2579
 
 Solving Problems with Min Cut Max Flow Duality https://codeforces.com/blog/entry/136761
 最小割问题秒杀三板斧 https://www.bilibili.com/video/BV1jt4y1t7pd/
@@ -4611,7 +4611,7 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 	}
 
 	{
-		// 二分图最大匹配的建图
+		// 二分图最大匹配的建图（忽略上面的代码）
 		st := len(a) + len(b)
 		end := st + 1
 		type neighbor struct{ to, rid, cap int }
@@ -4620,17 +4620,18 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 			g[from] = append(g[from], neighbor{to, len(g[to]), cap})
 			g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
 		}
+
 		// 超级源点连左部，右部连超级汇点，所有边的容量均为 1，最大流即为最大匹配
 		for i, v := range a {
 			for j, w := range b {
 				// 和题目有关，满足该约束即可匹配 a[i] 和 b[j]
 				if v+w < 100 {
-					addEdge(i, j+len(a), 1)
+					addEdge(i, j+len(a), math.MaxInt) // 两部之间的边不能割
 				}
 			}
 			// cap=1 表示每个 a[i] 只能选一次（匹配一次）
 			// 如果题目允许一对多，比如一对二，把 1 改成 2
-			addEdge(st, i, 1) 
+			addEdge(st, i, 1)
 		}
 		for j := range b {
 			// cap=1 表示 b[j] 只能被一个 a[i] 独占（匹配）
@@ -4668,7 +4669,8 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 		}
 		for ; iter[v] < len(g[v]); iter[v]++ {
 			e := &g[v][iter[v]]
-			if w := e.to; e.cap > 0 && d[w] > d[v] {
+			w := e.to
+			if e.cap > 0 && d[w] > d[v] {
 				f := dfs(w, min(totalFlow-curFlow, e.cap))
 				if f == 0 {
 					continue
