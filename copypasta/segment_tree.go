@@ -998,7 +998,7 @@ func (o *pstNode) kth(old *pstNode, k int) int {
 	if o.l == o.r {
 		return o.l
 	}
-	cntL := o.lo.sum - old.lo.sum
+	cntL := o.lo.cnt - old.lo.cnt
 	if k < cntL {
 		return o.lo.kth(old.lo, k)
 	}
@@ -1007,7 +1007,7 @@ func (o *pstNode) kth(old *pstNode, k int) int {
 
 // 主席树
 // 对 a 的每个前缀建立一棵值域线段树
-func newPST(a []int) []*pstNode {
+func newPST(a []int) ([]*pstNode, []int) {
 	sorted := slices.Clone(a)
 	slices.Sort(sorted)
 	sorted = slices.Compact(sorted)
@@ -1018,7 +1018,7 @@ func newPST(a []int) []*pstNode {
 		j := sort.SearchInts(sorted, v)
 		t[i+1] = t[i].update(j, v) // 统计 j 的出现次数，累加原始值
 	}
-	return t
+	return t, sorted
 }
 
 // countDiff 子数组不同元素个数
