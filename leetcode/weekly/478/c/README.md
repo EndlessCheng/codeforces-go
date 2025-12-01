@@ -13,6 +13,21 @@ class Solution:
         for j, x in enumerate(nums):
             if x in last_index:
                 ans = min(ans, j - last_index[x])
+            rev = int(str(x)[::-1])
+            last_index[rev] = j
+
+        return ans if ans < inf else -1
+```
+
+```py [sol-Python3 不用字符串]
+class Solution:
+    def minMirrorPairDistance(self, nums: List[int]) -> int:
+        last_index = {}
+        ans = inf
+
+        for j, x in enumerate(nums):
+            if x in last_index:
+                ans = min(ans, j - last_index[x])
 
             # 计算 reverse(x)，不用字符串
             rev = 0
