@@ -1,100 +1,80 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"sort"
+	"runtime/debug"
 )
 
-type stNode961 struct {
-	l, r int
-	vals []int
-}
-type segmentTree961 []stNode961
+// https://github.com/EndlessCheng
+func init() { debug.SetGCPercent(-1) }
 
-func (t segmentTree961) _pushUp(o int) []int {
-	a, b := t[o<<1].vals, t[o<<1|1].vals
-	i, n := 0, len(a)
-	j, m := 0, len(b)
-	res := make([]int, 0, n+m)
-	for {
-		if i == n {
-			return append(res, b[j:]...)
-		}
-		if j == m {
-			return append(res, a[i:]...)
-		}
-		if a[i] < b[j] {
-			res = append(res, a[i])
-			i++
-		} else {
-			res = append(res, b[j])
-			j++
-		}
-	}
+type data61 struct{ cnt int }
+type node61 struct {
+	lo, ro *node61
+	data61
 }
 
-func (t segmentTree961) _build(arr []int, o, l, r int) {
-	t[o].l, t[o].r = l, r
+func (node61) merge(l, r data61) data61 {
+	return data61{l.cnt + r.cnt}
+}
+
+func (o *node61) maintain() {
+	o.data61 = o.merge(o.lo.data61, o.ro.data61)
+}
+
+func build61(l, r int) *node61 {
+	o := &node61{}
 	if l == r {
-		t[o].vals = []int{arr[l-1]}
-		return
+		return o
 	}
 	m := (l + r) >> 1
-	t._build(arr, o<<1, l, m)
-	t._build(arr, o<<1|1, m+1, r)
-	t[o].vals = t._pushUp(o)
+	o.lo = build61(l, m)
+	o.ro = build61(m+1, r)
+	return o
 }
 
-func (t segmentTree961) _query(o, l, r, x int) (res int) {
-	if l <= t[o].l && t[o].r <= r {
-		a := t[o].vals
-		return len(a) - sort.SearchInts(a, x)
+func (o node61) update(l, r, i int) *node61 {
+	if l == r {
+		o.cnt++
+		return &o
 	}
-	m := (t[o].l + t[o].r) >> 1
-	if l <= m {
-		res += t._query(o<<1, l, r, x)
+	m := (l + r) >> 1
+	if i <= m {
+		o.lo = o.lo.update(l, m, i)
+	} else {
+		o.ro = o.ro.update(m+1, r, i)
 	}
-	if r > m {
-		res += t._query(o<<1|1, l, r, x)
-	}
-	return
+	o.maintain()
+	return &o
 }
 
-func (t segmentTree961) init(arr []int)        { t._build(arr, 1, 1, len(arr)) }
-func (t segmentTree961) query(l, r, x int) int { return t._query(1, l, r, x) }
-
-// github.com/EndlessCheng/codeforces-go
-func CF961E(_r io.Reader, _w io.Writer) {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
+func (o *node61) query(l, r, ql, qr int) data61 {
+	if ql <= l && r <= qr {
+		return o.data61
 	}
-	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
+	m := (l + r) >> 1
+	if qr <= m {
+		return o.lo.query(l, m, ql, qr)
+	}
+	if m < ql {
+		return o.ro.query(m+1, r, ql, qr)
+	}
+	return o.merge(o.lo.query(l, m, ql, qr), o.ro.query(m+1, r, ql, qr))
+}
 
-	var n int
+func cf961E(in io.Reader, out io.Writer) {
+	var n, v, ans int
 	Fscan(in, &n)
-	a := make([]int, n)
-	for i := range a {
-		Fscan(in, &a[i])
-	}
-
-	t := make(segmentTree961, 4*n)
-	t.init(a)
-	ans := int64(0)
-	for i, v := range a[:n-1] {
-		if v > i+1 {
-			ans += int64(t.query(i+2, min(v, n), i+1))
-		}
+	t := make([]*node61, n+1)
+	t[0] = build61(0, n)
+	for i := range n {
+		Fscan(in, &v)
+		r := min(v, i)
+		ans += r - t[r].query(0, n, 0, i).cnt
+		t[i+1] = t[i].update(0, n, min(v, n))
 	}
 	Fprint(out, ans)
 }
 
-//func main() {
-//	CF961E(os.Stdin, os.Stdout)
-//}
+//func main() { cf961E(bufio.NewReader(os.Stdin), os.Stdout) }
