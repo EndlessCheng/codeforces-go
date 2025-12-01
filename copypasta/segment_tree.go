@@ -972,7 +972,7 @@ func (o pstNode) update(i int, val int) *pstNode {
 }
 
 // 在子数组 [l,r) 对应线段树上做区间查询
-// 如果是值域线段树，则为【在线二维数点】，计算 [l,r) x [ql,qr] 中的元素个数（元素和），此时 ql 和 qr 是离散化后的值
+// 如果是值域线段树，则为【二维数点】，计算 [l,r) x [ql,qr] 中的元素个数（元素和），此时 ql 和 qr 是离散化后的值
 // ql := sort.SearchInts(sorted, queryLeft)
 // qr := sort.SearchInts(sorted, queryRight)
 // t[r].query(t[l], ql, qr)，其中 0 <= l < r <= n
@@ -994,6 +994,7 @@ func (o *pstNode) query(old *pstNode, ql, qr int) data {
 
 // 查询子数组 [l,r) 中第 k 小的数（k 从 0 开始）
 // t[r].kth(t[l], k)，其中 0 <= l < r <= n
+// 带修版本见 https://www.luogu.com.cn/problem/P2617
 func (o *pstNode) kth(old *pstNode, k int) int {
 	if o.l == o.r {
 		return o.l
