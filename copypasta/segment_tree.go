@@ -888,13 +888,13 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
 // https://oi-wiki.org/ds/persistent-seg/
-// 静态+动态 https://www.acwing.com/blog/content/487/
+// 视频讲解 https://www.bilibili.com/video/BV1D4SiB5Ee3/
 // https://zhuanlan.zhihu.com/p/250565583
 // https://blog.csdn.net/weixin_43914593/article/details/108861279
 //
 // 数组写法 https://codeforces.com/problemset/submission/840/254783792 
 //        https://codeforces.com/problemset/submission/323/250523407
-// 数组大小 n * (bits.Len(n-1) + 3)
+// 数组大小 n * (bits.Len(n) + 4)
 //
 // 另见 union_find.go 中的「可持久化并查集」
 // 另见 Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters
