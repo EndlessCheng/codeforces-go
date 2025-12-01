@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math"
 	"os"
 )
 
@@ -35,7 +36,7 @@ func run(in io.Reader, out io.Writer) {
 	for i := 0; i < m; i++ {
 		for j := 0; j < n; j++ {
 			Fscan(in, &v)
-			addEdge(i, m+j*5+v-1, 1e18)
+			addEdge(i, m+j*5+v-1, math.MaxInt)
 		}
 	}
 
@@ -86,7 +87,7 @@ func run(in io.Reader, out io.Writer) {
 		for i := range iter {
 			iter[i] = 0
 		}
-		maxFlow += dfs(st, 1e18)
+		maxFlow += dfs(st, math.MaxInt)
 	}
 
 	Fprintln(out, sum-maxFlow)
