@@ -1,6 +1,10 @@
 package copypasta
 
-import "math/bits"
+import (
+	"math/bits"
+	"slices"
+	"sort"
+)
 
 // 线段树讲解 by 灵茶山艾府（13:30 开始）https://www.bilibili.com/video/BV15D4y1G7ms
 
@@ -92,6 +96,7 @@ import "math/bits"
 // https://codeforces.com/problemset/problem/1665/E 2500 区间最小的 31 个数
 // https://codeforces.com/problemset/problem/2117/H 2500
 // https://codeforces.com/problemset/problem/2042/F 2600 两段最大子段和
+// https://codeforces.com/problemset/problem/780/G 2700 栈
 // https://codeforces.com/problemset/problem/19/D 2800
 // https://codeforces.com/problemset/problem/280/D 2800
 // https://codeforces.com/problemset/problem/765/F 3100 最小差值
@@ -101,6 +106,7 @@ import "math/bits"
 // https://atcoder.jp/contests/abc339/tasks/abc339_e 值域线段树
 // https://atcoder.jp/contests/abc356/tasks/abc356_f 动态图连通块大小
 // https://atcoder.jp/contests/abc353/tasks/abc353_g
+// https://www.luogu.com.cn/problem/P9474
 //
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // 力扣 https://leetcode.cn/tag/segment-tree/
@@ -388,6 +394,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/2009/G3 2700
 // https://codeforces.com/problemset/problem/794/F   2800 数位修改 考察对懒标记的理解 
 // https://codeforces.com/problemset/problem/1209/G2 3200 todo
+// https://www.luogu.com.cn/problem/P2574
 // https://www.luogu.com.cn/problem/P1502 窗口的星星
 //
 // 线段树二分
@@ -890,37 +897,53 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 // 数组大小 n * (bits.Len(n-1) + 3)
 //
 // 另见 union_find.go 中的「可持久化并查集」
+// 另见 Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters
 //
 // 模板题 https://www.luogu.com.cn/problem/P3919
-//       https://www.luogu.com.cn/problem/P3834
-//       https://ac.nowcoder.com/acm/contest/7613/C
-// https://atcoder.jp/contests/abc253/tasks/abc253_f 区间更新单点查询 
-// https://codeforces.com/problemset/problem/1262/D2 1800 *在线做法 
+// 模板题 https://www.luogu.com.cn/problem/P3834
+// https://codeforces.com/problemset/problem/1262/D2 1800 用在线做法解决 
+// https://codeforces.com/problemset/problem/961/E 1900 不止一种做法
+// https://codeforces.com/problemset/problem/620/E 2100 种类数
+// https://codeforces.com/problemset/problem/538/F 2200 二维数点
+// https://codeforces.com/problemset/problem/893/F 2300 与 DFS序+深度 结合
+// https://codeforces.com/problemset/problem/323/C 2400 二维数点
+// https://codeforces.com/problemset/problem/786/C 2400
+// https://codeforces.com/problemset/problem/813/E 2400 差分
 // https://codeforces.com/problemset/problem/484/E 2500 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 
-// https://codeforces.com/problemset/problem/840/D 2500
-// todo 种类数 https://codeforces.com/problemset/problem/620/E
-//  https://codeforces.com/problemset/problem/786/C
-//  差分 https://codeforces.com/problemset/problem/813/E
-//  https://codeforces.com/problemset/problem/837/G
-//  https://codeforces.com/problemset/problem/893/F 2300 与 DFS序+深度 结合
-//  https://codeforces.com/problemset/problem/961/E（不止一种做法）
+// https://codeforces.com/problemset/problem/837/G 2500
+// https://codeforces.com/problemset/problem/840/D 2500 kth
+// https://atcoder.jp/contests/abc253/tasks/abc253_f 区间更新单点查询
+// https://www.luogu.com.cn/problem/P2617
+// https://ac.nowcoder.com/acm/contest/7613/C
+// http://acm.hdu.edu.cn/showproblem.php?pid=4417 二维数点
+// 注：离线二维数点见 fenwick_tree.go 中的 areaPointCountOffline
+type data struct{ cnt, sum int }
 type pstNode struct {
+	l, r   int
 	lo, ro *pstNode
-	l, r   int // 注：如果 MLE 请换成传参的写法，或者使用数组版本
-	sum    int
+	data
 }
 
-func (pstNode) mergeInfo(a, b int) int {
-	return a + b // 根据题目修改
+func (pstNode) mergeInfo(l, r data) data {
+	// **根据题目修改**
+	return data{l.cnt + r.cnt, l.sum + r.sum}
 }
 
-// t := make([]*pstNode, 1, maxVersion+1)
-// t[0] = buildPST(a, 0, len(a)-1)
-// 或者 t := []*pstNode{buildPST(a, 0, len(a)-1)}
-func buildPST(a []int, l, r int) *pstNode {
+func (pstNode) diffInfo(l, r data) data {
+	// **根据题目修改**
+	return data{r.cnt - l.cnt, r.sum - l.sum}
+}
+
+func (o *pstNode) maintain() {
+	o.data = o.mergeInfo(o.lo.data, o.ro.data)
+}
+
+func buildPST(a []data, l, r int) *pstNode {
 	o := &pstNode{l: l, r: r}
 	if l == r {
-		o.sum = a[l]
+		if a != nil {
+			o.data = a[l]
+		}
 		return o
 	}
 	m := (l + r) >> 1
@@ -930,50 +953,103 @@ func buildPST(a []int, l, r int) *pstNode {
 	return o
 }
 
-// 一般写法是更新到当前版本，然后把返回的新版本加在 t 的末尾，即
-// t = append(t, t[len(t)-1].modify(i, add))
-// t[i] = t[i-1].modify(i, add)
-// 注意为了拷贝一份 pstNode，这里的接收器不是指针
-func (o pstNode) modify(i int, add int) *pstNode {
+// 单点更新
+// 基于当前线段树，创建一棵新的线段树
+func (o pstNode) update(i int, val int) *pstNode {
 	if o.l == o.r {
-		o.sum += add
+		o.cnt++
+		o.sum += val
 		return &o
 	}
 	m := (o.l + o.r) >> 1
 	if i <= m {
-		o.lo = o.lo.modify(i, add)
+		o.lo = o.lo.update(i, val)
 	} else {
-		o.ro = o.ro.modify(i, add)
+		o.ro = o.ro.update(i, val)
 	}
 	o.maintain()
 	return &o
 }
 
-func (o *pstNode) maintain() {
-	o.sum = o.mergeInfo(o.lo.sum, o.ro.sum)
-}
-
-func (o *pstNode) queryRange(l, r int) int {
-	if l <= o.l && o.r <= r {
-		return o.sum
+// 在子数组 [l,r) 对应线段树上做区间查询
+// 如果是值域线段树，则为【在线二维数点】，计算 [l,r) x [ql,qr] 中的元素个数（元素和），此时 ql 和 qr 是离散化后的值
+// ql := sort.SearchInts(sorted, queryLeft)
+// qr := sort.SearchInts(sorted, queryRight)
+// t[r].query(t[l], ql, qr)，其中 0 <= l < r <= n
+func (o *pstNode) query(old *pstNode, ql, qr int) data {
+	if ql <= o.l && o.r <= qr {
+		return o.diffInfo(old.data, o.data)
 	}
 	m := (o.l + o.r) >> 1
-	if r <= m {
-		return o.lo.queryRange(l, r)
+	if qr <= m {
+		return o.lo.query(old.lo, ql, qr)
 	}
-	if m < l {
-		return o.ro.queryRange(l, r)
+	if m < ql {
+		return o.ro.query(old.ro, ql, qr)
 	}
-	vl := o.lo.queryRange(l, r)
-	vr := o.ro.queryRange(l, r)
-	return o.mergeInfo(vl, vr)
+	lRes := o.lo.query(old.lo, ql, qr)
+	rRes := o.ro.query(old.ro, ql, qr)
+	return o.mergeInfo(lRes, rRes)
 }
 
-// 区间更新（只能配合单点查询）
+// 查询子数组 [l,r) 中第 k 小的数（k 从 0 开始）
+// t[r].kth(t[l], k)，其中 0 <= l < r <= n
+func (o *pstNode) kth(old *pstNode, k int) int {
+	if o.l == o.r {
+		return o.l
+	}
+	cntL := o.lo.sum - old.lo.sum
+	if k < cntL {
+		return o.lo.kth(old.lo, k)
+	}
+	return o.ro.kth(old.ro, k-cntL)
+}
+
+// 主席树
+// 对 a 的每个前缀建立一棵值域线段树
+func newPST(a []int) []*pstNode {
+	sorted := slices.Clone(a)
+	slices.Sort(sorted)
+	sorted = slices.Compact(sorted)
+
+	t := make([]*pstNode, len(a)+1)
+	t[0] = buildPST(nil, 0, len(sorted)-1)
+	for i, v := range a {
+		j := sort.SearchInts(sorted, v)
+		t[i+1] = t[i].update(j, v) // 统计 j 的出现次数，累加原始值
+	}
+	return t
+}
+
+// countDiff 子数组不同元素个数
+// 做法是维护左侧相同元素的位置
+// todo 参考 https://www.luogu.com.cn/problem/solution/SP3267
+// https://www.luogu.com.cn/problem/P1972
+// https://www.luogu.com.cn/problem/SP3267
+
+// 子数组绝对众数及其出现次数（注意返回的众数是离散化后的值）
+// 没找到时返回的 mode = -1
+// 题目链接见最上
+// 调用方式 t[r].countMode(t[l], k)，取 k = (r-l+1)/2，即区间长度一半的上取整
+// 这种 k 值使得递归时左右儿子至多调用其中一个
+func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
+	if o.l == o.r {
+		return o.l, o.sum - old.sum
+	}
+	if o.lo.sum-old.lo.sum >= k {
+		return o.lo.countMode(old.lo, k)
+	}
+	if o.ro.sum-old.ro.sum >= k {
+		return o.ro.countMode(old.ro, k)
+	}
+	return -1, 0
+}
+
+// 区间更新
 // 调用前需要拷贝一份 root 节点
 // 需要保证 add 非负
 // https://atcoder.jp/contests/abc253/tasks/abc253_f
-func (o *pstNode) update(l, r int, add int) {
+func (o *pstNode) updateRange(l, r int, add int) {
 	if l <= o.l && o.r <= r {
 		o.sum += add
 		return
@@ -989,10 +1065,10 @@ func (o *pstNode) update(l, r int, add int) {
 	}
 	m := (o.l + o.r) >> 1
 	if l <= m {
-		o.lo.update(l, r, add)
+		o.lo.updateRange(l, r, add)
 	}
 	if r > m {
-		o.ro.update(l, r, add)
+		o.ro.updateRange(l, r, add)
 	}
 }
 
@@ -1006,94 +1082,6 @@ func (o *pstNode) querySingle(i int) int {
 		return o.sum + o.lo.querySingle(i)
 	}
 	return o.sum + o.ro.querySingle(i)
-}
-
-// 主席树相当于对数组的每个前缀建立一棵线段树
-// 离散化时，求 kth 需要将相同元素也视作不同的
-// 附：Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters
-// 题目见上
-
-// EXTRA: 查询区间 [l,r] 中第 k 小（k 从 1 开始）的数
-// 初始 t[0] = buildPST(1, len(a))
-//     t[i+1] = t[i].modify(b[i], 1)     b[i] 为 a[i] 离散化后的值（从 1 开始）
-// 查询 t[r].kth(t[l-1], k)               类似前缀和 [l,r] 1<=l<=r<=n
-// https://www.luogu.com.cn/problem/P2617
-// https://codeforces.com/problemset/problem/840/D
-func (o *pstNode) kth(old *pstNode, k int) int {
-	if o.l == o.r {
-		return o.l
-	}
-	cntL := o.lo.sum - old.lo.sum
-	if k <= cntL {
-		return o.lo.kth(old.lo, k)
-	}
-	return o.ro.kth(old.ro, k-cntL)
-}
-
-// EXTRA: 查询区间 [l,r] 中 val 的出现次数
-// t[r].query(t[l-1], val)
-// https://codeforces.com/problemset/problem/840/D
-func (o *pstNode) query(old *pstNode, val int) int {
-	if o.l == o.r {
-		return o.sum - old.sum
-	}
-	m := (o.l + o.r) >> 1
-	if val <= m {
-		return o.lo.query(old.lo, val)
-	}
-	return o.ro.query(old.ro, val)
-}
-
-// todo EXTRA: rank
-//  二分答案？
-
-// 在线二维数点
-// 查询区间 [l,r] 中在 [low,high] 范围内的元素个数
-// low 和 high 为离散化后的值（从 1 开始）
-// 离线二维数点见 fenwick_tree.go 中的 areaPointCountOffline
-// https://codeforces.com/problemset/problem/323/C 2400
-// https://codeforces.com/problemset/problem/538/F 2200
-// http://acm.hdu.edu.cn/showproblem.php?pid=4417
-// 调用方式同上 t[r].countRange(t[l-1], low, high)
-func (o *pstNode) countRange(old *pstNode, low, high int) int {
-	if high < o.l || o.r < low {
-		return 0
-	}
-	if low <= o.l && o.r <= high {
-		return o.sum - old.sum
-	}
-	m := (o.l + o.r) >> 1
-	if high <= m {
-		return o.lo.countRange(old.lo, low, high)
-	}
-	if m < low {
-		return o.ro.countRange(old.ro, low, high)
-	}
-	return o.lo.countRange(old.lo, low, high) + o.ro.countRange(old.ro, low, high)
-}
-
-// EXTRA: countDiff 区间不同元素个数
-// 做法是维护左侧相同元素的位置
-// todo 参考 https://www.luogu.com.cn/problem/solution/SP3267
-// https://www.luogu.com.cn/problem/P1972
-// https://www.luogu.com.cn/problem/SP3267
-
-// EXTRA: 区间绝对众数及其出现次数（注意返回的众数是离散化后的值）
-// 没找到时返回的 mode = -1
-// 题目链接见最上
-// 调用方式 t[r].countMode(t[l-1], k)，取 k = (r-l+2)/2，即区间长度一半的上取整
-// 这种 k 值使得递归时左右儿子至多调用其中一个
-func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
-	if o.l == o.r {
-		return o.l, o.sum - old.sum
-	}
-	if o.lo.sum-old.lo.sum >= k {
-		return o.lo.countMode(old.lo, k)
-	}
-	if o.ro.sum-old.ro.sum >= k {
-		return o.ro.countMode(old.ro, k)
-	}
-	return -1, 0
 }
 
 //
