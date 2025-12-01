@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -222,6 +223,9 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 
 func genTemplates(session *grequests.Session, problemURL string, isContest bool) error {
 	// 检查 URL 是否合法
+	if strings.Contains(problemURL, "luogu") {
+		panic("todo 暂未实现 洛谷")
+	}
 	problemName := filepath.Base(problemURL)
 	spIdx := strings.LastIndexByte(problemName, '_')
 	if spIdx < 0 {
@@ -236,7 +240,7 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 	mainFilePath := dirPath + taskID + ".go"
 	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
 		open.Run(absPath(mainFilePath))
-		return fmt.Errorf("文件已存在！")
+		return fmt.Errorf("文件已存在")
 	}
 
 	// 解析样例输入输出
@@ -249,6 +253,17 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
 		return err
 	}
+
+	// 拿到题目的难度分
+	rating, err := getRating(problemName)
+	if err != nil {
+		fmt.Println("getRating", err)
+	}
+	ratingS := ""
+	if rating > 0 {
+		ratingS = " " + strconv.Itoa(rating)
+	}
+	fmt.Println(problemName, ratingS)
 
 	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit?taskScreenName=%s", contestName, problemName)
 	statusURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.LanguageName=Go&f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
@@ -288,8 +303,7 @@ func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
 		mainFileContent = strings.ReplaceAll(mainFileContent, "\tout := bufio.NewWriter(_w)\n\tdefer out.Flush()\n\n", "")
 		mainFileContent = strings.ReplaceAll(mainFileContent, "_w", "out")
 	}
-	
-	
+
 	if !isContest || taskID == "a" {
 		// 比赛时，在 IDE 中打开 A 题
 		defer open.Run(absPath(mainFilePath))
@@ -315,7 +329,7 @@ import (
 	"testing"
 )
 
-// 题目：%s
+// 题目：%s%s
 // 提交：%s
 // 对拍：%s
 // 最短：%s
@@ -325,7 +339,7 @@ func Test_%s(t *testing.T) {
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
 }
-`, problemURL, submitURL, statusURL, shortestURL, taskID, examples)
+`, problemURL, ratingS, submitURL, statusURL, shortestURL, taskID, examples)
 	testFilePath := dirPath + taskID + "_test.go"
 	if err := os.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
 		return err
