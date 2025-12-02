@@ -7,26 +7,26 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type node struct {
-	lr       [2]*node
+type node42 struct {
+	lr       [2]*node42
 	priority uint
 	key      int
 	keyCnt   int
 	subCnt   int
 }
 
-func (o *node) size() int {
+func (o *node42) size() int {
 	if o != nil {
 		return o.subCnt
 	}
 	return 0
 }
 
-func (o *node) maintain() {
+func (o *node42) maintain() {
 	o.subCnt = o.keyCnt + o.lr[0].size() + o.lr[1].size()
 }
 
-func (o *node) rotate(d int) *node {
+func (o *node42) rotate(d int) *node42 {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
@@ -37,7 +37,7 @@ func (o *node) rotate(d int) *node {
 
 type treap42 struct {
 	rd   uint
-	root *node
+	root *node42
 }
 
 func (t *treap42) fastRand() uint {
@@ -47,9 +47,9 @@ func (t *treap42) fastRand() uint {
 	return t.rd
 }
 
-func (t *treap42) _put(o *node, key int) *node {
+func (t *treap42) _put(o *node42, key int) *node42 {
 	if o == nil {
-		o = &node{priority: t.fastRand(), key: key, keyCnt: 1}
+		o = &node42{priority: t.fastRand(), key: key, keyCnt: 1}
 	} else if d := o.cmp(key); d >= 0 {
 		o.lr[d] = t._put(o.lr[d], key)
 		if o.lr[d].priority > o.priority {
@@ -64,7 +64,7 @@ func (t *treap42) _put(o *node, key int) *node {
 
 func (t *treap42) put(key int) { t.root = t._put(t.root, key) }
 
-func (o *node) cmp(a int) int {
+func (o *node42) cmp(a int) int {
 	b := o.key
 	if a == b {
 		return -1
