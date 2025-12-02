@@ -6,83 +6,77 @@ import (
 	"io"
 )
 
-// https://space.bilibili.com/206214
-var nodes40 [22 * 3e5]struct{ lo, ro, sum int32 }
-var pid40 int32 = -1
+// 类似 https://leetcode.cn/problems/element-appearing-more-than-25-in-sorted-array/
 
-func build40(l, r int32) int32 {
-	pid40++
-	o := pid40
-	if l == r {
-		return pid40
-	}
-	m := (l + r) >> 1
-	nodes40[o].lo = build40(l, m)
-	nodes40[o].ro = build40(m+1, r)
-	return o
+// https://github.com/EndlessCheng
+type node40 struct {
+	lo, ro *node40
+	cnt    int
 }
 
-func add40(old, l, r, i int32) int32 {
-	pid40++
-	o := pid40
-	nodes40[o] = nodes40[old]
+func build40(l, r int) *node40 {
+	o := &node40{}
 	if l == r {
-		nodes40[o].sum++
 		return o
 	}
 	m := (l + r) >> 1
-	if i <= m {
-		nodes40[o].lo = add40(nodes40[o].lo, l, m, i)
-	} else {
-		nodes40[o].ro = add40(nodes40[o].ro, m+1, r, i)
-	}
-	nodes40[o].sum = nodes40[nodes40[o].lo].sum + nodes40[nodes40[o].ro].sum
+	o.lo = build40(l, m)
+	o.ro = build40(m+1, r)
 	return o
 }
 
-func kth40(o, old, l, r, k int32) int32 {
+func (o node40) update(l, r, i int) *node40 {
 	if l == r {
-		return l
-	}
-	cntL := nodes40[nodes40[o].lo].sum - nodes40[nodes40[old].lo].sum
-	m := (l + r) >> 1
-	if k <= cntL {
-		return kth40(nodes40[o].lo, nodes40[old].lo, l, m, k)
-	}
-	return kth40(nodes40[o].ro, nodes40[old].ro, m+1, r, k-cntL)
-}
-
-func query40(o, old, l, r, i int32) int32 {
-	if l == r {
-		return nodes40[o].sum - nodes40[old].sum
+		o.cnt++
+		return &o
 	}
 	m := (l + r) >> 1
 	if i <= m {
-		return query40(nodes40[o].lo, nodes40[old].lo, l, m, i)
+		o.lo = o.lo.update(l, m, i)
+	} else {
+		o.ro = o.ro.update(m+1, r, i)
 	}
-	return query40(nodes40[o].ro, nodes40[old].ro, m+1, r, i)
+	o.cnt = o.lo.cnt + o.ro.cnt
+	return &o
 }
 
-func cf840D(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
+func (o *node40) query(old *node40, l, r, k int) (int, int) {
+	for l < r {
+		m := (l + r) >> 1
+		cntL := o.lo.cnt - old.lo.cnt
+		if k <= cntL {
+			o = o.lo
+			old = old.lo
+			r = m
+		} else {
+			o = o.ro
+			old = old.ro
+			l = m + 1
+			k -= cntL
+		}
+	}
+	return o.cnt - old.cnt, l
+}
+
+func cf840D(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-
-	var n, q, l, r, k int32
+	var n, q, v, l, r, k int
 	Fscan(in, &n, &q)
-	t := make([]int32, n+1)
+	t := make([]*node40, n+1)
 	t[0] = build40(1, n)
-	for i := int32(1); i <= n; i++ {
-		Fscan(in, &k)
-		t[i] = add40(t[i-1], 1, n, k)
+	for i := range n {
+		Fscan(in, &v)
+		t[i+1] = t[i].update(1, n, v)
 	}
 o:
-	for ; q > 0; q-- {
+	for range q {
 		Fscan(in, &l, &r, &k)
-		d := (r-l+1)/k + 1
-		for rk := int32(1); rk <= r-l+1; rk += d {
-			v := kth40(t[r], t[l-1], 1, n, rk)
-			if query40(t[r], t[l-1], 1, n, v) >= d {
+		l--
+		d := (r-l)/k + 1
+		for k := d; k <= r-l; k += d {
+			cnt, v := t[r].query(t[l], 1, n, k)
+			if cnt >= d {
 				Fprintln(out, v)
 				continue o
 			}
@@ -91,4 +85,4 @@ o:
 	}
 }
 
-//func main() { cf840D(os.Stdin, os.Stdout) }
+//func main() { debug.SetGCPercent(-1); cf840D(bufio.NewReader(os.Stdin), os.Stdout) }
