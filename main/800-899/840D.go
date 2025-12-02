@@ -41,21 +41,15 @@ func (o node40) update(l, r, i int) *node40 {
 }
 
 func (o *node40) query(old *node40, l, r, k int) (int, int) {
-	for l < r {
-		m := (l + r) >> 1
-		cntL := o.lo.cnt - old.lo.cnt
-		if k <= cntL {
-			o = o.lo
-			old = old.lo
-			r = m
-		} else {
-			o = o.ro
-			old = old.ro
-			l = m + 1
-			k -= cntL
-		}
+	if l == r {
+		return o.cnt - old.cnt, l
 	}
-	return o.cnt - old.cnt, l
+	m := (l + r) >> 1
+	cntL := o.lo.cnt - old.lo.cnt
+	if k <= cntL {
+		return o.lo.query(old.lo, l, m, k)
+	}
+	return o.ro.query(old.ro, m+1, r, k-cntL)
 }
 
 func cf840D(in io.Reader, _w io.Writer) {
