@@ -898,6 +898,7 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 //
 // 另见 union_find.go 中的「可持久化并查集」
 // 另见 Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters 备份 https://paste.ubuntu.com/p/36qFhNmKQj/
+// 另见 离散化小波矩阵 https://paste.ubuntu.com/p/5FmtXZPD4n/
 //
 // 模板题 https://www.luogu.com.cn/problem/P3919
 // 模板题 https://www.luogu.com.cn/problem/P3834
@@ -919,6 +920,7 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 // https://codeforces.com/problemset/problem/547/E 2800 上联：AC 自动机 fail 树 DFS 序建可持久化线段树（用树状数组也可以）
 // https://codeforces.com/problemset/problem/464/E 3000 最短路
 // https://atcoder.jp/contests/abc253/tasks/abc253_f 区间更新单点查询
+// https://www.luogu.com.cn/problem/P3755 二维数点
 // https://ac.nowcoder.com/acm/contest/7613/C
 // http://poj.org/problem?id=2104
 // http://acm.hdu.edu.cn/showproblem.php?pid=4417 二维数点
@@ -978,7 +980,8 @@ func (o pstNode) update(i int, val int) *pstNode {
 }
 
 // 在子数组 [l,r) 对应线段树上做区间查询
-// 如果是值域线段树，则为【二维数点】，计算 [l,r) x [ql,qr] 中的元素个数（元素和），此时 ql 和 qr 是离散化后的值
+// 如果是值域线段树，则为【在线二维数点】，计算 [l,r) x [ql,qr] 中的元素个数（元素和），此时 ql 和 qr 是离散化后的值
+// 离线二维数点见 fenwick.go 中的 areaPointCountOffline
 // ql := sort.SearchInts(sorted, queryLeft)
 // qr := sort.SearchInts(sorted, queryRight)
 // t[r].query(t[l], ql, qr)，其中 0 <= l < r <= n
@@ -1000,7 +1003,7 @@ func (o *pstNode) query(old *pstNode, ql, qr int) data {
 
 // 查询子数组 [l,r) 中第 k 小的数（k 从 0 开始）
 // t[r].kth(t[l], k)，其中 0 <= l < r <= n
-// EXTRA：单点带修 https://www.luogu.com.cn/problem/P2617
+// EXTRA：单点带修（见 seg_in_bit.go）https://www.luogu.com.cn/problem/P2617
 // EXTRA：区间带修 https://www.luogu.com.cn/problem/P4119
 func (o *pstNode) kth(old *pstNode, k int) int {
 	if o.l == o.r {

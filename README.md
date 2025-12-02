@@ -38,7 +38,7 @@
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
     - 差分树状数组（支持区间加、区间求和）
     - 二维差分树状数组
-    - 树套树 & 三维偏序
+    - 离线二维数点
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)
     - 线段树二分
     - 延迟标记（懒标记）
@@ -47,7 +47,8 @@
     - 线段树合并
     - 线段树分裂
     - 线段树分治 / 时间线段树
-    - 持久化（主席树）
+    - 可持久化线段树（主席树）
+  - [树套树 seg_in_bit.go](/copypasta/seg_in_bit.go)
   - [0-1 线段树 segment_tree01.go](/copypasta/segment_tree01.go)
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
