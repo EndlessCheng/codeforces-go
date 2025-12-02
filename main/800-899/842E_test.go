@@ -2,7 +2,11 @@
 package main
 
 import (
+	"bufio"
+	. "fmt"
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"io"
+	"math/bits"
 	"testing"
 )
 
@@ -32,6 +36,119 @@ func Test_cf842E(t *testing.T) {
 2
 2`,
 		},
+		{
+			`8
+1
+2
+2
+1
+4
+3
+1
+7`,
+			`2
+2
+3
+3
+2
+3
+4
+4`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf842E)
+}
+
+func TestCompare_cf842E(_t *testing.T) {
+	return
+	testutil.DebugTLE = 0
+	rg := testutil.NewRandGenerator()
+	inputGenerator := func() string {
+		//return ``
+		rg.Clear()
+		n := rg.Int(1, 8)
+		rg.NewLine()
+		for i := 1; i <= n; i++ {
+			rg.Int(1, i)
+			rg.NewLine()
+		}
+		return rg.String()
+	}
+
+	testutil.AssertEqualRunResultsInf(_t, inputGenerator, cf842E, cf842E_WA)
+}
+
+func cf842E_WA(in io.Reader, _w io.Writer) {
+	out := bufio.NewWriter(_w)
+	defer out.Flush()
+	var n, p int
+	Fscan(in, &n)
+	n++
+
+	const mx = 19
+	pa := make([][mx]int, n)
+	dep := make([]int, n)
+	uptoDep := func(v, d int) int {
+		for k := uint32(dep[v] - d); k > 0; k &= k - 1 {
+			v = pa[v][bits.TrailingZeros32(k)]
+		}
+		return v
+	}
+	lca := func(v, w int) int {
+		if dep[v] > dep[w] {
+			v, w = w, v
+		}
+		w = uptoDep(w, dep[v])
+		if w == v {
+			return v
+		}
+		for i := mx - 1; i >= 0; i-- {
+			pv, pw := pa[v][i], pa[w][i]
+			if pv != pw {
+				v, w = pv, pw
+			}
+		}
+		return pa[v][0]
+	}
+	dis := func(v, w int) int { return dep[v] + dep[w] - dep[lca(v, w)]*2 }
+
+	a, b := []int{0}, []int{1}
+	dia := 1
+	for i := 1; i < n; i++ {
+		Fscan(in, &p)
+		p--
+		
+		Println(p, i)
+		
+		dep[i] = dep[p] + 1
+		pa[i][0] = p
+		for j := range mx - 1 {
+			pa[i][j+1] = pa[pa[i][j]][j]
+		}
+		
+		if i == n-1 {
+			println()
+		}
+		
+		if i > 1 {
+			da, db := dis(i, a[0]), dis(i, b[0])
+			if da < db {
+				da, db = db, da
+				a, b = b, a
+			}
+			if da > dia {
+				dia = da
+				for _, v := range b {
+					if dis(i, v) == dia {
+						a = append(a, v)
+					}
+				}
+				b = []int{i}
+			} else if da == dia {
+				b = append(b, i)
+			}
+		}
+		//Println(a, b)
+		Fprintln(out, len(a)+len(b))
+	}
 }

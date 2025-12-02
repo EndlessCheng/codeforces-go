@@ -16,8 +16,8 @@ func cf842E(in io.Reader, _w io.Writer) {
 	n++
 
 	const mx = 19
-	pa := make([][mx]int, n)
-	dep := make([]int, n)
+	pa := make([][mx]int, n+1)
+	dep := make([]int, n+1)
 	uptoDep := func(v, d int) int {
 		for k := uint32(dep[v] - d); k > 0; k &= k - 1 {
 			v = pa[v][bits.TrailingZeros32(k)]
@@ -42,32 +42,46 @@ func cf842E(in io.Reader, _w io.Writer) {
 	}
 	dis := func(v, w int) int { return dep[v] + dep[w] - dep[lca(v, w)]*2 }
 
-	a, b := []int{0}, []int{1}
-	dia := 1
-	for i := 1; i < n; i++ {
+	a, b := []int{1}, []int{}
+	dia := 0
+	for i := 2; i <= n; i++ {
 		Fscan(in, &p)
-		p--
 		dep[i] = dep[p] + 1
 		pa[i][0] = p
 		for j := range mx - 1 {
 			pa[i][j+1] = pa[pa[i][j]][j]
 		}
-		if i > 1 {
-			da, db := dis(i, a[0]), dis(i, b[0])
-			if da < db {
-				da, db = db, da
-				a, b = b, a
-			}
-			if da > dia {
-				dia = da
+		
+		da, db := 0, 0
+		if len(a) > 0 {
+			da = dis(i, a[0])
+		}
+		if len(b) > 0 {
+			db = dis(i, b[0])
+		}
+		
+		if max(da, db) > dia {
+			dia++
+			if da >= db {
 				for _, v := range b {
 					if dis(i, v) == dia {
 						a = append(a, v)
 					}
 				}
 				b = []int{i}
-			} else if da == dia {
+			} else {
+				for _, v := range a {
+					if dis(i, v) == dia {
+						b = append(b, v)
+					}
+				}
+				a = []int{i}
+			}
+		} else if max(da, db) == dia {
+			if da == dia {
 				b = append(b, i)
+			} else {
+				a = append(a, i)
 			}
 		}
 		Fprintln(out, len(a)+len(b))
