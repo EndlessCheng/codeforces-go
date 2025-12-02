@@ -73,7 +73,7 @@ import (
 // - LC1157 https://leetcode.cn/problems/online-majority-element-in-subarray/
 // - https://www.luogu.com.cn/problem/P3567
 // - https://www.luogu.com.cn/problem/P3765
-// - https://codeforces.com/contest/1514/problem/D 2000
+// - https://codeforces.com/problemset/problem/1514/D 2000
 // https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和 
 // - 联系 https://www.luogu.com.cn/problem/P1972
 // todo https://codeforces.com/problemset/problem/1567/E 2200 区间连续递增子数组个数
@@ -897,24 +897,30 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 // 数组大小 n * (bits.Len(n) + 4)
 //
 // 另见 union_find.go 中的「可持久化并查集」
-// 另见 Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters
+// 另见 Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters 备份 https://paste.ubuntu.com/p/36qFhNmKQj/
 //
 // 模板题 https://www.luogu.com.cn/problem/P3919
 // 模板题 https://www.luogu.com.cn/problem/P3834
-// https://codeforces.com/problemset/problem/1262/D2 1800 用在线做法解决 
-// https://codeforces.com/problemset/problem/961/E 1900 不止一种做法
+// https://codeforces.com/problemset/problem/1227/D2 1800 用在线算法解决 
+// https://codeforces.com/problemset/problem/961/E 1900 用在线算法解决（一边读入一边计算答案）
 // https://codeforces.com/problemset/problem/620/E 2100 种类数
 // https://codeforces.com/problemset/problem/538/F 2200 二维数点
-// https://codeforces.com/problemset/problem/893/F 2300 与 DFS序+深度 结合
+// https://codeforces.com/problemset/problem/1181/D 2200 做法不止一种
+// https://codeforces.com/problemset/problem/893/F 2300 树 时间戳
 // https://codeforces.com/problemset/problem/323/C 2400 二维数点
 // https://codeforces.com/problemset/problem/786/C 2400
 // https://codeforces.com/problemset/problem/813/E 2400 差分
+// https://codeforces.com/problemset/problem/1000/F 2400
+// https://codeforces.com/problemset/problem/1080/F 2400 强制在线
 // https://codeforces.com/problemset/problem/484/E 2500 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 
 // https://codeforces.com/problemset/problem/837/G 2500
-// https://codeforces.com/problemset/problem/840/D 2500 kth
+// https://codeforces.com/problemset/problem/840/D 2500 kth 枚举
+// https://codeforces.com/problemset/problem/1771/F 2500 异或哈希
+// https://codeforces.com/problemset/problem/547/E 2800 上联：AC 自动机 fail 树 DFS 序建可持久化线段树（用树状数组也可以）
+// https://codeforces.com/problemset/problem/464/E 3000 最短路
 // https://atcoder.jp/contests/abc253/tasks/abc253_f 区间更新单点查询
-// https://www.luogu.com.cn/problem/P2617
 // https://ac.nowcoder.com/acm/contest/7613/C
+// http://poj.org/problem?id=2104
 // http://acm.hdu.edu.cn/showproblem.php?pid=4417 二维数点
 // 注：离线二维数点见 fenwick_tree.go 中的 areaPointCountOffline
 type data struct{ cnt, sum int }
@@ -994,7 +1000,8 @@ func (o *pstNode) query(old *pstNode, ql, qr int) data {
 
 // 查询子数组 [l,r) 中第 k 小的数（k 从 0 开始）
 // t[r].kth(t[l], k)，其中 0 <= l < r <= n
-// 带修版本见 https://www.luogu.com.cn/problem/P2617
+// EXTRA：单点带修 https://www.luogu.com.cn/problem/P2617
+// EXTRA：区间带修 https://www.luogu.com.cn/problem/P4119
 func (o *pstNode) kth(old *pstNode, k int) int {
 	if o.l == o.r {
 		return o.l
@@ -1091,7 +1098,7 @@ func (o *pstNode) querySingle(i int) int {
 // 如果 TLE 可以禁用垃圾回收 func init() { debug.SetGCPercent(-1) } 能快一倍
 // 模板题 https://atcoder.jp/contests/abc339/tasks/abc339_g
 // - 使用方法见代码 https://atcoder.jp/contests/abc339/submissions/50126709
-// https://codeforces.com/problemset/problem/1771/F 代码 https://codeforces.com/contest/1771/submission/245657179
+// https://codeforces.com/problemset/problem/1771/F 2500 代码 https://codeforces.com/contest/1771/submission/245657179
 
 //
 
