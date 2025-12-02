@@ -176,6 +176,7 @@ func (t fenwick) kth(k int) (res int) {
 // 离线，拆分成两个更小的询问：[1,x2] x [y1,y2] 中的点的个数，减去 [1,x1-1] x [y1,y2] 中的点的个数
 // 一边从小到大枚举 x，一边更新【值域树状数组】，一边回答离线后的询问
 // https://www.luogu.com.cn/problem/P2163
+// https://www.luogu.com.cn/problem/P3755
 // LC3382 https://leetcode.cn/problems/maximum-area-rectangle-with-point-constraints-ii/
 // https://codeforces.com/problemset/problem/1899/G 1900
 func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2, y1, y2 int }) []int {
@@ -217,7 +218,8 @@ func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2
 	for i, x := range xs { // 从小到大枚举 x
 		// 把横坐标为 x 的所有点都加到树状数组中
 		for _, y := range xMap[x] {
-			t.update(sort.SearchInts(ys, y)+1, 1) // 离散化，并且下标从 1 开始
+			// 离散化，并且下标从 1 开始
+			t.update(sort.SearchInts(ys, y)+1, 1) // 默认点权 val=1
 		}
 		for _, q := range qs[i] {
 			// 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
