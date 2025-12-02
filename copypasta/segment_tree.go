@@ -1042,12 +1042,12 @@ func newPST(a []int) ([]*pstNode, []int) {
 // 这种 k 值使得递归时左右儿子至多调用其中一个
 func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 	if o.l == o.r {
-		return o.l, o.sum - old.sum
+		return o.l, o.cnt - old.cnt
 	}
-	if o.lo.sum-old.lo.sum >= k {
+	if o.lo.cnt-old.lo.cnt >= k {
 		return o.lo.countMode(old.lo, k)
 	}
-	if o.ro.sum-old.ro.sum >= k {
+	if o.ro.cnt-old.ro.cnt >= k {
 		return o.ro.countMode(old.ro, k)
 	}
 	return -1, 0
@@ -1095,7 +1095,6 @@ func (o *pstNode) querySingle(i int) int {
 //
 
 // 动态开点主席树
-// 如果 TLE 可以禁用垃圾回收 func init() { debug.SetGCPercent(-1) } 能快一倍
 // 模板题 https://atcoder.jp/contests/abc339/tasks/abc339_g
 // - 使用方法见代码 https://atcoder.jp/contests/abc339/submissions/50126709
 // https://codeforces.com/problemset/problem/1771/F 2500 代码 https://codeforces.com/contest/1771/submission/245657179
