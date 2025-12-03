@@ -214,8 +214,21 @@ class Solution:
                 continue
             j = max(j, i - k)  # j 至少是 i-k
             while j <= min(i + k, len(nums) - 1):  # j 至多是 i+k，但不能越界
-                ans.append(j)
+                ans.append(j)  # 另一种写法见【Python3 写法二】
                 j += 1
+        return ans
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def findKDistantIndices(self, nums: List[int], key: int, k: int) -> List[int]:
+        ans = []
+        j = 0
+        for i, x in enumerate(nums):
+            if x == key:
+                # 至少是 i-k，至多是 i+k，但不能越界
+                ans.extend(range(max(i - k, j), min(i + k + 1, len(nums))))
+                j = i + k + 1
         return ans
 ```
 
