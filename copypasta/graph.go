@@ -3964,6 +3964,7 @@ func (G *graph) twoSAT(n int) []bool {
 // https://codeforces.com/problemset/problem/835/F 2500 去掉（基环上的）一条边后的最小直径 前后缀分解 环形问题 形状设计
 // https://codeforces.com/problemset/problem/875/F 2500 最小生成基环树
 // https://codeforces.com/problemset/problem/1270/G 2700 构造 建图
+// https://codeforces.com/problemset/problem/235/D 3000 期望
 // https://atcoder.jp/contests/abc357/tasks/abc357_e 内向基环树简单路径个数
 // https://atcoder.jp/contests/abc266/tasks/abc266_f
 // - 如果不是基环树，可以边双缩点，用大小 > 1 的点分割树，把不同的连通块标记不同的 ID
@@ -4356,17 +4357,19 @@ https://codeforces.com/problemset/problem/489/B 1200
 https://codeforces.com/problemset/problem/2026/E 2500 最大权闭合子图 / Hall 定理
 
 最大流·建模·转换
-将点拆为入点和出点（v 和 v+n），即可把点上的约束变成边上的约束
 https://www.luogu.com.cn/problem/P2891 http://poj.org/problem?id=3281
-【网络流 24 题】最长不降子序列 https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766
-    注意这题用到了操纵超级源点的技巧：容量限制与解除容量限制
+https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766 【网络流 24 题】最长不降子序列
+- 注意这题用到了操纵超级源点的技巧：容量限制与解除容量限制
 NWERC07 B https://codeforces.com/gym/100723 http://poj.org/problem?id=3498 UVa12125 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=243&page=show_problem&problem=3277
 https://codeforces.com/problemset/problem/1360/G 1900 网格模型
 https://codeforces.com/problemset/problem/498/C 2100 建模题，推荐
 https://codeforces.com/problemset/problem/546/E 2100
 https://codeforces.com/problemset/problem/653/D 2200 转换
-todo https://atcoder.jp/contests/arc085/tasks/arc085_c 转换
-https://www.acwing.com/problem/content/2239/ http://poj.org/problem?id=1149 转换
+https://codeforces.com/problemset/problem/1913/E 2400 todo
+https://atcoder.jp/contests/arc085/tasks/arc085_c 转换 todo
+http://poj.org/problem?id=1149 转换
+
+把点拆为入点和出点（v 和 v+n），可把点上的约束变成边上的约束
 
 顶点上有容量
 将顶点拆成两个（入顶点 x 和出顶点 y），入点向 x 连边，y 向出点连边，x 向 y 连边，容量为顶点的容量
