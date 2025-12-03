@@ -47,15 +47,13 @@ class Solution:
         def dfs(x: int, xor: int) -> SortedSet:
             xor ^= vals[x]
 
-            st = SortedSet()
-            st.add(xor)
+            st = SortedSet([xor])
             for y in g[x]:
                 set_y = dfs(y, xor)
                 # 启发式合并：小集合并入大集合
                 if len(set_y) > len(st):
                     st, set_y = set_y, st
-                for v in set_y:
-                    st.add(v)
+                st |= set_y
 
             for k, qi in qs[x]:
                 if k - 1 < len(st):
