@@ -6,11 +6,10 @@ import (
 	"sort"
 )
 
-// 线段树讲解 by 灵茶山艾府（13:30 开始）https://www.bilibili.com/video/BV15D4y1G7ms
-
+// 从线段树二分的角度，带你发明线段树 https://www.bilibili.com/video/BV15gRaYZE5o
+// Lazy 线段树（13:30 开始）https://www.bilibili.com/video/BV15D4y1G7ms
 // 可视化 https://visualgo.net/zh/segmenttree
-
-// 推荐阅读《算法竞赛进阶指南》0x43 和 0x48 节
+// 《算法竞赛进阶指南》0x43 和 0x48 节
 // https://oi-wiki.org/ds/seg/
 // https://cp-algorithms.com/data_structures/segment_tree.html
 // [Monoid 幺半群] Generalizing Segment Trees https://sharmaeklavya2.github.io/blog/generalizing-segment-trees.html
@@ -19,47 +18,16 @@ import (
 // https://codeforces.com/blog/entry/18051
 // https://codeforces.com/blog/entry/89313
 // https://codeforces.com/blog/entry/15890
-// todo 高效线段树 crazySegmentTree https://codeforces.com/blog/entry/89399
+// 高效线段树 crazySegmentTree https://codeforces.com/blog/entry/89399 todo
 // https://en.algorithmica.org/hpc/data-structures/segment-trees/
 // 像使用 STL 一样使用线段树 https://zhuanlan.zhihu.com/p/459679512 https://zhuanlan.zhihu.com/p/459880950
 // 数组两倍空间线段树 https://www.cnblogs.com/chy-2003/p/11815396.html
 // 线段树诡异题目收录 https://zhuanlan.zhihu.com/p/124181375
 // Limitの线段树题单 https://www.luogu.com.cn/training/1124
-// todo [题单] 线段树的进阶用法 https://www.luogu.com.cn/training/221#problems
+// [题单] 线段树的进阶用法 https://www.luogu.com.cn/training/221#problems todo
+// Offline Range MEX queries in O(log n) https://codeforces.com/blog/entry/117688 todo
 
-// todo Offline Range MEX queries in O(log n) https://codeforces.com/blog/entry/117688
-
-// 注：对于指针写法，必要时禁止 GC，能加速不少
-// func init() { debug.SetGCPercent(-1) }
-
-// 模板（单点修改、区间查询）https://www.luogu.com.cn/problem/P2068
-
-/*
-如果一个题目可以用分治解决，那么这个题目的带修改版本可以用线段树解决
-
-带修最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
-带修最大子段和 https://www.luogu.com.cn/problem/P4513
-- 代码 https://www.luogu.com.cn/record/50262292
-- https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
-- https://www.spoj.com/problems/GSS3/ 2007-08-03
-- 2 个最大子段和 https://codeforces.com/problemset/problem/2042/F
-- k 个最大子段和 https://codeforces.com/problemset/problem/280/D 2800 用网络流的思想「反悔」
-带修最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 https://www.luogu.com.cn/contest/42328
-带修打家劫舍 https://www.luogu.com.cn/problem/P3097
-- LC https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
-*/
-
-// 势能线段树：区间开方、区间取模、区间 GCD 一个数，都是可以暴力更新的
-// 关于线段树上的一些进阶操作 https://www.luogu.com/article/aentaeud
-// 区间开方见 CF920F
-// 区间取模见 CF438D
-// 区间 GCD 一个数见 https://www.luogu.com.cn/problem/P9989 https://www.cnblogs.com/Athanasy/p/17940070
-// https://www.luogu.com.cn/problem/P10516
-// 另见吉老师线段树 Segment Tree Beats https://www.luogu.com.cn/problem/P6242 【模板】线段树 3（区间最值操作、区间历史最值）
-// 另见 Kinetic Tournament 树 (KTT) https://www.luogu.com.cn/problem/P5693
-// https://www.luogu.com.cn/problem/P10587
-
-// https://www.luogu.com.cn/problem/P4588 乘法 单点修改
+// https://www.luogu.com.cn/problem/P2068 模板题（也可以用树状数组）
 // https://codeforces.com/problemset/problem/2050/F 1700 GCD
 // https://codeforces.com/problemset/problem/914/D 1900 GCD 
 // https://codeforces.com/problemset/problem/380/C 2000 区间最长括号子序列 
@@ -68,15 +36,14 @@ import (
 // https://codeforces.com/problemset/problem/920/F 2000 开方（也可以用并查集做）
 // - https://www.luogu.com.cn/problem/P4145
 // - http://acm.hdu.edu.cn/showproblem.php?pid=4027
-// 区间（绝对）众数及其次数（摩尔投票算法）https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
+// https://codeforces.com/problemset/problem/1514/D 2000 区间绝对众数及其次数（摩尔投票算法）
 // - LC169 https://leetcode.cn/problems/majority-element/
 // - LC1157 https://leetcode.cn/problems/online-majority-element-in-subarray/
 // - https://www.luogu.com.cn/problem/P3567
 // - https://www.luogu.com.cn/problem/P3765
-// - https://codeforces.com/problemset/problem/1514/D 2000
 // https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和 
 // - 联系 https://www.luogu.com.cn/problem/P1972
-// todo https://codeforces.com/problemset/problem/1567/E 2200 区间连续递增子数组个数
+// https://codeforces.com/problemset/problem/1567/E 2200 区间连续递增子数组个数 todo
 // https://codeforces.com/problemset/problem/1179/C 2200
 // https://codeforces.com/problemset/problem/1906/F 2200 最大子数组和（非空） 离线
 // https://codeforces.com/problemset/problem/438/D 2300 取模
@@ -84,6 +51,7 @@ import (
 // https://codeforces.com/problemset/problem/498/D 2400
 // https://codeforces.com/problemset/problem/524/E 2400 扫描线
 // https://codeforces.com/problemset/problem/1187/D 2400 转换的好题
+// https://codeforces.com/problemset/problem/1326/E 2400
 // https://codeforces.com/problemset/problem/1401/F 2400 区间 swap & reverse
 // - 联想 reverse bit 的递归思路
 // https://codeforces.com/problemset/problem/1436/E 2400 所有子数组的 mex 的 mex
@@ -106,13 +74,36 @@ import (
 // https://atcoder.jp/contests/abc339/tasks/abc339_e 值域线段树
 // https://atcoder.jp/contests/abc356/tasks/abc356_f 动态图连通块大小
 // https://atcoder.jp/contests/abc353/tasks/abc353_g
+// https://www.luogu.com.cn/problem/P4588 转化
 // https://www.luogu.com.cn/problem/P9474
-//
+
+// 如果一个题目可以用分治解决，那么这个题目的带修改版本可以用线段树解决
+// 带修最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
+// 带修最大子段和 https://www.luogu.com.cn/problem/P4513
+// - 代码 https://www.luogu.com.cn/record/50262292
+// - https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
+// - https://www.spoj.com/problems/GSS3/ 2007-08-03
+// - 2 个最大子段和 https://codeforces.com/problemset/problem/2042/F
+// - k 个最大子段和 https://codeforces.com/problemset/problem/280/D 2800 用网络流的思想「反悔」
+// 带修最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 https://www.luogu.com.cn/contest/42328
+// 带修打家劫舍 https://www.luogu.com.cn/problem/P3097
+// - LC https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
+
+// 势能线段树：区间开方、区间取模、区间 GCD 一个数，都是可以暴力更新的
+// 关于线段树上的一些进阶操作 https://www.luogu.com/article/aentaeud
+// 区间开方见 CF920F
+// 区间取模见 CF438D
+// 区间 GCD 一个数见 https://www.luogu.com.cn/problem/P9989 https://www.cnblogs.com/Athanasy/p/17940070
+// https://www.luogu.com.cn/problem/P10516
+// 另见吉老师线段树 Segment Tree Beats https://www.luogu.com.cn/problem/P6242 【模板】线段树 3（区间最值操作、区间历史最值）
+// 另见 Kinetic Tournament 树 (KTT) https://www.luogu.com.cn/problem/P5693
+// https://www.luogu.com.cn/problem/P10587
+
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // 力扣 https://leetcode.cn/tag/segment-tree/
 // 另见 dp.go 的数据结构优化 DP
 // 另见 dp.go 的动态 DP
-//
+
 // todo http://poj.org/problem?id=2991
 // 变换成值域 http://poj.org/problem?id=3368
 // - https://www.luogu.com.cn/problem/SP1684
