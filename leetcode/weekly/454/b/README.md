@@ -16,9 +16,9 @@
 - 右边的元素出现次数，可以先统计整个数组，然后再次遍历数组，**撤销** $[0,j]$ 中统计的元素出现次数，即为 $[j+1,n-1]$ 中的元素出现次数。
 - 左边的元素出现次数，可以一边遍历 $\textit{nums}$，一边统计。
 
-由于答案不超过 $n\cdot 10^5\cdot 10^5 = 10^{15}$，可以只在返回时取模。
+由于答案不超过 $n\cdot 10^5\cdot 10^5 \le 10^{15}$，可以只在返回时取模。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1qsMxz6EEd/?t=9m46s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1qsMxz6EEd/?t=9m46s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
