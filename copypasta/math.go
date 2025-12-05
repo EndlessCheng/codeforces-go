@@ -120,6 +120,8 @@ https://atcoder.jp/contests/arc158/tasks/arc158_b
 调和级数枚举（枚举倍数）
 https://codeforces.com/problemset/problem/757/B 1400
 https://codeforces.com/problemset/problem/1996/D 1500
+https://codeforces.com/problemset/problem/731/F 1900
+https://codeforces.com/problemset/problem/2171/H 2400
 https://atcoder.jp/contests/abc089/tasks/abc089_d
 https://atcoder.jp/contests/abc356/tasks/abc356_e
 https://atcoder.jp/contests/abc391/tasks/abc391_f 控制乘积不超过 k
@@ -154,6 +156,9 @@ https://mathoverflow.net/questions/31663/distinct-numbers-in-multiplication-tabl
 勾股数 https://oeis.org/A008846
 斜边 https://oeis.org/A004613 Numbers that are divisible only by primes congruent to 1 mod 4
 https://en.wikipedia.org/wiki/Pythagorean_triple https://zh.wikipedia.org/wiki/%E5%8B%BE%E8%82%A1%E6%95%B0
+勾三股四弦五：生成勾股数的公式 https://zhuanlan.zhihu.com/p/1978057341963368012
+LC1925 https://leetcode.cn/problems/count-square-sum-triples/
+https://codeforces.com/gym/106215/problem/L
 
 https://oeis.org/A000328 Number of points of norm <= n^2 in square lattice
 sum(isqrt(n*n-y*y) for y in range(1, n)) * 4 + 4*n + 1
@@ -362,8 +367,10 @@ func gp(x, n int) int {
 	return res % mod
 }
 
+// 龟速乘 a*b % mod
 // 适用于 mod 超过 int32 范围的情况
 // 还有一种用浮点数的写法，此略
+// https://projecteuler.net/problem=48
 func mul(a, b int) (res int) {
 	for ; b > 0; b /= 2 {
 		if b%2 > 0 {
@@ -475,10 +482,12 @@ func _(abs func(int) int) {
 	lcm := func(a, b int) int { return a / gcd(a, b) * b }
 
 	// 前 n 个数的 LCM https://oeis.org/A003418 a(n) = lcm(1,...,n) ~ exp(n)
-	// 相关题目 https://atcoder.jp/contests/arc110/tasks/arc110_a
-	//         https://codeforces.com/problemset/problem/1485/D
-	//         https://codeforces.com/problemset/problem/1542/C
-	//         https://codeforces.com/problemset/problem/1603/A
+	// https://codeforces.com/problemset/problem/1485/D
+	// https://codeforces.com/problemset/problem/1542/C
+	// https://codeforces.com/problemset/problem/1603/A
+	// https://codeforces.com/problemset/problem/2167/D 估算时间复杂度
+	// https://atcoder.jp/contests/arc110/tasks/arc110_a
+	// 
 	// a(n)/a(n-1) = https://oeis.org/A014963
 	//     前缀和 https://oeis.org/A072107 https://ac.nowcoder.com/acm/contest/7607/A
 	// LCM(2, 4, 6, ..., 2n) https://oeis.org/A051426
@@ -1040,6 +1049,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/2104/D 1400
 	// https://codeforces.com/problemset/problem/576/A 1500
 	// https://codeforces.com/problemset/problem/1646/E 2200
+	// https://codeforces.com/problemset/problem/73/E 2400 转化
 	sieve := func() {
 		const mx int = 1e6
 		primes := []int{}
@@ -1635,6 +1645,7 @@ func _(abs func(int) int) {
 
 		{
 			// 统计因子个数 d(n)
+			// 也可以统计因子之和 σ(n)，把 d[j]++ 改成 d[j] += i
 			// NOTE: 复杂度可以做到线性 https://codeforces.com/contest/920/submission/76859782
 			// https://oeis.org/A055507 卷积 Sum_{k=1..n} d(k)*d(n+1-k)
 			// https://atcoder.jp/contests/abc292/tasks/abc292_c
@@ -1663,7 +1674,7 @@ func _(abs func(int) int) {
 			// https://codeforces.com/contest/1512/problem/G
 			const mx int = 1e7
 			d := make([]int, mx+1)
-			d[1] = 1
+			d[1] = 1 // σ(n)，注意包含 n
 			s := make([]int, mx+1)
 			primes := []int{}
 			for i := 2; i <= mx; i++ {
@@ -2176,6 +2187,8 @@ func _(abs func(int) int) {
 
 	// 欧拉函数（互质的数的个数）Euler totient function
 	// φ(n) = n * (1 - 1/p1) * (1 - 1/p2) * ... * (1 - 1/pr)，其中 p1,p2,...,pr 是 n 的质因子
+	// φ(p^k) = p^k - p^(k-1)，即减去 [1,p^k] 中的 p 的倍数，这有 p^k / p = p^(k-1) 个
+	// ∑_{i=0..k} φ(p^i) = p^k
 	// https://oeis.org/A000010 https://oeis.org/A000010/list
 	// https://en.wikipedia.org/wiki/Euler%27s_totient_function
 	// 下界 https://en.wikipedia.org/wiki/Euler%27s_totient_function#Growth_rate
@@ -2539,13 +2552,14 @@ func _(abs func(int) int) {
 	// 相关论文 THE NUMBER OF SOLUTIONS TO ax + by = n http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.376.403
 	//
 	// 模板题 https://www.luogu.com.cn/problem/P5656
-	// 简单求解 https://atcoder.jp/contests/abc340/tasks/abc340_f 1516
-	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
-	//    最简单的做法就是 min(x1+y1, x2+y2)
-	// 需要转换一下符号 https://atcoder.jp/contests/abc186/tasks/abc186_e
+	// https://atcoder.jp/contests/abc340/tasks/abc340_f 1516 简单求解
+	// https://codeforces.com/problemset/problem/1244/C 使非负解 x+y 尽量小
+	// - 最简单的做法就是 min(x1+y1, x2+y2)
+	// https://codeforces.com/problemset/problem/1853/B 非暴力做法
+	// https://atcoder.jp/contests/abc186/tasks/abc186_e 需要转换一下符号
 	// https://atcoder.jp/contests/abc315/tasks/abc315_g
 	// https://codeforces.com/problemset/problem/1748/D
-	// https://codeforces.com/problemset/problem/982/E 2600
+	// https://codeforces.com/problemset/problem/982/E 2600 台球
 	// LC2910 https://leetcode.cn/problems/minimum-number-of-groups-to-create-a-valid-assignment/
 	solveLinearDiophantineEquations := func(a, b, c int) (n, x1, y1, x2, y2 int) {
 		g, x0, y0 := exgcd(a, b)
@@ -3245,6 +3259,27 @@ func _(abs func(int) int) {
 		return ans
 	}
 
+	// Lehmer 码：计算给定排列的下 k 个排列 
+	// 1. 求 Lehmer 码
+	// 2. 将 Lehmer 码加上 k（混合进制加法）
+	// 3. 解码得到排列
+	// https://en.wikipedia.org/wiki/Lehmer_code
+	// https://codeforces.com/problemset/problem/501/D 2000
+	// https://acm.hdu.edu.cn/showproblem.php?pid=5061
+	// http://bailian.openjudge.cn/practice/2996?lang=en_US
+	nextKPerm := func(a []int, k int) []int {
+		panic("todo")
+	}
+	_ = nextKPerm
+
+	// todo 可重集合的情况
+	// https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/description/
+	// https://github.com/981377660LMT/algorithm-study/blob/3a5b3129f79b227e4f49d216acbeb3470b391f52/19_%E6%95%B0%E5%AD%A6/%E6%95%B0%E8%AE%BA/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80/kthNextPermutation.py
+	nextKPermRepeat := func(a []int, k int) []int {
+		panic("todo")
+	}
+	_ = nextKPermRepeat
+
 	// 另类组合数求法
 	{
 		var n, k int64
@@ -3567,33 +3602,52 @@ func _(abs func(int) int) {
 		return mu
 	}
 
+	// 预处理莫比乌斯函数
 	// 调和级数枚举写法
 	// https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
 	// https://codeforces.com/problemset/problem/1043/F 2500
 	initMu := func() {
-		const mx int = 1e6
-		mu := [mx + 1]int{1: 1} // int8
-		for i := 1; i <= mx; i++ {
-			for j := i * 2; j <= mx; j += i {
-				mu[j] -= mu[i]
+		// 当 n > 1 时，我们有 sum_{d|n} mu[d] = 0
+		// 所以 mu[n] = -sum_{d|n, d<n} mu[d]
+		const mx int = 1e6 + 1
+		mu := [mx]int8{1: 1}
+		for i := 1; i < mx; i++ {
+			for j := i * 2; j < mx; j += i {
+				mu[j] -= mu[i] // i 是 j 的因子
+			}
+		}
+
+		// 预处理不含平方因子的因子列表，用于容斥/莫反
+		// https://oeis.org/A034444 the number of squarefree divisors of n
+		// https://oeis.org/A064608 A034444 的前缀和
+		// - a(n) = n*log(n)/zeta(2) + O(n) where zeta(2) = Pi^2/6
+		//        = Sum_{k=1..n} mu(k)^2*floor(n/k)
+		divisors := [mx][]int{} // 如果 MLE，改成 int32
+		for i := 1; i < mx; i++ {
+			if mu[i] == 0 {
+				continue
+			}
+			for j := i; j < mx; j += i {
+				divisors[j] = append(divisors[j], i)
 			}
 		}
 	}
 
+	// 预处理莫比乌斯函数
 	// 线性筛写法
-	initMu2 := func() {
-		const mx int = 1e6
-		mu := [mx + 1]int{1: 1} // int8
+	initMuLinear := func() {
+		const mx int = 1e6 + 1
+		mu := [mx]int{1: 1} // int8
 		primes := []int{}
-		vis := [mx + 1]bool{}
-		for i := 2; i <= mx; i++ {
+		vis := [mx]bool{}
+		for i := 2; i < mx; i++ {
 			if !vis[i] {
 				mu[i] = -1
 				primes = append(primes, i)
 			}
 			for _, p := range primes {
 				v := p * i
-				if v > mx {
+				if v >= mx {
 					break
 				}
 				vis[v] = true
@@ -3606,7 +3660,7 @@ func _(abs func(int) int) {
 		}
 	}
 
-	/* 常用结论 & 题型
+	/* 莫比乌斯反演 · 常用结论 & 题型
 
 	第一类：【有互质约束的计数问题】
 	[n == 1] = sum_{d|n} mu(d)
@@ -3694,14 +3748,17 @@ func _(abs func(int) int) {
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
 	// [L,R] 内任意 k 个不同数字的 GCD 有多少种 https://ac.nowcoder.com/acm/contest/35232/C
+	// https://codeforces.com/problemset/problem/1263/C 1400 模板题
 	// https://codeforces.com/problemset/problem/449/A 1700
 	// https://codeforces.com/problemset/problem/938/C 1700
 	// https://codeforces.com/problemset/problem/1603/C 2300 数论分块优化 DP
 	// https://codeforces.com/problemset/problem/226/C 2400 思想
+	// https://codeforces.com/problemset/problem/1780/E 2400 GCD
 	// https://codeforces.com/problemset/problem/792/E 2500
 	// https://codeforces.com/problemset/problem/1789/E 2500 式子同时包含上取整和下取整
 	// https://codeforces.com/problemset/problem/1202/F 2700
 	// https://atcoder.jp/contests/abc132/tasks/abc132_f 2143
+	// LC1925 https://leetcode.cn/problems/count-square-sum-triples/ 本原勾股数组
 	//
 	// https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
 	// https://oeis.org/A257213 mex(n/i); Least d>0 such that floor(n/d) = floor(n/(d+1))
@@ -3724,9 +3781,12 @@ func _(abs func(int) int) {
 	floorLoop := func(n int) (sum int) {
 		for l, r := 1, 0; l <= n; l = r + 1 {
 			h := n / l
+			// 计算最大的 r，满足 floor(n/r) = h
+			// 通用思考方式：n/r >= h  =>  rh<=n  =>  r <= floor(n/h)
 			r = n / h
 			w := r - l + 1 // sum[r+1] - sum[l]
-			sum += h * w   // for all i in [l,r], floor(n/i) = floor(n/l)
+			// 对于 [l,r] 中的 i，floor(n/i) 都等于 floor(n/l)
+			sum += h * w  
 		}
 		return
 	}
@@ -4040,7 +4100,7 @@ func _(abs func(int) int) {
 		bellTriangle, bellPoly, setPartition,
 		mahonian, mahonian2, mahonian3,
 
-		calcMu, initMu, initMu2,
+		calcMu, initMu, initMuLinear,
 
 		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
 
