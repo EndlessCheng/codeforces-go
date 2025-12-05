@@ -26,9 +26,9 @@ func cf311E(in io.Reader, out io.Writer) {
 	for i, s := range sex {
 		Fscan(in, &k)
 		if !s {
-			addEdge(st, i, k)
+			addEdge(st, i, k) // 如果不割 S->母狗，那么母狗就在 S 中
 		} else {
-			addEdge(i, end, k)
+			addEdge(i, end, k) // 如果不割公狗->T，那么公狗就在 T 中
 		}
 	}
 	for i := range m {
@@ -37,15 +37,15 @@ func cf311E(in io.Reader, out io.Writer) {
 			Fscan(in, &id)
 			id--
 			if tar == 0 {
-				addEdge(n+i, id, 1e18)
+				addEdge(n+i, id, 1e18) // 如果不割 S->富人，那么母狗必须在 S 中
 			} else {
-				addEdge(id, n+i, 1e18)
+				addEdge(id, n+i, 1e18) // 如果不割富人->T，那么公狗必须在 T 中
 			}
 		}
-		ans += w
+		ans += w // -k*fg + w+k*fg = w   先假定好友都不满足
 		Fscan(in, &k)
 		if tar == 0 {
-			addEdge(st, n+i, w+k*fg)
+			addEdge(st, n+i, w+k*fg) // 不割就表示选
 		} else {
 			addEdge(n+i, end, w+k*fg)
 		}
