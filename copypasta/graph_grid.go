@@ -31,6 +31,9 @@ https://codeforces.com/problemset/problem/679/C 2400
 https://codeforces.com/problemset/problem/35/C 1500
 https://codeforces.com/problemset/problem/329/B 1500
 https://codeforces.com/problemset/problem/2041/D 1700
+https://www.luogu.com.cn/problem/solution/CF78E 2300
+- LC2258. 逃离火灾 https://leetcode.cn/problems/escape-the-spreading-fire/
+- https://www.luogu.com.cn/problem/UVA11624
 https://codeforces.com/problemset/problem/1955/H 2300
 https://codeforces.com/problemset/problem/1301/F 2600 BFS 进阶玩法
 - 同色入队 - 往四周走 - 同色跳跃 - 往四周走 - 同色跳跃 - ...
@@ -39,8 +42,6 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
 另见 graph.go 中的 0-1 BFS
 
 综合
-LC2258. 逃离火灾 https://leetcode.cn/problems/escape-the-spreading-fire/
-- https://www.luogu.com.cn/problem/UVA11624
 易错题 https://codeforces.com/problemset/problem/540/C 2000
 
 其它
