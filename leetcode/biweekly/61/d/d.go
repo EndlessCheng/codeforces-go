@@ -1,34 +1,19 @@
 package main
 
-import "sort"
+import "slices"
 
 // github.com/EndlessCheng/codeforces-go
-func minOperations(nums []int) (ans int) {
+func minOperations(nums []int) int {
 	n := len(nums)
-	sort.Ints(nums)
-	nums = unique(nums)
-	for r, v := range nums {
-		l := sort.SearchInts(nums[:r], v-n+1)
-		ans = max(ans, r-l+1) // [l,r] 内的元素均可以保留
+	slices.Sort(nums)
+	nums = slices.Compact(nums) // 原地去重
+
+	ans, left := 0, 0
+	for i, x := range nums {
+		for nums[left] < x-n+1 { // nums[left] 不在窗口中
+			left++
+		}
+		ans = max(ans, i-left+1)
 	}
 	return n - ans
-}
-
-// 原地去重
-func unique(a []int) []int {
-	k := 0
-	for _, v := range a[1:] {
-		if a[k] != v {
-			k++
-			a[k] = v
-		}
-	}
-	return a[:k+1]
-}
-
-func max(a, b int) int {
-	if b > a {
-		return b
-	}
-	return a
 }
