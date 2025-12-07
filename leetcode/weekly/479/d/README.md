@@ -2,11 +2,11 @@
 
 ## 第一次 DFS
 
-计算以 $0$ 为根时，每棵子树 $x$ 的最大得分（一定包含节点 $x$），记作 $\textit{subTreeScore}[x]$。注意是子树 $x$，不是子图 $x$，前者不包含 $x$ 的父节点。
+计算以 $0$ 为根时，每棵子树 $x$ 的最大得分（一定包含节点 $x$），记作 $\textit{subScore}[x]$。注意是子树 $x$，不是子图 $x$，前者不包含 $x$ 的父节点。
 
 1. 对于 $x$ 的儿子 $y$，递归计算子树 $y$ 的最大得分（一定包含节点 $y$）。
-2. 如果子树 $y$ 的最大得分是负数，那么不选子树 $y$ 的得分，否则选子树 $y$ 的最大得分，即累加 $\max(\textit{subTreeScore}[y],0)$。
-3. 最后把节点 $x$ 的贡献算到 $\textit{subTreeScore}[x]$ 中：如果 $\textit{good}[x] = 1$ 则加一，否则减一。
+2. 如果子树 $y$ 的最大得分是负数，那么不选子树 $y$ 的得分，否则选子树 $y$ 的最大得分，即累加 $\max(\textit{subScore}[y],0)$。
+3. 最后把节点 $x$ 的贡献算到 $\textit{subScore}[x]$ 中：如果 $\textit{good}[x] = 1$ 则加一，否则减一。
 
 ## 第二次 DFS
 
@@ -16,12 +16,15 @@
 
 子图 $y$ 的得分由两部分组成：
 
-1. $\textit{subTreeScore}[y]$：这里面的节点只在子树 $y$ 中。
-2. 来自 $y$ 的父节点 $x$ 的最大得分：从 $\textit{scoreX}$ 中减去子树 $y$ 的贡献 $\max(\textit{subTreeScore}[y],0)$，即为来自 $x$ 的最大得分。
+1. $\textit{subScore}[y]$：这里面的节点只在子树 $y$ 中。
+2. 来自 $y$ 的父节点 $x$ 的最大得分：从 $\textit{scoreX}$ 中减去子树 $y$ 的贡献 $\max(\textit{subScore}[y],0)$，即为来自 $x$ 的最大得分。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1sv2fB4Evi/)，欢迎点赞关注~
 
 ```py [sol-Python3]
+# 手写 max 更快
+max = lambda a, b: b if b > a else a
+
 class Solution:
     def maxSubgraphScore(self, n: int, edges: List[List[int]], good: List[int]) -> List[int]:
         g = [[] for _ in range(n)]
@@ -47,8 +50,7 @@ class Solution:
 
         # 计算子图 x 的最大得分 score_x，其中 faScore 表示来自父节点 fa 的最大得分（一定包含节点 fa）
         def reroot(x: int, fa: int, fa_score: int) -> None:
-            score_x = sub_score[x] + max(fa_score, 0)
-            ans[x] = score_x
+            ans[x] = score_x = sub_score[x] + max(fa_score, 0)
             for y in g[x]:
                 if y != fa:
                     # score_x - max(sub_score[y], 0) 是不含子树 y 的最大得分
@@ -92,13 +94,13 @@ class Solution {
     }
 
     // 计算子图 x 的最大得分 scoreX，其中 faScore 表示来自父节点 fa 的最大得分（一定包含节点 fa）
-    private void reroot(int x, int fa, int faScore, List<Integer>[] g, int[] subTreeScore, int[] ans) {
-        int scoreX = subTreeScore[x] + Math.max(faScore, 0);
+    private void reroot(int x, int fa, int faScore, List<Integer>[] g, int[] subScore, int[] ans) {
+        int scoreX = subScore[x] + Math.max(faScore, 0);
         ans[x] = scoreX;
         for (int y : g[x]) {
             if (y != fa) {
-                // scoreX-max(subTreeScore[y],0) 是不含子树 y 的最大得分
-                reroot(y, x, scoreX - Math.max(subTreeScore[y], 0), g, subTreeScore, ans);
+                // scoreX-max(subScore[y],0) 是不含子树 y 的最大得分
+                reroot(y, x, scoreX - Math.max(subScore[y], 0), g, subScore, ans);
             }
         }
     }

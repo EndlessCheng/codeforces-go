@@ -8,7 +8,7 @@
 
 可以在 $\textit{specialPrimes}$ 的最前面加个 $0$，从而简化判断逻辑。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1sv2fB4Evi/?t=21m57s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 500_000
@@ -169,7 +169,7 @@ func largestPrime(n int) int {
 
 > 预处理的时空复杂度为 $\mathcal{O}(U\log\log U)$，$U=5\times 10^5$，不计入。
 
-- 时间复杂度：$\mathcal{O}(\log K)$，其中 $K=40+1$。$40$（本题范围下）特殊质数的个数，加一是哨兵。
+- 时间复杂度：$\mathcal{O}(\log K)$，其中 $K=40$。在本题数据范围下，有 $40$ 个特殊质数。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 写法二
@@ -188,12 +188,14 @@ for i in range(2, MX):
             is_prime[j] = False  # j 是质数 i 的倍数
 
 ans = [0] * (MX + 1)
-sum_p = j = 0
+sum_p = last = j = 0
 for i in range(2, MX + 1):
     if sum_p + primes[j] <= i:
         sum_p += primes[j]
         j += 1
-    ans[i] = sum_p if is_prime[sum_p] else ans[i - 1]
+        if is_prime[sum_p]:
+            last = sum_p
+    ans[i] = last
 
 
 class Solution:
@@ -228,13 +230,17 @@ class Solution {
         }
 
         int sum = 0;
+        int last = 0;
         int j = 0;
         for (int i = 2; i <= MX; i++) {
             if (sum + primes.get(j) <= i) {
                 sum += primes.get(j);
                 j++;
+                if (isPrime[sum]) {
+                    last = sum;
+                }
             }
-            ans[i] = isPrime[sum] ? sum : ans[i - 1];
+            ans[i] = last;
         }
     }
 
@@ -263,13 +269,16 @@ auto init = [] {
         }
     }
 
-    int sum = 0, j = 0;
+    int sum = 0, last = 0, j = 0;
     for (int i = 2; i <= MX; i++) {
         if (sum + primes[j] <= i) {
             sum += primes[j];
             j++;
+            if (is_prime[sum]) {
+                last = sum;
+            }
         }
-        ans[i] = is_prime[sum] ? sum : ans[i - 1];
+        ans[i] = last;
     }
     return 0;
 }();
@@ -299,17 +308,16 @@ func init() {
 		}
 	}
 
-	sum, j := 0, 0
+	sum, last, j := 0, 0, 0
 	for i := 2; i <= mx; i++ {
 		if sum+primes[j] <= i {
 			sum += primes[j]
 			j++
+			if !np[sum] {
+				last = sum
+			}
 		}
-		if !np[sum] {
-			ans[i] = sum
-		} else {
-			ans[i] = ans[i-1]
-		}
+		ans[i] = last
 	}
 }
 

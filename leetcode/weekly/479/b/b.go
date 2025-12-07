@@ -17,17 +17,16 @@ func init() {
 		}
 	}
 
-	sum, j := 0, 0
+	sum, last, j := 0, 0, 0
 	for i := 2; i <= mx; i++ {
 		if sum+primes[j] <= i {
 			sum += primes[j]
 			j++
+			if !np[sum] {
+				last = sum
+			}
 		}
-		if !np[sum] {
-			ans[i] = sum
-		} else {
-			ans[i] = ans[i-1]
-		}
+		ans[i] = last
 	}
 }
 

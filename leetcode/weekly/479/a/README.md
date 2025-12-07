@@ -1,12 +1,12 @@
 用库函数 $\mathcal{O}(1)$ 得到二进制反转后的结果。Python 需要手写。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1sv2fB4Evi/?t=18m26s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def sortByReflection(self, nums: List[int]) -> List[int]:
         # O(1) 反转见另一份代码【Python3 位运算】
-        nums.sort(key=lambda x: (int(bin(x)[2::][::-1], 2), x))
+        nums.sort(key=lambda x: (int(bin(x)[2:][::-1], 2), x))
         return nums
 ```
 
