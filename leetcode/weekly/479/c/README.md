@@ -1,4 +1,4 @@
-**提示**：如果问题没有让我们分别计算每个 $\text{score}(i)$，而是计算 $\text{score}(i)$ 的总和，通常可以用**贡献法**解决。
+**提示**：如果问题没有让我们分别计算每个 $\text{score}(j)$，而是计算 $\text{score}(j)$ 的总和，通常可以用**贡献法**解决。
 
 横看成岭侧成峰，考虑每个房间对总得分的贡献：
 
@@ -6,7 +6,7 @@
 
 设 $\textit{damage}$ 的**前缀和**数组为 $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
-从起点 $j\ (j\le i)$ 到房间 $i$，一共扣除了 $s[i+1] - s[j]$ 的血量。所以当前剩余血量为 $\textit{hp} - (s[i+1] - s[j])$。
+从起点 $j\ (j\le i)$ 一步步走到房间 $i$，一共扣除了 $s[i+1] - s[j]$ 的血量。所以当前剩余血量为 $\textit{hp} - (s[i+1] - s[j])$。
 
 如果剩余血量至少为 $\textit{requirement}[i]$，即
 
@@ -24,6 +24,8 @@ $$
 
 由于题目保证 $\textit{damage}[i]$ 非负，所以 $s$ 是递增数组。我们可以在 $s$ 的 $[0,i]$ 中二分查找第一个 $\ge s[i+1] + \textit{requirement}[i] - \textit{hp}$ 的元素下标 $j$（如果不存在则 $j=i+1$），那么 $[j,i]$ 中的整数都可以作为起点，在房间 $i$ 得到 $1$ 分。
 
+> 注：如果 $\textit{damage}[i] < 0$，可以用有序集合或者值域树状数组，同样可以快速计算大于等于一个数的元素个数。
+
 所以房间 $i$ 对总得分的贡献为 
 
 $$
@@ -37,12 +39,11 @@ $$
 ```py [sol-Python3]
 class Solution:
     def totalScore(self, hp: int, damage: List[int], requirement: List[int]) -> int:
-        n = len(damage)
-        s = [0] * (n + 1)
+        s = [0] * (len(damage) + 1)
         ans = 0
         for i, (dmg, req) in enumerate(zip(damage, requirement)):
             s[i + 1] = s[i] + dmg
-            low = s[i + 1] + requirement[i] - hp
+            low = s[i + 1] + req - hp
             j = bisect_left(s, low, 0, i + 1)  # 在 [0, i] 中二分
             ans += i - j + 1
         return ans
