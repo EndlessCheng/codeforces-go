@@ -10,7 +10,7 @@
 
 只保留大于 $0$ 的 $d[i]$，然后把 $d$ 从大到小排序，选择前 $n-k$ 个数（不超过 $d$ 的大小），作为额外增加的分数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wr2fBpENB/?t=22m17s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

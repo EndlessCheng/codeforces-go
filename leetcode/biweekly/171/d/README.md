@@ -14,9 +14,11 @@
 
 由于元素范围很大，我们又只需要知道元素的相对大小（元素的绝对大小不重要）。所以可以先离散化，把元素映射到 $n$ 以内，例如 $300,300,100,800$ 离散化后就是 $2,2,1,3$，保留了元素的相对大小。注：这里从 $1$ 开始，是因为我的树状数组模板是从 $1$ 开始的。
 
-另见「Python3 有序集合」写法。
+**小优化**：如果循环中发现 $\textit{ans}=0$，那么已经达到最小值，直接跳出循环。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+> 另见「Python3 有序集合」写法。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1wr2fBpENB/?t=29m48s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 完整模板见 https://leetcode.cn/circle/discuss/mOr1u6/
@@ -68,6 +70,8 @@ class Solution:
 
             # 2. 更新答案
             ans = min(ans, inv)
+            if ans == 0:  # 已经最小了，无需再计算
+                break
 
             # 3. 出
             out = nums[left]
@@ -87,7 +91,7 @@ class Solution:
         for i, x in enumerate(nums):
             # 1. 入
             sl.add(x)
-            inv += len(sl) - sl.bisect_left(x + 1)  # 窗口大小 - (<=x 的元素个数) = (>x 的元素个数)
+            inv += len(sl) - sl.bisect_right(x)  # 窗口大小 - (<=x 的元素个数) = (>x 的元素个数)
 
             left = i + 1 - k
             if left < 0:  # 尚未形成第一个窗口
@@ -95,6 +99,8 @@ class Solution:
 
             # 2. 更新答案
             ans = min(ans, inv)
+            if ans == 0:  # 已经最小了，无需再计算
+                break
 
             # 3. 出
             out = nums[left]
@@ -161,6 +167,9 @@ class Solution {
 
             // 2. 更新答案
             ans = Math.min(ans, inv);
+            if (ans == 0) { // 已经最小了，无需再计算
+                break;
+            }
 
             // 3. 出
             int out = nums[left];
@@ -230,6 +239,9 @@ public:
 
             // 2. 更新答案
             ans = min(ans, inv);
+            if (ans == 0) { // 已经最小了，无需再计算
+                break;
+            }
 
             // 3. 出
             int out = nums[left];
@@ -282,6 +294,9 @@ func minInversionCount(nums []int, k int) int64 {
 
 		// 2. 更新答案
 		ans = min(ans, inv)
+		if ans == 0 { // 已经最小了，无需再计算
+			break
+		}
 
 		// 3. 出
 		out := nums[left]

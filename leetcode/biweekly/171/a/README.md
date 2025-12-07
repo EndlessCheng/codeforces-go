@@ -4,11 +4,11 @@
 
 我们可以判断 $n$ 能否能被 $\sqrt n$ 以内的某个大于 $1$ 的整数整除，如果不能则说明 $n$ 是质数。为什么？
 
-**反证法**：如果 $n$ 不能被 $\sqrt n$ 以内的（大于 $1$ 的）整数整除，但可以被大于 $\sqrt n$ 的整数 $d$ 整除，那么必然还有一个数 $\dfrac{n}{d}$ 也能整除 $n$。但是 $\dfrac{n}{d} < \dfrac{n}{\sqrt n} = \sqrt n$，说明存在一个 $\sqrt n$ 以内的（大于 $1$ 的）整数能整除 $n$，矛盾。
+**反证法**：如果 $n$ 不能被 $\sqrt n$ 以内的（大于 $1$ 的）整数整除，但可以被大于 $\sqrt n$ 的整数 $d$ 整除，那么必然还有一个数 $\dfrac{n}{d}$ 也能整除 $n$（$d\times \dfrac{n}{d} = n$）。但是 $\dfrac{n}{d} < \dfrac{n}{\sqrt n} = \sqrt n$，说明存在一个 $\sqrt n$ 以内的（大于 $1$ 的）整数能整除 $n$，矛盾。
 
 注意 $1$ 不是质数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wr2fBpENB/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 def is_prime(n: int) -> bool:
@@ -128,7 +128,7 @@ func completePrime(num int) bool {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(\sqrt \textit{num})$。虽然执行了多次 $\texttt{isPrime}$，但只有最大数的 $\texttt{isPrime}$ 的循环次数占主导。
+- 时间复杂度：$\mathcal{O}(\sqrt \textit{num})$。虽然执行了多次 $\texttt{isPrime}$，但只有最大数的 $\texttt{isPrime}$ 的循环次数占主导。详细证明见视频讲解。
 - 空间复杂度：$\mathcal{O}(\log \textit{num})$。注：如果不用字符串，可以做到 $\mathcal{O}(1)$ 空间。
 
 ## 专题训练

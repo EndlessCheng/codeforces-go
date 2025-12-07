@@ -6,7 +6,7 @@
 
 然后在 $\textit{pal}$ 中**二分查找**离 $\textit{nums}[i]$ 最近的回文数。关于二分查找的原理，请看[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wr2fBpENB/?t=7m33s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 def init() -> List[int]:
@@ -121,7 +121,7 @@ auto init = []() {
     // 哨兵，0 也是回文数
     palindromes.push_back(0);
 
-    for (int pw = 1;; pw *= BASE) {
+    for (int pw = 1; ; pw *= BASE) {
         // 生成奇数长度回文数
         for (int i = pw; i < pw * BASE; i++) {
             long long x = i;
@@ -218,16 +218,16 @@ func minOperations(nums []int) []int {
 
 #### 复杂度分析
 
-> 预处理的时空复杂度为 $\mathcal{O}(\sqrt U)$，$U=5000$，不计入。
+> 不计入预处理的时间和空间。注：预处理的时间复杂度为 $\mathcal{O}(\sqrt U \log U)$，$U=5000$。
 
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=5000$ 是 $\textit{nums}[i]$ 的最大值。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 方法二：位运算
 
-设 $x= \textit{nums}[i]$，$x$ 的左半（奇数长度时包含中心）是 $\textit{left}$。
+设 $x=\textit{nums}[i]$，$x$ 的左半（奇数长度时包含中心）为 $\textit{left}$。
 
-最终变成的回文数的左半在 $\textit{left}-1, \textit{left}, \textit{left}+1$ 中。枚举这三种情况。
+考察枚举回文数的过程，相邻的回文数，其 $\textit{left}$ 是连续的。所以最终变成的回文数的左半只会在 $\textit{left}-1, \textit{left}, \textit{left}+1$ 中，其余回文数一定比这三个更远。枚举这三个回文数，计算与 $x$ 的最小绝对差。
 
 ```py [sol-Python3]
 class Solution:
@@ -239,6 +239,7 @@ class Solution:
             left = x >> m
             for l in range(left - 1, left + 2):
                 # 左半反转到右半
+                # 如果 n 是奇数，先去掉正中间的比特，再反转
                 right = self.reverseBits(l >> (n % 2)) >> (32 - m)
                 pal = l << m | right
                 res = min(res, abs(x - pal))
@@ -272,7 +273,7 @@ class Solution {
             int left = x >> m;
             for (int l = left - 1; l <= left + 1; l++) {
                 // 左半反转到右半
-                // 如果 n 是奇数，那么去掉回文中心再反转
+                // 如果 n 是奇数，先去掉正中间的比特，再反转
                 int right = Integer.reverse(l >> (n % 2)) >>> (32 - m);
                 int pal = l << m | right;
                 res = Math.min(res, Math.abs(x - pal));
@@ -299,7 +300,7 @@ public:
             int left = x >> m;
             for (int l = left - 1; l <= left + 1; l++) {
                 // 左半反转到右半
-                // 如果 n 是奇数，那么去掉回文中心再反转
+                // 如果 n 是奇数，先去掉正中间的比特，再反转
                 int right = __builtin_bitreverse32(l >> (n % 2)) >> (32 - m);
                 int pal = l << m | right;
                 res = min(res, abs(x - pal));
@@ -320,7 +321,7 @@ func minOperations(nums []int) []int {
 		left := x >> m
 		for l := left - 1; l <= left+1; l++ {
 			// 左半反转到右半
-			// 如果 n 是奇数，那么去掉回文中心再反转
+			// 如果 n 是奇数，先去掉正中间的比特，再反转
 			right := bits.Reverse(uint(l>>(n%2))) >> (bits.UintSize - m)
 			pal := l<<m | int(right)
 			res = min(res, abs(x-pal))

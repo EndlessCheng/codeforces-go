@@ -47,6 +47,9 @@ func minInversionCount(nums []int, k int) int64 {
 
 		// 2. 更新答案
 		ans = min(ans, inv)
+		if ans == 0 { // 已经最小了，无需再计算
+			break
+		}
 
 		// 3. 出
 		out := nums[left]
