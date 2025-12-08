@@ -59,6 +59,7 @@ https://codeforces.com/problemset/problem/2050/E 1500
 多维 DP
 https://codeforces.com/problemset/problem/2115/A 1500 也可以 BFS，或者更快的做法
 https://codeforces.com/problemset/problem/2027/D1 1700
+https://codeforces.com/problemset/problem/2145/D 1800 构造
 https://codeforces.com/problemset/problem/404/D 1900
 https://codeforces.com/problemset/problem/1920/E 2000
 https://codeforces.com/problemset/problem/2027/D2 2200 在 DP 数组上滑窗
@@ -73,6 +74,8 @@ https://codeforces.com/problemset/problem/6/D 2600
 https://codeforces.com/problemset/problem/93/E 2600 记忆化搜索 时间换空间
 https://codeforces.com/problemset/problem/367/E 2700 状态设计
 https://atcoder.jp/contests/dp/tasks/dp_t 状态设计
+https://www.luogu.com.cn/problem/P8816
+https://www.luogu.com.cn/problem/P1282
 https://www.luogu.com.cn/problem/P2258
 
 记忆化搜索
@@ -209,6 +212,7 @@ https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元
 https://codeforces.com/problemset/problem/845/F 2500 状态设计
 https://codeforces.com/problemset/problem/938/F 2700 扩散至超集的写法
 https://codeforces.com/problemset/problem/1152/F2 3000 值域 插入法
+https://codeforces.com/problemset/problem/1342/F 3000
 https://atcoder.jp/contests/abc237/tasks/abc237_f
 https://atcoder.jp/contests/abc232/tasks/abc232_e
 https://atcoder.jp/contests/arc097/tasks/arc097_c 混合逆序对
@@ -240,6 +244,7 @@ LC935 减少状态个数 https://leetcode.cn/problems/knight-dialer/
 LC1092 https://leetcode.cn/problems/shortest-common-supersequence/
 - 题解：https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/
 LC2212 https://leetcode.cn/problems/maximum-points-in-an-archery-competition/
+https://codeforces.com/problemset/problem/1342/F 3000
 
 值域 DP
 常见于递增子序列相关的题目
@@ -2693,13 +2698,15 @@ func _(abs func(int) int) {
 	//    - 将 n 个集合分成尽量多组，使得对于每组，组内所有集合的并集等于全集
 	// 训练指南第一章例题 32，WF10，UVa1099 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=245&page=show_problem&problem=3540
 	// https://codeforces.com/problemset/problem/599/E 2600 树上子集状压 DP
+	// https://codeforces.com/problemset/problem/1342/F 3000 状态设计
 	// https://atcoder.jp/contests/arc171/tasks/arc171_d 转换 图染色
 	// https://www.luogu.com.cn/problem/P10949
 	subsubDP := func(a []int) int {
 		n := len(a)
-		m := 1 << n
+		u := 1 << n
+
 		// 预处理每个子集的子集和
-		sum := make([]int, m)
+		sum := make([]int, u)
 		// lcms[0] = 1
 		for i, v := range a {
 			highBit := 1 << i
@@ -2707,10 +2714,11 @@ func _(abs func(int) int) {
 				sum[highBit|mask] = s + v // + 可以换成其它运算，例如 gcd lcm 等
 			}
 		}
-		f := make([]int, m)
+
+		f := make([]int, u)
 		for s, fs := range f {
-			t := m - 1 ^ s
 			// 枚举 s 的补集 t 的非空子集
+			t := u - 1 ^ s
 			for sub := t; sub > 0; sub = (sub - 1) & t {
 				ss := s | sub
 				f[ss] = max(f[ss], fs+sum[sub])
@@ -2718,14 +2726,14 @@ func _(abs func(int) int) {
 		}
 
 		// 另一种写法
-		for j := 1; j < m; j++ {
-			// 枚举 j 的所有非空子集 sub
-			for sub := j; sub > 0; sub = (sub - 1) & j {
-				f[j] = max(f[j], f[j^sub]+sum[sub])
+		for s := range f {
+			// 枚举 s 的所有非空子集 sub
+			for sub := s; sub > 0; sub = (sub - 1) & s {
+				f[s] = max(f[s], f[s^sub]+sum[sub])
 			}
 		}
 
-		return f[m-1]
+		return f[u-1]
 	}
 
 	// 至多分成 k 组
@@ -2818,7 +2826,6 @@ func _(abs func(int) int) {
 	// 可以看这篇文章里面的图 https://codeforces.com/blog/entry/45223
 	// 本质理解 https://codeforces.com/blog/entry/72488 Tutorial on Zeta Transform, Mobius Transform and Subset Sum Convolution
 	// Some SOS DP Insights https://codeforces.com/blog/entry/105247
-	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
 	//
 	// 入门题 https://cses.fi/problemset/task/1654/
 	// 高维差分 https://cses.fi/problemset/task/3141/
@@ -2837,13 +2844,13 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1523/D 2400
 	// https://codeforces.com/problemset/problem/1620/G 2400 容斥
 	// https://codeforces.com/problemset/problem/1679/E 2400
-	// https://codeforces.com/problemset/problem/1903/D2 2500
+	// https://codeforces.com/problemset/problem/1903/D2 2500 状态设计
 	// https://codeforces.com/problemset/problem/1208/F 2600
 	//    求 ai|(aj&ak) 的最大值，其中 i<j<k
 	//    根据 a|b = (^a)&b + a
 	//    问题变成 (^ai)&aj&ak + ai 的最大值
 	// https://codeforces.com/problemset/problem/383/E 2700 正难则反
-	// https://codeforces.com/problemset/problem/800/D 2700
+	// https://codeforces.com/problemset/problem/772/D 2700
 	// https://atcoder.jp/contests/arc100/tasks/arc100_c 最大次大 
 	// https://atcoder.jp/contests/arc136/tasks/arc136_d 十进制
 	// https://www.hackerearth.com/zh/problem/algorithm/special-pairs-5-3ee6b3fe-3d8a1606/
@@ -3075,6 +3082,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/contest/2121/problem/E 只用到了思想，无需记忆化
 	https://codeforces.com/contest/1710/problem/C
 	数位和 https://leetcode.cn/problems/count-largest-group/
+	数位和 https://www.luogu.com.cn/problem/P4999
 	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127
 	- https://atcoder.jp/contests/abc336/tasks/abc336_e
 	- https://ac.nowcoder.com/acm/contest/28262/E
@@ -4547,28 +4555,33 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/791/D 2100 任意两点距离除以 k 的上取整之和
 	// https://atcoder.jp/contests/abc160/tasks/abc160_f 2048=CF2260
 	// https://codeforces.com/problemset/problem/494/D 2700 式子变形
-	reroot1 := func(g [][]int) []int {
-		ans := make([]int, len(g))
-		size := make([]int, len(g))
-		var dfs func(int, int, int)
-		dfs = func(v, fa, depth int) {
-			ans[0] += depth // 点相关
-			size[v] = 1
+	reroot1 := func(g [][]int, a []int) []int {
+		n := len(g)
+		f := make([]int, n)
+		var dfs func(int, int)
+		dfs = func(v, fa int) {
+			// 节点 v 的贡献
+			f[v] = a[v]*2 - 1
 			for _, w := range g[v] {
 				if w != fa {
-					dfs(w, v, depth+1)
-					// ans[0] += ... // 边相关
-					size[v] += size[w]
+					dfs(w, v)
+					// 把子树 w 的贡献加到 f[v] 中
+					f[v] += max(f[w], 0)
 				}
 			}
 		}
-		dfs(0, -1, 0)
+		dfs(0, -1)
 
+		ans := make([]int, n)
+		ans[0] = f[0]
 		var reroot func(int, int)
 		reroot = func(v, fa int) {
 			for _, w := range g[v] {
 				if w != fa {
-					ans[w] = ans[v] + len(g) - size[w]*2 // 1-e.inv*2
+					// 从 ans[v] 中去掉子树 w 的贡献，剩余部分记作 rem
+					rem := ans[v] - max(f[w], 0)
+					// 把 rem 挂在 w 下面
+					ans[w] = f[w] + max(rem, 0)
 					reroot(w, v)
 				}
 			}
@@ -4627,43 +4640,51 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1866/K 2500 凸包
 	// https://codeforces.com/problemset/problem/633/F 2600 计算最大次大第三大（也可以直接树形 DP，无需换根）
 	reroot2 := func(g [][]struct{ to, wt int }) []int {
-		nodes := make([]struct{ fi, se, fiW int }, len(g))
-		var dfs func(int, int) int
-		dfs = func(v, fa int) int {
-			p := &nodes[v]
+		n := len(g)
+		// subRes[v] 保存子树 v 的最大深度 maxD，次大深度 maxD2，以及最大深度要往儿子 w 走
+		subRes := make([]struct{ maxD, maxD2, w int }, n)
+		var dfs func(int, int)
+		dfs = func(v, fa int) {
+			res := &subRes[v]
 			for _, e := range g[v] {
 				w := e.to
 				if w == fa {
 					continue
 				}
-				d := dfs(w, v) + e.wt // 从 v 出发，往 w 方向的最大链和
-				if d > p.fi {
-					p.se = p.fi
-					p.fi = d
-					p.fiW = w
-				} else if d > p.se {
-					p.se = d
+				dfs(w, v)
+				wt := 2 - w%2
+				// 从 v 出发，往 w 方向的最大深度
+				maxD := subRes[w].maxD + wt 
+				if maxD > res.maxD {
+					res.maxD2 = res.maxD
+					res.maxD = maxD
+					res.w = w
+				} else if maxD > res.maxD2 {
+					res.maxD2 = maxD
 				}
 			}
-			return p.fi
 		}
 		dfs(0, -1)
 
-		ans := make([]int, len(g))
+		// ans[v] 表示当 v 是树根时，整棵树的最大深度
+		ans := make([]int, n)
 		var reroot func(int, int, int)
-		reroot = func(v, fa, up int) {
-			p := nodes[v]
-			ans[v] = max(up, p.fi) // 从 v 出发的最大链和
+		reroot = func(v, fa, fromUp int) {
+			sub := subRes[v]
+			ans[v] = max(sub.maxD, fromUp)
 			for _, e := range g[v] {
 				w := e.to
 				if w == fa {
 					continue
 				}
-				otherDown := p.fi
-				if w == p.fiW {
-					otherDown = p.se // 对于 w 来说，上面要选次大的
+				// 站在 v 的角度，不往 w 走，能走多远？
+				// 要么往上走（fromUp），要么往除了 w 的其余子树走（mx），二者取最大值
+				mx := sub.maxD
+				if w == sub.w {
+					mx = sub.maxD2
 				}
-				reroot(w, v, max(up, otherDown)+e.wt)
+				// 对于 w 来说，还要加上从 w 到 v 的边权
+				reroot(w, v, max(fromUp, mx)+e.wt) 
 			}
 		}
 		reroot(0, -1, 0)
