@@ -48,7 +48,7 @@ class Solution:
 
         ans = [0] * n
 
-        # 计算子图 x 的最大得分 score_x，其中 faScore 表示来自父节点 fa 的最大得分（一定包含节点 fa）
+        # 计算子图 x 的最大得分 score_x，其中 fa_score 表示来自父节点 fa 的最大得分（一定包含节点 fa）
         def reroot(x: int, fa: int, fa_score: int) -> None:
             ans[x] = score_x = sub_score[x] + max(fa_score, 0)
             for y in g[x]:
@@ -134,7 +134,7 @@ public:
         dfs(0, -1);
 
         vector<int> ans(n);
-        // 计算子图 x 的最大得分 score_x，其中 faScore 表示来自父节点 fa 的最大得分（一定包含节点 fa）
+        // 计算子图 x 的最大得分 score_x，其中 fa_score 表示来自父节点 fa 的最大得分（一定包含节点 fa）
         auto reroot = [&](this auto&& reroot, int x, int fa, int fa_score) -> void {
             int score_x = sub_score[x] + max(fa_score, 0);
             ans[x] = score_x;
