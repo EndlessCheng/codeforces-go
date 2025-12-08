@@ -34,11 +34,7 @@ $$
 s[j] \ge s[i+1] + \textit{requirement}[i] - \textit{hp}
 $$
 
-由于题目保证 $\textit{damage}[i]$ 非负，所以 $s$ 是递增数组。我们可以在 $s$ 的 $[0,i]$ 中二分查找第一个 $\ge s[i+1] + \textit{requirement}[i] - \textit{hp}$ 的元素下标 $j$（如果不存在则 $j=i+1$），那么 $[j,i]$ 中的整数都可以作为起点，在房间 $i$ 得到 $1$ 分。
-
-注意不能用滑动窗口，因为 $\textit{requirement}[i]$ 没有单调性。
-
-> 注：如果 $\textit{damage}[i] < 0$，可以用有序集合或者值域树状数组，同样可以快速计算大于等于一个数的元素个数。
+由于题目保证 $\textit{damage}[i]$ 非负，所以 $s$ 是递增数组。我们可以在 $s$ 的 $[0,i]$ 中**二分查找**第一个 $\ge s[i+1] + \textit{requirement}[i] - \textit{hp}$ 的元素下标 $j$（如果不存在则 $j=i+1$），那么 $[j,i]$ 中的整数都可以作为起点，在房间 $i$ 得到 $1$ 分。关于二分查找的原理，请看[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 所以房间 $i$ 对总得分的贡献为 
 
@@ -49,6 +45,16 @@ $$
 累加即为答案。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1sv2fB4Evi/?t=29m24s)，欢迎点赞关注~
+
+## 答疑
+
+**问**：能不能用滑动窗口解决？
+
+**答**：不能用滑动窗口，因为 $\textit{requirement}[i]$ 没有单调性。
+
+**问**：如果 $\textit{damage}[i] < 0$，$s$ 不是有序的，怎么做？
+
+**答**：可以用有序集合或者值域树状数组，快速查询大于等于一个数的元素个数。
 
 ```py [sol-Python3]
 class Solution:
@@ -72,9 +78,9 @@ class Solution {
         for (int i = 0; i < n; i++) {
             sum[i + 1] = sum[i] + damage[i];
             int low = sum[i + 1] + requirement[i] - hp;
-            // 本题 sum 是严格递增的，没有重复元素，可以用 Arrays.binarySearch
+            // 本题 sum 是严格递增的，没有重复元素，可以用库函数二分
             int j = Arrays.binarySearch(sum, 0, i + 1, low); // 在 [0, i] 中二分
-            if (j < 0) j = ~j;
+            if (j < 0) j = ~j; // 见 Arrays.binarySearch 的文档：如果没找到 = low 的数，把返回值取反就是 > low 的第一个数的下标
             ans += i - j + 1;
         }
         return ans;
