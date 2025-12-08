@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://space.bilibili.com/206214
@@ -55,4 +53,4 @@ func p4999(in io.Reader, out io.Writer) {
 	}
 }
 
-func main() { p4999(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { p4999(bufio.NewReader(os.Stdin), os.Stdout) }
