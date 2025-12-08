@@ -24,6 +24,7 @@ func cf2096E(in io.Reader, out io.Writer) {
 				d--
 			}
 		}
+		// 每两个无法配对的 B 可共用 1 次最小收益操作（消除 1 个逆序对），最后剩余的 1 个 B 需要 1 次最小收益操作（再消除 1 个）
 		d = (d + 1) / 2
 		Fprintln(out, (inv+d)/2)
 	}
