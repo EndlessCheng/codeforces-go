@@ -1,10 +1,10 @@
 **前置知识**：[【图解】一张图秒懂换根 DP！](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/)
 
-本题相当于对每个节点，计算以该节点为根时，树的最大深度。
+本题相当于对每个节点，计算以该节点为根时，树的高度（最大深度）。
 
-其中从 $x\rightarrow y$ 的有向边的边权为 $2 - y\bmod 2$，即当 $y$ 是奇数时，边权为 $1$；当 $y$ 是偶数时，边权为 $2$。
+其中从 $x\to y$ 的有向边的边权为 $2 - y\bmod 2$，即当 $y$ 是奇数时，边权为 $1$；当 $y$ 是偶数时，边权为 $2$。
 
-⚠**注意**：如果 $x$ 和 $y$ 的奇偶性不同，那么从 $x\rightarrow y$ 的有向边和从 $y\rightarrow x$ 的有向边的边权是不一样的。
+⚠**注意**：如果 $x$ 和 $y$ 的奇偶性不同，那么从 $x\to y$ 的有向边和从 $y\to x$ 的有向边的边权是不一样的。
 
 考虑换根 DP。
 
@@ -21,7 +21,7 @@
 对于节点 $x$，其答案是以下两种情况的最大值：
 
 - 子树 $x$ 的最大深度。
-- $x$ 往上走到某个节点再往下拐弯的路径长度。
+- $x$ 往上走到某个节点（可以再往下拐弯）的路径长度。
 
 对于第二种情况，可以作为 DFS 的一个参数 $\textit{fromUp}$。
 
@@ -37,44 +37,56 @@ $$
 \max(\textit{fromUp}, \textit{maxD}) + 2 - x\bmod 2
 $$
 
-注：我把[【图解】一张图秒懂换根 DP](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/) 这题叫做**第一类换根 DP**，本题需要额外维护次大信息，我称其为**第二类换根 DP**。
+**注**：我把[【图解】一张图秒懂换根 DP](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/) 这题叫做**第一类换根 DP**，本题需要额外维护次大信息，我称其为**第二类换根 DP**。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1F4421S7XU/) 第四题，欢迎点赞关注！
+[本题视频讲解](https://www.bilibili.com/video/BV1F4421S7XU/?t=17m28s) 第四题，欢迎点赞关注~
 
 ```py [sol-Python3]
+# 手写 max 更快
+max = lambda a, b: b if b > a else a
+
 class Solution:
     def timeTaken(self, edges: List[List[int]]) -> List[int]:
-        g = [[] for _ in range(len(edges) + 1)]
+        n = len(edges) + 1
+        g = [[] for _ in range(n)]
         for x, y in edges:
             g[x].append(y)
             g[y].append(x)
 
-        # nodes[x] 保存子树 x 的最大深度 max_d，次大深度 max_d2，以及最大深度要往儿子 my 走
-        nodes = [None] * len(g)
-        def dfs(x: int, fa: int) -> int:
+        # sub_res[x] 保存子树 x 的最大深度，次大深度，以及最大深度要往哪个儿子走
+        sub_res = [None] * n
+        # 计算 sub_res[x]
+        def dfs(x: int, fa: int) -> None:
             max_d = max_d2 = my = 0
             for y in g[x]:
                 if y == fa:
                     continue
-                depth = dfs(y, x) + 2 - y % 2  # 从 x 出发，往 my 方向的最大深度
-                if depth > max_d:
+                dfs(y, x)
+                w = 2 - y % 2  # 从 x 到 y 的边权
+                max_y = sub_res[y][0] + w  # 从 x 出发，往 y 方向的最大深度
+                if max_y > max_d:
                     max_d2 = max_d
-                    max_d = depth
+                    max_d = max_y
                     my = y
-                elif depth > max_d2:
-                    max_d2 = depth
-            nodes[x] = (max_d, max_d2, my)
-            return max_d
+                elif max_y > max_d2:
+                    max_d2 = max_y
+            sub_res[x] = (max_d, max_d2, my)
         dfs(0, -1)
 
-        ans = [0] * len(g)
+        # ans[x] 表示当 x 是树根时，整棵树的最大深度
+        ans = [0] * n
+        # 计算 ans[x]
         def reroot(x: int, fa: int, from_up: int) -> None:
-            max_d, max_d2, my = nodes[x]
-            ans[x] = max(from_up, max_d)
-            w = 2 - x % 2  # 从 y 到 x 的边权
+            max_d, max_d2, my = sub_res[x]
+            ans[x] = max(max_d, from_up)
             for y in g[x]:
-                if y != fa:
-                    reroot(y, x, max(from_up, max_d2 if y == my else max_d) + w)
+                if y == fa:
+                    continue
+                # 站在 x 的角度，不往 y 走，能走多远？
+                # 要么往上走（from_up），要么往除了 y 的其余子树走（mx），二者取最大值
+                mx = max_d if y != my else max_d2
+                w = 2 - x % 2  # 从 y 到 x 的边权
+                reroot(y, x, max(from_up, mx) + w)  # 对于 y 来说，加上从 y 到 x 的边权
         reroot(0, -1, 0)
         return ans
 ```
@@ -82,8 +94,9 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int[] timeTaken(int[][] edges) {
-        List<Integer>[] g = new ArrayList[edges.length + 1];
-        Arrays.setAll(g, i -> new ArrayList<>());
+        int n = edges.length + 1;
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
         for (int[] e : edges) {
             int x = e[0];
             int y = e[1];
@@ -91,16 +104,18 @@ class Solution {
             g[y].add(x);
         }
 
-        // nodes[x] 保存子树 x 的最大深度 maxD，次大深度 maxD2，以及最大深度要往儿子 my 走
-        int[][] nodes = new int[g.length][3];
-        dfs(0, -1, g, nodes);
+        // subRes[x] 保存子树 x 的最大深度，次大深度，以及最大深度要往哪个儿子走
+        int[][] subRes = new int[n][];
+        dfs(0, -1, g, subRes);
 
-        int[] ans = new int[g.length];
-        reroot(0, -1, 0, g, nodes, ans);
+        // ans[x] 表示当 x 是树根时，整棵树的最大深度
+        int[] ans = new int[n];
+        reroot(0, -1, 0, g, subRes, ans);
         return ans;
     }
 
-    private int dfs(int x, int fa, List<Integer>[] g, int[][] nodes) {
+    // 计算 subRes[x]
+    private void dfs(int x, int fa, List<Integer>[] g, int[][] subRes) {
         int maxD = 0;
         int maxD2 = 0;
         int my = 0;
@@ -108,30 +123,35 @@ class Solution {
             if (y == fa) {
                 continue;
             }
-            int depth = dfs(y, x, g, nodes) + 2 - y % 2; // 从 x 出发，往 my 方向的最大深度
-            if (depth > maxD) {
+            dfs(y, x, g, subRes);
+            int w = 2 - y % 2; // 从 x 到 y 的边权
+            int maxY = subRes[y][0] + w; // 从 x 出发，往 y 方向的最大深度
+            if (maxY > maxD) {
                 maxD2 = maxD;
-                maxD = depth;
+                maxD = maxY;
                 my = y;
-            } else if (depth > maxD2) {
-                maxD2 = depth;
+            } else if (maxY > maxD2) {
+                maxD2 = maxY;
             }
         }
-        nodes[x][0] = maxD;
-        nodes[x][1] = maxD2;
-        nodes[x][2] = my;
-        return maxD;
+        subRes[x] = new int[]{maxD, maxD2, my};
     }
 
-    private void reroot(int x, int fa, int fromUp, List<Integer>[] g, int[][] nodes, int[] ans) {
-        int maxD = nodes[x][0];
-        int maxD2 = nodes[x][1];
-        int my = nodes[x][2];
-        ans[x] = Math.max(fromUp, maxD);
+    // 计算 ans[x]
+    private void reroot(int x, int fa, int fromUp, List<Integer>[] g, int[][] subRes, int[] ans) {
+        int maxD = subRes[x][0];
+        int maxD2 = subRes[x][1];
+        int my = subRes[x][2];
+        ans[x] = Math.max(maxD, fromUp);
         for (int y : g[x]) {
-            if (y != fa) {
-                reroot(y, x, Math.max(fromUp, (y == my ? maxD2 : maxD)) + 2 - x % 2, g, nodes, ans);
+            if (y == fa) {
+                continue;
             }
+            // 站在 x 的角度，不往 y 走，能走多远？
+            // 要么往上走（fromUp），要么往除了 y 的其余子树走（mx），二者取最大值
+            int mx = y != my ? maxD : maxD2;
+            int w = 2 - x % 2; // 从 y 到 x 的边权
+            reroot(y, x, Math.max(fromUp, mx) + w, g, subRes, ans);
         }
     }
 }
@@ -141,46 +161,56 @@ class Solution {
 class Solution {
 public:
     vector<int> timeTaken(vector<vector<int>>& edges) {
-        vector<vector<int>> g(edges.size() + 1);
+        int n = edges.size() + 1;
+        vector<vector<int>> g(n);
         for (auto& e : edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
             g[y].push_back(x);
         }
 
-        // nodes[x] 保存子树 x 的最大深度 max_d，次大深度 max_d2，以及最大深度要往儿子 my 走
-        vector<tuple<int, int, int>> nodes(g.size());
-        auto dfs = [&](auto&& dfs, int x, int fa) -> int {
+        // sub_res[x] 保存子树 x 的最大深度，次大深度，以及最大深度要往哪个儿子走
+        vector<tuple<int, int, int>> sub_res(n);
+        // 计算 sub_res[x]
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> void {
             int max_d = 0, max_d2 = 0, my = 0;
             for (int y : g[x]) {
                 if (y == fa) {
                     continue;
                 }
-                int depth = dfs(dfs, y, x) + 2 - y % 2; // 从 x 出发，往 my 方向的最大深度
-                if (depth > max_d) {
+                dfs(y, x);
+                int w = 2 - y % 2;  // 从 x 到 y 的边权
+                int max_y = get<0>(sub_res[y]) + w;  // 从 x 出发，往 y 方向的最大深度
+                if (max_y > max_d) {
                     max_d2 = max_d;
-                    max_d = depth;
+                    max_d = max_y;
                     my = y;
-                } else if (depth > max_d2) {
-                    max_d2 = depth;
+                } else if (max_y > max_d2) {
+                    max_d2 = max_y;
                 }
             }
-            nodes[x] = {max_d, max_d2, my};
-            return max_d;
+            sub_res[x] = {max_d, max_d2, my};
         };
-        dfs(dfs, 0, -1);
+        dfs(0, -1);
 
-        vector<int> ans(g.size());
-        auto reroot = [&](auto&& reroot, int x, int fa, int from_up) -> void {
-            auto& [max_d, max_d2, my] = nodes[x];
-            ans[x] = max(from_up, max_d);
+        // ans[x] 表示当 x 是树根时，整棵树的最大深度
+        vector<int> ans(n);
+        // 计算 ans[x]
+        auto reroot = [&](this auto&& reroot, int x, int fa, int from_up) -> void {
+            auto [max_d, max_d2, my] = sub_res[x];
+            ans[x] = max(max_d, from_up);
             for (int y : g[x]) {
-                if (y != fa) {
-                    reroot(reroot, y, x, max(from_up, (y == my ? max_d2 : max_d)) + 2 - x % 2);
+                if (y == fa) {
+                    continue;
                 }
+                // 站在 x 的角度，不往 y 走，能走多远？
+                // 要么往上走（from_up），要么往除了 y 的其余子树走（mx），二者取最大值
+                int mx = y != my ? max_d : max_d2;
+                int w = 2 - x % 2;  // 从 y 到 x 的边权
+                reroot(y, x, max(from_up, mx) + w);  // 对于 y 来说，加上从 y 到 x 的边权
             }
         };
-        reroot(reroot, 0, -1, 0);
+        reroot(0, -1, 0);
         return ans;
     }
 };
@@ -188,50 +218,57 @@ public:
 
 ```go [sol-Go]
 func timeTaken(edges [][]int) []int {
-	g := make([][]int, len(edges)+1)
+	n := len(edges) + 1
+	g := make([][]int, n)
 	for _, e := range edges {
 		x, y := e[0], e[1]
 		g[x] = append(g[x], y)
 		g[y] = append(g[y], x)
 	}
 
-	// nodes[x] 保存子树 x 的最大深度 maxD，次大深度 maxD2，以及最大深度要往儿子 y 走
-	nodes := make([]struct{ maxD, maxD2, y int }, len(g))
-	var dfs func(int, int) int
-	dfs = func(x, fa int) int {
-		p := &nodes[x]
+	// subRes[x] 保存子树 x 的最大深度 maxD，次大深度 maxD2，以及最大深度要往儿子 y 走
+	subRes := make([]struct{ maxD, maxD2, y int }, n)
+	// 计算 subRes[x]
+	var dfs func(int, int)
+	dfs = func(x, fa int) {
+		res := &subRes[x]
 		for _, y := range g[x] {
 			if y == fa {
 				continue
 			}
-			maxD := dfs(y, x) + 2 - y%2 // 从 x 出发，往 y 方向的最大深度
-			if maxD > p.maxD {
-				p.maxD2 = p.maxD
-				p.maxD = maxD
-				p.y = y
-			} else if maxD > p.maxD2 {
-				p.maxD2 = maxD
+			dfs(y, x)
+			w := 2 - y%2 // 从 x 到 y 的边权
+			maxD := subRes[y].maxD + w // 从 x 出发，往 y 方向的最大深度
+			if maxD > res.maxD {
+				res.maxD2 = res.maxD
+				res.maxD = maxD
+				res.y = y
+			} else if maxD > res.maxD2 {
+				res.maxD2 = maxD
 			}
 		}
-		return p.maxD
 	}
 	dfs(0, -1)
 
-	ans := make([]int, len(g))
+	// ans[x] 表示当 x 是树根时，整棵树的最大深度
+	ans := make([]int, n)
+	// 计算 ans[x]
 	var reroot func(int, int, int)
 	reroot = func(x, fa, fromUp int) {
-		p := nodes[x]
-		ans[x] = max(fromUp, p.maxD)
+		p := subRes[x]
+		ans[x] = max(subRes[x].maxD, fromUp)
 		for _, y := range g[x] {
 			if y == fa {
 				continue
 			}
-			w := 2 - x%2 // 从 y 到 x 的边权
+			// 站在 x 的角度，不往 y 走，能走多远？
+			// 要么往上走（fromUp），要么往除了 y 的其余子树走（mx），二者取最大值
+			mx := p.maxD
 			if y == p.y { // 对于 y 来说，上面要选次大的
-				reroot(y, x, max(fromUp, p.maxD2)+w)
-			} else { // 对于 y 来说，上面要选最大的
-				reroot(y, x, max(fromUp, p.maxD)+w)
+				mx = p.maxD2
 			}
+			w := 2 - x%2 // 从 y 到 x 的边权
+			reroot(y, x, max(fromUp, mx)+w) // 对于 y 来说，加上从 y 到 x 的边权
 		}
 	}
 	reroot(0, -1, 0)
@@ -254,17 +291,18 @@ func timeTaken(edges [][]int) []int {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
