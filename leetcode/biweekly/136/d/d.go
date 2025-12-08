@@ -39,17 +39,17 @@ func timeTaken(edges [][]int) []int {
 	// 计算 ans[x]
 	var reroot func(int, int, int)
 	reroot = func(x, fa, fromUp int) {
-		p := subRes[x]
-		ans[x] = max(subRes[x].maxD, fromUp)
+		sub := subRes[x]
+		ans[x] = max(sub.maxD, fromUp)
 		for _, y := range g[x] {
 			if y == fa {
 				continue
 			}
 			// 站在 x 的角度，不往 y 走，能走多远？
 			// 要么往上走（fromUp），要么往除了 y 的其余子树走（mx），二者取最大值
-			mx := p.maxD
-			if y == p.y { // 对于 y 来说，上面要选次大的
-				mx = p.maxD2
+			mx := sub.maxD
+			if y == sub.y { // 对于 y 来说，上面要选次大的
+				mx = sub.maxD2
 			}
 			w := 2 - x%2 // 从 y 到 x 的边权
 			reroot(y, x, max(fromUp, mx)+w) // 对于 y 来说，加上从 y 到 x 的边权
