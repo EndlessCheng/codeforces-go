@@ -40,7 +40,7 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private static final int MX = 1_000_000;
+    private static final int MX = 500_000;
     private static final boolean[] isPrime = new boolean[MX + 1];
     private static final List<Integer> primes = new ArrayList<>();
     private static final List<Integer> specialPrimes = new ArrayList<>();
@@ -205,7 +205,7 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private static final int MX = 1_000_000;
+    private static final int MX = 500_000;
     private static final boolean[] isPrime = new boolean[MX + 1];
     private static final List<Integer> primes = new ArrayList<>();
     private static final int[] ans = new int[MX + 1];
