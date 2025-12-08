@@ -4,20 +4,29 @@
 
 计算以 $0$ 为根时，每棵子树 $x$ 的最大得分（一定包含节点 $x$），记作 $\textit{subScore}[x]$。注意是子树 $x$，不是子图 $x$，前者不包含 $x$ 的父节点。
 
-1. 对于 $x$ 的儿子 $y$，递归计算子树 $y$ 的最大得分（一定包含节点 $y$）。
-2. 如果子树 $y$ 的最大得分是负数，那么不选子树 $y$ 的得分，否则选子树 $y$ 的最大得分，即累加 $\max(\textit{subScore}[y],0)$。
-3. 最后把节点 $x$ 的贡献算到 $\textit{subScore}[x]$ 中：如果 $\textit{good}[x] = 1$ 则加一，否则减一。
+1. 把节点 $x$ 算到 $\textit{subScore}[x]$ 中：如果 $\textit{good}[x] = 1$ 则初始化 $\textit{subScore}[x]=1$，否则初始化 $\textit{subScore}[x]=-1$。
+2. 对于 $x$ 的儿子 $y$，递归计算子树 $y$ 的最大得分（一定包含节点 $y$）。
+3. 如果子树 $y$ 的最大得分大于 $0$，那么选子树 $y$，否则不选。也就是把 $\max(\textit{subScore}[y],0)$ 加到 $\textit{subScore}[x]$ 中。
 
 ## 第二次 DFS
 
-假设我们算出了**子图** $x$ 的得分 $\textit{scoreX}$，现在要对 $x$ 的儿子 $y$，计算子图 $y$ 的得分。
+假设我们算出了**子图** $x$ 的最大得分 $\textit{ans}[x]$，现在要对 $x$ 的儿子 $y$，计算子图 $y$ 的最大得分。
 
-从「以 $x$ 为根」换到「以 $y$ 为根」，那么 $x$ 去掉子树 $y$ 后的剩余部分，就变成挂在 $y$ 下面的一棵子树了。
+从「以 $x$ 为根」换到「以 $y$ 为根」：
+
+1. 从 $x$ 中去掉子树 $y$，剩余部分记作 $F$。
+2. 换根后，$F$ 变成挂在 $y$ 下面的一棵子树。
 
 子图 $y$ 的得分由两部分组成：
 
-1. $\textit{subScore}[y]$：这里面的节点只在子树 $y$ 中。
-2. 来自 $y$ 的父节点 $x$ 的最大得分：从 $\textit{scoreX}$ 中减去子树 $y$ 的贡献 $\max(\textit{subScore}[y],0)$，即为来自 $x$ 的最大得分。
+1. 原来的 $\textit{subScore}[y]$。
+2. $\textit{ans}[x] - \max(\textit{subScore}[y], 0)$。这是子树 $F$ 的最大得分。如果大于 $0$ 则选子树 $F$，否则不选。 
+
+合并两部分，得到从 $x$ 换根到 $y$ 的转移方程
+
+$$
+\textit{ans}[y] = \textit{subScore}[y] + \max(\textit{ans}[x] - \max(\textit{subScore}[y], 0), 0)
+$$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1sv2fB4Evi/)，欢迎点赞关注~
 
@@ -32,31 +41,30 @@ class Solution:
             g[x].append(y)
             g[y].append(x)
 
-        # sub_score[x] 表示（以 0 为根时）子树 x 的最大得分（一定包含节点 x）
+        # sub_score[x] 表示（以 0 为根时）包含 x 的子树 x 的最大得分（注意是子树不是子图）
         sub_score = [0] * n
-
-        # 计算并返回 sub_score[x]
-        def dfs(x: int, fa: int) -> int:
+        # 计算 sub_score[x]
+        def dfs(x: int, fa: int) -> None:
+            sub_score[x] = 1 if good[x] else -1  # sub_score[x] 一定包含 x
             for y in g[x]:
                 if y != fa:
-                    # 如果子树 y 的得分是负数，不选子树 y，否则选子树 y
-                    sub_score[x] += max(dfs(y, x), 0)
-            sub_score[x] += 1 if good[x] else -1  # sub_score[x] 一定包含 x
-            return sub_score[x]
-
+                    dfs(y, x)
+                    # 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+                    sub_score[x] += max(sub_score[y], 0)
         dfs(0, -1)
 
         ans = [0] * n
-
-        # 计算子图 x 的最大得分 score_x，其中 fa_score 表示来自父节点 fa 的最大得分（一定包含节点 fa）
-        def reroot(x: int, fa: int, fa_score: int) -> None:
-            ans[x] = score_x = sub_score[x] + max(fa_score, 0)
+        ans[0] = sub_score[0]
+        # 对于 x 的儿子 y，计算包含 y 的子图最大得分
+        def reroot(x: int, fa: int) -> None:
             for y in g[x]:
                 if y != fa:
-                    # score_x - max(sub_score[y], 0) 是不含子树 y 的最大得分
-                    reroot(y, x, score_x - max(sub_score[y], 0))
-
-        reroot(0, -1, 0)
+                    # 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+                    score_f = ans[x] - max(sub_score[y], 0)
+                    # 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+                    ans[y] = sub_score[y] + max(score_f, 0)
+                    reroot(y, x)
+        reroot(0, -1)
         return ans
 ```
 
@@ -72,35 +80,37 @@ class Solution {
             g[y].add(x);
         }
 
-        // subScore[x] 表示（以 0 为根时）子树 x 的最大得分（一定包含节点 x）
+        // subScore[x] 表示（以 0 为根时）包含 x 的子树 x 的最大得分（注意是子树不是子图）
         int[] subScore = new int[n];
         dfs(0, -1, g, good, subScore);
 
         int[] ans = new int[n];
-        reroot(0, -1, 0, g, subScore, ans);
+        ans[0] = subScore[0];
+        reroot(0, -1, g, subScore, ans);
         return ans;
     }
 
-    // 计算并返回 subScore[x]
-    private int dfs(int x, int fa, List<Integer>[] g, int[] good, int[] subScore) {
+    // 计算 subScore[x]
+    private void dfs(int x, int fa, List<Integer>[] g, int[] good, int[] subScore) {
+        subScore[x] = good[x] == 0 ? -1 : 1; // subScore[x] 一定包含 x
         for (int y : g[x]) {
             if (y != fa) {
-                // 如果子树 y 的得分是负数，不选子树 y，否则选子树 y
-                subScore[x] += Math.max(dfs(y, x, g, good, subScore), 0);
+                dfs(y, x, g, good, subScore);
+                // 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+                subScore[x] += Math.max(subScore[y], 0);
             }
         }
-        subScore[x] += good[x] == 1 ? 1 : -1; // subScore[x] 一定包含 x
-        return subScore[x];
     }
 
-    // 计算子图 x 的最大得分 scoreX，其中 faScore 表示来自父节点 fa 的最大得分（一定包含节点 fa）
-    private void reroot(int x, int fa, int faScore, List<Integer>[] g, int[] subScore, int[] ans) {
-        int scoreX = subScore[x] + Math.max(faScore, 0);
-        ans[x] = scoreX;
+    // 对于 x 的儿子 y，计算包含 y 的子图最大得分
+    private void reroot(int x, int fa, List<Integer>[] g, int[] subScore, int[] ans) {
         for (int y : g[x]) {
             if (y != fa) {
-                // scoreX-max(subScore[y],0) 是不含子树 y 的最大得分
-                reroot(y, x, scoreX - Math.max(subScore[y], 0), g, subScore, ans);
+                // 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+                int scoreF = ans[x] - Math.max(subScore[y], 0);
+                // 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+                ans[y] = subScore[y] + Math.max(scoreF, 0);
+                reroot(y, x, g, subScore, ans);
             }
         }
     }
@@ -118,34 +128,36 @@ public:
             g[y].push_back(x);
         }
 
-        // sub_score[x] 表示（以 0 为根时）子树 x 的最大得分（一定包含节点 x）
+        // sub_score[x] 表示（以 0 为根时）包含 x 的子树 x 的最大得分（注意是子树不是子图）
         vector<int> sub_score(n);
-        // 计算并返回 sub_score[x]
-        auto dfs = [&](this auto&& dfs, int x, int fa) -> int {
+        // 计算 sub_score[x]
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> void {
+            sub_score[x] = good[x] ? 1 : -1; // subScore[x] 一定包含 x
             for (int y : g[x]) {
                 if (y != fa) {
-                    // 如果子树 y 的得分是负数，不选子树 y，否则选子树 y
-                    sub_score[x] += max(dfs(y, x), 0);
+                    dfs(y, x);
+                    // 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+                    sub_score[x] += max(sub_score[y], 0);
                 }
             }
-            sub_score[x] += good[x] ? 1 : -1; // sub_score[x] 一定包含 x
-            return sub_score[x];
         };
         dfs(0, -1);
 
         vector<int> ans(n);
-        // 计算子图 x 的最大得分 score_x，其中 fa_score 表示来自父节点 fa 的最大得分（一定包含节点 fa）
-        auto reroot = [&](this auto&& reroot, int x, int fa, int fa_score) -> void {
-            int score_x = sub_score[x] + max(fa_score, 0);
-            ans[x] = score_x;
+        ans[0] = sub_score[0];
+        // 对于 x 的儿子 y，计算包含 y 的子图最大得分
+        auto reroot = [&](this auto&& reroot, int x, int fa) -> void {
             for (int y : g[x]) {
                 if (y != fa) {
-                    // score_x - max(sub_score[y], 0) 是不含子树 y 的最大得分
-                    reroot(y, x, score_x - max(sub_score[y], 0));
+                    // 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+                    int score_f = ans[x] - max(sub_score[y], 0);
+                    // 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+                    ans[y] = sub_score[y] + max(score_f, 0);
+                    reroot(y, x);
                 }
             }
         };
-        reroot(0, -1, 0);
+        reroot(0, -1);
         return ans;
     }
 };
@@ -160,36 +172,38 @@ func maxSubgraphScore(n int, edges [][]int, good []int) []int {
 		g[y] = append(g[y], x)
 	}
 
-	// subScore[x] 表示（以 0 为根时）子树 x 的最大得分（一定包含节点 x）
+	// subScore[x] 表示（以 0 为根时）包含 x 的子树 x 的最大得分（注意是子树不是子图）
 	subScore := make([]int, n)
-	// 计算并返回 subScore[x]
-	var dfs func(int, int) int
-	dfs = func(x, fa int) int {
+	// 计算 subScore[x]
+	var dfs func(int, int)
+	dfs = func(x, fa int) {
+		subScore[x] = good[x]*2 - 1 // subScore[x] 一定包含 x
 		for _, y := range g[x] {
 			if y != fa {
-				// 如果子树 y 的得分是负数，不选子树 y，否则选子树 y
-				subScore[x] += max(dfs(y, x), 0)
+				dfs(y, x)
+				// 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+				subScore[x] += max(subScore[y], 0)
 			}
 		}
-		subScore[x] += good[x]*2 - 1 // subScore[x] 一定包含 x
-		return subScore[x]
 	}
 	dfs(0, -1)
 
 	ans := make([]int, n)
-	// 计算子图 x 的最大得分 scoreX，其中 faScore 表示来自父节点 fa 的最大得分（一定包含节点 fa）
-	var reroot func(int, int, int)
-	reroot = func(x, fa, faScore int) {
-		scoreX := subScore[x] + max(faScore, 0)
-		ans[x] = scoreX
+	ans[0] = subScore[0]
+	// 对于 x 的儿子 y，计算包含 y 的子图最大得分
+	var reroot func(int, int)
+	reroot = func(x, fa int) {
 		for _, y := range g[x] {
 			if y != fa {
-				// scoreX-max(subScore[y],0) 是不含子树 y 的最大得分
-				reroot(y, x, scoreX-max(subScore[y], 0))
+				// 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+				scoreF := ans[x] - max(subScore[y], 0)
+				// 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+				ans[y] = subScore[y] + max(scoreF, 0)
+				reroot(y, x)
 			}
 		}
 	}
-	reroot(0, -1, 0)
+	reroot(0, -1)
 	return ans
 }
 ```
