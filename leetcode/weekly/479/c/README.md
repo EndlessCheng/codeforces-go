@@ -56,6 +56,8 @@ $$
 
 **答**：可以用有序集合或者值域树状数组，快速查询大于等于一个数的元素个数。
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def totalScore(self, hp: int, damage: List[int], requirement: List[int]) -> int:
@@ -116,6 +118,81 @@ func totalScore(hp int, damage []int, requirement []int) (ans int64) {
 		ans += int64(i - j + 1)
 	}
 	return
+}
+```
+
+## 优化
+
+随机情况下，$\textit{hp}$ 较大，大多数循环算出的 $\textit{low}\le 0$，此时二分出的 $j$ 一定是 $0$。
+
+我们可以先初始化 $\textit{ans} = 1+2+\cdots + n = \dfrac{n(n+1)}{2}$，然后减去 $\textit{low}>0$ 时二分得到的 $j$。
+
+```py [sol-Python3]
+class Solution:
+    def totalScore(self, hp: int, damage: List[int], requirement: List[int]) -> int:
+        n = len(damage)
+        s = [0] * (n + 1)
+        ans = n * (n + 1) // 2
+        for i, (dmg, req) in enumerate(zip(damage, requirement)):
+            s[i + 1] = s[i] + dmg
+            low = s[i + 1] + req - hp
+            if low > 0:
+                ans -= bisect_left(s, low, 0, i + 1)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long totalScore(int hp, int[] damage, int[] requirement) {
+        int n = damage.length;
+        int[] sum = new int[n + 1];
+        long ans = (long) n * (n + 1) / 2;
+        for (int i = 0; i < n; i++) {
+            sum[i + 1] = sum[i] + damage[i];
+            int low = sum[i + 1] + requirement[i] - hp;
+            if (low > 0) {
+                int j = Arrays.binarySearch(sum, 0, i + 1, low);
+                if (j < 0) j = ~j;
+                ans -= j;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long totalScore(int hp, vector<int>& damage, vector<int>& requirement) {
+        int n = damage.size();
+        vector<int> sum(n + 1);
+        long long ans = 1LL * n * (n + 1) / 2;
+        for (int i = 0; i < n; i++) {
+            sum[i + 1] = sum[i] + damage[i];
+            int low = sum[i + 1] + requirement[i] - hp;
+            if (low > 0) {
+                ans -= lower_bound(sum.begin(), sum.begin() + i + 1, low) - sum.begin();
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func totalScore(hp int, damage, requirement []int) int64 {
+	n := len(damage)
+	sum := make([]int, n+1)
+	ans := n * (n + 1) / 2
+	for i, req := range requirement {
+		sum[i+1] = sum[i] + damage[i]
+		low := sum[i+1] + req - hp
+		if low > 0 {
+			ans -= sort.SearchInts(sum[:i+1], low)
+		}
+	}
+	return int64(ans)
 }
 ```
 
