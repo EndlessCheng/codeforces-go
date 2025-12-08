@@ -25,7 +25,7 @@ func cf2096E(in io.Reader, out io.Writer) {
 			}
 		}
 		d = (d + 1) / 2
-		Fprintln(out, (inv-d)/2+d)
+		Fprintln(out, (inv+d)/2)
 	}
 }
 
