@@ -27,7 +27,7 @@ func cf1375E(in io.Reader, _w io.Writer) {
 				id = append(id, j)
 			}
 		}
-		slices.SortFunc(id, func(i, j int) int { return a[i] - a[j] })
+		slices.SortStableFunc(id, func(i, j int) int { return a[i] - a[j] })
 		for _, j := range id {
 			ans = append(ans, [2]int{j, i})
 			b[j], b[i] = b[i], b[j]
