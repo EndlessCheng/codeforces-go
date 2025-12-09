@@ -9,7 +9,7 @@ import (
 
 /*
 我贡献的 LC hack 数据
-https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues?q=is%3Aissue+author%3AEndlessCheng+is%3Aclosed
+https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues?q=is%3Aissue%20author%3AEndlessCheng
 
 hack 乘法溢出
 限定质因子最大值 https://leetcode.cn/problems/frog-position-after-t-seconds/solutions/2281408/dfs-ji-yi-ci-you-qu-de-hack-by-endlessch-jtsr/
