@@ -46,7 +46,27 @@ class Solution {
         for (int i = 0; i < nums.length; i++) {
             nums[i] = arr[i];
         }
+        return nums;
+    }
+}
+```
 
+```java [sol-Java 写法二]
+class Solution {
+    public int[] sortByReflection(int[] nums) {
+        int n = nums.length;
+        long[] arr = new long[n];
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            long rev = Integer.reverse(x) >>> Integer.numberOfLeadingZeros(x);
+            arr[i] = rev << 32 | x;
+        }
+
+        Arrays.sort(arr); // 比较 long 的高 32 位，相同的话比低 32 位
+
+        for (int i = 0; i < n; i++) {
+            nums[i] = (int) arr[i]; // 去掉 long 的高位
+        }
         return nums;
     }
 }
