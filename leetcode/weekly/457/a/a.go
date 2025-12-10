@@ -13,20 +13,21 @@ var businessLineToCategory = map[string]int{
 	"restaurant":  3,
 }
 
+// 检查字符串是否非空，只包含字母、数字和下划线
 func isValid(s string) bool {
 	for _, c := range s {
 		if c != '_' && !unicode.IsLetter(c) && !unicode.IsDigit(c) {
 			return false
 		}
 	}
-	return true
+	return s != ""
 }
 
 func validateCoupons(code []string, businessLine []string, isActive []bool) (ans []string) {
 	groups := [4][]string{}
 	for i, s := range code {
 		category, ok := businessLineToCategory[businessLine[i]]
-		if s != "" && ok && isActive[i] && isValid(s) {
+		if ok && isActive[i] && isValid(s) {
 			groups[category] = append(groups[category], s) // 相同类别的优惠码分到同一组
 		}
 	}

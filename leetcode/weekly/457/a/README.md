@@ -3,8 +3,6 @@
 1. 用一个哈希表保存类别到类别编号（$0,1,2,3$）的映射，方便把答案分组，顺带可以判断类别是否合法（是否在哈希表中）。
 2. 创建四个列表，把相同类别的优惠码加到同一个列表中，这样我们只需对列表中的优惠码排序。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1GF3qzMEni/)，欢迎点赞关注~
-
 ```py [sol-Python3]
 BUSINESS_LINE_TO_CATEGORY = {
     "electronics": 0,
@@ -15,7 +13,7 @@ BUSINESS_LINE_TO_CATEGORY = {
 
 class Solution:
     def validateCoupons(self, code: List[str], businessLine: List[str], isActive: List[bool]) -> List[str]:
-        groups = [[] for _ in range(4)]
+        groups = [[] for _ in range(len(BUSINESS_LINE_TO_CATEGORY))]
         for s, bus, active in zip(code, businessLine, isActive):
             category = BUSINESS_LINE_TO_CATEGORY.get(bus, -1)
             if s and category >= 0 and active and \
@@ -39,12 +37,12 @@ class Solution {
     );
 
     public List<String> validateCoupons(String[] code, String[] businessLine, boolean[] isActive) {
-        List<String>[] groups = new ArrayList[4];
-        Arrays.setAll(groups, i -> new ArrayList<>());
+        List<String>[] groups = new ArrayList[BUSINESS_LINE_TO_CATEGORY.size()];
+        Arrays.setAll(groups, _ -> new ArrayList<>());
         for (int i = 0; i < code.length; i++) {
             String s = code[i];
             Integer category = BUSINESS_LINE_TO_CATEGORY.get(businessLine[i]);
-            if (!s.isEmpty() && category != null && isActive[i] && isValid(s)) {
+            if (category != null && isActive[i] && isValid(s)) {
                 groups[category].add(s); // 相同类别的优惠码分到同一组
             }
         }
@@ -57,14 +55,14 @@ class Solution {
         return ans;
     }
 
-    // 判断是否只包含下划线或字母数字
+    // 检查字符串是否非空，只包含字母、数字和下划线
     private boolean isValid(String s) {
         for (char c : s.toCharArray()) {
             if (c != '_' && !Character.isLetterOrDigit(c)) {
                 return false;
             }
         }
-        return true;
+        return !s.isEmpty();
     }
 }
 ```
@@ -78,14 +76,14 @@ unordered_map<string, int> BUSINESS_LINE_TO_CATEGORY = {
 };
 
 class Solution {
-    // 检查字符串是否只包含字母、数字或下划线
+    // 检查字符串是否非空，只包含字母、数字和下划线
     bool is_valid(const string& s) {
         for (char c : s) {
             if (c != '_' && !isalnum(c)) {
                 return false;
             }
         }
-        return true;
+        return !s.empty();
     }
 
 public:
@@ -94,7 +92,7 @@ public:
         for (int i = 0; i < code.size(); i++) {
             string& s = code[i];
             auto it = BUSINESS_LINE_TO_CATEGORY.find(businessLine[i]);
-            if (!s.empty() && it != BUSINESS_LINE_TO_CATEGORY.end() && isActive[i] && is_valid(s)) {
+            if (it != BUSINESS_LINE_TO_CATEGORY.end() && isActive[i] && is_valid(s)) {
                 groups[it->second].push_back(s); // 相同类别的优惠码分到同一组
             }
         }
@@ -117,20 +115,21 @@ var businessLineToCategory = map[string]int{
 	"restaurant":  3,
 }
 
+// 检查字符串是否非空，只包含字母、数字和下划线
 func isValid(s string) bool {
 	for _, c := range s {
 		if c != '_' && !unicode.IsLetter(c) && !unicode.IsDigit(c) {
 			return false
 		}
 	}
-	return true
+	return s != ""
 }
 
 func validateCoupons(code []string, businessLine []string, isActive []bool) (ans []string) {
 	groups := [4][]string{}
 	for i, s := range code {
 		category, ok := businessLineToCategory[businessLine[i]]
-		if s != "" && ok && isActive[i] && isValid(s) {
+		if ok && isActive[i] && isValid(s) {
 			groups[category] = append(groups[category], s) // 相同类别的优惠码分到同一组
 		}
 	}
@@ -162,7 +161,9 @@ func validateCoupons(code []string, businessLine []string, isActive []bool) (ans
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
