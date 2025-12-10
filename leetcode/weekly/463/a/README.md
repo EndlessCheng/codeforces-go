@@ -1,11 +1,10 @@
 ## 方法一：前缀和
 
-**前置知识**：[前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
-
 计算两个前缀和数组：
 
 - 定义数组 $c$，其中 $c[i] = \textit{prices}[i]\cdot \textit{strategy}[i]$。计算 $c$ 的前缀和，记作 $\textit{sum}$。
 - 计算 $\textit{prices}$ 的前缀和，记作 $\textit{sumSell}$。
+- 关于前缀和数组的详细定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
 如果不修改，答案为 $\textit{sum}[n]$。
 
@@ -23,7 +22,7 @@ $$
 
 用上式更新答案的最大值。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1kTYyzwEDD/?t=29m23s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1kTYyzwEDD/?t=29m23s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -107,18 +106,22 @@ func maxProfit(prices []int, strategy []int, k int) int64 {
 
 **前置知识**：[定长滑动窗口](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)。
 
-考虑修改元素时，在不修改的基础上，利润的**最大增量**是多少。（如果无法增大，则最大增量为 $0$）
+设不修改时的利润为 $\textit{total}$。修改后，利润（相比不修改）增加了 $\textit{sum}$。所有窗口的 $\textit{sum}$ 的最大值为 $\textit{maxSum}$。那么答案为 $\textit{total} + \max(\textit{maxSum},0)$。这里可能出现 $\textit{maxSum} < 0$ 的情况，此时不修改更好，也就是与 $0$ 取最大值。
 
-增量来自长为 $k$ 的子数组 $[i-k,i-1]$，将其分为左右两部分：
+对于价格 $\textit{p}$，如果修改前策略是 $x$，修改后策略是 $y$，那么利润增加了 $p\cdot(y-x)$。比如原来买入，现在持有（不买入），那么利润增加了 $p\cdot (0 - (-1)) = p$。又比如原来买入，现在卖出，那么利润增加了 $p\cdot (1 - (-1)) = 2p$。
 
-1. 左半为 $[i-k,i-k/2-1]$，修改后，增量为 $\textit{prices}[i]\cdot (-\textit{strategy}[i])$ 之和。
-2. 右半为 $[i-k/2,i-1]$，修改后，增量为 $\textit{prices}[i]\cdot (1-\textit{strategy}[i])$ 之和。
+下面来计算每个窗口的 $\textit{sum}$。考察从 $[i-k,i-1]$ 向右滑到 $[i-k+1,i]$，$\textit{sum}$ 如何变化。
 
-当窗口向右滑动时：
+先看窗口 $[i-k,i-1]$ 的 $\textit{sum}$，分为左右两部分：
 
-1. $\textit{prices}[i]\cdot (1-\textit{strategy}[i])$ 进入窗口。
-2. 下标为 $i-k/2$ 的元素从右半移到左半，交易策略从 $1$ 变成 $0$，所以增量减少了 $\textit{prices}[i-k/2]$。
-3. $\textit{prices}[i-k]\cdot (-\textit{strategy}[i-k])$ 离开窗口。
+1. 左半为 $[i-k,i-k/2-1]$。修改前的策略为 $\textit{strategy}[j]$，修改后的策略为 $0$，所以利润增加了 $\textit{prices}[j]\cdot (-\textit{strategy}[j])$ 之和，其中 $j$ 在左半中。
+2. 右半为 $[i-k/2,i-1]$。修改前的策略为 $\textit{strategy}[j]$，修改后的策略为 $1$，所以利润增加了 $\textit{prices}[j]\cdot (1-\textit{strategy}[j])$ 之和，其中 $j$ 在右半中。
+
+当窗口向右滑动时，有三个位置的元素发生了变化：
+
+1. $i$ 进入窗口（在右半），$\textit{sum}$ 增加了 $\textit{prices}[i]\cdot (1-\textit{strategy}[i])$。
+2. 下标为 $i-k/2$ 的元素从右半移到左半，交易策略从 $1$ 变成 $0$，所以 $\textit{sum}$ 减少了 $\textit{prices}[i-k/2]$。
+3. $i-k$ 离开窗口（离开前在左半），$\textit{sum}$ 减少了 $\textit{prices}[i-k]\cdot (-\textit{strategy}[i-k])$。
 
 ## 写法一
 
@@ -129,15 +132,16 @@ max = lambda a, b: b if b > a else a
 class Solution:
     def maxProfit(self, prices: List[int], strategy: List[int], k: int) -> int:
         total = s = 0
-        # 计算第一个窗口
+        # 计算第一个窗口的 s
         for p, st in zip(prices[:k // 2], strategy[:k // 2]):
             total += p * st
             s -= p * st
         for p, st in zip(prices[k // 2: k], strategy[k // 2: k]):
             total += p * st
             s += p * (1 - st)
-        max_s = max(s, 0)
 
+        max_s = max(s, 0)
+        # 向右滑动，计算后续窗口的 s
         for i in range(k, len(prices)):
             p, st = prices[i], strategy[i]
             total += p * st
@@ -150,7 +154,7 @@ class Solution:
 class Solution {
     public long maxProfit(int[] prices, int[] strategy, int k) {
         long total = 0, sum = 0;
-        // 计算第一个窗口
+        // 计算第一个窗口的 sum
         for (int i = 0; i < k / 2; i++) {
             int p = prices[i], s = strategy[i];
             total += p * s;
@@ -161,8 +165,9 @@ class Solution {
             total += p * s;
             sum += p * (1 - s);
         }
-        long maxSum = Math.max(sum, 0);
 
+        long maxSum = Math.max(sum, 0);
+        // 向右滑动，计算后续窗口的 sum
         for (int i = k; i < prices.length; i++) {
             int p = prices[i], s = strategy[i];
             total += p * s;
@@ -179,7 +184,7 @@ class Solution {
 public:
     long long maxProfit(vector<int>& prices, vector<int>& strategy, int k) {
         long long total = 0, sum = 0;
-        // 计算第一个窗口
+        // 计算第一个窗口的 sum
         for (int i = 0; i < k / 2; i++) {
             int p = prices[i], s = strategy[i];
             total += p * s;
@@ -190,8 +195,9 @@ public:
             total += p * s;
             sum += p * (1 - s);
         }
-        long long max_sum = max(sum, 0LL);
 
+        long long max_sum = max(sum, 0LL);
+        // 向右滑动，计算后续窗口的 sum
         for (int i = k; i < prices.size(); i++) {
             int p = prices[i], s = strategy[i];
             total += p * s;
@@ -206,7 +212,7 @@ public:
 ```go [sol-Go]
 func maxProfit(prices, strategy []int, k int) int64 {
 	total, sum := 0, 0
-	// 计算第一个窗口
+	// 计算第一个窗口的 sum
 	for i := range k / 2 {
 		p, s := prices[i], strategy[i]
 		total += p * s
@@ -217,8 +223,9 @@ func maxProfit(prices, strategy []int, k int) int64 {
 		total += p * s
 		sum += p * (1 - s)
 	}
-	maxSum := max(sum, 0)
 
+	maxSum := max(sum, 0)
+	// 向右滑动，计算后续窗口的 sum
 	for i := k; i < len(prices); i++ {
 		p, s := prices[i], strategy[i]
 		total += p * s
@@ -237,16 +244,23 @@ class Solution:
         total = max_s = s = 0
         for i, (p, st) in enumerate(zip(prices, strategy)):
             total += p * st
-            # 1. 入
+
+            # 1. 入右半，交易策略从 st 变成 1
             s += p * (1 - st)
-            if i < k - 1:  # 窗口长度不足 k
-                if i >= k // 2 - 1:
+
+            if i < k - 1:  # 尚未形成第一个窗口
+                # 在下一轮循环中，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
+                if i >= k // 2 - 1:  
                     s -= prices[i - k // 2 + 1]
                 continue
+
             # 2. 更新
             max_s = max(max_s, s)
-            # 3. 出
+
+            # 3. 出，为下一个窗口做准备
+            # 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
             s -= prices[i - k // 2 + 1] - prices[i - k + 1] * strategy[i - k + 1]
+
         return total + max_s
 ```
 
@@ -257,19 +271,26 @@ class Solution {
         for (int i = 0; i < prices.length; i++) {
             int p = prices[i], s = strategy[i];
             total += p * s;
-            // 1. 入
+
+            // 1. 入右半，交易策略从 s 变成 1
             sum += p * (1 - s);
-            if (i < k - 1) { // 窗口长度不足 k
+
+            if (i < k - 1) { // 尚未形成第一个窗口
+                // 在下一轮循环中，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
                 if (i >= k / 2 - 1) {
                     sum -= prices[i - k / 2 + 1];
                 }
                 continue;
             }
+
             // 2. 更新
             maxSum = Math.max(maxSum, sum);
-            // 3. 出
+
+            // 3. 出，为下一个窗口做准备
+            // 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
             sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
         }
+
         return total + maxSum;
     }
 }
@@ -283,19 +304,26 @@ public:
         for (int i = 0; i < prices.size(); i++) {
             int p = prices[i], s = strategy[i];
             total += p * s;
-            // 1. 入
+
+            // 1. 入右半，交易策略从 s 变成 1
             sum += p * (1 - s);
-            if (i < k - 1) { // 窗口长度不足 k
+
+            if (i < k - 1) { // 尚未形成第一个窗口
+                // 在下一轮循环中，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
                 if (i >= k / 2 - 1) {
                     sum -= prices[i - k / 2 + 1];
                 }
                 continue;
             }
+
             // 2. 更新
             max_sum = max(max_sum, sum);
-            // 3. 出
+
+            // 3. 出，为下一个窗口做准备
+            // 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
             sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
         }
+
         return total + max_sum;
     }
 };
@@ -307,19 +335,26 @@ func maxProfit(prices, strategy []int, k int) int64 {
 	for i, p := range prices {
 		s := strategy[i]
 		total += p * s
-		// 1. 入
+
+		// 1. 入右半，交易策略从 s 变成 1
 		sum += p * (1 - s)
-		if i < k-1 { // 窗口长度不足 k
+
+		if i < k-1 { // 尚未形成第一个窗口
+			// 在下一轮循环中，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
 			if i >= k/2-1 {
 				sum -= prices[i-k/2+1]
 			}
 			continue
 		}
+
 		// 2. 更新
 		maxSum = max(maxSum, sum)
-		// 3. 出
+
+		// 3. 出，为下一个窗口做准备
+		// 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
 		sum -= prices[i-k/2+1] - prices[i-k+1]*strategy[i-k+1]
 	}
+
 	return int64(total + maxSum)
 }
 ```
@@ -348,7 +383,9 @@ func maxProfit(prices, strategy []int, k int) int64 {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
