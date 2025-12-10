@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// https://codeforces.com/problemset/problem/220/E
+// https://codeforces.com/problemset/problem/220/E 2400
 // https://codeforces.com/problemset/status/220/problem/E?friends=on
 func Test_cf220E(t *testing.T) {
 	testCases := [][2]string{

@@ -10,13 +10,14 @@ import (
 // https://github.com/EndlessCheng
 type fenwick20 []int
 
-func (f fenwick20) update(i, v int) {
+func (f fenwick20) update(i, val int) {
 	for ; i < len(f); i += i & -i {
-		f[i] += v
+		f[i] += val
 	}
 }
 
-func (f fenwick20) pre(i int) (res int) {
+// [1,i] 的和
+func (f fenwick20) sum(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res += f[i]
 	}
@@ -24,7 +25,7 @@ func (f fenwick20) pre(i int) (res int) {
 }
 
 func cf220E(in io.Reader, out io.Writer) {
-	var n, k, l, ans int
+	var n, k, ans int
 	Fscan(in, &n, &k)
 	a := make([]int, n)
 	for i := range a {
@@ -36,26 +37,32 @@ func cf220E(in io.Reader, out io.Writer) {
 	b = slices.Compact(b)
 	m := len(b)
 
-	tr := make(fenwick20, m+1)
+	// 计算不删除时的逆序对（直接从 k 中减掉）
+	suf := make(fenwick20, m+1)
 	for i := n - 1; i >= 0; i-- {
-		a[i] = sort.SearchInts(b, a[i]) + 1
-		k -= tr.pre(a[i] - 1)
-		tr.update(a[i], 1)
+		a[i] = sort.SearchInts(b, a[i]) + 1 // 离散化
+		k -= suf.sum(a[i] - 1)
+		suf.update(a[i], 1)
 	}
 
-	tl := make(fenwick20, m+1)
+	pre := make(fenwick20, m+1)
+	l := 0
 	for r := 1; r < n; r++ {
-		tr.update(a[r-1], -1)
-		k += l - tl.pre(a[r-1]) + tr.pre(a[r-1]-1)
+		// 从后缀中删除 a[r-1]，撤销逆序对（a[r-1] 与 pre 和 suf 的逆序对）
+		suf.update(a[r-1], -1)
+		k += l - pre.sum(a[r-1]) + suf.sum(a[r-1]-1)
 		for l < r {
-			inv := l - tl.pre(a[l]) + tr.pre(a[l]-1)
-			if k < inv {
+			// 尝试往前缀添加 a[l]
+			inv := l - pre.sum(a[l]) + suf.sum(a[l]-1)
+			if inv > k { // 逆序对太多了，无法添加
 				break
 			}
+			// 添加后，总逆序对个数 <= k，说明 (l,r) 满足要求
 			k -= inv
-			tl.update(a[l], 1)
+			pre.update(a[l], 1)
 			l++
 		}
+		// 右端点为 r 时，左端点可以是 0,1,...,l-1，一共 l 个
 		ans += l
 	}
 	Fprint(out, ans)
