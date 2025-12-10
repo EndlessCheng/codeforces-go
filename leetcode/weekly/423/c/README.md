@@ -8,7 +8,7 @@
 
 为此，我们还需要知道以 $x$ 结尾的子序列的个数，记作 $\textit{cnt}[x]$。
 
-分类讨论：
+从左到右遍历 $\textit{nums}$，设 $x = \textit{nums}[i]$，考虑是否选 $x$（是否在子序列中），分类讨论：
 
 - 不选 $x$，元素和为 $f[x]$。
 - $x$ 加在所有以 $x-1$ 结尾的子序列之后，这会额外产生 $\textit{cnt}[x-1]$ 个子序列，相当于在 $f[x-1]$ 的基础上，额外增加了 $\textit{cnt}[x-1]$ 个 $x$，所以这些子序列的元素总和为 $f[x-1] + x\cdot \textit{cnt}[x-1]$。
@@ -27,9 +27,7 @@ $$
 \textit{cnt}[x] = \textit{cnt}[x] + \textit{cnt}[x-1] + \textit{cnt}[x+1] + 1
 $$
 
-记得取模。
-
-关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+记得取模。关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1JVmBYvEnD/?t=7m31s)，欢迎点赞关注~
 
