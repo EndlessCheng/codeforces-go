@@ -17,9 +17,9 @@ class Solution:
 
         ans = [0] * numberOfUsers
         online_t = [0] * numberOfUsers
-        for tp, ts, mention in events:
-            cur_t = int(ts)  # 当前时间
-            if tp[0] == 'O':  # 离线
+        for type_, timestamp, mention in events:
+            cur_t = int(timestamp)  # 当前时间
+            if type_[0] == 'O':  # 离线
                 online_t[int(mention)] = cur_t + 60  # 下次在线时间
             elif mention[0] == 'A':  # @所有人
                 for i in range(numberOfUsers):
@@ -125,27 +125,94 @@ func countMentions(numberOfUsers int, events [][]string) []int {
 	onlineT := make([]int, numberOfUsers)
 	for _, e := range events {
 		curT, _ := strconv.Atoi(e[1]) // 当前时间
+		mention := e[2]
 		if e[0][0] == 'O' { // 离线
-			i, _ := strconv.Atoi(e[2])
+			i, _ := strconv.Atoi(mention)
 			onlineT[i] = curT + 60 // 下次在线时间
-		} else if e[2][0] == 'A' { // @所有人
+		} else if mention[0] == 'A' { // @所有人
 			for i := range ans {
 				ans[i]++
 			}
-		} else if e[2][0] == 'H' { // @所有在线用户
+		} else if mention[0] == 'H' { // @所有在线用户
 			for i, t := range onlineT {
 				if t <= curT { // 在线
 					ans[i]++
 				}
 			}
 		} else { // @id
-			for _, s := range strings.Split(e[2], " ") {
+			for _, s := range strings.Split(mention, " ") {
 				i, _ := strconv.Atoi(s[2:])
 				ans[i]++
 			}
 		}
 	}
 	return ans
+}
+```
+
+```js [sol-JavaScript]
+var countMentions = function(numberOfUsers, events) {
+    // 按照时间戳从小到大排序，时间戳相同的，离线事件排在前面
+    events.sort((a, b) => parseInt(a[1]) - parseInt(b[1]) || b[0][0].charCodeAt(0) - a[0][0].charCodeAt(0));
+
+    const ans = Array(numberOfUsers).fill(0);
+    const onlineT = Array(numberOfUsers).fill(0);
+    for (const [type, timestamp, mention] of events) {
+        const curT = parseInt(timestamp); // 当前时间
+        if (type[0] === 'O') { // 离线
+            onlineT[parseInt(mention)] = curT + 60; // 下次在线时间
+        } else if (mention[0] === 'A') { // @所有人
+            for (let i = 0; i < numberOfUsers; i++) {
+                ans[i]++;
+            }
+        } else if (mention[0] === 'H') { // @所有在线用户
+            for (let i = 0; i < numberOfUsers; i++) {
+                if (onlineT[i] <= curT) { // 在线
+                    ans[i]++;
+                }
+            }
+        } else { // @id
+            for (const s of mention.split(" ")) {
+                ans[parseInt(s.slice(2))] += 1;
+            }
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_mentions(number_of_users: i32, mut events: Vec<Vec<String>>) -> Vec<i32> {
+        // 按照时间戳从小到大排序，时间戳相同的，离线事件排在前面
+        events.sort_unstable_by_key(|e| (e[1].parse::<i32>().unwrap(), e[0].as_bytes()[2]));
+
+        let n = number_of_users as usize;
+        let mut ans = vec![0; n];
+        let mut online_t = vec![0; n];
+        for e in events {
+            let cur_t = e[1].parse().unwrap(); // 当前时间
+            let mention = &e[2];
+            if e[0].as_bytes()[0] == b'O' { // 离线
+                online_t[mention.parse::<usize>().unwrap()] = cur_t + 60; // 下次在线时间
+            } else if mention.as_bytes()[0] == b'A' { // @所有人
+                for cnt in ans.iter_mut() {
+                    *cnt += 1;
+                }
+            } else if mention.as_bytes()[0] == b'H' { // @所有在线用户
+                for (&t, cnt) in online_t.iter().zip(ans.iter_mut()) {
+                    if t <= cur_t { // 在线
+                        *cnt += 1;
+                    }
+                }
+            } else { // @id
+                for s in mention.split(' ') {
+                    ans[s[2..].parse::<usize>().unwrap()] += 1;
+                }
+            }
+        }
+        ans
+    }
 }
 ```
 
