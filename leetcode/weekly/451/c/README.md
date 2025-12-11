@@ -9,8 +9,6 @@
 
 ## 寻找子问题
 
-推荐看 [本题视频讲解](https://www.bilibili.com/video/BV1o1jgzJE51/?t=7m52s)，从特殊到一般，带你一步步思考。
-
 对于节点 $x$ 来说：
 
 - 如果不买 $x$（即不买 $\textit{present}[x]$），且预算至多为 $j$，那么问题变成：
@@ -47,6 +45,8 @@ f[j][k] = \max(\textit{subF}[j][0], \textit{subF}[j-\textit{cost}][1] + \textit{
 $$
 
 最终答案为根节点的 $f[\textit{budget}][0]$，这里的 $0$ 是因为根节点没有父节点。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1o1jgzJE51/?t=7m52s)，从特殊到一般，带你一步步思考。
 
 ## 写法一：至多
 
