@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 	"math/bits"
@@ -9,10 +8,10 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type data474 struct{ l, r, pre, suf, ans int }
-type seg474 []data474
+type data struct{ l, r, pre, suf, ans int }
+type seg []data
 
-func (t seg474) merge(lo, ro data474) (d data474) {
+func (t seg) merge(lo, ro data) (d data) {
 	d.l = lo.l
 	d.r = ro.r
 
@@ -30,7 +29,7 @@ func (t seg474) merge(lo, ro data474) (d data474) {
 	return
 }
 
-func (t seg474) build(o, l, r int) {
+func (t seg) build(o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		return
@@ -40,7 +39,7 @@ func (t seg474) build(o, l, r int) {
 	t.build(o<<1|1, m+1, r)
 }
 
-func (t seg474) update(o, i, v int) {
+func (t seg) update(o, i, v int) {
 	cur := &t[o]
 	if cur.l == cur.r {
 		cur.pre = v
@@ -57,35 +56,27 @@ func (t seg474) update(o, i, v int) {
 	t[o] = t.merge(t[o<<1], t[o<<1|1])
 }
 
-func p9474(in io.Reader, _w io.Writer) {
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
-	var n, k, v, l int
-	Fscan(in, &n, &k)
-	t := make(seg474, 2<<bits.Len(uint(n-1)))
-	t.build(1, 0, n-1)
+func p9474(in io.Reader, out io.Writer) {
+	var n, m int
+	Fscan(in, &n, &m)
 	type pair struct{ v, i int }
-	pos := map[int][]int{}
-	for i := range n {
-		Fscan(in, &v)
-		pos[v] = append(pos[v], i)
+	a := make([]pair, n)
+	for i := range a {
+		Fscan(in, &a[i].v)
+		a[i].i = i
 	}
-	a := make([]int, 0, len(pos))
-	for v := range pos {
-		a = append(a, v)
-	}
-	slices.Sort(a)
+	slices.SortFunc(a, func(a, b pair) int { return a.v - b.v })
+
+	t := make(seg, 2<<bits.Len(uint(n-1)))
+	t.build(1, 0, n-1)
 
 	ans := int(1e9)
-	for _, v := range a {
-		for _, i := range pos[v] {
-			t.update(1, i, 1)
-		}
-		for t[1].ans >= k {
-			ans = min(ans, v-a[l])
-			for _, i := range pos[a[l]] {
-				t.update(1, i, 0)
-			}
+	l := 0
+	for _, p := range a {
+		t.update(1, p.i, 1)
+		for t[1].ans >= m {
+			ans = min(ans, p.v-a[l].v)
+			t.update(1, a[l].i, 0)
 			l++
 		}
 	}
