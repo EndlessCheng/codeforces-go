@@ -1,42 +1,29 @@
 package main
 
+import "slices"
+
 // github.com/EndlessCheng/codeforces-go
-func minDeletionSize(a []string) int {
-	n := len(a[0])
-	dp := make([][]int, n)
-	for i := range dp {
-		dp[i] = make([]int, n)
-		for j := range dp[i] {
-			dp[i][j] = -1
-		}
-	}
-	var f func(int, int) int
-	f = func(p, pre int) (res int) {
-		if p == n {
-			return
-		}
-		if pre == -1 {
-			return min(1+f(p+1, pre), f(p+1, p))
-		}
-		dv := &dp[p][pre]
-		if *dv != -1 {
-			return *dv
-		}
-		defer func() { *dv = res }()
-		res = 1 + f(p+1, pre)
-		for _, s := range a {
-			if s[p] < s[pre] {
-				return
+func minDeletionSize(strs []string) int {
+	// 对于每一行，j 列的字母都 <= i 列的字母？
+	lessEq := func(j, i int) bool {
+		for _, s := range strs {
+			if s[j] > s[i] {
+				return false
 			}
 		}
-		return min(res, f(p+1, p))
+		return true
 	}
-	return f(0, -1)
-}
 
-func min(a, b int) int {
-	if a < b {
-		return a
+	m := len(strs[0])
+	f := make([]int, m)
+	for i := range m {
+		for j := range i {
+			// 如果 f[j] <= f[i]，就不用跑 O(n) 的 lessEq 了
+			if f[j] > f[i] && lessEq(j, i) {
+				f[i] = f[j]
+			}
+		}
+		f[i]++
 	}
-	return b
+	return m - slices.Max(f)
 }
