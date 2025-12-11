@@ -112,6 +112,53 @@ public:
 };
 ```
 
+```c [sol-C]
+// 按照时间戳从小到大排序，时间戳相同的，离线事件排在前面
+int cmp(const void* p, const void* q) {
+    char** a = *(char***)p;
+    char** b = *(char***)q;
+    int ta = atoi(a[1]);
+    int tb = atoi(b[1]);
+    return ta != tb ? ta - tb : b[0][0] - a[0][0];
+}
+
+int* countMentions(int numberOfUsers, char*** events, int eventsSize, int* eventsColSize, int* returnSize) {
+    qsort(events, eventsSize, sizeof(char**), cmp);
+
+    *returnSize = numberOfUsers;
+    int* ans = calloc(numberOfUsers, sizeof(int));
+    int* online_t = calloc(numberOfUsers, sizeof(int));
+
+    for (int i = 0; i < eventsSize; i++) {
+        char** e = events[i];
+        int cur_t = atoi(e[1]); // 当前时间
+        char* mention = e[2];
+
+        if (e[0][0] == 'O') { // 离线
+            online_t[atoi(mention)] = cur_t + 60; // 下次在线时间
+        } else if (mention[0] == 'A') { // @所有人
+            for (int i = 0; i < numberOfUsers; i++) {
+                ans[i]++;
+            }
+        } else if (mention[0] == 'H') { // @所有在线用户
+            for (int i = 0; i < numberOfUsers; i++) {
+                if (online_t[i] <= cur_t) { // 在线
+                    ans[i]++;
+                }
+            }
+        } else { // @id
+            // 注：如果不想修改输入的话，可以先复制一份 mention
+            for (char* tok = strtok(mention, " "); tok; tok = strtok(NULL, " ")) {
+                ans[atoi(tok + 2)]++;
+            }
+        }
+    }
+
+    free(online_t);
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func countMentions(numberOfUsers int, events [][]string) []int {
 	// 按照时间戳从小到大排序，时间戳相同的，离线事件排在前面
