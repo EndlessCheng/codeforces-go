@@ -104,7 +104,7 @@ public:
                     }
                 }
             } else { // @id
-                for (const auto& part : mention | ranges::views::split(' ')) {
+                for (const auto& part : mention | views::split(' ')) {
                     string s(part.begin() + 2, part.end());
                     ans[stoi(s)]++;
                 }
@@ -389,7 +389,7 @@ public:
                 all++;
                 es.emplace_back(cur_t, 2, -1);
             } else { // @id
-                for (const auto& part : mention | ranges::views::split(' ')) {
+                for (const auto& part : mention | views::split(' ')) {
                     string s(part.begin() + 2, part.end());
                     ans[stoi(s)]++;
                 }
