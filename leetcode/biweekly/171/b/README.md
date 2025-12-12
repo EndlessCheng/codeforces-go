@@ -227,7 +227,9 @@ func minOperations(nums []int) []int {
 
 设 $x=\textit{nums}[i]$，$x$ 的左半（奇数长度时包含中心）为 $\textit{left}$。
 
-考察枚举回文数的过程，相邻的回文数，其 $\textit{left}$ 是连续的。所以最终变成的回文数的左半只会在 $\textit{left}-1, \textit{left}, \textit{left}+1$ 中，其余回文数一定比这三个更远。枚举这三个回文数，计算与 $x$ 的最小绝对差。
+回顾方法一枚举回文数的过程，对于相邻的回文数，其 $\textit{left}$ 是连续的。所以最终变成的回文数的左半只会在 $\textit{left}-1, \textit{left}, \textit{left}+1$ 中，其余回文数一定比这三个更远。枚举这三个回文数，计算与 $x$ 的最小绝对差。
+
+> 注：代码实现时，无需考虑 $\textit{left}-1$ 二进制长度小于 $\textit{left}$ 二进制长度的情况，此时 $\textit{left}=100\cdots 0$ 和 $\textit{left}+1=100\cdots 1$ 已经覆盖最优解。同理也无需考虑 $\textit{left}+1$ 二进制长度大于 $\textit{left}$ 二进制长度的情况。
 
 ```py [sol-Python3]
 class Solution:
