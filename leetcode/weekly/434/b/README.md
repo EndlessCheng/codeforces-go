@@ -399,8 +399,7 @@ public:
         ranges::sort(es);
 
         int here = 0;
-        for (auto& t : es) {
-            auto [timestamp, type, id] = t;
+        for (auto& [_, type, id] : es) {
             if (type == 2) {
                 here++;
             } else {
