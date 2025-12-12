@@ -31,6 +31,7 @@ https://codeforces.com/problemset/problem/600/B 1300
 https://codeforces.com/problemset/problem/1538/C 1300
 https://codeforces.com/problemset/problem/165/B 1500
 https://codeforces.com/problemset/problem/1971/E 1500
+https://codeforces.com/problemset/problem/1792/D 1700
 https://codeforces.com/problemset/problem/799/C 1800
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 https://atcoder.jp/contests/abc334/tasks/abc334_d 前缀和
@@ -79,7 +80,7 @@ https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
 https://codeforces.com/problemset/problem/314/D 2500
 https://codeforces.com/problemset/problem/875/E 2600
-https://codeforces.com/problemset/problem/505/E 2900
+https://codeforces.com/problemset/problem/505/E 2900 todo 回顾思路
 https://www.luogu.com.cn/problem/P2680
 
 ### 最大化最小值（二分下界 low+1，如果满足要求，例如所有元素最后都 >= low+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
