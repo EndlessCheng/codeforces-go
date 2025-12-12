@@ -41,7 +41,9 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 双单调栈
     - https://atcoder.jp/contests/abc140/tasks/abc140_e
     - https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
-    - https://codeforces.com/problemset/problem/1827/B2 2400 Range Sorting 
+    - https://codeforces.com/problemset/problem/1827/B2 2400 Range Sorting
+https://codeforces.com/problemset/problem/2171/F 1600 给定排列 p，构造一棵树，满足每条边的 pos[小端] < pos[大端]
+https://codeforces.com/problemset/problem/631/C 1700
 https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
@@ -80,6 +82,7 @@ https://atcoder.jp/contests/arc134/tasks/arc134_d 双序列
    - https://codeforces.com/contest/817/problem/D 1900
 - [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)
    - https://atcoder.jp/contests/abc311/tasks/abc311_g 枚举上下边界
+https://codeforces.com/problemset/problem/1750/E 2400 所有括号子串变成平衡的最小操作次数总和
 https://codeforces.com/problemset/problem/1827/B2 2400 Range Sorting 双单调栈
 https://codeforces.com/problemset/problem/1730/E 2700 最大值是最小值的倍数
 https://atcoder.jp/contests/abc140/tasks/abc140_e 子数组第二大数字的和
