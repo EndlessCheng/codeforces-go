@@ -30,7 +30,7 @@ func cf1413D(in io.Reader, out io.Writer) {
 		ans[st[top].i] = v
 		st = st[:top]
 		if top > 0 {
-			st[top-1].low = max(st[top-1].low, v)
+			st[top-1].low = max(st[top-1].low, v) // lazy 地把 low 往左扩散
 		}
 	}
 
