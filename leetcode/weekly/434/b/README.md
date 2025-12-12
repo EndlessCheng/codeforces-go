@@ -1,3 +1,7 @@
+## 方法一：模拟
+
+先说暴力怎么做。
+
 注意输入的 $\textit{events}$ 不保证是按时间顺序发生的，需要先排序。
 
 按照时间戳 $\textit{timestamp}$ 从小到大排序，时间戳相同的，离线事件排在前面，因为题目要求「状态变更在所有相同时间发生的消息事件之前处理」。
@@ -74,7 +78,6 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-#include<ranges>
 class Solution {
 public:
     vector<int> countMentions(int numberOfUsers, vector<vector<string>>& events) {
@@ -91,8 +94,8 @@ public:
             if (e[0][0] == 'O') { // 离线
                 online_t[stoi(mention)] = cur_t + 60; // 下次在线时间
             } else if (mention[0] == 'A') { // @所有人
-                for (int& v : ans) {
-                    v++;
+                for (int& cnt : ans) {
+                    cnt++;
                 }
             } else if (mention[0] == 'H') { // @所有在线用户
                 for (int i = 0; i < numberOfUsers; i++) {
@@ -220,7 +223,7 @@ var countMentions = function(numberOfUsers, events) {
             }
         } else { // @id
             for (const s of mention.split(" ")) {
-                ans[parseInt(s.slice(2))] += 1;
+                ans[parseInt(s.slice(2))]++;
             }
         }
     }
@@ -267,6 +270,355 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(mn + m\log m\log U + L)$，其中 $m$ 是 $\textit{events}$ 的长度，$n$ 是 $\textit{numberOfUsers}$，$U\le 10^5$ 是时间戳的最大值，$L$ 是所有 `mentions_string` 的长度之和。排序需要 $\mathcal{O}(m\log m)$ 次比较，每次比较需要 $\mathcal{O}(\log U)$ 的时间把长为 $\mathcal{O}(\log U)$ 的字符串时间戳转成整数。注：如果预处理这个转换，可以把排序的过程优化至 $\mathcal{O}(m\log m)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：计算离线期间被提及的次数
+
+对于 `ALL` 消息，用一个变量 $\textit{all}$ 统计所有用户被提及的次数。
+
+对于 `HERE` 消息：
+
+1. 先认为所有用户都被提及了，把 $\textit{all}$ 加一。
+2. 此刻离线的用户不能被计入，需要把这些用户的提及次数减一。
+
+比如一个用户在 $5$ 时刻离线，在 $65$ 时刻在线，那么发生在 $[5,64]$ 中的 `HERE` 消息个数，就是需要减去的提及次数。
+
+借鉴 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 的思想，用 $[0,64]$ 中的 `HERE` 消息个数，减去 $[0,4]$ 中的 `HERE` 消息个数，即为 $[5,64]$ 中的 `HERE` 消息个数。
+
+把离线事件、上线事件、`HERE` 消息混在一起，按照发生时间排序。相同时间的，`HERE` 消息排在后面。然后遍历这些事件，同时统计 `HERE` 消息个数 $\textit{here}$。离线时加上 $\textit{here}$，在线时减去 $\textit{here}$。这样一加一减，最终减去的就是离线时的 `HERE` 消息个数。
+
+```py [sol-Python3]
+class Solution:
+    def countMentions(self, numberOfUsers: int, events: List[List[str]]) -> List[int]:
+        ans = [0] * numberOfUsers
+        es = []  # (timestamp, type, id)
+        all = 0
+        for type_, timestamp, mention in events:
+            cur_t = int(timestamp)  # 当前时间
+            if type_[0] == 'O':  # 离线
+                i = int(mention)
+                es.append((cur_t, 1, i))
+                es.append((cur_t + 60, -1, i))
+            elif mention[0] == 'A':  # @所有人
+                all += 1
+            elif mention[0] == 'H':  # @所有在线用户
+                all += 1
+                es.append((cur_t, 2, -1))
+            else:  # @id
+                for s in mention.split():
+                    ans[int(s[2:])] += 1
+
+        es.sort()
+
+        here = 0
+        for _, type_, i in es:
+            if type_ == 2:
+                here += 1
+            else:
+                # 注意 HERE 排在后面，还没有计入发生在此刻的 HERE 消息
+                ans[i] += type_ * here  # type=1 是加，-1 是减
+
+        for i in range(numberOfUsers):
+            ans[i] += all
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] countMentions(int numberOfUsers, List<List<String>> events) {
+        int[] ans = new int[numberOfUsers];
+        List<int[]> es = new ArrayList<>(); // (timestamp, type, id)
+        int all = 0;
+        for (List<String> e : events) {
+            int curT = Integer.parseInt(e.get(1)); // 当前时间
+            String mention = e.get(2);
+            if (e.get(0).charAt(0) == 'O') { // 离线
+                int i = Integer.parseInt(mention);
+                es.add(new int[]{curT, 1, i});
+                es.add(new int[]{curT + 60, -1, i});
+            } else if (mention.charAt(0) == 'A') { // @所有人
+                all++;
+            } else if (mention.charAt(0) == 'H') { // @所有在线用户
+                all++;
+                es.add(new int[]{curT, 2, -1});
+            } else { // @id
+                for (String s : mention.split(" ")) {
+                    int i = Integer.parseInt(s.substring(2));
+                    ans[i]++;
+                }
+            }
+        }
+
+        es.sort((a, b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+
+        int here = 0;
+        for (int[] e : es) {
+            int type = e[1];
+            if (type == 2) {
+                here++;
+            } else {
+                // 注意 HERE 排在后面，还没有计入发生在此刻的 HERE 消息
+                ans[e[2]] += type * here; // type=1 是加，-1 是减
+            }
+        }
+
+        for (int i = 0; i < numberOfUsers; i++) {
+            ans[i] += all;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> countMentions(int numberOfUsers, vector<vector<string>>& events) {
+        vector<int> ans(numberOfUsers);
+        vector<tuple<int, int, int>> es; // (timestamp, type, id)
+        int all = 0;
+        for (auto& e : events) {
+            int cur_t = stoi(e[1]); // 当前时间
+            string mention = e[2];
+            if (e[0][0] == 'O') { // 离线
+                int i = stoi(mention);
+                es.emplace_back(cur_t, 1, i);
+                es.emplace_back(cur_t + 60, -1, i);
+            } else if (mention[0] == 'A') { // @所有人
+                all++;
+            } else if (mention[0] == 'H') { // @所有在线用户
+                all++;
+                es.emplace_back(cur_t, 2, -1);
+            } else { // @id
+                for (const auto& part : mention | ranges::views::split(' ')) {
+                    string s(part.begin() + 2, part.end());
+                    ans[stoi(s)]++;
+                }
+            }
+        }
+
+        ranges::sort(es);
+
+        int here = 0;
+        for (auto& t : es) {
+            auto [timestamp, type, id] = t;
+            if (type == 2) {
+                here++;
+            } else {
+                // 注意 HERE 排在后面，还没有计入发生在此刻的 HERE 消息
+                ans[id] += type * here; // type=1 是加，-1 是减
+            }
+        }
+
+        for (int& cnt : ans) {
+            cnt += all;
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+typedef struct {
+    int timestamp;
+    int type;
+    int id;
+} Event;
+
+int cmp(const void* a, const void* b) {
+    Event* x = (Event*) a;
+    Event* y = (Event*) b;
+    return x->timestamp != y->timestamp ? x->timestamp - y->timestamp : x->type - y->type;
+}
+
+int* countMentions(int numberOfUsers, char*** events, int eventsSize, int* eventsColSize, int* returnSize) {
+    *returnSize = numberOfUsers;
+    int* ans = calloc(numberOfUsers, sizeof(int));
+    Event* es = malloc(eventsSize * 2 * sizeof(Event));
+    int es_size = 0;
+    int all = 0;
+
+    for (int k = 0; k < eventsSize; k++) {
+        char** e = events[k];
+        int cur_t = atoi(e[1]); // 当前时间
+        char* mention = e[2];
+
+        if (e[0][0] == 'O') { // 离线
+            int i = atoi(mention);
+            es[es_size++] = (Event) {cur_t, 1, i};
+            es[es_size++] = (Event) {cur_t + 60, -1, i};
+        } else if (mention[0] == 'A') { // @所有人
+            all++;
+        } else if (mention[0] == 'H') { // @所有在线用户
+            all++;
+            es[es_size++] = (Event) {cur_t, 2, -1};
+        } else { // @id
+            // 注：如果不想修改输入的话，可以先复制一份 mention
+            for (char* tok = strtok(mention, " "); tok; tok = strtok(NULL, " ")) {
+                ans[atoi(tok + 2)]++;
+            }
+        }
+    }
+
+    qsort(es, es_size, sizeof(Event), cmp);
+
+    int here = 0;
+    for (int i = 0; i < es_size; i++) {
+        Event e = es[i];
+        if (e.type == 2) {
+            here++;
+        } else {
+            // 注意 HERE 排在后面，还没有计入发生在此刻的 HERE 消息
+            ans[e.id] += e.type * here; // type=1 是加，-1 是减
+        }
+    }
+
+    for (int i = 0; i < numberOfUsers; i++) {
+        ans[i] += all;
+    }
+
+    free(es);
+    return ans;
+}
+```
+
+```go [sol-Go]
+func countMentions(numberOfUsers int, events [][]string) []int {
+	ans := make([]int, numberOfUsers)
+	type event struct{ timestamp, type_, id int }
+	es := []event{}
+	all := 0
+	for _, e := range events {
+		curT, _ := strconv.Atoi(e[1]) // 当前时间
+		mention := e[2]
+		if e[0][0] == 'O' { // 离线
+			i, _ := strconv.Atoi(mention)
+			es = append(es, event{curT, 1, i}, event{curT + 60, -1, i})
+		} else if mention[0] == 'A' { // @所有人
+			all++
+		} else if mention[0] == 'H' { // @所有在线用户
+			all++
+			es = append(es, event{curT, 2, -1})
+		} else { // @id
+			for _, s := range strings.Split(mention, " ") {
+				i, _ := strconv.Atoi(s[2:])
+				ans[i]++
+			}
+		}
+	}
+
+	slices.SortFunc(es, func(a, b event) int {
+		return cmp.Or(a.timestamp-b.timestamp, a.type_-b.type_)
+	})
+
+	here := 0
+	for _, e := range es {
+		if e.type_ == 2 {
+			here++
+		} else {
+			// 注意 HERE 排在后面，还没有计入发生在此刻的 HERE 消息
+			ans[e.id] += e.type_ * here // type=1 是加，-1 是减 
+		}
+	}
+
+	for i := range ans {
+		ans[i] += all
+	}
+	return ans
+}
+```
+
+```js [sol-JavaScript]
+var countMentions = function(numberOfUsers, events) {
+    const ans = Array(numberOfUsers).fill(0);
+    const es = []; // (timestamp, type, id)
+    let all = 0;
+    for (const [type, timestamp, mention] of events) {
+        const curT = parseInt(timestamp); // 当前时间
+        if (type[0] === 'O') { // 离线
+            const i = parseInt(mention);
+            es.push([curT, 1, i]);
+            es.push([curT + 60, -1, i]);
+        } else if (mention[0] === 'A') { // @所有人
+            all++;
+        } else if (mention[0] === 'H') { // @所有在线用户
+            all++;
+            es.push([curT, 2, -1]);
+        } else { // @id
+            for (const s of mention.split(" ")) {
+                ans[parseInt(s.slice(2))]++;
+            }
+        }
+    }
+
+    es.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+
+    let here = 0;
+    for (const [_, type, id] of es) {
+        if (type === 2) {
+            here++;
+        } else {
+            // 注意 HERE 排在后面，还没有计入发生在此刻的 HERE 消息
+            ans[id] += type * here; // type=1 是加，-1 是减
+        }
+    }
+
+    for (let i = 0; i < numberOfUsers; i++) {
+        ans[i] += all;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_mentions(number_of_users: i32, events: Vec<Vec<String>>) -> Vec<i32> {
+        let n = number_of_users as usize;
+        let mut ans = vec![0; n];
+        let mut es = vec![]; // (timestamp, type, id)
+        let mut all = 0;
+        for e in events {
+            let cur_t = e[1].parse::<i32>().unwrap(); // 当前时间
+            let mention = &e[2];
+            if e[0].as_bytes()[0] == b'O' { // 离线
+                let i = mention.parse::<usize>().unwrap();
+                es.push((cur_t, 1, i));
+                es.push((cur_t + 60, -1, i));
+            } else if mention.as_bytes()[0] == b'A' { // @所有人
+                all += 1;
+            } else if mention.as_bytes()[0] == b'H' { // @所有在线用户
+                all += 1;
+                es.push((cur_t, 2, 0));
+            } else { // @id
+                for s in mention.split(' ') {
+                    ans[s[2..].parse::<usize>().unwrap()] += 1;
+                }
+            }
+        }
+
+        es.sort_unstable();
+
+        let mut here = 0;
+        for (_, type_, id) in es {
+            if type_ == 2 {
+                here += 1;
+            } else {
+                // 注意 HERE 排在后面，还没有计入发生在此刻的 HERE 消息
+                ans[id] += type_ * here; // type=1 是加，-1 是减
+            }
+        }
+
+        for cnt in ans.iter_mut() {
+            *cnt += all;
+        }
+        ans
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + m\log m + L)$，其中 $m$ 是 $\textit{events}$ 的长度，$n$ 是 $\textit{numberOfUsers}$，$L$ 是所有 `timestamp` 和 `mentions_string` 的长度之和。除了排序，其余逻辑均为线性。
+- 空间复杂度：$\mathcal{O}(n + m)$。
 
 ## 分类题单
 
