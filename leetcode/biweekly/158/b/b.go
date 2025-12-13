@@ -48,7 +48,7 @@ func maximumProfit1(prices []int, k int) int64 {
 	for i := range memo {
 		memo[i] = make([][3]int, k+1)
 		for j := range memo[i] {
-			memo[i][j] = [3]int{-1, -1, -1} // -1 表示还没有计算过
+			memo[i][j] = [3]int{math.MinInt, math.MinInt, math.MinInt} // MinInt 表示还没有计算过
 		}
 	}
 	// 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 endState 的情况下的最大收益
@@ -64,7 +64,7 @@ func maximumProfit1(prices []int, k int) int64 {
 			return
 		}
 		ptr := &memo[i][j][endState]
-		if *ptr != -1 { // 之前计算过
+		if *ptr != math.MinInt { // 之前计算过
 			return *ptr
 		}
 		defer func() { *ptr = res }() // 记忆化

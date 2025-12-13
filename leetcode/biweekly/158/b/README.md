@@ -19,6 +19,8 @@ $$
 
 此外，对于 $\textit{dfs}(i,j,0)$，在计算最大值时额外考虑在第 $i$ 天买回股票（平空）的情况，即 $\textit{dfs}(i,j,2) - \textit{prices}[i]$。
 
+注意本题可能算出负数，$\textit{memo}$ 数组可以初始化成 $\infty$ 或者 $-\infty$。
+
 什么是做空？[简单科普一下](https://www.bilibili.com/video/BV1rET9zsEsB/?t=4m32s)~
 
 ## 一、记忆化搜索
@@ -55,7 +57,7 @@ class Solution {
         memo = new long[n][k + 1][3];
         for (long[][] mat : memo) {
             for (long[] row : mat) {
-                Arrays.fill(row, -1); // -1 表示还没有计算过
+                Arrays.fill(row, Long.MIN_VALUE); // MIN_VALUE 表示还没有计算过
             }
         }
         return dfs(n - 1, k, 0);
@@ -69,7 +71,7 @@ class Solution {
         if (i < 0) {
             return endState > 0 ? Long.MIN_VALUE / 2 : 0;
         }
-        if (memo[i][j][endState] != -1) { // 之前计算过
+        if (memo[i][j][endState] != Long.MIN_VALUE) { // 之前计算过
             return memo[i][j][endState];
         }
         int p = prices[i];
@@ -89,7 +91,7 @@ class Solution {
 public:
     long long maximumProfit(vector<int>& prices, int k) {
         int n = prices.size();
-        vector memo(n, vector<array<long long, 3>>(k + 1, {-1, -1, -1})); // -1 表示还没有计算过
+        vector memo(n, vector<array<long long, 3>>(k + 1, {LLONG_MIN, LLONG_MIN, LLONG_MIN})); // LLONG_MIN 表示还没有计算过
         // 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 end_state 的情况下的最大收益
         auto dfs = [&](this auto&& dfs, int i, int j, int end_state) -> long long {
             if (j < 0) {
@@ -99,7 +101,7 @@ public:
                 return end_state ? LLONG_MIN / 2 : 0;
             }
             long long& res = memo[i][j][end_state]; // 注意这里是引用
-            if (res != -1) { // 之前计算过
+            if (res != LLONG_MIN) { // 之前计算过
                 return res;
             }
             int p = prices[i];
@@ -123,7 +125,7 @@ func maximumProfit(prices []int, k int) int64 {
 	for i := range memo {
 		memo[i] = make([][3]int, k+1)
 		for j := range memo[i] {
-			memo[i][j] = [3]int{-1, -1, -1} // -1 表示还没有计算过
+			memo[i][j] = [3]int{math.MinInt, math.MinInt, math.MinInt} // MinInt 表示还没有计算过
 		}
 	}
 	// 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 endState 的情况下的最大收益
@@ -139,7 +141,7 @@ func maximumProfit(prices []int, k int) int64 {
 			return
 		}
 		ptr := &memo[i][j][endState]
-		if *ptr != -1 { // 之前计算过
+		if *ptr != math.MinInt { // 之前计算过
 			return *ptr
 		}
 		defer func() { *ptr = res }() // 记忆化
