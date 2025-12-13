@@ -83,8 +83,9 @@ https://codeforces.com/problemset/problem/2034/C 1400
 LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
 
 输出具体方案
-做这一道题就够了 https://codeforces.com/problemset/problem/56/D 2100
+https://codeforces.com/problemset/problem/56/D 2100
 https://codeforces.com/problemset/problem/31/E 2400
+https://codeforces.com/problemset/problem/1779/F 2500 树上背包
 
 从 X 操作到 Y（部分题目也可以用 BFS）
 +1 -1 /2 [397. 整数替换](https://leetcode.cn/problems/integer-replacement/)
@@ -1816,6 +1817,7 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P4322 分数规划
 	// https://codeforces.com/problemset/problem/815/C 2400
 	// https://codeforces.com/problemset/problem/1280/D 2500
+	// https://codeforces.com/problemset/problem/1779/F 2500 输出具体方案
 
 	// 其一 · 朴素写法
 	// 这种写法父节点不选也可以
@@ -4578,10 +4580,10 @@ func _(abs func(int) int) {
 		reroot = func(v, fa int) {
 			for _, w := range g[v] {
 				if w != fa {
-					// 从 ans[v] 中去掉子树 w 的贡献，剩余部分记作 rem
-					rem := ans[v] - max(f[w], 0)
-					// 把 rem 挂在 w 下面
-					ans[w] = f[w] + max(rem, 0)
+					// 从 ans[v] 中去掉子树 w 的贡献，剩余部分记作 others
+					others := ans[v] - max(f[w], 0)
+					// 把 others 挂在 w 下面
+					ans[w] = f[w] + max(others, 0)
 					reroot(w, v)
 				}
 			}
@@ -4654,7 +4656,7 @@ func _(abs func(int) int) {
 				dfs(w, v)
 				wt := 2 - w%2
 				// 从 v 出发，往 w 方向的最大深度
-				maxD := subRes[w].maxD + wt 
+				maxD := subRes[w].maxD + wt
 				if maxD > res.maxD {
 					res.maxD2 = res.maxD
 					res.maxD = maxD
@@ -4684,7 +4686,7 @@ func _(abs func(int) int) {
 					mx = sub.maxD2
 				}
 				// 对于 w 来说，还要加上从 w 到 v 的边权
-				reroot(w, v, max(fromUp, mx)+e.wt) 
+				reroot(w, v, max(fromUp, mx)+e.wt)
 			}
 		}
 		reroot(0, -1, 0)
@@ -4737,10 +4739,9 @@ func _(abs func(int) int) {
 			ansAtRoot[v] = merge(movedFaData, subData[v])
 
 			// suf 是 g[v] 的子树后缀汇总信息（已经包含 v-g[v][i] 边）
-			ngv := len(g[v])
-			suf := make([]data, ngv+1)
-			suf[ngv] = unit
-			for i := ngv - 1; i >= 0; i-- {
+			suf := make([]data, len(g[v])+1)
+			suf[len(suf)-1] = unit
+			for i := len(suf) - 1; i >= 0; i-- {
 				w := g[v][i]
 				if w != fa {
 					suf[i] = merge(suf[i+1], moveEdge(subData[w], v, w, false)) // v-w 边
