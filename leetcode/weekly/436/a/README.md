@@ -83,7 +83,7 @@ public:
             if (min_j > 0) { // 右上角三角形
                 ranges::sort(a);
             } else { // 左下角三角形（包括中间对角线）
-                ranges::sort(a, greater<int>());
+                ranges::sort(a, greater());
             }
             for (int j = min_j; j <= max_j; j++) {
                 grid[k + j - n][j] = a[j - min_j];
@@ -229,7 +229,7 @@ impl Solution {
 
 - [1329. 将矩阵按对角线排序](https://leetcode.cn/problems/sort-the-matrix-diagonally/)
 - [2711. 对角线上不同值的数量差](https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/)
-- [498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/) 副对角线
+- [498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/) 反对角线
 - [562. 矩阵中最长的连续 1 线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
 
 ## 分类题单

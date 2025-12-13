@@ -359,7 +359,7 @@ class Solution {
         int n = nums.size();
         vector<long long> ans(n - k + 1);
         LazyHeap<int> left; // 最大堆
-        LazyHeap<int, greater<int>> right; // 最小堆
+        LazyHeap<int, greater<>> right; // 最小堆
 
         for (int i = 0; i < n; i++) {
             // 1. 进入窗口

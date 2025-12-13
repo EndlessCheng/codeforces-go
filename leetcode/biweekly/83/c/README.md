@@ -179,7 +179,7 @@ class NumberContainers {
 ```cpp [sol-C++]
 class NumberContainers {
     unordered_map<int, int> index_to_number;
-    unordered_map<int, priority_queue<int, vector<int>, greater<int>>> number_to_indices;
+    unordered_map<int, priority_queue<int, vector<int>, greater<>>> number_to_indices;
 
 public:
     void change(int index, int number) {
