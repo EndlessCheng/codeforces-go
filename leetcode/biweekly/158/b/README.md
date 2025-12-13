@@ -28,7 +28,8 @@ $$
 ```py [sol-Python3]
 class Solution:
     def maximumProfit(self, prices: List[int], k: int) -> int:
-        # 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 end_state 的情况下的最大收益
+        # 在 [0,i] 中完成至多 j 笔交易，第 i 天【结束时】的状态为 end_state 的情况下的最大收益
+        # 0=未持有股票，1=持有股票，2=做空中
         @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int, j: int, end_state: int) -> int:
             if j < 0:
@@ -41,6 +42,7 @@ class Solution:
             if end_state == 1:
                 return max(dfs(i - 1, j, 1), dfs(i - 1, j - 1, 0) - p)
             return max(dfs(i - 1, j, 2), dfs(i - 1, j - 1, 0) + p)
+
         ans = dfs(len(prices) - 1, k, 0)
         dfs.cache_clear()  # 防止爆内存（一般来说，状态数达到 1e6 就需要写这个）
         return ans
@@ -63,7 +65,8 @@ class Solution {
         return dfs(n - 1, k, 0);
     }
 
-    // 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 endState 的情况下的最大收益
+    // 在 [0,i] 中完成至多 j 笔交易，第 i 天【结束时】的状态为 endState 的情况下的最大收益
+    // 0=未持有股票，1=持有股票，2=做空中
     private long dfs(int i, int j, int endState) {
         if (j < 0) {
             return Long.MIN_VALUE / 2; // 除 2 防止溢出
@@ -92,7 +95,9 @@ public:
     long long maximumProfit(vector<int>& prices, int k) {
         int n = prices.size();
         vector memo(n, vector<array<long long, 3>>(k + 1, {LLONG_MIN, LLONG_MIN, LLONG_MIN})); // LLONG_MIN 表示还没有计算过
-        // 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 end_state 的情况下的最大收益
+
+        // 在 [0,i] 中完成至多 j 笔交易，第 i 天【结束时】的状态为 end_state 的情况下的最大收益
+        // 0=未持有股票，1=持有股票，2=做空中
         auto dfs = [&](this auto&& dfs, int i, int j, int end_state) -> long long {
             if (j < 0) {
                 return LLONG_MIN / 2; // 除 2 防止溢出
@@ -113,6 +118,7 @@ public:
             }
             return res = max(dfs(i - 1, j, 2), dfs(i - 1, j - 1, 0) + p);
         };
+
         return dfs(n - 1, k, 0);
     }
 };
@@ -128,7 +134,9 @@ func maximumProfit(prices []int, k int) int64 {
 			memo[i][j] = [3]int{math.MinInt, math.MinInt, math.MinInt} // MinInt 表示还没有计算过
 		}
 	}
-	// 在 [0,i] 中完成至多 j 笔交易，第 i 天结束时的状态为 endState 的情况下的最大收益
+
+	// 在 [0,i] 中完成至多 j 笔交易，第 i 天【结束时】的状态为 endState 的情况下的最大收益
+	// 0=未持有股票，1=持有股票，2=做空中
 	var dfs func(int, int, int) int
 	dfs = func(i, j, endState int) (res int) {
 		if j < 0 {
@@ -154,6 +162,7 @@ func maximumProfit(prices []int, k int) int64 {
 		}
 		return max(dfs(i-1, j, 2), dfs(i-1, j-1, 0)+p)
 	}
+
 	return int64(dfs(n-1, k, 0))
 }
 ```
@@ -350,3 +359,5 @@ func maximumProfit(prices []int, k int) int64 {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
