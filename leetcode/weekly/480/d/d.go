@@ -145,23 +145,23 @@ func minDeletions(s string, queries [][]int) (ans []int) {
 
 		i := q[1]
 
-		// 撤销旧的
-		if i > 0 && bs[i-1] == bs[i] {
-			t.update(i, -1)
+		if i > 0 {
+			val := 1
+			if bs[i-1] == bs[i] {
+				val = -1
+			}
+			t.update(i, val)
 		}
-		if i < n-1 && bs[i] == bs[i+1] {
-			t.update(i+1, -1)
+
+		if i < n-1 {
+			val := 1
+			if bs[i] == bs[i+1] {
+				val = -1
+			}
+			t.update(i+1, val)
 		}
 
 		bs[i] ^= 'A' ^ 'B' // A 变成 B，B 变成 A
-
-		// 添加新的
-		if i > 0 && bs[i-1] == bs[i] {
-			t.update(i, 1)
-		}
-		if i < n-1 && bs[i] == bs[i+1] {
-			t.update(i+1, 1)
-		}
 	}
 	return
 }

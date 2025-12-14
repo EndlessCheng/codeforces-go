@@ -398,9 +398,11 @@ $$
 
 子串 $[l,r]$ 的删除次数，等于 $b$ 中 $[l+1,r]$ 的元素和。
 
-由于有修改操作，需要用树状数组维护。
+由于反转 $s[i]$ 会影响 $b[i]$ 和 $b[i+1]$，需要用树状数组维护。
 
-修改 $s[i]$ 时，先撤销被影响的 $b[i]$ 和 $b[i+1]$，然后修改，然后添加新的 $b[i]$ 和 $b[i+1]$。
+### 写法一
+
+反转 $s[i]$ 时，先撤销被影响的 $b[i]$ 和 $b[i+1]$，然后反转，然后添加新的 $b[i]$ 和 $b[i+1]$。
 
 ```py [sol-Python3]
 class FenwickTree:
@@ -713,6 +715,306 @@ func minDeletions(s string, queries [][]int) (ans []int) {
 		if i < n-1 && bs[i] == bs[i+1] {
 			t.update(i+1, 1)
 		}
+	}
+	return
+}
+```
+
+### 写法二
+
+反转 $s[i]$ 时：
+
+- 如果原来 $s[i-1]=s[i]$，那么反转后一定 $s[i-1]\ne s[i]$。对应到 $b[i]$ 上，原来 $b[i]=1$，反转后 $b[i]=0$，减少了 $1$。
+- 如果原来 $s[i-1]\ne s[i]$，那么反转后一定 $s[i-1]= s[i]$。对应到 $b[i]$ 上，原来 $b[i]=0$，反转后 $b[i]=1$，增加了 $1$。
+
+对于 $b[i+1]$ 同理。
+
+```py [sol-Python3]
+class FenwickTree:
+    def __init__(self, n: int):
+        self.tree = [0] * (n + 1)  # 使用下标 1 到 n
+
+    # a[i] 增加 val
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def update(self, i: int, val: int) -> None:
+        t = self.tree
+        while i < len(t):
+            t[i] += val
+            i += i & -i
+
+    # 计算前缀和 a[1] + ... + a[i]
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def pre(self, i: int) -> int:
+        t = self.tree
+        res = 0
+        while i > 0:
+            res += t[i]
+            i &= i - 1
+        return res
+
+    # 计算区间和 a[l] + ... + a[r]
+    # 1 <= l <= r <= n
+    # 时间复杂度 O(log n)
+    def query(self, l: int, r: int) -> int:
+        if r < l:
+            return 0
+        return self.pre(r) - self.pre(l - 1)
+
+
+class Solution:
+    def minDeletions(self, s: str, queries: List[List[int]]) -> List[int]:
+        n = len(s)
+        t = FenwickTree(n - 1)
+        for i in range(1, n):
+            if s[i - 1] == s[i]:  # 删除 i
+                t.update(i, 1)
+
+        s = list(s)
+        ans = []
+        for q in queries:
+            if q[0] == 2:
+                ans.append(t.query(q[1] + 1, q[2]))
+                continue
+
+            i = q[1]
+
+            if i > 0:
+                t.update(i, 1 if s[i - 1] != s[i] else -1)
+            if i < n - 1:
+                t.update(i + 1, 1 if s[i] != s[i + 1] else -1)
+
+            s[i] = 'A' if s[i] == 'B' else 'B'  # A 变成 B，B 变成 A
+
+        return ans
+```
+
+```java [sol-Java]
+class FenwickTree {
+    private final int[] tree;
+
+    public FenwickTree(int n) {
+        tree = new int[n + 1]; // 使用下标 1 到 n
+    }
+
+    // a[i] 增加 val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public void update(int i, int val) {
+        for (; i < tree.length; i += i & -i) {
+            tree[i] += val;
+        }
+    }
+
+    // 求前缀和 a[1] + ... + a[i]
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public int pre(int i) {
+        int res = 0;
+        for (; i > 0; i &= i - 1) {
+            res += tree[i];
+        }
+        return res;
+    }
+
+    // 求区间和 a[l] + ... + a[r]
+    // 1 <= l <= r <= n
+    // 时间复杂度 O(log n)
+    public int query(int l, int r) {
+        if (r < l) {
+            return 0;
+        }
+        return pre(r) - pre(l - 1);
+    }
+}
+
+class Solution {
+    public int[] minDeletions(String S, int[][] queries) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        FenwickTree t = new FenwickTree(n - 1);
+        for (int i = 1; i < n; i++) {
+            if (s[i - 1] == s[i]) { // 删除 i
+                t.update(i, 1);
+            }
+        }
+
+        int size = 0;
+        for (int[] q : queries) {
+            size += q[0] - 1;
+        }
+
+        int[] ans = new int[size];
+        int idx = 0;
+        for (int[] q : queries) {
+            if (q[0] == 2) {
+                ans[idx++] = t.query(q[1] + 1, q[2]);
+                continue;
+            }
+
+            int i = q[1];
+
+            if (i > 0) {
+                t.update(i, s[i - 1] != s[i] ? 1 : -1);
+            }
+            if (i < n - 1) {
+                t.update(i + 1, s[i] != s[i + 1] ? 1 : -1);
+            }
+
+            s[i] ^= 'A' ^ 'B'; // A 变成 B，B 变成 A
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+template<typename T>
+class FenwickTree {
+    vector<T> tree;
+
+public:
+    // 使用下标 1 到 n
+    FenwickTree(int n) : tree(n + 1) {}
+
+    // a[i] 增加 val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    void update(int i, T val) {
+        for (; i < tree.size(); i += i & -i) {
+            tree[i] += val;
+        }
+    }
+
+    // 求前缀和 a[1] + ... + a[i]
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    T pre(int i) const {
+        T res = 0;
+        for (; i > 0; i &= i - 1) {
+            res += tree[i];
+        }
+        return res;
+    }
+
+    // 求区间和 a[l] + ... + a[r]
+    // 1 <= l <= r <= n
+    // 时间复杂度 O(log n)
+    T query(int l, int r) const {
+        if (r < l) {
+            return 0;
+        }
+        return pre(r) - pre(l - 1);
+    }
+};
+
+class Solution {
+public:
+    vector<int> minDeletions(string s, vector<vector<int>>& queries) {
+        int n = s.size();
+        FenwickTree<int> t(n - 1);
+        for (int i = 1; i < n; i++) {
+            if (s[i - 1] == s[i]) { // 删除 i
+                t.update(i, 1);
+            }
+        }
+
+        vector<int> ans;
+        for (auto& q : queries) {
+            if (q[0] == 2) {
+                ans.push_back(t.query(q[1] + 1, q[2]));
+                continue;
+            }
+
+            int i = q[1];
+
+            if (i > 0) {
+                t.update(i, s[i - 1] != s[i] ? 1 : -1);
+            }
+            if (i < n - 1) {
+                t.update(i + 1, s[i] != s[i + 1] ? 1 : -1);
+            }
+
+            s[i] ^= 'A' ^ 'B'; // A 变成 B，B 变成 A
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+type fenwick []int
+
+func newFenwickTree(n int) fenwick {
+	return make(fenwick, n+1) // 使用下标 1 到 n
+}
+
+// a[i] 增加 val
+// 1 <= i <= n
+// 时间复杂度 O(log n)
+func (f fenwick) update(i int, val int) {
+	for ; i < len(f); i += i & -i {
+		f[i] += val
+	}
+}
+
+// 求前缀和 a[1] + ... + a[i]
+// 1 <= i <= n
+// 时间复杂度 O(log n)
+func (f fenwick) pre(i int) (res int) {
+	for ; i > 0; i &= i - 1 {
+		res += f[i]
+	}
+	return
+}
+
+// 求区间和 a[l] + ... + a[r]
+// 1 <= l <= r <= n
+// 时间复杂度 O(log n)
+func (f fenwick) query(l, r int) int {
+	if r < l {
+		return 0
+	}
+	return f.pre(r) - f.pre(l-1)
+}
+
+func minDeletions(s string, queries [][]int) (ans []int) {
+	n := len(s)
+	t := newFenwickTree(n - 1)
+	for i := 1; i < n; i++ {
+		if s[i-1] == s[i] { // 删除 i
+			t.update(i, 1)
+		}
+	}
+
+	bs := []byte(s)
+	for _, q := range queries {
+		if q[0] == 2 {
+			ans = append(ans, t.query(q[1]+1, q[2]))
+			continue
+		}
+
+		i := q[1]
+
+		if i > 0 {
+			val := 1
+			if bs[i-1] == bs[i] {
+				val = -1
+			}
+			t.update(i, val)
+		}
+
+		if i < n-1 {
+			val := 1
+			if bs[i] == bs[i+1] {
+				val = -1
+			}
+			t.update(i+1, val)
+		}
+
+		bs[i] ^= 'A' ^ 'B' // A 变成 B，B 变成 A
 	}
 	return
 }
