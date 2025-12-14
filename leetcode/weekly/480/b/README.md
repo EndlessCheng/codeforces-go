@@ -1,6 +1,6 @@
 按照题意模拟即可。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1a1meBiETs/?t=1m46s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 def count_vowel(s: str) -> int:
@@ -47,7 +47,7 @@ class Solution {
     constexpr static string VOWELS = "aeiou";
 
     template<ranges::input_range R>
-    int count_vowel(R& s) {
+    int count_vowel(const R& s) {
         int vowel = 0;
         for (char c : s) {
             if (VOWELS.find(c) != string::npos) {
@@ -60,12 +60,12 @@ class Solution {
 public:
     string reverseWords(string s) {
         int cnt0 = -1;
-        for (auto part : s | views::split(' ')) {
-            int cnt = count_vowel(part);
+        for (auto t : s | views::split(' ')) {
+            int cnt = count_vowel(t);
             if (cnt0 < 0) {
                 cnt0 = cnt;
             } else if (cnt == cnt0) {
-                ranges::reverse(part);
+                ranges::reverse(t);
             }
         }
         return s;
