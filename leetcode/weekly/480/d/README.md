@@ -18,7 +18,9 @@
 
 对于线段树的叶子节点，保存 $s$ 对应位置的字母，最小删除次数为 $0$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+**注**：考察分治的过程，每次修改，只会影响整个分治过程中的 $\mathcal{O}(\log n)$ 个区间（子串），其余区间不受影响。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1a1meBiETs/?t=11m15s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Data:
@@ -396,7 +398,7 @@ b[i] =
 \end{cases}
 $$
 
-子串 $[l,r]$ 的删除次数，等于 $b$ 中 $[l+1,r]$ 的元素和。
+子串 $[l,r]$ 的删除次数，等于 $b$ 的子数组 $[l+1,r]$ 中的 $1$ 的个数，也等于 $b$ 的子数组 $[l+1,r]$ 的元素和。
 
 由于反转 $s[i]$ 会影响 $b[i]$ 和 $b[i+1]$，需要用树状数组维护。
 
@@ -1024,6 +1026,30 @@ func minDeletions(s string, queries [][]int) (ans []int) {
 
 - 时间复杂度：$\mathcal{O}((n + q)\log n)$，其中 $n$ 是 $s$ 的长度，$q$ 是 $\textit{queries}$ 的长度。也可以 $\mathcal{O}(n)$ 建树，做到 $\mathcal{O}(n+q\log n)$。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
+
+## 附：有序集合
+
+方法二用树状数组维护需要删除的下标，也可以用有序集合维护。
+
+```py
+class Solution:
+    def minDeletions(self, s: str, queries: List[List[int]]) -> List[int]:
+        # 维护需要删除的下标
+        del_idx = SortedList(i for i in range(1, len(s)) if s[i - 1] == s[i])
+        ans = []
+        for q in queries:
+            if q[0] == 2:
+                # [l+1, r] 中的下标个数
+                # <= r 的下标个数 - <= l 的下标个数
+                ans.append(del_idx.bisect_right(q[2]) - del_idx.bisect_right(q[1]))
+                continue
+            for i in q[1], q[1] + 1:
+                if i in del_idx:  # 反转后，原来相等，变成不相等
+                    del_idx.remove(i)
+                else:  # 反转后，原来不相等，变成相等
+                    del_idx.add(i)
+        return ans
+```
 
 ## 专题训练
 
