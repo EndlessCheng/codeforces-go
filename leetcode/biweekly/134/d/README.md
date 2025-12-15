@@ -4,11 +4,11 @@
 
 ## 方法一：二分查找
 
-由于每个元素都是其右侧元素的子集，所以从 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 的元素值是非降的。既然是有序数组，我们可以在 $[0,i]$ 中**二分查找** $k$，做法见 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)（[视频讲解](https://www.bilibili.com/video/BV1AP41137w7/)）。
+由于每个元素都是其右侧元素的子集，所以从 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 的元素值是非降的。既然是有序数组，我们可以在 $[0,i]$ 中**二分查找** $k$，做法见 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)，[视频讲解](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 设左闭右开区间 $[\textit{left},\textit{right})$ 是 $\textit{nums}[j]=k$ 的 $j$ 的范围。把左闭右开区间的长度 $\textit{right}-\textit{left}$ 加入答案。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1Yz421q7dD/) 第四题，欢迎点赞关注！
+[本题视频讲解](https://www.bilibili.com/video/BV1Yz421q7dD/) 第四题，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -280,9 +280,136 @@ func countSubarrays(nums []int, k int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-**注**：可以用恰好型滑动窗口+栈做到 $\mathcal{O}(n)$。见 [原理讲解（方法二）](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/)。
+## 方法四：恰好型滑动窗口 + 栈
 
-更多相似题目，见位运算题单中的「**LogTrick**」。
+见 [原理讲解（方法二）](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/)。
+
+对于本题，用「AND 的结果为 $k$ 的子数组个数」减去「AND 的结果为 $k+1$ 的子数组个数」，就得到了「AND 的结果恰好为 $k$ 的子数组个数」。
+
+```py [sol-Python3]
+class Solution:
+    def countSubarrays(self, nums: List[int], k: int) -> int:
+        # AND >= k 的子数组数目
+        def count(nums: List[int], k: int) -> int:
+            ans = left = bottom = 0
+            right_and = -1
+            for right, x in enumerate(nums):
+                right_and &= x
+                while left <= right and nums[left] & right_and < k:
+                    left += 1
+                    if bottom < left:
+                        # 重新构建一个栈
+                        for i in range(right - 1, left - 1, -1):
+                            nums[i] &= nums[i + 1]
+                        bottom = right
+                        right_and = -1
+                ans += right - left + 1
+            return ans
+
+        return count(nums.copy(), k) - count(nums, k + 1)
+```
+
+```java [sol-Java]
+class Solution {
+    public long countSubarrays(int[] nums, int k) {
+        return count(nums.clone(), k) - count(nums, k + 1);
+    }
+
+    // AND >= k 的子数组数目
+    private long count(int[] nums, int k) {
+        long ans = 0;
+        int left = 0;
+        int bottom = 0;
+        int rightAnd = -1;
+        for (int right = 0; right < nums.length; right++) {
+            rightAnd &= nums[right];
+            while (left <= right && (nums[left] & rightAnd) < k) {
+                left++;
+                if (bottom < left) {
+                    // 重新构建一个栈
+                    for (int i = right - 1; i >= left; i--) {
+                        nums[i] &= nums[i + 1];
+                    }
+                    bottom = right;
+                    rightAnd = -1;
+                }
+            }
+            ans += right - left + 1;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // AND >= k 的子数组数目
+    long long count(vector<int>& nums, int k) {
+        long long ans = 0;
+        int left = 0, bottom = 0, right_and = -1;
+        for (int right = 0; right < nums.size(); right++) {
+            right_and &= nums[right];
+            while (left <= right && (nums[left] & right_and) < k) {
+                left++;
+                if (bottom < left) {
+                    // 重新构建一个栈
+                    for (int i = right - 1; i >= left; i--) {
+                        nums[i] &= nums[i + 1];
+                    }
+                    bottom = right;
+                    right_and = -1;
+                }
+            }
+            ans += right - left + 1;
+        }
+        return ans;
+    }
+
+public:
+    long long countSubarrays(vector<int>& nums, int k) {
+        auto clone = nums;
+        return count(clone, k) - count(nums, k + 1);
+    }
+};
+```
+
+```go [sol-Go]
+// AND >= k 的子数组数目
+func count(nums []int, k int) (ans int64) {
+	left, bottom := 0, 0
+	rightAnd := -1
+	for right, x := range nums {
+		rightAnd &= x
+		for left <= right && nums[left]&rightAnd < k {
+			left++
+			if bottom < left {
+				// 重新构建一个栈
+				for i := right - 1; i >= left; i-- {
+					nums[i] &= nums[i+1]
+				}
+				bottom = right
+				rightAnd = -1
+			}
+		}
+		ans += int64(right - left + 1)
+	}
+	return
+}
+
+func countSubarrays(nums []int, k int) int64 {
+	return count(slices.Clone(nums), k) - count(nums, k+1)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。理由同 [原理讲解（方法二）](https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/) 的复杂度分析。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 专题训练
+
+1. 位运算题单的「**LogTrick**」。
+2. 滑动窗口题单的「**§2.3.3 恰好型滑动窗口**」。
 
 ## 分类题单
 
@@ -298,7 +425,7 @@ func countSubarrays(nums []int, k int) (ans int64) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
