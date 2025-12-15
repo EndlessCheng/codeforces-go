@@ -263,26 +263,30 @@ func sortCollections() {
 		}
 	}
 
-	// 把数组排序（元素互不相同），需要的最小交换次数
+	// 把（元素互不相同的）数组排序，需要的最小交换次数
 	// 做法：离散化后求置换环
 	// LC2471 https://leetcode.cn/problems/minimum-number-of-operations-to-sort-a-binary-tree-by-level/
+	// https://codeforces.com/problemset/problem/1983/D 1700
 	minSwaps := func(a []int) int {
-		id := make([]int, len(a))
-		for i := range id {
-			id[i] = i
+		n := len(a)
+		// 构建 a 离散化后的逆 P^-1（b 相当于 pos 数组，最小交换次数是一样的）
+		b := make([]int, n)
+		for i := range b {
+			b[i] = i
 		}
-		slices.SortFunc(id, func(i, j int) int { return a[i] - a[j] }) // 简单离散化
+		slices.SortFunc(b, func(x, y int) int { return a[x] - a[y] })
 
-		ans := len(a)
-		for i, v := range id {
+		ans := n
+		for i, v := range b {
 			if v < 0 {
 				continue
 			}
-			for id[i] >= 0 {
-				nxt := id[i]
-				id[i] = -1
+			for b[i] >= 0 {
+				nxt := b[i]
+				b[i] = -1
 				i = nxt
 			}
+			// m-1 次交换后，这个环的 m 个元素就排好序了
 			ans--
 		}
 		return ans
@@ -360,7 +364,7 @@ func sortCollections() {
 			x += l
 			// ...
 
-			return false
+			return true
 		})
 	}
 
@@ -759,7 +763,7 @@ func sortCollections() {
 	_ = []interface{}{
 		distinctAsc, distinctDesc,
 		searchIntervals,
-		minSwaps,
+		minSwaps, // 把（元素互不相同的）数组排序，需要的最小交换次数
 		insertionSort,
 		lowerBound, upperBound, search2,
 		searchRange,
