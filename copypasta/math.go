@@ -3412,11 +3412,15 @@ func _(abs func(int) int) {
 	// 1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
 	// https://en.wikipedia.org/wiki/Bell_triangle https://oeis.org/A011971 Aitken's array
 	// a(0,0)=1, a(n,0) = a(n-1,n-1), a(n,k) = a(n,k-1) + a(n-1,k-1)
+	// a(n,k) 表示对于 [0,n-1] 的划分，要求元素 k 恰好组成一个单元素子集，且没有比 k 更大的单元素子集，在这一约束下的划分个数
+	// 特别地，a(n,n) 是无约束的划分个数
 	// 其他公式
 	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
 	// B(n) = Sum_{k=1..n} S2(n,k)
+	//
+	// https://codeforces.com/problemset/problem/908/E 2500
 	bellTriangle := func(n int) [][]int {
-		b := make([][]int, n+1) // 第一列为贝尔数
+		b := make([][]int, n+1) // 第一列 b[i][0] 为贝尔数 B(i)
 		b[0] = []int{1}
 		for i := 1; i <= n; i++ {
 			b[i] = make([]int, i+1)
@@ -3426,6 +3430,24 @@ func _(abs func(int) int) {
 			}
 		}
 		return b
+	}
+
+	// 贝尔数 · 其二
+	// O(n) 空间写法
+	bellNumber := func(n int) []int {
+		bell := make([]int, n+1)
+		b := make([]int, n+1)
+		b[0] = 1
+		bell[0] = 1
+		for i := 1; i <= n; i++ {
+			pre := b[0]
+			b[0] = b[i-1]
+			bell[i] = b[0]
+			for j := 1; j <= i; j++ {
+				b[j], pre = (b[j-1]+pre)%mod, b[j]
+			}
+		}
+		return bell
 	}
 
 	// 贝尔数的多项式求法
@@ -3751,9 +3773,11 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1263/C 1400 模板题
 	// https://codeforces.com/problemset/problem/449/A 1700
 	// https://codeforces.com/problemset/problem/938/C 1700
+	// https://codeforces.com/problemset/problem/1485/C 1700
+	// https://codeforces.com/problemset/problem/616/E 2200
 	// https://codeforces.com/problemset/problem/1603/C 2300 数论分块优化 DP
-	// https://codeforces.com/problemset/problem/226/C 2400 思想
-	// https://codeforces.com/problemset/problem/1780/E 2400 GCD
+	// https://codeforces.com/problemset/problem/226/C 2400
+	// https://codeforces.com/problemset/problem/1780/E 2400 GCD todo
 	// https://codeforces.com/problemset/problem/792/E 2500
 	// https://codeforces.com/problemset/problem/1789/E 2500 式子同时包含上取整和下取整
 	// https://codeforces.com/problemset/problem/1202/F 2700
@@ -3786,13 +3810,13 @@ func _(abs func(int) int) {
 			r = n / h
 			w := r - l + 1 // sum[r+1] - sum[l]
 			// 对于 [l,r] 中的 i，floor(n/i) 都等于 floor(n/l)
-			sum += h * w  
+			sum += h * w
 		}
 		return
 	}
 
 	// ∑x/i, i in [low,up]
-	// 转换 https://codeforces.com/problemset/problem/1485/C
+	// https://codeforces.com/problemset/problem/1485/C 1700
 	floorLoopRange := func(low, up, x int) (sum int) {
 		for l, r := low, 0; l <= up; l = r + 1 {
 			h := x / l
@@ -3812,7 +3836,7 @@ func _(abs func(int) int) {
 	// = n*k-∑(k/i)*i
 	// 对于 [l,r] 范围内的 i，k/i 不变，此时 ∑(k/i)*i = (k/i)*∑i = (k/i)*(l+r)*(r-l+1)/2
 	// https://www.luogu.com.cn/problem/P2261
-	// https://codeforces.com/problemset/problem/616/E
+	// https://codeforces.com/problemset/problem/616/E 2200
 	// NEERC05，紫书例题 10-25，UVa1363 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4109 https://codeforces.com/gym/101334 J
 	floorLoopRem := func(n, k int) int {
 		sum := n * k
@@ -4097,7 +4121,7 @@ func _(abs func(int) int) {
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf,
 		initComb, comb, combMod, permRepeat, kthPermRepeat,
 		stirling1, stirling2, stirling2Row, stirling2RowPoly,
-		bellTriangle, bellPoly, setPartition,
+		bellTriangle, bellNumber, bellPoly, setPartition,
 		mahonian, mahonian2, mahonian3,
 
 		calcMu, initMu, initMuLinear,
