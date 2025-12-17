@@ -53,6 +53,7 @@ https://codeforces.com/problemset/problem/1420/B 1200
 https://codeforces.com/problemset/problem/318/B 1300 子串
 https://codeforces.com/problemset/problem/1931/D 1300 pair
 https://codeforces.com/problemset/problem/1926/D 1300
+https://codeforces.com/problemset/problem/2169/C 1300
 https://codeforces.com/problemset/problem/1974/C 1400
 https://codeforces.com/problemset/problem/159/D 1500 回文子串
 https://codeforces.com/problemset/problem/873/B 1500
@@ -88,6 +89,7 @@ https://atcoder.jp/contests/abc367/tasks/abc367_d
 https://atcoder.jp/contests/abc146/tasks/abc146_e 1762
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_h 三个字母映射到一些大整数上，从而区分开
+https://www.luogu.com.cn/problem/P1627
 LC974 和可被 K 整除的子数组 https://leetcode.cn/problems/subarray-sums-divisible-by-k/
 - 变形：乘积可以被 k 整除
 - a[i] = gcd(a[i], k) 之后窗口乘积是 k 的倍数就行，不会乘爆
@@ -160,6 +162,8 @@ https://codeforces.com/problemset/problem/1687/A 1600
 https://codeforces.com/problemset/problem/69/E 1800
 https://codeforces.com/problemset/problem/371/E 2000
 https://codeforces.com/problemset/problem/679/C 2400
+https://cses.fi/problemset/task/3405 滑动窗口 OR
+https://cses.fi/problemset/task/1077 滑动窗口 mex
 
 不定长滑动窗口：求最长/最大
 https://codeforces.com/problemset/problem/1692/E 1200
@@ -213,8 +217,9 @@ LC2972 https://leetcode.cn/problems/count-the-number-of-incremovable-subarrays-i
 - https://codeforces.com/problemset/problem/1167/E 2100
 https://codeforces.com/problemset/problem/2032/C 1400
 https://codeforces.com/problemset/problem/1166/C 1500
+https://codeforces.com/problemset/problem/220/E 2400 同向双指针 前缀+后缀 逆序对
 
-相向双指针
+相向双指针 同向双指针
 https://codeforces.com/problemset/problem/1006/C 1200
 https://codeforces.com/problemset/problem/1793/C 1200
 https://codeforces.com/problemset/problem/2075/C 1500 a[i] + a[j] <= target
@@ -471,14 +476,16 @@ https://codeforces.com/problemset/problem/1765/K 1500
 https://codeforces.com/problemset/problem/1990/C 1500
 https://codeforces.com/problemset/problem/1608/C 1700
 https://codeforces.com/problemset/problem/2124/D 1700
-https://codeforces.com/problemset/problem/911/D 1800 逆序对
+https://codeforces.com/problemset/problem/911/D  1800 逆序对
 https://codeforces.com/problemset/problem/1442/A 1800
 https://codeforces.com/problemset/problem/558/C  1900
 https://codeforces.com/problemset/problem/1644/E 1900
 https://codeforces.com/problemset/problem/1747/D 1900 不变量
 https://codeforces.com/problemset/problem/1744/F 2000
 https://codeforces.com/problemset/problem/1610/E 2300
-https://codeforces.com/problemset/problem/1237/E 2400 todo
+https://codeforces.com/problemset/problem/1237/E 2400 todo 回顾
+https://codeforces.com/problemset/problem/1392/F 2400 todo 回顾
+https://codeforces.com/problemset/problem/2096/E 2400 通过操作 3 个连续位置，使逆序对为 0
 https://codeforces.com/problemset/problem/2110/F 2400
 https://codeforces.com/problemset/problem/2004/F 2600
 LC2498 https://leetcode.cn/problems/frog-jump-ii/
@@ -499,13 +506,14 @@ https://codeforces.com/problemset/problem/2034/C 1400
 https://codeforces.com/problemset/problem/1012/A 1500
 https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/2140/C 1500
-https://codeforces.com/problemset/problem/500/C 1600
-https://codeforces.com/problemset/problem/601/A 1600
+https://codeforces.com/problemset/problem/500/C  1600
+https://codeforces.com/problemset/problem/601/A  1600
+https://codeforces.com/problemset/problem/1983/D 1700 操作多次：交换 a 中两个相距 d 的元素，b 中两个相距 d 的元素，使得 a = b
 https://codeforces.com/problemset/problem/2065/F 1700
-https://codeforces.com/problemset/problem/911/D 1800
+https://codeforces.com/problemset/problem/911/D  1800
 https://codeforces.com/problemset/problem/1763/C 2000
 https://codeforces.com/problemset/problem/1443/E 2400 唬人
-https://codeforces.com/problemset/problem/825/G 2500 树
+https://codeforces.com/problemset/problem/825/G  2500 树
 https://atcoder.jp/contests/abc194/tasks/abc194_e
 https://atcoder.jp/contests/abc196/tasks/abc196_e
 https://www.luogu.com.cn/problem/P12137 蓝桥杯 2025 省赛 C++ 大学 B 组 H 题
@@ -551,7 +559,7 @@ https://codeforces.com/problemset/problem/1713/C  1200
 https://codeforces.com/problemset/problem/1793/C  1200
 https://codeforces.com/problemset/problem/1990/B  1200
 https://codeforces.com/problemset/problem/2056/C  1200
-https://codeforces.com/problemset/problem/2134/B  1200 从特殊到一般
+https://codeforces.com/problemset/problem/2134/B  1200 操作至多 k 次：把 a 的一个子序列的元素都增加 k，最终让 gcd(a) > 1（提示：从特殊到一般）
 https://codeforces.com/problemset/problem/1717/C  1300
 https://codeforces.com/problemset/problem/1788/C  1300
 https://codeforces.com/problemset/problem/1815/A  1300
@@ -578,6 +586,7 @@ https://codeforces.com/problemset/problem/2077/A  1500
 https://codeforces.com/problemset/problem/2107/C  1500 经典 DP 的构造版本
 https://codeforces.com/problemset/problem/1968/E  1600
 https://codeforces.com/problemset/problem/2084/D  1600
+https://codeforces.com/problemset/problem/2171/F  1600 给定排列 p，构造一棵树，满足每条边的 pos[小端] < pos[大端]
 https://codeforces.com/problemset/problem/66/D    1700
 https://codeforces.com/problemset/problem/201/A   1700
 https://codeforces.com/problemset/problem/584/C   1700 分类讨论
@@ -592,6 +601,7 @@ https://codeforces.com/problemset/problem/1267/L  1800
 https://codeforces.com/problemset/problem/1304/D  1800 最短/最长 LIS
 https://codeforces.com/problemset/problem/1554/D  1800
 https://codeforces.com/problemset/problem/1965/B  1800 二进制分解
+https://codeforces.com/problemset/problem/2145/D  1800 排列 子问题
 https://codeforces.com/problemset/problem/118/C   1900 贪心
 https://codeforces.com/problemset/problem/327/D   1900
 https://codeforces.com/problemset/problem/388/B   1900 两点间恰好 k 条最短路径
@@ -603,17 +613,22 @@ https://codeforces.com/problemset/problem/1854/A2 1900 分类讨论
 https://codeforces.com/problemset/problem/2040/D  1900 树 质数
 https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
+https://codeforces.com/problemset/problem/2171/E  2000
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
 https://codeforces.com/problemset/problem/1550/D  2300 组合数学
 https://codeforces.com/problemset/problem/1028/E  2400 推荐 找特殊位置
 https://codeforces.com/problemset/problem/1098/C  2400 树
 https://codeforces.com/problemset/problem/1244/G  2400
+https://codeforces.com/problemset/problem/1333/E  2400 棋盘周游，车传送次数小于皇后（提示：把问题规模缩小为 n=3） 
 https://codeforces.com/problemset/problem/1667/C  2400
 https://codeforces.com/problemset/problem/1761/E  2400
 https://codeforces.com/problemset/problem/2111/F  2400
+https://codeforces.com/problemset/problem/2118/E  2400 网格染色，每次染色切比雪夫最远已染色点会惩罚一次，要求每个点的惩罚次数 <= 3
 https://codeforces.com/problemset/problem/297/D   2500
+https://codeforces.com/problemset/problem/613/C   2500 构造环形字符串，使得断开后是回文串的断点位置尽量多（提示：旋转对称性，周期）
 https://codeforces.com/problemset/problem/976/D   2500
+https://codeforces.com/problemset/problem/1375/E  2500 交换所有逆序对完成排序  提示：借鉴冒泡排序
 https://codeforces.com/problemset/problem/1474/E  2500
 https://codeforces.com/problemset/problem/1559/D2 2500
 https://codeforces.com/problemset/problem/1689/E  2500 脑筋急转弯
@@ -633,6 +648,7 @@ https://atcoder.jp/contests/abc178/tasks/abc178_f
 
 不变量（想一想，操作不会改变什么）
 https://codeforces.com/problemset/problem/1881/D 1300
+https://codeforces.com/problemset/problem/2171/C2 1400
 https://codeforces.com/problemset/problem/1365/F 2100 仍然对称
 https://codeforces.com/problemset/problem/1775/E 2100 有点差分的味道，想想前缀和
 https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
@@ -1327,6 +1343,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/932/B 1300
 	// https://codeforces.com/problemset/problem/1922/C 1300
 	// https://codeforces.com/problemset/problem/2033/D 1300
+	// https://codeforces.com/problemset/problem/2169/C 1300
 	// https://codeforces.com/problemset/problem/1923/C 1400 构造
 	// https://codeforces.com/problemset/problem/1141/C 1500
 	// https://codeforces.com/problemset/problem/2009/F 1700
@@ -1343,9 +1360,13 @@ func _() {
 		// ！需要保证 a 是有序的
 		// LC2602 https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/
 		// - 原题是 https://atcoder.jp/contests/abc255/tasks/abc255_d
+		// https://www.luogu.com.cn/problem/P5094 有序集合/树状数组 https://www.luogu.com.cn/problem/P2345
 		distanceSum := func(target int) int {
+			// 小于 target 的元素个数
 			i := sort.SearchInts(arr, target)
+			// [0,i-1] 到 target 的距离和
 			s1 := target*i - sum[i]
+			// [i,n-1] 到 target 的距离和
 			s2 := sum[len(arr)] - sum[i] - target*(len(arr)-i)
 			return s1 + s2
 		}
