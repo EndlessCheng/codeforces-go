@@ -7,26 +7,26 @@ import (
 )
 
 // https://github.com/EndlessCheng
-type fenwick []int
+type fenwick30 []int
 
-func (f fenwick) update(i, v int) {
+func (f fenwick30) update(i, v int) {
 	for ; i < len(f); i += i & -i {
 		f[i] += v
 	}
 }
 
-func (f fenwick) pre(i int) (res int) {
+func (f fenwick30) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res += f[i]
 	}
 	return
 }
 
-func (f fenwick) query(l, r int) int {
+func (f fenwick30) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
-func (f fenwick) kth(k int) (res int) {
+func (f fenwick30) kth(k int) (res int) {
 	for b := 1 << 17; b > 0; b >>= 1 {
 		if nxt := res | b; nxt < len(f) && f[nxt] < k {
 			k -= f[nxt]
@@ -48,8 +48,8 @@ func cf1030F(in io.Reader, _w io.Writer) {
 		a[i] -= i
 	}
 	w := make([]int, n+1)
-	fw := make(fenwick, n+1)
-	fwa := make(fenwick, n+1)
+	fw := make(fenwick30, n+1)
+	fwa := make(fenwick30, n+1)
 	for i := 1; i <= n; i++ {
 		Fscan(in, &w[i])
 		fw.update(i, w[i])
