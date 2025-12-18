@@ -22,16 +22,9 @@ func cf1954D(in io.Reader, out io.Writer) {
 	f[0] = 1
 	s = 0
 	for _, v := range a {
-		sumF := 0
-		for _, fv := range f[:v] {
-			sumF += fv
+		for j, fj := range f[:s+1] {
+			ans = (ans + max((j+v+1)/2, v)*fj) % mod
 		}
-		ans += sumF % mod * v
-
-		for j := v; j <= s; j++ {
-			ans += (j + v + 1) / 2 * f[j]
-		}
-		ans %= mod
 
 		s += v
 		for j := s; j >= v; j-- {
