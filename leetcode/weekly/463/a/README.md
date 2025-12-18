@@ -243,10 +243,10 @@ class Solution:
     def maxProfit(self, prices: List[int], strategy: List[int], k: int) -> int:
         total = max_s = s = 0
         for i, (p, st) in enumerate(zip(prices, strategy)):
-            total += p * st
+            total += p * st  # 不修改时的最大利润
 
-            # 1. 入右半，交易策略从 st 变成 1
-            s += p * (1 - st)
+            # 1. 下标为 i 的元素入右半，交易策略从 st 变成 1
+            s += p * (1 - st)  # 修改带来的额外利润
 
             if i < k - 1:  # 尚未形成第一个窗口
                 # 在下一轮循环中，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
@@ -255,10 +255,11 @@ class Solution:
                 continue
 
             # 2. 更新
-            max_s = max(max_s, s)
+            max_s = max(max_s, s)  # 修改带来的最大额外利润
 
             # 3. 出，为下一个窗口做准备
-            # 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
+            # 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+            # 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
             s -= prices[i - k // 2 + 1] - prices[i - k + 1] * strategy[i - k + 1]
 
         return total + max_s
@@ -270,9 +271,9 @@ class Solution {
         long total = 0, maxSum = 0, sum = 0;
         for (int i = 0; i < prices.length; i++) {
             int p = prices[i], s = strategy[i];
-            total += p * s;
+            total += p * s; // 不修改时的最大利润
 
-            // 1. 入右半，交易策略从 s 变成 1
+            // 1. 下标为 i 的元素入右半，交易策略从 s 变成 1
             sum += p * (1 - s);
 
             if (i < k - 1) { // 尚未形成第一个窗口
@@ -284,10 +285,11 @@ class Solution {
             }
 
             // 2. 更新
-            maxSum = Math.max(maxSum, sum);
+            maxSum = Math.max(maxSum, sum); // 修改带来的最大额外利润
 
             // 3. 出，为下一个窗口做准备
-            // 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
+            // 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+            // 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
             sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
         }
 
@@ -303,9 +305,9 @@ public:
         long long total = 0, max_sum = 0, sum = 0;
         for (int i = 0; i < prices.size(); i++) {
             int p = prices[i], s = strategy[i];
-            total += p * s;
+            total += p * s; // 不修改时的最大利润
 
-            // 1. 入右半，交易策略从 s 变成 1
+            // 1. 下标为 i 的元素入右半，交易策略从 s 变成 1
             sum += p * (1 - s);
 
             if (i < k - 1) { // 尚未形成第一个窗口
@@ -317,10 +319,11 @@ public:
             }
 
             // 2. 更新
-            max_sum = max(max_sum, sum);
+            max_sum = max(max_sum, sum); // 修改带来的最大额外利润
 
             // 3. 出，为下一个窗口做准备
-            // 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
+            // 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+            // 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
             sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
         }
 
@@ -334,9 +337,9 @@ func maxProfit(prices, strategy []int, k int) int64 {
 	var total, maxSum, sum int
 	for i, p := range prices {
 		s := strategy[i]
-		total += p * s
+		total += p * s // 不修改时的最大利润
 
-		// 1. 入右半，交易策略从 s 变成 1
+		// 1. 下标为 i 的元素入右半，交易策略从 s 变成 1
 		sum += p * (1 - s)
 
 		if i < k-1 { // 尚未形成第一个窗口
@@ -348,10 +351,11 @@ func maxProfit(prices, strategy []int, k int) int64 {
 		}
 
 		// 2. 更新
-		maxSum = max(maxSum, sum)
+		maxSum = max(maxSum, sum) // 修改带来的最大额外利润
 
 		// 3. 出，为下一个窗口做准备
-		// 对于下一个窗口，下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，下标为 i-k+1 的元素从左半离开窗口
+		// 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+		// 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
 		sum -= prices[i-k/2+1] - prices[i-k+1]*strategy[i-k+1]
 	}
 
