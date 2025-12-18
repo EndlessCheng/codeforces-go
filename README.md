@@ -37,6 +37,7 @@
     - 不相交 ST 表
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
     - 差分树状数组（支持区间加、区间求和）
+    - 二维树状数组
     - 二维差分树状数组
     - 离线二维数点
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)

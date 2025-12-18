@@ -288,6 +288,39 @@ func (t fenwickDiff) query(l, r int) int {
 
 //
 
+// 二维树状数组
+// https://codeforces.com/problemset/problem/1093/E 2400
+type fenwick2D [][]int
+
+func newFenwickTree2D(n, m int) fenwick2D {
+	t := make(fenwick2D, n+1)
+	for i := range t {
+		t[i] = make([]int, m+1)
+	}
+	return t
+}
+
+// 单点更新
+func (t fenwick2D) update(x, y, val int) {
+	for i := x; i < len(t); i += i & -i {
+		for j := y; j < len(t[i]); j += j & -j {
+			t[i][j] += val
+		}
+	}
+}
+
+// 左上角为 (1,1) 右下角为 (x,y) 的子矩形元素和
+func (t fenwick2D) pre(x, y int) (res int) {
+	for i := x; i > 0; i &= i - 1 {
+		for j := y; j > 0; j &= j - 1 {
+			res += t[i][j]
+		}
+	}
+	return
+}
+
+//
+
 // 二维差分树状数组
 // https://codeforces.com/problemset/problem/869/E 2400
 // https://codeforces.com/problemset/problem/341/D 2500 XOR 区间更新 区间查询
@@ -446,7 +479,7 @@ func _(n int) {
 	// https://codeforces.com/problemset/problem/1585/D 1900
 	// https://codeforces.com/problemset/problem/540/E 2100 1e9 范围逆序对
 	// https://codeforces.com/problemset/problem/1096/F 2300 扩展：某些位置上的数待定时的逆序对的期望值 
-	// https://codeforces.com/problemset/problem/220/E 2400
+	// https://codeforces.com/problemset/problem/220/E 2400 前缀+后缀
 	// https://codeforces.com/problemset/problem/749/E 2400 期望 贡献
 	// https://atcoder.jp/contests/abc296/tasks/abc296_f
 	// https://atcoder.jp/contests/arc136/tasks/arc136_b
