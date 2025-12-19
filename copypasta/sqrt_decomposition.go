@@ -93,6 +93,7 @@ https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 https://cp-algorithms.com/sequences/rmq.html
 https://www.luogu.com.cn/problem/P3396
 https://codeforces.com/problemset/problem/444/C 2400 DZY Loves Colors 经典题
+https://codeforces.com/problemset/problem/1093/E 2400 动态二维数点 也可以树套树
 https://codeforces.com/problemset/problem/551/E 2500 GukiZ and GukiZiana   Go1.22 推荐块大小为 sqrt(n/5)，比 sqrt(n) 快一倍
 https://codeforces.com/problemset/problem/13/E 2700
 https://codeforces.com/problemset/problem/455/D 2700
@@ -103,7 +104,7 @@ https://www.nowcoder.com/discuss/353159150542725120 K 题 https://ac.nowcoder.co
 func _(a []int) { // 下标从 0 开始
 	n := len(a)
 	B := int(math.Sqrt(float64(n)))
-	//B := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
+	//B := int(math.Sqrt(float64(n * bits.Len(uint(n)))))
 
 	type block struct {
 		l, r int // [l,r)
@@ -125,7 +126,7 @@ func _(a []int) { // 下标从 0 开始
 	}
 
 	// [l,r), 从 0 开始
-	sqrtOp := func(l, r int, v int) { 
+	sqrtOp := func(l, r int, v int) {
 		for i := range blocks {
 			b := &blocks[i]
 			if b.r <= l {
@@ -141,7 +142,7 @@ func _(a []int) { // 下标从 0 开始
 				bl := max(b.l, l)
 				br := min(b.r, r)
 				for j := bl; j < br; j++ {
-					
+
 				}
 			}
 		}
