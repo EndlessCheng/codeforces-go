@@ -319,6 +319,11 @@ func (t fenwick2D) pre(x, y int) (res int) {
 	return
 }
 
+// 左上角为 (x1,y1) 右下角为 (x2,y2) 的子矩形元素和
+func (t fenwick2D) query(x1, y1, x2, y2 int) int {
+	return t.pre(x2, y2) - t.pre(x2, y1-1) - t.pre(x1-1, y2) + t.pre(x1-1, y1-1)
+}
+
 //
 
 // 二维差分树状数组
