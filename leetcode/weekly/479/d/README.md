@@ -30,6 +30,8 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1sv2fB4Evi/)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 # 手写 max 更快
 max = lambda a, b: b if b > a else a
@@ -199,6 +201,169 @@ func maxSubgraphScore(n int, edges [][]int, good []int) []int {
 				scoreF := ans[x] - max(subScore[y], 0)
 				// 如果子树 F 的最大得分 > 0，选子树 F，否则不选
 				ans[y] = subScore[y] + max(scoreF, 0)
+				reroot(y, x)
+			}
+		}
+	}
+	reroot(0, -1)
+	return ans
+}
+```
+
+## 写法二
+
+观察上面的代码，$\textit{subScore}[y]$ 使用完后就不再用到了，所以可以把 $\textit{ans}[y]$ 记在 $\textit{subScore}[y]$ 中，无需创建 $\textit{ans}$ 数组。
+
+进一步地，$\textit{subScore}$ 数组也无需创建，直接把数据记在 $\textit{good}$ 数组中。
+
+```py [sol-Python3]
+# 手写 max 更快
+max = lambda a, b: b if b > a else a
+
+class Solution:
+    def maxSubgraphScore(self, n: int, edges: List[List[int]], ans: List[int]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        def dfs(x: int, fa: int) -> None:
+            ans[x] = 1 if ans[x] else -1
+            for y in g[x]:
+                if y != fa:
+                    dfs(y, x)
+                    # 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+                    ans[x] += max(ans[y], 0)
+        dfs(0, -1)
+
+        # 对于 x 的儿子 y，计算包含 y 的子图最大得分
+        def reroot(x: int, fa: int) -> None:
+            for y in g[x]:
+                if y != fa:
+                    # 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+                    score_f = ans[x] - max(ans[y], 0)
+                    # 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+                    ans[y] += max(score_f, 0)
+                    reroot(y, x)
+        reroot(0, -1)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] maxSubgraphScore(int n, int[][] edges, int[] good) {
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0];
+            int y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+
+        dfs(0, -1, g, good);
+        reroot(0, -1, g, good);
+        return good;
+    }
+
+    private void dfs(int x, int fa, List<Integer>[] g, int[] ans) {
+        ans[x] = ans[x] == 0 ? -1 : 1;
+        for (int y : g[x]) {
+            if (y != fa) {
+                dfs(y, x, g, ans);
+                // 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+                ans[x] += Math.max(ans[y], 0);
+            }
+        }
+    }
+
+    // 对于 x 的儿子 y，计算包含 y 的子图最大得分
+    private void reroot(int x, int fa, List<Integer>[] g, int[] ans) {
+        for (int y : g[x]) {
+            if (y != fa) {
+                // 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+                int scoreF = ans[x] - Math.max(ans[y], 0);
+                // 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+                ans[y] += Math.max(scoreF, 0);
+                reroot(y, x, g, ans);
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> maxSubgraphScore(int n, vector<vector<int>>& edges, vector<int>& ans) {
+        vector<vector<int>> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            g[x].push_back(y);
+            g[y].push_back(x);
+        }
+
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> void {
+            ans[x] = ans[x] ? 1 : -1;
+            for (int y : g[x]) {
+                if (y != fa) {
+                    dfs(y, x);
+                    // 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+                    ans[x] += max(ans[y], 0);
+                }
+            }
+        };
+        dfs(0, -1);
+
+        // 对于 x 的儿子 y，计算包含 y 的子图最大得分
+        auto reroot = [&](this auto&& reroot, int x, int fa) -> void {
+            for (int y : g[x]) {
+                if (y != fa) {
+                    // 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+                    int score_f = ans[x] - max(ans[y], 0);
+                    // 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+                    ans[y] += max(score_f, 0);
+                    reroot(y, x);
+                }
+            }
+        };
+        reroot(0, -1);
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxSubgraphScore(n int, edges [][]int, ans []int) []int {
+	g := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+
+	var dfs func(int, int)
+	dfs = func(x, fa int) {
+		ans[x] = ans[x]*2 - 1
+		for _, y := range g[x] {
+			if y != fa {
+				dfs(y, x)
+				// 如果子树 y 的最大得分 > 0，选子树 y，否则不选
+				ans[x] += max(ans[y], 0)
+			}
+		}
+	}
+	dfs(0, -1)
+
+	// 对于 x 的儿子 y，计算包含 y 的子图最大得分
+	var reroot func(int, int)
+	reroot = func(x, fa int) {
+		for _, y := range g[x] {
+			if y != fa {
+				// 从 ans[x] 中去掉子树 y。换根后，这部分内容变成 y 的一棵子树（记作 F）
+				scoreF := ans[x] - max(ans[y], 0)
+				// 如果子树 F 的最大得分 > 0，选子树 F，否则不选
+				ans[y] += max(scoreF, 0)
 				reroot(y, x)
 			}
 		}
