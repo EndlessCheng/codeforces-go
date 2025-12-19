@@ -289,7 +289,7 @@ func (t fenwickDiff) query(l, r int) int {
 //
 
 // 二维树状数组
-// https://codeforces.com/problemset/problem/1093/E 2400
+// https://codeforces.com/problemset/problem/1093/E 2400 第一维度分块，把空间复杂度从 O(n^2) 降至 O(n^2 / B)
 type fenwick2D [][]int
 
 func newFenwickTree2D(n, m int) fenwick2D {
@@ -322,6 +322,11 @@ func (t fenwick2D) pre(x, y int) (res int) {
 // 左上角为 (x1,y1) 右下角为 (x2,y2) 的子矩形元素和
 func (t fenwick2D) query(x1, y1, x2, y2 int) int {
 	return t.pre(x2, y2) - t.pre(x2, y1-1) - t.pre(x1-1, y2) + t.pre(x1-1, y1-1)
+}
+
+// 另一种写法：第一维度 [l1,r1]，第二维度 [l2,r2]
+func (t fenwick2D) query2(l1, r1, l2, r2 int) int {
+	return t.pre(r1, r2) - t.pre(r1, l2-1) - t.pre(l1-1, r2) + t.pre(l1-1, l2-1)
 }
 
 //
