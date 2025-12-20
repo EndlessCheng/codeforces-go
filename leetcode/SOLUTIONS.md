@@ -185,14 +185,6 @@
 11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
-### 周赛总结
-
-- [如何科学上分（科学刷题）](https://www.bilibili.com/read/cv22332590/)
-- [从周赛中学算法 - 2023·下](https://leetcode.cn/circle/discuss/lUu0KB/)
-- [从周赛中学算法 - 2023·上](https://leetcode.cn/circle/discuss/v2RXSN/)
-- [从周赛中学算法 - 2022·下](https://leetcode.cn/circle/discuss/WR1MJP/)
-- [从周赛中学算法 - 2022·上](https://leetcode.cn/circle/discuss/G0n5iY/)
-
 ### 其他
 
 - 🔥[从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
