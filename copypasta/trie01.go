@@ -35,8 +35,20 @@ import (
 // https://acm.hdu.edu.cn/showproblem.php?pid=6955 异或和 ≥k 的最短区间
 
 // 指针写法，关闭 GC 可以得到明显加速
-// 如果仍然超时，可以改成纯数组写法
 func init() { debug.SetGCPercent(-1) }
+
+/* 如果仍然超时，可以改成数组写法
+
+var nodes [n * (trieBitLen + 3 - n 的二进制长度)]node
+var cur uint
+
+func newNode() *node {
+	cur++
+	nodes[cur] = node{} // 重置
+	return &nodes[cur]
+}
+
+*/
 
 type trie01Node struct {
 	son [2]*trie01Node
@@ -238,19 +250,23 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 // https://codeforces.com/problemset/problem/1983/F 2500
 // https://codeforces.com/problemset/problem/241/B 2700 求个数以及和
 // 另见 maxXorKth
-func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
-	limit++ // 改成 limit+1（求与 v 异或值小于 limit 的元素个数）
+func (t *trie01) countLimitXOR(v, high int) (cnt int) {
+	// 改成 high+1（求与 v 异或值小于 high 的元素个数），方便计算
+	// 注意 high+1 可能等于 1<<trieBitLen
+	// 所以 trieBitLen 也要加一（比如 30 改成 31）
+	high++
+
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
-		if limit>>i&1 > 0 {
+		if high>>i&1 > 0 {
 			if o.son[b] != nil {
 				cnt += o.son[b].cnt
 			}
 			b ^= 1
 		}
 		if o.son[b] == nil {
-			return
+			break
 		}
 		o = o.son[b]
 	}
@@ -373,7 +389,8 @@ func (t *trie01) mex(xor int) (mex int) {
 // roots[i+1] = roots[i].put(v, trieBitLen-1)
 // 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
 // todo https://www.luogu.com.cn/problem/P4592
-// todo https://codeforces.com/problemset/problem/1777/F
+// https://codeforces.com/problemset/problem/1777/F 2400 todo
+// https://codeforces.com/problemset/problem/1665/E 2500 todo
 func (o trie01Node) put(v, k int) *trie01Node {
 	if k < 0 {
 		return &o
@@ -387,9 +404,9 @@ func (o trie01Node) put(v, k int) *trie01Node {
 	return &o
 }
 
-// n 个 [0, 2^k) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
-// n*(k-logn) + 2^(logn+1) - 1, 这里 logn = int(log_2(n)) = bit.Len(n)-1
-// 实际使用的时候，可以简单地用 n*(k+3-bit.Len(n)) 代替
+// n 个 [0, 2^w) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
+// n*(w-logn) + 2^(logn+1) - 1, 这里 logn = int(log_2(n)) = bit.Len(n)-1
+// 实际使用的时候，可以简单地用 n*(w+3-bit.Len(n)) 代替
 // O(max(n*(logU-logn),n))
 // 构造方法：先用不超过 n 的最大的 2 的幂次个数来构建一个完全二叉树，然后把剩余的数放入二叉树的下一层
 // 传入 n 和数据范围上限 maxV
