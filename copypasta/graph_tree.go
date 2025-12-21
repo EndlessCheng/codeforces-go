@@ -32,6 +32,7 @@ https://atcoder.jp/contests/abc333/tasks/abc333_d
 https://codeforces.com/problemset/problem/1675/D 1300 树分成尽量少的链
 https://codeforces.com/problemset/problem/580/C 1500
 https://codeforces.com/problemset/problem/34/D 1600
+https://www.luogu.com.cn/problem/P2420
 
 巧妙 DFS
 https://atcoder.jp/contests/abc163/tasks/abc163_f 2470=CF2579 树上路径计数
@@ -292,6 +293,7 @@ func (*tree) depthSize(root int, g [][]int, v int) {
 // https://codeforces.com/problemset/problem/877/E 2000
 // https://codeforces.com/problemset/problem/383/C 2000
 // https://codeforces.com/problemset/problem/620/E 2100
+// https://codeforces.com/problemset/problem/893/F 2300 可持久化线段树
 // https://codeforces.com/problemset/problem/1528/C 2300 好题（需要充分利用入出时间戳的性质）
 // https://codeforces.com/problemset/problem/2002/D2 2300
 // https://codeforces.com/problemset/problem/258/E 2400
@@ -523,6 +525,7 @@ func (*tree) minPathCover(g [][]int) int {
 // https://codeforces.com/problemset/problem/1617/E 2700 转换成求部分直径 
 // - https://oeis.org/A072339
 // https://codeforces.com/problemset/problem/516/D 2800
+// https://codeforces.com/problemset/problem/842/E 2800 动态加点求直径端点个数
 // https://www.luogu.com.cn/problem/P3304 必须边 
 // https://www.luogu.com.cn/problem/T238762?contestId=65460 求树中任意一个与 x 距离为 k 的点 
 // https://www.lanqiao.cn/problems/5890/learning/?contest_id=145
@@ -1142,6 +1145,8 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // - https://www.luogu.com.cn/problem/P3292 [SCOI2016] 幸运数字
 // https://codeforces.com/problemset/problem/372/D 2600
 // - 先把这题做了 https://www.luogu.com.cn/problem/P3320
+// https://codeforces.com/problemset/problem/842/E 2800 动态加点求直径端点个数
+// https://codeforces.com/problemset/problem/986/E 2800
 // https://codeforces.com/problemset/problem/176/E 3100
 // - 简化版 https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths-ii/
 // - 静态查询 https://atcoder.jp/contests/typical90/tasks/typical90_ai
@@ -1202,8 +1207,8 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		if d > dep[v] {
 			panic(-1)
 		}
-		for k := uint(dep[v] - d); k > 0; k &= k - 1 {
-			v = pa[v][bits.TrailingZeros(k)]
+		for k := uint32(dep[v] - d); k > 0; k &= k - 1 {
+			v = pa[v][bits.TrailingZeros32(k)]
 		}
 		return v
 	}
@@ -1282,7 +1287,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	// O(1) 求法见长链剖分
 	uptoKthPa := func(v, k int) int {
 		for ; k > 0 && v != -1; k &= k - 1 {
-			v = pa[v][bits.TrailingZeros(uint(k))]
+			v = pa[v][bits.TrailingZeros32(uint32(k))]
 		}
 		return v
 	}
@@ -1389,8 +1394,8 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 			if dep[v] > dep[w] {
 				v, w = w, v
 			}
-			for k := dep[w] - dep[v]; k > 0; k &= k - 1 {
-				p := pa[w][bits.TrailingZeros(uint(k))]
+			for k := uint32(dep[w] - dep[v]); k > 0; k &= k - 1 {
+				p := pa[w][bits.TrailingZeros32(k)]
 				maxWt = merge(maxWt, p.maxWt)
 				w = p.p
 			}
@@ -1639,6 +1644,7 @@ func (*tree) differenceInTree(n, root int, g, queries [][]int) []int {
 //
 // 题单 https://www.luogu.com.cn/training/3682#problems
 // https://codeforces.com/problemset/problem/1111/E 2500
+// https://codeforces.com/problemset/problem/1725/E 2500
 // https://codeforces.com/problemset/problem/613/D 2800 入门题
 // https://codeforces.com/problemset/problem/1320/E 3000 换根 DP
 // https://www.luogu.com.cn/problem/P4103 [HE14] 大工程（点对距离和，最短路径，最长路径/直径）
@@ -1654,37 +1660,47 @@ func (*tree) virtualTree(g [][]int) {
 	dfn := make([]int, len(g))
 	ts := 0
 	_ = ts
-	// 向上查找<lcaBinaryLifting>
-	// 在 buildPa 开头添加：
+
+	// g.lca
+	// 在 LCA 模板（向上查找 lcaBinaryLifting）的 buildPa 的开头添加：
 	// dfn[v] = ts; ts++
 
 	vt := make([][]int, len(g))
-	// vt := make([][]edge, len(g))
-	inNodes := make([]int, len(g))
-	for i := range inNodes {
-		inNodes[i] = -1
+	// vt := make([][]edge, len(g)) //（可选）
+	isNode := make([]int, len(g)) // 用来区分是关键节点还是 LCA
+	for i := range isNode {
+		isNode[i] = -1
 	}
 	addVtEdge := func(v, w int) {
 		vt[v] = append(vt[v], w)
+
+		// （可选）
 		// wt := dep[w] - dep[v]
 		// vt[v] = append(vt[v], edge{w, wt})
 		// 也可以在 DFS 的时候算出边权
 	}
+
 	const root = 0
 	st := []int{root} // 用根节点作为栈底哨兵
-	// nodes 为询问的「关键节点」
+
+	// nodes 为每次询问的「关键节点」
 	do := func(nodes []int, qid int) {
 		slices.SortFunc(nodes, func(a, b int) int { return dfn[a] - dfn[b] })
+
+		// 重置虚树
 		vt[root] = vt[root][:0]
 		st = st[:1]
+
 		for _, v := range nodes {
-			inNodes[v] = qid // 时间戳
+			isNode[v] = qid
 			if v == root {
 				continue
 			}
-			// ... 某些题目需要判断 v 和 pa[v][0] 是否都在 nodes 中
+
+			// （可选）某些题目需要判断 v 和 pa[v][0] 是否都在 nodes 中
+
 			vt[v] = vt[v][:0]
-			lca := getLCA(st[len(st)-1], v)
+			lca := getLCA(st[len(st)-1], v) // 拐点
 			// 回溯
 			for len(st) > 1 && dfn[lca] <= dfn[st[len(st)-2]] {
 				addVtEdge(st[len(st)-2], st[len(st)-1])
@@ -1694,10 +1710,12 @@ func (*tree) virtualTree(g [][]int) {
 				vt[lca] = vt[lca][:0]
 				addVtEdge(lca, st[len(st)-1])
 				st[len(st)-1] = lca // 加到栈中
-				// ... 标记 lca 是虚点
+
+				// （可选）标记 lca 是虚点
 			}
 			st = append(st, v)
 		}
+
 		// 最后的回溯
 		for i := 1; i < len(st); i++ {
 			addVtEdge(st[i-1], st[i])
@@ -1709,17 +1727,17 @@ func (*tree) virtualTree(g [][]int) {
 		// 最长路径（直径）
 		const inf int = 1e18
 		sumWt, gMinL, gMaxL := 0, inf, 0
-		var f func(int) (int, int, int)
-		f = func(v int) (size, minL, maxL int) {
+		var dfs func(int) (int, int, int)
+		dfs = func(v int) (size, minL, maxL int) {
 			// 如果 inNodes[v] != qid，那么 v 只是关键节点之间路径上的「拐点」
 			// 在处理虚树 DP 时，可能需要额外考虑 v 不在 nodes 中的情况
-			imp := inNodes[v] == qid
+			imp := isNode[v] == qid
 			if imp {
 				size = 1
 			}
 			minL = inf
 			for _, w := range vt[v] {
-				sz, mn, mx := f(w)
+				sz, mn, mx := dfs(w)
 				wt := dep[w] - dep[v]
 				sumWt += wt * sz * (len(nodes) - sz) // 贡献法
 				size += sz
@@ -1741,17 +1759,16 @@ func (*tree) virtualTree(g [][]int) {
 			}
 			return
 		}
+
 		rt := root
-		if inNodes[rt] != qid && len(vt[rt]) == 1 {
+		if isNode[rt] != qid && len(vt[rt]) == 1 {
 			// 注意 root 只是一个哨兵，得从真正的根节点开始
 			rt = vt[rt][0]
 		}
-		f(rt)
+		dfs(rt)
 
-		// 收尾工作：reset 数组
-		//for _, v := range nodes {
-		//	idx[v] = 0
-		//}
+		// （可选）收尾工作：重置额外的辅助数组
+		//for _, v := range nodes { idx[v] = 0 }
 	}
 
 	_ = do
