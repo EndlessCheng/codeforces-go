@@ -1,3 +1,5 @@
+## 方法一：用等差数列模拟
+
 示例 1 的操作流程如下：
 
 - 序列一开始是 $[1, 2, 3, 4, 5, 6, 7, 8]$，这是一个首项为 $1$，公差为 $1$ 的等差数列。
@@ -23,6 +25,15 @@ class Solution:
             d *= -2
             n = (n + 1) // 2
         return start
+```
+
+```py [sol-Python3 range]
+class Solution:
+    def lastInteger(self, n: int) -> int:
+        r = range(1, n + 1)
+        while len(r) > 1:
+            r = r[::2][::-1]
+        return r[0]
 ```
 
 ```java [sol-Java]
@@ -69,18 +80,64 @@ func lastInteger(n int64) int64 {
 - 时间复杂度：$\mathcal{O}(\log n)$。根据 [下取整恒等式及其应用](https://zhuanlan.zhihu.com/p/1893240318645732760)，$k$ 次操作后序列长度为 $\left\lceil\dfrac{n}{2^k}\right\rceil$，所以操作次数为 $\mathcal{O}(\log n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 附
+## 方法二：位运算
 
-Python3 可以直接用 $\texttt{range}$ 模拟。
+为方便计算，把初始序列改成从 $0$ 开始，即 $0,1,2,\ldots,n-1$。
 
-```py
+第一次操作，我们删除了所有的奇数，剩余的都是偶数。这意味着，（从 $0$ 开始的）最终答案，二进制最低位一定是 $0$。
+
+把剩余元素 $0,2,4,\ldots$ 全部右移一位，我们又得到了序列 $0,1,2,\ldots$
+
+在第二次操作中，我们要从右往左删除：
+
+- 如果序列最后一个数是偶数，例如 $0,1,2,3,4$，那么我们会删除所有的奇数，剩余的都是偶数。
+- 如果序列最后一个数是奇数，例如 $0,1,2,3,4,5$，那么我们会删除所有的偶数，剩余的都是奇数。
+
+这意味着，（从 $0$ 开始的）最终答案，二进制从低到高第二位一定等于 $n-1$ 从低到高第二位。
+
+依此类推。
+
+一般地，（从 $0$ 开始的）最终答案，二进制从低到高第 $1,3,5,\ldots$ 位一定是 $0$；第 $2,4,6,\ldots$ 位一定和 $n-1$ 的第 $2,4,6,\ldots$ 位相同。
+
+算出答案后，把答案加一（因为原题的序列是从 $1$ 开始的）。
+
+```py [sol-Python3]
 class Solution:
     def lastInteger(self, n: int) -> int:
-        r = range(1, n + 1)
-        while len(r) > 1:
-            r = r[::2][::-1]
-        return r[0]
+        MASK = 0xAAAAAAAAAAAAAAA  # ...1010
+        return ((n - 1) & MASK) + 1  # 取出 n-1 的从低到高第 2,4,6,... 位，最后再加一（从 1 开始）
 ```
+
+```java [sol-Java]
+class Solution {
+    public long lastInteger(long n) {
+        final long MASK = 0xAAAAAAAAAAAAAAAL; // ...1010
+        return ((n - 1) & MASK) + 1; // 取出 n-1 的从低到高第 2,4,6,... 位，最后再加一（从 1 开始）
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long lastInteger(long long n) {
+        constexpr long long MASK = 0xAAAAAAAAAAAAAAALL; // ...1010
+        return ((n - 1) & MASK) + 1; // 取出 n-1 的从低到高第 2,4,6,... 位，最后再加一（从 1 开始）
+    }
+};
+```
+
+```go [sol-Go]
+func lastInteger(n int64) int64 {
+	const mask = 0xAAAAAAAAAAAAAAA // ...1010
+	return (n-1)&mask + 1 // 取出 n-1 的从低到高第 2,4,6,... 位，最后再加一（从 1 开始）
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 相似题目
 
