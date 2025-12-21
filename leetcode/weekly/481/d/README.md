@@ -252,10 +252,10 @@ func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 		nodesMap[x] = append(nodesMap[x], i)
 	}
 
-	vt := make([][]int, n) // 虚树
-	tin := make([]int, n)  // 时间戳
-	for i := range tin {
-		tin[i] = -1
+	vt := make([][]int, n)   // 虚树
+	isNode := make([]int, n) // 用来区分是关键节点还是 LCA
+	for i := range isNode {
+		isNode[i] = -1
 	}
 	addVtEdge := func(v, w int) {
 		vt[v] = append(vt[v], w) // 往虚树上添加一条有向边
@@ -263,13 +263,13 @@ func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 	const root = 0
 	st := []int{root} // 用根节点作为栈底哨兵
 
-	for t, nodes := range nodesMap {
-		// 对于相同点权的这一组节点 nodes，构建虚树
+	for val, nodes := range nodesMap {
+		// 对于相同点权的这一组关键节点 nodes，构建虚树
 		slices.SortFunc(nodes, func(a, b int) int { return dfn[a] - dfn[b] })
 		vt[root] = vt[root][:0] // 重置虚树
 		st = st[:1]
 		for _, v := range nodes {
-			tin[v] = t // 记录时间戳
+			isNode[v] = val
 			if v == root {
 				continue
 			}
@@ -294,8 +294,8 @@ func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 
 		var dfs func(int) int
 		dfs = func(v int) (size int) {
-			// 如果 tin[v] != t，那么 v 只是节点之间路径上的「拐点」
-			if tin[v] == t {
+			// 如果 isNode[v] != t，那么 v 只是关键节点之间路径上的「拐点」
+			if isNode[v] == val {
 				size = 1
 			}
 			for _, w := range vt[v] {
@@ -309,8 +309,8 @@ func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 		}
 
 		rt := root
-		if tin[rt] != t && len(vt[rt]) == 1 {
-			// 注意 root 只是一个哨兵，得从真正的根节点开始
+		if isNode[rt] != val && len(vt[rt]) == 1 {
+			// 注意 root 只是一个哨兵，不一定在虚树上，得从真正的根节点开始
 			rt = vt[rt][0]
 		}
 		dfs(rt)
