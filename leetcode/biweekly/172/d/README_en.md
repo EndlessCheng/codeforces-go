@@ -6,8 +6,8 @@ Right-shift all remaining elements $0,2,4,\ldots$ by one bit, and we obtain the 
 
 In the second operation, we delete from right to left:
 
-- If the last number of the sequence is even, for example $0,1,2,3,4$ (which corresponds to the initial case where $n-1=8$ or $9$), then we will delete all odd numbers, leaving only even numbers.
-- If the last number of the sequence is odd, for example $0,1,2,3,4,5$ (which corresponds to the initial case where $n-1=10$ or $11$), then we will delete all even numbers, leaving only odd numbers.
+- If the last number of the sequence is even, for example $0,1,2,3,4$ (which corresponds to the initial case where $n-1=8$ or $9$), then we will delete all odd numbers, leaving only even numbers, which matches the parity of the last number of the sequence. Note that the last number of the sequence is equal to $(n-1)$ right-shifted by one bit.
+- If the last number of the sequence is odd, for example $0,1,2,3,4,5$ (which corresponds to the initial case where $n-1=10$ or $11$), then we will delete all even numbers, leaving only odd numbers, which matches the parity of the last number of the sequence. Note that the last number of the sequence is equal to $(n-1)$ right-shifted by one bit.
 
 This means that, for the final answer (starting from $0$), the second bit from low to high in binary must be equal to the second bit from low to high of $n-1$.
 
