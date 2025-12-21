@@ -27,8 +27,6 @@ $$
 
 本题涉及到中途取模，以及减法的取模，原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ## 写法一：查表法
 
 ```py [sol-Python3]

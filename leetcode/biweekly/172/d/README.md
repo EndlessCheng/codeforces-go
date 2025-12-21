@@ -10,16 +10,17 @@
 考察上述流程：
 
 - 每次操作，删除所有奇数下标数字。当 $n$ 是偶数时，删除一半，当 $n$ 是奇数时，删除 $\left\lfloor\dfrac{n}{2}\right\rfloor$ 个（比如 $n=5$ 时删除 $2$ 个）。所以每次都会删除 $\left\lfloor\dfrac{n}{2}\right\rfloor$ 个元素，序列元素个数从 $n$ 变成 $\left\lceil\dfrac{n}{2}\right\rceil$。
+- 间隔地删除一个等差数列中的元素，得到的仍然是一个等差数列。
 - 公差初始为 $d=1$，每次操作把 $d$ 乘以 $-2$。
 - 如果 $n$ 是奇数，那么序列的最后一个数一定保留。操作后，首项 $\textit{start}$ 变成序列的最后一个数 $\textit{start} + (n-1)\cdot d$，其中 $n$ 和 $d$ 都是操作之前的值。
 - 如果 $n$ 是偶数，那么序列的最后一个数被删除，倒数第二个数保留。操作后，首项 $\textit{start}$ 变成序列的倒数第二个数 $\textit{start} + (n-2)\cdot d$，其中 $n$ 和 $d$ 都是操作之前的值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV14LqmBMECK/?t=16m13s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def lastInteger(self, n: int) -> int:
-        start = d = 1  # 等差数列首项，公差
+        start = d = 1  # 等差数列的首项和公差
         while n > 1:
             start += (n - 2 + n % 2) * d
             d *= -2
@@ -30,6 +31,8 @@ class Solution:
 ```py [sol-Python3 range]
 class Solution:
     def lastInteger(self, n: int) -> int:
+        # range 是一个等差数列对象，不是 list
+        # 计算 len、计算切片都可以用数学公式做到 O(1) 时间复杂度
         r = range(1, n + 1)
         while len(r) > 1:
             r = r[::2][::-1]
@@ -54,7 +57,7 @@ class Solution {
 class Solution {
 public:
     long long lastInteger(long long n) {
-        long long start = 1, d = 1; // 等差数列首项，公差
+        long long start = 1, d = 1; // 等差数列的首项和公差
         for (; n > 1; n = (n + 1) / 2) {
             start += (n - 2 + n % 2) * d;
             d *= -2;
@@ -66,7 +69,7 @@ public:
 
 ```go [sol-Go]
 func lastInteger(n int64) int64 {
-	start, d := int64(1), int64(1) // 等差数列首项，公差
+	start, d := int64(1), int64(1) // 等差数列的首项和公差
 	for ; n > 1; n = (n + 1) / 2 {
 		start += (n - 2 + n%2) * d
 		d *= -2
@@ -87,6 +90,8 @@ func lastInteger(n int64) int64 {
 第一次操作，我们删除了所有的奇数，剩余的都是偶数。这意味着，（从 $0$ 开始的）最终答案，二进制最低位一定是 $0$。
 
 把剩余元素 $0,2,4,\ldots$ 全部右移一位，我们又得到了序列 $0,1,2,\ldots$
+
+在此基础上，执行第二次操作。
 
 在第二次操作中，我们要从右往左删除：
 
