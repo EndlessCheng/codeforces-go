@@ -43,6 +43,44 @@ func interactionCosts1(n int, edges [][]int, group []int) (ans int64) {
 func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 	g := make([][]int, n)
 	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+
+	mx := slices.Max(group)
+	total := make([]int, mx+1)
+	for _, x := range group {
+		total[x]++
+	}
+
+	for target, tot := range total {
+		if tot == 0 {
+			continue
+		}
+		var dfs func(int, int) int
+		dfs = func(x, fa int) (cntX int) {
+			if group[x] == target {
+				cntX = 1
+			}
+			for _, y := range g[x] {
+				if y == fa {
+					continue
+				}
+				cntY := dfs(y, x)
+				ans += int64(cntY) * int64(tot-cntY)
+				cntX += cntY
+			}
+			return
+		}
+		dfs(0, -1)
+	}
+	return
+}
+
+func interactionCosts3(n int, edges [][]int, group []int) (ans int64) {
+	g := make([][]int, n)
+	for _, e := range edges {
 		v, w := e[0], e[1]
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)

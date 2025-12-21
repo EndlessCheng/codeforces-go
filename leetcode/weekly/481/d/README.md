@@ -22,6 +22,8 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1HsqmBwEy3/)，顺带介绍了**虚树**的思路。
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def interactionCosts(self, n: int, edges: List[List[int]], group: List[int]) -> int:
@@ -178,6 +180,171 @@ func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 
 - 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{group})\le 20$。
 - 空间复杂度：$\mathcal{O}(nU)$。最坏情况下，递归栈需要保存 $n$ 个长为 $\mathcal{O}(U)$ 的数组。
+
+## 写法二
+
+也可以把枚举点权的过程写在 DFS 外面，这样无需在 DFS 中创建数组（哈希表），空间复杂度更低。
+
+```py [sol-Python3]
+class Solution:
+    def interactionCosts(self, n: int, edges: List[List[int]], group: List[int]) -> int:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+        
+        def dfs(x: int, fa: int) -> int:
+            nonlocal ans
+            cnt_x = 1 if group[x] == target else 0
+            for y in g[x]:
+                if y == fa:
+                    continue
+                cnt_y = dfs(y, x)
+                ans += cnt_y * (tot - cnt_y)
+                cnt_x += cnt_y
+            return cnt_x
+
+        ans = 0
+        for target, tot in Counter(group).items():
+            dfs(0, -1)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private long ans = 0;
+
+    public long interactionCosts(int n, int[][] edges, int[] group) {
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0];
+            int y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+
+        int mx = 0;
+        for (int x : group) {
+            mx = Math.max(mx, x);
+        }
+
+        int[] total = new int[mx + 1];
+        for (int x : group) {
+            total[x]++;
+        }
+
+        for (int target = 1; target <= mx; target++) {
+            int tot = total[target];
+            if (tot > 0) {
+                dfs(0, -1, g, group, target, tot);
+            }
+        }
+
+        return ans;
+    }
+
+    private int dfs(int x, int fa, List<Integer>[] g, int[] group, int target, int tot) {
+        int cntX = group[x] == target ? 1 : 0;
+        for (int y : g[x]) {
+            if (y == fa) {
+                continue;
+            }
+            int cntY = dfs(y, x, g, group, target, tot);
+            ans += (long) cntY * (tot - cntY);
+            cntX += cntY;
+        }
+        return cntX;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long interactionCosts(int n, vector<vector<int>>& edges, vector<int>& group) {
+        vector<vector<int>> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            g[x].push_back(y);
+            g[y].push_back(x);
+        }
+
+        int mx = ranges::max(group);
+        vector<int> total(mx + 1);
+        for (int x : group) {
+            total[x]++;
+        }
+
+        long long ans = 0;
+        for (int target = 1; target <= mx; target++) {
+            int tot = total[target];
+            if (tot == 0) {
+                continue;
+            }
+            auto dfs = [&](this auto&& dfs, int x, int fa) -> int {
+                int cnt_x = group[x] == target;
+                for (int y : g[x]) {
+                    if (y == fa) {
+                        continue;
+                    }
+                    int cnt_y = dfs(y, x);
+                    ans += 1LL * cnt_y * (tot - cnt_y);
+                    cnt_x += cnt_y;
+                }
+                return cnt_x;
+            };
+            dfs(0, -1);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
+	g := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+
+	mx := slices.Max(group)
+	total := make([]int, mx+1)
+	for _, x := range group {
+		total[x]++
+	}
+
+	for target, tot := range total {
+		if tot == 0 {
+			continue
+		}
+		var dfs func(int, int) int
+		dfs = func(x, fa int) (cntX int) {
+			if group[x] == target {
+				cntX = 1
+			}
+			for _, y := range g[x] {
+				if y == fa {
+					continue
+				}
+				cntY := dfs(y, x)
+				ans += int64(cntY) * int64(tot-cntY)
+				cntX += cntY
+			}
+			return
+		}
+		dfs(0, -1)
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{group})\le 20$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 附：与 U 无关的做法——虚树
 
