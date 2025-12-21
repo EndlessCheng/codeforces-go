@@ -83,7 +83,7 @@ $$
 
 [证明+具体操作方案](https://zhuanlan.zhihu.com/p/1945782212176909162)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1HsqmBwEy3/?t=46m19s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

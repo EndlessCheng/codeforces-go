@@ -2,7 +2,7 @@
 
 计算 $\textit{rev} \cdot 10 + d$，可以把数字 $d$ 添加到 $\textit{rev}$ 的末尾。例如 $32\cdot 10 + 1 = 321$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1HsqmBwEy3/?t=41m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -62,7 +62,7 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(\log n)$。循环次数等于 $n$ 的十进制长度 $\mathcal{O}(\log n)$。
-- 空间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(\log n)$ 或 $\mathcal{O}(1)$，取决于是否使用字符串。
 
 ## 分类题单
 

@@ -4,15 +4,15 @@
 
 也就是用总代价，减去最大代价和，即为答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1HsqmBwEy3/?t=43m38s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def minCost(self, s: str, cost: List[int]) -> int:
-        sum_ = defaultdict(int)
+        group_cost_sum = defaultdict(int)
         for ch, x in zip(s, cost):
-            sum_[ch] += x
-        return sum(sum_.values()) - max(sum_.values())
+            group_cost_sum[ch] += x
+        return sum(group_cost_sum.values()) - max(group_cost_sum.values())
 ```
 
 ```java [sol-Java]

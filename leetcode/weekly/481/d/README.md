@@ -20,7 +20,7 @@ $$
 
 所有边的贡献的总和，即为最终答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1HsqmBwEy3/)，顺带介绍了**虚树**的思路。
 
 ```py [sol-Python3]
 class Solution:
@@ -30,10 +30,10 @@ class Solution:
             g[x].append(y)
             g[y].append(x)
 
-        total = Counter(group)
+        total_cnt = Counter(group)
         ans = 0
 
-        def dfs(x: int, fa: int) -> defaultdict:
+        def dfs(x: int, fa: int) -> Dict[int, int]:
             nonlocal ans
             cnt_x = defaultdict(int)
             cnt_x[group[x]] = 1
@@ -42,7 +42,7 @@ class Solution:
                     continue
                 cnt_y = dfs(y, x)
                 for i, c in cnt_y.items():
-                    ans += c * (total[i] - c)
+                    ans += c * (total_cnt[i] - c)
                     cnt_x[i] += c
             return cnt_x
 
@@ -181,7 +181,11 @@ func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 
 ## 附：与 U 无关的做法——虚树
 
+**前置知识**：[最近公共祖先](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/)。
+
 对相同的 $\textit{group}[i]$ 构建 [虚树](https://oi-wiki.org/graph/virtual-tree/)，虚树上的相邻节点之间的边权，等于原树上这两点的最短距离。此时这条边的贡献为：边权乘以左右两个连通块的大小（节点个数）的乘积。
+
+下面用单调栈建树，初次学习的同学可以用排序法，实现简单（但常数略大）。
 
 ```go [sol-Go]
 func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
@@ -270,7 +274,7 @@ func interactionCosts(n int, edges [][]int, group []int) (ans int64) {
 				continue
 			}
 			vt[v] = vt[v][:0]
-			lca := getLCA(st[len(st)-1], v) // 拐点也加到虚树中
+			lca := getLCA(st[len(st)-1], v) // 路径的拐点（LCA）也加到虚树中
 			// 回溯，加边
 			for len(st) > 1 && dfn[lca] <= dfn[st[len(st)-2]] {
 				addVtEdge(st[len(st)-2], st[len(st)-1])
