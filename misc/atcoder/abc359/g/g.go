@@ -84,9 +84,9 @@ func run(in io.Reader, out io.Writer) {
 	}
 
 	vt := make([][]int, n)
-	tin := make([]int, n)
-	for i := range tin {
-		tin[i] = -1
+	isNode := make([]int, n)
+	for i := range isNode {
+		isNode[i] = -1
 	}
 	addEdge := func(v, w int) {
 		vt[v] = append(vt[v], w)
@@ -99,7 +99,7 @@ func run(in io.Reader, out io.Writer) {
 		vt[root] = vt[root][:0]
 		st = st[:1]
 		for _, v := range nodes {
-			tin[v] = t
+			isNode[v] = t
 			if v == root {
 				continue
 			}
@@ -122,7 +122,7 @@ func run(in io.Reader, out io.Writer) {
 
 		var dfs func(int) int
 		dfs = func(v int) (size int) {
-			if tin[v] == t {
+			if isNode[v] == t {
 				size = 1
 			}
 			for _, w := range vt[v] {
@@ -135,7 +135,7 @@ func run(in io.Reader, out io.Writer) {
 		}
 
 		rt := root
-		if tin[rt] != t && len(vt[rt]) == 1 {
+		if isNode[rt] != t && len(vt[rt]) == 1 {
 			rt = vt[rt][0]
 		}
 		dfs(rt)
