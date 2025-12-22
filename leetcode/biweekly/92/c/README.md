@@ -173,6 +173,10 @@ func bestClosingTime(customers string) (ans int) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{customers}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 相似题目
+
+[3694. 删除子字符串后不同的终点](https://leetcode.cn/problems/distinct-points-reachable-after-substring-removal/)
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
