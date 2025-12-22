@@ -1,17 +1,12 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 )
 
 // https://space.bilibili.com/206214
-func cf1822E(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
-
+func cf1822E(in io.Reader, out io.Writer) {
 	var T, n int
 	var s string
 o:
@@ -22,26 +17,26 @@ o:
 			continue
 		}
 
-		cnt := [26]int{}
+		total := [26]int{}
 		for _, b := range s {
-			cnt[b-'a']++
-			if cnt[b-'a'] > n/2 {
+			total[b-'a']++
+			if total[b-'a'] > n/2 {
 				Fprintln(out, -1)
 				continue o
 			}
 		}
 
-		tot, mx := 0, 0
-		same := [26]int{}
-		for i := 0; i < n/2; i++ {
+		cnt := [26]int{}
+		k, mx := 0, 0
+		for i := range n / 2 {
 			if s[i] == s[n-1-i] {
-				tot++
-				same[s[i]-'a']++
-				mx = max(mx, same[s[i]-'a'])
+				k++
+				cnt[s[i]-'a']++
+				mx = max(mx, cnt[s[i]-'a'])
 			}
 		}
-		Fprintln(out, max((tot+1)/2, mx))
+		Fprintln(out, max((k+1)/2, mx))
 	}
 }
 
-//func main() { cf1822E(os.Stdin, os.Stdout) }
+//func main() { cf1822E(bufio.NewReader(os.Stdin), os.Stdout) }
