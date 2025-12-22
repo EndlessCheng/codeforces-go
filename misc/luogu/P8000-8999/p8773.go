@@ -21,7 +21,7 @@ func p8773(in io.Reader, _w io.Writer) {
 		pos[v] = i
 	}
 
-	for i := 1; i <= n; i++ {
+	for i := 1; i <= m; i++ {
 		Fscan(in, &l, &r)
 		if maxI[r] >= l {
 			Fprintln(out, "yes")
