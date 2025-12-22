@@ -69,8 +69,9 @@ func cf593D(in io.Reader, _w io.Writer) {
 				if dep[v] > dep[w] {
 					v, w = w, v
 				}
-				wt /= es[paInfo[w].i].wt
-				w = find(paInfo[w].to)
+				p := paInfo[w]
+				wt /= es[p.i].wt
+				w = find(p.to)
 			}
 			Fprintln(out, wt)
 		} else {
