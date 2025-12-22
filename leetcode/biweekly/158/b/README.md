@@ -17,7 +17,7 @@ $$
 
 分别对应继续处于做空中，或者在第 $i$ 天卖出股票，开始做空（开空）。
 
-此外，对于 $\textit{dfs}(i,j,0)$，在计算最大值时额外考虑在第 $i$ 天买回股票（平空）的情况，即 $\textit{dfs}(i,j,2) - \textit{prices}[i]$。
+此外，对于 $\textit{dfs}(i,j,0)$，在计算最大值时额外考虑在第 $i$ 天买回股票（平空）的情况，即 $\textit{dfs}(i-1,j,2) - \textit{prices}[i]$。
 
 注意本题可能算出负数，$\textit{memo}$ 数组可以初始化成 $\infty$ 或者 $-\infty$。
 
