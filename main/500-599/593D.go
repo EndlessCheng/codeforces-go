@@ -25,21 +25,6 @@ func cf593D(in io.Reader, _w io.Writer) {
 		g[w] = append(g[w], nb{v, i})
 	}
 
-	faInfo := make([]nb, n)
-	dep := make([]int, n)
-	var dfs func(int, int)
-	dfs = func(v, fa int) {
-		for _, e := range g[v] {
-			w := e.to
-			if w != fa {
-				faInfo[w] = nb{v, e.i}
-				dep[w] = dep[v] + 1
-				dfs(w, v)
-			}
-		}
-	}
-	dfs(0, -1)
-
 	fa := make([]int, n)
 	for i := range fa {
 		fa[i] = i
@@ -55,6 +40,25 @@ func cf593D(in io.Reader, _w io.Writer) {
 		return rt
 	}
 
+	paInfo := make([]nb, n)
+	dep := make([]int, n)
+	var dfs func(int, int)
+	dfs = func(v, pa int) {
+		for _, e := range g[v] {
+			w := e.to
+			if w == pa {
+				continue
+			}
+			if es[e.i].wt == 1 {
+				fa[w] = find(v)
+			}
+			paInfo[w] = nb{v, e.i}
+			dep[w] = dep[v] + 1
+			dfs(w, v)
+		}
+	}
+	dfs(0, -1)
+
 	for range m {
 		Fscan(in, &op, &v, &w)
 		if op == 1 {
@@ -65,8 +69,8 @@ func cf593D(in io.Reader, _w io.Writer) {
 				if dep[v] > dep[w] {
 					v, w = w, v
 				}
-				wt /= es[faInfo[w].i].wt
-				w = find(faInfo[w].to)
+				wt /= es[paInfo[w].i].wt
+				w = find(paInfo[w].to)
 			}
 			Fprintln(out, wt)
 		} else {
