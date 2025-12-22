@@ -1,6 +1,101 @@
+## 方法一：从左到右
+
 把 $s[i] = \texttt{1}$ 理解成一根红色箭头，指向 $\textit{nums}[i]$。我们需要最大化箭头指向（选择）的元素之和。
 
 一次操作相当于把一根箭头左移一个单位（如果左边有空位的话）。
+
+示例 1 的 $\textit{nums}=[2,1,5,2,3]$，$s=\texttt{01010}$。
+
+- 对于第一根箭头来说，它只能选择 $[2,1]$ 中的数。贪心地，选择最大的数 $2$。
+- 对于第二根箭头来说，它可以选择 $[5,2]$，以及前面剩下的 $1$。贪心地，选择最大的数 $5$。
+- 答案为 $2+5=7$。
+
+我们需要一个数据结构，支持添加遍历过的元素，查询最大值，以及删除最大值（同一个元素选了就不能再选了）。最适合的数据结构是**最大堆**。
+
+```py [sol-Python3]
+class Solution:
+    def maximumScore(self, nums: List[int], s: str) -> int:
+        ans = 0
+        h = []
+        for x, ch in zip(nums, s):
+            heappush(h, -x)  # 取相反数，把 h 视作最大堆
+            if ch == '1':
+                ans += -heappop(h)
+        return ans
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def maximumScore(self, nums: List[int], s: str) -> int:
+        ans = 0
+        h = []
+        for x, ch in zip(nums, s):
+            if ch == '0':
+                heappush(h, -x)  # 取相反数，把 h 视作最大堆
+            else:
+                ans += -heappushpop(h, -x)            
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long maximumScore(int[] nums, String s) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> b - a);
+        long ans = 0;
+        for (int i = 0; i < nums.length; i++) {
+            pq.add(nums[i]);
+            if (s.charAt(i) == '1') {
+                ans += pq.poll();
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maximumScore(vector<int>& nums, string s) {
+        priority_queue<int> pq;
+        long long ans = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            pq.push(nums[i]);
+            if (s[i] == '1') {
+                ans += pq.top();
+                pq.pop();
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maximumScore(nums []int, s string) (ans int64) {
+	h := hp{}
+	for i, x := range nums {
+		heap.Push(&h, x)
+		if s[i] == '1' {
+			ans += int64(heap.Pop(&h).(int))
+		}
+	}
+	return
+}
+
+type hp struct{ sort.IntSlice }
+
+func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
+func (h *hp) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log k_0)$，其中 $n$ 是 $\textit{nums}$ 的长度，$k_0$ 是 $s$ 中的 $\texttt{0}$ 的个数。
+- 空间复杂度：$\mathcal{O}(k_0)$。
+
+## 方法二：从右到左
 
 示例 1 的 $\textit{nums}=[2,1,5,2,3]$，$s=\texttt{01010}$。
 
@@ -130,8 +225,8 @@ func (hp) Pop() (_ any)  { return }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log k)$，其中 $n$ 是 $\textit{nums}$ 的长度，$k$ 是 $s$ 中的 $\texttt{1}$ 的个数。
-- 空间复杂度：$\mathcal{O}(k)$。
+- 时间复杂度：$\mathcal{O}(n\log k_1)$，其中 $n$ 是 $\textit{nums}$ 的长度，$k_1$ 是 $s$ 中的 $\texttt{1}$ 的个数。
+- 空间复杂度：$\mathcal{O}(k_1)$。
 
 ## 专题训练
 
