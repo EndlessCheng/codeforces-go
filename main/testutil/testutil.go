@@ -8,30 +8,26 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 )
 
 type ioFunc func(io.Reader, io.Writer)
 
-func isTLE(f func()) bool {
-	if DebugTLE == 0 || IsDebugging() {
-		f()
-		return false
-	}
+type exReader struct {
+	r   *strings.Reader
+	cnt int
+}
 
-	done := make(chan struct{})
-	timer := time.NewTimer(DebugTLE)
-	defer timer.Stop()
-	go func() {
-		defer close(done)
-		f()
-	}()
-	select {
-	case <-done:
-		return false
-	case <-timer.C:
-		return true
+func (r *exReader) Read(b []byte) (n int, err error) {
+	n, err = r.r.Read(b)
+	if n == 0 {
+		r.cnt++
+		// 库函数会在最后读一次 EOF，这是正常情况
+		// 但如果 n == 0 发生至少两次，那就不正常了
+		if r.cnt >= 2 {
+			fmt.Println("【警告】读入了过多的内容，请检查代码，例如数组大小")
+		}
 	}
+	return
 }
 
 func AssertEqualStringCaseWithPrefix(t *testing.T, testCases [][2]string, targetCaseNum int, runFunc ioFunc, prefix string) {
@@ -60,25 +56,25 @@ func AssertEqualStringCaseWithPrefix(t *testing.T, testCases [][2]string, target
 			}
 			expectedOutput := removeExtraSpace(tc[1])
 
-			mockReader := strings.NewReader(input)
+			mockReader := &exReader{r: strings.NewReader(input)}
 			mockWriter := &strings.Builder{}
 			_f := func() { runFunc(mockReader, mockWriter) }
 			if targetCaseNum == 0 && isTLE(_f) {
 				allPassed = false
-				t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
+				t.Errorf("Time Limit Exceeded %d\n【输入】\n%s", curCaseNum+1, inputInfo)
 				return
-			} 
+			}
 			if targetCaseNum != 0 {
 				_f()
 			}
 
 			// 还有剩余未读入的内容
-			if mockReader.Len() > 0 {
-				t.Log("[警告] 有未读入的内容")
+			if mockReader.r.Len() > 0 {
+				t.Log("【警告】有未读入的内容")
 			}
 
 			actualOutput := removeExtraSpace(mockWriter.String())
-			if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
+			if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\n【输入】\n%s", curCaseNum+1, inputInfo) {
 				allPassed = false
 				handleOutput(actualOutput)
 			}
@@ -230,7 +226,7 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		mockReader = strings.NewReader(input)
 		mockWriter := &strings.Builder{}
 		if isTLE(func() { runFunc(mockReader, mockWriter) }) {
-			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", tc, input)
+			t.Errorf("Time Limit Exceeded %d\n【输入】\n%s", tc, input)
 			continue
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
@@ -238,7 +234,7 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		if DisableLogInput {
 			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d", tc)
 		} else {
-			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", tc, input)
+			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\n【输入】\n%s", tc, input)
 		}
 
 		// 每到 2 的幂次就打印检测了多少个测试数据
