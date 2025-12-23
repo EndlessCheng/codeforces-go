@@ -12,7 +12,8 @@ class Solution:
         a = []
         for row, limit in zip(grid, limits):
             row.sort(reverse=True)
-            a.extend(row[:limit])
+            a += row[:limit]
+
         a.sort(reverse=True)
         return sum(a[:k])
 ```
@@ -29,6 +30,7 @@ class Solution {
                 a.add(row[j]);
             }
         }
+
         a.sort(Collections.reverseOrder());
         long ans = 0;
         for (int i = 0; i < k; i++) {
@@ -74,6 +76,7 @@ public:
             ranges::sort(row, greater());
             a.insert(a.end(), row.begin(), row.begin() + limits[i]);
         }
+
         ranges::sort(a, greater());
         return reduce(a.begin(), a.begin() + k, 0LL);
     }
@@ -90,6 +93,7 @@ public:
             ranges::nth_element(row, row.end() - limits[i]);
             a.insert(a.end(), row.end() - limits[i], row.end());
         }
+
         ranges::nth_element(a, a.end() - k);
         return reduce(a.end() - k, a.end(), 0LL);
     }
@@ -104,6 +108,7 @@ func maxSum(grid [][]int, limits []int, k int) (ans int64) {
 		slices.SortFunc(row, cmp)
 		a = append(a, row[:limits[i]]...)
 	}
+
 	slices.SortFunc(a, cmp)
 	for _, x := range a[:k] {
 		ans += int64(x)
