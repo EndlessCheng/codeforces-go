@@ -5,6 +5,8 @@ import (
 	"io"
 )
 
+// 把 DFS 写在外面可以避免 MLE
+
 // https://github.com/EndlessCheng
 func cf1065F(in io.Reader, out io.Writer) {
 	var n, k int
