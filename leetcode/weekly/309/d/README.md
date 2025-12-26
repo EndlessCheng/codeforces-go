@@ -1,18 +1,13 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，感兴趣的小伙伴可以来 [关注](https://space.bilibili.com/206214/dynamic) 一波哦~
-
----
-
 用两个小顶堆模拟：
 
-- $\textit{idle}$ 维护在 $\textit{start}_i$ 时刻空闲的会议室；
-- $\textit{using}$ 维护在 $\textit{start}_i$ 时刻使用中的会议室。
+- $\textit{idle}$ 维护在 $\textit{start}_i$ 时刻空闲的会议室的编号；
+- $\textit{using}$ 维护在 $\textit{start}_i$ 时刻使用中的会议室的结束时间和编号。
+
+这两类会议室是互补关系，伴随着会议的开始和结束，会议室在这两类中来回倒。
 
 对 $\textit{meetings}$ 按照开始时间排序，然后遍历 $\textit{meetings}$，按照题目要求模拟即可，具体模拟方式见代码。
 
-#### 复杂度分析
-
-- 时间复杂度：$O(n+m(\log n + \log m))$，其中 $m$ 为 $\textit{meetings}$ 的长度。注意每个会议至多入堆出堆各一次。
-- 空间复杂度：$O(n)$。
+本题 [视频讲解](https://www.bilibili.com/video/BV1Dt4y1j7qh) 已出炉，欢迎素质三连，在评论区分享你对这场周赛的看法~
 
 ```py [sol1-Python3]
 class Solution:
@@ -24,7 +19,7 @@ class Solution:
             while using and using[0][0] <= st:
                 heappush(idle, heappop(using)[1])  # 维护在 st 时刻空闲的会议室
             if len(idle) == 0:
-                e, i = heappop(using)  # 没有可用的会议室，那么弹出一个最早结束的会议室
+                e, i = heappop(using)  # 没有可用的会议室，那么弹出一个最早结束的会议室（若有多个同时结束的，会弹出下标最小的）
                 end += e - st  # 更新当前会议的结束时间
             else:
                 i = heappop(idle)
@@ -41,7 +36,7 @@ class Solution:
 class Solution {
     public int mostBooked(int n, int[][] meetings) {
         var cnt = new int[n];
-        var idle = new PriorityQueue<Integer>((a, b) -> Integer.compare(a, b));
+        var idle = new PriorityQueue<Integer>();
         for (var i = 0; i < n; ++i) idle.offer(i);
         var using = new PriorityQueue<Pair<Long, Integer>>((a, b) -> !Objects.equals(a.getKey(), b.getKey()) ? Long.compare(a.getKey(), b.getKey()) : Integer.compare(a.getValue(), b.getValue()));
         Arrays.sort(meetings, (a, b) -> Integer.compare(a[0], b[0]));
@@ -52,7 +47,7 @@ class Solution {
             }
             int id;
             if (idle.isEmpty()) {
-                var p = using.poll(); // 没有可用的会议室，那么弹出一个最早结束的会议室
+                var p = using.poll(); // 没有可用的会议室，那么弹出一个最早结束的会议室（若有多个同时结束的，会弹出下标最小的）
                 end += p.getKey() - st; // 更新当前会议的结束时间
                 id = p.getValue();
             } else id = idle.poll();
@@ -82,7 +77,7 @@ public:
                 using_.pop();
             }
             if (idle.empty()) {
-                auto[e, i] = using_.top(); // 没有可用的会议室，那么弹出一个最早结束的会议室
+                auto[e, i] = using_.top(); // 没有可用的会议室，那么弹出一个最早结束的会议室（若有多个同时结束的，会弹出下标最小的）
                 using_.pop();
                 end += e - st; // 更新当前会议的结束时间
                 id = i;
@@ -116,7 +111,7 @@ func mostBooked(n int, meetings [][]int) (ans int) {
 		}
 		var i int
 		if idle.Len() == 0 {
-			p := heap.Pop(&using).(pair) // 没有可用的会议室，那么弹出一个最早结束的会议室
+			p := heap.Pop(&using).(pair) // 没有可用的会议室，那么弹出一个最早结束的会议室（若有多个同时结束的，会弹出下标最小的）
 			end += p.end - st // 更新当前会议的结束时间
 			i = p.i
 		} else {
@@ -145,3 +140,14 @@ func (h hp2) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
 func (h *hp2) Push(v interface{}) { *h = append(*h, v.(pair)) }
 func (h *hp2) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 ```
+
+
+#### 复杂度分析
+
+- 时间复杂度：$O(n+m(\log n + \log m))$，其中 $m$ 为 $\textit{meetings}$ 的长度。注意每个会议至多入堆出堆各一次。
+- 空间复杂度：$O(n)$。
+
+#### 相似题目
+
+- [1606. 找到处理最多请求的服务器](https://leetcode.cn/problems/find-servers-that-handled-most-number-of-requests/)
+- [1882. 使用服务器处理任务](https://leetcode.cn/problems/process-tasks-using-servers/)
