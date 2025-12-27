@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"slices"
 )
 
 // https://github.com/EndlessCheng
@@ -23,28 +22,24 @@ func cf1842F(in io.Reader, _w io.Writer) {
 		g[w] = append(g[w], v)
 	}
 
-	dep := make([]int, n)
-	var dfs func(int, int)
-	dfs = func(v, fa int) {
-		for _, w := range g[v] {
-			if w != fa {
-				dep[w] = dep[v] + 1
-				dfs(w, v)
-			}
-		}
-	}
-
 	ans := make([]int, n+1)
 	for i := range n {
-		dep[i] = 0
-		dfs(i, -1)
-
-		slices.Sort(dep)
-		s := 0
-		for j, d := range dep {
-			j++
-			s += d
-			ans[j] = max(ans[j], (n-1)*j-s*2)
+		type pair struct{ v, fa int }
+		q := []pair{{i, -1}}
+		s, j := 0, 0
+		for d := 0; q != nil; d++ {
+			tmp := q
+			q = nil
+			for _, p := range tmp {
+				s += d
+				j++
+				ans[j] = max(ans[j], (n-1)*j-s*2)
+				for _, w := range g[p.v] {
+					if w != p.fa {
+						q = append(q, pair{w, p.v})
+					}
+				}
+			}
 		}
 	}
 
