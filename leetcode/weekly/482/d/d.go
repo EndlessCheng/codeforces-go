@@ -14,14 +14,14 @@ func countBalanced(low, high int64) int64 {
 	highS := strconv.FormatInt(high, 10)
 	n := len(highS)
 	diffLH := n - len(lowS)
-	memo := make([][][2]int64, n)
+	memo := make([][]int64, n)
 	for i := range memo {
 		// diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
-		memo[i] = make([][2]int64, n*9+1)
+		memo[i] = make([]int64, n*9+1)
 	}
 
-	var dfs func(int, int, int, bool, bool) int64
-	dfs = func(i, diff, parity int, limitLow, limitHigh bool) (res int64) {
+	var dfs func(int, int, bool, bool) int64
+	dfs = func(i, diff int, limitLow, limitHigh bool) (res int64) {
 		if i == n {
 			if diff != 0 { // 不合法
 				return 0
@@ -29,7 +29,7 @@ func countBalanced(low, high int64) int64 {
 			return 1
 		}
 		if !limitLow && !limitHigh {
-			p := &memo[i][diff+n/2*9][parity] // 保证下标非负
+			p := &memo[i][diff+n/2*9] // 保证下标非负
 			if *p > 0 {
 				return *p - 1
 			}
@@ -46,17 +46,18 @@ func countBalanced(low, high int64) int64 {
 		}
 
 		d := lo
+		// 通过 limit_low 和 i 可以判断能否不填数字，无需 isNum 参数
 		if limitLow && i < diffLH { // 可以不填任何数
-			res = dfs(i+1, diff, parity, true, false) // 上界无约束
-			d = 1                                     // 下面填数字，至少从 1 开始填
+			res = dfs(i+1, diff, true, false) // 上界无约束
+			d = 1 // 下面填数字，至少从 1 开始填
 		}
 
 		for ; d <= hi; d++ {
 			// 下一个位置奇偶性翻转
-			res += dfs(i+1, diff+(parity*2-1)*d, parity^1,
+			res += dfs(i+1, diff+(1-i%2*2)*d,
 				limitLow && d == lo, limitHigh && d == hi)
 		}
 		return
 	}
-	return dfs(0, 0, 1, true, true)
+	return dfs(0, 0, true, true)
 }

@@ -7,7 +7,7 @@
 
 所以只需维护 $\textit{diff} = 奇数位之和 - 偶数位之和$。
 
-此外，还需要知道当前填的是奇数位还是偶数位，用参数 $\textit{parity}$ 表示。
+此外，还需要知道当前填的是奇数位还是偶数位，可以用 $i$ 的奇偶性表示。
 
 注意最小满足要求的数是 $11$，如果 $\textit{high} < 11$，可以直接返回 $0$。
 
@@ -27,7 +27,7 @@ class Solution:
         diff_lh = n - len(low_s)
 
         @cache
-        def dfs(i: int, diff: int, parity: bool, limit_low: bool, limit_high: bool) -> int:
+        def dfs(i: int, diff: int, limit_low: bool, limit_high: bool) -> int:
             if i == n:
                 return 1 if diff == 0 else 0
 
@@ -40,19 +40,18 @@ class Solution:
             # 通过 limit_low 和 i 可以判断能否不填数字，无需 is_num 参数
             if limit_low and i < diff_lh:
                 # 不填数字，上界不受约束
-                res = dfs(i + 1, diff, parity, True, False)
+                res = dfs(i + 1, diff, True, False)
                 start = 1  # 下面填数字，至少从 1 开始填
 
             for d in range(start, hi + 1):
                 res += dfs(i + 1,
-                           diff + (d if parity else -d),
-                           not parity,  # 下一个位置奇偶性翻转
+                           diff + (d if i % 2 else -d),
                            limit_low and d == lo,
                            limit_high and d == hi)
 
             return res
 
-        return dfs(0, 0, True, True, True)
+        return dfs(0, 0, True, True)
 ```
 
 ```java [sol-Java]
@@ -69,19 +68,19 @@ class Solution {
 
         int n = highS.length;
         // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
-        long[][][] memo = new long[n][n * 9 + 1][2];
+        long[][] memo = new long[n][n * 9 + 1];
 
-        return dfs(0, n / 2 * 9, 1, true, true, lowS, highS, memo);
+        return dfs(0, n / 2 * 9, true, true, lowS, highS, memo);
     }
 
-    private long dfs(int i, int diff, int parity, boolean limitLow, boolean limitHigh, char[] lowS, char[] highS, long[][][] memo) {
+    private long dfs(int i, int diff, boolean limitLow, boolean limitHigh, char[] lowS, char[] highS, long[][] memo) {
         int n = highS.length;
         if (i == n) {
             return diff == n / 2 * 9 ? 1 : 0;
         }
 
-        if (!limitLow && !limitHigh && memo[i][diff][parity] > 0) {
-            return memo[i][diff][parity] - 1; // 记忆化的时候 +1，这里减掉
+        if (!limitLow && !limitHigh && memo[i][diff] > 0) {
+            return memo[i][diff] - 1; // 记忆化的时候 +1，这里减掉
         }
 
         int diffLH = n - lowS.length;
@@ -94,21 +93,20 @@ class Solution {
         // 通过 limitLow 和 i 可以判断能否不填数字，无需 isNum 参数
         if (limitLow && i < diffLH) {
             // 不填数字，上界不受约束
-            res = dfs(i + 1, diff, parity, true, false, lowS, highS, memo);
+            res = dfs(i + 1, diff, true, false, lowS, highS, memo);
             d = 1; // 下面填数字，至少从 1 开始填
         }
 
         for (; d <= hi; d++) {
             res += dfs(i + 1,
-                    diff + (parity > 0 ? d : -d),
-                    parity ^ 1, // 下一个位置奇偶性翻转
+                    diff + (i % 2 == 0 ? d : -d),
                     limitLow && d == lo,
                     limitHigh && d == hi,
                     lowS, highS, memo);
         }
 
         if (!limitLow && !limitHigh) {
-            memo[i][diff][parity] = res + 1; // 记忆化的时候加一，这样 memo 可以初始化成 0
+            memo[i][diff] = res + 1; // 记忆化的时候加一，这样 memo 可以初始化成 0
         }
         return res;
     }
@@ -131,15 +129,15 @@ public:
         int diff_lh = n - low_s.size();
 
         // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
-        vector memo(n, vector<array<long long, 2>>(n * 9 + 1, {-1, -1}));
+        vector memo(n, vector<long long>(n * 9 + 1, -1));
 
-        auto dfs = [&](this auto&& dfs, int i, int diff, bool parity, bool limit_low, bool limit_high) -> long long {
+        auto dfs = [&](this auto&& dfs, int i, int diff, bool limit_low, bool limit_high) -> long long {
             if (i == n) {
                 return diff == n / 2 * 9;
             }
 
-            if (!limit_low && !limit_high && memo[i][diff][parity] >= 0) {
-                return memo[i][diff][parity];
+            if (!limit_low && !limit_high && memo[i][diff] >= 0) {
+                return memo[i][diff];
             }
 
             int lo = limit_low && i >= diff_lh ? low_s[i - diff_lh] - '0' : 0;
@@ -151,25 +149,24 @@ public:
             // 通过 limit_low 和 i 可以判断能否不填数字，无需 is_num 参数
             if (limit_low && i < diff_lh) {
                 // 不填数字，上界不受约束
-                res = dfs(i + 1, diff, parity, true, false);
+                res = dfs(i + 1, diff, true, false);
                 d = 1; // 下面填数字，至少从 1 开始填
             }
 
             for (; d <= hi; d++) {
                 res += dfs(i + 1,
-                           diff + (parity ? d : -d),
-                           !parity, // 下一个位置奇偶性翻转
+                           diff + (i % 2 ? -d : d),
                            limit_low && d == lo,
                            limit_high && d == hi);
             }
 
             if (!limit_low && !limit_high) {
-                memo[i][diff][parity] = res;
+                memo[i][diff] = res;
             }
             return res;
         };
 
-        return dfs(0, n / 2 * 9, true, true, true);
+        return dfs(0, n / 2 * 9, true, true);
     }
 };
 ```
@@ -186,14 +183,14 @@ func countBalanced(low, high int64) int64 {
 	highS := strconv.FormatInt(high, 10)
 	n := len(highS)
 	diffLH := n - len(lowS)
-	memo := make([][][2]int64, n)
+	memo := make([][]int64, n)
 	for i := range memo {
 		// diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
-		memo[i] = make([][2]int64, n*9+1)
+		memo[i] = make([]int64, n*9+1)
 	}
 
-	var dfs func(int, int, int, bool, bool) int64
-	dfs = func(i, diff, parity int, limitLow, limitHigh bool) (res int64) {
+	var dfs func(int, int, bool, bool) int64
+	dfs = func(i, diff int, limitLow, limitHigh bool) (res int64) {
 		if i == n {
 			if diff != 0 { // 不合法
 				return 0
@@ -201,7 +198,7 @@ func countBalanced(low, high int64) int64 {
 			return 1
 		}
 		if !limitLow && !limitHigh {
-			p := &memo[i][diff+n/2*9][parity] // 保证下标非负
+			p := &memo[i][diff+n/2*9] // 保证下标非负
 			if *p > 0 {
 				return *p - 1
 			}
@@ -220,18 +217,18 @@ func countBalanced(low, high int64) int64 {
 		d := lo
 		// 通过 limit_low 和 i 可以判断能否不填数字，无需 isNum 参数
 		if limitLow && i < diffLH { // 可以不填任何数
-			res = dfs(i+1, diff, parity, true, false) // 上界无约束
+			res = dfs(i+1, diff, true, false) // 上界无约束
 			d = 1 // 下面填数字，至少从 1 开始填
 		}
 
 		for ; d <= hi; d++ {
 			// 下一个位置奇偶性翻转
-			res += dfs(i+1, diff+(parity*2-1)*d, parity^1, 
+			res += dfs(i+1, diff+(1-i%2*2)*d,
 				limitLow && d == lo, limitHigh && d == hi)
 		}
 		return
 	}
-	return dfs(0, 0, 1, true, true)
+	return dfs(0, 0, true, true)
 }
 ```
 
