@@ -1,28 +1,22 @@
 package main
 
-func sumFourDivisors(nums []int) (ans int) {
-	doDivisors2 := func(n int, do func(d1, d2 int)) {
-		for d := 1; d*d <= n; d++ {
-			if n%d == 0 {
-				do(d, n/d)
-			}
+const mx = 100_001
+
+var divisorNum, divisorSum [mx]int
+
+func init() {
+	for i := 1; i < mx; i++ {
+		for j := i; j < mx; j += i { // 枚举 i 的倍数 j
+			divisorNum[j]++ // i 是 j 的因子
+			divisorSum[j] += i
 		}
-		return
 	}
-	for _, v := range nums {
-		cnt := 0
-		sum := 0
-		doDivisors2(v, func(d1, d2 int) {
-			if d1 != d2 {
-				sum += d1 + d2
-				cnt += 2
-			} else {
-				sum += d1
-				cnt++
-			}
-		})
-		if cnt == 4 {
-			ans += sum
+}
+
+func sumFourDivisors(nums []int) (ans int) {
+	for _, x := range nums {
+		if divisorNum[x] == 4 {
+			ans += divisorSum[x]
 		}
 	}
 	return
