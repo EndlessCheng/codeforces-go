@@ -13,8 +13,6 @@
 
 此外，更新 $\textit{low}$ 为 $\max(\textit{low},11)$，以保证数字至少是两位数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def countBalanced(self, low: int, high: int) -> int:

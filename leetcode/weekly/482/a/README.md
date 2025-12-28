@@ -4,7 +4,7 @@
 
 注意保证分割后，两部分都至少有一个数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Y5vrBoEuQ/)，欢迎点赞关注~
 
 ## 优化前
 

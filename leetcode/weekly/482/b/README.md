@@ -28,7 +28,7 @@ $$
 
 代码实现时，无需判断 $\textit{costBoth} < \textit{cost}_1 + \textit{cost}_2$。如果不满足，那么情况一（各买各的）更优。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Y5vrBoEuQ/?t=5m4s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
