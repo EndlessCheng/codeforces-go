@@ -283,7 +283,6 @@ import (
 func run(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-
 	var n int
 	Fscan(in, &n)
 
