@@ -8,6 +8,6 @@
 - Q3 https://leetcode.cn/problems/smallest-all-ones-multiple/solution/yuan-ti-pythonjavacgo-by-endlesscheng-7p4k/
 - Q4 https://leetcode.cn/problems/number-of-balanced-integers-in-a-range/solution/mo-ban-shang-xia-jie-shu-wei-dppythonjav-lnd8/
 
-Q4 en https://leetcode.com/problems/minimum-cost-to-acquire-required-items/solutions/7444597/case-analysis-o1-approach-by-endlesschen-lipq/
+Q2 en https://leetcode.com/problems/minimum-cost-to-acquire-required-items/solutions/7444597/case-analysis-o1-approach-by-endlesschen-lipq/
 
-[本题视频讲解](https://www.bilibili.com/video/BV1Y5vrBoEuQ/?t=2m30s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Y5vrBoEuQ/)，欢迎点赞关注~

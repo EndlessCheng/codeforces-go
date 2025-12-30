@@ -13,6 +13,8 @@
 
 此外，更新 $\textit{low}$ 为 $\max(\textit{low},11)$，以保证数字至少是两位数。
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def countBalanced(self, low: int, high: int) -> int:
@@ -222,6 +224,195 @@ func countBalanced(low, high int64) int64 {
 		}
 
 		for ; d <= hi; d++ {
+			// 下一个位置奇偶性翻转
+			res += dfs(i+1, diff+(1-i%2*2)*d,
+				limitLow && d == lo, limitHigh && d == hi)
+		}
+		return
+	}
+	return dfs(0, 0, true, true)
+}
+```
+
+## 写法二
+
+由于前导零对 $\textit{diff}$ 无影响，所以可以去掉处理前导零的逻辑。
+
+```py [sol-Python3]
+class Solution:
+    def countBalanced(self, low: int, high: int) -> int:
+        # 最小的满足要求的数是 11
+        if high < 11:
+            return 0
+
+        low = max(low, 11)
+        low_s = list(map(int, str(low)))  # 避免在 dfs 中频繁调用 int()
+        high_s = list(map(int, str(high)))
+        n = len(high_s)
+        diff_lh = n - len(low_s)
+
+        @cache
+        def dfs(i: int, diff: int, limit_low: bool, limit_high: bool) -> int:
+            if i == n:
+                return 1 if diff == 0 else 0
+
+            lo = low_s[i - diff_lh] if limit_low and i >= diff_lh else 0
+            hi = high_s[i] if limit_high else 9
+
+            res = 0
+            for d in range(lo, hi + 1):
+                res += dfs(i + 1,
+                           diff + (d if i % 2 else -d),
+                           limit_low and d == lo,
+                           limit_high and d == hi)
+            return res
+
+        return dfs(0, 0, True, True)
+```
+
+```java [sol-Java]
+class Solution {
+    public long countBalanced(long low, long high) {
+        // 最小的满足要求的数是 11
+        if (high < 11) {
+            return 0;
+        }
+
+        low = Math.max(low, 11);
+        char[] lowS = String.valueOf(low).toCharArray();
+        char[] highS = String.valueOf(high).toCharArray();
+
+        int n = highS.length;
+        // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+        long[][] memo = new long[n][n * 9 + 1];
+
+        return dfs(0, n / 2 * 9, true, true, lowS, highS, memo);
+    }
+
+    private long dfs(int i, int diff, boolean limitLow, boolean limitHigh, char[] lowS, char[] highS, long[][] memo) {
+        int n = highS.length;
+        if (i == n) {
+            return diff == n / 2 * 9 ? 1 : 0;
+        }
+
+        if (!limitLow && !limitHigh && memo[i][diff] > 0) {
+            return memo[i][diff] - 1; // 记忆化的时候 +1，这里减掉
+        }
+
+        int diffLH = n - lowS.length;
+        int lo = limitLow && i >= diffLH ? lowS[i - diffLH] - '0' : 0;
+        int hi = limitHigh ? highS[i] - '0' : 9;
+
+        long res = 0;
+        for (int d = lo; d <= hi; d++) {
+            res += dfs(i + 1,
+                    diff + (i % 2 == 0 ? d : -d),
+                    limitLow && d == lo,
+                    limitHigh && d == hi,
+                    lowS, highS, memo);
+        }
+
+        if (!limitLow && !limitHigh) {
+            memo[i][diff] = res + 1; // 记忆化的时候加一，这样 memo 可以初始化成 0
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countBalanced(long long low, long long high) {
+        // 最小的满足要求的数是 11
+        if (high < 11) {
+            return 0;
+        }
+
+        low = max(low, 11LL);
+        string low_s = to_string(low);
+        string high_s = to_string(high);
+        int n = high_s.size();
+        int diff_lh = n - low_s.size();
+
+        // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+        vector memo(n, vector<long long>(n * 9 + 1, -1));
+
+        auto dfs = [&](this auto&& dfs, int i, int diff, bool limit_low, bool limit_high) -> long long {
+            if (i == n) {
+                return diff == n / 2 * 9;
+            }
+
+            if (!limit_low && !limit_high && memo[i][diff] >= 0) {
+                return memo[i][diff];
+            }
+
+            int lo = limit_low && i >= diff_lh ? low_s[i - diff_lh] - '0' : 0;
+            int hi = limit_high ? high_s[i] - '0' : 9;
+
+            long long res = 0;
+            for (int d = lo; d <= hi; d++) {
+                res += dfs(i + 1,
+                           diff + (i % 2 ? -d : d),
+                           limit_low && d == lo,
+                           limit_high && d == hi);
+            }
+
+            if (!limit_low && !limit_high) {
+                memo[i][diff] = res;
+            }
+            return res;
+        };
+
+        return dfs(0, n / 2 * 9, true, true);
+    }
+};
+```
+
+```go [sol-Go]
+func countBalanced(low, high int64) int64 {
+	// 最小的满足要求的数是 11
+	if high < 11 {
+		return 0
+	}
+
+	low = max(low, 11)
+	lowS := strconv.FormatInt(low, 10)
+	highS := strconv.FormatInt(high, 10)
+	n := len(highS)
+	diffLH := n - len(lowS)
+	memo := make([][]int64, n)
+	for i := range memo {
+		// diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+		memo[i] = make([]int64, n*9+1)
+	}
+
+	var dfs func(int, int, bool, bool) int64
+	dfs = func(i, diff int, limitLow, limitHigh bool) (res int64) {
+		if i == n {
+			if diff != 0 { // 不合法
+				return 0
+			}
+			return 1
+		}
+		if !limitLow && !limitHigh {
+			p := &memo[i][diff+n/2*9] // 保证下标非负
+			if *p > 0 {
+				return *p - 1
+			}
+			defer func() { *p = res + 1 }() // 记忆化的时候加一，这样 memo 可以初始化成 0
+		}
+
+		lo := 0
+		if limitLow && i >= diffLH {
+			lo = int(lowS[i-diffLH] - '0')
+		}
+		hi := 9
+		if limitHigh {
+			hi = int(highS[i] - '0')
+		}
+
+		for d := lo; d <= hi; d++ {
 			// 下一个位置奇偶性翻转
 			res += dfs(i+1, diff+(1-i%2*2)*d,
 				limitLow && d == lo, limitHigh && d == hi)

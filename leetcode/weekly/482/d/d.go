@@ -45,14 +45,7 @@ func countBalanced(low, high int64) int64 {
 			hi = int(highS[i] - '0')
 		}
 
-		d := lo
-		// 通过 limit_low 和 i 可以判断能否不填数字，无需 isNum 参数
-		if limitLow && i < diffLH { // 可以不填任何数
-			res = dfs(i+1, diff, true, false) // 上界无约束
-			d = 1 // 下面填数字，至少从 1 开始填
-		}
-
-		for ; d <= hi; d++ {
+		for d := lo; d <= hi; d++ {
 			// 下一个位置奇偶性翻转
 			res += dfs(i+1, diff+(1-i%2*2)*d,
 				limitLow && d == lo, limitHigh && d == hi)
