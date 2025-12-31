@@ -1,25 +1,17 @@
 package main
 
-func minTimeToVisitAllPoints(points [][]int) int {
-	n := len(points)
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
+func minTimeToVisitAllPoints(points [][]int) (ans int) {
+	for i := 1; i < len(points); i++ {
+		p := points[i-1]
+		q := points[i]
+		ans += max(abs(p[0]-q[0]), abs(p[1]-q[1]))
 	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
+	return
+}
 
-	ans := 0
-	for i := 1; i < n; i++ {
-		pi := points[i]
-		p0 := points[i-1]
-		ans += max(abs(pi[0]-p0[0]), abs(pi[1]-p0[1]))
+func abs(x int) int {
+	if x < 0 {
+		return -x
 	}
-	return ans
+	return x
 }
