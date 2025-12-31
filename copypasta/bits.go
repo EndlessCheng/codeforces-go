@@ -48,31 +48,39 @@ https://codeforces.com/problemset/problem/1775/B 1300
 https://codeforces.com/problemset/problem/1973/B 1300
 https://codeforces.com/problemset/problem/2020/C 1400
 https://codeforces.com/problemset/problem/1299/A 1500
+https://codeforces.com/problemset/problem/2146/D1 1500
 https://codeforces.com/problemset/problem/1775/C 1600 连续数字 AND 等于目标值
 https://codeforces.com/problemset/problem/2036/E 1600
 https://codeforces.com/problemset/problem/1994/E 2000
+https://codeforces.com/problemset/problem/2146/D2 2000
+https://codeforces.com/problemset/problem/1935/E 2400 从高到低
 https://codeforces.com/problemset/problem/1665/E 2500 两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数
 https://codeforces.com/problemset/problem/1004/F 2600
 https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
+https://cses.fi/problemset/task/3405 滑动窗口 OR
 
 异或（XOR）的性质
 另见 strings.go 中的 trie.maxXor
+popcount(x XOR y) % 2 = (popcount(x) + popcount(y)) % 2
 https://atcoder.jp/contests/arc135/tasks/arc135_c 1512
 https://codeforces.com/problemset/problem/2039/C1 1200
+https://codeforces.com/problemset/problem/2171/C2 1400
 https://codeforces.com/problemset/problem/2057/C 1500 构造 可以做到 O(1)
+https://codeforces.com/problemset/problem/1955/F 1800
 https://codeforces.com/problemset/problem/1968/F 1800
 https://codeforces.com/problemset/problem/2039/C2 1800
 https://codeforces.com/problemset/problem/1895/D 1900
 https://codeforces.com/problemset/problem/1991/D 1900
 https://codeforces.com/problemset/problem/2036/F 1900
 https://codeforces.com/problemset/problem/1088/D 2000 交互
-https://codeforces.com/problemset/problem/703/D 2100 
+https://codeforces.com/problemset/problem/703/D 2100
 - 区间元素异或和 = 区间中出现次数为【奇数】的元素异或和
 - 在此基础上 XOR 区间去重后的元素异或和 = 区间中出现次数为【偶数】的元素异或和
 https://codeforces.com/problemset/problem/1934/D1 2100
 https://codeforces.com/problemset/problem/835/E 2400 交互
 https://codeforces.com/problemset/problem/1710/C 2500 三角形三边
-ones(x XOR y) % 2 = (ones(x) + ones(y)) % 2
+https://codeforces.com/problemset/problem/1779/F 2500 操作至多 2n 次：把一棵子树的所有点权都置为 S，其中 S 是子树点权异或和
+https://www.luogu.com.cn/problem/P2420
 
 XOR with AND
 https://codeforces.com/problemset/problem/1420/B 1200
@@ -119,6 +127,7 @@ https://atcoder.jp/contests/abc117/tasks/abc117_d 1423 “+1”的妙用
 https://atcoder.jp/contests/tenka1-2017/tasks/tenka1_2017_d 1789 “+1”的妙用
 https://atcoder.jp/contests/abc281/tasks/abc281_f
 https://atcoder.jp/contests/arc127/tasks/arc127_d
+https://cses.fi/problemset/task/3405 滑动窗口 OR
 
 https://oeis.org/A222423 Sum_{k=0..n} n AND k
 https://oeis.org/A350093 Sum_{k=0..n} n OR k
@@ -128,15 +137,17 @@ https://oeis.org/A258438 Sum_{i=1..n} Sum_{j=1..n} (i OR j)
 https://oeis.org/A224923 Sum_{i=0..n} Sum_{j=0..n} (i XOR j)
 LC3344 https://leetcode.cn/problems/maximum-sized-array/
 
-试填法
-https://codeforces.com/contest/1918/problem/C 1400
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 所有 a[i]+a[j] 的异或和 https://atcoder.jp/contests/abc091/tasks/arc092_b
 所有 a[i]+a[j] 的异或和 (i<j) https://codeforces.com/problemset/problem/1322/B 2100
 变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
-拆位再合并相同位 https://codeforces.com/problemset/problem/1874/B
+拆位再合并相同位 https://codeforces.com/problemset/problem/1874/B 2400
 https://ac.nowcoder.com/acm/contest/58860/G 河南省第十四届 ICPC 大学生程序设计竞赛
 https://ac.nowcoder.com/acm/contest/82957/F 牛客小白月赛 94
+
+试填法
+https://codeforces.com/problemset/problem/1918/C 1400
+https://codeforces.com/problemset/problem/1416/C 2000
 
 恒等式
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
@@ -371,7 +382,7 @@ todo O(1) https://codeforces.com/contest/520/submission/205035892
 */
 
 // 注：有关子集枚举的位运算技巧，见 search.go
-func _(x int) {
+func _(x int, abs func(int) int) {
 	// 利用 -v = ^v+1
 	lowbit := func(v int) int { return v & -v }
 
@@ -400,8 +411,8 @@ func _(x int) {
 		return v&(v+1) > 0
 	}
 
-	// x 和 y 二进制的最长公共前缀
-	// 注意 LCP(100, 1) = LCP(100, 001) = 0
+	// x 和 y 二进制（右对齐）的最长公共前缀
+	// 注意 lcp(100, 1) = lcp(100, 001) = 0
 	// 讲解 https://leetcode.cn/problems/bitwise-and-of-numbers-range/solutions/538550/golang-yi-xing-suan-fa-by-endlesscheng-iw6y/
 	// LC201 https://leetcode.cn/problems/bitwise-and-of-numbers-range/
 	lcp := func(x, y int) int {
@@ -410,11 +421,23 @@ func _(x int) {
 	// 这等价于 [l, r] 的区间 AND
 	rangeAND := lcp
 
-	// x 和 y 二进制的最长公共前缀的长度（只统计公共的）
+	// x 和 y 二进制（右对齐）的最长公共前缀的长度（只统计公共的）
 	// max(x,y) 的二进制长度 - x^y 的二进制长度
 	// https://codeforces.com/problemset/problem/1901/C
 	lcpLen := func(x, y int) int {
 		return bits.Len(uint(max(x, y))) - bits.Len(uint(x^y))
+	}
+
+	// https://codeforces.com/problemset/problem/2075/D 2000
+	// x 和 y 二进制（左对齐）的最长公共前缀
+	// lcpLeft(111, 1100) = 11
+	lcpLeft := func(x, y int) int {
+		if x > y {
+			x, y = y, x
+		}
+		n, m := bits.Len(uint(x)), bits.Len(uint(y))
+		return x >> bits.Len(uint(x^y>>(m-n)))
+		// 算长度就是 n - bits.Len(uint(x^y>>(m-n)))
 	}
 
 	// x 和 y 二进制的最长公共后缀
@@ -965,7 +988,7 @@ func _(x int) {
 
 	_ = []interface{}{
 		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros,
-		lcp, lcpLen, lcs, rangeAND, rangeOR, rangeXor,
+		lcp, lcpLen, lcpLeft, lcs, rangeAND, rangeOR, rangeXor,
 		bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
 
