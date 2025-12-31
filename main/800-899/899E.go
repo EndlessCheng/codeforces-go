@@ -7,88 +7,61 @@ import (
 )
 
 // https://github.com/EndlessCheng
-type uf99 struct {
-	fa []int
-	sz []int
-}
-
-func newUnionFind99(n int) uf99 {
-	fa := make([]int, n)
-	sz := make([]int, n)
-	for i := range fa {
-		fa[i] = i
-		sz[i] = 1
-	}
-	return uf99{fa, sz}
-}
-
-func (u uf99) find(x int) int {
-	if u.fa[x] != x {
-		u.fa[x] = u.find(u.fa[x])
-	}
-	return u.fa[x]
-}
-
-func (u *uf99) merge(from, to int) {
-	x, y := u.find(from), u.find(to)
-	if x == y {
-		return
-	}
-	u.fa[x] = y
-	u.sz[y] += u.sz[x]
-}
-
 func cf899E(in io.Reader, out io.Writer) {
 	var n, ans int
 	Fscan(in, &n)
 
-	prev := make([]int, n)
-	next := make([]int, n)
+	pre := make([]int, n)
+	nxt := make([]int, n)
+	sz := make([]int, n)
 	for i := range n {
-		prev[i] = i - 1
-		next[i] = i + 1
+		pre[i] = i - 1
+		nxt[i] = i + 1
+		sz[i] = 1
 	}
 	del := func(i int) {
-		l, r := prev[i], next[i]
+		l, r := pre[i], nxt[i]
 		if l >= 0 {
-			next[l] = r
+			nxt[l] = r
 		}
 		if r < n {
-			prev[r] = l
+			pre[r] = l
 		}
 	}
+	merge := func(from, to int) {
+		sz[to] += sz[from]
+		sz[from] = 0
+		del(from)
+	}
 
-	u := newUnionFind99(n)
 	a := make([]int, n)
 	for i := range a {
 		Fscan(in, &a[i])
 		if i > 0 && a[i] == a[i-1] {
-			u.merge(i-1, i)
-			del(i - 1)
+			merge(i-1, i)
 		}
 	}
 
 	h := hp99{}
-	for i, rt := range u.fa {
-		if rt == i {
-			heap.Push(&h, pair99{u.sz[i], i})
+	for i, s := range sz {
+		if s > 0 {
+			heap.Push(&h, pair99{s, i})
 		}
 	}
 
 	for len(h) > 0 {
 		p := heap.Pop(&h).(pair99)
 		i := p.i
-		if i != u.find(i) || p.sz != u.sz[i] {
+		if sz[i] != p.sz {
 			continue
 		}
-		l, r := prev[i], next[i]
-		if l >= 0 && r < n && a[l] == a[r] {
-			u.merge(l, r)
-			j := u.find(r)
-			heap.Push(&h, pair99{u.sz[j], j})
-			del(l)
-		}
+		sz[i] = 0
+		l, r := pre[i], nxt[i]
 		del(i)
+		if l >= 0 && r < n && a[l] == a[r] {
+			merge(l, r)
+			heap.Push(&h, pair99{sz[r], r})
+		}
 		ans++
 	}
 	Fprint(out, ans)
