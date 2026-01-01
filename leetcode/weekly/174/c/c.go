@@ -2,43 +2,26 @@ package main
 
 import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
-/**
- * Definition for a binary tree node.
- * type TreeNode struct {
- *     Val int
- *     Left *TreeNode
- *     Right *TreeNode
- * }
- */
 func maxProduct(root *TreeNode) (ans int) {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-	const mod int = 1e9 + 7
-
-	all := 0
-	var f1 func(o *TreeNode)
-	f1 = func(o *TreeNode) {
-		if o != nil {
-			all += o.Val
-			f1(o.Left)
-			f1(o.Right)
-		}
-	}
-	f1(root)
-
-	var f2 func(o *TreeNode) int
-	f2 = func(o *TreeNode) int {
-		if o == nil {
+	var dfs1 func(*TreeNode) int
+	dfs1 = func(node *TreeNode) int {
+		if node == nil {
 			return 0
 		}
-		sum := o.Val + f2(o.Left) + f2(o.Right)
-		ans = max(ans, sum*(all-sum))
-		return sum
+		return node.Val + dfs1(node.Left) + dfs1(node.Right)
 	}
-	f2(root)
-	return ans % mod
+	total := dfs1(root)
+
+	var dfs2 func(*TreeNode) int
+	dfs2 = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+		s := node.Val + dfs2(node.Left) + dfs2(node.Right)
+		ans = max(ans, s*(total-s))
+		return s
+	}
+	dfs2(root)
+
+	return ans % 1_000_000_007
 }
