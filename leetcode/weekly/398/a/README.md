@@ -1,4 +1,6 @@
-遍历数组，如果存在一对相邻元素，它们的奇偶性不同，返回 $\texttt{false}$。如果不存在，返回 $\texttt{true}$。
+遍历数组，如果存在一对相邻元素，它们的奇偶性相同，那么不满足题目要求，返回 $\texttt{false}$。
+
+如果不存在这样的一对元素，返回 $\texttt{true}$。
 
 ```py [sol-Python3]
 class Solution:
