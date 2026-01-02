@@ -58,6 +58,8 @@ import (
 // 区间 mex https://www.luogu.com.cn/problem/P4137
 // - 做法之一是离线+线段树二分 https://www.luogu.com.cn/blog/user7035/solution-p4137
 // - 也可以用树状数组 https://www.luogu.com.cn/blog/Atalod/ti-xie-p4137-post
+// - 在线做法是可持久化线段树（维护元素上一次出现的位置，以及区间 min）
+// - https://zhuanlan.zhihu.com/p/563177000
 // - 反向构造题 https://www.luogu.com.cn/problem/P6852
 // https://codeforces.com/problemset/problem/1609/E 2400 单点修改 + 不含子序列 abc
 // https://codeforces.com/problemset/problem/295/E 2500 难度虚高
@@ -79,7 +81,7 @@ import (
 
 // 如果一个题目可以用分治解决，那么这个题目的带修改版本可以用线段树解决
 // 带修最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
-// 带修最大子段和 https://www.luogu.com.cn/problem/P4513
+// 带修最大子段和（小白逛公园）https://www.luogu.com.cn/problem/P4513
 // - 代码 https://www.luogu.com.cn/record/50262292
 // - https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
 // - https://www.spoj.com/problems/GSS3/ 2007-08-03
@@ -87,7 +89,7 @@ import (
 // - k 个最大子段和 https://codeforces.com/problemset/problem/280/D 2800 用网络流的思想「反悔」
 // 带修最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 https://www.luogu.com.cn/contest/42328
 // 带修打家劫舍 https://www.luogu.com.cn/problem/P3097
-// - LC https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
+// - LC3165 https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
 
 // 势能线段树：区间开方、区间取模、区间 GCD 一个数，都是可以暴力更新的
 // 关于线段树上的一些进阶操作 https://www.luogu.com/article/aentaeud
@@ -420,9 +422,14 @@ func newSegmentTree(a []int) seg {
 //
 // 吉老师线段树 吉司机线段树 Segment Tree Beats (Seg-beats)
 // todo https://oi-wiki.org/ds/seg-beats/
+//  复杂度证明 https://codeforces.com/blog/entry/149516
 //  https://codeforces.com/blog/entry/57319
 //  区间最值操作与区间历史最值详解 https://www.luogu.com.cn/blog/Hakurei-Reimu/seg-beats
 //  模板题 https://www.luogu.com.cn/problem/P6242
+//
+// Lazy 思想在其他数据结构中的应用
+// https://codeforces.com/problemset/problem/1413/D 1700 已知进货+买最小的顺序，检查是否合法
+
 const todoInit = 0
 
 type lazySeg []struct {
@@ -878,6 +885,7 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 }
 
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
+// 通过计算每个前缀的线段树，可以得到任意子数组的线段树
 // https://oi-wiki.org/ds/persistent-seg/
 // 视频讲解 https://www.bilibili.com/video/BV1D4SiB5Ee3/
 // https://zhuanlan.zhihu.com/p/250565583
@@ -905,13 +913,15 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 // https://codeforces.com/problemset/problem/1000/F 2400
 // https://codeforces.com/problemset/problem/1080/F 2400 强制在线
 // https://codeforces.com/problemset/problem/484/E 2500 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 
-// https://codeforces.com/problemset/problem/837/G 2500
-// https://codeforces.com/problemset/problem/840/D 2500 kth 枚举
+// https://codeforces.com/problemset/problem/837/G 2500 todo
+// https://codeforces.com/problemset/problem/840/D 2500 区间出现次数大于 区间长度/k 的最小元素
+// - LC1287 https://leetcode.cn/problems/element-appearing-more-than-25-in-sorted-array/
 // https://codeforces.com/problemset/problem/1771/F 2500 异或哈希
 // https://codeforces.com/problemset/problem/547/E 2800 上联：AC 自动机 fail 树 DFS 序建可持久化线段树（用树状数组也可以）
 // https://codeforces.com/problemset/problem/464/E 3000 最短路
 // https://atcoder.jp/contests/abc253/tasks/abc253_f 区间更新单点查询
 // https://www.luogu.com.cn/problem/P3755 二维数点
+// https://www.luogu.com.cn/problem/P4137 区间 mex（在线做法）：维护元素上一次出现的位置，以及区间 min
 // https://ac.nowcoder.com/acm/contest/7613/C
 // http://poj.org/problem?id=2104
 // http://acm.hdu.edu.cn/showproblem.php?pid=4417 二维数点
