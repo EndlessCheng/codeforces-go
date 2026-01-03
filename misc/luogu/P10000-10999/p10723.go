@@ -9,6 +9,11 @@ import (
 func p10723(in io.Reader, out io.Writer) {
 	var n int
 	Fscan(in, &n)
+	if n == 1 {
+		Fprint(out, 0)
+		return
+	}
+
 	a := make([]int, n)
 	ans := n
 	for i := range a {
