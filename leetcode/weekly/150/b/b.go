@@ -1,31 +1,63 @@
 package main
 
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
-}
+import (
+	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	"math"
+)
 
-func maxLevelSum(root *TreeNode) int {
-	maxVal := int(-2e9)
-	maxPos := 1
-	q := [2][]*TreeNode{{}, {root}}
-	for i := 1; len(q[i&1]) > 0; i++ {
+func maxLevelSum1(root *TreeNode) (ans int) {
+	maxSum := math.MinInt
+	q := []*TreeNode{root}
+
+	for level := 1; q != nil; level++ {
+		tmp := q
+		q = nil
 		s := 0
-		q[(i+1)&1] = []*TreeNode{}
-		for _, o := range q[i&1] {
-			s += o.Val
-			if o.Left != nil {
-				q[(i+1)&1] = append(q[(i+1)&1], o.Left)
+
+		for _, node := range tmp {
+			s += node.Val
+			if node.Left != nil {
+				q = append(q, node.Left)
 			}
-			if o.Right != nil {
-				q[(i+1)&1] = append(q[(i+1)&1], o.Right)
+			if node.Right != nil {
+				q = append(q, node.Right)
 			}
 		}
-		if s > maxVal {
-			maxVal = s
-			maxPos = i
+
+		if s > maxSum {
+			maxSum = s
+			ans = level
 		}
 	}
-	return maxPos
+
+	return ans
+}
+
+func maxLevelSum(root *TreeNode) (ans int) {
+	rowSum := []int{}
+
+	var dfs func(*TreeNode, int)
+	dfs = func(node *TreeNode, level int) {
+		if node == nil {
+			return
+		}
+
+		if len(rowSum) == level {
+			rowSum = append(rowSum, node.Val)
+		} else {
+			rowSum[level] += node.Val
+		}
+
+		dfs(node.Left, level+1)
+		dfs(node.Right, level+1)
+	}
+
+	dfs(root, 0)
+
+	for i, s := range rowSum {
+		if s > rowSum[ans] {
+			ans = i
+		}
+	}
+	return ans + 1
 }
