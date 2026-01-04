@@ -46,9 +46,14 @@ $$
 
 代码实现时，用二进制表示集合，用位运算实现集合操作，具体请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
+此外，根据对称性，枚举子集时可以只枚举 $T > \complement_ST$ 的子集 $T$，其余子集是重复枚举。
+
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
+# 手写 min 更快
+min = lambda a, b: b if b < a else a
+
 class Solution:
     def minMergeCost(self, lists: List[List[int]]) -> int:
         u = 1 << len(lists)
@@ -73,7 +78,7 @@ class Solution:
                 continue
             # 枚举 i 的非空真子集 j
             j = i & (i - 1)
-            while j > 0:
+            while j > (i ^ j):
                 k = i ^ j  # j 关于 i 的补集是 k
                 f[i] = min(f[i], f[j] + f[k] + sum_len[j] + sum_len[k] + abs(median[j] - median[k]))
                 j = (j - 1) & i
@@ -82,6 +87,9 @@ class Solution:
 ```
 
 ```py [sol-Python3 写法二]
+# 手写 min 更快
+min = lambda a, b: b if b < a else a
+
 class Solution:
     def minMergeCost(self, lists: List[List[int]]) -> int:
         # 88. 合并两个有序数组（创建一个新数组）
@@ -119,7 +127,7 @@ class Solution:
                 continue
             # 枚举 i 的非空真子集 j
             j = i & (i - 1)
-            while j > 0:
+            while j > (i ^ j):
                 k = i ^ j  # j 关于 i 的补集是 k
                 f[i] = min(f[i], f[j] + f[k] + sum_len[j] + sum_len[k] + abs(median[j] - median[k]))
                 j = (j - 1) & i
@@ -154,7 +162,7 @@ class Solution {
             }
             f[i] = Long.MAX_VALUE;
             // 枚举 i 的非空真子集 j
-            for (int j = i & (i - 1); j > 0; j = (j - 1) & i) {
+            for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j; // j 关于 i 的补集是 k
                 f[i] = Math.min(f[i], f[j] + f[k] + sumLen[j] + sumLen[k] + Math.abs(median[j] - median[k]));
             }
@@ -230,7 +238,7 @@ public:
             }
             f[i] = LLONG_MAX;
             // 枚举 i 的非空真子集 j
-            for (int j = i & (i - 1); j > 0; j = (j - 1) & i) {
+            for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j; // j 关于 i 的补集是 k
                 f[i] = min(f[i], f[j] + f[k] + sum_len[j] + sum_len[k] + abs(median[j] - median[k]));
             }
@@ -265,7 +273,7 @@ func minMergeCost(lists [][]int) int64 {
 		}
 		f[i] = math.MaxInt
 		// 枚举 i 的非空真子集 j
-		for j := i & (i - 1); j > 0; j = (j - 1) & i {
+		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
 			k := i ^ j // j 关于 i 的补集是 k
 			f[i] = min(f[i], f[j]+f[k]+sumLen[j]+sumLen[k]+abs(median[j]-median[k]))
 		}
@@ -308,7 +316,7 @@ func abs(x int) int {
 - 时间复杂度：$\mathcal{O}(L\cdot 2^n + 3^n)$，其中 $n$ 是 $\textit{lists}$ 的长度，$L\le 2000$ 是所有 $\textit{list}[i]$ 的长度之和。对于预处理，瓶颈在 $\texttt{merge}$ 上，或者说所有 $\text{sorted}(S)$ 的长度之和。考虑每个元素的贡献，在 $2^n$ 个子集中，每个 $\textit{lists}[i][j]$ 恰好出现在其中的 $2^{n-1}$ 个子集中（选或不选），所以每个元素对 $\text{sorted}(S)$ 的长度之和的贡献是 $\mathcal{O}(2^n)$，所以预处理的时间复杂度为 $\mathcal{O}(L\cdot 2^n)$。子集状压 DP 的时间复杂度为 $\mathcal{O}(3^n)$，证明见动态规划题单的 §9.4 子集状压 DP。
 - 空间复杂度：$\mathcal{O}(L\cdot 2^n)$。所有 $\text{sorted}(S)$ 的长度之和为 $\mathcal{O}(L\cdot 2^n)$。
 
-## 预处理写法二：二分答案
+## 预处理写法二：二分中位数
 
 $S$ 的中位数即 $S$ 的第 $\left\lceil\dfrac{\text{len}(S)}{2}\right\rceil$ 小。
 
@@ -326,6 +334,9 @@ $S$ 的中位数即 $S$ 的第 $\left\lceil\dfrac{\text{len}(S)}{2}\right\rceil$
 关于二分查找的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 ```py [sol-Python3]
+# 手写 min 更快
+min = lambda a, b: b if b < a else a
+
 class Solution:
     def minMergeCost(self, lists: List[List[int]]) -> int:
         u = 1 << len(lists)
@@ -335,7 +346,7 @@ class Solution:
             for s in range(high_bit):
                 sum_len[high_bit | s] = sum_len[s] + len_a
 
-        all_elements = sorted(set(x for a in lists for x in a))
+        all_elements = sorted({x for a in lists for x in a})
         median = [0] * u
 
         for mask in range(1, u):
@@ -361,7 +372,7 @@ class Solution:
                 continue
             # 枚举 i 的非空真子集 j
             j = i & (i - 1)
-            while j > 0:
+            while j > (i ^ j):
                 k = i ^ j  # j 关于 i 的补集是 k
                 f[i] = min(f[i], f[j] + f[k] + sum_len[j] + sum_len[k] + abs(median[j] - median[k]))
                 j = (j - 1) & i
@@ -405,7 +416,7 @@ class Solution {
             }
             f[i] = Long.MAX_VALUE;
             // 枚举 i 的非空真子集 j
-            for (int j = i & (i - 1); j > 0; j = (j - 1) & i) {
+            for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j; // j 关于 i 的补集是 k
                 f[i] = Math.min(f[i], f[j] + f[k] + sumLen[j] + sumLen[k] + Math.abs(median[j] - median[k]));
             }
@@ -496,7 +507,7 @@ public:
             }
             f[i] = LLONG_MAX;
             // 枚举 i 的非空真子集 j
-            for (int j = i & (i - 1); j > 0; j = (j - 1) & i) {
+            for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j; // j 关于 i 的补集是 k
                 f[i] = min(f[i], f[j] + f[k] + sum_len[j] + sum_len[k] + abs(median[j] - median[k]));
             }
@@ -542,7 +553,7 @@ func minMergeCost(lists [][]int) int64 {
 		}
 		f[i] = math.MaxInt
 		// 枚举 i 的非空真子集 j
-		for j := i & (i - 1); j > 0; j = (j - 1) & i {
+		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
 			k := i ^ j // j 关于 i 的补集是 k
 			f[i] = min(f[i], f[j]+f[k]+sumLen[j]+sumLen[k]+abs(median[j]-median[k]))
 		}
