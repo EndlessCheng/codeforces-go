@@ -65,12 +65,12 @@ class Solution {
 class Solution {
 public:
     int findMaxVal(int n, vector<vector<int>>& restrictions, vector<int>& diff) {
-        vector<long long> max_val(n, LLONG_MAX);
+        vector<int> max_val(n, INT_MAX);
         for (auto& r : restrictions) {
             max_val[r[0]] = r[1];
         }
 
-        vector<long long> a(n);
+        vector<int> a(n);
         for (int i = 0; i < n - 1; i++) {
             a[i + 1] = min(a[i] + diff[i], max_val[i + 1]);
         }
