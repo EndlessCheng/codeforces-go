@@ -1,6 +1,8 @@
-答案的末尾不能是 $\texttt{1}$，所以移除所有的尾 $\texttt{1}$，此时 $s$ 是偶数且最大，无需继续删除。
+答案的末尾不能是 $\texttt{1}$（这是奇数），所以要移除所有的尾 $\texttt{1}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+移除后，$s$ 变成偶数且最大，无需继续删除。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1TgijB7Eer/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -24,11 +26,9 @@ class Solution {
 class Solution {
 public:
     string largestEven(string s) {
-        int n = s.size();
-        while (n > 0 && s[n - 1] == '1') {
-            n--;
+        while (!s.empty() && s.back() == '1') {
+            s.pop_back();
         }
-        s.resize(n);
         return s;
     }
 };

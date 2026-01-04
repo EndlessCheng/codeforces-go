@@ -28,7 +28,9 @@ $$
 
 ## 情况三：先串间交换，再串内交换，最后翻转
 
-我们可以使用操作三（串间交换）让 $a$ 和 $b$ 尽量均匀，从而可以尽量多地使用操作二（串内交换）。
+上面两种情况只用到了操作一（翻转）和操作二（串内交换）。如果引入操作三（串间交换），会发生什么？操作三有什么用？
+
+操作三可以让 $a$ 和 $b$ 尽量均匀，从而可以尽量多地使用操作二。
 
 设 $\textit{avg} = \left\lfloor\dfrac{a+b}{2}\right\rfloor$。
 
@@ -44,9 +46,9 @@ $$
 (\textit{avg}-a)\cdot \textit{crossCost} + \textit{avg}\cdot \textit{swapCost} + ((a+b)\bmod 2)\cdot \textit{flipCost}
 $$
 
-三种情况取最小值。
+由于减少其中一种操作，转而使用其他操作代替，对总代价的影响是线性的，所以最小值只会在端点或交点处取到。所以只需考虑上述三种情况。三种情况取最小值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1TgijB7Eer/?t=7m7s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

@@ -4,8 +4,6 @@
 
 注意为了保证答案有序，可以先对 $\textit{words}$ 从小到大排序，再枚举排列。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def wordSquares(self, words: List[str]) -> List[List[str]]:
@@ -129,8 +127,8 @@ func wordSquares(words []string) (ans [][]string) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(P_n^4) = \mathcal{O}(n^4)$，其中 $n$ 是 $\textit{words}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。排序的栈开销和返回值不计入。
+- 时间复杂度：$\mathcal{O}(A_n^4) = \mathcal{O}(n^4)$，其中 $n$ 是 $\textit{words}$ 的长度。字符串的长度视作常量。
+- 空间复杂度：$\mathcal{O}(1)$。排序的栈开销不计入，返回值不计入。
 
 ## 专题训练
 
