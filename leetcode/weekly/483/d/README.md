@@ -561,7 +561,7 @@ func abs(x int) int {
 
 ## 预处理写法三：meet in the middle
 
-把 $\textit{lists}$ 均分成两段，分别用写法一算出 $\textit{sorted}_1$ 和 $\textit{sorted}_2$。
+把 $\textit{lists}$ 均分成两部分，分别用写法一算出 $\textit{sorted}_1$ 和 $\textit{sorted}_2$。
 
 设 $n$ 是 $\textit{lists}$ 的长度，$m = \left\lfloor\dfrac{n}{2}\right\rfloor$。
 
@@ -570,7 +570,7 @@ func abs(x int) int {
 - 低 $m$ 位：这些数组合并后的大数组，从 $\textit{sorted}_1$ 中获取到。
 - 其余高 $n-m$ 位：这些数组合并后的大数组，从 $\textit{sorted}_2$ 中获取到。
 
-然后用 [4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/) 求出这两个大数组的中位数。
+然后用 [4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/) 求出这两个大数组的中位数，见[【图解】循序渐进：从双指针到二分](https://leetcode.cn/problems/median-of-two-sorted-arrays/solutions/2950686/tu-jie-xun-xu-jian-jin-cong-shuang-zhi-z-p2gd/)。
 
 ```py [sol-Python3]
 # 手写 min max 更快
