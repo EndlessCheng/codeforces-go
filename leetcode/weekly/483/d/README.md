@@ -20,7 +20,7 @@ $$
 
 答案为 $f[U]$，其中 $U=\{0,1,2,\ldots,n-1\}$，$n$ 是 $\textit{lists}$ 的长度。
 
-## 预处理
+## 预处理写法一：合并有序数组
 
 由于上述 DP 过程会反复计算同一个 $\text{len}(S)$ 和 $\text{med}(S)$，我们可以预处理所有 $\text{len}(S)$ 和 $\text{med}(S)$，这也是一个 DP。
 
@@ -53,7 +53,7 @@ class Solution:
     def minMergeCost(self, lists: List[List[int]]) -> int:
         u = 1 << len(lists)
         sum_len = [0] * u
-        sorted_lists = [[] for _ in range(u)]
+        sorted_ = [[] for _ in range(u)]
         median = [0] * u
 
         for i, a in enumerate(lists):  # 枚举不在 s 中的下标 i
@@ -61,9 +61,9 @@ class Solution:
             for s in range(high_bit):
                 t = high_bit | s
                 sum_len[t] = sum_len[s] + len(a)
-                b = sorted_lists[s] + a
+                b = sorted_[s] + a
                 b.sort()  # 线性合并的写法见另一份代码【Python3 写法二】
-                sorted_lists[t] = b
+                sorted_[t] = b
                 median[t] = b[(len(b) - 1) // 2]
 
         f = [inf] * u
@@ -100,7 +100,7 @@ class Solution:
 
         u = 1 << len(lists)
         sum_len = [0] * u
-        sorted_lists = [[] for _ in range(u)]
+        sorted_ = [[] for _ in range(u)]
         median = [0] * u
 
         for i, a in enumerate(lists):  # 枚举不在 s 中的下标 i
@@ -108,8 +108,8 @@ class Solution:
             for s in range(high_bit):
                 t = high_bit | s
                 sum_len[t] = sum_len[s] + len(a)
-                b = merge(sorted_lists[s], a)
-                sorted_lists[t] = b
+                b = merge(sorted_[s], a)
+                sorted_[t] = b
                 median[t] = b[(len(b) - 1) // 2]
 
         f = [inf] * u
@@ -308,9 +308,265 @@ func abs(x int) int {
 - 时间复杂度：$\mathcal{O}(L\cdot 2^n + 3^n)$，其中 $n$ 是 $\textit{lists}$ 的长度，$L\le 2000$ 是所有 $\textit{list}[i]$ 的长度之和。对于预处理，瓶颈在 $\texttt{merge}$ 上，或者说所有 $\text{sorted}(S)$ 的长度之和。考虑每个元素的贡献，在 $2^n$ 个子集中，每个 $\textit{lists}[i][j]$ 恰好出现在其中的 $2^{n-1}$ 个子集中（选或不选），所以每个元素对 $\text{sorted}(S)$ 的长度之和的贡献是 $\mathcal{O}(2^n)$，所以预处理的时间复杂度为 $\mathcal{O}(L\cdot 2^n)$。子集状压 DP 的时间复杂度为 $\mathcal{O}(3^n)$，证明见动态规划题单的 §9.4 子集状压 DP。
 - 空间复杂度：$\mathcal{O}(L\cdot 2^n)$。所有 $\text{sorted}(S)$ 的长度之和为 $\mathcal{O}(L\cdot 2^n)$。
 
+## 预处理写法二：二分答案
+
+$S$ 的中位数即 $S$ 的第 $\left\lceil\dfrac{\text{len}(S)}{2}\right\rceil$ 小。
+
+**套路**：第 $k$ 小等价于，求**最小**的 $x$，满足 $\le x$ 的数**至少**有 $k$ 个。
+
+转为二分答案，在 $S$ 的每个数组中二分查找 $\le x$ 的元素个数，如下表：
+
+| **需求**  | **写法**  |
+|---|---|
+| $< x$ 的元素个数  | $\texttt{lowerBound}(\textit{nums},x)$  | 
+| $\le x$ 的元素个数 | $\texttt{lowerBound}(\textit{nums},x+1)$  | 
+| $\ge x$ 的元素个数  | $n - \texttt{lowerBound}(\textit{nums},x)$  | 
+| $> x$ 的元素个数  | $n - \texttt{lowerBound}(\textit{nums},x+1)$  | 
+
+关于二分查找的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+
+```py [sol-Python3]
+class Solution:
+    def minMergeCost(self, lists: List[List[int]]) -> int:
+        u = 1 << len(lists)
+        sum_len = [0] * u
+        for i, len_a in enumerate(map(len, lists)):  # 枚举不在 s 中的下标 i
+            high_bit = 1 << i
+            for s in range(high_bit):
+                sum_len[high_bit | s] = sum_len[s] + len_a
+
+        all_elements = sorted(set(x for a in lists for x in a))
+        median = [0] * u
+
+        for mask in range(1, u):
+            k = (sum_len[mask] + 1) // 2
+
+            def check(x: int) -> bool:
+                cnt = 0
+                for i, a in enumerate(lists):
+                    if mask >> i & 1 == 0:
+                        continue
+                    cnt += bisect_right(a, x)
+                    if cnt >= k:
+                        return True
+                return False
+
+            i = bisect_left(all_elements, True, key=check)
+            median[mask] = all_elements[i]
+
+        f = [inf] * u
+        for i in range(u):
+            if i & (i - 1) == 0:  # i 只包含一个元素，无法分解成两个非空子集
+                f[i] = 0
+                continue
+            # 枚举 i 的非空真子集 j
+            j = i & (i - 1)
+            while j > 0:
+                k = i ^ j  # j 关于 i 的补集是 k
+                f[i] = min(f[i], f[j] + f[k] + sum_len[j] + sum_len[k] + abs(median[j] - median[k]))
+                j = (j - 1) & i
+
+        return f[-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public long minMergeCost(int[][] lists) {
+        int n = lists.length;
+        int u = 1 << n;
+        int[] sumLen = new int[u];
+        for (int i = 0; i < n; i++) { // 枚举不在 s 中的下标 i
+            int highBit = 1 << i;
+            for (int s = 0; s < highBit; s++) {
+                sumLen[highBit | s] = sumLen[s] + lists[i].length;
+            }
+        }
+
+        int[] median = new int[u];
+        for (int mask = 0; mask < u; mask++) {
+            int k = (sumLen[mask] + 1) / 2;
+            int left = (int) -1e9 - 1;
+            int right = (int) 1e9;
+            while (left + 1 < right) {
+                int mid = left + (right - left) / 2;
+                if (check(lists, mask, k, mid)) {
+                    right = mid;
+                } else {
+                    left = mid;
+                }
+            }
+            median[mask] = right;
+        }
+
+        long[] f = new long[u];
+        for (int i = 0; i < u; i++) {
+            if ((i & (i - 1)) == 0) { // i 只包含一个元素，无法分解成两个非空子集
+                continue; // f[i] = 0
+            }
+            f[i] = Long.MAX_VALUE;
+            // 枚举 i 的非空真子集 j
+            for (int j = i & (i - 1); j > 0; j = (j - 1) & i) {
+                int k = i ^ j; // j 关于 i 的补集是 k
+                f[i] = Math.min(f[i], f[j] + f[k] + sumLen[j] + sumLen[k] + Math.abs(median[j] - median[k]));
+            }
+        }
+
+        return f[u - 1];
+    }
+
+    private boolean check(int[][] lists, int mask, int k, int x) {
+        int cnt = 0;
+        for (int i = 0; i < lists.length; i++) {
+            if ((mask >> i & 1) == 0) {
+                continue;
+            }
+            cnt += upperBound(lists[i], x);
+            if (cnt >= k) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 开区间写法
+    // https://www.bilibili.com/video/BV1AP41137w7/
+    private int upperBound(int[] nums, int target) {
+        int left = -1;
+        int right = nums.length; // 开区间 (left, right)
+        while (left + 1 < right) { // 区间不为空
+            // 循环不变量：
+            // nums[left] <= target
+            // nums[right] > target
+            int mid = left + (right - left) / 2;
+            if (nums[mid] > target) {
+                right = mid; // 范围缩小到 (left, mid)
+            } else {
+                left = mid; // 范围缩小到 (mid, right)
+            }
+        }
+        return right;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minMergeCost(vector<vector<int>>& lists) {
+        int n = lists.size();
+        int u = 1 << n;
+        vector<int> sum_len(u);
+        for (int i = 0; i < n; i++) { // 枚举不在 s 中的下标 i
+            int high_bit = 1 << i;
+            for (int s = 0; s < high_bit; s++) {
+                sum_len[high_bit | s] = sum_len[s] + lists[i].size();
+            }
+        }
+
+        vector<int> median(u); // 每个子集的中位数
+        for (int mask = 0; mask < u; mask++) {
+            int sl = sum_len[mask];
+
+            auto check = [&](int med) -> bool {
+                int cnt = 0;
+                for (int i = 0; i < n; i++) {
+                    if ((mask >> i & 1) == 0) {
+                        continue;
+                    }
+                    cnt += ranges::upper_bound(lists[i], med) - lists[i].begin();
+                    if (cnt >= (sl + 1) / 2) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+            int left = -1e9 - 1, right = 1e9;
+            while (left + 1 < right) {
+                int mid = left + (right - left) / 2;
+                (check(mid) ? right : left) = mid;
+            }
+            median[mask] = right;
+        }
+
+        vector<long long> f(u);
+        for (int i = 0; i < u; i++) {
+            if ((i & (i - 1)) == 0) { // i 只包含一个元素，无法分解成两个非空子集
+                continue; // f[i] = 0
+            }
+            f[i] = LLONG_MAX;
+            // 枚举 i 的非空真子集 j
+            for (int j = i & (i - 1); j > 0; j = (j - 1) & i) {
+                int k = i ^ j; // j 关于 i 的补集是 k
+                f[i] = min(f[i], f[j] + f[k] + sum_len[j] + sum_len[k] + abs(median[j] - median[k]));
+            }
+        }
+
+        return f[u - 1];
+    }
+};
+```
+
+```go [sol-Go]
+func minMergeCost(lists [][]int) int64 {
+	u := 1 << len(lists)
+	sumLen := make([]int, u)
+	for i, a := range lists { // 枚举不在 s 中的下标 i
+		highBit := 1 << i
+		for s, sl := range sumLen[:highBit] {
+			sumLen[highBit|s] = sl + len(a)
+		}
+	}
+
+	median := make([]int, u)
+	for mask, sl := range sumLen {
+		left, right := int(-1e9), int(1e9)
+		median[mask] = left + sort.Search(right-left, func(med int) bool {
+			med += left
+			cnt := 0
+			for s := uint32(mask); s > 0; s &= s - 1 {
+				i := bits.TrailingZeros32(s)
+				cnt += sort.SearchInts(lists[i], med+1)
+				if cnt >= (sl+1)/2 {
+					return true
+				}
+			}
+			return false
+		})
+	}
+
+	f := make([]int, u)
+	for i := range f {
+		if i&(i-1) == 0 {
+			continue // f[i] = 0
+		}
+		f[i] = math.MaxInt
+		// 枚举 i 的非空真子集 j
+		for j := i & (i - 1); j > 0; j = (j - 1) & i {
+			k := i ^ j // j 关于 i 的补集是 k
+			f[i] = min(f[i], f[j]+f[k]+sumLen[j]+sumLen[k]+abs(median[j]-median[k]))
+		}
+	}
+	return int64(f[u-1])
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(2^n\cdot n\log (n\ell)\log \ell + 3^n)$ 或 $\mathcal{O}(2^n\cdot n\log U\log \ell + 3^n)$，取决于实现，其中 $n$ 是 $\textit{lists}$ 的长度，$U\le 2\times 10^9$ 是二分答案的范围大小，$\ell$ 是 $\textit{lists}[i]$ 的平均长度。
+- 空间复杂度：$\mathcal{O}(2^n)$。
+
 ## 专题训练
 
-见下面动态规划题单的「**§9.4 子集状压 DP**」。
+1. 动态规划题单的「**§9.4 子集状压 DP**」。
+2. 二分题单的「**§2.6 第 K 小/大**」。
 
 ## 分类题单
 

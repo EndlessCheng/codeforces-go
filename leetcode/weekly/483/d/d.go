@@ -1,22 +1,37 @@
 package main
 
-import "math"
+import (
+	"math"
+	"math/bits"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func minMergeCost(lists [][]int) int64 {
 	u := 1 << len(lists)
 	sumLen := make([]int, u)
-	sorted := make([][]int, u)
-	median := make([]int, u)
 	for i, a := range lists { // 枚举不在 s 中的下标 i
 		highBit := 1 << i
 		for s, sl := range sumLen[:highBit] {
-			t := highBit | s
-			sumLen[t] = sl + len(a)
-			b := merge(sorted[s], a)
-			sorted[t] = b
-			median[t] = b[(len(b)-1)/2]
+			sumLen[highBit|s] = sl + len(a)
 		}
+	}
+
+	median := make([]int, u)
+	for mask, sl := range sumLen {
+		left, right := int(-1e9), int(1e9)
+		median[mask] = left + sort.Search(right-left, func(med int) bool {
+			med += left
+			cnt := 0
+			for s := uint32(mask); s > 0; s &= s - 1 {
+				i := bits.TrailingZeros32(s)
+				cnt += sort.SearchInts(lists[i], med+1)
+				if cnt >= (sl+1)/2 {
+					return true
+				}
+			}
+			return false
+		})
 	}
 
 	f := make([]int, u)
@@ -32,23 +47,6 @@ func minMergeCost(lists [][]int) int64 {
 		}
 	}
 	return int64(f[u-1])
-}
-
-// 88. 合并两个有序数组（创建一个新数组）
-func merge(a, b []int) []int {
-	i, n := 0, len(a)
-	j, m := 0, len(b)
-	res := make([]int, 0, n+m)
-	for i < n || j < m {
-		if j == m || i < n && a[i] < b[j] {
-			res = append(res, a[i])
-			i++
-		} else {
-			res = append(res, b[j])
-			j++
-		}
-	}
-	return res
 }
 
 func abs(x int) int {
