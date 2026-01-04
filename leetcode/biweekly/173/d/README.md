@@ -59,9 +59,9 @@ $$
 
 答案：$\displaystyle\sum_{j=0}^{m-1} f[n-1][j] + g[n-1][j]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1mUijBnEda/?t=20m25s)，欢迎点赞关注~
 
-## 优化前
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -246,7 +246,7 @@ func numberOfRoutes(grid []string, d int) int {
 }
 ```
 
-## 优化
+## 写法二（进一步优化）
 
 计算 $f$ 的同时，计算 $f$ 的前缀和。
 

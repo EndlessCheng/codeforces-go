@@ -39,7 +39,7 @@ class Solution {
 class Solution {
 public:
     string reversePrefix(string s, int k) {
-        ranges::reverse(s.begin(), s.begin() + k);
+        reverse(s.begin(), s.begin() + k);
         return s;
     }
 };
