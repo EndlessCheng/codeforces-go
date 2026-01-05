@@ -63,10 +63,29 @@ $$
 ```py [sol-Python3]
 class Solution:
     def minimumCost(self, s: str, t: str, flipCost: int, swapCost: int, crossCost: int) -> int:
+        # 更快的写法见【Python3 写法二】
         cnt = Counter(x + y for x, y in zip(s, t))
 
         a = cnt["01"]
         b = cnt["10"]
+        if a > b:
+            a, b = b, a
+
+        res1 = (a + b) * flipCost
+        res2 = a * swapCost + (b - a) * flipCost
+        avg, rem = divmod(a + b, 2)
+        res3 = (avg - a) * crossCost + avg * swapCost + rem * flipCost
+        return min(res1, res2, res3)
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def minimumCost(self, s: str, t: str, flipCost: int, swapCost: int, crossCost: int) -> int:
+        x = int(s, 2)
+        y = int(t, 2)
+
+        a = (~x & y).bit_count()  # 01 个数
+        b = (x & ~y).bit_count()  # 10 个数
         if a > b:
             a, b = b, a
 
