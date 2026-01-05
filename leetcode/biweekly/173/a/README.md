@@ -1,9 +1,7 @@
 ```py [sol-Python3]
 class Solution:
     def reversePrefix(self, s: str, k: int) -> str:
-        t = list(s)
-        t[:k] = t[:k][::-1]
-        return ''.join(t)
+        return s[:k][::-1] + s[k:]
 ```
 
 ```java [sol-Java]
