@@ -224,7 +224,11 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 func genTemplates(session *grequests.Session, problemURL string, isContest bool) error {
 	// 检查 URL 是否合法
 	if strings.Contains(problemURL, "luogu") {
-		panic("todo 暂未实现 洛谷")
+		i := strings.Index(problemURL, "/AT_")
+		if i < 0 {
+			panic(-1)
+		}
+		problemURL = "https://atcoder.jp/contests/xxx/tasks/" + problemURL[i+len("/AT_"):]
 	}
 	problemName := filepath.Base(problemURL)
 	spIdx := strings.LastIndexByte(problemName, '_')
@@ -299,7 +303,7 @@ func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
 		}
 	}
 	if !multiOutput {
-		mainFileContent = strings.ReplaceAll(mainFileContent, "\tout := bufio.NewWriter(_w)\n\tdefer out.Flush()\n\n", "")
+		mainFileContent = strings.ReplaceAll(mainFileContent, "\tout := bufio.NewWriter(_w)\n\tdefer out.Flush()\n", "")
 		mainFileContent = strings.ReplaceAll(mainFileContent, "_w", "out")
 	}
 
