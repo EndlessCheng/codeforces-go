@@ -8,8 +8,10 @@ LC723 https://leetcode.cn/problems/candy-crush/（会员题）
 - [2254. 设计视频共享平台](https://leetcode.cn/problems/design-video-sharing-platform/)（会员题）
 - [723. 粉碎糖果](https://leetcode.cn/problems/candy-crush/)（会员题）消除游戏
 https://codeforces.com/problemset/problem/799/B 1400 有序集合/最小堆
+https://codeforces.com/problemset/problem/1774/D 1600 交换 0 1 使得每行 1 的个数都一样
 https://codeforces.com/problemset/problem/1974/F 1900
 https://codeforces.com/problemset/problem/2064/D 1900
+https://codeforces.com/problemset/problem/899/E 2000 三种数据结构（做法不止一种）
 
 */
 
