@@ -47,12 +47,17 @@ https://par.cse.nsysu.edu.tw/resource/paper/2024/240730/A%20Linear-Time%20Algori
 // https://codeforces.com/problemset/problem/1726/D 2000 处理图上的环
 // https://codeforces.com/problemset/problem/1851/G 2000 离线
 // https://codeforces.com/problemset/problem/87/D 2300
+// https://codeforces.com/problemset/problem/593/D 2400 单边修改，输出 floor(val / 路径边权乘积)
 // https://codeforces.com/problemset/problem/990/G 2400
 // https://codeforces.com/problemset/problem/1132/G 2400
 // https://codeforces.com/problemset/problem/1166/F 2400
+// https://codeforces.com/problemset/problem/60/D 2500
 // https://codeforces.com/problemset/problem/1253/F 2500 启发式合并
 // https://codeforces.com/problemset/problem/1559/D2 2500 构造
 // https://codeforces.com/problemset/problem/1876/D 2500
+// https://codeforces.com/problemset/problem/444/E 2700 最大化 min_{路径} 路径边权最大值
+// - 如果要求「路径上所有边都要 >= M」，那么可以保留 >= M 的边，删除 < M 的边，那么路径只能在同一个连通块中
+// - 如果要求「路径上存在一条边 >= M」，那么可以保留 < M 的边，删除 >= M 的边，那么路径两端点必须在不同连通块中，从而使得路径经过 >= M 的边
 // https://atcoder.jp/contests/abc304/tasks/abc304_e 转换
 // https://atcoder.jp/contests/abc238/tasks/abc238_e 转换
 // https://atcoder.jp/contests/abc279/tasks/abc279_f merge 后 from 还有用 
@@ -82,9 +87,11 @@ https://par.cse.nsysu.edu.tw/resource/paper/2024/240730/A%20Linear-Time%20Algori
 // https://codeforces.com/problemset/problem/827/A 1700
 // https://codeforces.com/problemset/problem/1157/E 1700
 // https://codeforces.com/problemset/problem/724/D 1900
+// https://codeforces.com/problemset/problem/899/E 2000 也可以用双向链表
 // https://codeforces.com/problemset/problem/2018/D 2200
 // https://codeforces.com/problemset/problem/1132/G 2400
 // https://codeforces.com/problemset/problem/827/D 2700
+// https://atcoder.jp/contests/abc380/tasks/abc380_e 1230
 // https://www.codechef.com/problems/REMSUBARR
 //
 // 树+点权/边权的顺序
@@ -749,20 +756,22 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	undo := []int{}
 	find := func(x int) int {
 		for x != fa[x] {
-			x = fa[x]
+			x = fa[x] // 不做路径压缩，方便撤销
 		}
 		return x
 	}
 	merge := func(e edge) {
-		if x, y := find(e.v), find(e.w); x != y {
-			if sz[x] > sz[y] {
-				x, y = y, x
-			}
-			fa[x] = y
-			sz[y] += sz[x]
-			undo = append(undo, x)
-			cc--
+		x, y := find(e.v), find(e.w)
+		if x == y {
+			return
 		}
+		if sz[x] > sz[y] {
+			x, y = y, x
+		}
+		fa[x] = y
+		sz[y] += sz[x]
+		undo = append(undo, x)
+		cc--
 	}
 	rollbackTo := func(k int) {
 		for len(undo) > k {
@@ -773,6 +782,7 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 			cc++
 		}
 	}
+
 	var f func(l, r int)
 	f = func(l, r int) {
 		if l+1 == r {
