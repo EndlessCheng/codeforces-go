@@ -18,7 +18,7 @@ func minMergeCost1(lists [][]int) int64 {
 	}
 
 	f := make([]int, u)
-	for i := range f {
+	for i, a := range sorted {
 		if i&(i-1) == 0 { // i 只包含一个元素，无法分解成两个非空子集
 			continue // f[i] = 0
 		}
@@ -26,12 +26,11 @@ func minMergeCost1(lists [][]int) int64 {
 		// 枚举 i 的非空真子集 j
 		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
 			k := i ^ j // j 关于 i 的补集是 k
-			lenJ := len(sorted[j])
-			lenK := len(sorted[k])
-			medJ := sorted[j][(lenJ-1)/2]
-			medK := sorted[k][(lenK-1)/2]
-			f[i] = min(f[i], f[j]+f[k]+lenJ+lenK+abs(medJ-medK))
+			medJ := sorted[j][(len(sorted[j])-1)/2]
+			medK := sorted[k][(len(sorted[k])-1)/2]
+			f[i] = min(f[i], f[j]+f[k]+abs(medJ-medK))
 		}
+		f[i] += len(a)
 	}
 	return int64(f[u-1])
 }
@@ -39,7 +38,7 @@ func minMergeCost1(lists [][]int) int64 {
 func minMergeCost2(lists [][]int) int64 {
 	u := 1 << len(lists)
 	sumLen := make([]int, u)
-	for i, a := range lists { // 枚举不在 s 中的下标 i
+	for i, a := range lists {
 		highBit := 1 << i
 		for s, sl := range sumLen[:highBit] {
 			sumLen[highBit|s] = sl + len(a)
@@ -65,16 +64,16 @@ func minMergeCost2(lists [][]int) int64 {
 	}
 
 	f := make([]int, u)
-	for i := range f {
+	for i, sl := range sumLen {
 		if i&(i-1) == 0 {
-			continue // f[i] = 0
+			continue
 		}
 		f[i] = math.MaxInt
-		// 枚举 i 的非空真子集 j
 		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
-			k := i ^ j // j 关于 i 的补集是 k
-			f[i] = min(f[i], f[j]+f[k]+sumLen[j]+sumLen[k]+abs(median[j]-median[k]))
+			k := i ^ j
+			f[i] = min(f[i], f[j]+f[k]+abs(median[j]-median[k]))
 		}
+		f[i] += sl
 	}
 	return int64(f[u-1])
 }
@@ -145,13 +144,11 @@ func minMergeCost(lists [][]int) int64 {
 
 	u := 1 << n
 	half := 1<<m - 1
-	sumLen := make([]int, u) // 可以省略，但预处理出来，相比直接在后面 DP 中计算更快
 	median := make([]int, u)
 	for i := 1; i < u; i++ {
 		// 把 i 分成低 m 位和高 n-m 位
 		// 低 half 位去 sorted1 中找合并后的数组
 		// 高 n-half 位去 sorted2 中找合并后的数组
-		sumLen[i] = len(sorted1[i&half]) + len(sorted2[i>>m])
 		median[i] = findMedianSortedArrays(sorted1[i&half], sorted2[i>>m])
 	}
 
@@ -163,8 +160,9 @@ func minMergeCost(lists [][]int) int64 {
 		f[i] = math.MaxInt
 		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
 			k := i ^ j
-			f[i] = min(f[i], f[j]+f[k]+sumLen[i]+abs(median[j]-median[k]))
+			f[i] = min(f[i], f[j]+f[k]+abs(median[j]-median[k]))
 		}
+		f[i] += len(sorted1[i&half]) + len(sorted2[i>>m])
 	}
 	return int64(f[u-1])
 }

@@ -8,12 +8,12 @@
 
 根据 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) §9.4 子集状压 DP 的套路，定义 $f[S]$ 表示已选数组（的下标）集合为 $S$ 时，把 $S$ 合并为一个有序列表所需的最小总成本。
 
-枚举 $S$ 的非空真子集 $T$，问题变成得到 $T$ 和 $\complement_ST$ 的最小总成本，即 $f[T] + f[\complement_ST]$，再加上合并 $S$ 和 $T$ 的代价 $\text{len}(S) + \text{len}(T) + |\text{med}(S) - \text{med}(T)|$。
+枚举 $S$ 的非空真子集 $T$，问题变成得到 $T$ 和 $\complement_ST$ 的最小总成本，即 $f[T] + f[\complement_ST]$，再加上合并 $T$ 和 $\complement_ST$ 的代价 $\text{len}(T) + \text{len}(\complement_ST) + |\text{med}(T) - \text{med}(\complement_ST)|$。注意 $\text{len}(T) + \text{len}(\complement_ST) = \text{len}(S)$，可以提到循环外面。
 
 所有情况取最小值，得
 
 $$
-f[S] = \min_{\varnothing \ne T \subset S} f[T] + f[\complement_ST] + \text{len}(S) + \text{len}(T) + |\text{med}(S) - \text{med}(T)|
+f[S] = \text{len}(S) + \min_{\varnothing \ne T \subset S} f[T] + f[\complement_ST] + |\text{med}(T) - \text{med}(\complement_ST)|
 $$
 
 初始值：如果 $S$ 是单元素集合，则 $f[S] = 0$，无需操作。
@@ -22,7 +22,7 @@ $$
 
 ## 预处理写法一：合并有序数组
 
-由于上述 DP 过程会反复计算同一个 $\text{len}(S)$ 和 $\text{med}(S)$，我们可以预处理所有 $\text{len}(S)$ 和 $\text{med}(S)$，这也是一个 DP。
+由于上述 DP 过程会反复对同一个状态 $S$ 计算 $\text{len}(S)$ 和 $\text{med}(S)$，我们可以预处理所有 $\text{len}(S)$ 和 $\text{med}(S)$，这也是一个 DP。
 
 考虑刷表法，枚举不在 $S$ 中的下标 $i$，设 $T = S\cup\{i\}$，那么
 
@@ -74,12 +74,11 @@ class Solution:
             j = i & (i - 1)
             while j > (i ^ j):
                 k = i ^ j  # j 关于 i 的补集是 k
-                len_j = len(sorted_[j])
-                len_k = len(sorted_[k])
-                med_j = sorted_[j][(len_j - 1) // 2]
-                med_k = sorted_[k][(len_k - 1) // 2]
-                f[i] = min(f[i], f[j] + f[k] + len_j + len_k + abs(med_j - med_k))
+                med_j = sorted_[j][(len(sorted_[j]) - 1) // 2]
+                med_k = sorted_[k][(len(sorted_[k]) - 1) // 2]
+                f[i] = min(f[i], f[j] + f[k] + abs(med_j - med_k))
                 j = (j - 1) & i
+            f[i] += len(sorted_[i])
 
         return f[-1]
 ```
@@ -120,12 +119,11 @@ class Solution:
             j = i & (i - 1)
             while j > (i ^ j):
                 k = i ^ j  # j 关于 i 的补集是 k
-                len_j = len(sorted_[j])
-                len_k = len(sorted_[k])
-                med_j = sorted_[j][(len_j - 1) // 2]
-                med_k = sorted_[k][(len_k - 1) // 2]
-                f[i] = min(f[i], f[j] + f[k] + len_j + len_k + abs(med_j - med_k))
+                med_j = sorted_[j][(len(sorted_[j]) - 1) // 2]
+                med_k = sorted_[k][(len(sorted_[k]) - 1) // 2]
+                f[i] = min(f[i], f[j] + f[k] + abs(med_j - med_k))
                 j = (j - 1) & i
+            f[i] += len(sorted_[i])
 
         return f[-1]
 ```
@@ -152,12 +150,11 @@ class Solution {
             // 枚举 i 的非空真子集 j
             for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j; // j 关于 i 的补集是 k
-                int lenJ = sorted[j].length;
-                int lenK = sorted[k].length;
-                int medJ = sorted[j][(lenJ - 1) / 2];
-                int medK = sorted[k][(lenK - 1) / 2];
-                f[i] = Math.min(f[i], f[j] + f[k] + lenJ + lenK + Math.abs(medJ - medK));
+                int medJ = sorted[j][(sorted[j].length - 1) / 2];
+                int medK = sorted[k][(sorted[k].length - 1) / 2];
+                f[i] = Math.min(f[i], f[j] + f[k] + Math.abs(medJ - medK));
             }
+            f[i] += sorted[i].length;
         }
 
         return f[u - 1];
@@ -226,12 +223,11 @@ public:
             // 枚举 i 的非空真子集 j
             for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j; // j 关于 i 的补集是 k
-                int len_j = sorted[j].size();
-                int len_k = sorted[k].size();
-                int med_j = sorted[j][(len_j - 1) / 2];
-                int med_k = sorted[k][(len_k - 1) / 2];
-                f[i] = min(f[i], f[j] + f[k] + len_j + len_k + abs(med_j - med_k));
+                int med_j = sorted[j][(sorted[j].size() - 1) / 2];
+                int med_k = sorted[k][(sorted[k].size() - 1) / 2];
+                f[i] = min(f[i], f[j] + f[k] + abs(med_j - med_k));
             }
+            f[i] += sorted[i].size();
         }
 
         return f[u - 1];
@@ -273,7 +269,7 @@ func minMergeCost(lists [][]int) int64 {
 	}
 
 	f := make([]int, u)
-	for i := range f {
+	for i, a := range sorted {
 		if i&(i-1) == 0 { // i 只包含一个元素，无法分解成两个非空子集
 			continue // f[i] = 0
 		}
@@ -281,12 +277,11 @@ func minMergeCost(lists [][]int) int64 {
 		// 枚举 i 的非空真子集 j
 		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
 			k := i ^ j // j 关于 i 的补集是 k
-			lenJ := len(sorted[j])
-			lenK := len(sorted[k])
-			medJ := sorted[j][(lenJ-1)/2]
-			medK := sorted[k][(lenK-1)/2]
-			f[i] = min(f[i], f[j]+f[k]+lenJ+lenK+abs(medJ-medK))
+			medJ := sorted[j][(len(sorted[j])-1)/2]
+			medK := sorted[k][(len(sorted[k])-1)/2]
+			f[i] = min(f[i], f[j]+f[k]+abs(medJ-medK))
 		}
+		f[i] += len(a)
 	}
 	return int64(f[u-1])
 }
@@ -361,8 +356,9 @@ class Solution:
             j = i & (i - 1)
             while j > (i ^ j):
                 k = i ^ j
-                f[i] = min(f[i], f[j] + f[k] + sum_len[i] + abs(median[j] - median[k]))
+                f[i] = min(f[i], f[j] + f[k] + abs(median[j] - median[k]))
                 j = (j - 1) & i
+            f[i] += sum_len[i]
 
         return f[-1]
 ```
@@ -404,8 +400,9 @@ class Solution {
             f[i] = Long.MAX_VALUE;
             for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j;
-                f[i] = Math.min(f[i], f[j] + f[k] + sumLen[i] + Math.abs(median[j] - median[k]));
+                f[i] = Math.min(f[i], f[j] + f[k] + Math.abs(median[j] - median[k]));
             }
+            f[i] += sumLen[i];
         }
 
         return f[u - 1];
@@ -494,8 +491,9 @@ public:
             f[i] = LLONG_MAX;
             for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j;
-                f[i] = min(f[i], f[j] + f[k] + sum_len[i] + abs(median[j] - median[k]));
+                f[i] = min(f[i], f[j] + f[k] + abs(median[j] - median[k]));
             }
+            f[i] += sum_len[i];
         }
 
         return f[u - 1];
@@ -533,15 +531,16 @@ func minMergeCost(lists [][]int) int64 {
 	}
 
 	f := make([]int, u)
-	for i := range f {
+	for i, sl := range sumLen {
 		if i&(i-1) == 0 {
 			continue
 		}
 		f[i] = math.MaxInt
 		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
 			k := i ^ j
-			f[i] = min(f[i], f[j]+f[k]+sumLen[i]+abs(median[j]-median[k]))
+			f[i] = min(f[i], f[j]+f[k]+abs(median[j]-median[k]))
 		}
+		f[i] += sl
 	}
 	return int64(f[u-1])
 }
@@ -622,13 +621,11 @@ class Solution:
 
         u = 1 << n
         half = (1 << m) - 1
-        sum_len = [0] * u  # 可以省略，但预处理出来，相比直接在后面 DP 中计算更快
         median = [0] * u
         for i in range(1, u):
             # 把 i 分成低 m 位和高 n-m 位
             # 低 half 位去 sorted1 中找合并后的数组
             # 高 n-half 位去 sorted2 中找合并后的数组
-            sum_len[i] = len(sorted1[i & half]) + len(sorted2[i >> m])
             median[i] = self.findMedianSortedArrays(sorted1[i & half], sorted2[i >> m])
 
         f = [inf] * u
@@ -639,8 +636,9 @@ class Solution:
             j = i & (i - 1)
             while j > (i ^ j):
                 k = i ^ j
-                f[i] = min(f[i], f[j] + f[k] + sum_len[i] + abs(median[j] - median[k]))
+                f[i] = min(f[i], f[j] + f[k] + abs(median[j] - median[k]))
                 j = (j - 1) & i
+            f[i] += len(sorted1[i & half]) + len(sorted2[i >> m])
 
         return f[-1]
 ```
@@ -655,13 +653,11 @@ class Solution {
 
         int u = 1 << n;
         int half = (1 << m) - 1;
-        int[] sumLen = new int[u]; // 可以省略，但预处理出来，相比直接在后面 DP 中计算更快
         int[] median = new int[u];
         for (int i = 1; i < u; i++) {
             // 把 i 分成低 m 位和高 n-m 位
             // 低 half 位去 sorted1 中找合并后的数组
             // 高 n-half 位去 sorted2 中找合并后的数组
-            sumLen[i] = sorted1[i & half].length + sorted2[i >> m].length;
             median[i] = findMedianSortedArrays(sorted1[i & half], sorted2[i >> m]);
         }
 
@@ -673,8 +669,9 @@ class Solution {
             f[i] = Long.MAX_VALUE;
             for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j;
-                f[i] = Math.min(f[i], f[j] + f[k] + sumLen[i] + Math.abs(median[j] - median[k]));
+                f[i] = Math.min(f[i], f[j] + f[k] + Math.abs(median[j] - median[k]));
             }
+            f[i] += sorted1[i & half].length + sorted2[i >> m].length;
         }
 
         return f[u - 1];
@@ -819,13 +816,11 @@ public:
 
         int u = 1 << n;
         int half = (1 << m) - 1;
-        vector<int> sum_len(u); // 可以省略，但预处理出来，相比直接在后面 DP 中计算更快
         vector<int> median(u);
         for (int i = 1; i < u; i++) {
             // 把 i 分成低 m 位和高 n-m 位
             // 低 half 位去 sorted1 中找合并后的数组
             // 高 n-half 位去 sorted2 中找合并后的数组
-            sum_len[i] = sorted1[i & half].size() + sorted2[i >> m].size();
             median[i] = findMedianSortedArrays(sorted1[i & half], sorted2[i >> m]);
         }
 
@@ -837,8 +832,9 @@ public:
             f[i] = LLONG_MAX;
             for (int j = i & (i - 1); j > (i ^ j); j = (j - 1) & i) {
                 int k = i ^ j;
-                f[i] = min(f[i], f[j] + f[k] + sum_len[i] + abs(median[j] - median[k]));
+                f[i] = min(f[i], f[j] + f[k] + abs(median[j] - median[k]));
             }
+            f[i] += sorted1[i & half].size() + sorted2[i >> m].size();
         }
 
         return f[u - 1];
@@ -911,13 +907,11 @@ func minMergeCost(lists [][]int) int64 {
 
 	u := 1 << n
 	half := 1<<m - 1
-	sumLen := make([]int, u) // 可以省略，但预处理出来，相比直接在后面 DP 中计算更快
 	median := make([]int, u)
 	for i := 1; i < u; i++ {
 		// 把 i 分成低 m 位和高 n-m 位
 		// 低 half 位去 sorted1 中找合并后的数组
 		// 高 n-half 位去 sorted2 中找合并后的数组
-		sumLen[i] = len(sorted1[i&half]) + len(sorted2[i>>m])
 		median[i] = findMedianSortedArrays(sorted1[i&half], sorted2[i>>m])
 	}
 
@@ -929,8 +923,9 @@ func minMergeCost(lists [][]int) int64 {
 		f[i] = math.MaxInt
 		for j := i & (i - 1); j > i^j; j = (j - 1) & i {
 			k := i ^ j
-			f[i] = min(f[i], f[j]+f[k]+sumLen[i]+abs(median[j]-median[k]))
+			f[i] = min(f[i], f[j]+f[k]+abs(median[j]-median[k]))
 		}
+		f[i] += len(sorted1[i&half]) + len(sorted2[i>>m])
 	}
 	return int64(f[u-1])
 }
