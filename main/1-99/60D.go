@@ -37,7 +37,7 @@ func cf60D(in io.Reader, out io.Writer) {
 		return
 	}
 
-	const mx int = 1e7
+	const mx = 10_000_000
 	fa := [mx + 1]uint32{}
 	find := func(x uint32) uint32 {
 		rt := x
@@ -50,7 +50,7 @@ func cf60D(in io.Reader, out io.Writer) {
 		return rt
 	}
 
-	n := int(rd())
+	n := rd()
 	merge := func(x, y uint32) {
 		if fa[x] == 0 || fa[y] == 0 {
 			return
@@ -68,17 +68,19 @@ func cf60D(in io.Reader, out io.Writer) {
 		fa[v] = v
 	}
 
-	for u := 3; u*u < mx*2; u += 2 {
-		for v := 1; v < u && u*u+v*v <= mx*2; v += 2 {
-			if gcd(u, v) > 1 {
+	for i := 1; i*(i+2) <= mx; i += 2 {
+		for j := i + 2; i*j <= mx && j*j-i*i <= mx*2; j += 2 {
+			if gcd(i, j) > 1 {
 				continue
 			}
-			a := uint32(u * v)
-			b := uint32(u*u-v*v) / 2
-			c := uint32(u*u+v*v) / 2
+			a := uint32(i * j)
+			b := uint32(j*j-i*i) / 2
+			c := uint32(i*i+j*j) / 2
 			merge(a, b)
-			merge(a, c)
-			merge(b, c)
+			if c <= mx {
+				merge(a, c)
+				merge(b, c)
+			}
 		}
 	}
 	Fprint(out, n)
