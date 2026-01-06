@@ -69,6 +69,7 @@ func cf60D(in io.Reader, out io.Writer) {
 	}
 
 	for i := 1; i*(i+2) <= mx; i += 2 {
+		// 如果 a > mx 或 b > mx，那么 c > max(a, b) > mx
 		for j := i + 2; i*j <= mx && j*j-i*i <= mx*2; j += 2 {
 			if gcd(i, j) > 1 {
 				continue
