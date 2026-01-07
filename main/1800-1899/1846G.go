@@ -16,10 +16,11 @@ func bin46(s string) (a int) {
 
 func cf1846G(in io.Reader, out io.Writer) {
 	var T, n, m int
-	var s0, s, t string
+	var s, t string
 o:
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n, &m, &s0)
+		Fscan(in, &n, &m, &s)
+		st := bin46(s)
 		a := make([]struct{ d, s, t int }, m)
 		for i := range a {
 			Fscan(in, &a[i].d, &s, &t)
@@ -31,7 +32,6 @@ o:
 		for i := range dis {
 			dis[i] = 1e9
 		}
-		st := bin46(s0)
 		dis[st] = 0
 		h := hp46{{0, st}}
 		for len(h) > 0 {
@@ -62,6 +62,7 @@ o:
 
 type pair46 struct{ d, v int }
 type hp46 []pair46
+
 func (h hp46) Len() int           { return len(h) }
 func (h hp46) Less(i, j int) bool { return h[i].d < h[j].d }
 func (h hp46) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
