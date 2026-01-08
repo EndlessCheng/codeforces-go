@@ -1,18 +1,16 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1wr421h7xY/) 第三题。
-
 ## 方法一：哈希表 + 有序集合
 
-做法类似前几天的每日一题 [2671. 频率跟踪器](https://leetcode.cn/problems/frequency-tracker/)：
+做法类似 [2671. 频率跟踪器](https://leetcode.cn/problems/frequency-tracker/)：
 
 - 用哈希表 $\textit{cnt}$ 记录 $x=\textit{nums}[i]$ 的出现次数 $\textit{cnt}[x]$（用 $\textit{freq}$ 更新出现次数）。
 - 用有序集合记录 $\textit{cnt}[x]$ 的出现次数，从而可以 $\mathcal{O}(\log n)$ 知道最大的 $\textit{cnt}[x]$ 是多少。
 
-```py [sol-Python3]
-from sortedcontainers import SortedList
+[视频讲解](https://www.bilibili.com/video/BV1wr421h7xY/) 第三题。
 
+```py [sol-Python3]
 class Solution:
     def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
-        cnt = Counter()
+        cnt = defaultdict(int)
         sl = SortedList()
         ans = []
         for x, f in zip(nums, freq):
@@ -112,15 +110,15 @@ func mostFrequentIDs(nums, freq []int) []int64 {
 ```py [sol-Python3]
 class Solution:
     def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
-        ans = []
-        cnt = Counter()
+        cnt = defaultdict(int)
         h = []
+        ans = []
         for x, f in zip(nums, freq):
             cnt[x] += f
-            heappush(h, (-cnt[x], x))  # 取负号变成最大堆
-            while -h[0][0] != cnt[h[0][1]]:  # 堆顶保存的数据已经发生变化
-                heappop(h)  # 删除
-            ans.append(-h[0][0])
+            heappush_max(h, (cnt[x], x))
+            while h[0][0] != cnt[h[0][1]]:  # 堆顶保存的数据已经发生变化
+                heappop_max(h)  # 删除
+            ans.append(h[0][0])
         return ans
 ```
 
@@ -200,12 +198,21 @@ func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; 
 
 ## 分类题单
 
-- [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
-- [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-- [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
-- [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-- [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-- [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-- [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-更多题单，点我个人主页 - 讨论发布。
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

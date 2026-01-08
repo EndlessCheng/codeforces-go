@@ -14,12 +14,12 @@
 class TaskManager:
     def __init__(self, tasks: List[List[int]]):
         self.mp = {taskId: (priority, userId) for userId, taskId, priority in tasks}
-        self.h = [(-priority, -taskId, userId) for userId, taskId, priority in tasks]  # 取相反数，变成最大堆
-        heapify(self.h)
+        self.h = [(priority, taskId, userId) for userId, taskId, priority in tasks]
+        heapify_max(self.h)
 
     def add(self, userId: int, taskId: int, priority: int) -> None:
         self.mp[taskId] = (priority, userId)
-        heappush(self.h, (-priority, -taskId, userId))
+        heappush_max(self.h, (priority, taskId, userId))
 
     def edit(self, taskId: int, newPriority: int) -> None:
         # 懒修改
@@ -31,9 +31,9 @@ class TaskManager:
 
     def execTop(self) -> int:
         while self.h:
-            priority, taskId, userId = heappop(self.h)
-            if self.mp[-taskId] == (-priority, userId):
-                self.rmv(-taskId)
+            priority, taskId, userId = heappop_max(self.h)
+            if self.mp[taskId] == (priority, userId):
+                self.rmv(taskId)
                 return userId
             # else 货不对板，堆顶和 mp 中记录的不一样，说明堆顶数据已被修改或删除，不做处理
         return -1
@@ -308,7 +308,7 @@ impl TaskManager {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
