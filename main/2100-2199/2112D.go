@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -35,29 +34,23 @@ func cf2112D(in io.Reader, _w io.Writer) {
 		}
 
 		Fprintln(out, "YES")
-		first := true
 		var dfs func(int, int, bool)
 		dfs = func(v, fa int, rev bool) {
 			for _, w := range g[v] {
 				if w == fa {
 					continue
 				}
-				r := rev
-				if first {
-					first = false
-				} else {
-					r = !r
-				}
-				if r {
+				if rev {
 					Fprintln(out, w, v)
 				} else {
 					Fprintln(out, v, w)
 				}
-				dfs(w, v, r)
+				dfs(w, v, !rev)
 			}
 		}
-		dfs(rt, 0, false)
+		dfs(rt, g[rt][1], false)
+		dfs(rt, g[rt][0], true)
 	}
 }
 
-func main() { cf2112D(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf2112D(bufio.NewReader(os.Stdin), os.Stdout) }
