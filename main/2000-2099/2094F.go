@@ -23,10 +23,9 @@ func cf2094F(in io.Reader, _w io.Writer) {
 				Fprintln(out)
 			}
 		} else {
-			for v := range n {
-				for range m {
-					Fprint(out, v%k+1, " ")
-					v++
+			for i := range n {
+				for j := range m {
+					Fprint(out, (i+j)%k+1, " ")
 				}
 				Fprintln(out)
 			}
