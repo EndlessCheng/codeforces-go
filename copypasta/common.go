@@ -180,6 +180,7 @@ https://codeforces.com/problemset/problem/224/B 1500 和最小
 https://codeforces.com/problemset/problem/701/C 1500
 https://codeforces.com/problemset/problem/1777/C 1700
 https://codeforces.com/problemset/problem/2093/G 1900
+https://www.luogu.com.cn/problem/P10719 二维转一维
 https://www.luogu.com.cn/problem/P9474 值域滑窗
 
 不定长滑动窗口：上下界
@@ -425,6 +426,8 @@ https://codeforces.com/problemset/problem/296/A 1100
 https://codeforces.com/problemset/problem/1574/B 1100
 https://codeforces.com/problemset/problem/1579/D 1400
 - LC1953 https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/
+https://codeforces.com/problemset/problem/1822/E 1600
+https://codeforces.com/problemset/problem/1954/D 1800
 https://codeforces.com/problemset/problem/884/F 2500
 https://codeforces.com/problemset/problem/1521/E 2700 二维+对角不同
 
@@ -520,6 +523,7 @@ https://www.luogu.com.cn/problem/P12137 蓝桥杯 2025 省赛 C++ 大学 B 组 H
 - 原题是 https://yukicoder.me/problems/no/1681 相邻数字之间插入 + - * 得到的式子（有 3^(n-1) 个）运算结果的总和
 https://www.luogu.com.cn/problem/UVA10881 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1822
 - [LCS 01. 下载插件](https://leetcode.cn/problems/Ju9Xwi/)
+https://www.luogu.com.cn/problem/P9533 区间翻转区间异或和
 https://www.codechef.com/problems/CLEARARR 2037
 
 MEX
@@ -550,6 +554,7 @@ https://codeforces.com/problemset/problem/2037/C  1000
 https://codeforces.com/problemset/problem/2039/B  1000 分析性质
 https://codeforces.com/problemset/problem/2040/B  1000
 https://codeforces.com/problemset/problem/2044/D  1100 脑筋急转弯
+https://codeforces.com/problemset/problem/2162/C  1100 分类讨论 XOR a -> b
 https://codeforces.com/problemset/problem/4/B     1200
 https://codeforces.com/problemset/problem/482/A   1200
 https://codeforces.com/problemset/problem/651/B   1200
@@ -584,8 +589,10 @@ https://codeforces.com/problemset/problem/2057/C  1500 XOR 可以做到 O(1)
 https://codeforces.com/problemset/problem/2072/E  1500
 https://codeforces.com/problemset/problem/2077/A  1500
 https://codeforces.com/problemset/problem/2107/C  1500 经典 DP 的构造版本
+https://codeforces.com/problemset/problem/2146/D1 1500 重排使得 sum(p[i] | q[i]) 最大
 https://codeforces.com/problemset/problem/1968/E  1600
 https://codeforces.com/problemset/problem/2084/D  1600
+https://codeforces.com/problemset/problem/2094/F  1600 棋盘 k-染色   (i+j)%2 彩带染色法
 https://codeforces.com/problemset/problem/2171/F  1600 给定排列 p，构造一棵树，满足每条边的 pos[小端] < pos[大端]
 https://codeforces.com/problemset/problem/66/D    1700
 https://codeforces.com/problemset/problem/201/A   1700
@@ -593,7 +600,7 @@ https://codeforces.com/problemset/problem/584/C   1700 分类讨论
 https://codeforces.com/problemset/problem/1332/D  1700 给你一个错误代码，构造 hack 数据
 https://codeforces.com/problemset/problem/1893/B  1700
 https://codeforces.com/problemset/problem/2071/C  1700 树 排列
-https://codeforces.com/problemset/problem/2112/D  1700 树
+https://codeforces.com/problemset/problem/2112/D  1700 树 定向
 https://codeforces.com/problemset/problem/142/B   1800 棋盘放最多的马
 https://codeforces.com/problemset/problem/847/C   1800
 https://codeforces.com/problemset/problem/1156/B  1800 相邻字母在字母表中不相邻
@@ -613,6 +620,7 @@ https://codeforces.com/problemset/problem/1854/A2 1900 分类讨论
 https://codeforces.com/problemset/problem/2040/D  1900 树 质数
 https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
+https://codeforces.com/problemset/problem/2146/D2 2000 重排使得 sum(p[i] | q[i]) 最大
 https://codeforces.com/problemset/problem/2171/E  2000
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
@@ -661,81 +669,83 @@ LC494 https://leetcode.cn/problems/target-sum/
 LC3189 https://leetcode.cn/problems/minimum-moves-to-get-a-peaceful-board/
 
 分类讨论（部分题是易错题）
-https://codeforces.com/problemset/problem/862/A 1000
-https://codeforces.com/problemset/problem/1550/B 1000
-https://codeforces.com/problemset/problem/1931/C 1000
-https://codeforces.com/problemset/problem/2039/B 1000
-https://codeforces.com/problemset/problem/2043/B 1100
-https://codeforces.com/problemset/problem/262/B 1200
-https://codeforces.com/problemset/problem/1364/A 1200
-https://codeforces.com/problemset/problem/1860/B 1200
-https://codeforces.com/problemset/problem/2053/B 1200
-https://codeforces.com/problemset/problem/870/C 1300
-https://codeforces.com/problemset/problem/1698/C 1300
+https://codeforces.com/problemset/problem/862/A   1000
+https://codeforces.com/problemset/problem/1550/B  1000
+https://codeforces.com/problemset/problem/1931/C  1000
+https://codeforces.com/problemset/problem/2039/B  1000
+https://codeforces.com/problemset/problem/2043/B  1100
+https://codeforces.com/problemset/problem/2162/C  1100
+https://codeforces.com/problemset/problem/262/B   1200
+https://codeforces.com/problemset/problem/1364/A  1200
+https://codeforces.com/problemset/problem/1860/B  1200
+https://codeforces.com/problemset/problem/2053/B  1200
+https://codeforces.com/problemset/problem/870/C   1300
+https://codeforces.com/problemset/problem/1698/C  1300
 https://codeforces.com/problemset/problem/2065/C2 1300
-https://codeforces.com/problemset/problem/2075/B 1300
-https://codeforces.com/problemset/problem/30/A 1400
-https://codeforces.com/problemset/problem/45/I 1400
-https://codeforces.com/problemset/problem/489/C 1400
-https://codeforces.com/problemset/problem/934/A 1400
-https://codeforces.com/problemset/problem/1009/B 1400 脑筋急转弯
-https://codeforces.com/problemset/problem/1251/B 1400
-https://codeforces.com/problemset/problem/1292/A 1400 也有简单写法
-https://codeforces.com/problemset/problem/1605/C 1400
-https://codeforces.com/problemset/problem/1989/C 1400
-https://codeforces.com/problemset/problem/2110/C 1400
-https://codeforces.com/problemset/problem/115/B 1500
-https://codeforces.com/problemset/problem/960/B 1500
-https://codeforces.com/problemset/problem/1051/C 1500
-https://codeforces.com/problemset/problem/1180/B 1500
-https://codeforces.com/problemset/problem/1250/L 1500
-https://codeforces.com/problemset/problem/2137/E 1500
-https://codeforces.com/problemset/problem/150/B 1600
-https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
-https://codeforces.com/problemset/problem/898/E 1600
-https://codeforces.com/problemset/problem/1822/E 1600 样例给的挺良心的
-https://codeforces.com/problemset/problem/1861/C 1600 好题！
-https://codeforces.com/problemset/problem/1976/C 1600
-https://codeforces.com/problemset/problem/1978/D 1600
-https://atcoder.jp/contests/abc173/tasks/abc173_e 1607=CF1926 乘法
-https://codeforces.com/problemset/problem/193/A 1700
-https://codeforces.com/problemset/problem/382/C 1700
-https://codeforces.com/problemset/problem/411/C 1700
-https://codeforces.com/problemset/problem/1516/C 1700
-https://codeforces.com/problemset/problem/1799/C 1700
-https://codeforces.com/problemset/problem/1468/J 1800 MST
-https://codeforces.com/problemset/problem/1833/G 1800 样例给得挺良心的
-https://codeforces.com/problemset/problem/2117/F 1800
-https://codeforces.com/problemset/problem/796/C 1900
-https://codeforces.com/problemset/problem/1095/E 1900
-https://codeforces.com/problemset/problem/1714/F 1900 锻炼代码实现技巧的好题
-https://codeforces.com/problemset/problem/1747/D 1900 结论 不变量
-https://codeforces.com/problemset/problem/1914/F 1900
-https://codeforces.com/problemset/problem/1088/D 2000
-https://codeforces.com/problemset/problem/1763/C 2000
-https://codeforces.com/problemset/problem/1978/E 2000
-https://codeforces.com/problemset/problem/2051/F 2000
-https://codeforces.com/problemset/problem/1811/F 2100
-https://codeforces.com/problemset/problem/1798/E 2300
-https://codeforces.com/problemset/problem/209/C 2400
-https://codeforces.com/problemset/problem/416/D 2400 推荐
-https://codeforces.com/problemset/problem/1594/F 2400
+https://codeforces.com/problemset/problem/2075/B  1300
+https://codeforces.com/problemset/problem/30/A    1400
+https://codeforces.com/problemset/problem/45/I    1400
+https://codeforces.com/problemset/problem/489/C   1400
+https://codeforces.com/problemset/problem/934/A   1400
+https://codeforces.com/problemset/problem/1009/B  1400 脑筋急转弯
+https://codeforces.com/problemset/problem/1251/B  1400
+https://codeforces.com/problemset/problem/1292/A  1400 也有简单写法
+https://codeforces.com/problemset/problem/1605/C  1400
+https://codeforces.com/problemset/problem/1989/C  1400
+https://codeforces.com/problemset/problem/2110/C  1400
+https://codeforces.com/problemset/problem/115/B   1500
+https://codeforces.com/problemset/problem/960/B   1500
+https://codeforces.com/problemset/problem/1051/C  1500
+https://codeforces.com/problemset/problem/1180/B  1500
+https://codeforces.com/problemset/problem/1250/L  1500
+https://codeforces.com/problemset/problem/2137/E  1500
+https://codeforces.com/problemset/problem/150/B   1600
+https://codeforces.com/problemset/problem/750/C   1600 *也有偏数学的做法
+https://codeforces.com/problemset/problem/898/E   1600
+https://codeforces.com/problemset/problem/1822/E  1600 样例给的挺良心的
+https://codeforces.com/problemset/problem/1861/C  1600 好题！
+https://codeforces.com/problemset/problem/1976/C  1600
+https://codeforces.com/problemset/problem/1978/D  1600
+https://codeforces.com/problemset/problem/193/A   1700
+https://codeforces.com/problemset/problem/382/C   1700
+https://codeforces.com/problemset/problem/411/C   1700
+https://codeforces.com/problemset/problem/1516/C  1700
+https://codeforces.com/problemset/problem/1799/C  1700
+https://codeforces.com/problemset/problem/1468/J  1800 MST
+https://codeforces.com/problemset/problem/1833/G  1800 样例给得挺良心的
+https://codeforces.com/problemset/problem/1955/F  1800
+https://codeforces.com/problemset/problem/2117/F  1800
+https://codeforces.com/problemset/problem/796/C   1900
+https://codeforces.com/problemset/problem/1095/E  1900
+https://codeforces.com/problemset/problem/1714/F  1900 锻炼代码实现技巧的好题
+https://codeforces.com/problemset/problem/1747/D  1900 结论 不变量
+https://codeforces.com/problemset/problem/1914/F  1900
+https://codeforces.com/problemset/problem/1088/D  2000
+https://codeforces.com/problemset/problem/1763/C  2000
+https://codeforces.com/problemset/problem/1978/E  2000
+https://codeforces.com/problemset/problem/2051/F  2000
+https://codeforces.com/problemset/problem/1811/F  2100
+https://codeforces.com/problemset/problem/1798/E  2300
+https://codeforces.com/problemset/problem/209/C   2400
+https://codeforces.com/problemset/problem/416/D   2400 推荐
+https://codeforces.com/problemset/problem/1594/F  2400
 https://codeforces.com/problemset/problem/1736/C2 2400
-https://codeforces.com/problemset/problem/1761/E 2400
+https://codeforces.com/problemset/problem/1761/E  2400
 https://codeforces.com/problemset/problem/1832/D2 2400
-https://codeforces.com/problemset/problem/501/E 2500
-- https://codeforces.com/problemset/problem/2069/D
-https://codeforces.com/problemset/problem/599/E 2600
-https://codeforces.com/problemset/problem/1016/F 2600
-https://codeforces.com/problemset/problem/1422/E 2700 LCS
-https://codeforces.com/problemset/problem/1730/E 2700
+https://codeforces.com/problemset/problem/501/E   2500
+- https://codeforces.com/problemset/problem/2069/D 1800
+https://codeforces.com/problemset/problem/599/E   2600
+https://codeforces.com/problemset/problem/1016/F  2600
+https://codeforces.com/problemset/problem/1422/E  2700 LCS
+https://codeforces.com/problemset/problem/1730/E  2700
 https://codeforces.com/gym/105139/problem/L
 https://atcoder.jp/contests/diverta2019/tasks/diverta2019_c
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 https://atcoder.jp/contests/abc125/tasks/abc125_d
+https://atcoder.jp/contests/abc173/tasks/abc173_e 1607=CF1926 乘法
 https://atcoder.jp/contests/arc134/tasks/arc134_d 1998
-- [335. 路径交叉](https://leetcode.cn/problems/self-crossing/)
-- [2162. 设置时间的最少代价](https://leetcode.cn/problems/minimum-cost-to-set-cooking-time/) 1852
+- LC335 https://leetcode.cn/problems/self-crossing/
+- LC2162 https://leetcode.cn/problems/minimum-cost-to-set-cooking-time/
 https://leetcode.cn/problems/maximize-the-number-of-partitions-after-operations/
 https://leetcode.cn/problems/count-the-number-of-houses-at-a-certain-distance-ii/
 
@@ -1126,6 +1136,7 @@ func _() {
 	// - https://atcoder.jp/contests/abc414/tasks/abc414_c
 	// LC3272 https://leetcode.cn/problems/find-the-count-of-good-integers/
 	// EXTRA: 单个数字的情况 LC564 https://leetcode.cn/problems/find-the-closest-palindrome/
+	// https://codeforces.com/problemset/problem/688/B 1000
 	// https://codeforces.com/problemset/problem/897/B 1300
 	initPalindromeNumber := func() {
 		const mx int = 1e9
