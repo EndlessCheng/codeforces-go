@@ -10,9 +10,9 @@ import (
 func cf688B(in io.Reader, out io.Writer) {
 	var s []byte
 	Fscan(in, &s)
-	t := slices.Clone(s)
-	slices.Reverse(t)
-	Fprintf(out, "%s%s", s, t)
+	Fprintf(out, "%s", s)
+	slices.Reverse(s)
+	Fprintf(out, "%s", s)
 }
 
 //func main() { cf688B(bufio.NewReader(os.Stdin), os.Stdout) }
