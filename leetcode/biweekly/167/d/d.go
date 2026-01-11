@@ -59,7 +59,7 @@ func maxPartitionFactor1(points [][]int) int {
 
 type unionFind struct {
 	fa  []int
-	dis []int8
+	dis []int8 // dis[x] 表示 x 到其代表元的距离
 }
 
 func newUnionFind(n int) unionFind {
@@ -87,14 +87,14 @@ func (u unionFind) find(x int) int {
 func (u *unionFind) merge(from, to int) bool {
 	x, y := u.find(from), u.find(to)
 	if x == y { // from 和 to 在同一个集合，不合并
-		return u.dis[from] != u.dis[to] // 必须在不同集合
+		return u.dis[from] != u.dis[to] // 是否与已知信息矛盾
 	}
 	//    2 ------ 4
 	//   /        /
 	//  1 ------ 3
 	// 如果知道 1->2 的距离和 3->4 的距离，现在合并 1 和 3，并传入 1->3 的距离（本题等于 1）
 	// 由于 1->3->4 和 1->2->4 的距离相等
-	// 于是 2->4 的距离为 (1->3) + (3->4) - (1->2)
+	// 所以 2->4 的距离为 (1->3) + (3->4) - (1->2)
 	u.dis[x] = 1 ^ u.dis[to] ^ u.dis[from]
 	u.fa[x] = y
 	return true

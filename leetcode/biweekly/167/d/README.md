@@ -319,7 +319,7 @@ class UnionFind:
         x, y = self.find(from_), self.find(to)
         dis = self.dis
         if x == y:  # from 和 to 在同一个集合，不合并
-            return dis[from_] != dis[to]  # 必须在不同集合
+            return dis[from_] != dis[to]  # 是否与已知信息矛盾
         #    2 ------ 4
         #   /        /
         #  1 ------ 3
@@ -334,7 +334,8 @@ class UnionFind:
 class Solution:
     def maxPartitionFactor(self, points: List[List[int]]) -> int:
         manhattan_tuples = [(abs(x1 - x2) + abs(y1 - y2), i, j)
-                            for i, (x1, y1) in enumerate(points) for j, (x2, y2) in enumerate(points[:i])]
+                            for i, (x1, y1) in enumerate(points)
+                            for j, (x2, y2) in enumerate(points[:i])]
         manhattan_tuples.sort(key=lambda t: t[0])
 
         uf = UnionFind(len(points))
@@ -374,7 +375,7 @@ class UnionFind {
         int x = find(from);
         int y = find(to);
         if (x == y) { // from 和 to 在同一个集合，不合并
-            return dis[from] != dis[to]; // 必须在不同集合
+            return dis[from] != dis[to]; // 是否与已知信息矛盾
         }
         //    2 ------ 4
         //   /        /
@@ -438,7 +439,7 @@ public:
     bool merge(int from, int to) {
         int x = find(from), y = find(to);
         if (x == y) { // from 和 to 在同一个集合，不合并
-            return dis[from] != dis[to]; // 必须在不同集合
+            return dis[from] != dis[to]; // 是否与已知信息矛盾
         }
         //    2 ------ 4
         //   /        /
@@ -508,7 +509,7 @@ func (u unionFind) find(x int) int {
 func (u *unionFind) merge(from, to int) bool {
 	x, y := u.find(from), u.find(to)
 	if x == y { // from 和 to 在同一个集合，不合并
-		return u.dis[from] != u.dis[to] // 必须在不同集合
+		return u.dis[from] != u.dis[to] // 是否与已知信息矛盾
 	}
 	//    2 ------ 4
 	//   /        /
