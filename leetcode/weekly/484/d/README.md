@@ -1,0 +1,189 @@
+## 核心思路
+
+1. 从高到低考虑答案的每一位是 $1$ 还是 $0$。
+2. 遍历 $\textit{nums}$，计算把 $\textit{nums}[i]$ 的某些比特位都变成 $1$ 的最小操作次数。
+3. 计算前 $m$ 小的操作次数之和 $s$。如果 $s\le k$，那么答案这一位可以是 $1$，否则是 $0$。
+
+## 具体思路
+
+由于 AND 结果不超过 $\max(\textit{nums})+k$，我们可以从 $\max(\textit{nums})+k$ 的二进制长度减一开始枚举比特位。
+
+设我们现在要判断 AND 结果能否为 $\textit{target}$，设 $x = \textit{nums}[i]$。
+
+比如二进制数 $\textit{target} = 0100$，这意味着每个 $\textit{nums}[i]$ 的从低到高第三位都要变成 $1$。
+
+- 比如 $x = 0001$，那么 $x$ 要增大到 $0100$。
+- 比如 $x = 1010$，那么 $x$ 要增大到 $1100$。
+
+一般地，找到从高到低第一个 $\textit{target}$ 是 $1$，$x$ 是 $0$ 的比特位。$x$ 高于这个比特位的不变，其余增大到和 $\textit{target}$ 一样。
+
+按照这个方法，计算每个 $\textit{nums}[i]$ 的操作次数，然后计算前 $m$ 小的操作次数之和 $s$。如果 $s\le k$，那么答案这一位可以是 $1$，否则是 $0$。
+
+⚠**注意**：比如 $\textit{target} = 0100$，然后答案这一位可以是 $1$，那么下一轮循环，要判断的 $\textit{target}$ 是 $0110$，不是 $0010$。**答案已经确定是 $1$ 的比特位不能变**。
+
+下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+
+```py [sol-Python3]
+class Solution:
+    def maximumAND(self, nums: List[int], k: int, m: int) -> int:
+        ops = [0] * len(nums)  # 每个数的操作次数
+        ans = 0
+        max_width = (max(nums) + k).bit_length()
+        for bit in range(max_width - 1, -1, -1):
+            target = ans | (1 << bit)  # 注意 target 要带着 ans 已经填好的 1
+            for i, x in enumerate(nums):
+                j = (target & ~x).bit_length()
+                # j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+                # target = 10110
+                #      x = 11010
+                #            ^
+                #           j-1
+                # x 高于 j-1 的比特位不变，其余变成和 target 一样
+                # 上面的例子要把 010 变成 110
+                mask = (1 << j) - 1
+                ops[i] = (target & mask) - (x & mask)
+
+            # 贪心，取前 m 小的操作次数
+            ops.sort()
+            if sum(ops[:m]) <= k:
+                ans = target  # 答案的 bit 位可以填 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maximumAND(int[] nums, int k, int m) {
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        int[] ops = new int[nums.length]; // 每个数的操作次数
+        int ans = 0;
+        int maxWidth = 32 - Integer.numberOfLeadingZeros(mx + k);
+        for (int bit = maxWidth - 1; bit >= 0; bit--) {
+            int target = ans | (1 << bit); // 注意 target 要带着 ans 已经填好的 1
+            for (int i = 0; i < nums.length; i++) {
+                int x = nums[i];
+                int j = 32 - Integer.numberOfLeadingZeros(target & ~x);
+                // j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+                // target = 10110
+                //      x = 11010
+                //            ^
+                //           j-1
+                // x 高于 j-1 的比特位不变，其余变成和 target 一样
+                // 上面的例子要把 010 变成 110
+                int mask = (1 << j) - 1;
+                ops[i] = (target & mask) - (x & mask);
+            }
+
+            // 贪心，取前 m 小的操作次数
+            Arrays.sort(ops);
+            long sum = 0;
+            for (int i = 0; i < m; i++) {
+                sum += ops[i];
+            }
+            if (sum <= k) {
+                ans = target; // 答案的 bit 位可以填 1
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maximumAND(vector<int>& nums, int k, int m) {
+        vector<int> ops(nums.size()); // 每个数的操作次数
+        int ans = 0;
+        int max_width = bit_width((uint32_t) ranges::max(nums) + k);
+        for (int bit = max_width - 1; bit >= 0; bit--) {
+            int target = ans | (1 << bit); // 注意 target 要带着 ans 已经填好的 1
+            for (int i = 0; i < nums.size(); i++) {
+                int x = nums[i];
+                int j = bit_width((uint32_t) target & ~x);
+                // j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+                // target = 10110
+                //      x = 11010
+                //            ^
+                //           j-1
+                // x 高于 j-1 的比特位不变，其余变成和 target 一样
+                // 上面的例子要把 010 变成 110
+                int mask = j < 31 ? (1 << j) - 1 : INT_MAX;
+                ops[i] = (target & mask) - (x & mask);
+            }
+
+            // 贪心，取前 m 小的操作次数
+            // ranges::sort(ops);
+            ranges::nth_element(ops, ops.begin() + m);
+            if (reduce(ops.begin(), ops.begin() + m, 0LL) <= k) {
+                ans = target; // 答案的 bit 位可以填 1
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maximumAND(nums []int, k, m int) (ans int) {
+	ops := make([]int, len(nums)) // 每个数的操作次数
+	maxWidth := bits.Len(uint(slices.Max(nums) + k))
+	for bit := maxWidth - 1; bit >= 0; bit-- {
+		target := ans | 1<<bit // 注意 target 要带着 ans 已经填好的 1
+		for i, x := range nums {
+			j := bits.Len(uint(target &^ x))
+			// j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+			// target = 10110
+			//      x = 11010
+			//            ^
+			//           j-1
+			// x 高于 j-1 的比特位不变，其余变成和 target 一样
+			// 上面的例子要把 010 变成 110
+			mask := 1<<j - 1
+			ops[i] = target&mask - x&mask
+		}
+
+		// 贪心，取前 m 小的操作次数
+		slices.Sort(ops)
+		sum := 0
+		for _, x := range ops[:m] {
+			sum += x
+		}
+		if sum <= k {
+			ans = target // 答案的 bit 位可以填 1
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k$。用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 专题训练
+
+见下面位运算题单的「**五、试填法**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
