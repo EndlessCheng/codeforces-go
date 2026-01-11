@@ -258,7 +258,7 @@ class Solution:
             max_s = max(max_s, s)  # 修改带来的最大额外利润
 
             # 3. 出，为下一个窗口做准备
-            # 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+            # 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
             # 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
             s -= prices[i - k // 2 + 1] - prices[i - k + 1] * strategy[i - k + 1]
 
@@ -288,7 +288,7 @@ class Solution {
             maxSum = Math.max(maxSum, sum); // 修改带来的最大额外利润
 
             // 3. 出，为下一个窗口做准备
-            // 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+            // 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
             // 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
             sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
         }
@@ -322,7 +322,7 @@ public:
             max_sum = max(max_sum, sum); // 修改带来的最大额外利润
 
             // 3. 出，为下一个窗口做准备
-            // 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+            // 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
             // 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
             sum -= prices[i - k / 2 + 1] - prices[i - k + 1] * strategy[i - k + 1];
         }
@@ -354,7 +354,7 @@ func maxProfit(prices, strategy []int, k int) int64 {
 		maxSum = max(maxSum, sum) // 修改带来的最大额外利润
 
 		// 3. 出，为下一个窗口做准备
-		// 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0，
+		// 下标为 i-k/2+1 的元素从右半移到左半，交易策略从 1 变成 0
 		// 下标为 i-k+1 的元素从左半离开窗口，交易策略从 0 恢复为 strategy[i-k+1]
 		sum -= prices[i-k/2+1] - prices[i-k+1]*strategy[i-k+1]
 	}
