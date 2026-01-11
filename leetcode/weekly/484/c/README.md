@@ -7,9 +7,9 @@
 - 先从 $\textit{cnt}$ 中查询 $t$ 的出现次数，即为 $i$ 的个数，加到答案中。
 - 然后把 $\textit{cnt}[t]$ 加一。
 
-注：也可以计算 $\textit{words}[j]$ 的长为 $m-1$ 的差分数组，哈希表保存差分数组的出现次数。
+可以用折线图的平移和重叠理解这个思路，见 [本题视频讲解](https://www.bilibili.com/video/BV1tv6dBME7K/?t=9m36s)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+> 注：也可以计算 $\textit{words}[j]$ 的长为 $m-1$ 的差分数组，哈希表统计差分数组的出现次数。
 
 ```py [sol-Python3]
 class Solution:
@@ -56,8 +56,8 @@ public:
         long long ans = 0;
         for (auto& s : words) {
             char base = s[0];
-            for (int i = 0; i < s.size(); i++) {
-                s[i] = (s[i] - base + 26) % 26; // 保证结果在 [0, 25] 中
+            for (char& ch : s) {
+                ch = (ch - base + 26) % 26; // 保证结果在 [0, 25] 中
             }
             ans += cnt[s];
             cnt[s]++;

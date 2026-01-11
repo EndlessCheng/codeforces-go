@@ -7,6 +7,9 @@ func residuePrefixes1(s string) (ans int) {
 	set := map[rune]struct{}{}
 	for i, ch := range s {
 		set[ch] = struct{}{}
+		if len(set) == 3 {
+			break
+		}
 		if len(set) == (i+1)%3 {
 			ans++
 		}
@@ -17,8 +20,12 @@ func residuePrefixes1(s string) (ans int) {
 func residuePrefixes(s string) (ans int) {
 	set := 0
 	for i, ch := range s {
-		set |= 1 << (ch - 'a')
-		if bits.OnesCount(uint(set)) == (i+1)%3 {
+		set |= 1 << (ch - 'a') // 把 ch 添加到 set 中
+		cnt := bits.OnesCount(uint(set))
+		if cnt == 3 {
+			break
+		}
+		if cnt == (i+1)%3 {
 			ans++
 		}
 	}

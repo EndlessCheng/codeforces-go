@@ -1,27 +1,31 @@
 ## 核心思路
 
-1. 从高到低考虑答案的每一位是 $1$ 还是 $0$。
+1. 从高到低构建答案的每一位是 $1$ 还是 $0$。
 2. 遍历 $\textit{nums}$，计算把 $\textit{nums}[i]$ 的某些比特位都变成 $1$ 的最小操作次数。
 3. 计算前 $m$ 小的操作次数之和 $s$。如果 $s\le k$，那么答案这一位可以是 $1$，否则是 $0$。
 
 ## 具体思路
 
-由于 AND 结果不超过 $\max(\textit{nums})+k$，我们可以从 $\max(\textit{nums})+k$ 的二进制长度减一开始枚举比特位。
+从高到低构建答案的每一位是 $1$ 还是 $0$。
 
-设我们现在要判断 AND 结果能否为 $\textit{target}$，设 $x = \textit{nums}[i]$。
+> 由于 AND 结果不超过 $\max(\textit{nums})+k$，从 $\max(\textit{nums})+k$ 的二进制长度减一开始枚举。
 
-比如二进制数 $\textit{target} = 0100$，这意味着每个 $\textit{nums}[i]$ 的从低到高第三位都要变成 $1$。
+假设现在要判断 AND 结果是否包含 $\textit{target}$。比如 $\textit{target} = 0100$（二进制数），那么 $x=\textit{nums}[i]$ 的从低到高第三位必须是 $1$，才能保证 AND 结果从低到高第三位是 $1$。
 
 - 比如 $x = 0001$，那么 $x$ 要增大到 $0100$。
 - 比如 $x = 1010$，那么 $x$ 要增大到 $1100$。
 
-一般地，找到从高到低第一个 $\textit{target}$ 是 $1$，$x$ 是 $0$ 的比特位。$x$ 高于这个比特位的不变，其余增大到和 $\textit{target}$ 一样。
+一般地，找到 $x$ 的**最高缺失位**，即从高到低第一个 $\textit{target}$ 是 $1$ 且 $x$ 是 $0$ 的比特位 $j$。$x$ 二进制中的高于 $j$ 的位不变，低 $j$ 位增大到等于 $\textit{target}$ 的低 $j$ 位。
 
-按照这个方法，计算每个 $\textit{nums}[i]$ 的操作次数，然后计算前 $m$ 小的操作次数之和 $s$。如果 $s\le k$，那么答案这一位可以是 $1$，否则是 $0$。
+按照这个方法，计算每个 $\textit{nums}[i]$ 的操作次数，然后计算前 $m$ 小的操作次数之和 $s$。如果 $s\le k$，那么答案这一位填 $1$，否则填 $0$。
 
-⚠**注意**：比如 $\textit{target} = 0100$，然后答案这一位可以是 $1$，那么下一轮循环，要判断的 $\textit{target}$ 是 $0110$，不是 $0010$。**答案已经确定是 $1$ 的比特位不能变**。
+[本题视频讲解](https://www.bilibili.com/video/BV1tv6dBME7K/?t=22m3s)，欢迎点赞关注~
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+## 答疑
+
+**问**：在处理答案的每一位时，我们所选择的 $m$ 个数，并没有考虑在上一轮循环中选择的 $m$ 个数，万一和上一轮循环选的 $m$ 个数不同呢？
+
+**答**：这个算法每轮循环，判断的是「能否选出 $m$ 个满足要求的数」，只要能选出，就说明答案这一位可以填 $1$，无需关心每一轮操作的数是否完全一样。最后一次填 $1$ 时选的 $m$ 个数就是最终选的 $m$ 个数。注意这 $m$ 个数不仅满足当前这一位可以填 $1$，$\textit{target}$ 更高位的 $1$ 也满足。
 
 ```py [sol-Python3]
 class Solution:
@@ -33,12 +37,12 @@ class Solution:
             target = ans | (1 << bit)  # 注意 target 要带着 ans 已经填好的 1
             for i, x in enumerate(nums):
                 j = (target & ~x).bit_length()
-                # j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+                # j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
                 # target = 10110
                 #      x = 11010
                 #            ^
                 #           j-1
-                # x 高于 j-1 的比特位不变，其余变成和 target 一样
+                # x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
                 # 上面的例子要把 010 变成 110
                 mask = (1 << j) - 1
                 ops[i] = (target & mask) - (x & mask)
@@ -66,12 +70,12 @@ class Solution {
             for (int i = 0; i < nums.length; i++) {
                 int x = nums[i];
                 int j = 32 - Integer.numberOfLeadingZeros(target & ~x);
-                // j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+                // j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
                 // target = 10110
                 //      x = 11010
                 //            ^
                 //           j-1
-                // x 高于 j-1 的比特位不变，其余变成和 target 一样
+                // x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
                 // 上面的例子要把 010 变成 110
                 int mask = (1 << j) - 1;
                 ops[i] = (target & mask) - (x & mask);
@@ -104,12 +108,12 @@ public:
             for (int i = 0; i < nums.size(); i++) {
                 int x = nums[i];
                 int j = bit_width((uint32_t) target & ~x);
-                // j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+                // j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
                 // target = 10110
                 //      x = 11010
                 //            ^
                 //           j-1
-                // x 高于 j-1 的比特位不变，其余变成和 target 一样
+                // x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
                 // 上面的例子要把 010 变成 110
                 int mask = j < 31 ? (1 << j) - 1 : INT_MAX;
                 ops[i] = (target & mask) - (x & mask);
@@ -135,12 +139,12 @@ func maximumAND(nums []int, k, m int) (ans int) {
 		target := ans | 1<<bit // 注意 target 要带着 ans 已经填好的 1
 		for i, x := range nums {
 			j := bits.Len(uint(target &^ x))
-			// j-1 是从高到低第一个 target 是 1，x 是 0 的比特位
+			// j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
 			// target = 10110
 			//      x = 11010
 			//            ^
 			//           j-1
-			// x 高于 j-1 的比特位不变，其余变成和 target 一样
+			// x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
 			// 上面的例子要把 010 变成 110
 			mask := 1<<j - 1
 			ops[i] = target&mask - x&mask
@@ -162,8 +166,14 @@ func maximumAND(nums []int, k, m int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k$。用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
+- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k$。瓶颈在排序上，用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 思考题
+
+把 AND 改成 OR（按位或）怎么做？
+
+欢迎在评论区分享你的思路/代码。
 
 ## 专题训练
 

@@ -2,7 +2,9 @@
 
 如果哈希集合的大小等于遍历过的字母个数模 $3$，即 $(i+1)\bmod 3$，那么把答案加一。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+**优化**：由于 $(i+1)\bmod 3 < 3$，如果发现哈希集合的大小达到 $3$，可以提前跳出循环。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1tv6dBME7K/)，欢迎点赞关注~
 
 ## 方法一
 
@@ -13,6 +15,8 @@ class Solution:
         ans = 0
         for i, ch in enumerate(s):
             st.add(ch)
+            if len(st) == 3:
+                break
             if len(st) == (i + 1) % 3:
                 ans += 1
         return ans
@@ -23,7 +27,7 @@ class Solution {
     public int residuePrefixes(String s) {
         Set<Character> set = new HashSet<>();
         int ans = 0;
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < s.length() && set.size() < 3; i++) {
             set.add(s.charAt(i));
             if (set.size() == (i + 1) % 3) {
                 ans++;
@@ -40,7 +44,7 @@ public:
     int residuePrefixes(string s) {
         unordered_set<char> st;
         int ans = 0;
-        for (int i = 0; i < s.size(); i++) {
+        for (int i = 0; i < s.size() && st.size() < 3; i++) {
             st.insert(s[i]);
             if (st.size() == (i + 1) % 3) {
                 ans++;
@@ -56,6 +60,9 @@ func residuePrefixes(s string) (ans int) {
 	set := map[rune]struct{}{}
 	for i, ch := range s {
 		set[ch] = struct{}{}
+		if len(set) == 3 {
+			break
+		}
 		if len(set) == (i+1)%3 {
 			ans++
 		}
@@ -79,7 +86,10 @@ class Solution:
         ans = st = 0
         for i, ch in enumerate(s):
             st |= 1 << (ord(ch) - ord('a'))  # 把 ch 添加到 st 中
-            if st.bit_count() == (i + 1) % 3:
+            cnt = st.bit_count()
+            if cnt == 3:
+                break
+            if cnt == (i + 1) % 3:
                 ans += 1
         return ans
 ```
@@ -89,7 +99,7 @@ class Solution {
     public int residuePrefixes(String s) {
         int set = 0;
         int ans = 0;
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < s.length() && Integer.bitCount(set) < 3; i++) {
             set |= 1 << (s.charAt(i) - 'a'); // 把 s[i] 添加到 set 中
             if (Integer.bitCount(set) == (i + 1) % 3) {
                 ans++;
@@ -106,7 +116,7 @@ public:
     int residuePrefixes(string s) {
         int st = 0;
         int ans = 0;
-        for (int i = 0; i < s.size(); i++) {
+        for (int i = 0; i < s.size() && popcount((uint32_t) st) < 3; i++) {
             st |= 1 << (s[i] - 'a'); // 把 s[i] 添加到 st 中
             if (popcount((uint32_t) st) == (i + 1) % 3) {
                 ans++;
@@ -122,7 +132,11 @@ func residuePrefixes(s string) (ans int) {
 	set := 0
 	for i, ch := range s {
 		set |= 1 << (ch - 'a') // 把 ch 添加到 set 中
-		if bits.OnesCount(uint(set)) == (i+1)%3 {
+		cnt := bits.OnesCount(uint(set))
+		if cnt == 3 {
+			break
+		}
+		if cnt == (i+1)%3 {
 			ans++
 		}
 	}

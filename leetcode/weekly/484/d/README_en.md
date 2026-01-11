@@ -1,27 +1,33 @@
 ## Core Idea
 
-1. Consider each bit of the answer from high to low, deciding whether it can be $1$ or must be $0$.
+1. Build the answer bit by bit from high to low, deciding whether each bit is $1$ or $0$.
 2. Traverse $\textit{nums}$ and compute the minimum number of operations needed to turn certain bits of $\textit{nums}[i]$ into $1$.
 3. Compute the sum $s$ of the smallest $m$ operation counts. If $s ≤ k$, then this bit of the answer can be $1$; otherwise, it must be $0$.
 
 ## Detailed Explanation
 
-Since the result of the AND operation does not exceed $\max(\textit{nums}) + k$, we can start enumerating bits from the binary length of $\max(\textit{nums}) + k$ minus $1$.
+We construct the answer from the most significant bit to the least significant bit, deciding whether each bit is $1$ or $0$.
 
-Suppose we are currently checking whether the AND result can be $target$, and let $x = \textit{nums}[i]$.
+> Since the AND result cannot exceed $\max(\textit{nums}) + k$, we start enumerating from the highest bit, i.e. one less than the binary length of $\max(\textit{nums}) + k$.
 
-For example, if the binary number $target = 0100$, this means that for every $\textit{nums}[i]$, the third bit (counting from low to high) must be turned into $1$.
+Suppose we are checking whether the AND result can include $\textit{target}$. For example, let $\textit{target} = 0100$ (in binary). Then, for $x = \textit{nums}[i]$, the third bit from low to high must be $1$ to ensure that the third bit of the AND result is $1$.
 
 For example:
 
 - If $x = 0001$, then $x$ needs to be increased to $0100$.
 - If $x = 1010$, then $x$ needs to be increased to $1100$.
 
-In general, we find the highest bit (from high to low) where $target$ is $1$ and $x$ is $0$. The bits of $x$ higher than this position remain unchanged, and the remaining lower bits are increased so that they match $target$.
+In general, we find the **highest missing bit** of $x$: that is, the first bit position $j$ (from high to low) where $\textit{target}$ has $1$ but $x$ has $0$.  
 
-Using this method, we compute the required number of operations for each $\textit{nums}[i]$, then take the sum $s$ of the smallest $m$ operation counts. If $s ≤ k$, then this bit of the answer can be $1$; otherwise, it must be $0$.
+All bits of $x$ higher than $j$ remain unchanged, while the lower $j$ bits are increased so that they become equal to the lower $j$ bits of $\textit{target}$.
 
-⚠ **Note**: For example, if $target = 0100$ and this bit of the answer is determined to be $1$, then in the next iteration, the $target$ to be checked is $0110$, not $0010$. **Bits of the answer that have already been determined to be $1$ cannot be changed.**
+Using this method, we compute the required number of operations for each $\textit{nums}[i]$. Then we take the sum $s$ of the smallest $m$ operation counts. If $s ≤ k$, we set this bit of the answer to $1$; otherwise, we set it to $0$.
+
+## Q&A
+
+**Q**: When processing each bit of the answer, the chosen $m$ numbers are not necessarily the same as the $m$ numbers chosen in the previous iteration. What if they differ?
+
+**A**: In each iteration, the algorithm only checks whether it is *possible* to select $m$ numbers that satisfy the requirement. As long as such a selection exists, this bit of the answer can be set to $1$. There is no need to ensure that the selected numbers are identical across iterations. The $m$ numbers chosen in the final iteration where a bit is set to $1$ are the actual final selection. Note that these $m$ numbers satisfy not only the current bit being $1$, but also all higher bits of $target$ that were previously set to $1$.
 
 ```py [sol-Python3]
 class Solution:
