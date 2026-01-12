@@ -11,6 +11,8 @@
 
 > 注：也可以计算 $\textit{words}[j]$ 的长为 $m-1$ 的差分数组，哈希表统计差分数组的出现次数。
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def countPairs(self, words: List[str]) -> int:
@@ -81,6 +83,106 @@ func countPairs(words []string) (ans int64) {
 		cnt[s]++
 	}
 	return
+}
+```
+
+## 优化
+
+统计 $\textit{words}$ 每个字符串的出现次数，只对不同的字符串计算 $t$，从而减少计算 $t$ 的次数。
+
+注意答案与 $\textit{words}$ 中的元素顺序无关，因为本质是从 $\textit{words}$ 中选两个相似字符串的方案数。无论 $\textit{words}=[A,B]$ 还是 $[B,A]$，答案是一样的。
+
+```py [sol-Python3]
+class Solution:
+    def countPairs(self, words: List[str]) -> int:
+        cnt = defaultdict(int)
+        ans = 0
+        for s, c in Counter(words).items():
+            t = list(s)
+            base = ord(t[0])
+            for i in range(len(t)):
+                t[i] = chr((ord(t[i]) - base) % 26)  # 保证结果在 [0, 25] 中
+            t = ''.join(t)
+            ans += cnt[t] * c + c * (c - 1) // 2  # c 个 s 中选 2 个有 C(c, 2) 种方案
+            cnt[t] += c
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countPairs(String[] words) {
+        Map<String, Integer> cntWords = new HashMap<>();
+        for (String s : words) {
+            cntWords.merge(s, 1, Integer::sum);
+        }
+
+        Map<String, Integer> cnt = new HashMap<>();
+        long ans = 0;
+        for (Map.Entry<String, Integer> e : cntWords.entrySet()) {
+            String s = e.getKey();
+            int totalS = e.getValue();
+            char[] t = s.toCharArray();
+            char base = t[0];
+            for (int i = 0; i < t.length; i++) {
+                t[i] = (char) ((t[i] - base + 26) % 26); // 保证结果在 [0, 25] 中
+            }
+            s = new String(t);
+            int c = cnt.getOrDefault(s, 0);
+            // totalS 个 s 中选 2 个有 C(totalS, 2) 种方案
+            ans += (long) c * totalS + (long) totalS * (totalS - 1) / 2;
+            cnt.put(s, c + totalS);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countPairs(vector<string>& words) {
+        unordered_map<string, int> cnt_words;
+        for (auto& s : words) {
+            cnt_words[s]++;
+        }
+
+        unordered_map<string, int> cnt;
+        long long ans = 0;
+        for (auto& [s, c] : cnt_words) {
+            string t = move(s);
+            char base = t[0];
+            for (char& ch : t) {
+                ch = (ch - base + 26) % 26; // 保证结果在 [0, 25] 中
+            }
+            // c 个 s 中选 2 个有 C(c, 2) 种方案
+            ans += 1LL * cnt[t] * c + 1LL * c * (c - 1) / 2;
+            cnt[t] += c;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countPairs(words []string) int64 {
+	cntWords := map[string]int{}
+	for _, s := range words {
+		cntWords[s]++
+	}
+
+	ans := 0
+	cnt := map[string]int{}
+	for s, c := range cntWords {
+		t := []byte(s)
+		base := t[0]
+		for i := range t {
+			t[i] = (t[i] - base + 26) % 26 // 保证结果在 [0, 25] 中
+		}
+		s = string(t)
+		ans += cnt[s]*c + c*(c-1)/2 // c 个 s 中选 2 个有 C(c, 2) 种方案
+		cnt[s] += c
+	}
+	return int64(ans)
 }
 ```
 

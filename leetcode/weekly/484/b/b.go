@@ -2,8 +2,9 @@ package main
 
 // https://space.bilibili.com/206214
 func centeredSubarrays(nums []int) (ans int) {
+	has := map[int]int{}
 	for i := range nums {
-		has := map[int]int{}
+		clear(has)
 		s := 0
 		for _, x := range nums[i:] {
 			has[x] = 1

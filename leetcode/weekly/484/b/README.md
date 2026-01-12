@@ -24,9 +24,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int centeredSubarrays(int[] nums) {
+        HashSet<Integer> set = new HashSet<>();
         int ans = 0;
         for (int i = 0; i < nums.length; i++) {
-            HashSet<Integer> set = new HashSet<>();
+            set.clear();
             int s = 0;
             for (int j = i; j < nums.length; j++) {
                 int x = nums[j];
@@ -46,9 +47,10 @@ class Solution {
 class Solution {
 public:
     int centeredSubarrays(vector<int>& nums) {
+        unordered_set<int> st;
         int ans = 0;
         for (int i = 0; i < nums.size(); i++) {
-            unordered_set<int> st;
+            st.clear();
             int s = 0;
             for (int j = i; j < nums.size(); j++) {
                 int x = nums[j];
@@ -64,8 +66,9 @@ public:
 
 ```go [sol-Go]
 func centeredSubarrays(nums []int) (ans int) {
+	has := map[int]int{}
 	for i := range nums {
-		has := map[int]int{}
+		clear(has)
 		s := 0
 		for _, x := range nums[i:] {
 			has[x] = 1
