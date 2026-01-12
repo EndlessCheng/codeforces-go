@@ -8,7 +8,7 @@
 
 We construct the answer from the most significant bit to the least significant bit, deciding whether each bit is $1$ or $0$.
 
-> Since the AND result cannot exceed $\max(\textit{nums}) + k$, we start enumerating from the highest bit, i.e. one less than the binary length of $\max(\textit{nums}) + k$.
+> Since the AND result cannot exceed $\max(\textit{nums}) + \lfloor\frac{k}{m}\rfloor$, we start enumerating from the highest bit, i.e. one less than the binary length of $\max(\textit{nums}) + \lfloor\frac{k}{m}\rfloor$.
 
 Suppose we are checking whether the AND result can include $\textit{target}$. For example, let $\textit{target} = 0100$ (in binary). Then, for $x = \textit{nums}[i]$, the third bit from low to high must be $1$ to ensure that the third bit of the AND result is $1$.
 
@@ -34,7 +34,7 @@ class Solution:
     def maximumAND(self, nums: List[int], k: int, m: int) -> int:
         ops = [0] * len(nums)  # Number of operations for each number
         ans = 0
-        max_width = (max(nums) + k).bit_length()
+        max_width = (max(nums) + k // m).bit_length()
         for bit in range(max_width - 1, -1, -1):
             target = ans | (1 << bit)  # Note: target includes the bits already set in ans
             for i, x in enumerate(nums):
@@ -60,7 +60,7 @@ class Solution {
 
         int[] ops = new int[nums.length]; // Number of operations for each number
         int ans = 0;
-        int maxWidth = 32 - Integer.numberOfLeadingZeros(mx + k);
+        int maxWidth = 32 - Integer.numberOfLeadingZeros(mx + k / m);
         for (int bit = maxWidth - 1; bit >= 0; bit--) {
             int target = ans | (1 << bit); // Note: target includes the bits already set in ans
             for (int i = 0; i < nums.length; i++) {
@@ -92,7 +92,7 @@ public:
     int maximumAND(vector<int>& nums, int k, int m) {
         vector<int> ops(nums.size()); // Number of operations for each number
         int ans = 0;
-        int max_width = bit_width((uint32_t) ranges::max(nums) + k);
+        int max_width = bit_width((uint32_t) ranges::max(nums) + k / m);
         for (int bit = max_width - 1; bit >= 0; bit--) {
             int target = ans | (1 << bit); // Note: target includes the bits already set in ans
             for (int i = 0; i < nums.size(); i++) {
@@ -118,7 +118,7 @@ public:
 ```go [sol-Go]
 func maximumAND(nums []int, k, m int) (ans int) {
 	ops := make([]int, len(nums)) // Number of operations for each number
-	maxWidth := bits.Len(uint(slices.Max(nums) + k))
+	maxWidth := bits.Len(uint(slices.Max(nums) + k/m))
 	for bit := maxWidth - 1; bit >= 0; bit-- {
 		target := ans | 1<<bit // Note: target includes the bits already set in ans
 		for i, x := range nums {

@@ -8,7 +8,7 @@
 
 从高到低构建答案的每一位是 $1$ 还是 $0$。
 
-> 由于 AND 结果不超过 $\max(\textit{nums})+k$，从 $\max(\textit{nums})+k$ 的二进制长度减一开始枚举。
+> 由于 AND 结果不超过 $\max(\textit{nums})+ \left\lfloor\dfrac{k}{m}\right\rfloor$，从 $\max(\textit{nums})+\left\lfloor\dfrac{k}{m}\right\rfloor$ 的二进制长度减一开始枚举。
 
 设现在要判断 AND 结果是否包含 $\textit{target}$。如果 $\textit{target} = 0100$（二进制数），那么 $x=\textit{nums}[i]$ 的从低到高第三位必须是 $1$，才能保证 AND 结果从低到高第三位是 $1$。
 
@@ -35,7 +35,7 @@ class Solution:
     def maximumAND(self, nums: List[int], k: int, m: int) -> int:
         ops = [0] * len(nums)  # 每个数的操作次数
         ans = 0
-        max_width = (max(nums) + k).bit_length()
+        max_width = (max(nums) + k // m).bit_length()
         for bit in range(max_width - 1, -1, -1):
             target = ans | (1 << bit)  # 注意 target 要带着 ans 已经填好的 1
             for i, x in enumerate(nums):
@@ -65,12 +65,14 @@ class Solution {
             mx = Math.max(mx, x);
         }
 
-        int[] ops = new int[nums.length]; // 每个数的操作次数
+        int n = nums.length;
+        int[] ops = new int[n]; // 每个数的操作次数
         int ans = 0;
-        int maxWidth = 32 - Integer.numberOfLeadingZeros(mx + k);
+
+        int maxWidth = 32 - Integer.numberOfLeadingZeros(mx + k / m);
         for (int bit = maxWidth - 1; bit >= 0; bit--) {
             int target = ans | (1 << bit); // 注意 target 要带着 ans 已经填好的 1
-            for (int i = 0; i < nums.length; i++) {
+            for (int i = 0; i < n; i++) {
                 int x = nums[i];
                 int j = 32 - Integer.numberOfLeadingZeros(target & ~x);
                 // j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
@@ -103,12 +105,14 @@ class Solution {
 class Solution {
 public:
     int maximumAND(vector<int>& nums, int k, int m) {
-        vector<int> ops(nums.size()); // 每个数的操作次数
+        int n = nums.size();
+        vector<int> ops(n); // 每个数的操作次数
         int ans = 0;
-        int max_width = bit_width((uint32_t) ranges::max(nums) + k);
+
+        int max_width = bit_width((uint32_t) ranges::max(nums) + k / m);
         for (int bit = max_width - 1; bit >= 0; bit--) {
             int target = ans | (1 << bit); // 注意 target 要带着 ans 已经填好的 1
-            for (int i = 0; i < nums.size(); i++) {
+            for (int i = 0; i < n; i++) {
                 int x = nums[i];
                 int j = bit_width((uint32_t) target & ~x);
                 // j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
@@ -137,7 +141,182 @@ public:
 ```go [sol-Go]
 func maximumAND(nums []int, k, m int) (ans int) {
 	ops := make([]int, len(nums)) // 每个数的操作次数
-	maxWidth := bits.Len(uint(slices.Max(nums) + k))
+	maxWidth := bits.Len(uint(slices.Max(nums) + k/m))
+	for bit := maxWidth - 1; bit >= 0; bit-- {
+		target := ans | 1<<bit // 注意 target 要带着 ans 已经填好的 1
+		for i, x := range nums {
+			j := bits.Len(uint(target &^ x))
+			// j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
+			// target = 10110
+			//      x = 11010
+			//            ^
+			//           j-1
+			// x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
+			// 上面的例子要把 010 变成 110
+			mask := 1<<j - 1
+			ops[i] = target&mask - x&mask
+		}
+
+		// 贪心，取前 m 小的操作次数
+		slices.Sort(ops)
+		sum := 0
+		for _, x := range ops[:m] {
+			sum += x
+		}
+		if sum <= k {
+			ans = target // 答案的 bit 位可以填 1
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k$。瓶颈在排序上，用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 优化
+
+如果 $\textit{nums}$ 最大的 $m$ 个数都相等，那么把最大的 $m$ 个数都增加 $\left\lfloor\dfrac{k}{m}\right\rfloor$，便可让答案等于理论最大值 $\max(\textit{nums}) + \left\lfloor\dfrac{k}{m}\right\rfloor$。
+
+```py [sol-Python3]
+class Solution:
+    def maximumAND(self, nums: List[int], k: int, m: int) -> int:
+        nums.sort()
+        max_ans = nums[-1] + k // m
+        if nums[-m] == nums[-1]:  # 最大的 m 个数都相等
+            return max_ans
+
+        ops = [0] * len(nums)  # 每个数的操作次数
+        ans = 0
+        max_width = max_ans.bit_length()
+        for bit in range(max_width - 1, -1, -1):
+            target = ans | (1 << bit)  # 注意 target 要带着 ans 已经填好的 1
+            for i, x in enumerate(nums):
+                j = (target & ~x).bit_length()
+                # j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
+                # target = 10110
+                #      x = 11010
+                #            ^
+                #           j-1
+                # x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
+                # 上面的例子要把 010 变成 110
+                mask = (1 << j) - 1
+                ops[i] = (target & mask) - (x & mask)
+
+            # 贪心，取前 m 小的操作次数
+            ops.sort()
+            if sum(ops[:m]) <= k:
+                ans = target  # 答案的 bit 位可以填 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maximumAND(int[] nums, int k, int m) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int maxAns = nums[n - 1] + k / m;
+        if (nums[n - m] == nums[n - 1]) { // 最大的 m 个数都相等
+            return maxAns;
+        }
+
+        int[] ops = new int[n]; // 每个数的操作次数
+        int ans = 0;
+
+        int maxWidth = 32 - Integer.numberOfLeadingZeros(maxAns);
+        for (int bit = maxWidth - 1; bit >= 0; bit--) {
+            int target = ans | (1 << bit); // 注意 target 要带着 ans 已经填好的 1
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                int j = 32 - Integer.numberOfLeadingZeros(target & ~x);
+                // j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
+                // target = 10110
+                //      x = 11010
+                //            ^
+                //           j-1
+                // x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
+                // 上面的例子要把 010 变成 110
+                int mask = (1 << j) - 1;
+                ops[i] = (target & mask) - (x & mask);
+            }
+
+            // 贪心，取前 m 小的操作次数
+            Arrays.sort(ops);
+            long sum = 0;
+            for (int i = 0; i < m; i++) {
+                sum += ops[i];
+            }
+            if (sum <= k) {
+                ans = target; // 答案的 bit 位可以填 1
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maximumAND(vector<int>& nums, int k, int m) {
+        ranges::nth_element(nums, nums.end() - m);
+        int n = nums.size();
+        int base = nums.back();
+        bool same = true;
+        for (int i = n - m; i < n - 1; i++) {
+            if (nums[i] != base) {
+                same = false;
+            }
+        }
+        if (same) { // 最大的 m 个数都相等
+            return base + k / m;
+        }
+
+        vector<int> ops(n); // 每个数的操作次数
+        int ans = 0;
+
+        int max_width = bit_width((uint32_t) ranges::max(nums) + k / m);
+        for (int bit = max_width - 1; bit >= 0; bit--) {
+            int target = ans | (1 << bit); // 注意 target 要带着 ans 已经填好的 1
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                int j = bit_width((uint32_t) target & ~x);
+                // j-1 是从高到低第一个 target 是 1 且 x 是 0 的比特位
+                // target = 10110
+                //      x = 11010
+                //            ^
+                //           j-1
+                // x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
+                // 上面的例子要把 010 变成 110
+                int mask = j < 31 ? (1 << j) - 1 : INT_MAX;
+                ops[i] = (target & mask) - (x & mask);
+            }
+
+            // 贪心，取前 m 小的操作次数
+            // ranges::sort(ops);
+            ranges::nth_element(ops, ops.begin() + m);
+            if (reduce(ops.begin(), ops.begin() + m, 0LL) <= k) {
+                ans = target; // 答案的 bit 位可以填 1
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maximumAND(nums []int, k, m int) (ans int) {
+	slices.Sort(nums)
+	n := len(nums)
+	maxAns := nums[n-1] + k/m
+	if nums[n-m] == nums[n-1] { // 最大的 m 个数都相等
+		return maxAns
+	}
+
+	ops := make([]int, n) // 每个数的操作次数
+	maxWidth := bits.Len(uint(maxAns))
 	for bit := maxWidth - 1; bit >= 0; bit-- {
 		target := ans | 1<<bit // 注意 target 要带着 ans 已经填好的 1
 		for i, x := range nums {
