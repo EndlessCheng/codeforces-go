@@ -10,7 +10,7 @@
 
 ### 细节
 
-开区间二分下界：$\min(\textit{nums})-1$，无法操作。也可以简单地写成 $-1$。
+开区间二分下界：$\textit{nums}[0]-1$，无法操作。注意 $\textit{nums}[0]$ 无法减少。
 
 开区间二分上界：$\max(\textit{nums})$，一定可以操作。
 
@@ -26,17 +26,18 @@ class Solution:
                 extra = max(new_num - limit, 0)  # 如果 new_num - limit > 0，那么多出的积木继续丢给左边
             return nums[0] + extra <= limit
 
-        return bisect_left(range(max(nums)), True, lo=min(nums), key=check)
+        return bisect_left(range(max(nums)), True, lo=nums[0], key=check)
 ```
 
 ```java [sol-Java]
 class Solution {
     public int minimizeArrayValue(int[] nums) {
-        int left = -1;
+        int left = nums[0] - 1;
         int right = 0;
         for (int x : nums) {
             right = Math.max(right, x);
         }
+
         // 开区间二分，原理见 https://www.bilibili.com/video/BV1AP41137w7/
         while (left + 1 < right) {
             int mid = (left + right) / 2;
@@ -46,6 +47,7 @@ class Solution {
                 left = mid;
             }
         }
+
         return right;
     }
 
@@ -74,7 +76,7 @@ public:
         };
 
         // 开区间二分，原理见 https://www.bilibili.com/video/BV1AP41137w7/
-        int left = -1, right = ranges::max(nums);
+        int left = nums[0] - 1, right = ranges::max(nums);
         while (left + 1 < right) {
             int mid = (left + right) / 2;
             (check(mid) ? right : left) = mid;
@@ -86,7 +88,10 @@ public:
 
 ```go [sol-Go]
 func minimizeArrayValue(nums []int) int {
-	return sort.Search(slices.Max(nums), func(limit int) bool {
+	// 库函数是左闭右开区间
+	left, right := nums[0], slices.Max(nums)
+	return left + sort.Search(right-left, func(limit int) bool {
+		limit += left
 		extra := 0
 		for i := len(nums) - 1; i > 0; i-- {
 			newNum := nums[i] + extra    // 把多出的积木堆到 nums[i] 上

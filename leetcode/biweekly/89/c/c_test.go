@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,58 @@ func Test_c(t *testing.T) {
 	}
 }
 // https://leetcode.cn/contest/biweekly-contest-89/problems/minimize-maximum-of-array/
+
+func minimizeArrayValueWA(nums []int) int {
+	n := len(nums)
+
+	check := func(mid int) bool {
+		t := make([]int, n)
+		for i := 0; i < n; i++ {
+			t[i] = nums[i]
+		}
+		if mid < t[0] {
+			return false
+		}
+		for i := 1; i < n; i++ {
+			temp := t[i-1]
+			delta := max(mid-temp, t[i]-mid)
+			t[i-1] += delta
+			t[i] -= delta
+			if t[i] > mid || t[i-1] > mid {
+				return false
+			}
+		}
+		return true
+	}
+
+	l, r := 0, 0
+	for _, v := range nums {
+		r = max(r, v)
+	}
+
+	for l <= r {
+		mid := l + (r-l)/2
+		if check(mid) {
+			r = mid - 1
+		} else {
+			l = mid + 1
+		}
+	}
+	return l
+}
+
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a []int) {
+		//return
+		rg.Clear()
+		n := rg.Int(2, 30)
+		a = rg.IntSlice(n, 0, 999)
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, minimizeArrayValue, minimizeArrayValueWA)
+}

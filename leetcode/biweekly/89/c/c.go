@@ -7,10 +7,13 @@ import (
 
 // https://space.bilibili.com/206214
 func minimizeArrayValue(nums []int) int {
-	return sort.Search(slices.Max(nums), func(limit int) bool {
+	// 库函数是左闭右开区间
+	left, right := nums[0], slices.Max(nums)
+	return left + sort.Search(right-left, func(limit int) bool {
+		limit += left
 		extra := 0
 		for i := len(nums) - 1; i > 0; i-- {
-			newNum := nums[i] + extra    // 把右边的积木堆到 nums[i] 上
+			newNum := nums[i] + extra    // 把多出的积木堆到 nums[i] 上
 			extra = max(newNum-limit, 0) // 如果 newNum-limit > 0，那么多出的积木继续丢给左边
 		}
 		return nums[0]+extra <= limit
