@@ -64,7 +64,10 @@ class Solution:
             if i == 0 and j == 0:
                 return 1 if x == val else 0
             return (dfs(i, j - 1, x ^ val) + dfs(i - 1, j, x ^ val)) % MOD
-        return dfs(len(grid) - 1, len(grid[0]) - 1, k)
+
+        ans = dfs(len(grid) - 1, len(grid[0]) - 1, k)
+        dfs.cache_clear()
+        return ans
 ```
 
 ```java [sol-Java]
@@ -128,6 +131,7 @@ public:
 
         int m = grid.size(), n = grid[0].size();
         vector memo(m, vector(n, vector<int>(u, -1)));
+
         auto dfs = [&](this auto&& dfs, int i, int j, int x) -> int {
             if (i < 0 || j < 0) {
                 return 0;
@@ -142,6 +146,7 @@ public:
             }
             return res = (dfs(i, j - 1, x ^ val) + dfs(i - 1, j, x ^ val)) % MOD;
         };
+
         return dfs(m - 1, n - 1, k);
     }
 };
