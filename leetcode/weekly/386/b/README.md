@@ -154,7 +154,7 @@ impl Solution {
 
 ## 优化
 
-外层循环枚举的矩形，如果其长或宽 $\le \textit{maxSide}$，那么 $\textit{maxSide}$ 不会变大，直接 `continue`。
+外层循环枚举的矩形，如果其长或宽 $\le \textit{maxSide}$，那么交集矩形的长或宽也 $\le \textit{maxSide}$，所以 $\textit{maxSide}$ 不会变大，无需跑内层循环，直接 `continue`。
 
 ```py [sol-Python3]
 class Solution:
