@@ -173,7 +173,7 @@ func maximumAND(nums []int, k, m int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k$。瓶颈在排序上，用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
+- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k/m$。瓶颈在排序上，用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 优化
@@ -348,7 +348,7 @@ func maximumAND(nums []int, k, m int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k$。瓶颈在排序上，用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
+- 时间复杂度：$\mathcal{O}(n\log n\log U)$ 或者 $\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})+k/m$。瓶颈在排序上，用快速选择算法可以做到 $\mathcal{O}(n\log U)$，见 C++ 代码。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 思考题
