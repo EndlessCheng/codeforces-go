@@ -31,7 +31,7 @@ func cf989D(in io.Reader, out io.Writer) {
 
 	j := 0
 	for _, x := range a {
-		for j < len(b) && abs(x+b[j]+l) >= maxW*(b[j]-x+l) {
+		for j < len(b) && (b[j]-x+l)*maxW <= abs(x+b[j]+l) {
 			j++
 		}
 		ans += len(b) - j
