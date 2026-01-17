@@ -1,1 +1,1 @@
-本题和周赛第四题是一样的，请看 [我的题解](https://leetcode.cn/problems/minimum-pair-removal-to-sort-array-ii/solutions/3641787/mo-ni-liang-ge-you-xu-ji-he-by-endlessch-gx8s/)。
+本题和 [3510. 移除最小数对使数组有序 II](https://leetcode.cn/problems/minimum-pair-removal-to-sort-array-ii/) 是一样的，请看 [我的题解](https://leetcode.cn/problems/minimum-pair-removal-to-sort-array-ii/solutions/3641787/mo-ni-liang-ge-you-xu-ji-he-by-endlessch-gx8s/)。
