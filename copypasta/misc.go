@@ -922,6 +922,8 @@ func parseExpression(s string) {
 // https://oeis.org/A033307
 //
 // https://leetcode.cn/contest/espressif-2021/problems/fSghVj/
+// https://codeforces.com/problemset/problem/2132/D 1600 前 k 项和
+// - https://leetcode.cn/problems/find-products-of-elements-of-big-array/ 类似题目 LC3145. 大数组元素的乘积
 // https://projecteuler.net/problem=40
 func champernowneConstant(k int) int {
 	const base = 10
