@@ -11,10 +11,8 @@ func countCompleteSubarrays(nums []int) (ans int) {
 	cnt := make(map[int]int, k) // 预分配空间
 	left := 0
 	for _, x := range nums {
-		ans += left
 		cnt[x]++
 		for len(cnt) == k {
-			ans++
 			out := nums[left]
 			cnt[out]--
 			if cnt[out] == 0 {
@@ -22,6 +20,7 @@ func countCompleteSubarrays(nums []int) (ans int) {
 			}
 			left++
 		}
+		ans += left
 	}
 	return
 }
