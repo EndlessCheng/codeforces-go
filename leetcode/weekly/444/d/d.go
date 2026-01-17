@@ -32,6 +32,7 @@ func minimumPairRemoval(nums []int) (ans int) {
 	for dec > 0 {
 		ans++
 
+		// 如果堆顶数据与实际数据不符，说明堆顶数据是之前本应删除，但没有删除的数据（懒删除）
 		for right[h[0].i] >= n || nums[h[0].i]+nums[right[h[0].i]] != h[0].s {
 			heap.Pop(&h)
 		}
