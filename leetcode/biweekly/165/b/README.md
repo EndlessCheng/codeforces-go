@@ -38,7 +38,7 @@ class Solution:
             if cnt[x] == m:  # x 的个数已达上限
                 # 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 # 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
-                arrivals[i] = 0
+                arrivals[i] = 0  # 丢弃 arrivals[i]
                 ans += 1
             else:
                 cnt[x] += 1
@@ -62,7 +62,7 @@ class Solution {
             if (c == m) { // x 的个数已达上限
                 // 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 // 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
-                arrivals[i] = 0;
+                arrivals[i] = 0; // 丢弃 arrivals[i]
                 ans++;
             } else {
                 cnt.put(x, c + 1);
@@ -95,7 +95,7 @@ class Solution {
             if (cnt[x] == m) { // x 的个数已达上限
                 // 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 // 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
-                arrivals[i] = 0;
+                arrivals[i] = 0; // 丢弃 arrivals[i]
                 ans++;
             } else {
                 cnt[x]++;
@@ -124,7 +124,7 @@ public:
             if (cnt[x] == m) { // x 的个数已达上限
                 // 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
                 // 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
-                x = 0;
+                x = 0; // 丢弃 arrivals[i]
                 ans++;
             } else {
                 cnt[x]++;
@@ -149,7 +149,7 @@ func minArrivalsToDiscard(arrivals []int, w, m int) (ans int) {
 		if cnt[x] == m { // x 的个数已达上限
 			// 注意 x 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 cnt
 			// 这里直接置为 0，未来离开窗口就是 cnt[0]--，不影响答案
-			arrivals[i] = 0
+			arrivals[i] = 0 // 丢弃 arrivals[i]
 			ans++
 		} else {
 			cnt[x]++
