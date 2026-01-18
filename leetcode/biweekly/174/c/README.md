@@ -4,10 +4,10 @@
 
 设整个数组的异或和为 $s$。
 
-- 如果最后一段的异或和是 $\textit{target}_1$，分割出最后一段后，剩余元素（$\textit{nums}$ 的前缀）的异或和为 $s\oplus \textit{target}_1$，问题变成：分割一个异或和为 $s\oplus \textit{target}_1$ 的数组，满足题目异或和交替的要求，且最后一段的异或和是 $\textit{target}_2$ 的方案数。
-- 如果最后一段的异或和是 $\textit{target}_2$，分割出最后一段后，剩余元素（$\textit{nums}$ 的前缀）的异或和为 $s\oplus \textit{target}_2$，问题变成：分割一个异或和为 $s\oplus \textit{target}_2$ 的数组，满足题目异或和交替的要求，且最后一段的异或和是 $\textit{target}_1$ 的方案数。
+- 如果最后一段的异或和是 $\textit{target}_1$，分割出最后一段后，剩余元素（$\textit{nums}$ 的前缀）的异或和为 $s\oplus \textit{target}_1$，问题变成：分割一个异或和为 $s\oplus \textit{target}_1$ 的前缀，满足题目异或和交替的要求，且最后一段的异或和是 $\textit{target}_2$ 的方案数。
+- 如果最后一段的异或和是 $\textit{target}_2$，分割出最后一段后，剩余元素（$\textit{nums}$ 的前缀）的异或和为 $s\oplus \textit{target}_2$，问题变成：分割一个异或和为 $s\oplus \textit{target}_2$ 的前缀，满足题目异或和交替的要求，且最后一段的异或和是 $\textit{target}_1$ 的方案数。
 
-回顾 560 题的技巧，我们可以用哈希表记录每个前缀的信息：
+这都是**规模更小的子问题**，所以可以用 DP 解决。
 
 - 定义 $f_1[s]$ 表示分割一个异或和为 $s$ 的前缀，满足题目异或和交替的要求，且最后一段的异或和是 $\textit{target}_1$ 的方案数。
 - 定义 $f_2[s]$ 表示分割一个异或和为 $s$ 的前缀，满足题目异或和交替的要求，且最后一段的异或和是 $\textit{target}_2$ 的方案数。
