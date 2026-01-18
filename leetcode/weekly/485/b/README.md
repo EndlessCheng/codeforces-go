@@ -2,11 +2,9 @@
 
 考虑枚举其中一台机器 $i$，那么另一台机器的价格必须严格小于 $\textit{budget} - \textit{costs}[i]$。
 
-如果把机器按照价格从小到大**排序**，我们就可以在 $[0,i-1]$ 中**二分查找**最后一台价格小于 $\textit{budget} - \textit{costs}[i]$ 的机器 $j$。在 $[0,i-1]$ 中二分是为了避免选同一台机器。
+如果把机器按照价格从小到大**排序**，那么价格小于 $\textit{budget} - \textit{costs}[i]$ 的机器在数组中是**连续**的，方便处理。我们可以在 $[0,i-1]$ 中**二分查找**最后一台价格小于 $\textit{budget} - \textit{costs}[i]$ 的机器 $j$。在 $[0,i-1]$ 中二分是为了避免选同一台机器。关于二分查找的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-关于二分查找的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
-
-然而，最后一台机器 $j$ 的容量并不是最大的，我们要求的是 $[0,j]$ 中的最大容量。
+然而，最后一台机器 $j$ 的容量并不是最大的，我们要计算 $[0,j]$ 中的最大容量。
 
 这启发我们维护一个关于机器容量的**前缀最大值**数组 $\textit{preMax}$。
 
@@ -26,14 +24,14 @@ $$
 
 **答**：继续往后遍历，遍历到 $B$ 时，在左边二分找到 $A$。所以不会漏掉最优解。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1PskxBnEP7/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def maxCapacity(self, costs: List[int], capacity: List[int], budget: int) -> int:
         # 把 costs[i] 和 capacity[i] 绑在一起排序
         a = [(cost, cap) for cost, cap in zip(costs, capacity) if cost < budget]  # 太贵的机器直接忽略
-        a.sort(key=lambda p: p[0])
+        a.sort(key=lambda p: p[0])  # 按照价格从小到大排序
 
         pre_max = [0] * (len(a) + 1)
         ans = 0
@@ -54,7 +52,7 @@ class Solution {
         for (int i = 0; i < n; i++) {
             idx[i] = i;
         }
-        Arrays.sort(idx, (i, j) -> costs[i] - costs[j]);
+        Arrays.sort(idx, (i, j) -> costs[i] - costs[j]); // 按照价格从小到大排序
 
         int[] preMax = new int[n + 1];
         int ans = 0;
@@ -97,7 +95,7 @@ public:
                 a.emplace_back(costs[i], capacity[i]);
             }
         }
-        ranges::sort(a, {}, &pair<int, int>::first);
+        ranges::sort(a, {}, &pair<int, int>::first); // 按照价格从小到大排序
 
         vector<int> pre_max(a.size() + 1);
         int ans = 0;
@@ -124,7 +122,7 @@ func maxCapacity(costs []int, capacity []int, budget int) (ans int) {
 			a = append(a, pair{cost, capacity[i]})
 		}
 	}
-	slices.SortFunc(a, func(a, b pair) int { return a.cost - b.cost })
+	slices.SortFunc(a, func(a, b pair) int { return a.cost - b.cost }) // 按照价格从小到大排序
 
 	preMax := make([]int, len(a)+1)
 	for i, p := range a {
@@ -181,7 +179,7 @@ class Solution {
         ArrayDeque<int[]> st = new ArrayDeque<>();
         st.push(new int[]{0, 0}); // 栈底加个哨兵
         int ans = 0;
-        for (int k = 0; k < n && costs[idx[k]] < budget; k++) { // 太贵的机器直接忽略
+        for (int k = 0; k < n && costs[idx[k]] < budget; k++) {
             int i = idx[k];
             while (costs[i] + st.peek()[0] >= budget) {
                 st.pop(); // 弹出太贵的机器
@@ -200,11 +198,10 @@ class Solution {
 class Solution {
 public:
     int maxCapacity(vector<int>& costs, vector<int>& capacity, int budget) {
-        // 把 costs[i] 和 capacity[i] 绑在一起排序
         int n = costs.size();
         vector<pair<int, int>> a;
         for (int i = 0; i < n; i++) {
-            if (costs[i] < budget) { // 太贵的机器直接忽略
+            if (costs[i] < budget) {
                 a.emplace_back(costs[i], capacity[i]);
             }
         }
@@ -257,6 +254,10 @@ func maxCapacity(costs, capacity []int, budget int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。**瓶颈在排序上**。虽然我们写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此循环次数**之和**是 $\mathcal{O}(n)$，所以二重循环的时间复杂度是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 专题训练
+
+见下面单调栈题单的「**一、单调栈**」。
 
 ## 分类题单
 

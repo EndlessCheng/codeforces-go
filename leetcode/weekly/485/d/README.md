@@ -1,6 +1,6 @@
 做法类似 [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)，请看 [我的题解](https://leetcode.cn/problems/remove-duplicate-letters/solutions/2381483/gen-zhao-wo-guo-yi-bian-shi-li-2ni-jiu-m-zd6u/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1PskxBnEP7/?t=34m13s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -9,12 +9,12 @@ class Solution:
 
         st = []
         for ch in s:
-            # 如果 ch 比栈顶小，用 ch 代替栈顶，可以让字典序更小
+            # 如果 ch 比栈顶小，移除栈顶，可以让字典序更小
             while st and ch < st[-1] and left[st[-1]] > 1:
                 left[st.pop()] -= 1
             st.append(ch)
 
-        # 最后，移除末尾的重复字母
+        # 最后，移除末尾的重复字母，可以让字典序更小
         while left[st[-1]] > 1:
             left[st.pop()] -= 1
 
@@ -32,7 +32,7 @@ class Solution {
 
         StringBuilder st = new StringBuilder();
         for (char ch : s) {
-            // 如果 ch 比栈顶小，用 ch 代替栈顶，可以让字典序更小
+            // 如果 ch 比栈顶小，移除栈顶，可以让字典序更小
             while (!st.isEmpty() && ch < st.charAt(st.length() - 1) && left[st.charAt(st.length() - 1) - 'a'] > 1) {
                 left[st.charAt(st.length() - 1) - 'a']--;
                 st.setLength(st.length() - 1);
@@ -40,7 +40,7 @@ class Solution {
             st.append(ch);
         }
 
-        // 最后，移除末尾的重复字母
+        // 最后，移除末尾的重复字母，可以让字典序更小
         while (left[st.charAt(st.length() - 1) - 'a'] > 1) {
             left[st.charAt(st.length() - 1) - 'a']--;
             st.setLength(st.length() - 1);
@@ -62,7 +62,7 @@ public:
 
         string st;
         for (char ch : s) {
-            // 如果 ch 比栈顶小，用 ch 代替栈顶，可以让字典序更小
+            // 如果 ch 比栈顶小，移除栈顶，可以让字典序更小
             while (!st.empty() && ch < st.back() && left[st.back() - 'a'] > 1) {
                 left[st.back() - 'a']--;
                 st.pop_back();
@@ -70,7 +70,7 @@ public:
             st.push_back(ch);
         }
 
-        // 最后，移除末尾的重复字母
+        // 最后，移除末尾的重复字母，可以让字典序更小
         while (left[st.back() - 'a'] > 1) {
             left[st.back() - 'a']--;
             st.pop_back();
@@ -90,9 +90,9 @@ public:
             left[ch - 'a']++;
         }
 
-        int top = -1;
+        int top = -1; // 把 s 当作栈
         for (char ch : s) {
-            // 如果 ch 比栈顶小，用 ch 代替栈顶，可以让字典序更小
+            // 如果 ch 比栈顶小，移除栈顶，可以让字典序更小
             while (top >= 0 && ch < s[top] && left[s[top] - 'a'] > 1) {
                 left[s[top] - 'a']--;
                 top--;
@@ -100,7 +100,7 @@ public:
             s[++top] = ch;
         }
 
-        // 最后，移除末尾的重复字母
+        // 最后，移除末尾的重复字母，可以让字典序更小
         while (left[s[top] - 'a'] > 1) {
             left[s[top] - 'a']--;
             top--;
@@ -121,7 +121,7 @@ func lexSmallestAfterDeletion(s string) string {
 
 	st := []rune{}
 	for _, ch := range s {
-		// 如果 ch 比栈顶小，用 ch 代替栈顶，可以让字典序更小
+		// 如果 ch 比栈顶小，移除栈顶，可以让字典序更小
 		for len(st) > 0 && ch < st[len(st)-1] && left[st[len(st)-1]-'a'] > 1 {
 			left[st[len(st)-1]-'a']--
 			st = st[:len(st)-1]
@@ -129,7 +129,7 @@ func lexSmallestAfterDeletion(s string) string {
 		st = append(st, ch)
 	}
 
-	// 最后，移除末尾的重复字母
+	// 最后，移除末尾的重复字母，可以让字典序更小
 	for left[st[len(st)-1]-'a'] > 1 {
 		left[st[len(st)-1]-'a']--
 		st = st[:len(st)-1]

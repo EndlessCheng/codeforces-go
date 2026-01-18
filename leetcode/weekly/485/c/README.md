@@ -1,11 +1,11 @@
 根据题意：
 
-- 我们需要知道每个 $(用户编号,商品编号)$ 对应的实际出价。这可以用一个哈希表维护。
-- 我们需要知道每个商品对应的所有 $(出价,用户编号)$中，最大出价对应的最大用户编号。这可以用一个懒删除堆维护。
+- 我们需要知道每个商品对应的所有 $(出价,用户编号)$ 中，最大出价对应的最大用户编号。这可以用有序集合维护，也可以用懒删除堆维护，后者常数小。
+- 用懒删除堆维护的话，还需要知道每个 $(用户编号,商品编号)$ 对应的实际出价。这可以用一个哈希表维护。
 
-对于 $\texttt{getHighestBidder}$，不断查看堆顶，如果堆顶的出价与实际出价不符，那么弹出堆顶。 
+对于 $\texttt{getHighestBidder}$，不断查看堆顶，如果堆顶出价与实际出价不符，那么弹出堆顶。 
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1PskxBnEP7/?t=24m53s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class AuctionSystem:
@@ -22,7 +22,9 @@ class AuctionSystem:
         # 堆中重复的元素在 getHighestBidder 中删除（懒更新）
 
     def removeBid(self, userId: int, itemId: int) -> None:
-        self.amount.pop((userId, itemId), None)
+        # 题目保证 (userId, itemId) 在 self.amount 中，如果不保证的话，用下面这行代码
+        # self.amount.pop((userId, itemId), None)
+        del self.amount[(userId, itemId)]
         # 堆中元素在 getHighestBidder 中删除（懒删除）
 
     def getHighestBidder(self, itemId: int) -> int:
@@ -31,7 +33,7 @@ class AuctionSystem:
             bidAmount, userId = h[0]
             if bidAmount == self.amount.get((userId, itemId), None):
                 return userId
-            # 货不对板，堆顶出价与实际不符
+            # 货不对板，堆顶出价与实际出价不符
             heappop_max(h)
         return -1
 ```
@@ -68,11 +70,10 @@ class AuctionSystem {
             int[] top = pq.peek();
             int bidAmount = top[0];
             int userId = top[1];
-            Integer realAmount = amount.get(userId << 16 | itemId);
-            if (realAmount != null && realAmount == bidAmount) {
+            if (bidAmount == amount.getOrDefault(userId << 16 | itemId, -1)) {
                 return userId;
             }
-            // 货不对板，堆顶出价与实际不符
+            // 货不对板，堆顶出价与实际出价不符
             pq.poll();
         }
         return -1;
@@ -115,7 +116,7 @@ public:
             if (it2 != amount.end() && it2->second == bidAmount) {
                 return userId;
             }
-            // 货不对板，堆顶出价与实际不符
+            // 货不对板，堆顶出价与实际出价不符
             pq.pop();
         }
         return -1;
@@ -162,7 +163,7 @@ func (a AuctionSystem) GetHighestBidder(itemId int) (ans int) {
 		if (*h)[0].bidAmount == a.amount[pair{(*h)[0].userId, itemId}] {
 			return (*h)[0].userId
 		}
-		// 货不对板，堆顶出价与实际不符
+		// 货不对板，堆顶出价与实际出价不符
 		heap.Pop(h)
 	}
 	return -1
