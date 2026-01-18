@@ -8,9 +8,13 @@
 
 可以。把满足 $\textit{nums}[i]\ne \textit{target}[i]$ 的 $\textit{nums}[i]$ 找出来，相同元素只保留其中一个。这些元素可以按照**任意顺序**操作。一旦 $\textit{nums}[i]$ 改成了 $\textit{target}[i]$，那么后续操作即使要改 $\textit{nums}[i]$，那也只是把 $\textit{target}[i]$ 改成了 $\textit{target}[i]$，保持不变。
 
-综上所述，答案为满足 $\textit{nums}[i]\ne \textit{target}[i]$ 的不同 $\textit{nums}[i]$ 的个数。
+既然操作后的数不会再变，那么操作等价于：
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+- 选择一个 $x$，删除 $\textit{nums}$ 中的所有等于 $x$ 的数。这些数操作后都等于目标值，不用再管。
+
+这样可以立刻看出，答案就是满足 $\textit{nums}[i]\ne \textit{target}[i]$ 的不同 $\textit{nums}[i]$ 的个数。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1MVkxBZE4D/?t=3m44s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

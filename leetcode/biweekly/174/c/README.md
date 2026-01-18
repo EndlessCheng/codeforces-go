@@ -25,11 +25,11 @@ $$
 
 初始值：$f_2[0] = 1$。相当于在第一段前面有一个空前缀，异或和为 $0$。这样我们计算第一段时，就可以让第一段的方案数是 $1$。
 
-答案为最后一轮循环（更新 $f_1$ 和 $f_2$ 之前）的 $f_1[\textit{preSum} \oplus \textit{target}_2] + f_2[\textit{preSum} \oplus \textit{target}_1]$。
+答案为最后一轮循环（更新 $f_1$ 和 $f_2$ 之前）的 $f_1[\textit{preSum} \oplus \textit{target}_2] + f_2[\textit{preSum} \oplus \textit{target}_1]$，表示分割整个数组的方案数。注意不能在遍历完 $\textit{nums}$ 后，从 $f_1$ 和 $f_2$ 中取数据，这可能会把（异或和恰好等于整个数组的异或和）的前缀的划分方案也算进来。
 
 代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1MVkxBZE4D/?t=8m29s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -117,6 +117,8 @@ func alternatingXOR(nums []int, target1, target2 int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+**注**：本题还可以利用「前 $k=1,2,3,\ldots$ 段的异或和是周期 $T=4$ 的序列」这一性质，写一个状态机 DP。然而，如果题目把异或运算改成加法运算，没有周期，这种方法就失效了。上面的算法没有用到周期性质，改成加法运算仍然可用。
 
 ## 专题训练
 

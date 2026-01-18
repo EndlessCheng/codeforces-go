@@ -9,7 +9,7 @@
 
 如何实现这个流程？可以写拓扑排序，也可以写自底向上的 DFS，都可以实现「先处理叶子，再处理更上层节点」的目标。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1MVkxBZE4D/?t=24m17s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
