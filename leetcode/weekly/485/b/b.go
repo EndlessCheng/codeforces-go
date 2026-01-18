@@ -42,8 +42,10 @@ func maxCapacity(costs, capacity []int, budget int) (ans int) {
 
 	st := []pair{{}} // 栈底加个哨兵
 	for _, p := range a {
-		j := sort.Search(len(st), func(j int) bool { return st[j].cost >= budget-p.cost }) - 1
-		ans = max(ans, p.cap+st[j].cap) // j=0 的情况对应单选一台机器
+		for p.cost+st[len(st)-1].cost >= budget {
+			st = st[:len(st)-1]
+		}
+		ans = max(ans, p.cap+st[len(st)-1].cap)
 		if p.cap > st[len(st)-1].cap {
 			st = append(st, p)
 		}

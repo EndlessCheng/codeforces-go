@@ -1,3 +1,5 @@
+## 方法一：二分查找 + 前缀最大值
+
 考虑枚举其中一台机器 $i$，那么另一台机器的价格必须严格小于 $\textit{budget} - \textit{costs}[i]$。
 
 如果把机器按照价格从小到大**排序**，我们就可以在 $[0,i-1]$ 中**二分查找**最后一台价格小于 $\textit{budget} - \textit{costs}[i]$ 的机器 $j$。在 $[0,i-1]$ 中二分是为了避免选同一台机器。
@@ -25,8 +27,6 @@ $$
 **答**：继续往后遍历，遍历到 $B$ 时，在左边二分找到 $A$。所以不会漏掉最优解。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
-## 写法一：前缀最大值
 
 ```py [sol-Python3]
 class Solution:
@@ -138,11 +138,18 @@ func maxCapacity(costs []int, capacity []int, budget int) (ans int) {
 }
 ```
 
-## 写法二：单调栈
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：单调栈
 
 对于两台机器 $A$ 和 $B$，如果机器 $B$ 又贵，容量又小，全方面不如机器 $A$，那么机器 $B$ 就是垃圾数据，直接忽略。
 
 这启发我们在遍历的同时，用一个栈维护遍历过的机器，只有当新遍历到的机器的容量比栈顶大时，才入栈。注意价格已经从小到大排序了，无需比较。
+
+此外，如果当前机器价格加上栈顶机器价格 $\ge \textit{budget}$，由于后面遍历的机器价格只会更大，所以栈顶是个无用数据，直接弹出。
 
 ```py [sol-Python3]
 class Solution:
@@ -153,8 +160,9 @@ class Solution:
         st = [(0, 0)]  # 栈底加个哨兵
         ans = 0
         for cost, cap in a:
-            j = bisect_left(st, (budget - cost,)) - 1
-            ans = max(ans, cap + st[j][1])  # j=0 的情况对应单选一台机器
+            while cost + st[-1][0] >= budget:
+                st.pop()  # 弹出太贵的机器
+            ans = max(ans, cap + st[-1][1])
             if cap > st[-1][1]:
                 st.append((cost, cap))
         return ans
@@ -170,33 +178,20 @@ class Solution {
         }
         Arrays.sort(idx, (i, j) -> costs[i] - costs[j]);
 
-        List<int[]> st = new ArrayList<>();
-        st.add(new int[]{0, 0}); // 栈底加个哨兵
+        ArrayDeque<int[]> st = new ArrayDeque<>();
+        st.push(new int[]{0, 0}); // 栈底加个哨兵
         int ans = 0;
         for (int k = 0; k < n && costs[idx[k]] < budget; k++) { // 太贵的机器直接忽略
             int i = idx[k];
-            int j = lowerBound(st, budget - costs[i]) - 1;
-            ans = Math.max(ans, capacity[i] + st.get(j)[1]); // j=0 的情况对应单选一台机器
-            if (capacity[i] > st.getLast()[1]) {
-                st.add(new int[]{costs[i], capacity[i]});
+            while (costs[i] + st.peek()[0] >= budget) {
+                st.pop(); // 弹出太贵的机器
+            }
+            ans = Math.max(ans, capacity[i] + st.peek()[1]);
+            if (capacity[i] > st.peek()[1]) {
+                st.push(new int[]{costs[i], capacity[i]});
             }
         }
         return ans;
-    }
-
-    // 原理见 https://www.bilibili.com/video/BV1AP41137w7/
-    private int lowerBound(List<int[]> st, int target) {
-        int left = -1;
-        int right = st.size();
-        while (left + 1 < right) {
-            int mid = left + (right - left) / 2;
-            if (st.get(mid)[0] >= target) {
-                right = mid;
-            } else {
-                left = mid;
-            }
-        }
-        return right;
     }
 }
 ```
@@ -215,13 +210,16 @@ public:
         }
         ranges::sort(a, {}, &pair<int, int>::first);
 
-        vector<pair<int, int>> st = {{0, 0}}; // 栈底加个哨兵
+        stack<pair<int, int>> st;
+        st.emplace(0, 0); // 栈底加个哨兵
         int ans = 0;
         for (auto& [cost, cap] : a) {
-            int j = ranges::lower_bound(st, pair(budget - cost, 0)) - st.begin() - 1;
-            ans = max(ans, cap + st[j].second); // j=0 的情况对应单选一台机器
-            if (cap > st.back().second) {
-                st.emplace_back(cost, cap);
+            while (cost + st.top().first >= budget) {
+                st.pop(); // 弹出太贵的机器
+            }
+            ans = max(ans, cap + st.top().second);
+            if (cap > st.top().second) {
+                st.emplace(cost, cap);
             }
         }
         return ans;
@@ -243,8 +241,10 @@ func maxCapacity(costs, capacity []int, budget int) (ans int) {
 
 	st := []pair{{}} // 栈底加个哨兵
 	for _, p := range a {
-		j := sort.Search(len(st), func(j int) bool { return st[j].cost >= budget-p.cost }) - 1
-		ans = max(ans, p.cap+st[j].cap) // j=0 的情况对应单选一台机器
+		for p.cost+st[len(st)-1].cost >= budget {
+			st = st[:len(st)-1] // 弹出太贵的机器
+		}
+		ans = max(ans, p.cap+st[len(st)-1].cap)
 		if p.cap > st[len(st)-1].cap {
 			st = append(st, p)
 		}
@@ -255,7 +255,7 @@ func maxCapacity(costs, capacity []int, budget int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。**瓶颈在排序上**。虽然我们写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此循环次数**之和**是 $\mathcal{O}(n)$，所以二重循环的时间复杂度是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
