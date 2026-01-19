@@ -11,6 +11,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1MVkxBZE4D/?t=24m17s)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def minimumFlips(self, n: int, edges: List[List[int]], start: str, target: str) -> List[int]:
@@ -147,6 +149,159 @@ func minimumFlips(n int, edges [][]int, start, target string) (ans []int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$。瓶颈在排序上。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 写法二
+
+用一个布尔数组标记哪些边需要反转，然后从左到右遍历布尔数组，把标记的下标放入答案。这样可以避免排序（类似计数排序）。
+
+```py [sol-Python3]
+class Solution:
+    def minimumFlips(self, n: int, edges: List[List[int]], start: str, target: str) -> List[int]:
+        g = [[] for _ in range(n)]
+        for i, (x, y) in enumerate(edges):
+            g[x].append((y, i))
+            g[y].append((x, i))
+
+        revs = [False] * (n - 1)
+        # 返回是否需要翻转 x-fa 这条边
+        def dfs(x: int, fa: int) -> bool:
+            rev = start[x] != target[x]  # x-fa 是否要翻转
+            for y, i in g[x]:
+                if y != fa and dfs(y, x):
+                    revs[i] = True  # 需要翻转 y-x
+                    rev = not rev  # x 被翻转了
+            return rev
+
+        if dfs(0, -1):  # 只剩下一个根节点需要翻转，无法操作
+            return [-1]
+
+        return [i for i, rev in enumerate(revs) if rev]
+```
+
+```java [sol-Java]
+class Solution {
+    public List<Integer> minimumFlips(int n, int[][] edges, String start, String target) {
+        List<int[]>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
+        for (int i = 0; i < edges.length; i++) {
+            int x = edges[i][0];
+            int y = edges[i][1];
+            g[x].add(new int[]{y, i});
+            g[y].add(new int[]{x, i});
+        }
+
+        char[] s = start.toCharArray();
+        char[] t = target.toCharArray();
+        boolean[] revs = new boolean[n - 1];
+        if (dfs(0, -1, g, s, t, revs)) { // 只剩下一个根节点需要翻转，无法操作
+            return List.of(-1);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < n - 1; i++) {
+            if (revs[i]) {
+                ans.add(i);
+            }
+        }
+        return ans;
+    }
+
+    // 返回是否需要翻转 x-fa 这条边
+    private boolean dfs(int x, int fa, List<int[]>[] g, char[] s, char[] t, boolean[] revs) {
+        boolean rev = s[x] != t[x]; // x-fa 是否要翻转
+        for (int[] e : g[x]) {
+            int y = e[0];
+            if (y != fa && dfs(y, x, g, s, t, revs)) {
+                revs[e[1]] = true; // 需要翻转 y-x
+                rev = !rev; // x 被翻转了
+            }
+        }
+        return rev;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> minimumFlips(int n, vector<vector<int>>& edges, string start, string target) {
+        vector<vector<pair<int, int>>> g(n);
+        for (int i = 0; i < edges.size(); i++) {
+            int x = edges[i][0], y = edges[i][1];
+            g[x].emplace_back(y, i);
+            g[y].emplace_back(x, i);
+        }
+
+        vector<int8_t> revs(n - 1);
+        // 返回是否需要翻转 x-fa 这条边
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> bool {
+            bool rev = start[x] != target[x]; // x-fa 是否要翻转
+            for (auto& [y, i] : g[x]) {
+                if (y != fa && dfs(y, x)) {
+                    revs[i] = true; // 需要翻转 y-x
+                    rev = !rev; // x 被翻转了
+                }
+            }
+            return rev;
+        };
+
+        if (dfs(0, -1)) { // 只剩下一个根节点需要翻转，无法操作
+            return {-1};
+        }
+
+        vector<int> ans;
+        for (int i = 0; i < n - 1; i++) {
+            if (revs[i]) {
+                ans.push_back(i);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumFlips(n int, edges [][]int, start, target string) (ans []int) {
+	type edge struct{ to, i int }
+	g := make([][]edge, n)
+	for i, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], edge{y, i})
+		g[y] = append(g[y], edge{x, i})
+	}
+
+	revs := make([]bool, n-1)
+	// 返回是否需要翻转 x-fa 这条边
+	var dfs func(int, int) bool
+	dfs = func(x, fa int) bool {
+		rev := start[x] != target[x] // x-fa 是否要翻转
+		for _, e := range g[x] {
+			y := e.to
+			if y != fa && dfs(y, x) {
+				revs[e.i] = true // 需要翻转 y-x
+				rev = !rev // x 被翻转了
+			}
+		}
+		return rev
+	}
+
+	if dfs(0, -1) { // 只剩下一个根节点需要翻转，无法操作
+		return []int{-1}
+	}
+
+	for i, rev := range revs {
+		if rev {
+			ans = append(ans, i)
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练

@@ -1,7 +1,5 @@
 package main
 
-import "slices"
-
 // https://space.bilibili.com/206214
 func minimumFlips(n int, edges [][]int, start, target string) (ans []int) {
 	type edge struct{ to, i int }
@@ -12,6 +10,7 @@ func minimumFlips(n int, edges [][]int, start, target string) (ans []int) {
 		g[y] = append(g[y], edge{x, i})
 	}
 
+	revs := make([]bool, n-1)
 	// 返回是否需要翻转 x-fa 这条边
 	var dfs func(int, int) bool
 	dfs = func(x, fa int) bool {
@@ -19,8 +18,8 @@ func minimumFlips(n int, edges [][]int, start, target string) (ans []int) {
 		for _, e := range g[x] {
 			y := e.to
 			if y != fa && dfs(y, x) {
-				ans = append(ans, e.i) // 需要翻转 y-x
-				rev = !rev             // x 被翻转了
+				revs[e.i] = true // 需要翻转 y-x
+				rev = !rev       // x 被翻转了
 			}
 		}
 		return rev
@@ -29,6 +28,11 @@ func minimumFlips(n int, edges [][]int, start, target string) (ans []int) {
 	if dfs(0, -1) { // 只剩下一个根节点需要翻转，无法操作
 		return []int{-1}
 	}
-	slices.Sort(ans)
+
+	for i, rev := range revs {
+		if rev {
+			ans = append(ans, i)
+		}
+	}
 	return
 }
