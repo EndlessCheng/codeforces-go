@@ -153,7 +153,7 @@ func minimumFlips(n int, edges [][]int, start, target string) (ans []int) {
 
 ## 写法二
 
-用一个布尔数组标记哪些边需要反转，然后从左到右遍历布尔数组，把标记的下标放入答案。这样可以避免排序（类似计数排序）。
+用一个布尔数组标记哪些边需要反转，然后从左到右遍历布尔数组，把标记的下标放入答案。这样可以避免排序。
 
 ```py [sol-Python3]
 class Solution:
