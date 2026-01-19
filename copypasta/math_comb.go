@@ -51,6 +51,7 @@ https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
 https://codeforces.com/problemset/problem/213/B 1900
 https://codeforces.com/problemset/problem/1359/E 2000
 https://codeforces.com/problemset/problem/1931/G 2000 放球问题 构造
+https://codeforces.com/problemset/problem/2171/G 2000
 https://codeforces.com/problemset/problem/1761/D 2100
 - https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d
 - https://www.cnblogs.com/linyihdfj/p/16893607.html
@@ -67,9 +68,12 @@ https://codeforces.com/problemset/problem/1109/D 2400 Prufer 序列
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
 https://codeforces.com/problemset/problem/1526/E 2400 后缀数组
 https://codeforces.com/problemset/problem/1608/D 2400
+https://codeforces.com/problemset/problem/1726/E 2400 满足 |p_i − p^{−1}_i| ≤ 1 的排列个数
+https://codeforces.com/problemset/problem/1930/E 2400 选长为 2k+1 的子序列，删除其中前 k 个和后 k 个
 https://codeforces.com/problemset/problem/156/D 2500 Prufer 序列 n^(cc-2)
 https://codeforces.com/problemset/problem/348/D 2500 不相交路径
 https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元素不同
+https://codeforces.com/problemset/problem/908/E 2500 等价类 贝尔数
 https://codeforces.com/problemset/problem/997/C 2500
 https://codeforces.com/problemset/problem/1096/E 2500 容斥
 https://codeforces.com/problemset/problem/1838/E 2500
