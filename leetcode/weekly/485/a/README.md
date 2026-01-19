@@ -1,3 +1,5 @@
+按题意模拟即可。注意 $s$ 可能包含不是字母的字符。
+
 ```py [sol-Python3]
 class Solution:
     def vowelConsonantScore(self, s: str) -> int:
@@ -61,7 +63,7 @@ func vowelConsonantScore(s string) int {
 		if !unicode.IsLetter(ch) {
 			continue
 		}
-		if strings.Contains("aeiou", string(ch)) {
+		if strings.ContainsRune("aeiou", ch) {
 			v++
 		} else {
 			c++

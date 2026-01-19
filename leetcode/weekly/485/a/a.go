@@ -12,7 +12,7 @@ func vowelConsonantScore(s string) int {
 		if !unicode.IsLetter(ch) {
 			continue
 		}
-		if strings.Contains("aeiou", string(ch)) {
+		if strings.ContainsRune("aeiou", ch) {
 			v++
 		} else {
 			c++
