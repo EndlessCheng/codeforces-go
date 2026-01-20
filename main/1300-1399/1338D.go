@@ -7,17 +7,16 @@ import (
 
 // https://github.com/EndlessCheng
 func cf1338D(in io.Reader, out io.Writer) {
-	var n int
+	var n, ans int
 	Fscan(in, &n)
 	g := make([][]int, n+1)
 	for range n - 1 {
-		var u, v int
-		Fscan(in, &u, &v)
-		g[u] = append(g[u], v)
-		g[v] = append(g[v], u)
+		var v, w int
+		Fscan(in, &v, &w)
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
 	}
 
-	ans := 0
 	var dfs func(int, int) (int, int)
 	dfs = func(v, fa int) (int, int) {
 		maxL, foot := 0, 1
