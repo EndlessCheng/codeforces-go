@@ -6,11 +6,10 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func maxCapacity1(costs []int, capacity []int, budget int) (ans int) {
+func maxCapacity1(costs, capacity []int, budget int) (ans int) {
 	// 把 costs[i] 和 capacity[i] 绑在一起排序
 	type pair struct{ cost, cap int }
-	n := len(costs)
-	a := make([]pair, 0, n)
+	a := make([]pair, 0, len(costs))
 	for i, cost := range costs {
 		if cost < budget { // 太贵的机器直接忽略
 			a = append(a, pair{cost, capacity[i]})
@@ -31,8 +30,32 @@ func maxCapacity1(costs []int, capacity []int, budget int) (ans int) {
 
 func maxCapacity(costs, capacity []int, budget int) (ans int) {
 	type pair struct{ cost, cap int }
-	n := len(costs)
-	a := make([]pair, 0, n)
+	a := make([]pair, 0, len(costs))
+	for i, cost := range costs {
+		if cost < budget {
+			a = append(a, pair{cost, capacity[i]})
+		}
+	}
+	slices.SortFunc(a, func(a, b pair) int { return a.cost - b.cost })
+
+	n := len(a)
+	preMax := make([]int, n+1)
+	l := 0
+	// 枚举买机器 r
+	for r := n - 1; r >= 0; r-- {
+		for l < r && a[l].cost+a[r].cost < budget {
+			preMax[l+1] = max(preMax[l], a[l].cap)
+			l++
+		}
+		// 循环结束后，下标在范围 [0, min(l-1, r-1)] 中的机器都可以买
+		ans = max(ans, preMax[min(l, r)]+a[r].cap)
+	}
+	return
+}
+
+func maxCapacity3(costs, capacity []int, budget int) (ans int) {
+	type pair struct{ cost, cap int }
+	a := make([]pair, 0, len(costs))
 	for i, cost := range costs {
 		if cost < budget {
 			a = append(a, pair{cost, capacity[i]})

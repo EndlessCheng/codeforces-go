@@ -1,4 +1,4 @@
-## 方法一：二分查找 + 前缀最大值
+## 方法一：排序 + 前缀最大值 + 二分查找 / 相向双指针
 
 考虑枚举其中一台机器 $i$，那么另一台机器的价格必须严格小于 $\textit{budget} - \textit{costs}[i]$。
 
@@ -18,13 +18,15 @@ $$
 
 这样二分之后，$\textit{preMax}[j+1]$ 就是另一台机器的最大容量了。如果这台机器不存在，那么我们会取 $\textit{preMax}[0] = 0$，相当于不买另一台机器。
 
-#### 答疑
+### 答疑
 
 **问**：对于机器 $A$，如果另一台要买的机器 $B$ 在 $A$ 的右边呢？我们会漏掉这种情况吗？
 
 **答**：继续往后遍历，遍历到 $B$ 时，在左边二分找到 $A$。所以不会漏掉最优解。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1PskxBnEP7/)，欢迎点赞关注~
+
+### 优化前：二分查找
 
 ```py [sol-Python3]
 class Solution:
@@ -88,9 +90,8 @@ class Solution {
 public:
     int maxCapacity(vector<int>& costs, vector<int>& capacity, int budget) {
         // 把 costs[i] 和 capacity[i] 绑在一起排序
-        int n = costs.size();
         vector<pair<int, int>> a;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < costs.size(); i++) {
             if (costs[i] < budget) { // 太贵的机器直接忽略
                 a.emplace_back(costs[i], capacity[i]);
             }
@@ -112,11 +113,10 @@ public:
 ```
 
 ```go [sol-Go]
-func maxCapacity(costs []int, capacity []int, budget int) (ans int) {
+func maxCapacity(costs, capacity []int, budget int) (ans int) {
 	// 把 costs[i] 和 capacity[i] 绑在一起排序
 	type pair struct{ cost, cap int }
-	n := len(costs)
-	a := make([]pair, 0, n)
+	a := make([]pair, 0, len(costs))
 	for i, cost := range costs {
 		if cost < budget { // 太贵的机器直接忽略
 			a = append(a, pair{cost, capacity[i]})
@@ -141,7 +141,123 @@ func maxCapacity(costs []int, capacity []int, budget int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 方法二：单调栈
+### 优化：相向双指针
+
+类似 [2824. 统计和小于目标的下标对数目](https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/)，用相向双指针处理「两个价格之和小于 $\textit{budget}$」的问题。
+
+注意本题的机器容量并不是有序的，需要枚举所有的机器作为第二台机器。
+
+```py [sol-Python3]
+class Solution:
+    def maxCapacity(self, costs: List[int], capacity: List[int], budget: int) -> int:
+        # 把 costs[i] 和 capacity[i] 绑在一起排序
+        a = [(cost, cap) for cost, cap in zip(costs, capacity) if cost < budget]  # 太贵的机器直接忽略
+        a.sort(key=lambda p: p[0])  # 按照价格从小到大排序
+
+        pre_max = [0] * (len(a) + 1)
+        ans = l = 0
+        # 枚举买机器 r
+        for r in range(len(a) - 1, -1, -1):
+            while l < r and a[l][0] + a[r][0] < budget:
+                pre_max[l + 1] = max(pre_max[l], a[l][1])
+                l += 1
+            # 循环结束后，下标在范围 [0, min(l-1, r-1)] 中的机器都可以买
+            ans = max(ans, pre_max[min(l, r)] + a[r][1])
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxCapacity(int[] costs, int[] capacity, int budget) {
+        int n = costs.length;
+        Integer[] idx = new Integer[n];
+        for (int i = 0; i < n; i++) {
+            idx[i] = i;
+        }
+        Arrays.sort(idx, (i, j) -> costs[i] - costs[j]); // 按照价格从小到大排序
+
+        int[] preMax = new int[n + 1];
+        int l = 0;
+        int ans = 0;
+        // 枚举买机器 r
+        for (int r = n - 1; r >= 0; r--) {
+            if (costs[idx[r]] >= budget) {
+                continue; // 太贵的机器直接忽略
+            }
+            while (l < r && costs[idx[l]] + costs[idx[r]] < budget) {
+                preMax[l + 1] = Math.max(preMax[l], capacity[idx[l]]);
+                l++;
+            }
+            // 循环结束后，下标在范围 [0, min(l-1, r-1)] 中的机器都可以买
+            ans = Math.max(ans, preMax[Math.min(l, r)] + capacity[idx[r]]);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxCapacity(vector<int>& costs, vector<int>& capacity, int budget) {
+        // 把 costs[i] 和 capacity[i] 绑在一起排序
+        vector<pair<int, int>> a;
+        for (int i = 0; i < costs.size(); i++) {
+            if (costs[i] < budget) { // 太贵的机器直接忽略
+                a.emplace_back(costs[i], capacity[i]);
+            }
+        }
+        ranges::sort(a, {}, &pair<int, int>::first); // 按照价格从小到大排序
+
+        int n = a.size();
+        vector<int> pre_max(n + 1);
+        int ans = 0, l = 0;
+        // 枚举买机器 r
+        for (int r = n - 1; r >= 0; r--) {
+            while (l < r && a[l].first + a[r].first < budget) {
+                pre_max[l + 1] = max(pre_max[l], a[l].second);
+                l++;
+            }
+            // 循环结束后，下标在范围 [0, min(l-1, r-1)] 中的机器都可以买
+            ans = max(ans, pre_max[min(l, r)] + a[r].second);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxCapacity(costs, capacity []int, budget int) (ans int) {
+	type pair struct{ cost, cap int }
+	a := make([]pair, 0, len(costs))
+	for i, cost := range costs {
+		if cost < budget {
+			a = append(a, pair{cost, capacity[i]})
+		}
+	}
+	slices.SortFunc(a, func(a, b pair) int { return a.cost - b.cost })
+
+	preMax := make([]int, len(a)+1)
+	l := 0
+	// 枚举买机器 r
+	for r := len(a) - 1; r >= 0; r-- {
+		for l < r && a[l].cost+a[r].cost < budget {
+			preMax[l+1] = max(preMax[l], a[l].cap)
+			l++
+		}
+		// 循环结束后，下标在范围 [0, min(l-1, r-1)] 中的机器都可以买
+		ans = max(ans, preMax[min(l, r)]+a[r].cap)
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。瓶颈在排序上。虽然写了个二重循环，但是内层循环中对 $l$ 加一的**总**执行次数不会超过 $n$ 次，所以二重循环的时间复杂度为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：排序 + 单调栈
 
 对于两台机器 $A$ 和 $B$，如果机器 $B$ 又贵，容量又小，全方面不如机器 $A$，那么机器 $B$ 就是垃圾数据，直接忽略。
 
@@ -198,9 +314,8 @@ class Solution {
 class Solution {
 public:
     int maxCapacity(vector<int>& costs, vector<int>& capacity, int budget) {
-        int n = costs.size();
         vector<pair<int, int>> a;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < costs.size(); i++) {
             if (costs[i] < budget) {
                 a.emplace_back(costs[i], capacity[i]);
             }
@@ -227,8 +342,7 @@ public:
 ```go [sol-Go]
 func maxCapacity(costs, capacity []int, budget int) (ans int) {
 	type pair struct{ cost, cap int }
-	n := len(costs)
-	a := make([]pair, 0, n)
+	a := make([]pair, 0, len(costs))
 	for i, cost := range costs {
 		if cost < budget {
 			a = append(a, pair{cost, capacity[i]})
@@ -252,12 +366,13 @@ func maxCapacity(costs, capacity []int, budget int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。**瓶颈在排序上**。虽然我们写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此循环次数**之和**是 $\mathcal{O}(n)$，所以二重循环的时间复杂度是 $\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{costs}$ 的长度。瓶颈在排序上。虽然写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此循环次数**之和**是 $\mathcal{O}(n)$，所以二重循环的时间复杂度是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练
 
-见下面单调栈题单的「**一、单调栈**」。
+1. 单调栈题单的「**一、单调栈**」。
+2. 双指针题单的「**§3.2 相向双指针**」。
 
 ## 分类题单
 
