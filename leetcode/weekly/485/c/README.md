@@ -1,7 +1,7 @@
 根据题意：
 
 - 我们需要知道每个商品对应的所有 $(出价,用户编号)$ 中，最大出价对应的最大用户编号。这可以用有序集合维护，也可以用懒删除堆维护，后者常数小。
-- 用懒删除堆维护的话，还需要知道每个 $(用户编号,商品编号)$ 对应的实际出价。这可以用一个哈希表维护。
+- 还需要知道每个 $(用户编号,商品编号)$ 对应的实际出价。这可以用一个哈希表维护。
 
 对于 $\texttt{getHighestBidder}$，不断查看堆顶，如果堆顶出价与实际出价不符，那么弹出堆顶。 
 
@@ -83,13 +83,13 @@ class AuctionSystem {
 
 ```cpp [sol-C++]
 class AuctionSystem {
-    unordered_map<int, int> amount; // (userId, itemId) -> bidAmount
+    unordered_map<uint32_t, int> amount; // (userId, itemId) -> bidAmount
     unordered_map<int, priority_queue<pair<int, int>>> item_pq; // itemId -> [(bidAmount, userId)]
 
 public:
     void addBid(int userId, int itemId, int bidAmount) {
         // 把 (userId, itemId) 压缩到一个 32 位 int 中
-        amount[userId << 16 | itemId] = bidAmount;
+        amount[(uint32_t) userId << 16 | itemId] = bidAmount;
         item_pq[itemId].emplace(bidAmount, userId);
     }
 
@@ -99,7 +99,7 @@ public:
     }
 
     void removeBid(int userId, int itemId) {
-        amount.erase(userId << 16 | itemId);
+        amount.erase((uint32_t) userId << 16 | itemId);
         // 堆中元素在 getHighestBidder 中删除（懒删除）
     }
 
@@ -112,7 +112,7 @@ public:
         auto& pq = it->second;
         while (!pq.empty()) {
             auto [bidAmount, userId] = pq.top();
-            auto it2 = amount.find(userId << 16 | itemId);
+            auto it2 = amount.find((uint32_t) userId << 16 | itemId);
             if (it2 != amount.end() && it2->second == bidAmount) {
                 return userId;
             }
