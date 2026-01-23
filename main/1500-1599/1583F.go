@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	. "math"
 )
 
 // https://github.com/EndlessCheng
@@ -14,7 +13,12 @@ func cf1583F(in io.Reader, _w io.Writer) {
 	var n, k int
 	Fscan(in, &n, &k)
 
-	Fprintln(out, int(Ceil(Log(float64(n))/Log(float64(k)))))
+	ans := 0
+	for p := 1; p < n; p *= k {
+		ans++
+	}
+	Fprintln(out, ans)
+
 	for i := range n {
 		for j := i + 1; j < n; j++ {
 			c := 0
