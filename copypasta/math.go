@@ -37,6 +37,8 @@ https://codeforces.com/problemset/problem/2035/D 1800
 
 p<<x ≤ q  => TODO 分类讨论
 https://codeforces.com/problemset/problem/1883/E 1600
+- https://www.luogu.com.cn/problem/P12642
+- https://www.luogu.com.cn/problem/P12836
 
 ⌊a/x⌋≤b  =>  TODO
 https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/
@@ -120,6 +122,7 @@ https://atcoder.jp/contests/arc158/tasks/arc158_b
 调和级数枚举（枚举倍数）
 https://codeforces.com/problemset/problem/757/B 1400
 https://codeforces.com/problemset/problem/1996/D 1500
+https://codeforces.com/problemset/problem/1648/B 1800
 https://codeforces.com/problemset/problem/731/F 1900
 https://codeforces.com/problemset/problem/2171/H 2400
 https://atcoder.jp/contests/abc089/tasks/abc089_d
@@ -381,6 +384,41 @@ func mul(a, b int) (res int) {
 	return
 }
 
+// 返回 floor(log(n) / log(k))，其中 k >= 2
+// 如果 n < k，返回 0
+// 等价于计算满足 pow(k, res) <= n 的最大 res
+func floorLog(n, k int) (res int) {
+	for p := 1; p <= n/k; p *= k {
+		res++
+	}
+	return
+}
+
+// 返回 ceil(log(n) / log(k))，其中 k >= 2
+// 如果 n < k，返回 1
+// 等价于计算满足 pow(k, res) >= n 的最小 res
+// 注：log(81) / log(3) = 4.000000000000001
+// https://codeforces.com/problemset/problem/1583/F
+func ceilLog(n, k int) (res int) {
+	for p := 1; p < n; p *= k {
+		res++
+	}
+	return
+}
+
+// 另一种写法，可以避免 p*k 溢出
+func ceilLogSafe(n, k int) (res int) {
+	if n == 1 {
+		return // 或者根据题意，特判 n=1 的情况
+	}
+	for p := 1; ; p *= k {
+		res++
+		if p > (n-1)/k { // p*k >= n
+			return
+		}
+	}
+}
+
 func _(abs func(int) int) {
 	/* GCD LCM 相关
 	https://mathworld.wolfram.com/EuclideanAlgorithm.html
@@ -411,6 +449,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1766/D 1600
 	https://codeforces.com/problemset/problem/1295/D 1800
 	https://codeforces.com/problemset/problem/2008/G 1800
+	https://www.luogu.com.cn/problem/P10031
 
 	从 (1,1) 到 (n,m)，每步可以把 x += y 或者把 y += x
 	关键性质：
@@ -607,6 +646,34 @@ func _(abs func(int) int) {
 		}
 		return
 	}
+
+	// 本原勾股数组 Primitive Pythagorean Triples
+	// https://en.wikipedia.org/wiki/Pythagorean_triple
+	// 勾三股四弦五：生成勾股数的公式 https://zhuanlan.zhihu.com/p/1978057341963368012
+	//
+	// https://leetcode.cn/problems/count-square-sum-triples/
+	// https://codeforces.com/gym/106215/problem/L
+	// https://codeforces.com/problemset/problem/60/D 2500
+	ppt := func(n int) {
+		for i := 1; i*(i+2) <= n; i += 2 {
+			// 注：先枚举 i，再枚举更大的 j 是更好的，此时 a 和 b 都是单调递增
+			// 如果先枚举大的 j，再枚举小的 i，那么 a 和 b 的单调性相反，下面这个循环条件不好写
+			// 循环条件：a <= n 且 b <= n，c 无限制
+			// 如果 c <= n，就是 i*i+j*j <= n*2
+			for j := i + 2; i*j <= n && j*j-i*i <= n*2; j += 2 {
+				if gcd(i, j) > 1 {
+					continue
+				}
+				a := i * j           // 奇数直角边
+				b := (j*j - i*i) / 2 // 偶数直角边
+				c := (i*i + j*j) / 2 // 斜边
+
+				_ = []any{a, b, c}
+			}
+		}
+	}
+
+	//
 
 	// 最简分数
 	// https://codeforces.com/problemset/problem/1468/F
@@ -2189,6 +2256,12 @@ func _(abs func(int) int) {
 	// φ(n) = n * (1 - 1/p1) * (1 - 1/p2) * ... * (1 - 1/pr)，其中 p1,p2,...,pr 是 n 的质因子
 	// φ(p^k) = p^k - p^(k-1)，即减去 [1,p^k] 中的 p 的倍数，这有 p^k / p = p^(k-1) 个
 	// ∑_{i=0..k} φ(p^i) = p^k
+	//
+	// 哪些 φ(m) 是奇数？
+	// 如果 m 含有奇质数 p，那么 φ(m) 式子包含 p-1，φ(m) 为偶数
+	// 如果 m = 2^k 且 k >= 2，那么 φ(2^k) = 2^(k-1) 是偶数
+	// 所以只有 φ(1) = φ(2) = 1 是奇数
+	//
 	// https://oeis.org/A000010 https://oeis.org/A000010/list
 	// https://en.wikipedia.org/wiki/Euler%27s_totient_function
 	// 下界 https://en.wikipedia.org/wiki/Euler%27s_totient_function#Growth_rate
@@ -4095,6 +4168,7 @@ func _(abs func(int) int) {
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, lcm, lcms,
 		countGCD, countDifferentSubsequenceGCDs,
+		ppt,
 
 		makeFrac, lessFrac,
 
