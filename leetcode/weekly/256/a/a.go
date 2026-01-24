@@ -2,24 +2,15 @@ package main
 
 import (
 	"math"
-	"sort"
+	"slices"
 )
 
-// 排序+滑动窗口
-
 // github.com/EndlessCheng/codeforces-go
-func minimumDifference(a []int, k int) int {
-	sort.Ints(a)
-	ans := math.MaxInt32
-	for i := k - 1; i < len(a); i++ {
-		ans = min(ans, a[i]-a[i-k+1])
+func minimumDifference(nums []int, k int) int {
+	slices.Sort(nums)
+	ans := math.MaxInt
+	for i := k - 1; i < len(nums); i++ {
+		ans = min(ans, nums[i]-nums[i-k+1])
 	}
 	return ans
-}
-
-func min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
 }
