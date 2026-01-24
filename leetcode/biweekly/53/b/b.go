@@ -1,20 +1,13 @@
 package main
 
-import "sort"
+import "slices"
 
 // github.com/EndlessCheng/codeforces-go
-func minPairSum(a []int) (ans int) {
-	sort.Ints(a)
-	n := len(a)
-	for i, v := range a[:n/2] {
-		ans = max(ans, v+a[n-1-i])
+func minPairSum(nums []int) (ans int) {
+	slices.Sort(nums)
+	n := len(nums)
+	for i, x := range nums[:n/2] {
+		ans = max(ans, x+nums[n-1-i])
 	}
 	return
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
