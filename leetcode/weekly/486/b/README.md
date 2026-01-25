@@ -2,6 +2,8 @@
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def rotateElements(self, nums: List[int], k: int) -> List[int]:
@@ -122,10 +124,99 @@ func rotateElements(nums []int, k int) (ans []int) {
 }
 ```
 
+## 写法二
+
+无需轮替，直接把双指针的 $j$ 初始化成 $k$，表示从第 $k$ 个非负数开始填。
+
+```py [sol-Python3]
+class Solution:
+    def rotateElements(self, nums: List[int], k: int) -> List[int]:
+        # 取出非负数
+        a = [x for x in nums if x >= 0]
+        m = len(a)
+
+        # 双指针，把 a 填入 nums，跳过负数
+        j = k
+        for i, x in enumerate(nums):
+            if x >= 0:
+                nums[i] = a[j % m]
+                j += 1
+        return nums
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] rotateElements(int[] nums, int k) {
+        // 取出非负数
+        List<Integer> a = new ArrayList<>();
+        for (int x : nums) {
+            if (x >= 0) {
+                a.add(x);
+            }
+        }
+
+        // 双指针，把 a 填入 nums，跳过负数
+        int j = k;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] >= 0) {
+                nums[i] = a.get(j++ % a.size());
+            }
+        }
+        return nums;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> rotateElements(vector<int>& nums, int k) {
+        // 取出非负数
+        vector<int> a;
+        for (int x : nums) {
+            if (x >= 0) {
+                a.push_back(x);
+            }
+        }
+
+        // 双指针，把 a 填入 nums，跳过负数
+        int j = k;
+        for (int& x : nums) {
+            if (x >= 0) {
+                x = a[j++ % a.size()];
+            }
+        }
+        return nums;
+    }
+};
+```
+
+```go [sol-Go]
+func rotateElements(nums []int, k int) []int {
+	// 取出非负数
+	a := []int{}
+	for _, x := range nums {
+		if x >= 0 {
+			a = append(a, x)
+		}
+	}
+
+	// 双指针，把 a 填入 nums，跳过负数
+	j := k
+	for i, x := range nums {
+		if x >= 0 {
+			nums[i] = a[j%len(a)]
+			j++
+		}
+	}
+	return nums
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(m)$，其中 $m$ 是 $\textit{nums}$ 中的非负数的个数。
 
 ## 分类题单
 
