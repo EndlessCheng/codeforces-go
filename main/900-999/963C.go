@@ -16,12 +16,12 @@ func cf963C(in io.Reader, out io.Writer) {
 	var n, w, h, c, g int
 	Fscan(in, &n)
 	cntW := map[int]int{}
-	st := map[int]bool{}
+	setW := map[int]bool{}
 	for range n {
 		Fscan(in, &w, &h, &c)
 		g = gcd(g, c)
 		cntW[h]++
-		st[w] = true
+		setW[w] = true
 	}
 
 	if g == 1 {
@@ -30,7 +30,7 @@ func cf963C(in io.Reader, out io.Writer) {
 	}
 
 	for _, c := range cntW {
-		if c != len(st) {
+		if c != len(setW) {
 			Fprint(out, 0)
 			return
 		}
