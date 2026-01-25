@@ -1,8 +1,12 @@
-跑三次 DFS（或者 BFS），计算从 $x,y,z$ 出发，到每个点的距离。
+计算每个点到 $x,y,z$ 的距离，要跑 $n$ 次 $\mathcal{O}(n)$ 的最短路，总的时间复杂度是 $\mathcal{O}(n^2)$，太慢了。
+
+反过来呢？
+
+计算从 $x,y,z$ 出发，到每个点的距离。只需跑三次 DFS（或者 BFS）。
 
 然后枚举点 $0,1,2,\ldots,n-1$，判断 $\textit{dx},\textit{dy},\textit{dz}$ 是否构成勾股数元组，也就是把 $\textit{dx},\textit{dy},\textit{dz}$ 从小到大排序，得到 $a\le b\le c$，判断 $a^2+b^2=c^2$ 是否成立。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1W2zQBnE3g/?t=12m19s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

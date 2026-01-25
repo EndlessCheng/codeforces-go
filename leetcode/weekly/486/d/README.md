@@ -17,7 +17,7 @@
 
 代码实现时，可以预处理 $50$ 以内的组合数（题目保证答案小于 $2^{50}$），原理见 [118. 杨辉三角](https://leetcode.cn/problems/pascals-triangle/)，[我的题解](https://leetcode.cn/problems/pascals-triangle/solutions/2784222/jian-dan-ti-jian-dan-zuo-pythonjavaccgoj-z596/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1W2zQBnE3g/?t=17m52s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

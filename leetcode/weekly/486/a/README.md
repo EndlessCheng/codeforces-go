@@ -2,8 +2,6 @@
 
 如果 $\textit{nums}$ 已经是严格递增的，返回 $0$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def minimumPrefixLength(self, nums: List[int]) -> int:

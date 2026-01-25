@@ -1,6 +1,6 @@
 按照题目要求模拟即可，详见代码注释。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1W2zQBnE3g/)，欢迎点赞关注~
 
 ## 写法一
 
@@ -94,7 +94,7 @@ func rotateLeft(a []int, k int) {
 	slices.Reverse(a)
 }
 
-func rotateElements(nums []int, k int) (ans []int) {
+func rotateElements(nums []int, k int) []int {
 	// 取出非负数
 	a := []int{}
 	for _, x := range nums {
@@ -126,7 +126,7 @@ func rotateElements(nums []int, k int) (ans []int) {
 
 ## 写法二
 
-无需轮替，直接把双指针的 $j$ 初始化成 $k$，表示从第 $k$ 个非负数开始填。
+无需轮替，直接把双指针的 $j$ 初始化成 $k$，即 $a$ 轮替后的第一个数。
 
 ```py [sol-Python3]
 class Solution:
