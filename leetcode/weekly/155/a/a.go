@@ -1,17 +1,22 @@
 package main
 
-import "sort"
+import (
+	"math"
+	"slices"
+)
 
 // github.com/EndlessCheng/codeforces-go
-func minimumAbsDifference(a []int) (ans [][]int) {
-	sort.Ints(a)
-	mi := int(1e9)
-	for i := 1; i < len(a); i++ {
-		if d := a[i] - a[i-1]; d < mi {
-			mi = d
-			ans = [][]int{{a[i-1], a[i]}}
-		} else if d == mi {
-			ans = append(ans, []int{a[i-1], a[i]})
+func minimumAbsDifference(arr []int) (ans [][]int) {
+	slices.Sort(arr)
+	minDiff := math.MaxInt
+	for i, x := range arr[:len(arr)-1] {
+		y := arr[i+1]
+		diff := y - x
+		if diff < minDiff {
+			minDiff = diff
+			ans = [][]int{{x, y}}
+		} else if diff == minDiff {
+			ans = append(ans, []int{x, y})
 		}
 	}
 	return
