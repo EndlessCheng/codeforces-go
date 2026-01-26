@@ -148,7 +148,7 @@ class Solution:
 class Solution {
     public int[] rotateElements(int[] nums, int k) {
         // 取出非负数
-        List<Integer> a = new ArrayList<>();
+        List<Integer> a = new ArrayList<>(); // 更快的写法见【Java 数组】
         for (int x : nums) {
             if (x >= 0) {
                 a.add(x);
@@ -160,6 +160,31 @@ class Solution {
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] >= 0) {
                 nums[i] = a.get(j++ % a.size());
+            }
+        }
+        return nums;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public int[] rotateElements(int[] nums, int k) {
+        // 取出非负数
+        int n = nums.length;
+        int[] a = new int[n];
+        int m = 0;
+        for (int x : nums) {
+            if (x >= 0) {
+                a[m++] = x;
+            }
+        }
+
+        // 双指针，把 a 填入 nums，跳过负数
+        int j = k;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] >= 0) {
+                nums[i] = a[j++ % m];
             }
         }
         return nums;
