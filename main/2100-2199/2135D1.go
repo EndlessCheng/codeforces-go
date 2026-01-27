@@ -14,14 +14,14 @@ func cf2135D1() {
 	}
 
 	const n int = 1e5
-	a1 := make([]any, n)
+	a1 := [n]any{}
 	for i := range a1 {
 		a1[i] = 1
 	}
 
 	var T int
 	for Scan(&T); T > 0; T-- {
-		r := q(a1)
+		r := q(a1[:])
 		if r == 1 {
 			Println("!", n)
 			continue
