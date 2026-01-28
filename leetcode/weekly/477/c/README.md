@@ -65,7 +65,7 @@ class Solution {
     private static boolean initialized = false;
 
     // 这样写比 static block 快
-    private void init() {
+    public Solution() {
         if (initialized) {
             return;
         }
@@ -79,8 +79,6 @@ class Solution {
     }
 
     public int[] sumAndMultiply(String s, int[][] queries) {
-        init();
-
         int n = s.length();
         int[] sumD = new int[n + 1];       // s 的前缀和
         int[] preNum = new int[n + 1];     // s 的前缀对应的数字（模 MOD）
@@ -106,8 +104,8 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-constexpr static int MOD = 1'000'000'007;
-constexpr static int MAX_N = 100'001;
+static constexpr int MOD = 1'000'000'007;
+static constexpr int MAX_N = 100'001;
 int pow10[MAX_N];
 
 int init = [] {

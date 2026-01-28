@@ -87,7 +87,7 @@ class Solution {
 class Solution {
 public:
     int numberOfPaths(vector<vector<int>>& grid, int k) {
-        constexpr static int MOD = 1'000'000'007;
+        constexpr int MOD = 1'000'000'007;
         int m = grid.size(), n = grid[0].size();
         vector memo(m, vector(n, vector<int>(k, -1))); // -1 表示没有计算过
 
@@ -225,7 +225,7 @@ class Solution {
 class Solution {
 public:
     int numberOfPaths(vector<vector<int>>& grid, int k) {
-        constexpr static int MOD = 1'000'000'007;
+        constexpr int MOD = 1'000'000'007;
         int m = grid.size(), n = grid[0].size();
         vector memo(m, vector(n, vector<int>(k, -1)));
 

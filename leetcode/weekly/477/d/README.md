@@ -51,6 +51,8 @@ $$
 - 如果 $S$ 与 $\textit{or}$ 相差偶数个数，那么加上 $2^{f[S]}$。
 - 如果 $S$ 与 $\textit{or}$ 相差奇数个数，那么减去 $2^{f[S]}$。
 
+> 注：这个技巧叫做**子集反演**。
+
 最后，剩下的问题是，如何计算 $f[S]$？也就是在 $\textit{nums}$ 中，有多少个数是 $S$ 的子集？注意，现在要算的是元素个数，不是子序列的个数。
 
 ## SOS DP
@@ -120,7 +122,7 @@ class Solution {
     private static boolean initialized = false;
 
     // 这样写比 static block 快
-    private void init() {
+    public Solution() {
         if (initialized) {
             return;
         }
@@ -134,8 +136,6 @@ class Solution {
     }
 
     public int countEffective(int[] nums) {
-        init();
-
         int or = 0;
         boolean same = true;
         for (int x : nums) {
@@ -179,8 +179,8 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-constexpr static int MOD = 1'000'000'007;
-constexpr static int MAX_N = 100'001;
+static constexpr int MOD = 1'000'000'007;
+static constexpr int MAX_N = 100'001;
 int pow2[MAX_N];
 
 int init = [] {

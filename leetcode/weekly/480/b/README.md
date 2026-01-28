@@ -42,9 +42,8 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-#include<ranges>
 class Solution {
-    constexpr static string VOWELS = "aeiou";
+    static constexpr string VOWELS = "aeiou";
 
     template<ranges::input_range R>
     int count_vowel(const R& s) {

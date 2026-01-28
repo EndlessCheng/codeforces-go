@@ -36,7 +36,7 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    constexpr static string VOWEL = "aeiou";
+    static constexpr string VOWEL = "aeiou";
 
 public:
     int vowelConsonantScore(string s) {
