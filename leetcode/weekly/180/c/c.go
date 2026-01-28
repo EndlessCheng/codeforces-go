@@ -1,38 +1,36 @@
 package main
 
-import (
-	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-	"sort"
-)
+import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
-/**
- * Definition for a binary tree node.
- * type TreeNode struct {
- *     Val int
- *     Left *TreeNode
- *     Right *TreeNode
- * }
- */
+// 94. 二叉树的中序遍历
+func inorderTraversal(root *TreeNode) (ans []int) {
+	var dfs func(*TreeNode)
+	dfs = func(node *TreeNode) {
+		if node == nil {
+			return
+		}
+		dfs(node.Left)              // 左
+		ans = append(ans, node.Val) // 根（这行代码移到前面就是前序，移到后面就是后序）
+		dfs(node.Right)             // 右
+	}
+	dfs(root)
+	return
+}
 
-func build(a []int) *TreeNode {
-	if len(a) == 0 {
+// 108. 将有序数组转换为二叉搜索树
+func sortedArrayToBST(nums []int) *TreeNode {
+	if len(nums) == 0 {
 		return nil
 	}
-	m := len(a) / 2
-	return &TreeNode{a[m], build(a[:m]), build(a[m+1:])}
+	m := len(nums) / 2
+	return &TreeNode{
+		Val:   nums[m],
+		Left:  sortedArrayToBST(nums[:m]),
+		Right: sortedArrayToBST(nums[m+1:]),
+	}
 }
 
 func balanceBST(root *TreeNode) *TreeNode {
-	a := []int{}
-	var f func(*TreeNode)
-	f = func(o *TreeNode) {
-		if o != nil {
-			a = append(a, o.Val)
-			f(o.Left)
-			f(o.Right)
-		}
-	}
-	f(root)
-	sort.Ints(a)
-	return build(a)
+	nums := inorderTraversal(root)
+	return sortedArrayToBST(nums)
 }
