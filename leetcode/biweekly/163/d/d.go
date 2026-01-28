@@ -10,7 +10,7 @@ import (
 // https://space.bilibili.com/206214
 func minCost(grid [][]int, k int) int {
 	m, n := len(grid), len(grid[0])
-	if k > 0 && grid[0][0] > grid[m-1][n-1] {
+	if k > 0 && grid[0][0] >= grid[m-1][n-1] {
 		return 0
 	}
 
