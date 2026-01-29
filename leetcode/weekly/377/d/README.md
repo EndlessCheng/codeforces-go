@@ -1,8 +1,8 @@
 ### 思路
 
-1. 把每个字符串转换成一个整数编号，这一步可以用**字典树**完成。见 [208. 实现 Trie (前缀树)](https://leetcode.cn/problems/implement-trie-prefix-tree/)。
+1. 把每个字符串转换成一个整数编号，这一步可以用**字典树**完成。见 [208. 实现 Trie (前缀树)](https://leetcode.cn/problems/implement-trie-prefix-tree/)，[原理讲解](https://leetcode.cn/problems/implement-trie-prefix-tree/solutions/2993894/cong-er-cha-shu-dao-er-shi-liu-cha-shu-p-xsj4/)。
 2. 建图，从 $\textit{original}[i]$ 向 $\textit{changed}[i]$ 连边，边权为 $\textit{cost}[i]$。
-3. 用 Floyd 算法求图中任意两点最短路，得到 $\textit{dis}$ 矩阵，原理请看[【图解】带你发明 Floyd 算法！](https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/)这里得到的 $\textit{dis}[i][j]$ 表示编号为 $i$ 的子串，通过若干次替换操作变成编号为 $j$ 的子串的最小成本。
+3. 用 **Floyd 算法**求图中任意两点最短路，得到 $\textit{dis}$ 矩阵，原理请看[【图解】带你发明 Floyd 算法！](https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/)这里得到的 $\textit{dis}[i][j]$ 表示编号为 $i$ 的子串，通过若干次替换操作变成编号为 $j$ 的子串的最小成本。
 4. 动态规划。定义 $\textit{dfs}(i)$ 表示从 $\textit{source}[i]$ 开始向后修改的最小成本。
 5. 如果 $\textit{source}[i] = \textit{target}[i]$，可以不修改，$\textit{dfs}(i) = \textit{dfs}(i+1)$。
 6. 也可以从 $\textit{source}[i]$ 开始向后修改，利用字典树**快速判断** $\textit{source}$ 和 $\textit{target}$ 的下标从 $i$ 到 $j$ 的子串是否在 $\textit{original}$ 和 $\textit{changed}$ 中，如果在就用 $\textit{dis}[x][y] + \textit{dfs}(j+1)$ 更新 $\textit{dfs}(i)$ 的最小值，其中 $x$ 和 $y$ 分别是 $\textit{source}$ 和 $\textit{target}$ 的这段子串对应的编号。
@@ -216,18 +216,18 @@ class Solution {
 
 ```cpp [sol-C++]
 struct Node {
-    Node *son[26]{};
+    Node* son[26]{};
     int sid = -1; // 字符串的编号
 };
 
 class Solution {
 public:
-    long long minimumCost(string source, string target, vector<string> &original, vector<string> &changed, vector<int> &cost) {
-        Node *root = new Node();
+    long long minimumCost(string source, string target, vector<string>& original, vector<string>& changed, vector<int>& cost) {
+        Node* root = new Node();
         int sid = 0;
-        auto put = [&](string &s) -> int {
-            Node *o = root;
-            for (char b: s) {
+        auto put = [&](string& s) -> int {
+            Node* o = root;
+            for (char b : s) {
                 int i = b - 'a';
                 if (o->son[i] == nullptr) {
                     o->son[i] = new Node();
@@ -242,7 +242,7 @@ public:
 
         // 初始化距离矩阵
         int m = cost.size();
-        vector<vector<int>> dis(m * 2, vector<int>(m * 2, INT_MAX / 2));
+        vector dis(m * 2, vector<int>(m * 2, INT_MAX / 2));
         for (int i = 0; i < m * 2; i++) {
             dis[i][i] = 0;
         }
@@ -266,11 +266,11 @@ public:
 
         int n = source.size();
         vector<long long> memo(n, -1);
-        function<long long(int)> dfs = [&](int i) -> long long {
+        auto dfs = [&](this auto&& dfs, int i) -> long long {
             if (i >= n) {
                 return 0;
             }
-            auto &res = memo[i];
+            auto& res = memo[i]; // 注意这里是引用
             if (res != -1) {
                 return res;
             }
@@ -278,7 +278,8 @@ public:
             if (source[i] == target[i]) {
                 res = dfs(i + 1); // 不修改 source[i]
             }
-            Node *p = root, *q = root;
+            Node* p = root;
+            Node* q = root;
             for (int j = i; j < n; j++) {
                 p = p->son[source[j] - 'a'];
                 q = q->son[target[j] - 'a'];
@@ -581,18 +582,17 @@ class Solution {
 
 ```cpp [sol-C++]
 struct Node {
-    Node *son[26]{};
+    Node* son[26]{};
     int sid = -1; // 字符串的编号
 };
 
 class Solution {
 public:
-    long long
-    minimumCost(string source, string target, vector<string> &original, vector<string> &changed, vector<int> &cost) {
-        Node *root = new Node();
+    long long minimumCost(string source, string target, vector<string>& original, vector<string>& changed, vector<int>& cost) {
+        Node* root = new Node();
         int sid = 0;
-        auto put = [&](string &s) -> int {
-            Node *o = root;
+        auto put = [&](string& s) -> int {
+            Node* o = root;
             for (char b: s) {
                 int i = b - 'a';
                 if (o->son[i] == nullptr) {
@@ -608,7 +608,7 @@ public:
 
         // 初始化距离矩阵
         int m = cost.size();
-        vector<vector<int>> dis(m * 2, vector<int>(m * 2, INT_MAX / 2));
+        vector dis(m * 2, vector<int>(m * 2, INT_MAX / 2));
         for (int i = 0; i < m * 2; i++) {
             dis[i][i] = 0;
         }
@@ -635,7 +635,8 @@ public:
         for (int i = n - 1; i >= 0; i--) {
             // 不修改 source[i]
             f[i] = source[i] == target[i] ? f[i + 1] : LONG_LONG_MAX / 2;
-            Node *p = root, *q = root;
+            Node* p = root;
+            Node* q = root;
             for (int j = i; j < n; j++) {
                 p = p->son[source[j] - 'a'];
                 q = q->son[target[j] - 'a'];
@@ -744,6 +745,12 @@ func minimumCost(source, target string, original, changed []string, cost []int) 
 - 时间复杂度：$\mathcal{O}(n^2+mn+m^3)$，其中 $n$ 为 $\textit{source}$ 的长度，$m$ 为 $\textit{cost}$ 的长度。DP 需要 $\mathcal{O}(n^2)$ 的时间，把 $2m$ 个长度至多为 $n$ 的字符串插入字典树需要 $\mathcal{O}(mn)$ 的时间，Floyd 需要 $\mathcal{O}(m^3)$ 的时间。
 - 空间复杂度：$\mathcal{O}(n+mn+m^2)$。DP 需要 $\mathcal{O}(n)$ 的空间，把 $2m$ 个长度至多为 $n$ 的字符串插入字典树需要 $\mathcal{O}(mn)$ 的空间，Floyd 需要 $\mathcal{O}(m^2)$ 的空间。
 
+## 专题训练
+
+1. 动态规划题单的「**§5.2 最优划分**」。
+2. 图论题单的「**§3.2 全源最短路：Floyd 算法**」。
+3. 数据结构题单的「**六、字典树（trie）**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
@@ -753,12 +760,12 @@ func minimumCost(source, target string, original, changed []string, cost []int) 
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. 【本题相关】[图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
