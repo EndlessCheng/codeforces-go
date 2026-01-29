@@ -1,8 +1,6 @@
 package main
 
-import (
-	. "fmt"
-)
+import . "fmt"
 
 // https://github.com/EndlessCheng
 func cf2135D1() {
