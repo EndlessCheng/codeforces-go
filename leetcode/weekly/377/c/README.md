@@ -4,7 +4,7 @@
 
 这里得到的 $\textit{dis}[i][j]$ 表示字母 $i$ 通过若干次替换操作变成字母 $j$ 的最小成本。
 
-最后累加所有 $\textit{dis}[\textit{original}[i]][\textit{changed}[i]]$，即为答案。如果答案为无穷大，返回 $-1$。
+最后，累加所有 $\textit{dis}[\textit{source}[i]][\textit{target}[i]]$，即为答案。如果答案为无穷大，返回 $-1$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1rG411k72D/)
 
