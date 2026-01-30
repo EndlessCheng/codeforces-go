@@ -1,10 +1,12 @@
-相当于从 $i$ 移动到 $i+\textit{nums}[i]$。
+操作相当于从下标 $i$ 移动到下标 $i+\textit{nums}[i]$。
 
-如果 $i+\textit{nums}[i]$ 下标越界，需要将其调整到 $[0,n-1]$ 中。
+如果 $i+\textit{nums}[i]$ 下标越界呢？
 
-做法：由于数组是循环数组，把下标对 $n$ 取模。比如 $n=4$，那么下标 $5,9,13,\cdots$ 都对应着下标 $1$。
+需要把 $i+\textit{nums}[i]$ 调整到 $[0,n-1]$ 范围中。具体来说，把下标 $i+\textit{nums}[i]$ 模 $n$。比如 $n=4$，在循环数组中，正数下标 $5,9,13,\ldots$ 都是下标 $1$，负数下标 $-3,-7,-11,\ldots$ 也都是下标 $1$。
 
-不了解取模的同学，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/) 或者 [本题视频讲解](https://www.bilibili.com/video/BV1YeqHYSEhK/)，欢迎点赞关注~
+不了解取模的同学，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1YeqHYSEhK/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -40,6 +42,18 @@ public:
 };
 ```
 
+```c [sol-C]
+int* constructTransformedArray(int* nums, int numsSize, int* returnSize) {
+    int n = numsSize;
+    int* result = malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++) {
+        result[i] = nums[((i + nums[i]) % n + n) % n]; // 保证结果在 [0,n-1] 中
+    }
+    *returnSize = n;
+    return result;
+}
+```
+
 ```go [sol-Go]
 func constructTransformedArray(nums []int) []int {
 	n := len(nums)
@@ -48,6 +62,32 @@ func constructTransformedArray(nums []int) []int {
 		result[i] = nums[((i+x)%n+n)%n] // 保证结果在 [0,n-1] 中
 	}
 	return result
+}
+```
+
+```js [sol-JavaScript]
+var constructTransformedArray = function(nums) {
+    const n = nums.length;
+    const result = new Array(n);
+    for (let i = 0; i < n; i++) {
+        result[i] = nums[((i + nums[i]) % n + n) % n]; // 保证结果在 [0,n-1] 中
+    }
+    return result;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn construct_transformed_array(nums: Vec<i32>) -> Vec<i32> {
+        let n = nums.len();
+        let m = n as i32;
+        let mut result = vec![0; n];
+        for i in 0..n {
+            let j = ((i as i32 + nums[i]) % m + m) % m; // 保证结果在 [0,n-1] 中
+            result[i] = nums[j as usize];
+        }
+        result
+    }
 }
 ```
 
@@ -65,12 +105,14 @@ func constructTransformedArray(nums []int) []int {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
