@@ -16,6 +16,7 @@ func cf1673E(in io.Reader, out io.Writer) {
 		Fscan(in, &a[i])
 	}
 
+	// 计算 (sum C(n,i)) mod 2，可以裂项相消
 	c2 := func(n, k int) byte {
 		if k <= 0 {
 			if n == 0 {
