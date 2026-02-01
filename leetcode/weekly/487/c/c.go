@@ -2,22 +2,20 @@ package main
 
 // https://space.bilibili.com/206214
 type RideSharingSystem struct {
-	riders         []int
-	drivers        []int
-	seenRiders     map[int]bool
-	canceledRiders map[int]bool
+	riders        []int
+	drivers       []int
+	waitingRiders map[int]bool
 }
 
 func Constructor() RideSharingSystem {
 	return RideSharingSystem{
-		seenRiders:     map[int]bool{},
-		canceledRiders: map[int]bool{},
+		waitingRiders: map[int]bool{},
 	}
 }
 
 func (r *RideSharingSystem) AddRider(riderId int) {
 	r.riders = append(r.riders, riderId)
-	r.seenRiders[riderId] = true
+	r.waitingRiders[riderId] = true
 }
 
 func (r *RideSharingSystem) AddDriver(driverId int) {
@@ -26,7 +24,7 @@ func (r *RideSharingSystem) AddDriver(driverId int) {
 
 func (r *RideSharingSystem) MatchDriverWithRider() []int {
 	// 弹出队列中的已取消乘客
-	for len(r.riders) > 0 && r.canceledRiders[r.riders[0]] {
+	for len(r.riders) > 0 && !r.waitingRiders[r.riders[0]] {
 		r.riders = r.riders[1:]
 	}
 	// 没有乘客或者司机
@@ -41,8 +39,5 @@ func (r *RideSharingSystem) MatchDriverWithRider() []int {
 }
 
 func (r *RideSharingSystem) CancelRider(riderId int) {
-	// 对于不存在的乘客，不能标记为取消
-	if r.seenRiders[riderId] {
-		r.canceledRiders[riderId] = true
-	}
+	delete(r.waitingRiders, riderId)
 }

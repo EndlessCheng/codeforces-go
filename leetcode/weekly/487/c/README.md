@@ -1,8 +1,6 @@
 既然是先来先匹配，那就用两个队列，分别保存乘客编号和司机编号。
 
-此外，还需要知道**在队列中的**乘客是否取消了请求，这可以用一个哈希集合（或者布尔数组）保存已取消的乘客编号。
-
-如果乘客根本就不在队列中，我们不能将其标记为已取消。所以还需要再用一个哈希集合（或者布尔数组）保存**在队列中的乘客编号**。注意题目保证乘客编号唯一且只会被添加一次。
+此外，我们还需要知道在队列中的乘客是否取消了请求，可以用一个哈希集合（或者布尔数组）保存**在队列中且没有取消**的乘客编号。对于 $\texttt{cancelRider}$，把乘客编号从哈希集合中删除即可。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
@@ -11,42 +9,38 @@ class RideSharingSystem:
     def __init__(self):
         self.riders = deque()
         self.drivers = deque()
-        self.seen_riders = set()
-        self.canceled_riders = set()
+        self.waiting_riders = set()
 
     def addRider(self, riderId: int) -> None:
         self.riders.append(riderId)
-        self.seen_riders.add(riderId)
+        self.waiting_riders.add(riderId)
 
     def addDriver(self, driverId: int) -> None:
         self.drivers.append(driverId)
 
     def matchDriverWithRider(self) -> List[int]:
         # 弹出队列中的已取消乘客
-        while self.riders and self.riders[0] in self.canceled_riders:
+        while self.riders and self.riders[0] not in self.waiting_riders:
             self.riders.popleft()
         # 没有乘客或者司机
         if not self.riders or not self.drivers:
             return [-1, -1]
-        # 配对
+        # 配对（这里没有删除 waiting_riders 中的乘客编号，面试的话建议写上删除的逻辑）
         return [self.drivers.popleft(), self.riders.popleft()]
 
     def cancelRider(self, riderId: int) -> None:
-        # 对于不存在的乘客，不能标记为取消
-        if riderId in self.seen_riders:
-            self.canceled_riders.add(riderId)
+        self.waiting_riders.discard(riderId)
 ```
 
 ```java [sol-Java]
 class RideSharingSystem {
     private final Deque<Integer> riders = new ArrayDeque<>();
     private final Deque<Integer> drivers = new ArrayDeque<>();
-    private final Set<Integer> seenRiders = new HashSet<>();
-    private final Set<Integer> canceledRiders = new HashSet<>();
+    private final Set<Integer> waitingEiders = new HashSet<>();
 
     public void addRider(int riderId) {
         riders.addLast(riderId);
-        seenRiders.add(riderId);
+        waitingEiders.add(riderId);
     }
 
     public void addDriver(int driverId) {
@@ -55,22 +49,19 @@ class RideSharingSystem {
 
     public int[] matchDriverWithRider() {
         // 弹出队列中的已取消乘客
-        while (!riders.isEmpty() && canceledRiders.contains(riders.peekFirst())) {
+        while (!riders.isEmpty() && !waitingEiders.contains(riders.peekFirst())) {
             riders.pollFirst();
         }
         // 没有乘客或者司机
         if (riders.isEmpty() || drivers.isEmpty()) {
             return new int[]{-1, -1};
         }
-        // 配对
+        // 配对（这里没有删除 waitingEiders 中的乘客编号，面试的话建议写上删除的逻辑）
         return new int[]{drivers.pollFirst(), riders.pollFirst()};
     }
 
     public void cancelRider(int riderId) {
-        // 对于不存在的乘客，不能标记为取消
-        if (seenRiders.contains(riderId)) {
-            canceledRiders.add(riderId);
-        }
+        waitingEiders.remove(riderId);
     }
 }
 ```
@@ -79,13 +70,12 @@ class RideSharingSystem {
 class RideSharingSystem {
     deque<int> riders;
     deque<int> drivers;
-    unordered_set<int> seen_riders;
-    unordered_set<int> canceled_riders;
+    unordered_set<int> waiting_riders;
 
 public:
     void addRider(int riderId) {
         riders.push_back(riderId);
-        seen_riders.insert(riderId);
+        waiting_riders.insert(riderId);
     }
 
     void addDriver(int driverId) {
@@ -94,46 +84,41 @@ public:
 
     vector<int> matchDriverWithRider() {
         // 弹出队列中的已取消乘客
-        while (!riders.empty() && canceled_riders.contains(riders.front())) {
+        while (!riders.empty() && !waiting_riders.contains(riders.front())) {
             riders.pop_front();
         }
         // 没有乘客或者司机
         if (riders.empty() || drivers.empty()) {
             return {-1, -1};
         }
-        // 配对
+        // 配对（这里没有删除 waiting_riders 中的乘客编号，面试的话建议写上删除的逻辑）
         int driver = drivers.front(); drivers.pop_front();
         int rider = riders.front(); riders.pop_front();
         return {driver, rider};
     }
 
     void cancelRider(int riderId) {
-        // 对于不存在的乘客，不能标记为取消
-        if (seen_riders.contains(riderId)) {
-            canceled_riders.insert(riderId);
-        }
+        waiting_riders.erase(riderId);
     }
 };
 ```
 
 ```go [sol-Go]
 type RideSharingSystem struct {
-	riders         []int
-	drivers        []int
-	seenRiders     map[int]bool
-	canceledRiders map[int]bool
+	riders        []int
+	drivers       []int
+	waitingRiders map[int]bool
 }
 
 func Constructor() RideSharingSystem {
 	return RideSharingSystem{
-		seenRiders:     map[int]bool{},
-		canceledRiders: map[int]bool{},
+		waitingRiders: map[int]bool{},
 	}
 }
 
 func (r *RideSharingSystem) AddRider(riderId int) {
 	r.riders = append(r.riders, riderId)
-	r.seenRiders[riderId] = true
+	r.waitingRiders[riderId] = true
 }
 
 func (r *RideSharingSystem) AddDriver(driverId int) {
@@ -142,14 +127,14 @@ func (r *RideSharingSystem) AddDriver(driverId int) {
 
 func (r *RideSharingSystem) MatchDriverWithRider() []int {
 	// 弹出队列中的已取消乘客
-	for len(r.riders) > 0 && r.canceledRiders[r.riders[0]] {
+	for len(r.riders) > 0 && !r.waitingRiders[r.riders[0]] {
 		r.riders = r.riders[1:]
 	}
 	// 没有乘客或者司机
 	if len(r.riders) == 0 || len(r.drivers) == 0 {
 		return []int{-1, -1}
 	}
-	// 配对
+	// 配对（这里没有删除 waitingRiders 中的乘客编号，面试的话建议写上删除的逻辑）
 	ans := []int{r.drivers[0], r.riders[0]}
 	r.riders = r.riders[1:]
 	r.drivers = r.drivers[1:]
@@ -157,17 +142,14 @@ func (r *RideSharingSystem) MatchDriverWithRider() []int {
 }
 
 func (r *RideSharingSystem) CancelRider(riderId int) {
-	// 对于不存在的乘客，不能标记为取消
-	if r.seenRiders[riderId] {
-		r.canceledRiders[riderId] = true
-	}
+	delete(r.waitingRiders, riderId)
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\texttt{MatchDriverWithRider}$ 均摊 $\mathcal{O}(1)$，其余为 $\mathcal{O}(1)$。每个乘客只会入队出队各一次。
-- 空间复杂度：$\mathcal{O}(q)$。其中 $q$ 是 $\texttt{AddRider}$ 和 $\texttt{AddDriver}$ 的调用次数之和。
+- 时间复杂度：$\texttt{matchDriverWithRider}$ 均摊 $\mathcal{O}(1)$，其余为 $\mathcal{O}(1)$。每个乘客只会入队出队各一次。
+- 空间复杂度：$\mathcal{O}(q)$。其中 $q$ 是 $\texttt{addRider}$ 和 $\texttt{addDriver}$ 的调用次数之和。
 
 ## 专题训练
 
