@@ -6,7 +6,7 @@ $$
 \text{nonPositive}(\textit{nums}, k) \le k^2
 $$
 
-当 $k$ 逐渐增大时，操作次数变小，所以 $\text{nonPositive}(\textit{nums}, k)$ 变小；另一方面，$k^2$ 变大。
+当 $k$ 逐渐增大时，操作次数会变小（或者不变），所以 $\text{nonPositive}(\textit{nums}, k)$ 会变小（或者不变）；另一方面，$k^2$ 会随着 $k$ 的增大而增大。
 
 所以当 $k$ 较小时，不等式不成立；当 $k$ 较大时，不等式成立。
 
@@ -50,11 +50,11 @@ $$
 
 下面代码采用开区间二分。使用闭区间或者半闭半开区间也是可以的，喜欢哪种写法就用哪种。
 
-- 开区间左端点初始值：$0$。无法满足要求。
-- 开区间左端点初始值（优化）：$\left\lceil\sqrt n\right\rceil - 1$。由于 $\textit{nums}$ 中的元素都是正数，每个数都至少要操作一次，所以 $\text{nonPositive}(\textit{nums}, k) \ge n$，所以 $k$ 必须满足 $k^2\ge n$。
-- 开区间右端点初始值：$M$，其中 $M = \max(\textit{nums})$。此时 $\text{nonPositive}(\textit{nums}, k)=n$。如果 $n\le M^2$，那么满足要求。如果 $n > M^2$，那么答案就是理论最小值 $\left\lceil\sqrt n\right\rceil$，此时 $\text{nonPositive}(\textit{nums}, k) \le k^2$ 为 $n\le \left\lceil\sqrt n\right\rceil^2$，一定成立，无需二分。
+- 开区间左端点初始值：$0$。无法满足题目要求。
+- 开区间左端点初始值（优化）：$\left\lceil\sqrt n\right\rceil - 1$。由于 $\textit{nums}$ 中的元素都是正数，每个数都至少要操作一次，所以 $\text{nonPositive}(\textit{nums}, k) \ge n$，所以 $k$ 必须满足 $k^2\ge n$，即 $k\ge \left\lceil\sqrt n\right\rceil$。减一后，一定无法满足题目要求。
+- 开区间右端点初始值：$M$，其中 $M = \max(\textit{nums})$。此时 $\text{nonPositive}(\textit{nums}, M)=n$。如果 $n \le M^2$，那么满足题目要求。这引出了一个**特殊情况**：如果 $M\le \left\lceil\sqrt n\right\rceil$，那么答案就是理论最小值 $\left\lceil\sqrt n\right\rceil$，此时 $\text{nonPositive}(\textit{nums}, k) \le k^2$ 为 $n\le \left\lceil\sqrt n\right\rceil^2$，一定成立，可以提前返回 $\left\lceil\sqrt n\right\rceil$，无需二分。
 
-> 对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
+> **注**：对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
 
 ### 2)
 
