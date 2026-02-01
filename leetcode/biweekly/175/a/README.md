@@ -1,4 +1,4 @@
-做法同 [344. 反转字符串](https://leetcode.cn/problems/reverse-string/)，[我的题解](https://leetcode.cn/problems/reverse-string/solutions/2376290/ji-chong-bu-tong-de-xie-fa-pythonjavacgo-9trb/)。
+**前置题目**：[344. 反转字符串](https://leetcode.cn/problems/reverse-string/)，[我的题解](https://leetcode.cn/problems/reverse-string/solutions/2376290/ji-chong-bu-tong-de-xie-fa-pythonjavacgo-9trb/)。
 
 ```py [sol-Python3]
 class Solution:
@@ -16,7 +16,7 @@ class Solution:
     def reverseByType(self, s: str) -> str:
         t = list(s)
         self.reverse(t, str.islower)
-        self.reverse(t, lambda b: not b.islower())
+        self.reverse(t, lambda ch: not ch.islower())
         return ''.join(t)
 ```
 
@@ -69,8 +69,8 @@ class Solution {
 
 public:
     string reverseByType(string s) {
-        reverse(s, [](char b) { return 'a' <= b && b <= 'z'; });
-        reverse(s, [](char b) { return !('a' <= b && b <= 'z'); });
+        reverse(s, ::islower);
+        reverse(s, [](char ch) { return !islower(ch); });
         return s;
     }
 };
@@ -94,8 +94,8 @@ func reverse(t []byte, f func(byte) bool) {
 
 func reverseByType(s string) string {
 	t := []byte(s)
-	reverse(t, func(b byte) bool { return 'a' <= b && b <= 'z' })
-	reverse(t, func(b byte) bool { return !('a' <= b && b <= 'z') })
+	reverse(t, func(ch byte) bool { return 'a' <= ch && ch <= 'z' })
+	reverse(t, func(ch byte) bool { return !('a' <= ch && ch <= 'z') })
 	return string(t)
 }
 ```

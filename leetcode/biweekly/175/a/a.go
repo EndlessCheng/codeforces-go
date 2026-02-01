@@ -18,7 +18,7 @@ func reverse(t []byte, f func(byte) bool) {
 
 func reverseByType(s string) string {
 	t := []byte(s)
-	reverse(t, func(b byte) bool { return 'a' <= b && b <= 'z' })
-	reverse(t, func(b byte) bool { return !('a' <= b && b <= 'z') })
+	reverse(t, func(ch byte) bool { return 'a' <= ch && ch <= 'z' })
+	reverse(t, func(ch byte) bool { return !('a' <= ch && ch <= 'z') })
 	return string(t)
 }

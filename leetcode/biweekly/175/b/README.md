@@ -84,7 +84,7 @@ class Solution:
         def check(k: int) -> bool:
             return n + sum((x - 1) // k for x in nums) <= k * k
 
-        left = ceil(sqrt(n))
+        left = ceil(sqrt(n))  # 答案的下界
         right = max(nums)
         return bisect_left(range(right), True, left, key=check)
 ```
@@ -94,7 +94,7 @@ class Solution:
     def minimumK(self, nums: List[int]) -> int:
         n = len(nums)
         mx = max(nums)
-        rt = ceil(sqrt(n))
+        rt = ceil(sqrt(n))  # 答案的下界
         if mx <= rt:
             return rt
 
@@ -120,7 +120,7 @@ class Solution {
             mx = Math.max(mx, x);
         }
 
-        int rt = (int) Math.ceil(Math.sqrt(nums.length));
+        int rt = (int) Math.ceil(Math.sqrt(nums.length)); // 答案的下界
         if (mx <= rt) {
             return rt;
         }
@@ -154,7 +154,7 @@ public:
     int minimumK(vector<int>& nums) {
         int n = nums.size();
         int mx = ranges::max(nums);
-        int rt = ceil(sqrt(n));
+        int rt = ceil(sqrt(n)); // 答案的下界
         if (mx <= rt) {
             return rt;
         }
@@ -181,7 +181,7 @@ public:
 ```go [sol-Go]
 func minimumK(nums []int) int {
 	n := len(nums)
-	left := int(math.Ceil(math.Sqrt(float64(n))))
+	left := int(math.Ceil(math.Sqrt(float64(n)))) // 答案的下界
 	right := slices.Max(nums)
 	ans := left + sort.Search(right-left, func(k int) bool {
 		k += left
