@@ -2,7 +2,9 @@
 
 此外，我们还需要知道在队列中的乘客是否取消了请求，可以用一个哈希集合（或者布尔数组）保存**在队列中且没有取消**的乘客编号。对于 $\texttt{cancelRider}$，把乘客编号从哈希集合中删除即可。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+> 吐槽一下，没有叫车的乘客也能发送取消请求，这项目好烂……
+
+[本题视频讲解](https://www.bilibili.com/video/BV1hd64BcEBQ/?t=15m48s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class RideSharingSystem:

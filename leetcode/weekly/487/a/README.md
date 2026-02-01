@@ -4,13 +4,11 @@
 
 $0\le 2^k -1 \le n$ 即 $1\le 2^k\le n+1$。
 
-解得 $0\le k\le w-1$，其中 $w$ 是 $n+1$ 的二进制长度。
-
-比如 $n+1 = 10110$，二进制长度为 $5$，那么 $2^k\le 10000$，所以 $k\le 4$。
+解得 $0\le k\le w-1$，其中 $w$ 是 $n+1$ 的二进制长度。比如 $n+1 = 10110$，二进制长度为 $5$，那么 $2^k\le 10000$，所以 $k\le 4$。
 
 所以有 $w$ 个不同的 $k$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1hd64BcEBQ/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

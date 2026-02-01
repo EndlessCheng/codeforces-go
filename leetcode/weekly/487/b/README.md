@@ -15,13 +15,13 @@ Alice 可以取这两种情况的最大值。
 - 第一轮，Alice 操作。Alice 不能移除 $x$，只能移除其他不含 $x$ 的子数组。这个子数组要么位于 $x$ 的左侧，要么位于 $x$ 的右侧。由于 $1\le i\le n-2$，所以移除子数组后，一定剩下至少两个数（游戏没有结束），且至少剩下 $\textit{nums}[0]$ 和 $\textit{nums}[n-1]$ 中的一个数。
 - 第二轮，Bob 操作。如果剩下的数包含 $\textit{nums}[0]$，那么 Bob 可以删除其他数，最终剩下 $\textit{nums}[0]$。如果剩下的数包含 $\textit{nums}[n-1]$，那么 Bob 可以删除其他数，最终剩下 $\textit{nums}[n-1]$。矛盾，所以答案不可能严格大于 $\max(\textit{nums}[0], \textit{nums}[n-1])$。
 
-综上所述，Alice 的最佳策略是第一回合就结束游戏，答案为
+综上所述，Alice 的最佳策略是第一回合就结束游戏（Bob：请输入文字），答案为
 
 $$
 \max(\textit{nums}[0], \textit{nums}[n-1])
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1hd64BcEBQ/?t=5m15s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

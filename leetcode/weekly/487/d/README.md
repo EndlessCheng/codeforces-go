@@ -1,6 +1,10 @@
+推荐先完成本题的简单版本：[3738. 替换至多一个元素后最长非递减子数组](https://leetcode.cn/problems/longest-non-decreasing-subarray-after-replacing-at-most-one-element/)。
+
+## 方法一：前后缀分解
+
 为方便描述，下文把 $\textit{nums}$ 简称为 $a$。
 
-枚举删除的是 $a[i]$，我们需要知道：
+假设删除的是 $a[i]$，我们需要知道什么？
 
 - 以 $i-1$ 结尾的最长交替子数组的长度，记作 $\textit{pre}[i-1]$。
 - 以 $i+1$ 开头的最长交替子数组的长度，记作 $\textit{suf}[i+1]$。
@@ -12,7 +16,7 @@
 
 然后来计算答案。
 
-删除 $a[i]$ 后，有两种情况可以把左右两侧的交替子数组拼在一起：
+枚举删除的元素是 $a[i]$。删除后，有两种情况可以把左右两侧的交替子数组拼在一起：
 
 - $a[i-2] < a[i-1] > a[i+1] < a[i+2]$。
 - $a[i-2] > a[i-1] < a[i+1] > a[i+2]$。
@@ -30,9 +34,9 @@ $$
 - 只满足 $a[i-2] < a[i-1] > a[i+1]$ 或者 $a[i-2] > a[i-1] < a[i+1]$，拼接后的交替子数组的长度为 $\textit{pre}[i-1] + 1$。
 - 只满足 $a[i-1] > a[i+1] < a[i+2]$ 或者 $a[i-1] < a[i+1] > a[i+2]$，拼接后的交替子数组的长度为 $\textit{suf}[i+1] + 1$。
 
-此外，还可以不删除元素，最长长度为 $\max(\textit{pre})$。
+此外，还可以不删除元素，最长交替子数组的长度为 $\max(\textit{pre})$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1hd64BcEBQ/?t=25m37s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -273,9 +277,155 @@ func longestAlternating(nums []int) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 方法二：状态机 DP
+
+先想想记忆化搜索怎么写。
+
+除了子数组的末尾下标 $i$，我们还需要两个额外信息：
+
+- $\textit{canDel}$，表示**是否可以执行删除操作**，一开始为 $\texttt{true}$。
+- $\textit{inc}$，表示子数组**最后两个数必须满足的大小关系**。如果 $\textit{inc}=\texttt{true}$ 则表示最后两个数必须是左小右大，如果 $\textit{inc}=\texttt{false}$ 则表示最后两个数必须是左大右小。
+
+分类讨论：
+
+- $a[i]$ 可以单独一个数，所以返回值的初始值为 $1$。
+- 如果 $a[i-1] \ne a[i]$，那么当 $a[i-1] < a[i]$（这是个布尔值）等于 $\textit{inc}$ 时，可以继续递归，$\textit{canDel}$ 不变，$\textit{inc}$ 取反。
+- 如果 $\textit{canDel} = \texttt{true}$ 且 $a[i-2] \ne a[i]$，那么当 $a[i-2] < a[i]$（这是个布尔值）等于 $\textit{inc}$ 时，可以继续递归，$\textit{canDel}$ 置为 $\texttt{false}$，$\textit{inc}$ 取反。
+
+递归边界：$i=0$ 时返回 $1$。
+
+递归入口：$\textit{dfs}(i,\texttt{true},\texttt{false})$ 和 $\textit{dfs}(i,\texttt{true},\texttt{true})$，所以情况取最大值。
+
+```py
+class Solution:
+    def longestAlternating(self, a: List[int]) -> int:
+        @cache
+        def dfs(i: int, can_del: bool, inc: bool) -> int:
+            if i == 0:
+                return 1
+            res = 1
+            if a[i - 1] != a[i] and (a[i - 1] < a[i]) == inc:
+                res = dfs(i - 1, can_del, not inc) + 1
+            if can_del and i > 1 and a[i - 2] != a[i] and (a[i - 2] < a[i]) == inc:
+                res = max(res, dfs(i - 2, False, not inc) + 1)
+            return res
+
+        n = len(a)
+        ans = 0
+        for i in range(n):
+            ans = max(ans, dfs(i, True, False), dfs(i, True, True))
+        dfs.cache_clear()  # 防止爆内存
+        return ans
+```
+
+记忆化搜索只是个脚手架，可以参考记忆化搜索的代码，1:1 地翻译成递推。
+
+```py [sol-Python3]
+class Solution:
+    def longestAlternating(self, a: List[int]) -> int:
+        n = len(a)
+        f = [[[1, 1], [1, 1]] for _ in range(n)]
+        for i in range(1, n):
+            if a[i - 1] != a[i]:
+                inc = 1 if a[i - 1] < a[i] else 0
+                f[i][0][inc] = f[i - 1][0][inc ^ 1] + 1
+                f[i][1][inc] = f[i - 1][1][inc ^ 1] + 1
+            if i > 1 and a[i - 2] != a[i]:
+                inc = 1 if a[i - 2] < a[i] else 0
+                f[i][1][inc] = max(f[i][1][inc], f[i - 2][0][inc ^ 1] + 1)
+        return max(max(v[1]) for v in f)
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestAlternating(int[] a) {
+        int n = a.length;
+        int[][][] f = new int[n][2][2];
+        for (int[][] mat : f) {
+            mat[0][0] = mat[0][1] = mat[1][0] = mat[1][1] = 1;
+        }
+
+        int ans = 1;
+        for (int i = 1; i < n; i++) {
+            if (a[i - 1] != a[i]) {
+                int inc = a[i - 1] < a[i] ? 1 : 0;
+                f[i][0][inc] = f[i - 1][0][inc ^ 1] + 1;
+                f[i][1][inc] = f[i - 1][1][inc ^ 1] + 1;
+            }
+            if (i > 1 && a[i - 2] != a[i]) {
+                int inc = a[i - 2] < a[i] ? 1 : 0;
+                f[i][1][inc] = Math.max(f[i][1][inc], f[i - 2][0][inc ^ 1] + 1);
+            }
+            ans = Math.max(ans, Math.max(f[i][1][0], f[i][1][1]));
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestAlternating(vector<int>& a) {
+        int n = a.size();
+        int ans = 1;
+        vector<array<array<int, 2>, 2>> f(n, {{{1, 1}, {1, 1}}});
+        for (int i = 1; i < n; i++) {
+            if (a[i - 1] != a[i]) {
+                int inc = a[i - 1] < a[i];
+                f[i][0][inc] = f[i - 1][0][inc ^ 1] + 1;
+                f[i][1][inc] = f[i - 1][1][inc ^ 1] + 1;
+            }
+            if (i > 1 && a[i - 2] != a[i]) {
+                int inc = a[i - 2] < a[i];
+                f[i][1][inc] = max(f[i][1][inc], f[i - 2][0][inc ^ 1] + 1);
+            }
+            ans = max(ans, max(f[i][1][0], f[i][1][1]));
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func longestAlternating(a []int) int {
+	n := len(a)
+	f := make([][2][2]int, n)
+	for i := range f {
+		f[i] = [2][2]int{{1, 1}, {1, 1}}
+	}
+
+	ans := 1
+	for i := 1; i < n; i++ {
+		if a[i-1] != a[i] {
+			inc := 0
+			if a[i-1] < a[i] {
+				inc = 1
+			}
+			f[i][0][inc] = f[i-1][0][inc^1] + 1
+			f[i][1][inc] = f[i-1][1][inc^1] + 1
+		}
+		if i > 1 && a[i-2] != a[i] {
+			inc := 0
+			if a[i-2] < a[i] {
+				inc = 1
+			}
+			f[i][1][inc] = max(f[i][1][inc], f[i-2][0][inc^1]+1)
+		}
+		ans = max(ans, f[i][1][0], f[i][1][1])
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。**注**：用滚动数组可以优化到 $\mathcal{O}(1)$ 空间。
+
 ## 专题训练
 
-见下面动态规划题单的「**专题：前后缀分解**」。
+见下面动态规划题单的「**专题：前后缀分解**」和「**六、状态机 DP**」。
 
 ## 分类题单
 
