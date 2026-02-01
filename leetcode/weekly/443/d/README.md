@@ -31,7 +31,7 @@ $$
 
 ## 划分型 DP
 
-根据 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/)「§5.3 约束划分个数」，定义 $f[i][j]$ 表示下标 $[0,j-1]$ 中选 $i$ 个长为 $x$ 的子数组的最小操作次数。
+根据 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/)「§5.3 约束划分个数」，定义 $f[i][j]$ 表示在下标区间 $[0,j-1]$ 中选 $i$ 个长为 $x$ 的子数组的最小操作次数。
 
 分类讨论：
 
