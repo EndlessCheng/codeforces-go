@@ -53,6 +53,7 @@ $$
 - 开区间左端点初始值：$0$。无法满足题目要求。
 - 开区间左端点初始值（优化）：$\left\lceil\sqrt n\right\rceil - 1$。由于 $\textit{nums}$ 中的元素都是正数，每个数都至少要操作一次，所以 $\text{nonPositive}(\textit{nums}, k) \ge n$，所以 $k$ 必须满足 $k^2\ge n$，即 $k\ge \left\lceil\sqrt n\right\rceil$。减一后，一定无法满足题目要求。
 - 开区间右端点初始值：$M$，其中 $M = \max(\textit{nums})$。此时 $\text{nonPositive}(\textit{nums}, M)=n$。如果 $n \le M^2$，那么满足题目要求。这引出了一个**特殊情况**：如果 $M\le \left\lceil\sqrt n\right\rceil$，那么答案就是理论最小值 $\left\lceil\sqrt n\right\rceil$，此时 $\text{nonPositive}(\textit{nums}, k) \le k^2$ 为 $n\le \left\lceil\sqrt n\right\rceil^2$，一定成立，可以提前返回 $\left\lceil\sqrt n\right\rceil$，无需二分。
+- 开区间右端点初始值（优化）：$\left\lceil\sqrt[3] {2nM}\right\rceil$。最坏情况下，$\textit{nums}$ 中的元素都是 $M$，一共需要操作 $\left\lceil\dfrac{M}{k}\right\rceil n$ 次。当 $k\le M$ 时，有 $\left\lceil\dfrac{M}{k}\right\rceil n\le \dfrac{2M}{k}n$，所以当 $\dfrac{2M}{k}n\le k^2$，即 $k \ge \left\lceil\sqrt[3] {2nM}\right\rceil$ 时，一定满足题目要求。
 
 > **注**：对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
 
@@ -85,7 +86,7 @@ class Solution:
             return n + sum((x - 1) // k for x in nums) <= k * k
 
         left = ceil(sqrt(n))  # 答案的下界
-        right = max(nums)
+        right = ceil(cbrt(n * max(nums) * 2))  # 答案的上界
         return bisect_left(range(right), True, left, key=check)
 ```
 
@@ -102,7 +103,7 @@ class Solution:
             return n + sum((x - 1) // k for x in nums) <= k * k
 
         left = rt - 1
-        right = mx
+        right = ceil(cbrt(n * mx * 2))  # 答案的上界
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -115,18 +116,19 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int minimumK(int[] nums) {
+        int n = nums.length;
         int mx = 0;
         for (int x : nums) {
             mx = Math.max(mx, x);
         }
 
-        int rt = (int) Math.ceil(Math.sqrt(nums.length)); // 答案的下界
+        int rt = (int) Math.ceil(Math.sqrt(n)); // 答案的下界
         if (mx <= rt) {
             return rt;
         }
 
         int left = rt - 1;
-        int right = mx;
+        int right = (int) Math.ceil(Math.cbrt((long) n * mx * 2)); // 答案的上界
         while (left + 1 < right) {
             int mid = (left + right) / 2;
             if (check(mid, nums)) {
@@ -168,7 +170,7 @@ public:
         };
 
         int left = rt - 1;
-        int right = mx;
+        int right = ceil(cbrt(1LL * n * mx * 2)); // 答案的上界
         while (left + 1 < right) {
             int mid = (left + right) / 2;
             (check(mid) ? right : left) = mid;
@@ -181,8 +183,9 @@ public:
 ```go [sol-Go]
 func minimumK(nums []int) int {
 	n := len(nums)
-	left := int(math.Ceil(math.Sqrt(float64(n)))) // 答案的下界
-	right := slices.Max(nums)
+	mx := slices.Max(nums)
+	left := int(math.Ceil(math.Sqrt(float64(n))))           // 答案的下界
+	right := int(math.Ceil(math.Cbrt(float64(n * mx * 2)))) // 答案的上界
 	ans := left + sort.Search(right-left, func(k int) bool {
 		k += left
 		sum := n
@@ -197,7 +200,7 @@ func minimumK(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log (U - \sqrt n))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(n\log (\sqrt[3] {nU} - \sqrt n))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
