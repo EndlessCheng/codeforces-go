@@ -13,13 +13,13 @@
 子数组的值（乘以 $2$）为
 
 $$
-(s_i - s_j)\cdot (s_i - s_j+1)
+(s_i - s_j)(s_i - s_j+1)
 $$
 
 取最小值，有
 
 $$
-f_{K,i} = \min_{j=0}^{i-1} f_{K-1,j} + (s_i - s_j)\cdot (s_i - s_j+1)
+f_{K,i} = \min_{j=0}^{i-1} f_{K-1,j} + (s_i - s_j)(s_i - s_j+1)
 $$
 
 初始值 $f_{0,0} = 0$，$f_{i,i-1}=\infty$。注意不需要初始化 $K<i-1$ 的状态，因为我们不会访问这些状态。
@@ -34,7 +34,7 @@ $$
 
 **前置知识**：二维计算几何，凸包，Andrew 算法。
 
-转移方程可以变形为
+把转移方程中的括号展开，得
 
 $$
 f_{K,i} = s_i^2+s_i + \min_{j=0}^{i-1} f_{K-1,j} -2s_is_j + s_j^2-s_j
@@ -60,20 +60,18 @@ $$
 
 根据点积的几何意义，我们求的是 $\mathbf{v}_j$ 在 $\mathbf{p}$ 方向上的投影长度，再乘以 $\mathbf{p}$ 的模长 $||\mathbf{p}||$。由于 $||\mathbf{p}||$ 是个定值，所以要最小化投影长度。
 
-考虑 $\mathbf{v}_j$ 的**下凸包**（用 Andrew 算法计算），在凸包内的点，比凸包顶点的投影长度长（注意 $\mathbf{p}$ 在凸包外面）。所以只需考虑凸包顶点。
+考虑 $\mathbf{v}_j$ 的**凸包**（用 Andrew 算法计算），在凸包内的点，比凸包顶点的投影长度长（注意 $\mathbf{p}$ 在凸包外面）。所以只需考虑凸包顶点。由于下凸包的投影长度比上凸包的短，所以只需考虑下凸包。
 
 > 由于 $s_j$ 是单调递增的，求下凸包无需排序。
 
-这样有一个很好的性质：从左到右遍历凸包顶点，$\mathbf{p}\cdot \mathbf{v}_j$ 会先变小再变大（单峰函数）。那么要计算最小值，就类似 [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/)，**二分**首个「上坡」的位置，具体见 [我的题解](https://leetcode.cn/problems/peak-index-in-a-mountain-array/solutions/2984800/er-fen-gen-ju-shang-po-huan-shi-xia-po-p-uoev/)。
+这样有一个很好的性质：从左到右遍历凸包顶点，$\mathbf{p}\cdot \mathbf{v}_j$ 会先变小再变大（单峰函数）。那么要计算最小值，就类似 [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/)，**二分**首个「上坡」的位置，见 [我的题解](https://leetcode.cn/problems/peak-index-in-a-mountain-array/solutions/2984800/er-fen-gen-ju-shang-po-huan-shi-xia-po-p-uoev/)。
 
 实际上不需要二分。由于 $-2s_i$ 是单调递减的，可以用单调队列维护凸包。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
-其他语言稍后补充。
+[本题视频讲解](https://www.bilibili.com/video/BV1mA6tBxEVC/)，欢迎点赞关注~
 
 ```py [sol-Python3]
-# 注：由于代码使用了 Vec 类，跑得比较慢，直接在循环中做 dot det 更快
+# 注：由于把运算封装到了单独的方法，跑得比较慢，直接把计算逻辑写在 DP 中更快
 class Vec:
     __slots__ = 'x', 'y'
 
@@ -99,12 +97,12 @@ class Solution:
 
         for K in range(1, k + 1):
             s = pre[K - 1]
-            q = [Vec(s, f[K - 1] + s * s - s)]
-            for i in range(K, n - (k - K) + 1):
+            q = deque([Vec(s, f[K - 1] + s * s - s)])
+            for i in range(K, n - (k - K) + 1):  # 其他子数组的长度至少是 1
                 s = pre[i]
                 p = Vec(-2 * s, 1)
                 while len(q) > 1 and p.dot(q[0]) >= p.dot(q[1]):
-                    q = q[1:]
+                    q.popleft()
 
                 v = Vec(s, f[i] + s * s - s)
                 f[i] = p.dot(q[0]) + s * s + s
@@ -114,6 +112,140 @@ class Solution:
                 q.append(v)
 
         return f[n] // 2
+```
+
+```java [sol-Java]
+import java.math.BigInteger;
+
+class Solution {
+    private static class Vec {
+        long x;
+        long y;
+
+        Vec(long x, long y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    private Vec sub(Vec a, Vec b) {
+        return new Vec(a.x - b.x, a.y - b.y);
+    }
+
+    private long dot(Vec a, Vec b) {
+        return a.x * b.x + a.y * b.y;
+    }
+
+    // 如果乘法会溢出，用 detCmp
+    private long det(Vec a, Vec b) {
+        return a.x * b.y - a.y * b.x;
+    }
+
+    private int detCmp(Vec a, Vec b) {
+        return BigInteger.valueOf(a.x).multiply(BigInteger.valueOf(b.y))
+                .compareTo(BigInteger.valueOf(a.y).multiply(BigInteger.valueOf(b.x)));
+    }
+
+    public long minPartitionScore(int[] nums, int k) {
+        int n = nums.length;
+        int[] sum = new int[n + 1]; // nums 的前缀和
+        for (int i = 0; i < n; i++) {
+            sum[i + 1] = sum[i] + nums[i];
+        }
+
+        long[] f = new long[n + 1];
+        Arrays.fill(f, Long.MAX_VALUE / 2);
+        f[0] = 0;
+
+        Vec[] q = new Vec[n + 1];
+
+        for (int K = 1; K <= k; K++) {
+            int head = 0;
+            int tail = 0; // 模拟 deque
+
+            long s = sum[K - 1];
+            q[tail++] = new Vec(s, f[K - 1] + s * s - s);
+
+            for (int i = K; i <= n - (k - K); i++) { // 其他子数组的长度至少是 1
+                s = sum[i];
+                Vec p = new Vec(-2 * s, 1);
+                while (tail - head > 1 && dot(p, q[head]) >= dot(p, q[head + 1])) {
+                    head++;
+                }
+
+                Vec v = new Vec(s, f[i] + s * s - s);
+                f[i] = dot(p, q[head]) + s * s + s;
+
+                // 读者可以把 detCmp 改成 det 感受下这个算法的效率
+			    // 目前 det 也能过，可以试试 hack 一下
+                while (tail - head > 1 && detCmp(sub(q[tail - 1], q[tail - 2]), sub(v, q[tail - 1])) <= 0) {
+                    tail--;
+                }
+                q[tail++] = v;
+            }
+        }
+
+        return f[n] / 2;
+    }
+}
+```
+
+```cpp [sol-C++]
+struct vec {
+    long long x, y;
+};
+
+vec sub(vec a, vec b) {
+    return vec{a.x - b.x, a.y - b.y};
+}
+
+long long dot(vec a, vec b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+// 如果乘法会溢出，用 __int128
+__int128 det(vec a, vec b) {
+    return (__int128) a.x * b.y - (__int128) a.y * b.x;
+}
+
+class Solution {
+public:
+    long long minPartitionScore(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<int> sum(n + 1); // nums 的前缀和
+        partial_sum(nums.begin(), nums.end(), sum.begin() + 1);
+
+        vector<long long> f(n + 1, LLONG_MAX / 2);
+        f[0] = 0;
+
+        vector<vec> q(n - k + 2);
+
+        for (int K = 1; K <= k; K++) {
+            int head = 0, tail = 0; // 模拟 deque
+
+            long long s = sum[K - 1];
+            q[tail++] = vec{s, f[K - 1] + s * s - s};
+
+            for (int i = K; i <= n - (k - K); i++) { // 其他子数组的长度至少是 1
+                s = sum[i];
+                vec p = {-2 * s, 1};
+                while (tail - head > 1 && dot(p, q[head]) >= dot(p, q[head + 1])) {
+                    head++;
+                }
+
+                vec v{s, f[i] + s * s - s};
+                f[i] = dot(p, q[head]) + s * s + s;
+
+                while (tail - head > 1 && det(sub(q[tail - 1], q[tail - 2]), sub(v, q[tail - 1])) <= 0) {
+                    tail--;
+                }
+                q[tail++] = v;
+            }
+        }
+
+        return f[n] / 2;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -143,7 +275,7 @@ func minPartitionScore(nums []int, k int) int64 {
 	for K := 1; K <= k; K++ {
 		s := sum[K-1]
 		q := []vec{{s, f[K-1] + s*s - s}}
-		for i := K; i <= n-(k-K); i++ {
+		for i := K; i <= n-(k-K); i++ { // 其他子数组的长度至少是 1
 			s = sum[i]
 			p := vec{-2 * s, 1}
 			for len(q) > 1 && p.dot(q[0]) >= p.dot(q[1]) {
