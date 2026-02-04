@@ -58,6 +58,27 @@ public:
 };
 ```
 
+```c [sol-C]
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
+
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+int minRemoval(int* nums, int numsSize, int k) {
+    qsort(nums, numsSize, sizeof(int), cmp);
+    int max_save = 0;
+    int left = 0;
+    for (int i = 0; i < numsSize; i++) {
+        while (1LL * nums[left] * k < nums[i]) {
+            left++;
+        }
+        max_save = MAX(max_save, i - left + 1);
+    }
+    return numsSize - max_save;
+}
+```
+
 ```go [sol-Go]
 func minRemoval(nums []int, k int) int {
 	slices.Sort(nums)
@@ -69,6 +90,39 @@ func minRemoval(nums []int, k int) int {
 		maxSave = max(maxSave, i-left+1)
 	}
 	return len(nums) - maxSave
+}
+```
+
+```js [sol-JavaScript]
+var minRemoval = function(nums, k) {
+    nums.sort((a, b) => a - b);
+    const n = nums.length;
+    let maxSave = 0;
+    let left = 0;
+    for (let i = 0; i < n; i++) {
+        while (nums[left] * k < nums[i]) {
+            left++;
+        }
+        maxSave = Math.max(maxSave, i - left + 1);
+    }
+    return n - maxSave;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_removal(mut nums: Vec<i32>, k: i32) -> i32 {
+        nums.sort_unstable();
+        let mut max_save = 0;
+        let mut left = 0;
+        for (i, &x) in nums.iter().enumerate() {
+            while (nums[left] as i64) * (k as i64) < x as i64 {
+                left += 1;
+            }
+            max_save = max_save.max(i - left + 1);
+        }
+        (nums.len() - max_save) as _
+    }
 }
 ```
 
@@ -95,7 +149,7 @@ func minRemoval(nums []int, k int) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
