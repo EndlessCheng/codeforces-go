@@ -51,11 +51,8 @@ $$
 下面代码采用开区间二分。使用闭区间或者半闭半开区间也是可以的，喜欢哪种写法就用哪种。
 
 - 开区间左端点初始值：$0$。无法满足题目要求。
-- 开区间左端点初始值（优化）：$\left\lceil\sqrt n\right\rceil - 1$。由于 $\textit{nums}$ 中的元素都是正数，每个数都至少要操作一次，所以 $\text{nonPositive}(\textit{nums}, k) \ge n$，所以 $k$ 必须满足 $k^2\ge n$，即 $k\ge \left\lceil\sqrt n\right\rceil$。减一后，一定无法满足题目要求。
+- 开区间左端点初始值（优化）：$\left\lceil\sqrt n\right\rceil - 1$。由于 $\textit{nums}$ 中的元素都是正数，**每个数都至少要操作一次**，所以 $\text{nonPositive}(\textit{nums}, k) \ge n$，所以 $k$ 必须满足 $k^2\ge n$，即 $k\ge \left\lceil\sqrt n\right\rceil$。减一后，一定无法满足题目要求。
 - 开区间右端点初始值：$M$，其中 $M = \max(\textit{nums})$。此时 $\text{nonPositive}(\textit{nums}, M)=n$。如果 $n \le M^2$，那么满足题目要求。这引出了一个**特殊情况**：如果 $M\le \left\lceil\sqrt n\right\rceil$，那么答案就是理论最小值 $\left\lceil\sqrt n\right\rceil$，此时 $\text{nonPositive}(\textit{nums}, k) \le k^2$ 为 $n\le \left\lceil\sqrt n\right\rceil^2$，一定成立，可以提前返回 $\left\lceil\sqrt n\right\rceil$，无需二分。
-- 开区间右端点初始值（优化）：$\left\lceil\sqrt[3] {2nM}\right\rceil$。最坏情况下，$\textit{nums}$ 中的元素都是 $M$，一共需要操作 $\left\lceil\dfrac{M}{k}\right\rceil n$ 次。当 $k\le M$ 时，有 $\left\lceil\dfrac{M}{k}\right\rceil n\le \dfrac{2M}{k}n$，所以当 $\dfrac{2M}{k}n\le k^2$，即 $k \ge \left\lceil\sqrt[3] {2nM}\right\rceil$ 时，一定满足题目要求。
-
-> **注**：对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
 
 ### 2)
 
@@ -75,7 +72,7 @@ $$
 
 这样做可以避免浮点运算，避免浮点数的舍入误差导致计算错误。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -86,7 +83,7 @@ class Solution:
             return n + sum((x - 1) // k for x in nums) <= k * k
 
         left = ceil(sqrt(n))  # 答案的下界
-        right = ceil(cbrt(n * max(nums) * 2))  # 答案的上界
+        right = max(nums)
         return bisect_left(range(right), True, left, key=check)
 ```
 
@@ -94,23 +91,19 @@ class Solution:
 class Solution:
     def minimumK(self, nums: List[int]) -> int:
         n = len(nums)
-        mx = max(nums)
-        rt = ceil(sqrt(n))  # 答案的下界
-        if mx <= rt:
-            return rt
 
         def check(k: int) -> bool:
             return n + sum((x - 1) // k for x in nums) <= k * k
 
-        left = rt - 1
-        right = ceil(cbrt(n * mx * 2))  # 答案的上界
+        left = ceil(sqrt(n)) - 1
+        right = max(nums)
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
                 right = mid
             else:
                 left = mid
-        return right
+        return left + 1
 ```
 
 ```java [sol-Java]
@@ -122,13 +115,8 @@ class Solution {
             mx = Math.max(mx, x);
         }
 
-        int rt = (int) Math.ceil(Math.sqrt(n)); // 答案的下界
-        if (mx <= rt) {
-            return rt;
-        }
-
-        int left = rt - 1;
-        int right = (int) Math.ceil(Math.cbrt((long) n * mx * 2)); // 答案的上界
+        int left = (int) Math.ceil(Math.sqrt(n)) - 1;
+        int right = mx;
         while (left + 1 < right) {
             int mid = (left + right) / 2;
             if (check(mid, nums)) {
@@ -137,7 +125,7 @@ class Solution {
                 left = mid;
             }
         }
-        return right;
+        return left + 1;
     }
 
     private boolean check(int k, int[] nums) {
@@ -155,11 +143,6 @@ class Solution {
 public:
     int minimumK(vector<int>& nums) {
         int n = nums.size();
-        int mx = ranges::max(nums);
-        int rt = ceil(sqrt(n)); // 答案的下界
-        if (mx <= rt) {
-            return rt;
-        }
 
         auto check = [&](int k) -> bool {
             long long sum = n;
@@ -169,13 +152,13 @@ public:
             return sum <= 1LL * k * k;
         };
 
-        int left = rt - 1;
-        int right = ceil(cbrt(1LL * n * mx * 2)); // 答案的上界
+        int left = ceil(sqrt(n)) - 1;
+        int right = ranges::max(nums);
         while (left + 1 < right) {
             int mid = (left + right) / 2;
             (check(mid) ? right : left) = mid;
         }
-        return right;
+        return left + 1;
     }
 };
 ```
@@ -183,9 +166,8 @@ public:
 ```go [sol-Go]
 func minimumK(nums []int) int {
 	n := len(nums)
-	mx := slices.Max(nums)
-	left := int(math.Ceil(math.Sqrt(float64(n))))           // 答案的下界
-	right := int(math.Ceil(math.Cbrt(float64(n * mx * 2)))) // 答案的上界
+	left := int(math.Ceil(math.Sqrt(float64(n)))) // 答案的下界
+	right := slices.Max(nums)
 	ans := left + sort.Search(right-left, func(k int) bool {
 		k += left
 		sum := n
@@ -200,7 +182,153 @@ func minimumK(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log (\sqrt[3] {nU} - \sqrt n))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(n\log (U - \sqrt n))$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 优化
+
+由于
+
+$$
+\sum_{i=0}^{n-1}\dfrac{\textit{nums}[i]}{k} \le \sum_{i=0}^{n-1}\left\lceil\dfrac{\textit{nums}[i]}{k}\right\rceil \le k^2
+$$
+
+解得
+
+$$
+k\ge \sqrt[3] S
+$$
+
+其中 $S = \sum\limits_{i=0}^{n-1}\textit{nums}[i]$。
+
+所以答案的下界，可以改进为
+
+$$
+\textit{low} = \max\left(\left\lceil \sqrt n \right\rceil, \left\lceil \sqrt[3] S \right\rceil\right)
+$$
+
+设
+
+$$
+\textit{high} = \left\lceil \sqrt {\text{nonPositive}(\textit{nums}, \textit{low})} \right\rceil
+$$
+
+如果 $\textit{high} \ge \textit{low}$，根据 $\text{nonPositive}$ 的单调性，我们有
+
+$$
+\text{nonPositive}(\textit{nums}, \textit{high}) \le \text{nonPositive}(\textit{nums}, \textit{low}) \le \textit{high}^2
+$$
+
+所以 $\textit{high}$ 是答案的上界。
+
+> 如果 $\textit{high} < \textit{low}$ 呢？此时 $\sqrt {\text{nonPositive}(\textit{nums}, \textit{low})} \le  \left\lceil \sqrt {\text{nonPositive}(\textit{nums}, \textit{low})} \right\rceil < \textit{low}$，得 $\text{nonPositive}(\textit{nums}, \textit{low}) < \textit{low}^2$，所以答案就是 $\textit{low}$。
+
+```py [sol-Python3]
+class Solution:
+    def minimumK(self, nums: List[int]) -> int:
+        n = len(nums)
+
+        def non_positive(k: int) -> int:
+            return n + sum((x - 1) // k for x in nums)
+
+        left = max(ceil(sqrt(n)), ceil(cbrt(sum(nums))))  # 答案的下界
+        right = ceil(sqrt(non_positive(left)))  # 答案的上界
+        return bisect_left(range(right), True, left, key=lambda k: non_positive(k) <= k * k)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumK(int[] nums) {
+        int n = nums.length;
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        long total = 0;
+        for (int x : nums) {
+            total += x;
+        }
+
+        int left = Math.max((int) Math.ceil(Math.sqrt(n)), (int) Math.ceil(Math.cbrt(total))) - 1;
+        int right = (int) Math.ceil(Math.sqrt(nonPositive(nums, left + 1)));
+        while (left + 1 < right) {
+            int k = (left + right) / 2;
+            if (nonPositive(nums, k) <= (long) k * k) {
+                right = k;
+            } else {
+                left = k;
+            }
+        }
+        return left + 1;
+    }
+
+    private long nonPositive(int[] nums, int k) {
+        long sum = nums.length;
+        for (int x : nums) {
+            sum += (x - 1) / k;
+        }
+        return sum;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumK(vector<int>& nums) {
+        int n = nums.size();
+        int mx = ranges::max(nums);
+        long long total = reduce(nums.begin(), nums.end(), 0LL);
+
+        auto non_positive = [&](int k) -> long long {
+            long long sum = n;
+            for (int x : nums) {
+                sum += (x - 1) / k;
+            }
+            return sum;
+        };
+
+        int left = max(ceil(sqrt(n)), ceil(cbrt(total))) - 1;
+        int right = ceil(sqrt(non_positive(left + 1)));
+        while (left + 1 < right) {
+            int k = (left + right) / 2;
+            (non_positive(k) <= 1LL * k * k ? right : left) = k;
+        }
+        return left + 1;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumK(nums []int) int {
+	n := len(nums)
+	nonPositive := func(k int) int {
+		sum := n
+		for _, x := range nums {
+			sum += (x - 1) / k
+		}
+		return sum
+	}
+
+	sum := 0
+	for _, x := range nums {
+		sum += x
+	}
+
+	left := max(int(math.Ceil(math.Sqrt(float64(n)))), int(math.Ceil(math.Cbrt(float64(sum))))) // 答案的下界
+	right := int(math.Ceil(math.Sqrt(float64(nonPositive(left)))))                              // 答案的上界
+	ans := left + sort.Search(right-left, func(k int) bool {
+		k += left
+		return nonPositive(k) <= k*k
+	})
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log (n/\sqrt[3] S))$，其中 $n$ 是 $\textit{nums}$ 的长度，$S$ 是 $\textit{nums}$ 的元素和。由于 $\sum\limits_{i=0}^{n-1}\left\lceil\dfrac{\textit{nums}[i]}{k}\right\rceil < \sum\limits_{i=0}^{n-1}\left(\dfrac{\textit{nums}[i]}{k}+1\right) = \dfrac{S}{k} + n$，所以当 $\textit{low} = \sqrt[3] S$ 时，$\textit{high} = \sqrt{\dfrac{S}{\sqrt[3] S} + n} = \sqrt{S^{2/3} + n}$。根据泰勒展开 $\sqrt{x^2+y} - x\approx \dfrac{y}{2x}$，得到 $\textit{high} - \textit{low} \approx \dfrac{n}{2\sqrt[3] S}$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
