@@ -14,26 +14,27 @@ func cf1784D(in io.Reader, _w io.Writer) {
 	var n int
 	Fscan(in, &n)
 	m := 1 << n
-	F := make([]int, m+2)
+	F := make([]int, m+1)
 	F[0] = 1
 	for i := 1; i <= m; i++ {
 		F[i] = F[i-1] * i % mod
 	}
 
-	f := make([][]int, n+1)
-	for i := range f {
-		f[i] = make([]int, m+1)
-	}
-	f[0][1] = m
+	f := make([]int, m+1)
+	f[1] = m
 	for i := 1; i <= n; i++ {
 		mx := m - 1<<(n-i) + 1
+		pre := f[i]
+		f[i] = 0
 		for j := i + 1; j <= mx; j++ {
-			f[i][j] = (f[i-1][j-1]<<(n-i) + f[i][j-1]*(mx-j+1)) % mod
+			tmp := f[j]
+			f[j] = (pre<<(n-i) + f[j-1]*(mx-j+1)) % mod
+			pre = tmp
 		}
 	}
 
 	for i := 1; i <= m; i++ {
-		Fprintln(out, f[n][i]*F[m-i]%mod)
+		Fprintln(out, f[i]*F[m-i]%mod)
 	}
 }
 
