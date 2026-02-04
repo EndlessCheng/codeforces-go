@@ -68,7 +68,11 @@ $$
 
 实际上不需要二分。由于 $-2s_i$ 是单调递减的，可以用单调队列维护凸包。
 
-[本题视频讲解](https://www.bilibili.com/video/BV1mA6tBxEVC/)，欢迎点赞关注~
+![lc3826-c.png](https://pic.leetcode.cn/1770167283-DIMMWk-lc3826-c.png){:width=500px}
+
+如上图所示，设向量 $\mathbf{p}$ 的垂线与凸包的交点为 $A$，那么 $\overrightarrow{OA}$ 到 $\mathbf{p}$ 的投影长度最短。
+
+当向量 $\mathbf{p}$ 向左旋转时，交点 $A$ 在凸包上会向右移动。
 
 ```py [sol-Python3]
 # 注：由于把运算封装到了单独的方法，跑得比较慢，直接把计算逻辑写在 DP 中更快
