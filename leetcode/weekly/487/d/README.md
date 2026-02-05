@@ -294,7 +294,7 @@ func longestAlternating(nums []int) int {
 
 递归边界：$i=0$ 时返回 $1$。
 
-递归入口：$\textit{dfs}(i,\texttt{true},\texttt{false})$ 和 $\textit{dfs}(i,\texttt{true},\texttt{true})$，所以情况取最大值。
+递归入口：$\textit{dfs}(i,\texttt{true},\texttt{false})$ 和 $\textit{dfs}(i,\texttt{true},\texttt{true})$，所有情况取最大值。
 
 ```py
 class Solution:
