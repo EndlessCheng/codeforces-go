@@ -45,8 +45,11 @@ https://codeforces.com/problemset/problem/2053/C 1500 做到 O(1) 时间
 https://codeforces.com/problemset/problem/1991/B 1100
 https://codeforces.com/problemset/problem/1420/B 1200 XOR
 https://codeforces.com/problemset/problem/1775/B 1300
+https://codeforces.com/problemset/problem/2179/D 1300 构造排列，使 AND 前缀的 popcount 之和最大
 https://codeforces.com/problemset/problem/1973/B 1300
+https://codeforces.com/problemset/problem/1988/C 1300 严格递增序列，满足 a[i] | a[i+1] = n
 https://codeforces.com/problemset/problem/2020/C 1400
+https://codeforces.com/problemset/problem/2035/C 1400 排列 &|&|&|... 结果最大
 https://codeforces.com/problemset/problem/1299/A 1500
 https://codeforces.com/problemset/problem/2146/D1 1500
 https://codeforces.com/problemset/problem/1775/C 1600 连续数字 AND 等于目标值
@@ -62,8 +65,12 @@ https://cses.fi/problemset/task/3405 滑动窗口 OR
 异或（XOR）的性质
 另见 strings.go 中的 trie.maxXor
 popcount(x XOR y) % 2 = (popcount(x) + popcount(y)) % 2
+a - b <= a XOR b <= a + b
 https://atcoder.jp/contests/arc135/tasks/arc135_c 1512
+https://codeforces.com/problemset/problem/1682/B 1100 交换 排序
+https://codeforces.com/problemset/problem/2162/C 1100
 https://codeforces.com/problemset/problem/2039/C1 1200
+https://codeforces.com/problemset/problem/2108/B 1300 构造 异或和为 x
 https://codeforces.com/problemset/problem/2171/C2 1400
 https://codeforces.com/problemset/problem/2057/C 1500 构造 可以做到 O(1)
 https://codeforces.com/problemset/problem/1955/F 1800
@@ -72,6 +79,7 @@ https://codeforces.com/problemset/problem/2039/C2 1800
 https://codeforces.com/problemset/problem/1895/D 1900
 https://codeforces.com/problemset/problem/1991/D 1900
 https://codeforces.com/problemset/problem/2036/F 1900
+https://codeforces.com/problemset/problem/2180/C 1900 构造 XOR(a) = n 且 sum(a) 尽量大
 https://codeforces.com/problemset/problem/1088/D 2000 交互
 https://codeforces.com/problemset/problem/703/D 2100
 - 区间元素异或和 = 区间中出现次数为【奇数】的元素异或和
@@ -147,7 +155,10 @@ https://ac.nowcoder.com/acm/contest/82957/F 牛客小白月赛 94
 
 试填法
 https://codeforces.com/problemset/problem/1918/C 1400
+https://codeforces.com/problemset/problem/1903/D1 1700 这题抄袭 arc146_b 题
 https://codeforces.com/problemset/problem/1416/C 2000
+https://atcoder.jp/contests/abc408/tasks/abc408_e 1222
+https://atcoder.jp/contests/arc146/tasks/arc146_b
 
 恒等式
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
@@ -416,7 +427,8 @@ func _(x int, abs func(int) int) {
 	// 讲解 https://leetcode.cn/problems/bitwise-and-of-numbers-range/solutions/538550/golang-yi-xing-suan-fa-by-endlesscheng-iw6y/
 	// LC201 https://leetcode.cn/problems/bitwise-and-of-numbers-range/
 	lcp := func(x, y int) int {
-		return x &^ (1<<bits.Len(uint(x^y)) - 1)
+		w := bits.Len(uint(x ^ y))
+		return x &^ (1<<w - 1)
 	}
 	// 这等价于 [l, r] 的区间 AND
 	rangeAND := lcp

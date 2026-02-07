@@ -62,6 +62,7 @@ https://codeforces.com/problemset/problem/1879/D 1700 子数组长度
 https://codeforces.com/problemset/problem/2065/G 1700 质因子 分类讨论
 https://codeforces.com/problemset/problem/1800/F 1900 异或
 https://codeforces.com/problemset/problem/1592/E 2400
+https://codeforces.com/problemset/problem/1835/C 2600 四数异或为 0    值域 meet in the middle
 https://atcoder.jp/contests/abc353/tasks/abc353_d 844=CF1349
 https://atcoder.jp/contests/abc342/tasks/abc342_d 944=CF1425
 
@@ -115,7 +116,7 @@ https://codeforces.com/problemset/problem/1296/C
 前后缀分解
 部分题目也可以用状态机 DP 解决
 - [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
-  注：带修改的接雨水 https://codeforces.com/gym/104821/problem/M
+  - 带修接雨水 https://codeforces.com/gym/104821/problem/M
   - https://www.zhihu.com/question/627281278/answer/3280684055
   - 全排列接雨水 https://atcoder.jp/contests/tenka1-2015-final/tasks/tenka1_2015_final_e
 - [926. 将字符串翻转到单调递增](https://leetcode.cn/problems/flip-string-to-monotone-increasing/)
@@ -235,6 +236,7 @@ https://codeforces.com/problemset/problem/799/C 1800 也可以二分查找
 
 双序列双指针
 https://codeforces.com/contest/489/problem/B 1200
+https://codeforces.com/problemset/problem/989/D 2500 黑盒装着两朵云，风吹着盒子移动
 https://atcoder.jp/contests/abc312/tasks/abc312_f
 另见 strings.go 中的 isSubseq
 
@@ -417,6 +419,7 @@ https://codeforces.com/problemset/problem/2000/E 1400
 https://codeforces.com/problemset/problem/276/C 1500
 https://codeforces.com/problemset/problem/1165/E 1600
 https://codeforces.com/problemset/problem/1612/G 2500
+https://codeforces.com/problemset/problem/1380/G 2600 放 k 个宝箱怪
 
 相邻不同
 每次取两个数减一，最后剩下的数最小 / 操作次数最多
@@ -451,6 +454,7 @@ https://atcoder.jp/contests/dp/tasks/dp_x 0-1 背包
 https://ac.nowcoder.com/acm/contest/65259/C 相邻两数之差的绝对值为 1
 
 非邻项交换（最小代价排序/字典序最小）
+https://codeforces.com/problemset/problem/1682/B 1100 AND
 https://codeforces.com/problemset/problem/1174/B 1200
 https://codeforces.com/problemset/problem/252/B 1800
 https://codeforces.com/problemset/problem/1768/D 1800
@@ -470,6 +474,7 @@ LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
 
 思维：观察、结论
 https://codeforces.com/problemset/problem/1811/C 1100
+https://codeforces.com/problemset/problem/1997/B 1100
 https://codeforces.com/problemset/problem/1822/D 1200
 https://codeforces.com/problemset/problem/1954/B 1200
 https://codeforces.com/problemset/problem/1077/C 1300
@@ -478,6 +483,7 @@ https://codeforces.com/problemset/problem/1844/C 1300 假设答案是某些数�
 https://codeforces.com/problemset/problem/1765/K 1500
 https://codeforces.com/problemset/problem/1990/C 1500
 https://codeforces.com/problemset/problem/1608/C 1700
+https://codeforces.com/problemset/problem/1930/C 1700
 https://codeforces.com/problemset/problem/2124/D 1700
 https://codeforces.com/problemset/problem/911/D  1800 逆序对
 https://codeforces.com/problemset/problem/1442/A 1800
@@ -496,6 +502,7 @@ LC782 https://leetcode.cn/problems/transform-to-chessboard/
 
 思维：脑筋急转弯
 https://codeforces.com/problemset/problem/2049/A 800
+https://codeforces.com/problemset/problem/1333/A 1000
 https://codeforces.com/problemset/problem/1632/B 1000 位运算 XOR
 https://codeforces.com/problemset/problem/1637/B 1100
 https://codeforces.com/problemset/problem/1708/B 1100
@@ -513,7 +520,9 @@ https://codeforces.com/problemset/problem/500/C  1600
 https://codeforces.com/problemset/problem/601/A  1600
 https://codeforces.com/problemset/problem/1983/D 1700 操作多次：交换 a 中两个相距 d 的元素，b 中两个相距 d 的元素，使得 a = b
 https://codeforces.com/problemset/problem/2065/F 1700
+https://codeforces.com/problemset/problem/2112/D 1700 树 边定向
 https://codeforces.com/problemset/problem/911/D  1800
+https://codeforces.com/problemset/problem/1991/D 1900 图染色 x^y 是质数则有 x-y 边
 https://codeforces.com/problemset/problem/1763/C 2000
 https://codeforces.com/problemset/problem/1443/E 2400 唬人
 https://codeforces.com/problemset/problem/825/G  2500 树
@@ -548,6 +557,7 @@ https://codeforces.com/contest/1977/problem/C
 构造 constructive algorithms
 https://codeforces.com/problemset/problem/1927/B   900
 https://codeforces.com/problemset/problem/1174/A  1000
+https://codeforces.com/problemset/problem/1333/A  1000 脑筋急转弯
 https://codeforces.com/problemset/problem/1772/C  1000
 https://codeforces.com/problemset/problem/1998/B  1000
 https://codeforces.com/problemset/problem/2037/C  1000
@@ -569,8 +579,11 @@ https://codeforces.com/problemset/problem/1717/C  1300
 https://codeforces.com/problemset/problem/1788/C  1300
 https://codeforces.com/problemset/problem/1815/A  1300
 https://codeforces.com/problemset/problem/1978/C  1300
+https://codeforces.com/problemset/problem/1988/C  1300 严格递增序列，满足 a[i] | a[i+1] = n
 https://codeforces.com/problemset/problem/2031/C  1300 数学
+https://codeforces.com/problemset/problem/2108/B  1300 构造 异或和为 x
 https://codeforces.com/problemset/problem/2146/C  1300
+https://codeforces.com/problemset/problem/2179/D  1300 构造排列，使 AND 前缀的 popcount 之和最大
 https://codeforces.com/problemset/problem/803/A   1400
 https://codeforces.com/problemset/problem/1102/B  1400
 https://codeforces.com/problemset/problem/1838/C  1400
@@ -579,6 +592,7 @@ https://codeforces.com/problemset/problem/1863/D  1400 棋盘+多米诺染色
 https://codeforces.com/problemset/problem/1896/C  1400
 https://codeforces.com/problemset/problem/1974/D  1400
 https://codeforces.com/problemset/problem/2034/C  1400 网格图
+https://codeforces.com/problemset/problem/2035/C  1400 排列 &|&|&|... 结果最大
 https://codeforces.com/problemset/problem/2120/C  1400
 https://codeforces.com/problemset/problem/2126/E  1400 前后缀 GCD
 https://codeforces.com/problemset/problem/1630/A  1500
@@ -603,6 +617,7 @@ https://codeforces.com/problemset/problem/2071/C  1700 树 排列
 https://codeforces.com/problemset/problem/2112/D  1700 树 定向
 https://codeforces.com/problemset/problem/142/B   1800 棋盘放最多的马
 https://codeforces.com/problemset/problem/847/C   1800
+https://codeforces.com/problemset/problem/989/C   1800 网格图 每种字符构成的联通块个数恰好等于 a,b,c,d
 https://codeforces.com/problemset/problem/1156/B  1800 相邻字母在字母表中不相邻
 https://codeforces.com/problemset/problem/1267/L  1800
 https://codeforces.com/problemset/problem/1304/D  1800 最短/最长 LIS
@@ -618,10 +633,11 @@ https://codeforces.com/problemset/problem/1659/D  1900
 https://codeforces.com/problemset/problem/1823/D  1900
 https://codeforces.com/problemset/problem/1854/A2 1900 分类讨论
 https://codeforces.com/problemset/problem/2040/D  1900 树 质数
+https://codeforces.com/problemset/problem/2180/C  1900 构造 XOR(a) = n 且 sum(a) 尽量大
 https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
 https://codeforces.com/problemset/problem/2146/D2 2000 重排使得 sum(p[i] | q[i]) 最大
-https://codeforces.com/problemset/problem/2171/E  2000
+https://codeforces.com/problemset/problem/2171/E  2000 排列 相邻三数两两互质的情况 <= 6
 https://codeforces.com/problemset/problem/1787/E  2100
 https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
 https://codeforces.com/problemset/problem/1550/D  2300 组合数学
@@ -715,6 +731,7 @@ https://codeforces.com/problemset/problem/1468/J  1800 MST
 https://codeforces.com/problemset/problem/1833/G  1800 样例给得挺良心的
 https://codeforces.com/problemset/problem/1955/F  1800
 https://codeforces.com/problemset/problem/2117/F  1800
+https://codeforces.com/problemset/problem/2187/B  1800 构造不相交的 p 和 q，使得 |p-x| + |q-y| 最小
 https://codeforces.com/problemset/problem/796/C   1900
 https://codeforces.com/problemset/problem/1095/E  1900
 https://codeforces.com/problemset/problem/1714/F  1900 锻炼代码实现技巧的好题
@@ -728,6 +745,7 @@ https://codeforces.com/problemset/problem/1811/F  2100
 https://codeforces.com/problemset/problem/1798/E  2300
 https://codeforces.com/problemset/problem/209/C   2400
 https://codeforces.com/problemset/problem/416/D   2400 推荐
+https://codeforces.com/problemset/problem/908/F   2400 红绿蓝连边，使得删除所有红或者所有蓝后，仍然连通
 https://codeforces.com/problemset/problem/1594/F  2400
 https://codeforces.com/problemset/problem/1736/C2 2400
 https://codeforces.com/problemset/problem/1761/E  2400
@@ -750,6 +768,7 @@ https://leetcode.cn/problems/maximize-the-number-of-partitions-after-operations/
 https://leetcode.cn/problems/count-the-number-of-houses-at-a-certain-distance-ii/
 
 大量分类讨论
+https://codeforces.com/problemset/problem/2108/B 1300 构造 异或和为 x
 https://codeforces.com/problemset/problem/2045/A 1700 做到 O(n)
 https://codeforces.com/problemset/problem/2065/G 1700
 https://codeforces.com/problemset/problem/796/C 1900
@@ -937,6 +956,7 @@ https://codeforces.com/problemset/problem/1638/D 2000
 https://codeforces.com/problemset/problem/571/A 2100
 https://codeforces.com/problemset/problem/1919/D 2100
 https://codeforces.com/problemset/problem/369/E 2200
+https://codeforces.com/problemset/problem/1407/E 2500 节点涂色 堵路 最大化最短路长度
 https://codeforces.com/problemset/problem/1677/D 2500
 https://codeforces.com/problemset/problem/505/E 2900
 
