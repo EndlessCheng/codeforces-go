@@ -69,7 +69,7 @@ func mergeAdjacent(nums []int) []int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然我们写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此循环次数**之和**是 $\mathcal{O}(n)$，所以时间复杂度是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。部分语言可以直接把 $\textit{nums}$ 当作栈，从而做到 $\mathcal{O}(1)$ 空间。
 
 ## 专题训练
