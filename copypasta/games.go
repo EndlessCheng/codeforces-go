@@ -30,6 +30,7 @@ https://atcoder.jp/contests/dp/tasks/dp_k
 https://codeforces.com/problemset/problem/197/A 1600 入门
 https://codeforces.com/problemset/problem/1033/C 1600 三定理的模板题
 https://codeforces.com/problemset/problem/1194/D 1700 1-2-K Game     我的题解 https://www.acwing.com/file_system/file/content/whole/index/content/3179098/
+https://codeforces.com/problemset/problem/1728/D 1800 字符串两端取字母，字典序小的胜
 https://codeforces.com/problemset/problem/78/C 2000 分类讨论
 https://codeforces.com/problemset/problem/936/B 2100 一道不错的有向图博弈
 https://codeforces.com/problemset/problem/812/E 2300 阶梯博弈
@@ -110,6 +111,11 @@ func _() {
 				Println(i)
 			}
 		}
+	}
+	
+	{
+		// 打印方案
+		
 	}
 
 	{
