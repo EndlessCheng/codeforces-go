@@ -14,14 +14,14 @@ o:
 		Fscan(in, &s)
 		n := len(s)
 		for i := range n / 2 {
-			if s[i] == s[n-1-i] {
-				continue
-			}
-			for j := i; j < n-i; j += 2 {
-				if s[j] != s[j+1] {
-					Fprintln(out, "Alice")
-					continue o
+			if s[i] != s[n-1-i] {
+				for j := i; j < n-i; j += 2 {
+					if s[j] != s[j+1] {
+						Fprintln(out, "Alice")
+						continue o
+					}
 				}
+				break
 			}
 		}
 		Fprintln(out, "Draw")
