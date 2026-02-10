@@ -2,6 +2,9 @@ package copypasta
 
 import "math/bits"
 
+// todo 目前只支持无符号整数，如果要支持有符号，可以单独存一个 sign，其余用无符号
+//      但忙碌了一天的灵师傅觉得还是 big.Int 简单
+
 // Add: (aHi,aLo) + (bHi,bLo) -> (hi, lo)
 func Add(aHi, aLo, bHi, bLo uint64) (hi, lo uint64) {
 	lo, carry := bits.Add64(aLo, bLo, 0)
