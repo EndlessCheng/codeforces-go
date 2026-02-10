@@ -6,6 +6,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1idFoz3Efi/)，欢迎点赞关注~
 
+## 写法一：先入栈，再出栈
+
 ```py [sol-Python3]
 class Solution:
     def mergeAdjacent(self, nums: List[int]) -> List[int]:
@@ -61,6 +63,68 @@ func mergeAdjacent(nums []int) []int64 {
 			st = st[:len(st)-1]
 			st[len(st)-1] *= 2
 		}
+	}
+	// 力扣的 int 就是 int64，直接 O(1) 转成 []int64
+	return *(*[]int64)(unsafe.Pointer(&st))
+}
+```
+
+## 写法二：先出栈，再入栈
+
+```py [sol-Python3]
+class Solution:
+    def mergeAdjacent(self, nums: List[int]) -> List[int]:
+        st = []
+        for x in nums:
+            while st and st[-1] == x:
+                st.pop()
+                x *= 2
+            st.append(x)
+        return st
+```
+
+```java [sol-Java]
+class Solution {
+    public List<Long> mergeAdjacent(int[] nums) {
+        List<Long> st = new ArrayList<>();
+        for (long x : nums) {
+            while (!st.isEmpty() && st.getLast() == x) {
+                st.removeLast();
+                x *= 2;
+            }
+            st.add(x);
+        }
+        return st;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<long long> mergeAdjacent(vector<int>& nums) {
+        vector<long long> st;
+        for (long long x : nums) {
+            while (!st.empty() && st.back() == x) {
+                st.pop_back();
+                x *= 2;
+            }
+            st.push_back(x);
+        }
+        return st;
+    }
+};
+```
+
+```go [sol-Go]
+func mergeAdjacent(nums []int) []int64 {
+	st := nums[:0] // 原地
+	for _, x := range nums {
+		for len(st) > 0 && st[len(st)-1] == x {
+			st = st[:len(st)-1]
+			x *= 2
+		}
+		st = append(st, x)
 	}
 	// 力扣的 int 就是 int64，直接 O(1) 转成 []int64
 	return *(*[]int64)(unsafe.Pointer(&st))
