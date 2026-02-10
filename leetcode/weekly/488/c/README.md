@@ -40,10 +40,11 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long countSubarrays(int[] nums, long k) {
-        Deque<Integer> minQ = new ArrayDeque<>();
+        Deque<Integer> minQ = new ArrayDeque<>(); // 更快的写法见【Java 数组】
         Deque<Integer> maxQ = new ArrayDeque<>();
         long ans = 0;
         int left = 0;
+
         for (int right = 0; right < nums.length; right++) {
             // 1. 入：元素进入窗口
             int x = nums[right];
@@ -72,6 +73,49 @@ class Solution {
             // 3. 更新答案
             ans += right - left + 1;
         }
+
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long countSubarrays(int[] nums, long k) {
+        int n = nums.length;
+        int[] minQ = new int[n];
+        int[] maxQ = new int[n];
+        int minHead = 0, minTail = -1;
+        int maxHead = 0, maxTail = -1;
+        long ans = 0;
+        int left = 0;
+
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+
+            while (minHead <= minTail && x <= nums[minQ[minTail]]) {
+                minTail--; // 右边出队
+            }
+            minQ[++minTail] = i; // 右边入队
+
+            while (maxHead <= maxTail && x >= nums[maxQ[maxTail]]) {
+                maxTail--; // 右边出队
+            }
+            maxQ[++maxTail] = i; // 右边入队
+
+            while ((long) (nums[maxQ[maxHead]] - nums[minQ[minHead]]) * (i - left + 1) > k) {
+                left++;
+                if (minQ[minHead] < left) { // 队首不在窗口中
+                    minHead++; // 左边出队
+                }
+                if (maxQ[maxHead] < left) { // 队首不在窗口中
+                    maxHead++; // 左边出队
+                }
+            }
+
+            ans += i - left + 1;
+        }
+
         return ans;
     }
 }
