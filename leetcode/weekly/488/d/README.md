@@ -176,6 +176,8 @@ func maxScore(nums1, nums2 []int, k int) int64 {
 - 时间复杂度：$\mathcal{O}(knm)$，其中 $n$ 是 $\textit{nums}_1$ 的长度，$m$ 是 $\textit{nums}_2$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(knm)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(knm)$。
 - 空间复杂度：$\mathcal{O}(knm)$。保存多少状态，就需要多少空间。
 
+**注**：类似「恰好型划分 DP」，我们其实只会访问 $\mathcal{O}(k(n-k)(m-k))$ 个状态，如果不考虑初始化 $\textit{memo}$ 数组的时间，实际时间复杂度为 $\mathcal{O}(k(n-k)(m-k))$。见写法二。
+
 ## 写法二：递推
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
@@ -201,8 +203,8 @@ class Solution:
         f = [[[-inf] * (m + 1) for _ in range(n + 1)] for _ in range(K + 1)]
         f[0] = [[0] * (m + 1) for _ in range(n + 1)]
         for k in range(1, K + 1):
-            for i in range(k - 1, n):
-                for j in range(k - 1, m):
+            for i in range(k - 1, n - (K - k)):  # 后面还要选 K-k 个下标对
+                for j in range(k - 1, m - (K - k)):
                     f[k][i + 1][j + 1] = max(f[k][i][j + 1], f[k][i + 1][j], f[k - 1][i][j] + nums1[i] * nums2[j])
         return f[K][n][m]
 ```
@@ -219,8 +221,8 @@ class Solution {
             }
         }
         for (int k = 1; k <= K; k++) {
-            for (int i = k - 1; i < n; i++) {
-                for (int j = k - 1; j < m; j++) {
+            for (int i = k - 1; i < n - (K - k); i++) { // 后面还要选 K-k 个下标对
+                for (int j = k - 1; j < m - (K - k); j++) {
                     f[k][i + 1][j + 1] = Math.max(Math.max(f[k][i][j + 1], f[k][i + 1][j]),
                             f[k - 1][i][j] + (long) nums1[i] * nums2[j]);
                 }
@@ -241,8 +243,8 @@ public:
             ranges::fill(row, 0);
         }
         for (int k = 1; k <= K; k++) {
-            for (int i = k - 1; i < n; i++) {
-                for (int j = k - 1; j < m; j++) {
+            for (int i = k - 1; i < n - (K - k); i++) { // 后面还要选 K-k 个下标对
+                for (int j = k - 1; j < m - (K - k); j++) {
                     f[k][i + 1][j + 1] = max(max(f[k][i][j + 1], f[k][i + 1][j]), 
                                              f[k - 1][i][j] + 1LL * nums1[i] * nums2[j]);
                 }
@@ -269,8 +271,8 @@ func maxScore(nums1, nums2 []int, K int) int64 {
 		}
 	}
 	for k := 1; k <= K; k++ {
-		for i := k - 1; i < n; i++ {
-			for j := k - 1; j < m; j++ {
+		for i := k - 1; i < n-(K-k); i++ { // 后面还要选 K-k 个下标对
+			for j := k - 1; j < m-(K-k); j++ {
 				f[k][i+1][j+1] = max(f[k][i][j+1], f[k][i+1][j], f[k-1][i][j]+nums1[i]*nums2[j])
 			}
 		}
@@ -279,12 +281,102 @@ func maxScore(nums1, nums2 []int, K int) int64 {
 }
 ```
 
+**空间优化（滚动数组）**：
+
+```py [sol-Python3]
+class Solution:
+    def maxScore(self, nums1: List[int], nums2: List[int], K: int) -> int:
+        n, m = len(nums1), len(nums2)
+        f = [[0] * (m + 1) for _ in range(n + 1)]
+        for k in range(1, K + 1):
+            nf = [[-inf] * (m + 1) for _ in range(n + 1)]
+            for i in range(k - 1, n - (K - k)):  # 后面还要选 K-k 个下标对
+                for j in range(k - 1, m - (K - k)):
+                    nf[i + 1][j + 1] = max(nf[i][j + 1], nf[i + 1][j], f[i][j] + nums1[i] * nums2[j])
+            f = nf
+        return f[n][m]
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxScore(int[] nums1, int[] nums2, int K) {
+        int n = nums1.length;
+        int m = nums2.length;
+        long[][] f = new long[n + 1][m + 1];
+        long[][] g = new long[n + 1][m + 1];
+        for (int k = 1; k <= K; k++) {
+            for (long[] row : g) {
+                Arrays.fill(row, Long.MIN_VALUE);
+            }
+            for (int i = k - 1; i < n - (K - k); i++) { // 后面还要选 K-k 个下标对
+                for (int j = k - 1; j < m - (K - k); j++) {
+                    g[i + 1][j + 1] = Math.max(Math.max(g[i][j + 1], g[i + 1][j]),
+                            f[i][j] + (long) nums1[i] * nums2[j]);
+                }
+            }
+            long[][] tmp = f;
+            f = g;
+            g = tmp;
+        }
+        return f[n][m];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxScore(vector<int>& nums1, vector<int>& nums2, int K) {
+        int n = nums1.size(), m = nums2.size();
+        vector f(n + 1, vector<long long>(m + 1));
+        vector g(n + 1, vector<long long>(m + 1));
+        for (int k = 1; k <= K; k++) {
+            for (auto& row : g) {
+                ranges::fill(row, LLONG_MIN);
+            }
+            for (int i = k - 1; i < n - (K - k); i++) { // 后面还要选 K-k 个下标对
+                for (int j = k - 1; j < m - (K - k); j++) {
+                    g[i + 1][j + 1] = max(max(g[i][j + 1], g[i + 1][j]), 
+                                          f[i][j] + 1LL * nums1[i] * nums2[j]);
+                }
+            }
+            swap(f, g);
+        }
+        return f[n][m];
+    }
+};
+```
+
+```go [sol-Go]
+func maxScore(nums1, nums2 []int, K int) int64 {
+	n, m := len(nums1), len(nums2)
+	f := make([][]int, n+1)
+	g := make([][]int, n+1)
+	for i := range f {
+		f[i] = make([]int, m+1)
+		g[i] = make([]int, m+1)
+	}
+	for k := 1; k <= K; k++ {
+		for _, row := range g {
+			for j := range row {
+				row[j] = math.MinInt
+			}
+		}
+		for i := k - 1; i < n-(K-k); i++ { // 后面还要选 K-k 个下标对
+			for j := k - 1; j < m-(K-k); j++ {
+				g[i+1][j+1] = max(g[i][j+1], g[i+1][j], f[i][j]+nums1[i]*nums2[j])
+			}
+		}
+		f, g = g, f
+	}
+	return int64(f[n][m])
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(knm)$，其中 $n$ 是 $\textit{nums}_1$ 的长度，$m$ 是 $\textit{nums}_2$ 的长度。
-- 空间复杂度：$\mathcal{O}(knm)$。
-
-**注**：利用滚动数组，可以把空间复杂度优化到 $\mathcal{O}(nm)$。
+- 时间复杂度：$\mathcal{O}(knm)$ 或 $\mathcal{O}(k(n-k)(m-k))$，其中 $n$ 是 $\textit{nums}_1$ 的长度，$m$ 是 $\textit{nums}_2$ 的长度。如果不考虑初始化 DP 数组的时间，则时间复杂度为下面三重循环的复杂度，即 $\mathcal{O}(k(n-k)(m-k))$。
+- 空间复杂度：$\mathcal{O}(nm)$。
 
 ## 专题训练
 
