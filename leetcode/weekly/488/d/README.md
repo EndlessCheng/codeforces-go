@@ -23,7 +23,7 @@ $$
 **递归边界**：
 
 - $\textit{dfs}(0,i,j)=0$。没有数对要选，点积为 $0$。
-- 如果 $i+1<k$ 或者 $j+1<k$，那么剩余元素不足 $k$ 个，无法满足要求，返回 $-\infty$。这样计算 $\max$ 的时候，一定会取到合法的情况。
+- 如果 $i+1<k$ 或者 $j+1<k$，那么剩余元素不足 $k$ 个，无法满足要求，返回 $-\infty$。这样计算 $\max$ 的时候，一定会取到合法的情况。具体地，涉及到的状态是 $\textit{dfs}(k,k-2,j) = \textit{dfs}(k,i,k-2) = -\infty$。
 
 **递归入口**：$\textit{dfs}(k,n-1,m-1)$，这是原问题，也是答案。
 
@@ -192,9 +192,9 @@ $$
 
 由于 $i+1<k$ 和 $j+1<k$ 均不合法，所以 $i$ 和 $j$ 可以从 $k-1$ 开始循环。
 
-**初始值**：$f[0][i][j] = 0$，其余为 $-\infty$。
+**初始值**：$f[0][i][j] = 0$，其余为 $-\infty$。实际上，这里的「其余」只有 $f[k][k-1][j+1] = f[k][i+1][k-1] = -\infty$，翻译自递归边界 $\textit{dfs}(k,k-2,j) = \textit{dfs}(k,i,k-2) = -\infty$。为什么要强调这个？后面的空间优化会用到。
 
-**答案**：$f[k][n][m]$。
+**答案**：$f[k][n][m]$，翻译自递归入口 $\textit{dfs}(k,n-1,m-1)$。
 
 ```py [sol-Python3]
 class Solution:
@@ -289,11 +289,29 @@ class Solution:
         n, m = len(nums1), len(nums2)
         f = [[0] * (m + 1) for _ in range(n + 1)]
         for k in range(1, K + 1):
+            # 更快的写法见【Python3 写法二】
             nf = [[-inf] * (m + 1) for _ in range(n + 1)]
             for i in range(k - 1, n - (K - k)):  # 后面还要选 K-k 个下标对
                 for j in range(k - 1, m - (K - k)):
                     nf[i + 1][j + 1] = max(nf[i][j + 1], nf[i + 1][j], f[i][j] + nums1[i] * nums2[j])
             f = nf
+        return f[n][m]
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def maxScore(self, nums1: List[int], nums2: List[int], K: int) -> int:
+        n, m = len(nums1), len(nums2)
+        f = [[0] * (m + 1) for _ in range(n + 1)]
+        g = [[0] * (m + 1) for _ in range(n + 1)]
+        invalid = [-inf] * (m - K + 1)
+        for k in range(1, K + 1):
+            g[k - 1][k: -(K - k)] = invalid
+            for i in range(k - 1, n - (K - k)):  # 后面还要选 K-k 个下标对
+                g[i + 1][k - 1] = -inf
+                for j in range(k - 1, m - (K - k)):
+                    g[i + 1][j + 1] = max(g[i][j + 1], g[i + 1][j], f[i][j] + nums1[i] * nums2[j])
+            f, g = g, f
         return f[n][m]
 ```
 
@@ -305,10 +323,9 @@ class Solution {
         long[][] f = new long[n + 1][m + 1];
         long[][] g = new long[n + 1][m + 1];
         for (int k = 1; k <= K; k++) {
-            for (long[] row : g) {
-                Arrays.fill(row, Long.MIN_VALUE);
-            }
+            Arrays.fill(g[k - 1], k, m - (K - k) + 1, Long.MIN_VALUE);
             for (int i = k - 1; i < n - (K - k); i++) { // 后面还要选 K-k 个下标对
+                g[i + 1][k - 1] = Long.MIN_VALUE;
                 for (int j = k - 1; j < m - (K - k); j++) {
                     g[i + 1][j + 1] = Math.max(Math.max(g[i][j + 1], g[i + 1][j]),
                             f[i][j] + (long) nums1[i] * nums2[j]);
@@ -331,10 +348,9 @@ public:
         vector f(n + 1, vector<long long>(m + 1));
         vector g(n + 1, vector<long long>(m + 1));
         for (int k = 1; k <= K; k++) {
-            for (auto& row : g) {
-                ranges::fill(row, LLONG_MIN);
-            }
+            fill(g[k - 1].begin() + k, g[k - 1].end() - (K - k), LLONG_MIN);
             for (int i = k - 1; i < n - (K - k); i++) { // 后面还要选 K-k 个下标对
+                g[i + 1][k - 1] = LLONG_MIN;
                 for (int j = k - 1; j < m - (K - k); j++) {
                     g[i + 1][j + 1] = max(max(g[i][j + 1], g[i + 1][j]), 
                                           f[i][j] + 1LL * nums1[i] * nums2[j]);
@@ -357,12 +373,11 @@ func maxScore(nums1, nums2 []int, K int) int64 {
 		g[i] = make([]int, m+1)
 	}
 	for k := 1; k <= K; k++ {
-		for _, row := range g {
-			for j := range row {
-				row[j] = math.MinInt
-			}
+		for j := k; j <= m-(K-k); j++ {
+			g[k-1][j] = math.MinInt
 		}
 		for i := k - 1; i < n-(K-k); i++ { // 后面还要选 K-k 个下标对
+			g[i+1][k-1] = math.MinInt
 			for j := k - 1; j < m-(K-k); j++ {
 				g[i+1][j+1] = max(g[i][j+1], g[i+1][j], f[i][j]+nums1[i]*nums2[j])
 			}
@@ -375,7 +390,7 @@ func maxScore(nums1, nums2 []int, K int) int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(knm)$ 或 $\mathcal{O}(k(n-k)(m-k))$，其中 $n$ 是 $\textit{nums}_1$ 的长度，$m$ 是 $\textit{nums}_2$ 的长度。如果不考虑初始化 DP 数组的时间，则时间复杂度为下面三重循环的复杂度，即 $\mathcal{O}(k(n-k)(m-k))$。
+- 时间复杂度：$\mathcal{O}(k(n-k)(m-k))$，其中 $n$ 是 $\textit{nums}_1$ 的长度，$m$ 是 $\textit{nums}_2$ 的长度。
 - 空间复杂度：$\mathcal{O}(nm)$。
 
 ## 专题训练

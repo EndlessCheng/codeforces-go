@@ -36,12 +36,11 @@ func maxScore(nums1, nums2 []int, K int) int64 {
 		g[i] = make([]int, m+1)
 	}
 	for k := 1; k <= K; k++ {
-		for _, row := range g {
-			for j := range row {
-				row[j] = math.MinInt
-			}
+		for j := k; j <= m-(K-k); j++ {
+			g[k-1][j] = math.MinInt
 		}
 		for i := k - 1; i < n-(K-k); i++ { // 后面还要选 K-k 个下标对
+			g[i+1][k-1] = math.MinInt
 			for j := k - 1; j < m-(K-k); j++ {
 				g[i+1][j+1] = max(g[i][j+1], g[i+1][j], f[i][j]+nums1[i]*nums2[j])
 			}
