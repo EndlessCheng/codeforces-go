@@ -13,10 +13,10 @@ type vec15 struct{ x, y int }
 
 func (a vec15) sub(b vec15) vec15 { return vec15{a.x - b.x, a.y - b.y} }
 func (a vec15) dot(b vec15) int   { return a.x*b.x + a.y*b.y }
-func (a vec15) det(b vec15) bool {
+func (a vec15) detCmp(b vec15) int {
 	v := new(big.Int).Mul(big.NewInt(int64(a.x)), big.NewInt(int64(b.y)))
 	w := new(big.Int).Mul(big.NewInt(int64(a.y)), big.NewInt(int64(b.x)))
-	return v.Cmp(w) <= 0
+	return v.Cmp(w)
 }
 
 func cf1715E(in io.Reader, _w io.Writer) {
@@ -70,17 +70,17 @@ func cf1715E(in io.Reader, _w io.Writer) {
 		q := []vec15{}
 		for i, d := range dis {
 			v := vec15{i, i*i + d}
-			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(v.sub(q[len(q)-1])) {
+			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).detCmp(v.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
 			}
 			q = append(q, v)
 		}
-		for i, d := range dis {
+		for i := range dis {
 			p := vec15{-2 * i, 1}
 			for len(q) > 1 && p.dot(q[0]) >= p.dot(q[1]) {
 				q = q[1:]
 			}
-			dis[i] = min(d, p.dot(q[0])+i*i)
+			dis[i] = p.dot(q[0]) + i*i
 		}
 	}
 	dij()
