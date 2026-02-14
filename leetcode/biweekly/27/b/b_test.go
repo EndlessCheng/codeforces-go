@@ -38,3 +38,4 @@ func Test(t *testing.T) {
 	}
 }
 // https://leetcode-cn.com/contest/biweekly-contest-27/problems/check-if-a-string-contains-all-binary-codes-of-size-k/
+// https://leetcode.cn/problems/check-if-a-string-contains-all-binary-codes-of-size-k/
