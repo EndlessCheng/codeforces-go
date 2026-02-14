@@ -1,12 +1,15 @@
-由于值域很小，所以借鉴**计数排序**，用一个 $\textit{cnt}$ 数组维护窗口内每个数的出现次数。然后遍历 $\textit{cnt}$ 去求第 $x$ 小的数。
+## 什么是第 x 小？
 
-什么是第 $x$ 小的数？
+例如数组 $[1,1,1,2,2]$，其中第 $1$ 小、第 $2$ 小和第 $3$ 小的数都是 $1$，第 $4$ 小和第 $5$ 小的数都是 $2$。
 
-设它是 $\textit{num}$，那么 $<\textit{num}$ 的数有 $<x$ 个，$\le\textit{num}$ 的数有 $\ge x$ 个，就说明 $\textit{num}$ 是第 $x$ 小的数。
+- 第 $x$ 小等价于：求**最小**的 $v$，满足 $\le v$ 的数**至少**有 $x$ 个。
+- 第 $x$ 大等价于：求**最大**的 $v$，满足 $\ge v$ 的数**至少**有 $x$ 个。
 
-比如 $[-1,-1,-1]$ 中，第 $1,2,3$ 小的数都是 $-1$。
+## 思路
 
-[视频讲解](https://www.bilibili.com/video/BV1Bs4y1A7Wa/) 第三题。
+本题数据范围很小（$-50\le \textit{nums}[i]\le 50$），我们可以借鉴**计数排序**的思想，用一个 $\textit{cnt}$ 数组维护窗口内每个数的出现次数。
+
+枚举 $v=-50,-49,\ldots,-1$，统计 $\le v$ 的元素个数。如果个数 $\ge x$，那么 $v$ 就是答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -18,11 +21,11 @@ class Solution:
         ans = [0] * (len(nums) - k + 1)
         for i, (in_, out) in enumerate(zip(nums[k - 1:], nums)):
             cnt[in_] += 1  # 进入窗口（保证窗口有恰好 k 个数）
-            left = x
-            for j in range(-50, 0):  # 暴力枚举负数范围 [-50,-1]
-                left -= cnt[j]
-                if left <= 0:  # 找到美丽值
-                    ans[i] = j
+            left = x  # 从 x 开始倒着减，减到 <= 0 就找到了答案
+            for v in range(-50, 0):  # 暴力枚举负数范围 [-50, -1]
+                left -= cnt[v]
+                if left <= 0:  # 找到答案
+                    ans[i] = v
                     break
             cnt[out] -= 1  # 离开窗口
         return ans
@@ -41,11 +44,11 @@ class Solution {
         int[] ans = new int[n - k + 1];
         for (int i = k - 1; i < n; i++) {
             cnt[nums[i] + BIAS]++; // 进入窗口（保证窗口有恰好 k 个数）
-            int left = x;
-            for (int j = 0; j < BIAS; j++) { // 暴力枚举负数范围 [-50,-1]
-                left -= cnt[j];
-                if (left <= 0) { // 找到美丽值
-                    ans[i - k + 1] = j - BIAS;
+            int left = x; // 从 x 开始倒着减，减到 <= 0 就找到了答案
+            for (int v = -50; v < 0; v++) { // 暴力枚举负数范围 [-50, -1]
+                left -= cnt[v + BIAS];
+                if (left <= 0) { // 找到答案
+                    ans[i - k + 1] = v;
                     break;
                 }
             }
@@ -60,7 +63,7 @@ class Solution {
 class Solution {
 public:
     vector<int> getSubarrayBeauty(vector<int>& nums, int k, int x) {
-        const int BIAS = 50;
+        constexpr int BIAS = 50;
         int cnt[BIAS * 2 + 1]{};
         for (int i = 0; i < k - 1; i++) { // 先往窗口内添加 k-1 个数
             cnt[nums[i] + BIAS]++;
@@ -70,11 +73,11 @@ public:
         vector<int> ans(n - k + 1);
         for (int i = k - 1; i < n; i++) {
             cnt[nums[i] + BIAS]++; // 进入窗口（保证窗口有恰好 k 个数）
-            int left = x;
-            for (int j = 0; j < BIAS; j++) { // 暴力枚举负数范围 [-50,-1]
-                left -= cnt[j];
-                if (left <= 0) { // 找到美丽值
-                    ans[i - k + 1] = j - BIAS;
+            int left = x; // 从 x 开始倒着减，减到 <= 0 就找到了答案
+            for (int v = -50; v < 0; v++) { // 暴力枚举负数范围 [-50, -1]
+                left -= cnt[v + BIAS];
+                if (left <= 0) { // 找到答案
+                    ans[i - k + 1] = v;
                     break;
                 }
             }
@@ -96,11 +99,11 @@ func getSubarrayBeauty(nums []int, k, x int) []int {
     ans := make([]int, len(nums)-k+1)
     for i, num := range nums[k-1:] {
         cnt[num+bias]++ // 进入窗口（保证窗口有恰好 k 个数）
-        left := x
-        for j, c := range cnt[:bias] { // 暴力枚举负数范围 [-50,-1]
+        left := x // 从 x 开始倒着减，减到 <= 0 就找到了答案
+        for v, c := range cnt[:bias] { // 暴力枚举负数范围 [-50, -1]
             left -= c
-            if left <= 0 { // 找到美丽值
-                ans[i] = j - bias
+            if left <= 0 { // 找到答案
+                ans[i] = v - bias
                 break
             }
         }
@@ -172,12 +175,12 @@ public:
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
