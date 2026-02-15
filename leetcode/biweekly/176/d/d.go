@@ -121,7 +121,6 @@ func palindromePath(n int, edges [][]int, s string, queries []string) (ans []boo
 			x, _ := strconv.Atoi(q[:i])
 			y, _ := strconv.Atoi(q[i+1:])
 			lca := getLCA(x, y)
-			// x 和 y 的 LCA 被抵消了，把 LCA 添加回来
 			res := pathXorFromRoot[x] ^ pathXorFromRoot[y] ^ f.pre(timeIn[x]) ^ f.pre(timeIn[y]) ^ 1<<(t[lca]-'a')
 			ans = append(ans, res&(res-1) == 0) // 至多一个字母的出现次数是奇数
 		}

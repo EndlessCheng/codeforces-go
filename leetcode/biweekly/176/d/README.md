@@ -42,6 +42,32 @@ $\textit{XOR}[i]$ 可以通过一次自顶向下的 DFS 求出。
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
+# 模板来自我的题单 https://leetcode.cn/circle/discuss/mOr1u6/
+class FenwickTree:
+    def __init__(self, n: int):
+        self.tree = [0] * (n + 1)  # 使用下标 1 到 n
+
+    # a[i] ^= val
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def update(self, i: int, val: int) -> None:
+        t = self.tree
+        while i < len(t):
+            t[i] ^= val
+            i += i & -i
+
+    # 计算前缀异或和 a[1] ^ ... ^ a[i]
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def pre(self, i: int) -> int:
+        t = self.tree
+        res = 0
+        while i > 0:
+            res ^= t[i]
+            i &= i - 1
+        return res
+
+
 # 模板来自我的题单 https://leetcode.cn/circle/discuss/K0n2gO/
 class LcaBinaryLifting:
     def __init__(self, edges: List[List[int]], s: List[int]):
@@ -112,32 +138,6 @@ class LcaBinaryLifting:
         return pa[0][x]
 
 
-# 模板来自我的题单 https://leetcode.cn/circle/discuss/mOr1u6/
-class FenwickTree:
-    def __init__(self, n: int):
-        self.tree = [0] * (n + 1)  # 使用下标 1 到 n
-
-    # a[i] ^= val
-    # 1 <= i <= n
-    # 时间复杂度 O(log n)
-    def update(self, i: int, val: int) -> None:
-        t = self.tree
-        while i < len(t):
-            t[i] ^= val
-            i += i & -i
-
-    # 计算前缀异或和 a[1] ^ ... ^ a[i]
-    # 1 <= i <= n
-    # 时间复杂度 O(log n)
-    def pre(self, i: int) -> int:
-        t = self.tree
-        res = 0
-        while i > 0:
-            res ^= t[i]
-            i &= i - 1
-        return res
-
-
 class Solution:
     def palindromePath(self, n: int, edges: list[list[int]], s: str, queries: list[str]) -> list[bool]:
         ord_a = ord('a')
@@ -164,7 +164,6 @@ class Solution:
             else:
                 y = int(y)
                 lca = g.get_lca(x, y)
-                # x 和 y 的 LCA 被抵消了，把 LCA 添加回来
                 res = path_xor_from_root[x] ^ path_xor_from_root[y] ^ f.pre(tin[x]) ^ f.pre(tin[y]) ^ (1 << t[lca])
                 ans.append(res & (res - 1) == 0)  # 至多一个字母的出现次数是奇数
 
@@ -172,6 +171,35 @@ class Solution:
 ```
 
 ```java [sol-Java]
+// 模板来自我的题单 https://leetcode.cn/circle/discuss/mOr1u6/
+class FenwickTree {
+    private final int[] tree;
+
+    public FenwickTree(int n) {
+        tree = new int[n + 1]; // 使用下标 1 到 n
+    }
+
+    // a[i] ^= val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public void update(int i, int val) {
+        for (; i < tree.length; i += i & -i) {
+            tree[i] ^= val;
+        }
+    }
+
+    // 求前缀异或和 a[1] ^ ... ^ a[i]
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public int pre(int i) {
+        int res = 0;
+        for (; i > 0; i &= i - 1) {
+            res ^= tree[i];
+        }
+        return res;
+    }
+}
+
 // 模板来自我的题单 https://leetcode.cn/circle/discuss/K0n2gO/
 class LcaBinaryLifting {
     private final int[] depth;
@@ -256,35 +284,6 @@ class LcaBinaryLifting {
     }
 }
 
-// 模板来自我的题单 https://leetcode.cn/circle/discuss/mOr1u6/
-class FenwickTree {
-    private final int[] tree;
-
-    public FenwickTree(int n) {
-        tree = new int[n + 1]; // 使用下标 1 到 n
-    }
-
-    // a[i] ^= val
-    // 1 <= i <= n
-    // 时间复杂度 O(log n)
-    public void update(int i, int val) {
-        for (; i < tree.length; i += i & -i) {
-            tree[i] ^= val;
-        }
-    }
-
-    // 求前缀异或和 a[1] ^ ... ^ a[i]
-    // 1 <= i <= n
-    // 时间复杂度 O(log n)
-    public int pre(int i) {
-        int res = 0;
-        for (; i > 0; i &= i - 1) {
-            res ^= tree[i];
-        }
-        return res;
-    }
-}
-
 class Solution {
     public List<Boolean> palindromePath(int n, int[][] edges, String s, String[] queries) {
         char[] t = s.toCharArray();
@@ -305,7 +304,6 @@ class Solution {
             } else {
                 int y = Integer.parseInt(parts[2]);
                 int lca = g.getLCA(x, y);
-                // x 和 y 的 LCA 被抵消了，把 LCA 添加回来
                 int res = g.pathXorFromRoot[x] ^ g.pathXorFromRoot[y] ^ f.pre(g.tin[x]) ^ f.pre(g.tin[y]) ^ (1 << (t[lca] - 'a'));
                 ans.add((res & (res - 1)) == 0); // 至多一个字母的出现次数是奇数
             }
@@ -317,6 +315,37 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
+// 模板来自我的题单 https://leetcode.cn/circle/discuss/mOr1u6/
+// 根据题目用 FenwickTree<int> t(n) 或者 FenwickTree<long long> t(n) 初始化
+template<typename T>
+class FenwickTree {
+    vector<T> tree;
+
+public:
+    // 使用下标 1 到 n
+    FenwickTree(int n) : tree(n + 1) {}
+
+    // a[i] ^= val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    void update(int i, T val) {
+        for (; i < tree.size(); i += i & -i) {
+            tree[i] ^= val;
+        }
+    }
+
+    // 求前缀异或和 a[1] ^ ... ^ a[i]
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    T pre(int i) const {
+        T res = 0;
+        for (; i > 0; i &= i - 1) {
+            res ^= tree[i];
+        }
+        return res;
+    }
+};
+
 // 模板来自我的题单 https://leetcode.cn/circle/discuss/K0n2gO/
 class LcaBinaryLifting {
     vector<int> depth;
@@ -397,37 +426,6 @@ public:
     }
 };
 
-// 模板来自我的题单 https://leetcode.cn/circle/discuss/mOr1u6/
-// 根据题目用 FenwickTree<int> t(n) 或者 FenwickTree<long long> t(n) 初始化
-template<typename T>
-class FenwickTree {
-    vector<T> tree;
-
-public:
-    // 使用下标 1 到 n
-    FenwickTree(int n) : tree(n + 1) {}
-
-    // a[i] ^= val
-    // 1 <= i <= n
-    // 时间复杂度 O(log n)
-    void update(int i, T val) {
-        for (; i < tree.size(); i += i & -i) {
-            tree[i] ^= val;
-        }
-    }
-
-    // 求前缀异或和 a[1] ^ ... ^ a[i]
-    // 1 <= i <= n
-    // 时间复杂度 O(log n)
-    T pre(int i) const {
-        T res = 0;
-        for (; i > 0; i &= i - 1) {
-            res ^= tree[i];
-        }
-        return res;
-    }
-};
-
 class Solution {
 public:
     vector<bool> palindromePath(int n, vector<vector<int>>& edges, string s, vector<string>& queries) {
@@ -450,7 +448,6 @@ public:
             } else {
                 int y = stoi(y_str);
                 int lca = g.get_lca(x, y);
-                // x 和 y 的 LCA 被抵消了，把 LCA 添加回来
                 int res = g.path_xor_from_root[x] ^ g.path_xor_from_root[y] ^ f.pre(g.tin[x]) ^ f.pre(g.tin[y]) ^ (1 << (s[lca] - 'a'));
                 ans.push_back((res & (res - 1)) == 0); // 至多一个字母的出现次数是奇数
             }
@@ -576,7 +573,6 @@ func palindromePath(n int, edges [][]int, s string, queries []string) (ans []boo
 			x, _ := strconv.Atoi(q[:i])
 			y, _ := strconv.Atoi(q[i+1:])
 			lca := getLCA(x, y)
-			// x 和 y 的 LCA 被抵消了，把 LCA 添加回来
 			res := pathXorFromRoot[x] ^ pathXorFromRoot[y] ^ f.pre(timeIn[x]) ^ f.pre(timeIn[y]) ^ 1<<(t[lca]-'a')
 			ans = append(ans, res&(res-1) == 0) // 至多一个字母的出现次数是奇数
 		}
