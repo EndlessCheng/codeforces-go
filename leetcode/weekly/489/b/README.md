@@ -1,8 +1,8 @@
-用哈希表统计 $\textit{nums}$ 每个数的出现次数，然后用再用一个哈希表（或者数组）统计出现次数的出现次数。
+用哈希表统计 $\textit{nums}$ 每个数的出现次数，然后再用一个哈希表（或者数组）统计出现次数的出现次数。
 
-最后从左到右遍历 $\textit{nums}$，第一个出现次数的出现次数是 $1$ 的数就是答案。
+最后从左到右遍历 $\textit{nums}$，第一个出现次数的出现次数是 $1$ 的 $\textit{nums}[i]$ 就是答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1VgZ4BCETj/?t=2m45s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

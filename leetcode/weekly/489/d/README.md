@@ -20,7 +20,7 @@
 
 这可以用 0-1 字典树解决，见 421 题。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1VgZ4BCETj/?t=26m12s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 WIDTH = 15  # nums[i] 二进制长度的最大值
@@ -391,6 +391,8 @@ func maxXor(nums []int, k int) (ans int) {
 ## 专题训练
 
 见下面数据结构题单的「**§4.4 单调队列**」和「**§6.4 0-1 字典树**」。
+
+其中和本题相似的题目是 [2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/)。
 
 ## 分类题单
 
