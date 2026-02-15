@@ -61,7 +61,7 @@ class Solution {
             l--;
             r++;
         }
-        return r - l - 1;
+        return r - l - 1; // [l+1, r-1] 是回文串
     }
 }
 ```
@@ -129,7 +129,7 @@ func almostPalindromic(s string) (ans int) {
 
 ## 更快的做法
 
-本题还可以用 Manacher 算法 + 后缀数组做到 $\mathcal{O}(n\log n)$（或者字符串哈希做到 $\mathcal{O}(n)$），直播结束后补充。
+本题还可以用 Manacher 算法 + 后缀数组（或者字符串哈希）做到 $\mathcal{O}(n\log n)$，直播结束后补充。
 
 ## 专题训练
 

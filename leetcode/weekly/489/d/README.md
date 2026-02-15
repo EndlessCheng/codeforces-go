@@ -10,7 +10,15 @@
 
 子数组异或和可以用前缀和快速计算。设 $\textit{nums}$ 的**前缀异或和**数组为 $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
-题目要求子数组的最大异或和，等价于计算 $s[r+1]$ 与下标区间 $[l,r]$ 中的一个 $s[i]$ 的最大异或和。这可以用 0-1 字典树解决，见 421 题。
+题目要求子数组的最大异或和，我们可以枚举子数组的右端点下标 $r$，问题变成：
+
+- 计算子数组 $[i,r]$ 的最大异或和，其中 $i$ 在闭区间 $[l,r]$ 中，其中 $l$ 是滑动窗口的左端点。
+
+这等价于：
+
+- 计算 $s[r+1]$ 与 $i$ 在 $[l,r]$ 中的一个 $s[i]$ 的最大异或和。
+
+这可以用 0-1 字典树解决，见 421 题。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
@@ -285,6 +293,8 @@ public:
 ```
 
 ```go [sol-Go]
+const width = 15 // nums[i] 二进制长度的最大值
+
 type node struct {
 	son  [2]*node
 	leaf int // 子树叶子个数
@@ -297,8 +307,6 @@ type trie struct {
 func newTrie() *trie {
 	return &trie{&node{}}
 }
-
-const width = 15 // nums[i] 二进制长度的最大值
 
 func (t *trie) put(val int) {
 	cur := t.root

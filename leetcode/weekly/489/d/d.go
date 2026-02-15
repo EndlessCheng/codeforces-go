@@ -1,6 +1,8 @@
 package main
 
 // https://space.bilibili.com/206214
+const width = 15 // nums[i] 二进制长度的最大值
+
 type node struct {
 	son  [2]*node
 	leaf int // 子树叶子个数
@@ -13,8 +15,6 @@ type trie struct {
 func newTrie() *trie {
 	return &trie{&node{}}
 }
-
-const width = 15 // nums[i] 二进制长度的最大值
 
 func (t *trie) put(val int) {
 	cur := t.root
