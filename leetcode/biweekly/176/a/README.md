@@ -1,6 +1,6 @@
 「将结果按字母倒序映射到一个小写英文字母」，相当于把 $\texttt{z}$ 减去权重取模后的值：减 $0$ 就是 $\texttt{z}$，减 $1$ 就是 $\texttt{y}$ …… 减 $25$ 就是 $\texttt{a}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV15TZ4B1Eev/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

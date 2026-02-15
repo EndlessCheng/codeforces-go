@@ -1,12 +1,12 @@
-题意很绕，说人话就是：
+题意有点绕，说人话就是：
 
 - 统计 $\textit{words}[i][..k]$（长为 $k$ 的前缀）的出现次数，有多少个出现次数 $\ge 2$ 的**不同**前缀？
 
 用哈希表统计即可。
 
-忽略长度小于 $k$ 的字符串。
+跳过长度小于 $k$ 的字符串。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV15TZ4B1Eev/?t=2m48s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

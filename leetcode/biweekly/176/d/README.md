@@ -19,7 +19,7 @@
 
 - $0$ 到 $x$ 的路径的字母出现次数的奇偶性 $\textit{XOR}[x]$。
 - $0$ 到 $y$ 的路径的字母出现次数的奇偶性 $\textit{XOR}[y]$。
-- 上面两条路径异或后，把 $x$ 和 $y$ 的 $\textit{lca}$ 抵消掉了，所以要添加回来，即异或 $s[\textit{lca}]$ 对应的二进制数 `1 << (s[lca] - 'a')`。
+- 上面两条路径异或后，$x$ 和 $y$ 的 $\textit{lca}$ **被抵消了**，所以要添加回来，即异或 $s[\textit{lca}]$ 对应的二进制数 `1 << (s[lca] - 'a')`。
 
 $\textit{XOR}[i]$ 可以通过一次自顶向下的 DFS 求出。
 
@@ -27,7 +27,7 @@ $\textit{XOR}[i]$ 可以通过一次自顶向下的 DFS 求出。
 
 想一想，当我们修改 $s[x]$ 后，哪些 $\textit{XOR}[i]$ 会变？变成什么了？
 
-修改 $s[x]$ 后，在子树 $x$ 中的节点 $i$ 的 $\textit{XOR}[i]$ 会变。
+由于 $\textit{XOR}[i]$ 对应从 $0$ 到 $i$ 的路径，如果路径经过 $x$，那么 $\textit{XOR}[i]$ 就会变。所以修改 $s[x]$ 后，在**子树** $x$ 中的节点 $i$ 的 $\textit{XOR}[i]$ 会变。
 
 去掉原来的 $s[x]$，改成新的字母 $c$，用位运算解决，把这些 $\textit{XOR}[i]$ 都异或 `val = (1 << (s[x] - 'a')) ^ (1 << (c - 'a'))`。
 
@@ -39,7 +39,7 @@ $\textit{XOR}[i]$ 可以通过一次自顶向下的 DFS 求出。
 
 代码实现时，差分树状数组保存的是「区间更新」操作的异或结果，没有保存初始值 $\textit{XOR}[i]$。获取 $\textit{XOR}[i]$ 修改后的值，可以用其初始值 $\textit{XOR}[i]$ 异或差分树状数组的前缀查询结果。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV15TZ4B1Eev/?t=12m23s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 模板来自我的题单 https://leetcode.cn/circle/discuss/mOr1u6/
@@ -433,20 +433,22 @@ public:
         FenwickTree<int> f(n); // 注意树状数组是异或运算
         vector<bool> ans;
 
-        string op, x_str, y_str;
+        string op;
+        int x, y;
+        char c;
+
         for (auto& q : queries) {
             stringstream ss(q);
-            ss >> op >> x_str >> y_str;
-            int x = stoi(x_str);
+            ss >> op >> x;
             if (op[0] == 'u') {
-                char c = y_str[0];
+                ss >> c;
                 int val = (1 << (s[x] - 'a')) ^ (1 << (c - 'a')); // 擦除旧的，换上新的
                 s[x] = c;
                 // 子树 x 全部异或 val，转换成对区间 [tin[x], tout[x]] 的差分更新
                 f.update(g.tin[x], val);
                 f.update(g.tout[x] + 1, val);
             } else {
-                int y = stoi(y_str);
+                ss >> y;
                 int lca = g.get_lca(x, y);
                 int res = g.path_xor_from_root[x] ^ g.path_xor_from_root[y] ^ f.pre(g.tin[x]) ^ f.pre(g.tin[y]) ^ (1 << (s[lca] - 'a'));
                 ans.push_back((res & (res - 1)) == 0); // 至多一个字母的出现次数是奇数

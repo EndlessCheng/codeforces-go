@@ -17,7 +17,7 @@
 
 答案为在 $[0,n-1]$ 中能得到的最大总和，即 $f[n]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV15TZ4B1Eev/?t=5m8s)，欢迎点赞关注~
 
 ## 写法一
 
