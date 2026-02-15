@@ -155,9 +155,7 @@ class Solution:
             op, x, y = q.split()
             x = int(x)
             if op[0] == 'u':
-                c = ord(y) - ord('a')
-                if s[x] == c:  # 小优化：如果字母不变，不做耗时的 f.update
-                    continue
+                c = ord(y) - ord_a
                 val = (1 << t[x]) ^ (1 << c)  # 擦除旧的，换上新的
                 t[x] = c
                 # 子树 x 全部异或 val，转换成对区间 [tin[x], tout[x]] 的差分更新
@@ -299,9 +297,6 @@ class Solution {
             int x = Integer.parseInt(parts[1]);
             if (parts[0].charAt(0) == 'u') {
                 char c = parts[2].charAt(0);
-                if (t[x] == c) { // 小优化：如果字母不变，不做耗时的 f.update
-                    continue;
-                }
                 int val = (1 << (t[x] - 'a')) ^ (1 << (c - 'a')); // 擦除旧的，换上新的
                 t[x] = c;
                 // 子树 x 全部异或 val，转换成对区间 [tin[x], tout[x]] 的差分更新
@@ -447,9 +442,6 @@ public:
             int x = stoi(x_str);
             if (op[0] == 'u') {
                 char c = y_str[0];
-                if (s[x] == c) { // 小优化：如果字母不变，不做耗时的 f.update
-                    continue;
-                }
                 int val = (1 << (s[x] - 'a')) ^ (1 << (c - 'a')); // 擦除旧的，换上新的
                 s[x] = c;
                 // 子树 x 全部异或 val，转换成对区间 [tin[x], tout[x]] 的差分更新
@@ -573,9 +565,6 @@ func palindromePath(n int, edges [][]int, s string, queries []string) (ans []boo
 		if q[0] == 'u' {
 			x, _ := strconv.Atoi(q[7 : len(q)-2])
 			c := q[len(q)-1]
-			if t[x] == c { // 小优化：如果字母不变，不做耗时的 f.update
-				continue
-			}
 			val := 1<<(t[x]-'a') ^ 1<<(c-'a') // 擦除旧的，换上新的
 			t[x] = c
 			// 子树 x 全部异或 val，转换成对区间 [timeIn[x], timeOut[x]] 的差分更新
