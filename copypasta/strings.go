@@ -724,7 +724,9 @@ func _() {
 
 		// 定义一个奇回文串的回文半径=(长度+1)/2，即保留回文中心，去掉一侧后的剩余字符串的长度
 		// halfLen[i] 表示在 t 上的以 t[i] 为回文中心的最长回文子串的回文半径
-		// 即闭区间 [i-halfLen[i]+1, i+halfLen[i]-1] 是 t 上的一个回文子串
+		// 具体地，闭区间 [i-halfLen[i]+1, i+halfLen[i]-1] 是 t 上的一个回文子串
+		// 由于 t 中回文子串的首尾字母一定是 #，根据下标转换关系，
+		// 可以得到其在 s 中对应的回文子串的区间为 [(i-halfLen[i])/2, (i+halfLen[i])/2-2]
 		halfLen := make([]int, len(t)-2)
 		halfLen[1] = 1
 		// boxR 表示当前右边界下标最大的回文子串的右边界下标+1（初始化成任意 <= 0 的数都可以）
@@ -1096,7 +1098,7 @@ func _() {
 
 		// 计算高度数组（也叫 LCP 数组）
 		// height[0] = 0（哨兵）
-		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])   (i > 0)
+		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])  (i > 0)
 		// 获取 s[i] 所在位置的高度：height[rank[i]]
 		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
 		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
