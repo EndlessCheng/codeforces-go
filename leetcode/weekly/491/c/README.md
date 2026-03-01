@@ -139,6 +139,12 @@ func minimumOR(grid [][]int) (ans int) {
 - 时间复杂度：$\mathcal{O}(mn\log U)$，其中 $m$ 和 $n$ 分别是 $\textit{grid}$ 的行数和列数，$U$ 是所有 $\textit{grid}[i][j]$ 中的最大值。注意题目保证 $m\cdot n\le 10^5$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 思考题
+
+改成求 OR 的最大值，怎么做？
+
+欢迎在评论区分享你的思路/代码。
+
 ## 专题训练
 
 见下面位运算题单的「**五、试填法**」。
