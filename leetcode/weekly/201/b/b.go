@@ -14,7 +14,7 @@ func findKthBit1(n, k int) byte {
 	return findKthBit(n-1, 1<<n-k) ^ 1
 }
 
-func findKthBit(n, k int) byte {
+func findKthBit2(n, k int) byte {
 	rev := byte(0) // 翻转次数的奇偶性
 	for {
 		if n == 1 {
@@ -29,4 +29,12 @@ func findKthBit(n, k int) byte {
 		}
 		n--
 	}
+}
+
+func findKthBit(_, k int) byte {
+	if k%2 > 0 {
+		return '0' + byte(k/2%2)
+	}
+	k /= k & -k // 去掉 k 的尾零
+	return '1' - byte(k/2%2)
 }
