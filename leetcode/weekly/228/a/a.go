@@ -1,19 +1,13 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func minOperations(s string) (ans int) {
-	c := 0
-	for i, b := range s {
-		if int(b&1) != i&1 {
-			c++
+func minOperations(s string) int {
+	diff := 0
+	for i, ch := range s {
+		// 如果 i 是偶数，把 ch 变成 0，否则变成 1
+		if int(ch-'0') != i%2 {
+			diff++
 		}
 	}
-	return min(c, len(s)-c)
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
+	return min(diff, len(s)-diff)
 }
