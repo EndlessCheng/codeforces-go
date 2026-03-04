@@ -1,26 +1,18 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func getHappyString(n, k int) (ans string) {
-	s := make([]byte, n)
-	var f func(int)
-	f = func(p int) {
-		if p == n {
-			k--
-			return
-		}
-		for s[p] = 'a'; s[p] < 'd'; s[p]++ {
-			if p == 0 || s[p] != s[p-1] {
-				f(p + 1)
-				if k == 0 {
-					return
-				}
-			}
+func getHappyString(n, k int) string {
+	if k > 3<<(n-1) {
+		return ""
+	}
+	k-- // 改成从 0 开始，方便计算
+	ans := make([]byte, n)
+	ans[0] = 'a' + byte(k>>(n-1))
+	for i := 1; i < n; i++ {
+		ans[i] = 'a' + byte(k>>(n-1-i)&1)
+		if ans[i] >= ans[i-1] {
+			ans[i]++
 		}
 	}
-	f(0)
-	if k > 0 {
-		return
-	}
-	return string(s)
+	return string(ans)
 }
