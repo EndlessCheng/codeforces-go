@@ -21,7 +21,7 @@ class Solution:
             mask = ans | ((1 << i) - 1)  # mask 低于 i 的比特位全是 1，表示 grid[i][j] 的低位是 0 还是 1 无所谓
             for row in grid:
                 for x in row:
-                    # x 的高于 i 的比特位，如果 ans 是 0，那么 x 的这一位必须也是 0
+                    # x 的高于 i 的比特位，如果 mask 是 0，那么 x 的这一位必须也是 0（注意 mask 继承了 ans 高位中的 0）
                     # x 的低于 i 的比特位，随意
                     # x 的第 i 个比特位，我们期望它是 0
                     if (x | mask) == mask:  # x 可以选，且第 i 位是 0
@@ -51,7 +51,7 @@ class Solution {
             next:
             for (int[] row : grid) {
                 for (int x : row) {
-                    // x 的高于 i 的比特位，如果 ans 是 0，那么 x 的这一位必须也是 0
+                    // x 的高于 i 的比特位，如果 mask 是 0，那么 x 的这一位必须也是 0（注意 mask 继承了 ans 高位中的 0）
                     // x 的低于 i 的比特位，随意
                     // x 的第 i 个比特位，我们期望它是 0
                     if ((x | mask) == mask) { // x 可以选，且第 i 位是 0
@@ -85,7 +85,7 @@ public:
             for (auto& row : grid) {
                 bool found0 = false;
                 for (int x : row) {
-                    // x 的高于 i 的比特位，如果 ans 是 0，那么 x 的这一位必须也是 0
+                    // x 的高于 i 的比特位，如果 mask 是 0，那么 x 的这一位必须也是 0（注意 mask 继承了 ans 高位中的 0）
                     // x 的低于 i 的比特位，随意
                     // x 的第 i 个比特位，我们期望它是 0
                     if ((x | mask) == mask) { // x 可以选，且第 i 位是 0
@@ -118,7 +118,7 @@ func minimumOR(grid [][]int) (ans int) {
 	next:
 		for _, row := range grid {
 			for _, x := range row {
-				// x 的高于 i 的比特位，如果 ans 是 0，那么 x 的这一位必须也是 0
+				// x 的高于 i 的比特位，如果 mask 是 0，那么 x 的这一位必须也是 0（注意 mask 继承了 ans 高位中的 0）
 				// x 的低于 i 的比特位，随意
 				// x 的第 i 个比特位，我们期望它是 0
 				if x|mask == mask { // x 可以选，且第 i 位是 0
