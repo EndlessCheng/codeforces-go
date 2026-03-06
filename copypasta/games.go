@@ -4,7 +4,7 @@ import . "fmt"
 
 /* 博弈论 Game Theory
 
-另见 dp.go 中的「博弈类 DP」
+另见 dp.go 中的「博弈 DP」
 
 https://en.wikipedia.org/wiki/Game_theory
 定义必胜状态为先手必胜的状态，必败状态为先手必败的状态
@@ -36,6 +36,8 @@ https://codeforces.com/problemset/problem/936/B 2100 一道不错的有向图博
 https://codeforces.com/problemset/problem/812/E 2300 阶梯博弈
 https://codeforces.com/problemset/problem/995/D 2500
 https://codeforces.com/problemset/problem/1312/F 2500
+https://codeforces.com/problemset/problem/725/F 2900 拿照片，最大化幸福总和之差
+- LC1686. 石子游戏 VI https://leetcode.cn/problems/stone-game-vi/
 todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
 todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
 题单 https://blog.csdn.net/ACM_cxlove/article/details/7854526
