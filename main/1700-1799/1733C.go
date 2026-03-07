@@ -18,18 +18,19 @@ func cf1733C(in io.Reader, _w io.Writer) {
 			Fscan(in, &a[i])
 		}
 		Fprintln(out, n-1)
-		idx := -1
-		for i := n - 1; i >= 0; i-- {
-			if a[i]%2 == a[0]%2 {
-				if idx < 0 {
-					idx = i
-				} else {
-					Fprintln(out, i+1, idx+1)
-				}
-			}
+		if n == 1 {
+			continue
 		}
-		for i, v := range a {
-			if v%2 != a[0]%2 {
+
+		Fprintln(out, 1, n)
+		x := a[0]
+		if (a[0]+a[n-1])%2 == 0 {
+			x = a[n-1]
+		}
+		for i := 1; i < n-1; i++ {
+			if (a[i]+x)%2 == 0 {
+				Fprintln(out, i+1, n)
+			} else {
 				Fprintln(out, 1, i+1)
 			}
 		}
