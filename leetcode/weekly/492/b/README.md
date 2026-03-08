@@ -16,6 +16,8 @@
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def smallestBalancedIndex(self, nums: List[int]) -> int:
@@ -112,6 +114,99 @@ func smallestBalancedIndex(nums []int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 优化
+
+先计算 $\textit{nums}$ 的和，然后在倒序遍历的过程中减去遍历的数，也能求出前缀和。这样可以做到 $\mathcal{O}(1)$ 空间。
+
+```py [sol-Python3]
+class Solution:
+    def smallestBalancedIndex(self, nums: List[int]) -> int:
+        pre = sum(nums)
+        mul = 1
+        for i in range(len(nums) - 1, 0, -1):
+            pre -= nums[i]
+            if pre < mul:
+                break
+            if pre == mul:
+                return i
+            mul *= nums[i]
+        return -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int smallestBalancedIndex(int[] nums) {
+        int n = nums.length;
+        long sum = 0;
+        for (int i = 0; i < n - 1; i++) {
+            sum += nums[i];
+        }
+
+        long mul = 1;
+        for (int i = n - 1; i > 0; i--) {
+            if (sum == mul) {
+                return i;
+            }
+            sum -= nums[i - 1];
+            if (mul > sum / nums[i]) {
+                break;
+            }
+            mul *= nums[i];
+        }
+        return -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int smallestBalancedIndex(vector<int>& nums) {
+        long long sum = reduce(nums.begin(), nums.end() - 1, 0LL);
+        long long mul = 1;
+        for (int i = nums.size() - 1; i > 0; i--) {
+            if (sum == mul) {
+                return i;
+            }
+            sum -= nums[i - 1];
+            if (mul > sum / nums[i]) {
+                break;
+            }
+            mul *= nums[i];
+        }
+        return -1;
+    }
+};
+```
+
+```go [sol-Go]
+func smallestBalancedIndex(nums []int) int {
+	n := len(nums)
+	sum := 0
+	for _, x := range nums[:n-1] {
+		sum += x
+	}
+
+	mul := 1
+	for i := n - 1; i > 0; i-- {
+		if sum == mul {
+			return i
+		}
+		sum -= nums[i-1]
+		if mul > sum/nums[i] {
+			break
+		}
+		mul *= nums[i]
+	}
+	return -1
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
 
