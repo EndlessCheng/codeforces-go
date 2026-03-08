@@ -1,7 +1,5 @@
 从左到右遍历 $\textit{capacity}$ 的过程中，维护满足要求的最小容量，及其对应的下标。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def minimumIndex(self, capacity: List[int], itemSize: int) -> int:

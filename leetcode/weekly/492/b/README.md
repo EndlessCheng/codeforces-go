@@ -14,7 +14,7 @@
 
 此外，当 $i=0$ 时，$\textit{sum}[0] = 0$，$\textit{mul}[0]>0$，所以 $\textit{sum}[0] \ne \textit{mul}[0]$。所以至多循环到 $i=1$ 为止。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1H6NMzdEbo/)，欢迎点赞关注~
 
 ## 优化前
 
@@ -207,6 +207,12 @@ func smallestBalancedIndex(nums []int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 思考题
+
+如果 $\textit{nums}$ 包含 $0$ 和负数，怎么写？
+
+欢迎在评论区分享你的思路/代码。
 
 ## 专题训练
 

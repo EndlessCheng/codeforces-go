@@ -1,17 +1,17 @@
 写个分治：
 
-- 定义 $\textit{dfs}(\ell,r)$ 表示子串 $[\ell,r)$ 的最小总费用。
-- 如果子串 $[\ell,r)$ 长度 $r-\ell$ 是奇数，返回不拆分时的费用。
-- 否则，额外计算拆分时的费用，即 $\textit{dfs}(\ell,m) + \textit{dfs}(m,r)$，其中 $m = \left\lfloor\dfrac{\ell+r}{2}\right\rfloor$。
+- 定义 $\textit{dfs}(\ell,r)$ 表示子串 $[\ell,r)$ 的最小费用。
+- 计算子串 $[\ell,r)$ 中有多少个 $\texttt{1}$，从而算出不拆分子串时的费用。
+- 如果子串 $[\ell,r)$ 的长度 $r-\ell$ 是偶数，可以拆分，对应的费用为 $\textit{dfs}(\ell,m) + \textit{dfs}(m,r)$，其中 $m = \left\lfloor\dfrac{\ell+r}{2}\right\rfloor$。
 - 两种情况取最小值，即为 $\textit{dfs}(\ell,r)$ 的返回值。
 
 递归入口：$\textit{dfs}(0,n)$。
 
 递归边界：由于 $1$ 是奇数，所以递归边界已经蕴含在 $r-\ell$ 是奇数的情况中了。
 
-代码实现时，子串有多少个 $\texttt{1}$ 可以用前缀和加速计算。原理请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
+代码实现时，子串有多少个 $\texttt{1}$ 可以用**前缀和**快速计算。原理请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1H6NMzdEbo/?t=47m48s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -19,7 +19,7 @@ class Solution:
         n = len(s)
         pre = list(accumulate(map(int, s), initial=0))
 
-        # 计算 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+        # 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
         def dfs(l: int, r: int) -> int:
             # 不拆分
             x = pre[r] - pre[l]
@@ -46,7 +46,7 @@ class Solution {
         return dfs(0, n, sum, encCost, flatCost);
     }
 
-    // 计算 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+    // 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
     private long dfs(int l, int r, int[] sum, int encCost, int flatCost) {
         // 不拆分
         int x = sum[r] - sum[l];
@@ -73,7 +73,7 @@ public:
             sum[i + 1] = sum[i] + (s[i] - '0');
         }
 
-        // 计算 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+        // 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
         auto dfs = [&](this auto&& dfs, int l, int r) -> long long {
             // 不拆分
             int x = sum[r] - sum[l];
@@ -101,7 +101,7 @@ func minCost(s string, encCost, flatCost int) int64 {
 		sum[i+1] = sum[i] + int(ch-'0')
 	}
 
-	// 计算 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+	// 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
 	var dfs func(int, int) int
 	dfs = func(l, r int) int {
 		// 不拆分
