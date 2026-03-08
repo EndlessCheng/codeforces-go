@@ -12,7 +12,7 @@
 
 代码实现时，可以先把 $\textit{sum}$ 算出来，然后倒着遍历 $\textit{nums}$，同时计算 $\textit{mul}$。这样做，$\textit{mul}$ 可以简化成一个变量。
 
-此外，当 $i=0$ 时，$\textit{sum}[0] = 0$，$\textit{mul}[0]>0$，所以 $\textit{sum}[0] \ne \textit{mul}[0]$。所以至多循环到 $i=1$ 为止。
+此外，当 $i=0$ 时，$\textit{sum}[0] = 0$，$\textit{mul}[0]>0$，所以 $\textit{sum}[0] \ne \textit{mul}[0]$。所以第二个循环只需循环到 $i=1$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1H6NMzdEbo/)，欢迎点赞关注~
 
