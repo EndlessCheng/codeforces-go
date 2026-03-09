@@ -8,6 +8,6 @@
 - Q3 https://leetcode.cn/problems/minimum-operations-to-sort-a-string/solution/fen-lei-tao-lun-pythonjavacgo-by-endless-s0wo/
 - Q4 https://leetcode.cn/problems/minimum-cost-to-partition-a-binary-string/solution/bao-li-fen-zhi-ji-ke-shi-jian-fu-za-du-o-dm36/
 
-[本题视频讲解](https://www.bilibili.com/video/BV1H6NMzdEbo/?t=2m30s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1H6NMzdEbo/)，欢迎点赞关注~
 
 比赛地址：https://leetcode.cn/contest/weekly-contest-492/
