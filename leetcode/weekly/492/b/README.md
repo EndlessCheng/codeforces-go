@@ -1,3 +1,5 @@
+## 方法一：前后缀分解
+
 定义 $\textit{sum}[i]$ 表示 $[0,i-1]$ 的元素和（前缀和）。特别地，$\textit{sum}[0] = 0$。
 
 定义 $\textit{mul}[i]$ 表示 $[i+1,n-1]$ 的元素积（后缀积）。特别地，$\textit{mul}[n-1] = 1$。
@@ -16,7 +18,7 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1H6NMzdEbo/)，欢迎点赞关注~
 
-## 优化前
+### 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -115,7 +117,7 @@ func smallestBalancedIndex(nums []int) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 优化
+### 优化
 
 先计算 $\textit{nums}$ 的和，然后在倒序遍历的过程中减去遍历的数，也能求出前缀和。这样可以做到 $\mathcal{O}(1)$ 空间。
 
@@ -198,6 +200,94 @@ func smallestBalancedIndex(nums []int) int {
 			break
 		}
 		mul *= nums[i]
+	}
+	return -1
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：相向双指针
+
+由于 $n\le 10^5$ 以及 $\textit{nums}[i]\le 10^9$，所以前缀和不会超过 $10^{14}$。一旦发现后缀积超过 $10^{14}$，那么后续不可能出现前缀和等于后缀积的情况，可以直接返回 $-1$。
+
+```py [sol-Python3]
+class Solution:
+    def smallestBalancedIndex(self, nums: List[int]) -> int:
+        pre, mul = 0, 1
+        l, r = 0, len(nums) - 1
+        while l < r and mul <= 10 ** 14:
+            if pre < mul:
+                pre += nums[l]
+                l += 1
+            else:
+                mul *= nums[r]
+                r -= 1
+        return l if pre == mul else -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int smallestBalancedIndex(int[] nums) {
+        long sum = 0, mul = 1;
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            if (sum < mul) {
+                sum += nums[l++];
+            } else {
+                if (mul > (long) 1e14 / nums[r]) {
+                    return -1;
+                }
+                mul *= nums[r--];
+            }
+        }
+        return sum == mul ? l : -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int smallestBalancedIndex(vector<int>& nums) {
+        long long sum = 0, mul = 1;
+        int l = 0, r = nums.size() - 1;
+        while (l < r) {
+            if (sum < mul) {
+                sum += nums[l++];
+            } else {
+                if (mul > (long long) 1e14 / nums[r]) {
+                    return -1;
+                }
+                mul *= nums[r--];
+            }
+        }
+        return sum == mul ? l : -1;
+    }
+};
+```
+
+```go [sol-Go]
+func smallestBalancedIndex(nums []int) int {
+	sum, mul := 0, 1
+	l, r := 0, len(nums)-1
+	for l < r {
+		if sum < mul {
+			sum += nums[l]
+			l++
+		} else {
+			if mul > 1e14/nums[r] {
+				return -1
+			}
+			mul *= nums[r]
+			r--
+		}
+	}
+	if sum == mul {
+		return l
 	}
 	return -1
 }

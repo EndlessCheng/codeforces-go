@@ -23,7 +23,7 @@ func smallestBalancedIndex1(nums []int) int {
 	return -1
 }
 
-func smallestBalancedIndex(nums []int) int {
+func smallestBalancedIndex2(nums []int) int {
 	n := len(nums)
 	sum := 0
 	for _, x := range nums[:n-1] {
@@ -40,6 +40,27 @@ func smallestBalancedIndex(nums []int) int {
 			break
 		}
 		mul *= nums[i]
+	}
+	return -1
+}
+
+func smallestBalancedIndex(nums []int) int {
+	sum, mul := 0, 1
+	l, r := 0, len(nums)-1
+	for l < r {
+		if sum < mul {
+			sum += nums[l]
+			l++
+		} else {
+			if mul > 1e14/nums[r] {
+				return -1
+			}
+			mul *= nums[r]
+			r--
+		}
+	}
+	if sum == mul {
+		return l
 	}
 	return -1
 }
