@@ -12,38 +12,37 @@ func cf1244G(in io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var n, k int
 	Fscan(in, &n, &k)
-	a := make([]int, n)
-	b := make([]int, n)
-	for i := range a {
-		a[i] = i + 1
-		b[i] = i + 1
+	p := make([]int, n)
+	q := make([]int, n)
+	for i := range p {
+		p[i] = i + 1
+		q[i] = i + 1
 	}
 
-	k0 := k
-	k -= n * (n + 1) / 2
-	if k < 0 {
+	d := k - n*(n+1)/2
+	if d < 0 {
 		Fprintln(out, -1)
 		return
 	}
 
 	l, r := 0, n-1
-	for l < r && k >= r-l {
-		k -= r - l
-		b[l], b[r] = b[r], b[l]
+	for l < r && d >= r-l {
+		d -= r - l
+		q[l], q[r] = q[r], q[l]
 		l++
 		r--
 	}
-	if k > 0 && l < r {
-		b[l], b[l+k] = b[l+k], b[l]
-		k = 0
+	if l < r && d > 0 {
+		q[l], q[l+d] = q[l+d], q[l]
+		d = 0
 	}
 
-	Fprintln(out, k0-k)
-	for _, v := range a {
+	Fprintln(out, k-d)
+	for _, v := range p {
 		Fprint(out, v, " ")
 	}
 	Fprintln(out)
-	for _, v := range b {
+	for _, v := range q {
 		Fprint(out, v, " ")
 	}
 }
