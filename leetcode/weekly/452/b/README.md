@@ -1,8 +1,6 @@
-暴力枚举所有子矩形，把子矩形中的所有元素添加到一个列表 $a$ 中。
+暴力枚举所有子矩形。把子矩形中的所有元素添加到一个数组 $a$ 中，然后把 $a$ 排序。排序后，不同元素之差的最小值一定来自 $a$ 的相邻元素，计算相邻不同元素之差的最小值。
 
-把 $a$ 排序后，不同元素之差的最小值一定在相邻元素中，计算相邻不同元素之差的最小值。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1Dz76zfEdi/?t=10m54s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Dz76zfEdi/?t=10m54s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -14,12 +12,12 @@ class Solution:
             for j in range(n - k + 1):
                 a = []
                 for row in sub_grid:
-                    a.extend(row[j: j + k])
+                    a += row[j: j + k]
                 a.sort()
 
                 res = inf
                 for x, y in pairwise(a):
-                    if x < y:
+                    if x < y:  # 题目要求相减的两个数必须不同
                         res = min(res, y - x)
                 if res < inf:
                     ans[i][j] = res
@@ -45,7 +43,7 @@ class Solution {
 
                 int res = Integer.MAX_VALUE;
                 for (int p = 1; p < a.length; p++) {
-                    if (a[p] > a[p - 1]) {
+                    if (a[p] > a[p - 1]) { // 题目要求相减的两个数必须不同
                         res = Math.min(res, a[p] - a[p - 1]);
                     }
                 }
@@ -77,7 +75,7 @@ public:
 
                 int res = INT_MAX;
                 for (int p = 1; p < a.size(); p++) {
-                    if (a[p] > a[p - 1]) {
+                    if (a[p] > a[p - 1]) { // 题目要求相减的两个数必须不同
                         res = min(res, a[p] - a[p - 1]);
                     }
                 }
@@ -107,7 +105,7 @@ func minAbsDiff(grid [][]int, k int) [][]int {
 
 			res := math.MaxInt
 			for p := 1; p < len(a); p++ {
-				if a[p] > a[p-1] {
+				if a[p] > a[p-1] { // 题目要求相减的两个数必须不同
 					res = min(res, a[p]-a[p-1])
 				}
 			}
@@ -127,7 +125,7 @@ func minAbsDiff(grid [][]int, k int) [][]int {
 
 **注**：考虑用定长滑动窗口 + 有序集合 + 懒删除堆，用有序集合维护窗口（子矩阵）元素，用懒删除堆维护相邻不同元素之差。添加删除的时候更新相邻不同元素之差。
 
-这样可以做到 $\mathcal{O}((m-k)nk\log k)$，但常数非常大。
+这样可以做到 $\mathcal{O}((m-k)nk\log k)$，但常数比较大。
 
 ## 分类题单
 
@@ -143,7 +141,7 @@ func minAbsDiff(grid [][]int, k int) [][]int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
