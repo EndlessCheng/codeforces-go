@@ -63,6 +63,8 @@ $$
 
 请看 [视频讲解](https://www.bilibili.com/video/BV16t421c7GB/) 第四题，欢迎点赞关注~
 
+> **注**：也可以从枚举最后一段有多少个 $0$（或者 $1$）入手，用前缀和优化 DP（或者滑动窗口优化 DP）做。可以先做做我 DP 题单中的前缀和优化 DP，再来做这题。
+
 ```py [sol-Python3]
 class Solution:
     def numberOfStableArrays(self, zero: int, one: int, limit: int) -> int:
