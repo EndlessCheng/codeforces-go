@@ -558,7 +558,7 @@ func maxStability(n int, edges [][]int, k int) int {
 - 时间复杂度：$\mathcal{O}((n+m\log n)\log U)$，其中 $m$ 是 $\textit{edges}$ 的长度，$U=\max(s_i) - \min(s_i)$（常数系数可以忽略）。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-**注**：缩点建图 + DFS/BFS 判断是否连通，可以做到 $\mathcal{O}((n+m)\log U)$。
+**注**：如果改成缩点建图 + DFS/BFS 判断是否连通，可以做到 $\mathcal{O}((n+m)\log U)$。
 
 ## 方法二：Kruskal 算法
 
@@ -942,10 +942,9 @@ class Solution:
         if left == 0:  # 只需选必选边
             return min_s1
 
-        ans = min_s1
         # Kruskal 求最大生成树
         edges.sort(key=lambda e: -e[2])
-        a = []
+        ans = min_s1
         for x, y, s, must in edges:
             if not must and uf.merge(x, y):
                 ans = min(ans, s if left > k else s * 2)
@@ -1019,10 +1018,9 @@ class Solution {
             return minS1;
         }
 
-        int ans = minS1;
         // Kruskal 求最大生成树
         Arrays.sort(edges, (a, b) -> b[2] - a[2]);
-        List<Integer> a = new ArrayList<>();
+        int ans = minS1;
         for (int[] e : edges) {
             int x = e[0], y = e[1], s = e[2], must = e[3];
             if (must == 0 && uf.merge(x, y)) {
@@ -1100,10 +1098,9 @@ public:
             return min_s1;
         }
 
-        int ans = min_s1;
         // Kruskal 求最大生成树
         ranges::sort(edges, {}, [](auto& e) { return -e[2]; });
-        vector<int> a;
+        int ans = min_s1;
         for (auto& e : edges) {
             int x = e[0], y = e[1], s = e[2], must = e[3];
             if (!must && uf.merge(x, y)) {
@@ -1181,9 +1178,9 @@ func maxStability(n int, edges [][]int, k int) int {
 		return minS1
 	}
 
-	ans := minS1
 	// Kruskal 算法求最大生成树
 	slices.SortFunc(edges, func(a, b []int) int { return b[2] - a[2] })
+	ans := minS1
 	for _, e := range edges {
 		x, y, s, must := e[0], e[1], e[2], e[3]
 		if must == 0 && uf.merge(x, y) {
@@ -1227,7 +1224,9 @@ func maxStability(n int, edges [][]int, k int) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
