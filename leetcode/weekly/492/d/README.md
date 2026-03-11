@@ -13,6 +13,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1H6NMzdEbo/?t=47m48s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minCost(self, s: str, encCost: int, flatCost: int) -> int:
@@ -109,6 +111,134 @@ func minCost(s string, encCost, flatCost int) int64 {
 		if x := sum[r] - sum[l]; x > 0 {
 			res = (r - l) * x * encCost
 		}
+
+		// 拆分
+		if (r-l)%2 == 0 {
+			m := (l + r) / 2
+			res = min(res, dfs(l, m)+dfs(m, r))
+		}
+
+		return res
+	}
+	return int64(dfs(0, n))
+}
+```
+
+## 优化
+
+当 $x = 0$ 时，由于拆分后，子串的 $x$ 仍然是 $0$，所以费用是 $2\cdot \textit{flatCost}$，大于不拆分的费用 $\textit{flatCost}$。如果继续拆分，费用只会越来越大，都会大于不拆分的费用 $\textit{flatCost}$。
+
+所以当 $x=0$ 时，直接返回 $\textit{flatCost}$ 即可。
+
+```py [sol-Python3]
+class Solution:
+    def minCost(self, s: str, encCost: int, flatCost: int) -> int:
+        n = len(s)
+        pre = list(accumulate(map(int, s), initial=0))
+
+        # 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+        def dfs(l: int, r: int) -> int:
+            x = pre[r] - pre[l]
+            if x == 0:
+                return flatCost           
+
+            # 不拆分
+            res = (r - l) * x * encCost
+
+            # 拆分
+            if (r - l) % 2 == 0:
+                m = (l + r) // 2
+                res = min(res, dfs(l, m) + dfs(m, r))
+
+            return res
+
+        return dfs(0, n)
+```
+
+```java [sol-Java]
+class Solution {
+    public long minCost(String s, int encCost, int flatCost) {
+        int n = s.length();
+        int[] sum = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            sum[i + 1] = sum[i] + (s.charAt(i) - '0');
+        }
+        return dfs(0, n, sum, encCost, flatCost);
+    }
+
+    // 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+    private long dfs(int l, int r, int[] sum, int encCost, int flatCost) {
+        int x = sum[r] - sum[l];
+        if (x == 0) {
+            return flatCost;
+        }
+
+        // 不拆分
+        long res = (long) (r - l) * x * encCost;
+
+        // 拆分
+        if ((r - l) % 2 == 0) {
+            int m = (l + r) / 2;
+            res = Math.min(res, dfs(l, m, sum, encCost, flatCost) + dfs(m, r, sum, encCost, flatCost));
+        }
+
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minCost(string s, int encCost, int flatCost) {
+        int n = s.size();
+        vector<int> sum(n + 1);
+        for (int i = 0; i < n; i++) {
+            sum[i + 1] = sum[i] + (s[i] - '0');
+        }
+
+        // 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+        auto dfs = [&](this auto&& dfs, int l, int r) -> long long {
+            int x = sum[r] - sum[l];
+            if (x == 0) {
+                return flatCost;
+            }
+
+            // 不拆分
+            long long res = 1LL * (r - l) * x * encCost;
+
+            // 拆分
+            if ((r - l) % 2 == 0) {
+                int m = (l + r) / 2;
+                res = min(res, dfs(l, m) + dfs(m, r));
+            }
+
+            return res;
+        };
+
+        return dfs(0, n);
+    }
+};
+```
+
+```go [sol-Go]
+func minCost(s string, encCost, flatCost int) int64 {
+	n := len(s)
+	sum := make([]int, n+1)
+	for i, ch := range s {
+		sum[i+1] = sum[i] + int(ch-'0')
+	}
+
+	// 计算子串 [l, r) 的最小费用，注意区间是左闭右开，方便计算
+	var dfs func(int, int) int
+	dfs = func(l, r int) int {
+		x := sum[r] - sum[l]
+		if x == 0 {
+			return flatCost
+		}
+
+		// 不拆分
+		res := (r - l) * x * encCost
 
 		// 拆分
 		if (r-l)%2 == 0 {
