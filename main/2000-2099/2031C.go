@@ -24,7 +24,7 @@ func cf2031C(in io.Reader, _w io.Writer) {
 			Print(a...)
 			n -= 27
 			for i := 14; i < 14+n/2; i++ {
-				Fprint(out, i, " ", i, " ")
+				Fprint(out, " ", i, " ", i)
 			}
 		}
 		Fprintln(out)
