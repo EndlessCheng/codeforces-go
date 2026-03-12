@@ -2,18 +2,21 @@
 
 循环 $\textit{mountainHeight}$ 次，每次选一个「工作后总用时」最短的工人，把山的高度降低 $1$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1WRtDejEjD/)，欢迎点赞关注~
+注意工人们是**同时**工作的，这个算法不是贪心，是按照事件发生顺序的模拟。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1WRtDejEjD/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def minNumberOfSeconds(self, mountainHeight: int, workerTimes: List[int]) -> int:
         h = [(t, t, t) for t in workerTimes]
         heapify(h)
+
         for _ in range(mountainHeight):
             # 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
-            nxt, delta, base = h[0]
-            heapreplace(h, (nxt + delta + base, delta + base, base))
-        return nxt  # 最后一个出堆的 nxt 即为答案
+            total, cur, base = h[0]
+            heapreplace(h, (total + cur + base, cur + base, base))
+        return total  # 最后一个出堆的 total 即为答案
 ```
 
 ```java [sol-Java]
@@ -23,13 +26,14 @@ class Solution {
         for (int t : workerTimes) {
             pq.offer(new long[]{t, t, t});
         }
+
         long ans = 0;
         while (mountainHeight-- > 0) {
             // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
-            long[] w = pq.poll();
-            long nxt = w[0], delta = w[1], base = w[2];
-            ans = nxt; // 最后一个出堆的 nxt 即为答案
-            pq.offer(new long[]{nxt + delta + base, delta + base, base});
+            long[] top = pq.poll();
+            long total = top[0], cur = top[1], base = top[2];
+            ans = total; // 最后一个出堆的 total 即为答案
+            pq.offer(new long[]{total + cur + base, cur + base, base});
         }
         return ans;
     }
@@ -44,12 +48,13 @@ public:
         for (int t : workerTimes) {
             pq.emplace(t, t, t);
         }
+
         long long ans = 0;
         while (mountainHeight--) {
             // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
-            auto [nxt, delta, base] = pq.top(); pq.pop();
-            ans = nxt; // 最后一个出堆的 nxt 即为答案
-            pq.emplace(nxt + delta + base, delta + base, base);
+            auto [total, cur, base] = pq.top(); pq.pop();
+            ans = total; // 最后一个出堆的 total 即为答案
+            pq.emplace(total + cur + base, cur + base, base);
         }
         return ans;
     }
@@ -65,20 +70,20 @@ func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 	heap.Init(&h)
 
 	ans := 0
-	for ; mountainHeight > 0; mountainHeight-- {
-		ans = h[0].nxt // 最后一个出堆的 nxt 即为答案
-		h[0].delta += h[0].base
-		h[0].nxt += h[0].delta
+	for range mountainHeight {
+		ans = h[0].total // 最后一个出堆的 total 即为答案
+		h[0].cur += h[0].base
+		h[0].total += h[0].cur
 		heap.Fix(&h, 0)
 	}
 	return int64(ans)
 }
 
 // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
-type worker struct{ nxt, delta, base int }
+type worker struct{ total, cur, base int }
 type hp []worker
 func (h hp) Len() int           { return len(h) }
-func (h hp) Less(i, j int) bool { return h[i].nxt < h[j].nxt }
+func (h hp) Less(i, j int) bool { return h[i].total < h[j].total }
 func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (hp) Push(any)             {}
 func (hp) Pop() (_ any)         { return }
@@ -120,6 +125,8 @@ $$
 $$
 \left\lfloor \dfrac{-1 + \sqrt{1 + 8k}}{2} \right\rfloor = \left\lfloor \dfrac{-1 + \lfloor\sqrt{1 + 8k}\rfloor}{2} \right\rfloor
 $$
+
+上式是个关于下取整的恒等式，理由见 [下取整恒等式及其应用](https://zhuanlan.zhihu.com/p/1893240318645732760)。
 
 累加上式，如果和 $\ge \textit{mountainHeight}$，则说明答案 $\le m$，否则说明答案 $> m$。
 
@@ -247,7 +254,7 @@ func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 
 ## 专题训练
 
-见下面二分题单中的「**二分答案：求最小**」。
+见下面二分题单的「**二分答案：求最小**」。
 
 ## 分类题单
 
@@ -263,7 +270,7 @@ func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)

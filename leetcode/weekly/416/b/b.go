@@ -25,7 +25,7 @@ func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 	return int64(ans)
 }
 
-func minNumberOfSeconds2(mountainHeight int, workerTimes []int) int64 {
+func minNumberOfSeconds1(mountainHeight int, workerTimes []int) int64 {
 	h := make(hp, len(workerTimes))
 	for i, t := range workerTimes {
 		h[i] = worker{t, t, t}
@@ -33,20 +33,21 @@ func minNumberOfSeconds2(mountainHeight int, workerTimes []int) int64 {
 	heap.Init(&h)
 
 	ans := 0
-	for ; mountainHeight > 0; mountainHeight-- {
-		ans = h[0].nxt
-		h[0].delta += h[0].base
-		h[0].nxt += h[0].delta
+	for range mountainHeight {
+		ans = h[0].total // 最后一个出堆的 total 即为答案
+		h[0].cur += h[0].base
+		h[0].total += h[0].cur
 		heap.Fix(&h, 0)
 	}
 	return int64(ans)
 }
 
-type worker struct{ nxt, delta, base int }
+// 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
+type worker struct{ total, cur, base int }
 type hp []worker
 
 func (h hp) Len() int           { return len(h) }
-func (h hp) Less(i, j int) bool { return h[i].nxt < h[j].nxt }
+func (h hp) Less(i, j int) bool { return h[i].total < h[j].total }
 func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (hp) Push(any)             {}
 func (hp) Pop() (_ any)         { return }
