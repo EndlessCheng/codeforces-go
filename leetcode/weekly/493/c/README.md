@@ -30,12 +30,12 @@ $$
 
 还有四种特殊情况：
 
-- 只满足 $a[i-1] - a[i-2] = d$，拼接后的等差子数组的长度为 $\textit{pre}[i-1] + 2$。
-- 只满足 $a[i+2] - a[i+1] = d$，拼接后的等差子数组的长度为 $\textit{suf}[i+1] + 2$。
+- 只满足 $a[i-1] - a[i-2] = d$，只能在 $\textit{pre}[i-1]$ 的后面拼接 $a[i]$ 和 $a[i+1]$，拼接后的等差子数组的长度为 $\textit{pre}[i-1] + 2$。
+- 只满足 $a[i+2] - a[i+1] = d$，只能在 $\textit{suf}[i+1]$ 的前面拼接 $a[i]$ 和 $a[i-1]$，拼接后的等差子数组的长度为 $\textit{suf}[i+1] + 2$。
 - 修改 $a[i]$，拼在 $\textit{pre}[i-1]$ 的后面，拼接后的等差子数组的长度为 $\textit{pre}[i-1] + 1$。
 - 修改 $a[i]$，拼在 $\textit{suf}[i+1]$ 的前面，拼接后的等差子数组的长度为 $\textit{suf}[i+1] + 1$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1DvwTzbE1n/?t=11m23s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -64,8 +64,7 @@ class Solution:
         for i in range(1, n - 1):
             # 把 nums[i] 改成 d2 / 2
             d2 = nums[i + 1] - nums[i - 1]
-            if d2 % 2:
-                # d2 / 2 必须是整数
+            if d2 % 2:  # d2 / 2 必须是整数
                 continue
 
             ok_left = i > 1 and nums[i - 1] - nums[i - 2] == d2 // 2
