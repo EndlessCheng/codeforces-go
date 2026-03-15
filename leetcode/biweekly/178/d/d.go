@@ -11,11 +11,12 @@ import (
 var goodNums []int
 
 func init() {
+	// 枚举 {0,1,2,...,9} 的非空子集
 	for mask := 1; mask < 1<<10; mask++ {
 		// 构造严格递减好数
 		x := 0
 		sum := 0
-		for i := 9; i >= 0; i-- {
+		for i := 9; i >= 0; i-- { // 从大到小遍历子集中的元素
 			if mask>>i&1 > 0 {
 				x = x*10 + i
 				sum += i
@@ -31,7 +32,7 @@ func init() {
 		}
 		x = 0
 		sum = 0
-		for i := 1; i < 10; i++ {
+		for i := 1; i < 10; i++ { // 从小到大遍历子集中的元素
 			if mask>>i&1 > 0 {
 				x = x*10 + i
 				sum += i

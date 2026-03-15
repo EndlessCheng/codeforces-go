@@ -1,4 +1,7 @@
-**前置知识**：见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/)「**十、数位 DP**」的两个讲解视频。
+**前置知识**：
+
+1. [数位 DP v1.0 模板讲解](https://www.bilibili.com/video/BV1rS4y1s721/?t=19m36s)
+2. [数位 DP v2.0 模板讲解](https://www.bilibili.com/video/BV1Fg4y1Q7wv/?t=31m28s)（上下界数位 DP）
 
 对于本题，需要在模板的基础上，添加三个参数：
 
@@ -30,7 +33,7 @@
 
 递归边界：如果 $\textit{state} \ne 3$，或者 $\textit{digitSum}$ 是好数，那么找到了一个合法方案（奇妙数），返回 $1$；否则返回 $0$。
 
-下午两点 B站@灵茶山艾府 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV111wTzQEbp/?t=13m6s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -379,9 +382,9 @@ func countFancy(l, r int64) int64 {
 
 第二个问题，我们可以直接枚举所有的好数。怎么枚举？
 
-由于好数是严格递增或者严格递减的，所以**各个数位互不相同**。我们可以枚举 $\{0,1,2,\ldots,9\}$ 的**子集**，把子集排成严格递减或者严格递增，就枚举了所有的好数。注意严格递增的好数不能包含 $0$（无前导零）。
+由于好数是严格递增或者严格递减的，所以**各个数位互不相同**。我们可以枚举 $\{0,1,2,\ldots,9\}$ 的非空**子集**，把子集排成严格递减或者严格递增，就枚举了所有的好数。注意严格递增的好数不能包含 $0$（无前导零）。
 
-如何枚举子集？见 [78. 子集](https://leetcode.cn/problems/subsets/)。
+如何枚举子集？见 [78. 子集](https://leetcode.cn/problems/subsets/)，下面用的是 [我的题解](https://leetcode.cn/problems/subsets/solutions/2059409/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-8tkl/) 的方法三。
 
 ```py [sol-Python3]
 # 判断数位和 s 是否为好数
@@ -395,10 +398,11 @@ def is_good(s: int) -> bool:
 # 预处理数位和不是好数的好数（只有 139 个）
 good_nums = []
 
+# 枚举 {0,1,2,...,9} 的非空子集
 for mask in range(1, 1 << 10):
     # 构造严格递减好数
     x = s = 0
-    for i in range(9, -1, -1):
+    for i in range(9, -1, -1):  # 从大到小遍历子集中的元素
         if mask >> i & 1:
             x = x * 10 + i
             s += i
@@ -409,7 +413,7 @@ for mask in range(1, 1 << 10):
     if mask & 1:  # 不能包含 0
         continue
     x = s = 0
-    for i in range(1, 10):
+    for i in range(1, 10):  # 从小到大遍历子集中的元素
         if mask >> i & 1:
             x = x * 10 + i
             s += i
@@ -471,11 +475,12 @@ class Solution {
         }
         initialized = true;
 
+        // 枚举 {0,1,2,...,9} 的非空子集
         for (int mask = 1; mask < (1 << 10); mask++) {
             // 构造严格递减好数
             long x = 0;
             int sum = 0;
-            for (int i = 9; i >= 0; i--) {
+            for (int i = 9; i >= 0; i--) { // 从大到小遍历子集中的元素
                 if ((mask >> i & 1) > 0) {
                     x = x * 10 + i;
                     sum += i;
@@ -491,7 +496,7 @@ class Solution {
             }
             x = 0;
             sum = 0;
-            for (int i = 1; i < 10; i++) {
+            for (int i = 1; i < 10; i++) { // 从小到大遍历子集中的元素
                 if ((mask >> i & 1) > 0) {
                     x = x * 10 + i;
                     sum += i;
@@ -585,11 +590,12 @@ bool is_good(int s) {
 vector<long long> good_nums;
 
 int initGoodNums = []() {
+    // 枚举 {0,1,2,...,9} 的非空子集
     for (int mask = 1; mask < (1 << 10); mask++) {
         // 构造严格递减好数
         long long x = 0;
         int sum = 0;
-        for (int i = 9; i >= 0; i--) {
+        for (int i = 9; i >= 0; i--) { // 从大到小遍历子集中的元素
             if (mask >> i & 1) {
                 x = x * 10 + i;
                 sum += i;
@@ -605,7 +611,7 @@ int initGoodNums = []() {
         }
         x = 0;
         sum = 0;
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i < 10; i++) { // 从小到大遍历子集中的元素
             if (mask >> i & 1) {
                 x = x * 10 + i;
                 sum += i;
@@ -676,11 +682,12 @@ public:
 var goodNums []int
 
 func init() {
+	// 枚举 {0,1,2,...,9} 的非空子集
 	for mask := 1; mask < 1<<10; mask++ {
 		// 构造严格递减好数
 		x := 0
 		sum := 0
-		for i := 9; i >= 0; i-- {
+		for i := 9; i >= 0; i-- { // 从大到小遍历子集中的元素
 			if mask>>i&1 > 0 {
 				x = x*10 + i
 				sum += i
@@ -696,7 +703,7 @@ func init() {
 		}
 		x = 0
 		sum = 0
-		for i := 1; i < 10; i++ {
+		for i := 1; i < 10; i++ { // 从小到大遍历子集中的元素
 			if mask>>i&1 > 0 {
 				x = x*10 + i
 				sum += i
