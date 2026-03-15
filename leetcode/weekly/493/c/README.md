@@ -45,7 +45,7 @@ class Solution:
         pre[0] = 1
         pre[1] = 2
         for i in range(2, n):
-            if nums[i - 2] + nums[i] == 2 * nums[i - 1]:  # 三个数等差
+            if nums[i - 2] + nums[i] == nums[i - 1] * 2:  # 三个数等差
                 pre[i] = pre[i - 1] + 1
             else:
                 pre[i] = 2
@@ -129,7 +129,7 @@ class Solution {
         pre[0] = 1;
         pre[1] = 2;
         for (int i = 2; i < n; i++) {
-            if (nums[i - 2] + nums[i] == 2 * nums[i - 1]) { // 三个数等差
+            if (nums[i - 2] + nums[i] == nums[i - 1] * 2) { // 三个数等差
                 pre[i] = pre[i - 1] + 1;
             } else {
                 pre[i] = 2;
@@ -156,7 +156,7 @@ class Solution {
         pre[0] = 1;
         pre[1] = 2;
         for (int i = 2; i < n; i++) {
-            if (nums[i - 2] + nums[i] == 2 * nums[i - 1]) { // 三个数等差
+            if (nums[i - 2] + nums[i] == nums[i - 1] * 2) { // 三个数等差
                 pre[i] = pre[i - 1] + 1;
             } else {
                 pre[i] = 2;
@@ -255,6 +255,92 @@ func longestArithmetic(nums []int) (ans int) {
 
 	return ans
 }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 附：状态机 DP 做法
+
+后面补充其他语言。
+
+```py
+class Solution:
+    def longestArithmetic(self, nums: List[int]) -> int:
+        # 返回以 i 结尾的最长等差子数组的长度，其中 nums[i] 不改
+        # left 表示剩余操作次数
+        @cache
+        def dfs(i: int, left: int) -> int:
+            if i <= 1:
+                return i + 1  # 等差子数组 [0, i]，长为 i+1
+
+            # 不改
+            res = 2  # 等差子数组 [i-1, i]，长为 2
+            if nums[i - 2] + nums[i] == nums[i - 1] * 2:  # 三个数等差
+                res = dfs(i - 1, left) + 1  # 以 i-1 结尾的最长等差子数组 + [i, i]
+
+            if left:
+                res = max(res, 3)  # 改 nums[i-2]，得到等差子数组 [i-2, i]，长为 3
+                if i >= 3:
+                    # 改 nums[i-1]
+                    if (nums[i - 2] - nums[i - 3]) * 2 == nums[i] - nums[i - 2]:
+                        res = max(res, dfs(i - 2, 0) + 2)  # 以 i-2 结尾的最长等差子数组 + [i-1, i]
+
+                    # 改 nums[i-2]
+                    d = nums[i] - nums[i - 1]
+                    if nums[i - 1] - nums[i - 3] == d * 2:
+                        res = max(res, 4)  # 等差子数组 [i-3, i]，长为 4
+                        if i >= 4 and nums[i - 3] - nums[i - 4] == d:
+                            res = max(res, dfs(i - 3, 0) + 3)  # 以 i-3 结尾的最长等差子数组 + [i-2, i]
+
+            return res
+
+        n = len(nums)
+        ans1 = max(dfs(i, 1) for i in range(n))  # 不改 nums[i]
+        ans2 = max(dfs(i - 1, 0) for i in range(1, n)) + 1  # 改 nums[i]
+        return max(ans1, ans2)
+```
+
+1:1 翻译成递推：
+
+```py
+# 手写 max 更快
+fmax = lambda a, b: b if b > a else a
+
+class Solution:
+    def longestArithmetic(self, nums: List[int]) -> int:
+        n = len(nums)
+        f = [[0, 0] for _ in range(n)]
+        f[0][0] = f[0][1] = 1
+        f[1][0] = f[1][1] = 2
+        for i in range(2, n):
+            for left in range(2):
+                # 不改
+                res = 2  # 等差子数组 [i-1, i]，长为 2
+                if nums[i - 2] + nums[i] == nums[i - 1] * 2:  # 三个数等差
+                    res = f[i - 1][left] + 1  # 以 i-1 结尾的最长等差子数组 + [i, i]
+
+                if left:
+                    res = fmax(res, 3)  # 改 nums[i-2]，得到等差子数组 [i-2, i]，长为 3
+                    if i >= 3:
+                        # 改 nums[i-1]
+                        if (nums[i - 2] - nums[i - 3]) * 2 == nums[i] - nums[i - 2]:
+                            res = fmax(res, f[i - 2][0] + 2)  # 以 i-2 结尾的最长等差子数组 + [i-1, i]
+
+                        # 改 nums[i-2]
+                        d = nums[i] - nums[i - 1]
+                        if nums[i - 1] - nums[i - 3] == d * 2:
+                            res = fmax(res, 4)  # 等差子数组 [i-3, i]，长为 4
+                            if i >= 4 and nums[i - 3] - nums[i - 4] == d:
+                                res = fmax(res, f[i - 3][0] + 3)  # 以 i-3 结尾的最长等差子数组 + [i-2, i]
+
+                f[i][left] = res
+
+        ans1 = max(f[i][1] for i in range(n))  # 不改 nums[i]
+        ans2 = max(f[i][0] for i in range(n - 1)) + 1  # 改 nums[i+1]
+        return max(ans1, ans2)
 ```
 
 #### 复杂度分析
