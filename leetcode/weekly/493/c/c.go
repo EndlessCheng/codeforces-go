@@ -18,7 +18,7 @@ func calc(nums []int) []int {
 	return pre
 }
 
-func longestArithmetic(nums []int) (ans int) {
+func longestArithmetic1(nums []int) (ans int) {
 	n := len(nums)
 	pre := calc(nums)
 	ans = slices.Max(pre) + 1
@@ -52,4 +52,43 @@ func longestArithmetic(nums []int) (ans int) {
 	}
 
 	return ans
+}
+
+func longestArithmetic(nums []int) (ans int) {
+	n := len(nums)
+	for i := 1; ; {
+		// 枚举 i-1 和 i 作为等差子数组的前两项，且我们不改 nums[i-1] 和 nums[i]
+		start := i - 1
+		d := nums[i] - nums[i-1]
+
+		// 往右移动，直到 nums[i] 不满足等差
+		for i++; i < n && nums[i]-nums[i-1] == d; i++ {
+		}
+
+		// 现在 [start, i-1] 是等差子数组
+		// 要想让子数组更长，要么改 nums[start-1]，要么改 nums[i]
+
+		// 改 nums[start-1]
+		if start >= 2 && nums[start]-nums[start-2] == d*2 { // 可以和 nums[start-2] 连起来
+			ans = max(ans, i-start+2) // 等差子数组 [start-2, i-1]
+			// 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+		} else { // 子数组左端点最远只能到 max(start-1,0)
+			ans = max(ans, i-max(start-1, 0)) // 等差子数组 [max(start-1,0), i-1]
+		}
+
+		if i == n {
+			return
+		}
+
+		// 改 nums[i]
+		if i < n-1 && nums[i+1]-nums[i-1] == d*2 { // 可以和 nums[i+1] 连起来
+			// 继续往右延长
+			j := i + 2
+			for ; j < n && nums[j]-nums[j-1] == d; j++ {
+			}
+			ans = max(ans, j-start) // 等差子数组 [start, j-1]
+		} else { // 子数组右端点最远只能到 i
+			ans = max(ans, i-start+1) // 等差子数组 [start, i]
+		}
+	}
 }

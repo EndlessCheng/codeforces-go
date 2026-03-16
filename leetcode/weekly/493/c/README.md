@@ -1,3 +1,5 @@
+## 方法一：前后缀分解
+
 推荐先完成本题的简单版本：[3738. 替换至多一个元素后最长非递减子数组](https://leetcode.cn/problems/longest-non-decreasing-subarray-after-replacing-at-most-one-element/)。
 
 为方便描述，下文把 $\textit{nums}$ 简称为 $a$。
@@ -262,9 +264,207 @@ func longestArithmetic(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 附：状态机 DP 做法
+## 方法二：分组循环
 
-后面补充其他语言。
+**适用场景**：按照题目要求，数组会被分割成若干组，每一组的判断/处理逻辑是相同的。
+
+**核心思想**：
+
+- 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
+- 内层循环负责遍历组，找出这一组最远在哪结束。
+
+这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
+
+[例题讲解](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solutions/2528771/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
+
+对于本题，$\textit{nums}$ 包含若干段等差子数组。修改等差子数组的中间元素是无意义的（值没变），所以修改操作只会发生在等差子数组的端点旁边。用分组循环找到等差子数组的端点。
+
+```py [sol-Python3]
+# 手写 max 更快
+max = lambda a, b: b if b > a else a
+
+class Solution:
+    def longestArithmetic(self, nums: List[int]) -> int:
+        ans = 0
+        n = len(nums)
+        i = 1
+        while True:
+            # 枚举 i-1 和 i 作为等差子数组的前两项，且我们不改 nums[i-1] 和 nums[i]
+            start = i - 1
+            d = nums[i] - nums[i - 1]
+
+            # 往右移动，直到 nums[i] 不满足等差
+            i += 1
+            while i < n and nums[i] - nums[i - 1] == d:
+                i += 1
+
+            # 现在 [start, i-1] 是等差子数组
+            # 要想让子数组更长，要么改 nums[start-1]，要么改 nums[i]
+
+            # 改 nums[start-1]
+            if start >= 2 and nums[start] - nums[start - 2] == d * 2:  # 可以和 nums[start-2] 连起来
+                ans = max(ans, i - start + 2)  # 等差子数组 [start-2, i-1]
+                # 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+            else:  # 子数组左端点最远只能到 max(start-1,0)
+                ans = max(ans, i - max(start - 1, 0))  # 等差子数组 [max(start-1,0), i-1]
+
+            if i == n:
+                return ans
+
+            # 改 nums[i]
+            if i < n - 1 and nums[i + 1] - nums[i - 1] == d * 2:  # 可以和 nums[i+1] 连起来
+                # 继续往右延长
+                j = i + 2
+                while j < n and nums[j] - nums[j - 1] == d:
+                    j += 1
+                ans = max(ans, j - start)  # 等差子数组 [start, j-1]
+            else:  # 子数组右端点最远只能到 i
+                ans = max(ans, i - start + 1)  # 等差子数组 [start, i]
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestArithmetic(int[] nums) {
+        int ans = 0;
+        int n = nums.length;
+        int i = 1;
+        while (true) {
+            // 枚举 i-1 和 i 作为等差子数组的前两项，且我们不改 nums[i-1] 和 nums[i]
+            int start = i - 1;
+            int d = nums[i] - nums[i - 1];
+
+            // 往右移动，直到 nums[i] 不满足等差
+            i++;
+            while (i < n && nums[i] - nums[i - 1] == d) {
+                i++;
+            }
+
+            // 现在 [start, i-1] 是等差子数组
+            // 要想让子数组更长，要么改 nums[start-1]，要么改 nums[i]
+
+            // 改 nums[start-1]
+            if (start >= 2 && nums[start] - nums[start - 2] == d * 2) { // 可以和 nums[start-2] 连起来
+                ans = Math.max(ans, i - start + 2); // 等差子数组 [start-2, i-1]
+                // 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+            } else { // 子数组左端点最远只能到 max(start-1,0)
+                ans = Math.max(ans, i - Math.max(start - 1, 0)); // 等差子数组 [max(start-1,0), i-1]
+            }
+
+            if (i == n) {
+                return ans;
+            }
+
+            // 改 nums[i]
+            if (i < n - 1 && nums[i + 1] - nums[i - 1] == d * 2) { // 可以和 nums[i+1] 连起来
+                // 继续往右延长
+                int j = i + 2;
+                while (j < n && nums[j] - nums[j - 1] == d) {
+                    j++;
+                }
+                ans = Math.max(ans, j - start); // 等差子数组 [start, j-1]
+            } else { // 子数组右端点最远只能到 i
+                ans = Math.max(ans, i - start + 1); // 等差子数组 [start, i]
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestArithmetic(vector<int>& nums) {
+        int ans = 0;
+        int i = 1, n = nums.size();
+        while (true) {
+            // 枚举 i-1 和 i 作为等差子数组的前两项，且我们不改 nums[i-1] 和 nums[i]
+            int start = i - 1;
+            int d = nums[i] - nums[i - 1];
+
+            // 往右移动，直到 nums[i] 不满足等差
+            i++;
+            while (i < n && nums[i] - nums[i - 1] == d) {
+                i++;
+            }
+
+            // 现在 [start, i-1] 是等差子数组
+            // 要想让子数组更长，要么改 nums[start-1]，要么改 nums[i]
+
+            // 改 nums[start-1]
+            if (start >= 2 && nums[start] - nums[start - 2] == d * 2) { // 可以和 nums[start-2] 连起来
+                ans = max(ans, i - start + 2); // 等差子数组 [start-2, i-1]
+                // 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+            } else { // 子数组左端点最远只能到 max(start-1,0)
+                ans = max(ans, i - max(start - 1, 0)); // 等差子数组 [max(start-1,0), i-1]
+            }
+
+            if (i == n) {
+                return ans;
+            }
+
+            // 改 nums[i]
+            if (i < n - 1 && nums[i + 1] - nums[i - 1] == d * 2) { // 可以和 nums[i+1] 连起来
+                // 继续往右延长
+                int j = i + 2;
+                while (j < n && nums[j] - nums[j - 1] == d) {
+                    j++;
+                }
+                ans = max(ans, j - start); // 等差子数组 [start, j-1]
+            } else { // 子数组右端点最远只能到 i
+                ans = max(ans, i - start + 1); // 等差子数组 [start, i]
+            }
+        }
+    }
+};
+```
+
+```go [sol-Go]
+func longestArithmetic(nums []int) (ans int) {
+	n := len(nums)
+	for i := 1; ; {
+		// 枚举 i-1 和 i 作为等差子数组的前两项，且我们不改 nums[i-1] 和 nums[i]
+		start := i - 1
+		d := nums[i] - nums[i-1]
+
+		// 往右移动，直到 nums[i] 不满足等差
+		for i++; i < n && nums[i]-nums[i-1] == d; i++ {
+		}
+
+		// 现在 [start, i-1] 是等差子数组
+		// 要想让子数组更长，要么改 nums[start-1]，要么改 nums[i]
+
+		// 改 nums[start-1]
+		if start >= 2 && nums[start]-nums[start-2] == d*2 { // 可以和 nums[start-2] 连起来
+			ans = max(ans, i-start+2) // 等差子数组 [start-2, i-1]
+			// 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+		} else { // 子数组左端点最远只能到 max(start-1,0)
+			ans = max(ans, i-max(start-1, 0)) // 等差子数组 [max(start-1,0), i-1]
+		}
+
+		if i == n {
+			return
+		}
+
+		// 改 nums[i]
+		if i < n-1 && nums[i+1]-nums[i-1] == d*2 { // 可以和 nums[i+1] 连起来
+			// 继续往右延长
+			j := i + 2
+			for ; j < n && nums[j]-nums[j-1] == d; j++ {
+			}
+			ans = max(ans, j-start) // 等差子数组 [start, j-1]
+		} else { // 子数组右端点最远只能到 i
+			ans = max(ans, i-start+1) // 等差子数组 [start, i]
+		}
+	}
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个数至多被遍历两次。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 附：状态机 DP 做法
 
 ```py
 class Solution:
