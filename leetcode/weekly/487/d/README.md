@@ -277,7 +277,198 @@ func longestAlternating(nums []int) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 方法二：状态机 DP
+## 方法二：分组循环
+
+**适用场景**：按照题目要求，数组会被分割成若干组，每一组的判断/处理逻辑是相同的。
+
+**核心思想**：
+
+- 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
+- 内层循环负责遍历组，找出这一组最远在哪结束。
+
+这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
+
+[例题讲解](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solutions/2528771/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
+
+对于本题，$\textit{nums}$ 包含若干段交替子数组。删除交替子数组的中间元素是无意义的（反而可能会让子数组变得不交替），所以删除操作只会发生在交替子数组的端点。用分组循环找到交替子数组的端点。
+
+```py [sol-Python3]
+class Solution:
+    def longestAlternating(self, a: List[int]) -> int:
+        ans = 1
+        n = len(a)
+        i = 1
+        while i < n:
+            if a[i - 1] == a[i]:
+                i += 1
+                continue
+
+            # 枚举 i-1 和 i 作为交替子数组的前两项
+            start = i - 1
+            # 往右移动，直到 a[i] 不满足交替
+            i += 1
+            while i < n and a[i] != a[i - 1] and (a[i - 2] < a[i - 1]) != (a[i - 1] < a[i]):
+                i += 1
+
+            # 现在 [start, i-1] 是交替子数组
+            ans = max(ans, i - start)
+
+            if i == n:
+                break
+
+            # 删除 a[i-1] 或者 a[i]
+            # 现在 a[i-2] < a[i-1] <= a[i]，我们期望 a[i-2] < ... > a[i+1]
+            # 或者 a[i-2] > a[i-1] >= a[i]，我们期望 a[i-2] > ... < a[i+1]
+            # 由此可见，删 a[i-1] 比删 a[i] 更好，更能让不等式成立
+            # 注意上面两种情况都说明 a[i-2] != a[i] 一定成立
+            if i < n - 1 and a[i] != a[i + 1] and (a[i - 2] < a[i]) != (a[i] < a[i + 1]):  # 可以和 a[i+1] 连起来
+                # 继续往右延长
+                j = i + 2
+                while j < n and a[j - 1] != a[j] and (a[j - 2] < a[j - 1]) != (a[j - 1] < a[j]):
+                    j += 1
+                ans = max(ans, j - start - 1)  # 交替子数组 [start, i-2] ∪ [i, j-1]
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestAlternating(int[] a) {
+        int ans = 1;
+        int n = a.length;
+        int i = 1;
+        while (i < n) {
+            if (a[i - 1] == a[i]) {
+                i++;
+                continue;
+            }
+
+            // 枚举 i-1 和 i 作为交替子数组的前两项
+            int start = i - 1;
+            // 往右移动，直到 a[i] 不满足交替
+            i++;
+            while (i < n && a[i] != a[i - 1] && (a[i - 2] < a[i - 1]) != (a[i - 1] < a[i])) {
+                i++;
+            }
+
+            // 现在 [start, i-1] 是交替子数组
+            ans = Math.max(ans, i - start);
+
+            if (i == n) {
+                break;
+            }
+
+            // 删除 a[i-1] 或者 a[i]
+            // 现在 a[i-2] < a[i-1] <= a[i]，我们期望 a[i-2] < ... > a[i+1]
+            // 或者 a[i-2] > a[i-1] >= a[i]，我们期望 a[i-2] > ... < a[i+1]
+            // 由此可见，删 a[i-1] 比删 a[i] 更好，更能让不等式成立
+            // 注意上面两种情况都说明 a[i-2] != a[i] 一定成立
+            if (i < n - 1 && a[i] != a[i + 1] && (a[i - 2] < a[i]) != (a[i] < a[i + 1])) { // 可以和 a[i+1] 连起来
+                // 继续往右延长
+                int j = i + 2;
+                while (j < n && a[j - 1] != a[j] && (a[j - 2] < a[j - 1]) != (a[j - 1] < a[j])) {
+                    j++;
+                }
+                ans = Math.max(ans, j - start - 1); // 交替子数组 [start, i-2] ∪ [i, j-1]
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestAlternating(vector<int>& a) {
+        int ans = 1;
+        int i = 1, n = a.size();
+        while (i < n) {
+            if (a[i - 1] == a[i]) {
+                i++;
+                continue;
+            }
+
+            // 枚举 i-1 和 i 作为交替子数组的前两项
+            int start = i - 1;
+            // 往右移动，直到 a[i] 不满足交替
+            i++;
+            while (i < n && a[i] != a[i - 1] && (a[i - 2] < a[i - 1]) != (a[i - 1] < a[i])) {
+                i++;
+            }
+
+            // 现在 [start, i-1] 是交替子数组
+            ans = max(ans, i - start);
+
+            if (i == n) {
+                break;
+            }
+
+            // 删除 a[i-1] 或者 a[i]
+            // 现在 a[i-2] < a[i-1] <= a[i]，我们期望 a[i-2] < ... > a[i+1]
+            // 或者 a[i-2] > a[i-1] >= a[i]，我们期望 a[i-2] > ... < a[i+1]
+            // 由此可见，删 a[i-1] 比删 a[i] 更好，更能让不等式成立
+            // 注意上面两种情况都说明 a[i-2] != a[i] 一定成立
+            if (i < n - 1 && a[i] != a[i + 1] && (a[i - 2] < a[i]) != (a[i] < a[i + 1])) { // 可以和 a[i+1] 连起来
+                // 继续往右延长
+                int j = i + 2;
+                while (j < n && a[j - 1] != a[j] && (a[j - 2] < a[j - 1]) != (a[j - 1] < a[j])) {
+                    j++;
+                }
+                ans = max(ans, j - start - 1); // 交替子数组 [start, i-2] ∪ [i, j-1]
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func longestAlternating(a []int) int {
+	n := len(a)
+	ans := 1
+	for i := 1; i < n; {
+		if a[i-1] == a[i] {
+			i++
+			continue
+		}
+
+		// 枚举 i-1 和 i 作为交替子数组的前两项
+		start := i - 1
+		// 往右移动，直到 a[i] 不满足交替
+		for i++; i < n && a[i] != a[i-1] && (a[i-2] < a[i-1]) != (a[i-1] < a[i]); i++ {
+		}
+
+		// 现在 [start, i-1] 是交替子数组
+		ans = max(ans, i-start)
+
+		if i == n {
+			break
+		}
+
+		// 删除 a[i-1] 或者 a[i]
+		// 现在 a[i-2] < a[i-1] <= a[i]，我们期望 a[i-2] < ... > a[i+1]
+		// 或者 a[i-2] > a[i-1] >= a[i]，我们期望 a[i-2] > ... < a[i+1]
+		// 由此可见，删 a[i-1] 比删 a[i] 更好，更能让不等式成立
+		// 注意上面两种情况都说明 a[i-2] != a[i] 一定成立
+		if i < n-1 && a[i] != a[i+1] && (a[i-2] < a[i]) != (a[i] < a[i+1]) { // 可以和 a[i+1] 连起来
+			// 继续往右延长
+			j := i + 2
+			for ; j < n && a[j-1] != a[j] && (a[j-2] < a[j-1]) != (a[j-1] < a[j]); j++ {
+			}
+			ans = max(ans, j-start-1) // 交替子数组 [start, i-2] ∪ [i, j-1]
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个数至多被遍历两次。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 附：状态机 DP 做法
 
 先想想记忆化搜索怎么写。
 
@@ -423,9 +614,14 @@ func longestAlternating(a []int) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。**注**：用滚动数组可以优化到 $\mathcal{O}(1)$ 空间。
 
+## 相似题目
+
+[3872. 替换最多一个元素后的最长等差子数组](https://leetcode.cn/problems/longest-arithmetic-sequence-after-changing-at-most-one-element/)
+
 ## 专题训练
 
-见下面动态规划题单的「**专题：前后缀分解**」和「**六、状态机 DP**」。
+1. 动态规划题单的「**专题：前后缀分解**」和「**六、状态机 DP**」。
+2. 双指针题单的「**六、分组循环**」。
 
 ## 分类题单
 

@@ -66,7 +66,7 @@ func longestAlternating1(nums []int) int {
 	return ans
 }
 
-func longestAlternating(a []int) int {
+func longestAlternating2(a []int) int {
 	n := len(a)
 	f := make([][2][2]int, n)
 	for i := range f {
@@ -91,6 +91,44 @@ func longestAlternating(a []int) int {
 			f[i][1][inc] = max(f[i][1][inc], f[i-2][0][inc^1]+1)
 		}
 		ans = max(ans, f[i][1][0], f[i][1][1])
+	}
+	return ans
+}
+
+func longestAlternating(a []int) int {
+	n := len(a)
+	ans := 1
+	for i := 1; i < n; {
+		if a[i-1] == a[i] {
+			i++
+			continue
+		}
+
+		// 枚举 i-1 和 i 作为交替子数组的前两项
+		start := i - 1
+		// 往右移动，直到 a[i] 不满足交替
+		for i++; i < n && a[i] != a[i-1] && (a[i-2] < a[i-1]) != (a[i-1] < a[i]); i++ {
+		}
+
+		// 现在 [start, i-1] 是交替子数组
+		ans = max(ans, i-start)
+
+		if i == n {
+			break
+		}
+
+		// 删除 a[i-1] 或者 a[i]
+		// 现在 a[i-2] < a[i-1] <= a[i]，我们期望 a[i-2] < ... > a[i+1]
+		// 或者 a[i-2] > a[i-1] >= a[i]，我们期望 a[i-2] > ... < a[i+1]
+		// 由此可见，删 a[i-1] 比删 a[i] 更好，更能让不等式成立
+		// 注意上面两种情况都说明 a[i-2] != a[i] 一定成立
+		if i < n-1 && a[i] != a[i+1] && (a[i-2] < a[i]) != (a[i] < a[i+1]) { // 可以和 a[i+1] 连起来
+			// 继续往右延长
+			j := i + 2
+			for ; j < n && a[j-1] != a[j] && (a[j-2] < a[j-1]) != (a[j-1] < a[j]); j++ {
+			}
+			ans = max(ans, j-start-1) // 交替子数组 [start, i-2] ∪ [i, j-1]
+		}
 	}
 	return ans
 }
