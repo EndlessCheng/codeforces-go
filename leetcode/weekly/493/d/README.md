@@ -34,11 +34,10 @@ class Solution:
 
         def find(x: int) -> int:
             if x not in fa:
-                fa[x] = x
+                return x
             if fa[x] != x:
                 fa[x] = find(fa[x])
-                return fa[x]
-            return x
+            return fa[x]
 
         OFFSET = 3 * 10 ** 9
         for x, y in points:
@@ -91,10 +90,10 @@ class Solution {
     }
 
     private long find(long x, Map<Long, Long> fa) {
-        if (!fa.containsKey(x)) {
-            fa.put(x, x);
+        Long fx = fa.get(x);
+        if (fx == null) {
+            return x;
         }
-        long fx = fa.get(x);
         if (fx != x) {
             long root = find(fx, fa);
             fa.put(x, root);
@@ -113,7 +112,6 @@ class Solution {
     long long find(long long x) {
         auto it = fa.find(x);
         if (it == fa.end()) {
-            fa[x] = x;
             return x;
         }
         auto& fx = it->second;
@@ -158,8 +156,7 @@ func maxActivated(points [][]int) int {
 	find = func(x int) int {
 		fx, ok := fa[x]
 		if !ok {
-			fa[x] = x
-			fx = x
+			return x
 		}
 		if fx != x {
 			fa[x] = find(fx)

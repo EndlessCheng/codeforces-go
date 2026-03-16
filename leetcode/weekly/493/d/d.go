@@ -8,8 +8,7 @@ func maxActivated(points [][]int) int {
 	find = func(x int) int {
 		fx, ok := fa[x]
 		if !ok {
-			fa[x] = x
-			fx = x
+			return x
 		}
 		if fx != x {
 			fa[x] = find(fx)
