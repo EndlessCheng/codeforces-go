@@ -17,6 +17,7 @@ https://codeforces.com/problemset/problem/1523/D 2400
 https://codeforces.com/problemset/problem/1305/F 2500 数论
 https://codeforces.com/problemset/problem/995/E 2700
 https://codeforces.com/problemset/problem/364/D 2900
+https://codeforces.com/problemset/problem/1198/F 2900
 https://atcoder.jp/contests/abc272/tasks/abc272_g
 https://atcoder.jp/contests/abc339/tasks/abc339_f 推荐
 https://atcoder.jp/contests/jsc2025advance-final/tasks/abc422_e
@@ -28,7 +29,7 @@ https://codeforces.com/problemset/problem/1746/F 2800
 异或哈希 xor hashing
 https://codeforces.com/problemset/problem/1996/G 2200
 https://codeforces.com/problemset/problem/1830/C 2400
-https://codeforces.com/problemset/problem/1771/F 2500
+https://codeforces.com/problemset/problem/1771/F 2500 主席树
 
 多项式哈希 加法哈希
 https://codeforces.com/problemset/problem/869/E 2400
