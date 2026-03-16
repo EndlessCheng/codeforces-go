@@ -161,7 +161,207 @@ func longestSubarray(nums []int) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 方法二：状态机 DP
+## 方法二：分组循环
+
+**适用场景**：按照题目要求，数组会被分割成若干组，每一组的判断/处理逻辑是相同的。
+
+**核心思想**：
+
+- 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
+- 内层循环负责遍历组，找出这一组最远在哪结束。
+
+这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
+
+[例题讲解](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solutions/2528771/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
+
+对于本题，$\textit{nums}$ 包含若干段非递减子数组。修改非递减子数组的中间元素是无意义的，所以修改操作只会发生在非递减子数组的端点旁边。用分组循环找到非递减子数组的端点。
+
+```py [sol-Python3]
+class Solution:
+    def longestSubarray(self, nums: List[int]) -> int:
+        n = len(nums)
+        ans = min(n, 2)
+        i = 1
+        while i < n:
+            if nums[i - 1] > nums[i]:
+                i += 1
+                continue
+
+            # 枚举 i-1 和 i 作为非递减子数组的前两项
+            start = i - 1
+            # 往右移动，直到 nums[i] 不满足非递减
+            i += 1
+            while i < n and nums[i - 1] <= nums[i]:
+                i += 1
+
+            # 现在 [start, i-1] 是非递减子数组
+            # 要想让子数组更长，要么改左边的 nums[start-1]，要么改右边的 nums[i] 或者 nums[i-1]
+
+            # 改 nums[start-1]
+            ans = max(ans, i - max(start - 1, 0))  # 非递减子数组 [max(start-1,0), i-1]
+            # 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+
+            if i == n:
+                break
+
+            # 改 nums[i] 或者 nums[i-1]
+            if i < n - 1 and (nums[i - 1] <= nums[i + 1] or nums[i - 2] <= nums[i] <= nums[i + 1]):  # 可以和 nums[i+1] 连起来
+                # 继续往右延长
+                j = i + 2
+                while j < n and nums[j - 1] <= nums[j]:
+                    j += 1
+                ans = max(ans, j - start)  # 非递减子数组 [start, j-1]
+            else:  # 子数组右端点最远只能到 i
+                ans = max(ans, i - start + 1)  # 非递减子数组 [start, i]
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestSubarray(int[] nums) {
+        int n = nums.length;
+        int ans = Math.min(n, 2);
+        int i = 1;
+        while (i < n) {
+            if (nums[i - 1] > nums[i]) {
+                i++;
+                continue;
+            }
+
+            // 枚举 i-1 和 i 作为非递减子数组的前两项
+            int start = i - 1;
+            // 往右移动，直到 nums[i] 不满足非递减
+            i++;
+            while (i < n && nums[i - 1] <= nums[i]) {
+                i++;
+            }
+
+            // 现在 [start, i-1] 是非递减子数组
+            // 要想让子数组更长，要么改左边的 nums[start-1]，要么改右边的 nums[i] 或者 nums[i-1]
+
+            // 改 nums[start-1]
+            ans = Math.max(ans, i - Math.max(start - 1, 0)); // 非递减子数组 [max(start-1,0), i-1]
+            // 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+
+            if (i == n) {
+                break;
+            }
+
+            // 改 nums[i] 或者 nums[i-1]
+            if (i < n - 1 && (nums[i - 1] <= nums[i + 1] || nums[i - 2] <= nums[i] && nums[i] <= nums[i + 1])) { // 可以和 nums[i+1] 连起来
+                // 继续往右延长
+                int j = i + 2;
+                while (j < n && nums[j - 1] <= nums[j]) {
+                    j++;
+                }
+                ans = Math.max(ans, j - start); // 非递减子数组 [start, j-1]
+            } else { // 子数组右端点最远只能到 i
+                ans = Math.max(ans, i - start + 1); // 非递减子数组 [start, i]
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums) {
+        int n = nums.size();
+        int ans = min(n, 2);
+        int i = 1;
+        while (i < n) {
+            if (nums[i - 1] > nums[i]) {
+                i++;
+                continue;
+            }
+
+            // 枚举 i-1 和 i 作为非递减子数组的前两项
+            int start = i - 1;
+            // 往右移动，直到 nums[i] 不满足非递减
+            i++;
+            while (i < n && nums[i - 1] <= nums[i]) {
+                i++;
+            }
+
+            // 现在 [start, i-1] 是非递减子数组
+            // 要想让子数组更长，要么改左边的 nums[start-1]，要么改右边的 nums[i] 或者 nums[i-1]
+
+            // 改 nums[start-1]
+            ans = max(ans, i - max(start - 1, 0)); // 非递减子数组 [max(start-1,0), i-1]
+            // 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+
+            if (i == n) {
+                break;
+            }
+
+            // 改 nums[i] 或者 nums[i-1]
+            if (i < n - 1 && (nums[i - 1] <= nums[i + 1] || nums[i - 2] <= nums[i] && nums[i] <= nums[i + 1])) { // 可以和 nums[i+1] 连起来
+                // 继续往右延长
+                int j = i + 2;
+                while (j < n && nums[j - 1] <= nums[j]) {
+                    j++;
+                }
+                ans = max(ans, j - start); // 非递减子数组 [start, j-1]
+            } else { // 子数组右端点最远只能到 i
+                ans = max(ans, i - start + 1); // 非递减子数组 [start, i]
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func longestSubarray(nums []int) int {
+	n := len(nums)
+	ans := min(n, 2)
+	for i := 1; i < n; {
+		if nums[i-1] > nums[i] {
+			i++
+			continue
+		}
+
+		// 枚举 i-1 和 i 作为非递减子数组的前两项
+		start := i - 1
+		// 往右移动，直到 nums[i] 不满足非递减
+		for i++; i < n && nums[i-1] <= nums[i]; i++ {
+		}
+
+		// 现在 [start, i-1] 是非递减子数组
+		// 要想让子数组更长，要么改左边的 nums[start-1]，要么改右边的 nums[i] 或者 nums[i-1]
+
+		// 改 nums[start-1]
+		ans = max(ans, i-max(start-1, 0)) // 非递减子数组 [max(start-1,0), i-1]
+		// 继续往左延长的情况等同于上一段继续往右延长，无需重复计算
+
+		if i == n {
+			break
+		}
+
+		// 改 nums[i] 或者 nums[i-1]
+		if i < n-1 && (nums[i-1] <= nums[i+1] || nums[i-2] <= nums[i] && nums[i] <= nums[i+1]) { // 可以和 nums[i+1] 连起来
+			// 继续往右延长
+			j := i + 2
+			for ; j < n && nums[j-1] <= nums[j]; j++ {
+			}
+			ans = max(ans, j-start) // 非递减子数组 [start, j-1]
+		} else { // 子数组右端点最远只能到 i
+			ans = max(ans, i-start+1) // 非递减子数组 [start, i]
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个数至多遍历两次。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法三：状态机 DP
 
 做法类似 [1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)，[我的题解](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solutions/2321829/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)。
 
@@ -458,9 +658,15 @@ func longestSubarray(nums []int) int {
 
 欢迎在评论区分享你的思路/代码。
 
+## 相似题目
+
+- [3872. 替换最多一个元素后的最长等差子数组](https://leetcode.cn/problems/longest-arithmetic-sequence-after-changing-at-most-one-element/)
+- [3830. 移除至多一个元素后的最长交替子数组](https://leetcode.cn/problems/longest-alternating-subarray-after-removing-at-most-one-element/)
+
 ## 专题训练
 
-见下面动态规划题单的「**专题：前后缀分解**」「**§7.3 子数组 DP**」和「**六、状态机 DP**」。
+1. 动态规划题单的「**专题：前后缀分解**」和「**六、状态机 DP**」。
+2. 双指针题单的「**六、分组循环**」。
 
 ## 分类题单
 
