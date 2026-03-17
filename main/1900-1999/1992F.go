@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io"
 	"maps"
+	"slices"
 )
 
 // https://github.com/EndlessCheng
@@ -15,8 +16,7 @@ func cf1992F(in io.Reader, out io.Writer) {
 		set := map[int]bool{1: true}
 		for range n {
 			Fscan(in, &v)
-			tmp := maps.Clone(set)
-			for w := range tmp {
+			for _, w := range slices.Collect(maps.Keys(set)) {
 				if x%(v*w) == 0 {
 					set[v*w] = true
 				}
