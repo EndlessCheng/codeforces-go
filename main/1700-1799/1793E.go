@@ -20,18 +20,18 @@ func cf1793E(in io.Reader, _w io.Writer) {
 	slices.Sort(a)
 
 	f := make([]int, n+1)
-	ans := make([]int, n+2)
+	ans := make([]int, n+1)
 	for i := 1; i <= n; i++ {
 		v := a[i-1]
 		if i >= v {
 			f[i] = f[i-v] + 1
-			ans[n-i+f[i]] = i
+			ans[f[i]+n-i] = i
 		} else {
-			ans[n-v+1] = i
+			ans[1+n-v] = i
 		}
 		f[i] = max(f[i], f[i-1])
 	}
-	for i := n; i > 0; i-- {
+	for i := n - 1; i > 0; i-- {
 		ans[i] = max(ans[i], ans[i+1])
 	}
 
