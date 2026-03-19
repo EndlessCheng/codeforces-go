@@ -1,22 +1,24 @@
 ## 方法一：二维前缀和
 
-请看[【图解】二维前缀和](https://leetcode.cn/problems/range-sum-query-2d-immutable/solution/tu-jie-yi-zhang-tu-miao-dong-er-wei-qian-84qp/) 以及 [视频讲解](https://www.bilibili.com/video/BV14r421W7oR/)。
+**前置知识**：[【图解】二维前缀和](https://leetcode.cn/problems/range-sum-query-2d-immutable/solution/tu-jie-yi-zhang-tu-miao-dong-er-wei-qian-84qp/)。
 
-代码实现时，可以取 X 和 Y 的 ASCII 值二进制的最低位，表示 $0$ 和 $1$。
+由于子矩阵要包含 $\textit{grid}[0][0]$，所以我们计算的是 $\texttt{X}$ 和 $\texttt{Y}$ 的个数的二维前缀和。
+
+代码实现时，可以统计 $\texttt{X}$ 和 $\texttt{Y}$ 的 ASCII 值二进制的最低位，即 $0$ 和 $1$。这样无需判断字符是 $\texttt{X}$ 还是 $\texttt{Y}$。
 
 ```py [sol-Python3]
 class Solution:
     def numberOfSubmatrices(self, grid: List[List[str]]) -> int:
-        ans = 0
         m, n = len(grid), len(grid[0])
         s = [[[0, 0] for _ in range(n + 1)] for _ in range(m + 1)]
+        ans = 0
         for i, row in enumerate(grid):
             for j, c in enumerate(row):
                 s[i + 1][j + 1][0] = s[i + 1][j][0] + s[i][j + 1][0] - s[i][j][0]
                 s[i + 1][j + 1][1] = s[i + 1][j][1] + s[i][j + 1][1] - s[i][j][1]
                 if c != '.':
                     s[i + 1][j + 1][ord(c) & 1] += 1
-                if s[i + 1][j + 1][0] and s[i + 1][j + 1][0] == s[i + 1][j + 1][1]:
+                if s[i + 1][j + 1][0] == s[i + 1][j + 1][1] > 0:
                     ans += 1
         return ans
 ```
@@ -24,10 +26,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int numberOfSubmatrices(char[][] grid) {
-        int ans = 0;
         int m = grid.length;
         int n = grid[0].length;
         int[][][] sum = new int[m + 1][n + 1][2];
+        int ans = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 sum[i + 1][j + 1][0] = sum[i + 1][j][0] + sum[i][j + 1][0] - sum[i][j][0];
@@ -50,7 +52,7 @@ class Solution {
 public:
     int numberOfSubmatrices(vector<vector<char>>& grid) {
         int ans = 0, m = grid.size(), n = grid[0].size();
-        vector<vector<array<int, 2>>> sum(m + 1, vector<array<int, 2>>(n + 1));
+        vector sum(m + 1, vector<array<int, 2>>(n + 1));
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 sum[i + 1][j + 1][0] = sum[i + 1][j][0] + sum[i][j + 1][0] - sum[i][j][0];
@@ -98,17 +100,17 @@ func numberOfSubmatrices(grid [][]byte) (ans int) {
 
 ## 方法二：维护每列的字符个数
 
-遍历每一行，同时用一个长为 $n\times 2$ 的数组 $\textit{colCnt}$ 维护每一列的 X 和 Y 的个数。
+遍历每一行，同时用一个长为 $n\times 2$ 的数组 $\textit{colCnt}$ 维护每一列的 $\texttt{X}$ 和 $\texttt{Y}$ 的个数。
 
 遍历当前行时，一边更新 $\textit{colCnt}[j]$，一边累加 $\textit{colCnt}[j][0]$ 到变量 $s_0$ 中，累加 $\textit{colCnt}[j][1]$ 到变量 $s_1$ 中。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1Ry411q71f/) 第三题，欢迎点赞关注！
+[视频讲解](https://www.bilibili.com/video/BV1Ry411q71f/) 第三题，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def numberOfSubmatrices(self, grid: List[List[str]]) -> int:
-        ans = 0
         col_cnt = [[0, 0] for _ in grid[0]]
+        ans = 0
         for row in grid:
             s0 = s1 = 0
             for j, c in enumerate(row):
@@ -116,7 +118,7 @@ class Solution:
                     col_cnt[j][ord(c) & 1] += 1
                 s0 += col_cnt[j][0]
                 s1 += col_cnt[j][1]
-                if s0 and s0 == s1:
+                if s0 == s1 > 0:
                     ans += 1
         return ans
 ```
@@ -124,10 +126,11 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int numberOfSubmatrices(char[][] grid) {
-        int ans = 0;
         int[][] colCnt = new int[grid[0].length][2];
+        int ans = 0;
         for (char[] row : grid) {
-            int s0 = 0, s1 = 0;
+            int s0 = 0;
+            int s1 = 0;
             for (int j = 0; j < row.length; j++) {
                 if (row[j] != '.') {
                     colCnt[j][row[j] & 1]++;
@@ -148,8 +151,8 @@ class Solution {
 class Solution {
 public:
     int numberOfSubmatrices(vector<vector<char>>& grid) {
-        int ans = 0;
         vector<array<int, 2>> col_cnt(grid[0].size());
+        int ans = 0;
         for (auto& row : grid) {
             int s0 = 0, s1 = 0;
             for (int j = 0; j < row.size(); j++) {
@@ -207,17 +210,21 @@ func numberOfSubmatrices(grid [][]byte) (ans int) {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
