@@ -7,14 +7,16 @@ import (
 
 // https://space.bilibili.com/206214
 func minimumOR(grid [][]int) (ans int) {
-	mx := 0
+	or := 0
 	for _, row := range grid {
-		mx = max(mx, slices.Max(row))
+		// 每行选个最小值，计算 OR
+		or |= slices.Min(row)
 	}
+	// 答案 <= or，那么答案的二进制长度也 <= or 的二进制长度
 
 	// 试填法：ans 的第 i 位能不能是 0？
 	// 如果在每一行的能选的数字中，都存在第 i 位是 0 的数，那么 ans 的第 i 位可以是 0，否则必须是 1
-	for i := bits.Len(uint(mx)) - 1; i >= 0; i-- {
+	for i := bits.Len(uint(or)) - 1; i >= 0; i-- {
 		mask := ans | (1<<i - 1) // mask 低于 i 的比特位全是 1
 	next:
 		for _, row := range grid {

@@ -13,7 +13,9 @@
 ```py [sol-Python3]
 class Solution:
     def minimumOR(self, grid: List[List[int]]) -> int:
-        mx = max(map(max, grid))
+        # 每行选个最小值，计算 OR，答案 <= OR（答案的二进制长度至多为这些数的最大值的二进制长度）
+        mx = max(map(min, grid))  
+
         ans = 0
         # 试填法：ans 的第 i 位能不能是 0？
         # 如果在每一行的能选的数字中，都存在第 i 位是 0 的数，那么 ans 的第 i 位可以是 0，否则必须是 1
@@ -35,13 +37,17 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int minimumOR(int[][] grid) {
-        int mx = 0;
+        int or = 0;
         for (int[] row : grid) {
+            // 每行选个最小值，计算 OR
+            int mn = Integer.MAX_VALUE;
             for (int x : row) {
-                mx = Math.max(mx, x);
+                mn = Math.min(mn, x);
             }
+            or |= mn;
         }
-        int bitLength = 32 - Integer.numberOfLeadingZeros(mx);
+        // 答案 <= or，那么答案的二进制长度也 <= or 的二进制长度
+        int bitLength = 32 - Integer.numberOfLeadingZeros(or);
 
         int ans = 0;
         // 试填法：ans 的第 i 位能不能是 0？
@@ -72,15 +78,17 @@ class Solution {
 class Solution {
 public:
     int minimumOR(vector<vector<int>>& grid) {
-        int mx = 0;
+        int or_ = 0;
         for (auto& row : grid) {
-            mx = max(mx, ranges::max(row));
+            // 每行选个最小值，计算 OR
+            or_ |= ranges::min(row);
         }
+        // 答案 <= or，那么答案的二进制长度也 <= or 的二进制长度
 
         int ans = 0;
         // 试填法：ans 的第 i 位能不能是 0？
         // 如果在每一行的能选的数字中，都存在第 i 位是 0 的数，那么 ans 的第 i 位可以是 0，否则必须是 1
-        for (int i = bit_width((uint32_t) mx) - 1; i >= 0; i--) {
+        for (int i = bit_width((uint32_t) or_) - 1; i >= 0; i--) {
             int mask = ans | ((1 << i) - 1); // mask 低于 i 的比特位全是 1，表示 grid[i][j] 的低位是 0 还是 1 无所谓
             for (auto& row : grid) {
                 bool found0 = false;
@@ -106,14 +114,16 @@ public:
 
 ```go [sol-Go]
 func minimumOR(grid [][]int) (ans int) {
-	mx := 0
+	or := 0
 	for _, row := range grid {
-		mx = max(mx, slices.Max(row))
+		// 每行选个最小值，计算 OR
+		or |= slices.Min(row)
 	}
+	// 答案 <= or，那么答案的二进制长度也 <= or 的二进制长度
 
 	// 试填法：ans 的第 i 位能不能是 0？
 	// 如果在每一行的能选的数字中，都存在第 i 位是 0 的数，那么 ans 的第 i 位可以是 0，否则必须是 1
-	for i := bits.Len(uint(mx)) - 1; i >= 0; i-- {
+	for i := bits.Len(uint(or)) - 1; i >= 0; i-- {
 		mask := ans | (1<<i - 1) // mask 低于 i 的比特位全是 1，表示 grid[i][j] 的低位是 0 还是 1 无所谓
 	next:
 		for _, row := range grid {
