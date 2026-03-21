@@ -27,5 +27,6 @@ func removeStones(stones [][]int) int {
 	for _, p := range stones {
 		set[find(p[0])] = struct{}{}
 	}
+
 	return len(stones) - len(set)
 }
