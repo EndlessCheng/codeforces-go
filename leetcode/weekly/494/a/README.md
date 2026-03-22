@@ -2,11 +2,9 @@
 
 否则，$\textit{nums}_1$ 奇数偶数都有。由于偶数减去奇数等于奇数，那么随便选一个奇数 $x$，把每个偶数都减去 $x$（第二种操作），即可让所有偶数都变成奇数。其余每个奇数用第一种操作。
 
-所以，一定可以满足要求，返回 $\texttt{true}$ 即可。
+所以，一定可以满足题目要求，返回 $\texttt{true}$ 即可。
 
-> **注**：可以把奇数都变成偶数吗？注意奇数只能减去奇数才能变成偶数，那么不断操作奇数，直到只剩下一个奇数时，这个奇数只能减去自己。但题目要求 `j != i`，所以无法操作。所以无法把奇数都变成偶数。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1vfAuzyEp8/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -41,6 +39,11 @@ func uniformArray([]int) bool {
 
 - 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 相似题目
+
+- [2396. 严格回文的数字](https://leetcode.cn/problems/strictly-palindromic-number/)
+- [877. 石子游戏](https://leetcode.cn/problems/stone-game/)
 
 ## 专题训练
 

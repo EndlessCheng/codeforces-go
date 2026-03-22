@@ -1,8 +1,8 @@
-**前置知识**：[LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
+**前置知识**：[LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)，也可以看 [本题视频讲解](https://www.bilibili.com/video/BV1vfAuzyEp8/?t=33m56s)，解释了 LogTrick 的原理。
 
-本题需要判断子数组是否包含 $\textit{or}$。我们可以记录 $\textit{nums}$ 每个元素的最近一次出现的位置 $\textit{last}[x]$，只要 $\textit{last}[\textit{or}]$ 大于等于子数组左端点，那么子数组就包含 $\textit{or}$。
+本题需要判断子数组是否包含 $\textit{or}$。我们可以在遍历 $\textit{nums}$ 的同时，维护 $\textit{nums}$ 的每个元素 $x$ 的**最近一次出现的位置** $\textit{last}[x]$，只要 $\textit{last}[\textit{or}]$ 大于等于子数组左端点，那么子数组就包含 $\textit{or}$。
 
-设子数组右端点在 $i$，左端点在 $[\ell,r]$ 的子数组的 OR 都是 $\textit{or}$。设 $j = \textit{last}[\textit{or}]$。那么当 $j\ge \ell$ 时，左端点为 $\ell,\ell+1,\ldots,\min(r, j)$，右端点为 $i$ 的子数组都包含 $\textit{or}$，这一共有
+设右端点在 $i$，左端点在 $[\ell,r]$ 中的子数组的 OR 都是 $\textit{or}$。设 $j = \textit{last}[\textit{or}]$。那么当 $j\ge \ell$ 时，左端点为 $\ell,\ell+1,\ldots,\min(r, j)$，右端点为 $i$ 的子数组都包含 $\textit{or}$，这一共有
 
 $$
 \min(r,j)-\ell+1
@@ -11,8 +11,6 @@ $$
 个合法子数组，加入答案。
 
 代码用到了原地去重算法，可以看 [26. 删除有序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)，[我的题解](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/solutions/2807162/gen-zhao-wo-guo-yi-bian-shi-li-2ni-jiu-m-rvyk/)。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -187,7 +185,7 @@ func countGoodSubarrays(nums []int) (ans int64) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。理由见 [LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
 - 空间复杂度：$\mathcal{O}(n + \log U)$。
 
 ## 专题训练

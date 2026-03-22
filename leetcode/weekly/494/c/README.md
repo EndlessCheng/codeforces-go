@@ -10,7 +10,7 @@
 
 和 2915 题一样，定义 $f[i+1][j]$ 表示在 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 中的，异或和为 $j$ 的子序列的最长长度。
 
-由于异或运算本质是模 $2$ 加法，把 $v \oplus \textit{nums}[i] = j$ 移项得 $v = j\oplus \textit{nums}[i]$。我们只需把 2915 转移方程中的 $j - \textit{nums}[i]$ 改成 $j\oplus  \textit{nums}[i]$ 即可，其中 $\oplus$ 是异或运算。
+异或运算 $\oplus$ 本质是模 $2$ 加法，满足交换律和结合律，把 $v \oplus \textit{nums}[i] = j$ 移项可得 $v = j\oplus \textit{nums}[i]$。我们只需把 2915 转移方程中的 $j - \textit{nums}[i]$ 改成 $j\oplus  \textit{nums}[i]$ 即可。
 
 $$
 f[i+1][j] = \max(f[i][j],f[i][j\oplus\textit{nums}[i]] + 1)
@@ -22,13 +22,15 @@ $$
 
 **特殊情况**：设 $m$ 为 $\max(\textit{nums})$ 的二进制长度。如果 $m$ 小于 $\textit{target}$ 的二进制长度，那么 XOR 的二进制长度也小于 $\textit{target}$ 的二进制长度，必然无解，返回 $-1$。否则可以计算 DP，看看是否有解。由于 XOR 最大是 $2^m-1$，所以数组第二维的大小为 $2^m$。
 
+代码实现时，「$m$ 小于 $\textit{target}$ 的二进制长度」等价于 $2^m\le \textit{target}$，这样无需计算 $\textit{target}$ 的二进制长度。
+
 ## 答疑
 
 **问**：为什么数组第二维的大小不能是 $\textit{target}+1$？
 
-**答**：比如 $\textit{target}$ 二进制是 $100$，我们可能先异或得到 $110$，再异或一个等于 $10$ 的数，得到 $100$。一般地，在计算过程中，可能先算出比 $\textit{target}$ 大的数，再减小到 $\textit{target}$。所以要用 XOR 的最大值加一作为数组大小。
+**答**：比如 $\textit{target}$ 的二进制是 $100$。在 DP 过程中，我们可能先异或得到 $1101$，再异或一个等于 $1001$ 的数，得到 $100$。一般地，在计算过程中，可能先算出比 $\textit{target}$ 大的数，再减小到 $\textit{target}$。所以要用 XOR 的最大值加一作为数组大小。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1vfAuzyEp8/?t=12m)，欢迎点赞关注~
 
 ## 优化前
 
@@ -36,7 +38,7 @@ $$
 class Solution:
     def minRemovals(self, nums: List[int], target: int) -> int:
         m = max(nums).bit_length()
-        if m < target.bit_length():
+        if (1 << m) <= target:
             return -1
 
         n = len(nums)
@@ -60,8 +62,8 @@ class Solution {
             mx = Math.max(mx, x);
         }
 
-        int m = 32 - Integer.numberOfLeadingZeros(mx);
-        if (m < 32 - Integer.numberOfLeadingZeros(target)) {
+        int m = 32 - Integer.numberOfLeadingZeros(mx); // mx 的二进制长度
+        if ((1 << m) <= target) {
             return -1;
         }
 
@@ -92,7 +94,7 @@ class Solution {
 public:
     int minRemovals(vector<int>& nums, int target) {
         int m = bit_width((uint32_t) ranges::max(nums));
-        if (m < bit_width((uint32_t) target)) {
+        if ((1 << m) <= target) {
             return -1;
         }
 
@@ -118,7 +120,7 @@ public:
 ```go [sol-Go]
 func minRemovals(nums []int, target int) int {
 	m := bits.Len(uint(slices.Max(nums)))
-	if m < bits.Len(uint(target)) {
+	if 1<<m <= target {
 		return -1
 	}
 
@@ -153,13 +155,10 @@ func minRemovals(nums []int, target int) int {
 ## 空间优化（查表法）
 
 ```py [sol-Python3]
-# 手写 max 更快
-fmax = lambda a, b: b if b > a else a
-
 class Solution:
     def minRemovals(self, nums: List[int], target: int) -> int:
         m = max(nums).bit_length()
-        if m < target.bit_length():
+        if (1 << m) <= target:
             return -1
 
         f = [-inf] * (1 << m)
@@ -185,7 +184,7 @@ class Solution {
         }
 
         int m = 32 - Integer.numberOfLeadingZeros(mx);
-        if (m < 32 - Integer.numberOfLeadingZeros(target)) {
+        if ((1 << m) <= target) {
             return -1;
         }
 
@@ -216,7 +215,7 @@ class Solution {
 public:
     int minRemovals(vector<int>& nums, int target) {
         int m = bit_width((uint32_t) ranges::max(nums));
-        if (m < bit_width((uint32_t) target)) {
+        if ((1 << m) <= target) {
             return -1;
         }
 
@@ -242,7 +241,7 @@ public:
 ```go [sol-Go]
 func minRemovals(nums []int, target int) int {
 	m := bits.Len(uint(slices.Max(nums)))
-	if m < bits.Len(uint(target)) {
+	if 1<<m <= target {
 		return -1
 	}
 
@@ -272,13 +271,10 @@ func minRemovals(nums []int, target int) int {
 如果修改问题，把 XOR 改成没有逆运算的 AND 或者 OR，用**刷表法**更合适。也就是用当前状态更新其他状态。
 
 ```py [sol-Python3]
-# 手写 max 更快
-fmax = lambda a, b: b if b > a else a
-
 class Solution:
     def minRemovals(self, nums: List[int], target: int) -> int:
         m = max(nums).bit_length()
-        if m < target.bit_length():
+        if (1 << m) <= target:
             return -1
 
         f = [-inf] * (1 << m)
@@ -287,7 +283,7 @@ class Solution:
         for x in nums:
             nf = f[:]
             for j, fj in enumerate(f):
-                nf[j ^ x] = fmax(nf[j ^ x], fj + 1)  # x 不选 or 选
+                nf[j ^ x] = max(nf[j ^ x], fj + 1)  # x 不选 or 选
             f = nf
 
         if f[target] < 0:
@@ -304,7 +300,7 @@ class Solution {
         }
 
         int m = 32 - Integer.numberOfLeadingZeros(mx);
-        if (m < 32 - Integer.numberOfLeadingZeros(target)) {
+        if ((1 << m) <= target) {
             return -1;
         }
 
@@ -333,7 +329,7 @@ class Solution {
 public:
     int minRemovals(vector<int>& nums, int target) {
         int m = bit_width((uint32_t) ranges::max(nums));
-        if (m < bit_width((uint32_t) target)) {
+        if ((1 << m) <= target) {
             return -1;
         }
 
@@ -359,7 +355,7 @@ public:
 ```go [sol-Go]
 func minRemovals(nums []int, target int) int {
 	m := bits.Len(uint(slices.Max(nums)))
-	if m < bits.Len(uint(target)) {
+	if 1<<m <= target {
 		return -1
 	}
 
@@ -389,9 +385,14 @@ func minRemovals(nums []int, target int) int {
 - 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(U)$。
 
+## 注
+
+本题还有和值域无关的 $\mathcal{O}(2^{n/2})$ 折半搜索做法，见 [494. 目标和](https://leetcode.cn/problems/target-sum/)，[我的题解](https://leetcode.cn/problems/target-sum/solutions/2119041/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-s1cx/)。
+
 ## 专题训练
 
-见下面动态规划题单的「**§3.1 0-1 背包**」。
+1. 动态规划题单的「**§3.1 0-1 背包**」。
+2. 回溯题单的「**§4.8 折半搜索**」。
 
 ## 分类题单
 

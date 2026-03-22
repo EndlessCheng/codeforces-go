@@ -9,7 +9,7 @@ import (
 // https://space.bilibili.com/206214
 func minRemovals1(nums []int, target int) int {
 	m := bits.Len(uint(slices.Max(nums)))
-	if m < bits.Len(uint(target)) {
+	if 1<<m <= target {
 		return -1
 	}
 
@@ -37,7 +37,7 @@ func minRemovals1(nums []int, target int) int {
 
 func minRemovals(nums []int, target int) int {
 	m := bits.Len(uint(slices.Max(nums)))
-	if m < bits.Len(uint(target)) {
+	if 1<<m <= target {
 		return -1
 	}
 

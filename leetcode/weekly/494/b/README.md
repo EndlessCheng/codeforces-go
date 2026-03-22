@@ -4,61 +4,36 @@
 
 分类讨论：
 
-- 可以把奇数都变成偶数吗？注意奇数只能减去奇数才能变成偶数，那么不断操作奇数，直到只剩下一个奇数时，这个奇数只能减去自己。但题目要求 `j != i`，所以无法操作。所以无法把奇数都变成偶数。
-- 可以把偶数都变成奇数吗？注意偶数只能减去奇数才能变成奇数。为了尽可能地满足 `nums1[i] - nums1[j] >= 1` 的要求，我们可以选一个**最小的奇数** $x$，把每个偶数都减去 $x$。这要求所有的偶数都要比 $x$ 大。
+- 可以把奇数都变成偶数吗？注意奇数只能减去奇数才能变成偶数，那么最小的奇数要减去谁呢？我们无法满足 `nums1[i] - nums1[j] >= 1` 的要求，所以无法把奇数都变成偶数。
+- 可以把偶数都变成奇数吗？注意偶数只能减去奇数才能变成奇数。为了尽可能地满足 `nums1[i] - nums1[j] >= 1` 的要求，我们可以选一个**最小的奇数** $x$ 作为 $\textit{nums}_1[j]$，然后把每个偶数都减去 $x$。这要求所有的偶数都比 $x$ 大，或者说，最小的偶数必须大于最小的奇数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1vfAuzyEp8/?t=4m39s)，欢迎点赞关注~
 
-```py [sol-Python3 普通写法]
+```py [sol-Python3]
 class Solution:
     def uniformArray(self, nums1: List[int]) -> bool:
-        min_odd = inf
+        # 计算最小偶数、最小奇数
+        mn = [inf] * 2
         for x in nums1:
-            if x % 2:
-                min_odd = min(min_odd, x)
+            mn[x % 2] = min(mn[x % 2], x)
 
-        # 没有奇数，都是偶数
-        if min_odd == inf:
-            return True
-
-        for x in nums1:
-            # 把偶数减去奇数，变成奇数，前提是偶数 > 奇数
-            if x % 2 == 0 and x < min_odd:
-                return False
-
-        return True
-```
-
-```py [sol-Python3 写法二]
-class Solution:
-    def uniformArray(self, nums1: List[int]) -> bool:
-        min_odd = min((x for x in nums1 if x % 2), default=inf)
-        return min_odd == inf or all(x % 2 or x > min_odd for x in nums1)
+        # 只有偶数，或者偶数 >= 最小的偶数 > 最小的奇数
+        # 只有奇数的情况蕴含在 mn[0] > mn[1] 中
+        return mn[1] == inf or mn[0] > mn[1]
 ```
 
 ```java [sol-Java]
 class Solution {
     public boolean uniformArray(int[] nums1) {
-        int minOdd = Integer.MAX_VALUE;
+        // 计算最小偶数、最小奇数
+        int[] mn = {Integer.MAX_VALUE, Integer.MAX_VALUE};
         for (int x : nums1) {
-            if (x % 2 != 0) {
-                minOdd = Math.min(minOdd, x);
-            }
+            mn[x & 1] = Math.min(mn[x & 1], x);
         }
 
-        // 没有奇数，都是偶数
-        if (minOdd == Integer.MAX_VALUE) {
-            return true;
-        }
-
-        for (int x : nums1) {
-            // 把偶数减去奇数，变成奇数，前提是偶数 > 奇数
-            if (x % 2 == 0 && x < minOdd) {
-                return false;
-            }
-        }
-
-        return true;
+        // 只有偶数，或者偶数 >= 最小的偶数 > 最小的奇数
+        // 只有奇数的情况蕴含在 mn[0] > mn[1] 中
+        return mn[1] == Integer.MAX_VALUE || mn[0] > mn[1];
     }
 }
 ```
@@ -67,52 +42,30 @@ class Solution {
 class Solution {
 public:
     bool uniformArray(vector<int>& nums1) {
-        int min_odd = INT_MAX;
+        // 计算最小偶数、最小奇数
+        int mn[2] = {INT_MAX, INT_MAX};
         for (int x : nums1) {
-            if (x % 2) {
-                min_odd = min(min_odd, x);
-            }
+            mn[x % 2] = min(mn[x % 2], x);
         }
 
-        // 没有奇数，都是偶数
-        if (min_odd == INT_MAX) {
-            return true;
-        }
-
-        for (int x : nums1) {
-            // 把偶数减去奇数，变成奇数，前提是偶数 > 奇数
-            if (x % 2 == 0 && x < min_odd) {
-                return false;
-            }
-        }
-
-        return true;
+        // 只有偶数，或者偶数 >= 最小的偶数 > 最小的奇数
+        // 只有奇数的情况蕴含在 mn[0] > mn[1] 中
+        return mn[1] == INT_MAX || mn[0] > mn[1];
     }
 };
 ```
 
 ```go [sol-Go]
 func uniformArray(nums1 []int) bool {
-	minOdd := math.MaxInt
+	// 计算最小偶数、最小奇数
+	mn := [2]int{math.MaxInt, math.MaxInt}
 	for _, x := range nums1 {
-		if x%2 != 0 {
-			minOdd = min(minOdd, x)
-		}
+		mn[x&1] = min(mn[x&1], x)
 	}
 
-	// 没有奇数，都是偶数
-	if minOdd == math.MaxInt {
-		return true
-	}
-
-	for _, x := range nums1 {
-		// 把偶数减去奇数，变成奇数，前提是偶数 > 奇数
-		if x%2 == 0 && x < minOdd {
-			return false
-		}
-	}
-
-	return true
+	// 只有偶数，或者偶数 >= 最小的偶数 > 最小的奇数
+	// 只有奇数的情况蕴含在 mn[0] > mn[1] 中
+	return mn[1] == math.MaxInt || mn[0] > mn[1]
 }
 ```
 

@@ -4,24 +4,13 @@ import "math"
 
 // https://space.bilibili.com/206214
 func uniformArray(nums1 []int) bool {
-	minOdd := math.MaxInt
+	// 计算最小偶数、最小奇数
+	mn := [2]int{math.MaxInt, math.MaxInt}
 	for _, x := range nums1 {
-		if x%2 != 0 {
-			minOdd = min(minOdd, x)
-		}
+		mn[x&1] = min(mn[x&1], x)
 	}
 
-	// 没有奇数，都是偶数
-	if minOdd == math.MaxInt {
-		return true
-	}
-
-	for _, x := range nums1 {
-		// 把偶数减去奇数，变成奇数，前提是偶数 > 奇数
-		if x%2 == 0 && x < minOdd {
-			return false
-		}
-	}
-
-	return true
+	// 只有偶数 or 偶数 >= 最小的偶数 > 最小的奇数
+	// 只有奇数的情况蕴含在 mn[0] > mn[1] 中
+	return mn[1] == math.MaxInt || mn[0] > mn[1]
 }
