@@ -165,11 +165,11 @@ class Solution:
         f = [-inf] * (1 << m)
         f[0] = 0
 
+        nf = [0] * (1 << m)
         for x in nums:
-            nf = f[:]
             for j in range(1 << m):
-                nf[j] = max(nf[j], f[j ^ x] + 1)  # x 不选 or 选
-            f = nf
+                nf[j] = max(f[j], f[j ^ x] + 1)  # x 不选 or 选
+            f, nf = nf, f
 
         if f[target] < 0:
             return -1
@@ -193,12 +193,14 @@ class Solution {
         Arrays.fill(f, Integer.MIN_VALUE);
         f[0] = 0;
 
+        int[] nf = new int[1 << m];
         for (int x : nums) {
-            int[] nf = f.clone();
             for (int j = 0; j < (1 << m); j++) {
-                nf[j] = Math.max(nf[j], f[j ^ x] + 1); // x 不选 or 选
+                nf[j] = Math.max(f[j], f[j ^ x] + 1); // x 不选 or 选
             }
+            int[] tmp = f;
             f = nf;
+            nf = tmp;
         }
 
         if (f[target] < 0) {
@@ -221,12 +223,12 @@ public:
         vector<int> f(1 << m, INT_MIN);
         f[0] = 0;
 
+        vector<int> nf(1 << m);
         for (int x : nums) {
-            auto nf = f;
             for (int j = 0; j < (1 << m); j++) {
-                nf[j] = max(nf[j], f[j ^ x] + 1); // x 不选 or 选
+                nf[j] = max(f[j], f[j ^ x] + 1); // x 不选 or 选
             }
-            f = nf;
+            swap(f, nf);
         }
 
         if (f[target] < 0) {
@@ -250,12 +252,12 @@ func minRemovals(nums []int, target int) int {
 	}
 	f[0] = 0
 
+	nf := make([]int, 1<<m)
 	for _, x := range nums {
-		nf := slices.Clone(f)
 		for j := range 1 << m {
-			nf[j] = max(nf[j], f[j^x]+1) // x 不选 or 选
+			nf[j] = max(f[j], f[j^x]+1) // x 不选 or 选
 		}
-		f = nf
+		f, nf = nf, f
 	}
 
 	if f[target] < 0 {

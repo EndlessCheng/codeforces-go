@@ -47,12 +47,12 @@ func minRemovals(nums []int, target int) int {
 	}
 	f[0] = 0
 
+	nf := make([]int, 1<<m)
 	for _, x := range nums {
-		nf := slices.Clone(f)
 		for j := range 1 << m {
-			nf[j] = max(nf[j], f[j^x]+1) // x 不选 or 选
+			nf[j] = max(f[j], f[j^x]+1) // x 不选 or 选
 		}
-		f = nf
+		f, nf = nf, f
 	}
 
 	if f[target] < 0 {
