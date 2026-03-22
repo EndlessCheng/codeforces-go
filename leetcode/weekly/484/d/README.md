@@ -122,7 +122,7 @@ public:
                 //           j-1
                 // x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
                 // 上面的例子要把 010 变成 110
-                int mask = j < 31 ? (1 << j) - 1 : INT_MAX;
+                int mask = (1u << j) - 1;
                 ops[i] = (target & mask) - (x & mask);
             }
 
@@ -290,7 +290,7 @@ public:
                 //           j-1
                 // x 二进制中的高于 j-1 的位不变，其余位增大到和 target 一样
                 // 上面的例子要把 010 变成 110
-                int mask = j < 31 ? (1 << j) - 1 : INT_MAX;
+                int mask = (1u << j) - 1;
                 ops[i] = (target & mask) - (x & mask);
             }
 

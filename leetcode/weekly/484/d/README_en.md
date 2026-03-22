@@ -99,7 +99,7 @@ public:
                 int x = nums[i];
                 int j = bit_width((uint32_t) target & ~x);
                 // j-1 is the highest bit where target is 1 and x is 0
-                int mask = j < 31 ? (1 << j) - 1 : INT_MAX;
+                int mask = (1u << j) - 1;
                 ops[i] = (target & mask) - (x & mask);
             }
 
