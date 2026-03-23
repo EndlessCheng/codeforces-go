@@ -1,3 +1,5 @@
+## 方法一：LogTrick
+
 **前置知识**：[LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)，也可以看 [本题视频讲解](https://www.bilibili.com/video/BV1vfAuzyEp8/?t=33m56s)，解释了 LogTrick 的原理。
 
 本题需要判断子数组是否包含 $\textit{or}$。我们可以在遍历 $\textit{nums}$ 的同时，维护 $\textit{nums}$ 的每个元素 $x$ 的**最近一次出现的位置** $\textit{last}[x]$，只要 $\textit{last}[\textit{or}]$ 大于等于子数组左端点，那么子数组就包含 $\textit{or}$。
@@ -188,9 +190,220 @@ func countGoodSubarrays(nums []int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。理由见 [LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
 - 空间复杂度：$\mathcal{O}(n + \log U)$。
 
+## 方法二：单调栈 + 贡献法
+
+**前置题目**：[907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)，[我的题解](https://leetcode.cn/problems/sum-of-subarray-minimums/solutions/1930857/gong-xian-fa-dan-diao-zhan-san-chong-shi-gxa5/)。**请注意 907 题避免重复统计的技巧，本文不再赘述**。
+
+根据 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)，子数组的 OR 值，是子数组所有元素的超集。换句话说，子数组的每个数，都是子数组 OR 值的子集。
+
+仿照 907 题的做法，枚举 $x = \textit{nums}[i]$ 作为子数组的 OR 值。计算子数组左端点的最小值，和子数组右端点的最大值，从而算出 $x$ 的贡献（子数组个数）。
+
+对于 OR 值为 $x$ 的子数组，如果 $y$ 也在子数组中，那么 $y$ 必须是 $x$ 的子集，即 `(y | x) == x`。如果不满足要求，那么子数组一定不能包含 $y$，否则子数组 OR 值会大于 $x$。
+
+对比一下：
+
+- 在常规单调栈中，如果要计算左边比 $\textit{nums}[i]$ 大的最近的数的下标，假设我们先遍历到 $y$，再遍历到 $x$，且 $y\le x$，那么对于 $x$ 右边的数来说，$x$ 更大且更靠近右边的数，所以 $y$ 是个无用数据，直接出栈。
+- 对于本题，我们要计算左边不是 $\textit{nums}[i]$ 的子集的最近的数的下标，假设我们先遍历到 $y$，再遍历到 $x$，且 $y$ 是 $x$ 的子集，那么对于 $x$ 右边的数来说，$x$ 更大（从集合角度来说）且更靠近右边的数，所以 $y$ 是个无用数据，直接出栈。
+
+因此，把常规单调栈中的 `y <= x` 替换成 `(y | x) == x` 即可。
+
+### 答疑
+
+**问**：是否会出现不同的 $x_1$ 和 $x_2$，对应的子数组都同时包含 $x_1$ 和 $x_2$ 的情况？这会导致重复统计。
+
+**答**：不会，如果 $x_1\ne x_2$，那么二者不可能互为对方的子集（这只会在 $x_1=x_2$ 的时候出现）。所以我们只需考虑 $x_1=x_2$ 时，如何避免重复统计，这在 907 题的题解中解释了。
+
+```py [sol-Python3]
+class Solution:
+    def countGoodSubarrays(self, nums: List[int]) -> int:
+        n = len(nums)
+        left = [0] * n
+        st = [-1]  # 哨兵
+        for i, x in enumerate(nums):
+            while len(st) > 1 and (nums[st[-1]] | x) == x:
+                st.pop()
+            left[i] = st[-1]  # nums[left[i]] 不是 x 的子集
+            st.append(i)
+
+        st = [n]
+        ans = 0
+        for i in range(n - 1, -1, -1):
+            x = nums[i]
+            # 比如 nums = [...,1,...,1,...]，我们规定，包含左边的 1 的子数组，不能包含右边的 1，从而避免重复统计子数组
+            # 注：包含右边的 1 的子数组，可以包含左边的 1
+            while len(st) > 1 and nums[st[-1]] != x and (nums[st[-1]] | x) == x:
+                st.pop()
+            right = st[-1]  # nums[right] 不是 x 的子集
+            st.append(i)
+
+            # 子数组左端点可以从 left[i]+1 到 i，一共 i-left[i] 个
+            # 子数组右端点可以从 i 到 right-1，一共 right-i 个
+            ans += (i - left[i]) * (right - i)
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countGoodSubarrays(int[] nums) {
+        int n = nums.length;
+        int[] left = new int[n];
+        ArrayDeque<Integer> st = new ArrayDeque<>(); // 更快的写法见【Java 数组】
+        st.push(-1); // 哨兵
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            while (st.size() > 1 && (nums[st.peek()] | x) == x) {
+                st.pop();
+            }
+            left[i] = st.peek(); // nums[left[i]] 不是 x 的子集
+            st.push(i);
+        }
+
+        st.clear();
+        st.push(n);
+        long ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = nums[i];
+            // 比如 nums = [...,1,...,1,...]，我们规定，包含左边的 1 的子数组，不能包含右边的 1，从而避免重复统计子数组
+            // 注：包含右边的 1 的子数组，可以包含左边的 1
+            while (st.size() > 1 && nums[st.peek()] != x && (nums[st.peek()] | x) == x) {
+                st.pop();
+            }
+            int right = st.peek(); // nums[right] 不是 x 的子集
+            st.push(i);
+
+            // 子数组左端点可以从 left[i]+1 到 i，一共 i-left[i] 个
+            // 子数组右端点可以从 i 到 right-1，一共 right-i 个
+            ans += (long) (i - left[i]) * (right - i);
+        }
+
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long countGoodSubarrays(int[] nums) {
+        int n = nums.length;
+        int[] left = new int[n];
+        int[] st = new int[n + 1];
+        st[0] = -1;
+        int top = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            while (top > 0 && (nums[st[top]] | x) == x) {
+                top--;
+            }
+            left[i] = st[top]; // nums[left[i]] 不是 x 的子集
+            st[++top] = i;
+        }
+
+        st[0] = n;
+        top = 0;
+        long ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = nums[i];
+            // 比如 nums = [...,1,...,1,...]，我们规定，包含左边的 1 的子数组，不能包含右边的 1，从而避免重复统计子数组
+            // 注：包含右边的 1 的子数组，可以包含左边的 1
+            while (top > 0 && nums[st[top]] != x && (nums[st[top]] | x) == x) {
+                top--;
+            }
+            int right = st[top]; // nums[right] 不是 x 的子集
+            st[++top] = i;
+
+            // 子数组左端点可以从 left[i]+1 到 i，一共 i-left[i] 个
+            // 子数组右端点可以从 i 到 right-1，一共 right-i 个
+            ans += (long) (i - left[i]) * (right - i);
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countGoodSubarrays(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> left(n);
+        stack<int> st;
+        st.push(-1); // 哨兵
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            while (st.size() > 1 && (nums[st.top()] | x) == x) {
+                st.pop();
+            }
+            left[i] = st.top(); // nums[left[i]] 不是 x 的子集
+            st.push(i);
+        }
+
+        st = stack<int>();
+        st.push(n);
+        long long ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = nums[i];
+            // 比如 nums = [...,1,...,1,...]，我们规定，包含左边的 1 的子数组，不能包含右边的 1，从而避免重复统计子数组
+            // 注：包含右边的 1 的子数组，可以包含左边的 1
+            while (st.size() > 1 && nums[st.top()] != x && (nums[st.top()] | x) == x) {
+                st.pop();
+            }
+            int right = st.top(); // nums[right] 不是 x 的子集
+            st.push(i);
+
+            // 子数组左端点可以从 left[i]+1 到 i，一共 i-left[i] 个
+            // 子数组右端点可以从 i 到 right-1，一共 right-i 个
+            ans += 1LL * (i - left[i]) * (right - i);
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countGoodSubarrays(nums []int) (ans int64) {
+	n := len(nums)
+	left := make([]int, n)
+	st := []int{-1} // 哨兵
+	for i, x := range nums {
+		for len(st) > 1 && nums[st[len(st)-1]]|x == x {
+			st = st[:len(st)-1]
+		}
+		left[i] = st[len(st)-1] // nums[left[i]] 不是 x 的子集
+		st = append(st, i)
+	}
+
+	st = []int{n}
+	for i := n - 1; i >= 0; i-- {
+		x := nums[i]
+		// 比如 nums = [...,1,...,1,...]，我们规定，包含左边的 1 的子数组，不能包含右边的 1，从而避免重复统计子数组
+		// 注：包含右边的 1 的子数组，可以包含左边的 1
+		for len(st) > 1 && nums[st[len(st)-1]] != x && nums[st[len(st)-1]]|x == x {
+			st = st[:len(st)-1]
+		}
+		right := st[len(st)-1] // nums[right] 不是 x 的子集
+		st = append(st, i)
+
+		// 子数组左端点可以从 left[i]+1 到 i，一共 i-left[i] 个
+		// 子数组右端点可以从 i 到 right-1，一共 right-i 个
+		ans += int64(i-left[i]) * int64(right-i)
+	}
+
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然我们写了二重循环，但站在 $\textit{nums}[i]$ 的视角看，$i$ 在二重循环中最多入栈出栈各一次（两个二重循环就是两次），因此二重循环的时间复杂度为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
 ## 专题训练
 
-见下面位运算题单的「**AND/OR LogTrick**」。
+1. 位运算题单的「**AND/OR LogTrick**」。
+2. 单调栈题单的「**三、贡献法**」。
 
 ## 分类题单
 
