@@ -28,7 +28,7 @@ class Solution {
         // 计算最小偶数、最小奇数
         int[] mn = {Integer.MAX_VALUE, Integer.MAX_VALUE};
         for (int x : nums1) {
-            mn[x & 1] = Math.min(mn[x & 1], x);
+            mn[x & 1] = Math.min(mn[x & 1], x); // &1 比 %2 好，nums1 有负数也适用
         }
 
         // 只有偶数，或者偶数 >= 最小的偶数 > 最小的奇数
@@ -45,7 +45,7 @@ public:
         // 计算最小偶数、最小奇数
         int mn[2] = {INT_MAX, INT_MAX};
         for (int x : nums1) {
-            mn[x % 2] = min(mn[x % 2], x);
+            mn[x & 1] = min(mn[x & 1], x); // &1 比 %2 好，nums1 有负数也适用
         }
 
         // 只有偶数，或者偶数 >= 最小的偶数 > 最小的奇数
@@ -60,7 +60,7 @@ func uniformArray(nums1 []int) bool {
 	// 计算最小偶数、最小奇数
 	mn := [2]int{math.MaxInt, math.MaxInt}
 	for _, x := range nums1 {
-		mn[x&1] = min(mn[x&1], x)
+		mn[x&1] = min(mn[x&1], x) // &1 比 %2 好，nums1 有负数也适用
 	}
 
 	// 只有偶数，或者偶数 >= 最小的偶数 > 最小的奇数
