@@ -18,13 +18,19 @@ func cf1635C(in io.Reader, _w io.Writer) {
 		for i := range a {
 			Fscan(in, &a[i])
 		}
-		if a[n-2] > a[n-1] || a[n-1] < 0 && !slices.IsSorted(a) {
+		if a[n-2] > a[n-1] {
 			Fprintln(out, -1)
-			continue
-		}
-		Fprintln(out, n-2)
-		for i := n - 2; i > 0; i-- {
-			Fprintln(out, i, i+1, n)
+		} else if a[n-1] < 0 {
+			if slices.IsSorted(a) {
+				Fprintln(out, 0)
+			} else {
+				Fprintln(out, -1)
+			}
+		} else {
+			Fprintln(out, n-2)
+			for i := n - 2; i > 0; i-- {
+				Fprintln(out, i, i+1, n)
+			}
 		}
 	}
 }
