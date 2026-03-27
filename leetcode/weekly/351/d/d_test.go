@@ -7,11 +7,7 @@ import (
 )
 
 func Test_d(t *testing.T) {
-	targetCaseNum := 0 // -1
-	if err := testutil.RunLeetCodeFuncWithFile(t, survivedRobotsHealths, "d.txt", targetCaseNum); err != nil {
-		t.Fatal(err)
-	}
-	if err := testutil.RunFuncWithRandomInput(t, survivedRobotsHealths); err != nil {
+	if err := testutil.RunLeetCodeFuncWithFile(t, survivedRobotsHealths, "d.txt", 0); err != nil {
 		t.Fatal(err)
 	}
 }

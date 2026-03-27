@@ -1,49 +1,49 @@
 package main
 
-import "sort"
+import (
+	"slices"
+)
 
 // https://space.bilibili.com/206214
-func survivedRobotsHealths(positions, healths []int, directions string) []int {
-	type data struct {
-		i, p, h int
-		d       byte
+func survivedRobotsHealths(positions []int, healths []int, directions string) (ans []int) {
+	// 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+	idx := make([]int, len(positions))
+	for i := range idx {
+		idx[i] = i
 	}
-	a := make([]data, len(positions))
-	for i, p := range positions {
-		a[i] = data{i, p, healths[i], directions[i]}
-	}
-	sort.Slice(a, func(i, j int) bool { return a[i].p < a[j].p })
+	slices.SortFunc(idx, func(i, j int) int { return positions[i] - positions[j] })
 
-	var toLeft, st []data
-next:
-	for _, p := range a {
-		if p.d == 'R' { // 向右，存入栈中
-			st = append(st, p)
+	st := []int{}
+	for _, i := range idx {
+		if directions[i] == 'R' { // 机器人 i 向右
+			st = append(st, i)
 			continue
 		}
-		// p 向左，与栈中向右的机器人碰撞
-		for len(st) > 0 {
-			top := &st[len(st)-1]
-			if top.h > p.h { // 栈顶的健康度大
-				top.h--
-				continue next
+		for len(st) > 0 { // 栈顶机器人向右
+			j := st[len(st)-1]
+			if healths[j] > healths[i] { // 栈顶机器人的健康度大
+				healths[i] = 0 // 移除机器人 i
+				healths[j]--
+				break
 			}
-			if top.h == p.h { // 健康度一样大
+			if healths[j] == healths[i] { // 健康度一样大，都移除
+				healths[i] = 0
+				healths[j] = 0
 				st = st[:len(st)-1]
-				continue next
+				break
 			}
-			p.h-- // p 的健康度大
-			st = st[:len(st)-1] // 移除栈顶
+			// 机器人 i 的健康度大
+			healths[i]--
+			healths[j] = 0 // 移除机器人 j
+			st = st[:len(st)-1]
 		}
-		toLeft = append(toLeft, p)
 	}
 
-	// 合并剩余的机器人
-	toLeft = append(toLeft, st...)
-	sort.Slice(toLeft, func(i, j int) bool { return toLeft[i].i < toLeft[j].i })
-	ans := make([]int, len(toLeft))
-	for i, p := range toLeft {
-		ans[i] = p.h
+	// 返回幸存机器人的健康度
+	for _, h := range healths {
+		if h > 0 {
+			ans = append(ans, h)
+		}
 	}
-	return ans
+	return
 }

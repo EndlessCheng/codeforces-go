@@ -1,83 +1,98 @@
-本题思路和 [735. 行星碰撞](https://leetcode.cn/problems/asteroid-collision/) 是一样的。
+推荐先完成本题的简单版本：[735. 行星碰撞](https://leetcode.cn/problems/asteroid-collision/)，[我的题解](https://leetcode.cn/problems/asteroid-collision/solutions/3938065/yong-zhan-wei-hu-xiao-xing-xing-pythonja-llqq/)。
 
-用列表 $\textit{toLeft}$ 维护向左的机器人，用栈 $\textit{st}$ 维护向右的机器人。
+从左到右遍历这些机器人（需要先按照位置排序），向右的机器人会和向左的机器人碰撞。
 
-按照 $\textit{positions}[i]$ 从小到大排序。遍历机器人，如果遇到一个向左的机器人 $p$，分类讨论：
+遍历到一个向左的机器人时，我们需要找到左边最近的未移除的机器人。这可以用一个栈维护。
 
-- 如果 $p$ 的健康度小于栈顶，那么栈顶的健康度减一。
-- 如果 $p$ 的健康度等于栈顶，那么移除栈顶。
-- 如果 $p$ 的健康度大于栈顶，那么移除栈顶，将 $p$ 的健康度减一后加入 $\textit{toLeft}$。
-- 请注意，如果健康度减一，那么在减一之前，健康度一定是大于 $1$ 的，**不存在健康度减为** $0$ **的情况**。
+如果当前机器人向右，那么直接入栈，继续向后遍历。
 
-最后剩余的就是 $\textit{toLeft}$ 和 $\textit{st}$ 中的机器人，合并，按照编号排序后，返回健康度列表。
+如果当前机器人向左，设其健康度为 $h$，栈顶机器人的健康度为 $\textit{top}$，分类讨论：
 
-代码实现时，也可以直接在 $\textit{healths}$ 上修改，最后返回 $\textit{healths}$ 中的正数。
+- 如果 $\textit{top} > h$，那么移除当前机器人，$\textit{top}$ 减一。
+- 如果 $\textit{top} = h$，那么两个机器人都移除。
+- 如果 $\textit{top} < h$，那么移除栈顶机器人，$h$ 减一。
+- 如此循环，直到当前机器人被移除，或者栈顶为空。
 
-视频讲解见[【周赛 351】](https://www.bilibili.com/video/BV1du41187ZN/)第四题，欢迎点赞！
+⚠**注意**：比大小的这两个健康度都是正整数，所以减一的那个健康度一定大于 $1$。所以减一后，健康度大于 $0$。
+
+代码实现时，直接在 $\textit{healths}$ 上修改，移除机器人 $i$ 相当于把 $\textit{healths}[i]$ 置为 $0$。最后返回 $\textit{healths}$ 中的正数。
 
 ```py [sol-Python3]
 class Solution:
     def survivedRobotsHealths(self, positions: List[int], healths: List[int], directions: str) -> List[int]:
-        n = len(positions)
-        a = sorted(zip(range(n), positions, healths, directions), key=lambda p: p[1])
-        to_left = []
+        # 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+        idx = sorted(range(len(positions)), key=lambda i: positions[i])
+
         st = []
-        for i, _, h, d in a:
-            if d == 'R':  # 向右，存入栈中
-                st.append([i, h])
+        for i in idx:
+            if directions[i] == 'R':  # 机器人 i 向右
+                st.append(i)
                 continue
-            # 当前机器人向左，与栈中向右的机器人碰撞
-            while st:
-                top = st[-1]
-                if top[1] > h:  # 栈顶的健康度大
-                    top[1] -= 1
+            while st:  # 栈顶机器人向右
+                j = st[-1]
+                if healths[j] > healths[i]:  # 栈顶机器人的健康度大
+                    healths[i] = 0  # 移除机器人 i
+                    healths[j] -= 1
                     break
-                if top[1] == h:  # 健康度一样大
+                if healths[j] == healths[i]:  # 健康度一样大，都移除
+                    healths[i] = 0
+                    healths[j] = 0
                     st.pop()
                     break
-                h -= 1  # 当前机器人的健康度大
-                st.pop()  # 移除栈顶
-            else:  # while 循环没有 break，说明当前机器人把栈中的全部撞掉
-                to_left.append([i, h])
-        to_left += st  # 合并剩余的机器人
-        to_left.sort(key=lambda p: p[0])  # 按编号排序
-        return [h for _, h in to_left]
+                # 机器人 i 的健康度大
+                healths[i] -= 1
+                healths[j] = 0  # 移除机器人 j
+                st.pop()
+
+        # 返回幸存机器人的健康度
+        return [h for h in healths if h > 0]
 ```
 
 ```java [sol-Java]
 class Solution {
     public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
         int n = positions.length;
-        var id = new Integer[n];
-        for (int i = 0; i < n; ++i) id[i] = i;
-        Arrays.sort(id, (i, j) -> positions[i] - positions[j]);
+        // 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+        Integer[] idx = new Integer[n];
+        for (int i = 0; i < n; i++) {
+            idx[i] = i;
+        }
+        Arrays.sort(idx, (i, j) -> positions[i] - positions[j]);
 
-        var st = new ArrayDeque<Integer>();
-        for (int i : id) {
-            if (directions.charAt(i) == 'R') { // 向右，存入栈中
-                st.push(i);
+        int[] st = new int[n];
+        int top = -1;
+        for (int i : idx) {
+            if (directions.charAt(i) == 'R') { // 机器人 i 向右
+                st[++top] = i;
                 continue;
             }
-            // 向左，与栈中向右的机器人碰撞
-            while (!st.isEmpty()) {
-                int top = st.peek();
-                if (healths[top] > healths[i]) { // 栈顶的健康度大
-                    healths[top]--;
-                    healths[i] = 0;
+            while (top >= 0) { // 栈顶机器人向右
+                int j = st[top];
+                if (healths[j] > healths[i]) { // 栈顶机器人的健康度大
+                    healths[i] = 0; // 移除机器人 i
+                    healths[j]--;
                     break;
                 }
-                if (healths[top] == healths[i]) { // 健康度一样大
-                    healths[st.pop()] = 0;
+                if (healths[j] == healths[i]) { // 健康度一样大，都移除
                     healths[i] = 0;
+                    healths[j] = 0;
+                    top--;
                     break;
                 }
-                healths[st.pop()] = 0;
-                healths[i]--; // 当前机器人的健康度大
+                // 机器人 i 的健康度大
+                healths[i]--;
+                healths[j] = 0; // 移除机器人 j
+                top--;
             }
         }
 
-        var ans = new ArrayList<Integer>();
-        for (int h : healths) if (h > 0) ans.add(h);
+        // 返回幸存机器人的健康度
+        List<Integer> ans = new ArrayList<>();
+        for (int h : healths) {
+            if (h > 0) {
+                ans.add(h);
+            }
+        }
         return ans;
     }
 }
@@ -86,98 +101,258 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    vector<int> survivedRobotsHealths(vector<int> &positions, vector<int> &healths, string directions) {
-        int n = positions.size(), id[n];
-        iota(id, id + n, 0);
-        sort(id, id + n, [&](const int i, const int j) {
-            return positions[i] < positions[j];
-        });
+    vector<int> survivedRobotsHealths(vector<int>& positions, vector<int>& healths, string directions) {
+        int n = positions.size();
+        // 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+        vector<int> idx(n);
+        ranges::iota(idx, 0); // idx[i] = i
+        ranges::sort(idx, {}, [&](int i) { return positions[i]; });
 
         stack<int> st;
-        for (int i: id) {
-            if (directions[i] == 'R') { // 向右，存入栈中
+        for (int i : idx) {
+            if (directions[i] == 'R') { // 机器人 i 向右
                 st.push(i);
                 continue;
             }
-            // 向左，与栈中向右的机器人碰撞
-            while (!st.empty()) {
-                int top = st.top();
-                if (healths[top] > healths[i]) { // 栈顶的健康度大
-                    healths[top]--;
-                    healths[i] = 0;
+            while (!st.empty()) { // 栈顶机器人向右
+                int j = st.top();
+                if (healths[j] > healths[i]) { // 栈顶机器人的健康度大
+                    healths[i] = 0; // 移除机器人 i
+                    healths[j]--;
                     break;
                 }
-                if (healths[top] == healths[i]) { // 健康度一样大
-                    healths[top] = 0;
-                    st.pop(); // 移除栈顶
+                if (healths[j] == healths[i]) { // 健康度一样大，都移除
                     healths[i] = 0;
+                    healths[j] = 0;
+                    st.pop();
                     break;
                 }
-                healths[top] = 0;
-                st.pop(); // 移除栈顶
-                healths[i]--; // 当前机器人的健康度大
+                // 机器人 i 的健康度大
+                healths[i]--;
+                healths[j] = 0; // 移除机器人 j
+                st.pop();
             }
         }
 
-        // 去掉 0
-        healths.erase(remove(healths.begin(), healths.end(), 0), healths.end());
-        return healths;
+        // 返回幸存机器人的健康度
+        vector<int> ans;
+        for (int h : healths) {
+            if (h > 0) {
+                ans.push_back(h);
+            }
+        }
+        return ans;
     }
 };
 ```
 
-```go [sol-Go]
-func survivedRobotsHealths(positions, healths []int, directions string) []int {
-	type data struct {
-		i, p, h int
-		d       byte
-	}
-	a := make([]data, len(positions))
-	for i, p := range positions {
-		a[i] = data{i, p, healths[i], directions[i]}
-	}
-	sort.Slice(a, func(i, j int) bool { return a[i].p < a[j].p })
+```c [sol-C]
+int* _positions;
 
-	var toLeft, st []data
-next:
-	for _, p := range a {
-		if p.d == 'R' { // 向右，存入栈中
-			st = append(st, p)
+int cmp(const void* i, const void* j) {
+    return _positions[*(int*)i] - _positions[*(int*)j];
+}
+
+int* survivedRobotsHealths(int* positions, int positionsSize, int* healths, int healthsSize, char* directions, int* returnSize) {
+    int n = positionsSize;
+    // 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+    int* idx = malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++) {
+        idx[i] = i;
+    }
+    _positions = positions;
+    qsort(idx, n, sizeof(int), cmp);
+
+    int* st = malloc(n * sizeof(int));
+    int top = -1;
+    for (int k = 0; k < n; k++) {
+        int i = idx[k];
+        if (directions[i] == 'R') { // 机器人 i 向右
+            st[++top] = i;
+            continue;
+        }
+        while (top >= 0) { // 栈顶机器人向右
+            int j = st[top];
+            if (healths[j] > healths[i]) { // 栈顶机器人的健康度大
+                healths[i] = 0; // 移除机器人 i
+                healths[j]--;
+                break;
+            }
+            if (healths[j] == healths[i]) { // 健康度一样大，都移除
+                healths[i] = 0;
+                healths[j] = 0;
+                top--;
+                break;
+            }
+            // 机器人 i 的健康度大
+            healths[i]--;
+            healths[j] = 0; // 移除机器人 j
+            top--;
+        }
+    }
+
+    free(idx);
+
+    // 返回幸存机器人的健康度
+    int* ans = st;
+    *returnSize = 0;
+    for (int i = 0; i < n; i++) {
+        if (healths[i] > 0) {
+            ans[(*returnSize)++] = healths[i];
+        }
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func survivedRobotsHealths(positions []int, healths []int, directions string) (ans []int) {
+	// 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+	idx := make([]int, len(positions))
+	for i := range idx {
+		idx[i] = i
+	}
+	slices.SortFunc(idx, func(i, j int) int { return positions[i] - positions[j] })
+
+	st := []int{}
+	for _, i := range idx {
+		if directions[i] == 'R' { // 机器人 i 向右
+			st = append(st, i)
 			continue
 		}
-		// p 向左，与栈中向右的机器人碰撞
-		for len(st) > 0 {
-			top := &st[len(st)-1]
-			if top.h > p.h { // 栈顶的健康度大
-				top.h--
-				continue next
+		for len(st) > 0 { // 栈顶机器人向右
+			j := st[len(st)-1]
+			if healths[j] > healths[i] { // 栈顶机器人的健康度大
+				healths[i] = 0 // 移除机器人 i
+				healths[j]--
+				break
 			}
-			if top.h == p.h { // 健康度一样大
+			if healths[j] == healths[i] { // 健康度一样大，都移除
+				healths[i] = 0
+				healths[j] = 0
 				st = st[:len(st)-1]
-				continue next
+				break
 			}
-			p.h-- // p 的健康度大
-			st = st[:len(st)-1] // 移除栈顶
+			// 机器人 i 的健康度大
+			healths[i]--
+			healths[j] = 0 // 移除机器人 j
+			st = st[:len(st)-1]
 		}
-		toLeft = append(toLeft, p) // p 把栈中的全部撞掉
 	}
 
-	// 合并剩余的机器人，按编号排序
-	toLeft = append(toLeft, st...)
-	sort.Slice(toLeft, func(i, j int) bool { return toLeft[i].i < toLeft[j].i })
-	ans := make([]int, len(toLeft))
-	for i, p := range toLeft {
-		ans[i] = p.h
+	// 返回幸存机器人的健康度
+	for _, h := range healths {
+		if h > 0 {
+			ans = append(ans, h)
+		}
 	}
-	return ans
+	return
+}
+```
+
+```js [sol-JavaScript]
+var survivedRobotsHealths = function(positions, healths, directions) {
+    // 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+    const idx = Array.from({ length: positions.length }, (_, i) => i)
+                     .sort((i, j) => positions[i] - positions[j]);
+
+    const st = [];
+    for (const i of idx) {
+        if (directions[i] === 'R') { // 机器人 i 向右
+            st.push(i);
+            continue;
+        }
+        while (st.length > 0) { // 栈顶机器人向右
+            const j = st[st.length - 1];
+            if (healths[j] > healths[i]) { // 栈顶机器人的健康度大
+                healths[i] = 0; // 移除机器人 i
+                healths[j] -= 1;
+                break;
+            }
+            if (healths[j] === healths[i]) { // 健康度一样大，都移除
+                healths[i] = 0;
+                healths[j] = 0;
+                st.pop();
+                break;
+            }
+            // 机器人 i 的健康度大
+            healths[i] -= 1;
+            healths[j] = 0; // 移除机器人 j
+            st.pop();
+        }
+    }
+
+    // 返回幸存机器人的健康度
+    return healths.filter(h => h > 0);
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn survived_robots_healths(positions: Vec<i32>, mut healths: Vec<i32>, directions: String) -> Vec<i32> {
+        // 创建一个下标数组，对下标数组排序，这样不会打乱输入顺序
+        let mut idx = (0..positions.len()).collect::<Vec<_>>();
+        idx.sort_unstable_by_key(|&i| positions[i]);
+
+        let directions = directions.as_bytes();
+        let mut st = vec![];
+
+        for i in idx {
+            if directions[i] == b'R' { // 机器人 i 向右
+                st.push(i);
+                continue;
+            }
+            while let Some(&j) = st.last() { // 栈顶机器人向右
+                if healths[j] > healths[i] { // 栈顶机器人的健康度大
+                    healths[i] = 0; // 移除机器人 i
+                    healths[j] -= 1;
+                    break;
+                }
+                if healths[j] == healths[i] { // 健康度一样大，都移除
+                    healths[i] = 0;
+                    healths[j] = 0;
+                    st.pop();
+                    break;
+                }
+                // 机器人 i 的健康度大
+                healths[i] -= 1;
+                healths[j] = 0; // 移除机器人 j
+                st.pop();
+            }
+        }
+
+        // 返回幸存机器人的健康度
+        healths.into_iter().filter(|&h| h > 0).collect()
+    }
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{positions}$ 的长度。瓶颈在排序上。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{positions}$ 的长度。瓶颈在排序上。虽然我们写了个二重循环，但每个元素至多入栈出栈各一次，所以二重循环的**总**循环次数是 $\mathcal{O}(n)$ 的。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-#### 相似题目
+## 专题训练
 
-- [735. 行星碰撞](https://leetcode.cn/problems/asteroid-collision/)
+见下面数据结构题单的「**§3.3 邻项消除**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
