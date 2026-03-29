@@ -7,7 +7,7 @@
 - 对于 $\texttt{updatePriority}$，不做更新，而是把一条新的 $(\textit{newPriority},\textit{eventId})$ 数据**插入**堆。同时，额外用一个哈希表记录每个 $\textit{eventId}$ 对应的**最新**优先级。
 - 对于 $\texttt{pollHighest}$，如果堆顶优先级与哈希表中记录的优先级不一致，说明堆顶是个旧数据，弹出堆顶即可。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV11UXSB7EGz/?t=39m16s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class EventManager:

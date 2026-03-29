@@ -2,12 +2,11 @@
 
 所以只需遍历下标 $0$ 到 $\left\lfloor\dfrac{n}{2}\right\rfloor$。注意当 $n$ 是奇数时，这包括了字符串的正中心（一定满足要求）。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV11UXSB7EGz/?t=37m41s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def firstMatchingIndex(self, s: str) -> int:
-        n = len(s)
         for i in range(len(s) // 2 + 1):
             if s[i] == s[-1 - i]:
                 return i

@@ -20,9 +20,9 @@
 
 把 $j$ 记在数组 $\textit{nextDec}$ 中。
 
-有了 $\textit{nextDec}$，就可以快速找到下一个递增段的位置，从而判断子数组 $a$ 是否满足要求，具体见代码。
+有了 $\textit{nextDec}$，就可以快速找到下一个递增段的位置，从而判断子数组 $a$ 是否满足要求。可以根据 $a$ 是递增的还是两段递增分类讨论，具体见代码。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV11UXSB7EGz/?t=44m54s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -43,13 +43,13 @@ class Solution:
                 m = next_dec[l]
                 if m >= r:
                     # [l, r] 是递增的，最小值为 nums[l]，最大值为 nums[r]
-                    # nums[l] 必须 >= 上一段的最大值
+                    # 最小值必须 >= 上一段的最大值
                     if nums[l] < last_max:
                         return
                     last_max = nums[r]
                 else:
                     # [l, m] 是第一段，[m+1, r] 是第二段
-                    # 第二段必须是递增的，且第二段的最小值 >= 上一段的最大值，且第二段最大值 <= 第一段的最大值
+                    # 第二段必须是递增的，且第二段的最小值必须 >= 上一段的最大值，且第二段的最大值必须 <= 第一段的最小值
                     if next_dec[m + 1] < r or nums[m + 1] < last_max or nums[r] > nums[l]:
                         return
                     last_max = nums[m]
@@ -101,14 +101,14 @@ class Solution {
             int m = nextDec[l];
             if (m >= r) {
                 // [l, r] 是递增的，最小值为 nums[l]，最大值为 nums[r]
-                // nums[l] 必须 >= 上一段的最大值
+                // 最小值必须 >= 上一段的最大值
                 if (nums[l] < lastMax) {
                     return 0;
                 }
                 lastMax = nums[r];
             } else {
                 // [l, m] 是第一段，[m+1, r] 是第二段
-                // 第二段必须是递增的，且第二段的最小值 >= 上一段的最大值，且第二段最大值 <= 第一段的最大值
+                // 第二段必须是递增的，且第二段的最小值必须 >= 上一段的最大值，且第二段的最大值必须 <= 第一段的最小值
                 if (nextDec[m + 1] < r || nums[m + 1] < lastMax || nums[r] > nums[l]) {
                     return 0;
                 }
@@ -145,14 +145,14 @@ public:
                 int m = next_dec[l];
                 if (m >= r) {
                     // [l, r] 是递增的，最小值为 nums[l]，最大值为 nums[r]
-                    // nums[l] 必须 >= 上一段的最大值
+                    // 最小值必须 >= 上一段的最大值
                     if (nums[l] < last_max) {
                         return;
                     }
                     last_max = nums[r];
                 } else {
                     // [l, m] 是第一段，[m+1, r] 是第二段
-                    // 第二段必须是递增的，且第二段的最小值 >= 上一段的最大值，且第二段最大值 <= 第一段的最大值
+                    // 第二段必须是递增的，且第二段的最小值必须 >= 上一段的最大值，且第二段的最大值必须 <= 第一段的最小值
                     if (next_dec[m + 1] < r || nums[m + 1] < last_max || nums[r] > nums[l]) {
                         return;
                     }
@@ -198,14 +198,14 @@ func sortableIntegers(nums []int) (ans int) {
 			m := nextDec[l]
 			if m >= r {
 				// [l, r] 是递增的，最小值为 nums[l]，最大值为 nums[r]
-				// nums[l] 必须 >= 上一段的最大值
+				// 最小值必须 >= 上一段的最大值
 				if nums[l] < lastMax {
 					return
 				}
 				lastMax = nums[r]
 			} else {
 				// [l, m] 是第一段，[m+1, r] 是第二段
-				// 第二段必须是递增的，且第二段的最小值 >= 上一段的最大值，且第二段最大值 <= 第一段的最大值
+				// 第二段必须是递增的，且第二段的最小值必须 >= 上一段的最大值，且第二段的最大值必须 <= 第一段的最小值
 				if nextDec[m+1] < r || nums[m+1] < lastMax || nums[r] > nums[l] {
 					return
 				}

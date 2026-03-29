@@ -1,5 +1,3 @@
-**前置题目**：[399. 除法求值](https://leetcode.cn/problems/evaluate-division/)，[我的题解](https://leetcode.cn/problems/evaluate-division/solutions/3805496/dai-quan-bing-cha-ji-pythonjavacgojsrust-a4a1/)。
-
 在边权只有 $0$ 和 $1$ 的情况下，环的边权和是偶数，等价于有偶数个 $1$，等价于边权的**异或和**等于 $0$。
 
 设 $x$ 和 $y$ 是某个环上的两个节点，我们可以把这个环拆分成从 $x$ 到 $y$ 的两条不同的简单路径。
@@ -11,13 +9,9 @@
 - 如果添加的边连接了图的两个连通块，那么没有形成新的环，直接连边。
 - 如果添加的边连接了同一个连通块中的两个点 $x$ 和 $y$，那么当且仅当添加的边的边权等于从 $x$ 到 $y$ 的路径的异或和（根据上面的结论，路径异或和是唯一的），我们才能添加这条边。
 
-如何快速求出从 $x$ 到 $y$ 的路径的异或和？这可以用**带权并查集**维护。请先完成 [399. 除法求值](https://leetcode.cn/problems/evaluate-division/)。
+如何快速求出从 $x$ 到 $y$ 的路径的异或和？这可以用**带权并查集**维护，具体请看 [本题视频讲解](https://www.bilibili.com/video/BV11UXSB7EGz/)，欢迎点赞关注~
 
-对于本题，可以维护节点到其代表元 $\textit{root}$ 的路径异或和。从 $x$ 到 $y$ 的路径，可以拆分成先从 $x$ 到 $\textit{root}$，再从 $\textit{root}$ 到 $y$（重复走的边权会被异或抵消掉），这两条路径的异或和再计算异或，即为从 $x$ 到 $y$ 的路径异或和。
-
-> **注**：即使边权范围改成 $[0,10^9]$，这个做法也是适用的。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+我们可以维护节点到其代表元 $\textit{root}$ 的路径异或和。从 $x$ 到 $y$ 的路径，可以拆分成先从 $x$ 到 $\textit{root}$，再从 $\textit{root}$ 到 $y$（重复走的边权会被异或抵消掉），这两条路径的异或和再计算异或，即为从 $x$ 到 $y$ 的路径异或和。
 
 ```py [sol-Python3]
 # 完整模板见 https://leetcode.cn/circle/discuss/mOr1u6/
@@ -200,6 +194,10 @@ func numberOfEdgesAdded(n int, edges [][]int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n\log n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 相似题目
+
+[399. 除法求值](https://leetcode.cn/problems/evaluate-division/)
 
 ## 专题训练
 
