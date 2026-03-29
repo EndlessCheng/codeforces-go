@@ -1,7 +1,7 @@
 一旦我们确定了被 $\textit{pos}$ 看到的 $k$ 个人，那么：
 
 - 这 $k$ 个人的方向是唯一确定的：在 $\textit{pos}$ 左边的人的方向为 $\texttt{L}$，在 $\textit{pos}$ 右边的人的方向为 $\texttt{R}$。
-- 其余 $n-1-k$ 个人的方向也是唯一确定的：在 $\textit{pos}$ 左边的人的方向为 $\texttt{R}$，在 $\textit{pos}$ 右边的人的方向为 $\texttt{L}$。
+- 其余 $n-1-k$ 个人不可见，方向也是唯一确定的：在 $\textit{pos}$ 左边的人的方向为 $\texttt{R}$，在 $\textit{pos}$ 右边的人的方向为 $\texttt{L}$。
 
 从 $n-1$ 个人中选 $k$ 个人有 $C(n-1,k)$ 种方案，每种方案，这 $n-1$ 个人的方向都是唯一确定的，而 $\textit{pos}$ 向左向右都可以，有 $2$ 种方案。所以一共有
 
@@ -13,7 +13,7 @@ $$
 
 由于 $n$ 和 $k$ 都很大，需要**预处理阶乘及其逆元**，从而快速计算组合数。代码模板见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1dxXSBAE6F/?t=4m31s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

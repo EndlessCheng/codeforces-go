@@ -24,7 +24,7 @@ $$
 
 代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1dxXSBAE6F/?t=14m42s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
@@ -39,13 +39,13 @@ for x in range(MX):
 
 class Solution:
     def countArrays(self, digitSum: List[int]) -> int:
-        s = [1] * MX
+        s = [1] * MX  # f 的前缀和
         for ds in digitSum:
             if ds > MAX_DIGIT_SUM:
                 return 0
             for x in range(MX):
-                # 如果 dig_sum[x] != ds，那么 f[x] = 0，否则 f[x] = sum[x]
-                # 把 f[x] 的值填到 sum[x] 中，那么只需要把 dig_sum[x] != ds 的 sum[x] 置为 0
+                # 如果 dig_sum[x] != ds，那么 f[x] = 0，否则 f[x] = s[x]
+                # 把 f[x] 的值填到 s[x] 中，那么只需要把 dig_sum[x] != ds 的 s[x] 置为 0
                 if dig_sum[x] != ds:
                     s[x] = 0
                 if x > 0:
@@ -76,7 +76,7 @@ class Solution {
     }
 
     public int countArrays(int[] digitSum) {
-        int[] sum = new int[MX];
+        int[] sum = new int[MX]; // f 的前缀和
         Arrays.fill(sum, 1);
         for (int ds : digitSum) {
             if (ds > MAX_DIGIT_SUM) {
@@ -116,7 +116,7 @@ class Solution {
 public:
     int countArrays(vector<int>& digitSum) {
         constexpr int MOD = 1'000'000'007;
-        vector<int> sum(MX, 1);
+        vector<int> sum(MX, 1); // f 的前缀和
         for (int ds : digitSum) {
             if (ds > MAX_DIGIT_SUM) {
                 return 0;
@@ -152,7 +152,7 @@ func init() {
 
 func countArrays(digitSum []int) int {
 	const mod = 1_000_000_007
-	sum := [mx]int{}
+	sum := [mx]int{} // f 的前缀和
 	for i := range sum {
 		sum[i] = 1
 	}
@@ -184,7 +184,7 @@ func countArrays(digitSum []int) int {
 
 ## 方法二：双指针优化 DP
 
-在示例 1 的 $\textit{digitSum} = [25,1]$：
+示例 1 的 $\textit{digitSum} = [25,1]$：
 
 - 数位和为 $25$ 的数字为 $a=[799,889,898,979,988,997]$。
 - 数位和为 $1$ 的数字为 $b=[1,10,100,1000]$。
@@ -212,8 +212,8 @@ for x in range(MX):
 
 class Solution:
     def countArrays(self, digitSum: List[int]) -> int:
-        f = [0] * MX
-        f[0] = 1  # f[x] 表示以 x 结尾的有效数组的个数
+        f = [0] * MX  # f[x] 表示以 x 结尾的有效数组的个数
+        f[0] = 1
         pre = 0
 
         for cur in digitSum:
@@ -259,8 +259,8 @@ class Solution {
     }
 
     public int countArrays(int[] digitSum) {
-        int[] f = new int[MX];
-        f[0] = 1; // f[x] 表示以 x 结尾的有效数组的个数
+        int[] f = new int[MX]; // f[x] 表示以 x 结尾的有效数组的个数
+        f[0] = 1;
         int pre = 0;
 
         for (int cur : digitSum) {
@@ -309,7 +309,8 @@ class Solution {
 public:
     int countArrays(vector<int>& digitSum) {
         constexpr int MOD = 1'000'000'007;
-        int f[MX] = {1}; // f[x] 表示以 x 结尾的有效数组的个数
+        // f[x] 表示以 x 结尾的有效数组的个数
+        int f[MX] = {1}; // f[0] = 1，其余 f[x] = 0 
         int pre = 0;
 
         for (int cur : digitSum) {

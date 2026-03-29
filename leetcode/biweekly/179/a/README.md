@@ -3,7 +3,9 @@
 - 遍历到 $\textit{nums}[i] = 1$ 时，我们需要知道上一个 $2$ 的位置 $j = \textit{last}[2]$，用 $i-j$ 更新答案的最小值。
 - 遍历到 $\textit{nums}[i] = 2$ 时，我们需要知道上一个 $1$ 的位置 $j = \textit{last}[1]$，用 $i-j$ 更新答案的最小值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+> 注：无需找 $i$ 右边的 $j$，因为我们会继续遍历，遍历到 $j$ 那个位置时，它会去找左边的 $i$。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1dxXSBAE6F/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
