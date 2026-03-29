@@ -1,0 +1,11 @@
+"abcacbd"
+1
+
+"abc"
+1
+
+"abcdab"
+-1
+
+
+
