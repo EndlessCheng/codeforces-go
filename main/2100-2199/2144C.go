@@ -15,23 +15,16 @@ func cf2144C(in io.Reader, out io.Writer) {
 		for i := range a {
 			Fscan(in, &a[i])
 		}
-		f0, f1 := 1, 0
+		ans := 1
 		preV, preW := 0, 0
 		for _, v := range a {
 			Fscan(in, &w)
-			nf0, nf1 := 0, 0
-			if v >= preV && w >= preW {
-				nf0 = f0
-				nf1 = f1
+			if v >= preV && w >= preW && v >= preW && w >= preV {
+				ans = ans * 2 % mod
 			}
-			if v >= preW && w >= preV {
-				nf0 = (nf0 + f1) % mod
-				nf1 = (nf1 + f0) % mod
-			}
-			f0, f1 = nf0, nf1
 			preV, preW = v, w
 		}
-		Fprintln(out, (f0+f1)%mod)
+		Fprintln(out, ans)
 	}
 }
 
