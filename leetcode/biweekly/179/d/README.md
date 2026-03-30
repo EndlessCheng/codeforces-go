@@ -293,7 +293,7 @@ class Solution {
 ```cpp [sol-C++]
 static constexpr int MX = 5001;
 static constexpr int MAX_DIGIT_SUM = 31; // 4999 的数位和最大
-vector<int> sum_to_nums[MX];
+vector<int> sum_to_nums[MAX_DIGIT_SUM + 1];
 
 int init = [] {
     int dig_sum[MX]{};
