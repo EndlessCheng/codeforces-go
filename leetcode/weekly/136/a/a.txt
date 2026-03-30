@@ -1,0 +1,11 @@
+"GGLLGG"
+true
+
+"GG"
+false
+
+"GL"
+true
+
+
+
