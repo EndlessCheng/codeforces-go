@@ -2,39 +2,56 @@
 
 首先说做法。下文把 $\textit{str}_1$ 简记为 $s$，把 $\textit{str}_2$ 简记为 $t$。
 
-先**模拟**：处理 $s$ 中的 T，把字符串 $t$ 填入答案的对应位置，如果发现矛盾，就返回空串。没填的位置（待定位置）初始化为 $\texttt{a}$。
+先**模拟**：处理 $s$ 中的 $\texttt{T}$，把字符串 $t$ 填入答案的对应位置，如果发现矛盾，就返回空串。没填的位置（待定位置）初始化为 $\texttt{a}$。
 
-再**贪心**：从左到右检查 F 对应的答案子串，如果发现子串和 $t$ 相同，那么把子串的最后一个待定位置改成 $\texttt{b}$。
+再**贪心**：从左到右检查 $\texttt{F}$ 对应的答案子串，如果发现子串和 $t$ 相同，那么把子串的最后一个待定位置改成 $\texttt{b}$。
 
 本题的贪心策略是简单的，难点在正确性上。考虑如下问题：
 
-- 按照上述贪心策略，是否存在一种情况，当我们把待定位置改成 $\texttt{b}$ 后，前面的某个 F 对应子串反而变成和 $t$ 相同了？
+- 按照上述贪心策略，是否存在一种情况，当我们把待定位置改成 $\texttt{b}$ 后，前面的某个 $\texttt{F}$ 对应子串反而变成和 $t$ 相同了？
 
-### 情况一
+如下图，这只会发生在 $t = A + \texttt{a} + B + \texttt{b} + C$ 的情况，如果把左边的 $\texttt{a}$ 改成 $\texttt{b}$，会把之前的某个子串改成 $t$。
 
-$t$ 全为 $\texttt{a}$ 的情况。
+![lc3474-c.png](https://pic.leetcode.cn/1774925078-nOtrAY-lc3474-c.png)
 
-这是容易证明的，因为把待定位置改成 $\texttt{b}$ 后，前面的受到影响的子串（包含这个 $\texttt{b}$ 的子串）一定不会等于 $t$，毕竟 $t$ 只有 $\texttt{a}$。
+具体地，定义：
 
-例如 $t=\texttt{aaa}$，现在 $\textit{ans}=\texttt{aaa?????aaa}$。其中 $\texttt{?}$ 表示待定位置，初始值为 $\texttt{a}$。
+- $t = A + \texttt{a} + B + \texttt{b} + C$。
+- $s[i] = s[k] = \texttt{F}$。
+- 修改前，下标 $j$ 处的字母是 $\texttt{a}$，从 $i$ 开始的长为 $m$ 的子串等于 $t$。
+- $j$ 是在处理 $s[i]$ 时，我们倒着遍历找到的第一个待定位置。
 
-- 我们遇到的第一个待定位置就会改成 $\texttt{b}$，后续所有包含这个 $\texttt{b}$ 的子串必然不等于 $t$，所以仍然为默认值 $\texttt{a}$。
-- 直到我们遇到下一个需要改成 $\texttt{b}$ 的待定位置。
-- 最终 $\textit{ans} = \texttt{aaa}\underline{\texttt{baabb}}\texttt{aaa}$。请动手算算，特别注意最后一个 $\texttt{b}$ 是怎么改的。
+在处理 $s[i]$ 时，由于从 $i$ 开始的长为 $m$ 的子串等于 $t$，要把 $j$ 处的字母改成 $\texttt{b}$。我们担心的是，是否修复了一个 bug，又产生了一个新的 bug？是否会把更早的一个 $s[k] = \texttt{F}$ 对应的子串给改成 $t$ 了？
 
-### 情况二
+这是不会的，可以用**反证法**证明，也就是假设出现了上图的情况。
 
-下面讨论 $t$ 包含不等于 $\texttt{a}$ 的字母的情况。
+$j$ 是在处理 $s[i]$ 时，我们倒着遍历找到的第一个待定位置，这意味着什么？
 
-**猜想**：$t$ 形如 $t' + \texttt{aa\ldots a} + t'$。例如 $\texttt{baab},\texttt{baaaaba},\texttt{abaaaba}$ 等。
+这意味着从 $j+1$ 往右的 $B + \texttt{b} + C$，是我们在一开始处理 $\texttt{T}$ 时，已经确定的那些字母。所以 $s[j+1]$ 一定是 $\texttt{T}$，所以 $B + \texttt{b} + C$ 是 $t$ 的前缀。**这是最重要的结论，后面会反复用到这个结论**。
 
-例如 $t=\texttt{baaaaba}$，即 $\texttt{ba} + \texttt{aaa} + \texttt{ba}$。
+下面用记号 $|s|$ 表示字符串 $s$ 的长度。
 
-设 $\textit{ans} = \texttt{baaaaba???baaaaba}$。中间的 $\texttt{???}$ 不能全为 $\texttt{a}$，改成 $\texttt{aab}$，得 $\texttt{baaaaba}\underline{\texttt{aab}}\texttt{baaaaba}$，这里产生的 $\texttt{baaab}$ 可以保证前面的 F 对应子串不会和 $t$ 相同。
+分类讨论。
 
-这可以推广到一般情况。抛砖引玉，欢迎在评论区发表你的证明。
+**情况一**：$|A| = |B|$。
 
-同理，一旦我们修改了 $\textit{ans}[j]$，那么后面包含 $\textit{ans}[j]$ 的子串都不会和 $t$ 相同。所以只需改最后一个待定位置，不会出现改子串倒数第二个待定位置的情况。进一步地，可以直接跳到 $j+1$ 继续循环，这个优化用在方法二中。
+- $t = A + \texttt{a} + B + \texttt{b} + C$ 去掉前 $|A|$ 个字母后，剩下的第一个字母是 $\texttt{a}$。
+- $B + \texttt{b} + C$ 去掉前 $|B|$ 个字母后，剩下的第一个字母是 $\texttt{b}$。
+- 由于 $B + \texttt{b} + C$ 是 $t = A + \texttt{a} + B + \texttt{b} + C$ 的前缀，在 $|A| = |B|$ 的情况下，$t$ 去掉前 $|A|$ 个字母后，剩下的第一个字母既是 $\texttt{a}$，又是 $\texttt{b}$，矛盾。
+
+**情况二**：$|A| > |B|$。
+
+由于 $B + \texttt{b} + C$ 是 $t = A + \texttt{a} + B + \texttt{b} + C$ 的前缀，所以 $A$ 可以表示为 $A = B + \texttt{b} + D$。
+
+此外，根据上文的图，$A$ 是 $A + \texttt{a} + B$ 的后缀。把这句话中的 $A$ 用 $B + \texttt{b} + D$ 替换，得到 $B + \texttt{b} + D$ 是 $B + \texttt{b} + D + \texttt{a} + B$ 后缀。由于 $B + \texttt{b} + D + \texttt{a} + B$ 的长为 $|B|+1+|D|$ 的后缀是 $D + \texttt{a} + B$，所以 $B + \texttt{b} + D = D + \texttt{a} + B$。对比这两个字符串的每个字母的出现次数，发现左边多了一个 $\texttt{b}$，右边多了一个 $\texttt{a}$，所以这两个字符串不可能相等，矛盾。 
+
+**情况三**：$|A| < |B|$。
+
+根据上文的图，$A$ 是 $A + \texttt{a} + B$ 的后缀，所以 $B$ 可以表示为 $B = D + A$。
+
+$B + \texttt{b} + C$ 是 $t = A + \texttt{a} + B + \texttt{b} + C$ 的前缀。把这句话中的 $B$ 用 $D + A$ 替换，得到 $D + A + \texttt{b} + C$ 是 $A + \texttt{a} + D + A + \texttt{b} + C$ 的前缀。由于 $D + A + \texttt{b} + C$ 和 $A + \texttt{a} + D + A + \texttt{b} + C$ 的长为 $|A|+|D| + 1$ 的前缀分别是 $D + A + \texttt{b}$ 和 $A + \texttt{a} + D$，所以 $D + A + \texttt{b} = A + \texttt{a} + D$。对比这两个字符串的每个字母的出现次数，发现左边多了一个 $\texttt{b}$，右边多了一个 $\texttt{a}$，所以这两个字符串不可能相等，矛盾。
+
+综上所述，原命题成立，我们不会把更早的一个 $s[k] = \texttt{F}$ 对应的子串给改成 $t$。
 
 ```py [sol-Python3]
 class Solution:
