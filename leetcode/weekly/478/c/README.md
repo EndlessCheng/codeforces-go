@@ -2,6 +2,8 @@
 
 如果哈希表中有 $\textit{nums}[j]$，获取对应的下标 $i$，用 $j-i$ 更新答案的最小值。
 
+⚠**注意**：请仔细读题，题目要求的是 `reverse(nums[i]) == nums[j]`，不是 `reverse(nums[j]) == nums[i]`，下标必须满足 $i<j$，不是对称的。
+
 [本题视频讲解](https://www.bilibili.com/video/BV1D4SiB5Ee3/?t=56m18s)，欢迎点赞关注~
 
 ```py [sol-Python3]
