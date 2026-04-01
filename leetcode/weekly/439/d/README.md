@@ -6,9 +6,11 @@
 
 再**贪心**：从左到右检查 $\texttt{F}$ 对应的答案子串，如果发现子串和 $t$ 相同，那么把子串的最后一个待定位置改成 $\texttt{b}$。
 
-本题的贪心策略是简单的，难点在正确性上。考虑如下问题：
+本题的贪心策略是简单的，难点在正确性上。
 
-- 按照上述贪心策略，是否存在一种情况，当我们把待定位置改成 $\texttt{b}$ 后，前面的某个 $\texttt{F}$ 对应子串反而变成和 $t$ 相同了？
+### 问题一：修改是否会影响之前的子串？
+
+按照上述贪心策略，是否存在一种情况，当我们把待定位置改成 $\texttt{b}$ 后，前面的某个 $\texttt{F}$ 对应子串反而变成和 $t$ 相同了？
 
 如下图，这只会发生在 $t = A + \texttt{a} + B + \texttt{b} + C$ 的情况。下图的 $\texttt{?}$ 原来是 $\texttt{a}$，为了让从 $i$ 开始的子串不等于 $t$，我们把 $\texttt{a}$ 改成 $\texttt{b}$，但这可能会导致之前的某个子串变成 $t$。不能修复了一个 bug，又产生了一个新的 bug 呀！
 
@@ -27,7 +29,7 @@
 
 $j$ 是在处理 $s[i]$ 时，我们倒着遍历找到的第一个待定位置，这意味着什么？
 
-这意味着从 $j+1$ 往右的 $B + \texttt{b} + C$，是我们在一开始处理 $\texttt{T}$ 时，已经确定的那些字母。所以 $s[j+1]$ 一定是 $\texttt{T}$，所以 $B + \texttt{b} + C$ 是 $t$ 的前缀。**这是最重要的结论，后面会反复用到这个结论**。
+这意味着从 $j+1$ 往右的 $B + \texttt{b} + C$，是我们在一开始处理 $\texttt{T}$ 时，已经确定的那些字母。由于位置 $j$ 是待定的，而位置 $j+1$ 是确定的，所以 $s[j]$ 一定是 $\texttt{F}$ 且 $s[j+1]$ 一定是 $\texttt{T}$，所以 $B + \texttt{b} + C$ 是 $t$ 的前缀。**这是最重要的结论，后面会反复用到这个结论**。
 
 下面用记号 $|s|$ 表示字符串 $s$ 的长度。
 
@@ -45,7 +47,7 @@ $B + \texttt{b} + C$ 去掉前 $|B|$ 个字母后，剩下的第一个字母是 
 
 由于 $B + \texttt{b} + C$ 是 $t = A + \texttt{a} + B + \texttt{b} + C$ 的前缀，在 $|A| > |B|$ 的情况下，$B + \texttt{b}$ 是 $A$ 的前缀，所以 $A$ 可以表示为 $A = B + \texttt{b} + D$。
 
-此外，根据上文的图，$A$ 是 $A + \texttt{a} + B$ 的后缀。把这句话中的 $A$ 用 $B + \texttt{b} + D$ 替换，得到 $B + \texttt{b} + D$ 是 $B + \texttt{b} + D + \texttt{a} + B$ 的后缀。由于 $B + \texttt{b} + D + \texttt{a} + B$ 的长为 $|B|+1+|D|$ 的后缀是 $D + \texttt{a} + B$，所以 $B + \texttt{b} + D = D + \texttt{a} + B$。对比这两个字符串的每个字母的出现次数，发现左边多了一个 $\texttt{b}$，右边多了一个 $\texttt{a}$，所以这两个字符串不可能相等，矛盾。 
+此外，根据上文的图，$A$ 是 $A + \texttt{a} + B$ 的后缀。把这句话中的 $A$ 用 $B + \texttt{b} + D$ 替换，得到 $B + \texttt{b} + D$ 是 $B + \texttt{b} + D + \texttt{a} + B$ 的后缀。由于 $B + \texttt{b} + D + \texttt{a} + B$ 的长为 $|B + \texttt{b} + D| = |B|+1+|D|$ 的后缀是 $D + \texttt{a} + B$，所以 $B + \texttt{b} + D = D + \texttt{a} + B$。对比这两个字符串的每个字母的出现次数，发现左边多了一个 $\texttt{b}$，右边多了一个 $\texttt{a}$，所以这两个字符串不可能相等，矛盾。 
 
 **情况三**：$|A| < |B|$。
 
@@ -54,6 +56,22 @@ $B + \texttt{b} + C$ 去掉前 $|B|$ 个字母后，剩下的第一个字母是 
 $B + \texttt{b} + C$ 是 $t = A + \texttt{a} + B + \texttt{b} + C$ 的前缀。把这句话中的 $B$ 用 $D + A$ 替换，得到 $D + A + \texttt{b} + C$ 是 $A + \texttt{a} + D + A + \texttt{b} + C$ 的前缀。由于 $D + A + \texttt{b} + C$ 和 $A + \texttt{a} + D + A + \texttt{b} + C$ 的长为 $|A|+|D| + 1$ 的前缀分别是 $D + A + \texttt{b}$ 和 $A + \texttt{a} + D$，所以 $D + A + \texttt{b} = A + \texttt{a} + D$。对比这两个字符串的每个字母的出现次数，发现左边多了一个 $\texttt{b}$，右边多了一个 $\texttt{a}$，所以这两个字符串不可能相等，矛盾。
 
 综上所述，原命题成立，我们不会把更早的一个 $s[k] = \texttt{F}$ 对应的子串给改成 $t$。
+
+### 问题二：为什么只需要改成 b？
+
+![lc3474-2c.png](https://pic.leetcode.cn/1775042023-QzsWKx-lc3474-2c.png)
+
+定义：
+
+- $t = A + \texttt{b} + B + \texttt{a} + C$。
+- $s[i] = s[k] = \texttt{F}$。
+- $j$ 是在处理 $s[i] = \textit{F}$ 时，我们倒着遍历找到的第一个待定位置，改成了 $\texttt{b}$。
+
+我们的问题是，在处理 $s[k]$ 时，$j$ 是不是倒着遍历找到的第一个待定位置？
+
+可以证明，$j$ 一定不会是倒着遍历找到的第一个待定位置。证明过程类似问题一，按照 $|A|$ 和 $|B|$ 的大小分类讨论，具体证明过程留给读者思考。
+
+> **提示**：反证法。如果 $j$ 是倒着遍历找到的第一个待定位置，那么 $B+ \texttt{a} + C$ 会是 $t$ 的前缀。此外，$A$ 是 $A + \texttt{b} + B$ 的后缀。
 
 ```py [sol-Python3]
 class Solution:
@@ -125,6 +143,7 @@ class Solution {
         }
 
         // 处理 F
+        next:
         for (int i = 0; i < n; i++) {
             if (s[i] != 'F') {
                 continue;
@@ -134,17 +153,13 @@ class Solution {
                 continue;
             }
             // 找最后一个待定位置
-            boolean ok = false;
             for (int j = i + m - 1; j >= i; j--) {
                 if (oldAns[j] == '?') { // 之前填 'a'，现在改成 'b'
                     ans[j] = 'b';
-                    ok = true;
-                    break;
+                    continue next;
                 }
             }
-            if (!ok) {
-                return "";
-            }
+            return "";
         }
 
         return new String(ans);
@@ -265,7 +280,7 @@ next:
 
 ## 方法二：Z 函数
 
-在模拟（处理 $s$ 中的 T）的过程中，如果两个 $t$ 重叠，我们需要判断 $t$ 的某个长度的前后缀是否相同，这可以用 Z 函数直接解决。
+在模拟（处理 $s$ 中的 $\texttt{T}$）的过程中，如果两个 $t$ 重叠，我们需要判断 $t$ 的某个长度的前后缀是否相同，这可以用 Z 函数直接解决。
 
 判断 $\textit{ans}$ 子串是否等于 $t$ 也可以用 Z 函数。计算 $t + \textit{ans}$ 的 Z 函数，如果 $z[i+m]<m$，就说明从 $i$ 开始的 $\textit{ans}$ 子串不等于 $t$。
 
@@ -582,7 +597,10 @@ func generateString(s, t string) string {
 - 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。
 - 空间复杂度：$\mathcal{O}(n+m)$。
 
-更多相似题目，见下面贪心题单中的「**§3.1 字典序最小/最大**」和字符串题单中的「**二、Z 函数**」。
+## 专题训练
+
+1. 贪心题单的「**§3.1 字典序最小/最大**」。
+2. 字符串题单的「**二、Z 函数**」。
 
 ## 分类题单
 
@@ -593,12 +611,14 @@ func generateString(s, t string) string {
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. 【本题相关】[贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
-12. 【本题相关】[字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
