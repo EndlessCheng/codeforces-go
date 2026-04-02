@@ -41,7 +41,10 @@ class Solution:
             if k and x < 0:
                 res = max(res, dfs(i - 1, j, k - 1), dfs(i, j - 1, k - 1))  # 不选
             return res
-        return dfs(len(coins) - 1, len(coins[0]) - 1, 2)
+
+        ans = dfs(len(coins) - 1, len(coins[0]) - 1, 2)
+        dfs.cache_clear()  # 避免超出内存限制
+        return ans
 ```
 
 ```java [sol-Java]
