@@ -8,7 +8,7 @@ import (
 
 func Test_a(t *testing.T) {
 	targetCaseNum := 0 // -1
-	if err := testutil.RunLeetCodeFuncWithFile(t, closetTarget, "a.txt", targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithFile(t, closestTarget, "a.txt", targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }
