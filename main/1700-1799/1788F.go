@@ -57,8 +57,9 @@ func CF1788F(in io.Reader, _w io.Writer) {
 	ccOddDegCnt := make([]byte, n)
 	xor := 0
 	for i, d := range deg {
+		find(i)
 		if d > 0 { // 每个点权的计算次数是它在原图上的度数，想要影响所有点权的异或值，度数必须是奇数
-			ccOddDegCnt[find(i)] ^= 1 // 连通块中的奇度数点的个数
+			ccOddDegCnt[fa[i]] ^= 1 // 连通块中的奇度数点的个数
 			xor ^= dis[i]
 		}
 	}
