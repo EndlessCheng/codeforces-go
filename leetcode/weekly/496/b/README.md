@@ -10,8 +10,6 @@
 
 由于 $b\ge a$，所以当 $2a^3 > 10^9$ 时，跳出外层循环。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 MX = 1_000_000_000
 cnt = defaultdict(int)
@@ -129,8 +127,8 @@ func findGoodIntegers(n int) []int {
 
 预处理的时间和空间不计入。
 
-- 时间复杂度：$\mathcal{O}(\log G)$，其中 $G=1554$ 是好整数的个数。
-- 空间复杂度：$\mathcal{O}(1)$。
+- 时间复杂度：$\mathcal{O}(G)$ 或 $\mathcal{O}(\log G)$，其中 $G=1554$ 是好整数的个数。如果获取子数组是 $\mathcal{O}(1)$ 时间的（例如 Go 语言），则瓶颈在二分查找上。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
 
 ## 分类题单
 
@@ -148,3 +146,7 @@ func findGoodIntegers(n int) []int {
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
