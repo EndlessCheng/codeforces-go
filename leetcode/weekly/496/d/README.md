@@ -6,14 +6,14 @@
 
 由于长为 $n$ 的**环形**数组至多有 $\left\lfloor\dfrac{n}{2}\right\rfloor$ 个峰值，所以当 $k > \left\lfloor\dfrac{n}{2}\right\rfloor$ 时无解。
 
-如果能把环形数组变成普通数组（非环形），问题就更容易解决。
+如果能把环形数组变成普通数组（非环形数组），问题就更容易解决。
 
 **普通数组的第一个数和最后一个数不能是峰值**。
 
 分类讨论：
 
-- 如果 $\textit{nums}[0]$ 是峰值，那么 $\textit{nums}[n-1]$ 不能是峰值，可以放在普通数组的最左边。于是构造数组 $a = [\textit{nums}[n-1]] + \textit{nums}$，问题变成使 $a$ 包含 $k$ 个峰值的最小操作次数。
-- 如果 $\textit{nums}[0]$ 不是峰值，那么 $\textit{nums}[0]$ 可以放在普通数组的最右边。于是构造数组 $a = \textit{nums} + [\textit{nums}[0]]$，问题变成使 $a$ 包含 $k$ 个峰值的最小操作次数。
+- 如果 $\textit{nums}[0]$ 是峰值，那么 $\textit{nums}[n-1]$ 不能是峰值，可以放在普通数组的最左边。于是构造普通数组 $a = [\textit{nums}[n-1]] + \textit{nums}$，问题变成使 $a$ 包含 $k$ 个峰值的最小操作次数。
+- 如果 $\textit{nums}[0]$ 不是峰值，那么 $\textit{nums}[0]$ 可以放在普通数组的最右边。于是构造普通数组 $a = \textit{nums} + [\textit{nums}[0]]$，问题变成使 $a$ 包含 $k$ 个峰值的最小操作次数。
 
 ## 寻找子问题
 
@@ -55,7 +55,7 @@ $$
 
 关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1abSSBnERm/?t=16m42s)，欢迎点赞关注~
 
 ## 记忆化搜索
 
@@ -76,9 +76,7 @@ class Solution:
             choose = dfs(left - 1, i - 2) + max(max(a[i - 1], a[i + 1]) - a[i] + 1, 0)
             return min(not_choose, choose)
 
-        ans = dfs(k, len(a) - 2)
-        dfs.cache_clear()
-        return ans
+        return dfs(k, len(a) - 2)
 
     def minOperations(self, nums: List[int], k: int) -> int:
         n = len(nums)
@@ -92,9 +90,9 @@ class Solution:
         if cnt >= k:  # 优化：已经有至少 k 个峰值了，无需操作
             return 0
 
-        # 如果 nums[0] 是峰顶，那么 nums[-1] 不是峰顶
+        # 如果 nums[0] 是峰值，那么 nums[-1] 不是峰值
         ans1 = self.solve([nums[-1]] + nums, k)
-        # 如果 nums[0] 不是峰顶
+        # 如果 nums[0] 不是峰值
         ans2 = self.solve(nums + [nums[0]], k)
         return min(ans1, ans2)
 ```
@@ -117,13 +115,13 @@ class Solution {
             return 0;
         }
 
-        // 如果 nums[0] 是峰顶，那么 nums[n-1] 不是峰顶
+        // 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
         int[] a = new int[n + 1];
         a[0] = nums[n - 1];
         System.arraycopy(nums, 0, a, 1, n);
         int ans1 = solve(a, k);
 
-        // 如果 nums[0] 不是峰顶
+        // 如果 nums[0] 不是峰值
         int[] b = new int[n + 1];
         System.arraycopy(nums, 0, b, 0, n);
         b[n] = nums[0];
@@ -215,12 +213,12 @@ public:
             return 0;
         }
 
-        // 如果 nums[0] 是峰顶，那么 nums[n-1] 不是峰顶
+        // 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
         vector<int> a = {nums.back()};
         a.insert(a.end(), nums.begin(), nums.end());
         int ans1 = solve(a, k);
 
-        // 如果 nums[0] 不是峰顶
+        // 如果 nums[0] 不是峰值
         nums.push_back(nums[0]);
         int ans2 = solve(nums, k);
 
@@ -284,9 +282,9 @@ func minOperations(nums []int, k int) int {
 		return 0
 	}
 
-	// 如果 nums[0] 是峰顶，那么 nums[n-1] 不是峰顶
+	// 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
 	ans1 := solve(append([]int{nums[n-1]}, nums...), k)
-	// 如果 nums[0] 不是峰顶
+	// 如果 nums[0] 不是峰值
 	ans2 := solve(append(nums, nums[0]), k)
 	return min(ans1, ans2)
 }
@@ -294,28 +292,45 @@ func minOperations(nums []int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nk)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(nk)$。
-- 空间复杂度：$\mathcal{O}(nk)$。保存多少状态，就需要多少空间。
+- 时间复杂度：$\mathcal{O}(k(n-2k))$ 或 $\mathcal{O}(kn)$，其中 $n$ 是 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。实际上，本题状态个数不是 $\mathcal{O}(kn)$，而是 $\mathcal{O}(k(n-2k))$（见后面递推写法），单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(k(n-2k))$。如果用数组存储记忆化的内容，则创建 $\mathcal{O}(kn)$ 的数组就需要 $\mathcal{O}(kn)$ 的时间了。
+- 空间复杂度：$\mathcal{O}(k(n-2k))$ 或 $\mathcal{O}(kn)$。保存多少状态，就需要多少空间。
 
 ## 1:1 翻译成递推
+
+翻译时，注意 $i$ 的循环范围。
+
+如果数组要包含 $\textit{left}$ 个峰值，那么数组长度至少是 $\textit{left}\cdot 2 + 1$。
+
+$[0,i+1]$ 有 $i+2$ 个数，所以有 $i+2 \ge \textit{left}\cdot 2 + 1$，即 
+
+$$
+i\ge \textit{left}\cdot 2 - 1
+$$
+
+此外，对于右边的 $[i+1,n-1]$ 这 $n-i-1$ 个数，要包含 $k-\textit{left}$ 个峰值，所以有 $n-i-1\ge (k-\textit{left})\cdot 2 + 1$，即
+
+$$
+i\le n-2-(k-\textit{left})\cdot 2
+$$
+
+> 注意 $i+1$ 这个位置不是峰值，在计算数组长度时可以包括 $i+1$。
 
 ```py [sol-Python3]
 class Solution:
     # 非环形版本
     def solve(self, a: List[int], k: int) -> int:
         n = len(a)
-        f = [[0] * n for _ in range(k + 1)]
-        for i in range(1, k + 1):
-            f[i][0] = f[i][1] = inf
+        # 避免在循环中反复计算操作次数
+        ops = [max(max(a[i - 1], a[i + 1]) - a[i] + 1, 0) for i in range(1, n - 1)] 
 
-        ops = [max(max(a[i - 1], a[i + 1]) - a[i] + 1, 0) for i in range(1, n - 1)]
+        f = [[0] * n for _ in range(k + 1)]
         for left in range(1, k + 1):
-            for i in range(1, n - 1):
+            f[left][left * 2 - 1] = inf
+            for i in range(left * 2 - 1, n - 1 - (k - left) * 2):
                 # 选或不选
                 not_choose = f[left][i]
                 choose = f[left - 1][i - 1] + ops[i - 1]
                 f[left][i + 1] = min(not_choose, choose)
-
         return f[k][n - 1]
 
     def minOperations(self, nums: List[int], k: int) -> int:
@@ -330,9 +345,9 @@ class Solution:
         if cnt >= k:  # 优化：已经有至少 k 个峰值了，无需操作
             return 0
 
-        # 如果 nums[0] 是峰顶，那么 nums[-1] 不是峰顶
+        # 如果 nums[0] 是峰值，那么 nums[-1] 不是峰值
         ans1 = self.solve([nums[-1]] + nums, k)
-        # 如果 nums[0] 不是峰顶
+        # 如果 nums[0] 不是峰值
         ans2 = self.solve(nums + [nums[0]], k)
         return min(ans1, ans2)
 ```
@@ -355,13 +370,13 @@ class Solution {
             return 0;
         }
 
-        // 如果 nums[0] 是峰顶，那么 nums[n-1] 不是峰顶
+        // 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
         int[] a = new int[n + 1];
         a[0] = nums[n - 1];
         System.arraycopy(nums, 0, a, 1, n);
         int ans1 = solve(a, k);
 
-        // 如果 nums[0] 不是峰顶
+        // 如果 nums[0] 不是峰值
         int[] b = new int[n + 1];
         System.arraycopy(nums, 0, b, 0, n);
         b[n] = nums[0];
@@ -374,19 +389,15 @@ class Solution {
     public int solve(int[] a, int k) {
         int n = a.length;
         int[][] f = new int[k + 1][n];
-        for (int i = 1; i <= k; i++) {
-            f[i][0] = f[i][1] = Integer.MAX_VALUE / 2;
-        }
-
         for (int left = 1; left <= k; left++) {
-            for (int i = 1; i < n - 1; i++) {
+            f[left][left * 2 - 1] = Integer.MAX_VALUE / 2;
+            for (int i = left * 2 - 1; i < n - 1 - (k - left) * 2; i++) {
                 // 选或不选
                 int notChoose = f[left][i];
                 int choose = f[left - 1][i - 1] + Math.max(Math.max(a[i - 1], a[i + 1]) - a[i] + 1, 0);
                 f[left][i + 1] = Math.min(notChoose, choose);
             }
         }
-
         return f[k][n - 1];
     }
 }
@@ -398,19 +409,15 @@ class Solution {
     int solve(vector<int>& a, int k) {
         int n = a.size();
         vector f(k + 1, vector<int>(n));
-        for (int i = 1; i <= k; i++) {
-            f[i][0] = f[i][1] = INT_MAX / 2;
-        }
-
         for (int left = 1; left <= k; left++) {
-            for (int i = 1; i < n - 1; i++) {
+            f[left][left * 2 - 1] = INT_MAX / 2;
+            for (int i = left * 2 - 1; i < n - 1 - (k - left) * 2; i++) {
                 // 选或不选
                 int not_choose = f[left][i];
                 int choose = f[left - 1][i - 1] + max(max(a[i - 1], a[i + 1]) - a[i] + 1, 0);
                 f[left][i + 1] = min(not_choose, choose);
             }
         }
-
         return f[k][n - 1];
     }
 
@@ -431,12 +438,12 @@ public:
             return 0;
         }
 
-        // 如果 nums[0] 是峰顶，那么 nums[n-1] 不是峰顶
+        // 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
         vector<int> a = {nums.back()};
         a.insert(a.end(), nums.begin(), nums.end());
         int ans1 = solve(a, k);
 
-        // 如果 nums[0] 不是峰顶
+        // 如果 nums[0] 不是峰值
         nums.push_back(nums[0]);
         int ans2 = solve(nums, k);
 
@@ -452,21 +459,16 @@ func solve(a []int, k int) int {
 	f := make([][]int, k+1)
 	for i := range f {
 		f[i] = make([]int, n)
-		if i > 0 {
-			f[i][0] = math.MaxInt / 2
-			f[i][1] = math.MaxInt / 2
-		}
 	}
-
 	for left := 1; left <= k; left++ {
-		for i := 1; i < n-1; i++ {
+		f[left][left*2-1] = math.MaxInt / 2
+		for i := left*2 - 1; i < n-1-(k-left)*2; i++ {
 			// 选或不选
 			notChoose := f[left][i]
 			choose := f[left-1][i-1] + max(max(a[i-1], a[i+1])-a[i]+1, 0)
 			f[left][i+1] = min(notChoose, choose)
 		}
 	}
-
 	return f[k][n-1]
 }
 
@@ -486,9 +488,9 @@ func minOperations(nums []int, k int) int {
 		return 0
 	}
 
-	// 如果 nums[0] 是峰顶，那么 nums[n-1] 不是峰顶
+	// 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
 	ans1 := solve(append([]int{nums[n-1]}, nums...), k)
-	// 如果 nums[0] 不是峰顶
+	// 如果 nums[0] 不是峰值
 	ans2 := solve(append(nums, nums[0]), k)
 	return min(ans1, ans2)
 }
@@ -496,10 +498,206 @@ func minOperations(nums []int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(nk)$。
+- 时间复杂度：$\mathcal{O}(kn)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在创建 DP 数组上，计算 DP 是 $\mathcal{O}(k(n-2k))$ 的。
+- 空间复杂度：$\mathcal{O}(kn)$。
 
-**注**：用滚动数组可以把空间复杂度优化到 $\mathcal{O}(n)$。
+## 空间优化
+
+```py [sol-Python3]
+class Solution:
+    # 非环形版本
+    def solve(self, a: List[int], k: int) -> int:
+        n = len(a)
+        # 避免在循环中反复计算操作次数
+        ops = [max(max(a[i - 1], a[i + 1]) - a[i] + 1, 0) for i in range(1, n - 1)] 
+
+        f = [0] * n
+        for left in range(1, k + 1):
+            f0, f1 = f[left * 2 - 2], f[left * 2 - 1]
+            f[left * 2 - 1] = inf
+            for i in range(left * 2 - 1, n - 1 - (k - left) * 2):
+                # 选或不选
+                not_choose = f[i]
+                choose = f0 + ops[i - 1]
+                f0 = f1
+                f1 = f[i + 1]  # 保存旧数据
+                f[i + 1] = min(not_choose, choose)
+        return f[-1]
+
+    def minOperations(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        if k > n // 2:
+            return -1
+
+        cnt = 0
+        for i in range(n):
+            if nums[i - 1] < nums[i] > nums[(i + 1) % n]:
+                cnt += 1
+        if cnt >= k:  # 优化：已经有至少 k 个峰值了，无需操作
+            return 0
+
+        # 如果 nums[0] 是峰值，那么 nums[-1] 不是峰值
+        ans1 = self.solve([nums[-1]] + nums, k)
+        # 如果 nums[0] 不是峰值
+        ans2 = self.solve(nums + [nums[0]], k)
+        return min(ans1, ans2)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minOperations(int[] nums, int k) {
+        int n = nums.length;
+        if (k > n / 2) {
+            return -1;
+        }
+
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[(i - 1 + n) % n] < nums[i] && nums[i] > nums[(i + 1) % n]) {
+                cnt++;
+            }
+        }
+        if (cnt >= k) { // 优化：已经有至少 k 个峰值了，无需操作
+            return 0;
+        }
+
+        // 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
+        int[] a = new int[n + 1];
+        a[0] = nums[n - 1];
+        System.arraycopy(nums, 0, a, 1, n);
+        int ans1 = solve(a, k);
+
+        // 如果 nums[0] 不是峰值
+        int[] b = new int[n + 1];
+        System.arraycopy(nums, 0, b, 0, n);
+        b[n] = nums[0];
+        int ans2 = solve(b, k);
+
+        return Math.min(ans1, ans2);
+    }
+
+    // 非环形版本
+    public int solve(int[] a, int k) {
+        int n = a.length;
+        int[] f = new int[n];
+        for (int left = 1; left <= k; left++) {
+            int f0 = f[left * 2 - 2];
+            int f1 = f[left * 2 - 1];
+            f[left * 2 - 1] = Integer.MAX_VALUE / 2;
+            for (int i = left * 2 - 1; i < n - 1 - (k - left) * 2; i++) {
+                // 选或不选
+                int notChoose = f[i];
+                int choose = f0 + Math.max(Math.max(a[i - 1], a[i + 1]) - a[i] + 1, 0);
+                f0 = f1;
+                f1 = f[i + 1]; // 保存旧数据
+                f[i + 1] = Math.min(notChoose, choose);
+            }
+        }
+        return f[n - 1];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 非环形版本
+    int solve(vector<int>& a, int k) {
+        int n = a.size();
+        vector<int> f(n);
+        for (int left = 1; left <= k; left++) {
+            int f0 = f[left * 2 - 2], f1 = f[left * 2 - 1];
+            f[left * 2 - 1] = INT_MAX / 2;
+            for (int i = left * 2 - 1; i < n - 1 - (k - left) * 2; i++) {
+                // 选或不选
+                int not_choose = f[i];
+                int choose = f0 + max(max(a[i - 1], a[i + 1]) - a[i] + 1, 0);
+                f0 = f1;
+                f1 = f[i + 1]; // 保存旧数据
+                f[i + 1] = min(not_choose, choose);
+            }
+        }
+        return f[n - 1];
+    }
+
+public:
+    int minOperations(vector<int>& nums, int k) {
+        int n = nums.size();
+        if (k > n / 2) {
+            return -1;
+        }
+
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (nums[(i - 1 + n) % n] < nums[i] && nums[i] > nums[(i + 1) % n]) {
+                cnt++;
+            }
+        }
+        if (cnt >= k) { // 优化：已经有至少 k 个峰值了，无需操作
+            return 0;
+        }
+
+        // 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
+        vector<int> a = {nums.back()};
+        a.insert(a.end(), nums.begin(), nums.end());
+        int ans1 = solve(a, k);
+
+        // 如果 nums[0] 不是峰值
+        nums.push_back(nums[0]);
+        int ans2 = solve(nums, k);
+
+        return min(ans1, ans2);
+    }
+};
+```
+
+```go [sol-Go]
+// 非环形版本
+func solve(a []int, k int) int {
+	n := len(a)
+	f := make([]int, n)
+	for left := 1; left <= k; left++ {
+		f0, f1 := f[left*2-2], f[left*2-1]
+		f[left*2-1] = math.MaxInt / 2
+		for i := left*2 - 1; i < n-1-(k-left)*2; i++ {
+			// 选或不选
+			notChoose := f[i]
+			choose := f0 + max(max(a[i-1], a[i+1])-a[i]+1, 0)
+			f0 = f1
+			f1 = f[i+1] // 保存旧数据
+			f[i+1] = min(notChoose, choose)
+		}
+	}
+	return f[n-1]
+}
+
+func minOperations(nums []int, k int) int {
+	n := len(nums)
+	if k > n/2 {
+		return -1
+	}
+
+	cnt := 0
+	for i, x := range nums {
+		if nums[(i-1+n)%n] < x && x > nums[(i+1)%n] {
+			cnt++
+		}
+	}
+	if cnt >= k { // 优化：已经有至少 k 个峰值了，无需操作
+		return 0
+	}
+
+	// 如果 nums[0] 是峰值，那么 nums[n-1] 不是峰值
+	ans1 := solve(append([]int{nums[n-1]}, nums...), k)
+	// 如果 nums[0] 不是峰值
+	ans2 := solve(append(nums, nums[0]), k)
+	return min(ans1, ans2)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(k(n-2k))$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 
