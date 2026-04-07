@@ -1,59 +1,51 @@
 package main
 
-func min(a, b int) int {
-	if a < b {
-		return a
+import "slices"
+
+var dis [26][26]int
+
+func init() {
+	const column = 6
+	for i := range 26 {
+		for j := range 26 {
+			dis[i][j] = abs(i/column-j/column) + abs(i%column-j%column)
+		}
 	}
-	return b
 }
 
-func do(s []byte, _p2 byte) int {
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
+func minimumDistance(word string) int {
+	var f, nf [26]int
+
+	for i := range len(word) - 1 {
+		x, y := word[i]-'A', word[i+1]-'A'
+		for anotherFinger := range 26 {
+			nf[anotherFinger] = min(f[anotherFinger]+dis[x][y], f[y]+dis[x][anotherFinger])
 		}
-		return x
-	}
-	dis := func(p1, p2 int) int {
-		x1, y1 := p1/6, p1%6
-		x2, y2 := p2/6, p2%6
-		v := abs(x1-x2) + abs(y1-y2)
-		return v
+		f, nf = nf, f
 	}
 
-	const mx = 305
-	dp := [mx][26][26]int{}
-	vis := [mx][26][26]bool{}
-	n := len(s)
-	var f func(i int, p1, p2 byte) int
-	f = func(i int, p1, p2 byte) (ans int) {
-		if i >= n {
-			return 0
-		}
-		if vis[i][p1][p2] {
-			return dp[i][p1][p2]
-		}
-		vis[i][p1][p2] = true
-		defer func() { dp[i][p1][p2] = ans }()
-		c := s[i]
-		if c == p1 || c == p2 {
-			return f(i+1, p1, p2)
-		}
-		f1 := f(i+1, c, p2) + dis(int(p1), int(c))
-		f2 := f(i+1, p1, c) + dis(int(p2), int(c))
-		return min(f1, f2)
-	}
-	return f(0, s[0], _p2)
+	return slices.Min(f[:])
 }
 
-func minimumDistance(ss string) int {
-	s := []byte(ss)
-	for i := range s {
-		s[i] -= 'A'
+func abs(x int) int {
+	if x < 0 {
+		return -x
 	}
-	ans := int(1e9)
-	for i := byte(0); i < 26; i++ {
-		ans = min(ans, do(s, i))
+	return x
+}
+
+//
+
+func minimumDistance1(word string) int {
+	n := len(word)
+	f := make([][26]int, n)
+
+	for i := range n - 1 {
+		x, y := word[i]-'A', word[i+1]-'A'
+		for anotherFinger := range 26 {
+			f[i+1][anotherFinger] = min(f[i][anotherFinger]+dis[y][x], f[i][y]+dis[anotherFinger][x])
+		}
 	}
-	return ans
+
+	return slices.Min(f[n-1][:])
 }
