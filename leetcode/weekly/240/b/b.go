@@ -1,21 +1,16 @@
 package main
 
-import "sort"
-
 // github.com/EndlessCheng/codeforces-go
-func maxDistance(x, y []int) (ans int) {
-	for j, v := range y {
-		i := sort.Search(min(len(x), j), func(i int) bool { return x[i] <= v })
-		if i < min(len(x), j) && j-i > ans {
-			ans = j - i
+func maxDistance(nums1, nums2 []int) (ans int) {
+	i := 0
+	for j, y := range nums2 {
+		for i < len(nums1) && nums1[i] > y {
+			i++
 		}
+		if i == len(nums1) {
+			break
+		}
+		ans = max(ans, j-i)
 	}
 	return
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
