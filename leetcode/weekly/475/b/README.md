@@ -1,13 +1,11 @@
-按照相同元素分组，记录相同元素的下标，保存到列表中。
+把 $i,j,k$ 画在一维数轴上，$|i-j| + |j-k| + |k-i|$ 的几何意义是这三个下标中的最左最右下标绝对差的两倍。设最左最右的下标分别为 $i$ 和 $k$，那么三元组的距离为 $2(k-i)$。
 
-把 $i,j,k$ 画在一维数轴上，$|i-j| + |j-k| + |k-i|$ 的几何意义就是这三个下标中的最左最右下标之差的两倍，设最左最右的下标分别为 $i$ 和 $k$，那么三元组的距离为 $2(k-i)$。
-
-为了让 $2(k-i)$ 尽量小，可以取同一组中的连续三个下标分别作为 $i,j,k$。
-
-计算上式的最小值，即为答案。
+为了让 $2(k-i)$ 尽量小，按照相同元素分组，枚举同一组中的连续三个下标分别作为 $i,j,k$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1oskQBLEsY/)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minimumDistance(self, nums: List[int]) -> int:
@@ -85,44 +83,48 @@ func minimumDistance(nums []int) int {
 }
 ```
 
-**小优化**：如果 $\textit{nums}$ 包含 $3$ 个连续相同的数，直接返回最小答案 $4$。
+## 优化
+
+针对本题：
+
+1. 由于 $\textit{nums}[i]$ 的范围是 $[1,n]$，哈希表可以换成更轻量的数组。
+2. 由于只关心最近的三个位置，所以只需要知道 $x = \textit{nums}[i]$ 上一次出现的位置 $\textit{last}[x]$ 和上上一次出现的位置 $\textit{last}_2[x]$。
+3. 此外，不需要每次循环都计算一次乘二，乘二可以放在返回答案的时候计算。
 
 ```py [sol-Python3]
 class Solution:
     def minimumDistance(self, nums: List[int]) -> int:
-        pos = defaultdict(list)
+        n = len(nums)
+        last = [-inf] * (n + 1)
+        last2 = [-inf] * (n + 1)
+
+        ans = n
         for i, x in enumerate(nums):
-            if i >= 2 and x == nums[i - 1] == nums[i - 2]:
-                return 4
-            pos[x].append(i)
+            ans = min(ans, i - last2[x])
+            last2[x] = last[x]
+            last[x] = i
 
-        ans = inf
-        for p in pos.values():
-            for i in range(2, len(p)):
-                ans = min(ans, (p[i] - p[i - 2]) * 2)
-
-        return -1 if ans == inf else ans
+        return -1 if ans == n else ans * 2
 ```
 
 ```java [sol-Java]
 class Solution {
     public int minimumDistance(int[] nums) {
-        Map<Integer, List<Integer>> pos = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            if (i >= 2 && nums[i] == nums[i - 1] && nums[i] == nums[i - 2]) {
-                return 4;
-            }
-            pos.computeIfAbsent(nums[i], _ -> new ArrayList<>()).add(i);
+        int n = nums.length;
+        int[] last = new int[n + 1];
+        int[] last2 = new int[n + 1];
+        Arrays.fill(last, -n);
+        Arrays.fill(last2, -n); // i-(-n) >= n，不会把 ans 变小
+
+        int ans = n;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            ans = Math.min(ans, i - last2[x]);
+            last2[x] = last[x];
+            last[x] = i;
         }
 
-        int ans = Integer.MAX_VALUE;
-        for (List<Integer> p : pos.values()) {
-            for (int i = 2; i < p.size(); i++) {
-                ans = Math.min(ans, (p.get(i) - p.get(i - 2)) * 2);
-            }
-        }
-
-        return ans == Integer.MAX_VALUE ? -1 : ans;
+        return ans == n ? -1 : ans * 2;
     }
 }
 ```
@@ -131,47 +133,44 @@ class Solution {
 class Solution {
 public:
     int minimumDistance(vector<int>& nums) {
-        unordered_map<int, vector<int>> pos;
-        for (int i = 0; i < nums.size(); i++) {
-            if (i >= 2 && nums[i] == nums[i - 1] && nums[i] == nums[i - 2]) {
-                return 4;
-            }
-            pos[nums[i]].push_back(i);
+        int n = nums.size();
+        vector<int> last(n + 1, -n);
+        vector<int> last2(n + 1, -n); // i-(-n) >= n，不会把 ans 变小
+
+        int ans = n;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            ans = min(ans, i - last2[x]);
+            last2[x] = last[x];
+            last[x] = i;
         }
 
-        int ans = INT_MAX;
-        for (auto& [_, p] : pos) {
-            for (int i = 2; i < p.size(); i++) {
-                ans = min(ans, (p[i] - p[i - 2]) * 2);
-            }
-        }
-
-        return ans == INT_MAX ? -1 : ans;
+        return ans == n ? -1 : ans * 2;
     }
 };
 ```
 
 ```go [sol-Go]
 func minimumDistance(nums []int) int {
-	pos := map[int][]int{}
+	n := len(nums)
+	last := make([]int, n+1)
+	last2 := make([]int, n+1)
+	for i := range last {
+		last[i] = -n
+		last2[i] = -n // i-(-n) >= n，不会把 ans 变小
+	}
+
+	ans := n
 	for i, x := range nums {
-		if i >= 2 && x == nums[i-1] && x == nums[i-2] {
-			return 4
-		}
-		pos[x] = append(pos[x], i)
+		ans = min(ans, i-last2[x])
+		last2[x] = last[x]
+		last[x] = i
 	}
 
-	ans := math.MaxInt
-	for _, p := range pos {
-		for i := 2; i < len(p); i++ {
-			ans = min(ans, (p[i]-p[i-2])*2)
-		}
-	}
-
-	if ans == math.MaxInt {
+	if ans == n {
 		return -1
 	}
-	return ans
+	return ans * 2
 }
 ```
 
@@ -198,3 +197,5 @@ func minimumDistance(nums []int) int {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
