@@ -24,8 +24,6 @@ $$
 
 由于「小边对小角」，所以 $A\le B\le C$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def internalAngles(self, sides: List[int]) -> List[float]:

@@ -14,7 +14,7 @@
 
 > **注**：本题允许子串为空，可以先更新哈希表，再计算子串长度。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1JNDQBBE7n/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -77,7 +77,9 @@ class Solution {
             sum += (s[i] - '0') * 2 - 1;
 
             List<Integer> p = pos.computeIfAbsent(sum, _ -> new ArrayList<>());
-            p.add(i);
+            if (p.size() < 2) {
+                p.add(i);
+            }
 
             // 不交换
             ans = Math.max(ans, i - p.get(0));

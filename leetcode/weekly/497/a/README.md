@@ -1,38 +1,56 @@
-（Python/Java/C++/Go）
+根据题意，点 $i$ 的度等于 $\textit{matrix}[i]$ 中的 $1$ 的个数。
 
----
-
-
-
-
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+所以统计矩阵每一行的 $1$ 的个数即可。
 
 ```py [sol-Python3]
-
+class Solution:
+    def findDegrees(self, matrix: List[List[int]]) -> List[int]:
+        return list(map(sum, matrix))
 ```
 
 ```java [sol-Java]
-
+class Solution {
+    public int[] findDegrees(int[][] matrix) {
+        int[] ans = new int[matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int x : matrix[i]) {
+                ans[i] += x;
+            }
+        }
+        return ans;
+    }
+}
 ```
 
 ```cpp [sol-C++]
-
+class Solution {
+public:
+    vector<int> findDegrees(vector<vector<int>>& matrix) {
+        vector<int> ans;
+        for (auto& row : matrix) {
+            ans.push_back(reduce(row.begin(), row.end(), 0));
+        }
+        return ans;
+    }
+};
 ```
 
 ```go [sol-Go]
-
+func findDegrees(matrix [][]int) []int {
+	ans := make([]int, len(matrix))
+	for i, row := range matrix {
+		for _, x := range row {
+			ans[i] += x
+		}
+	}
+	return ans
+}
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}()$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别是 $\textit{}$ 的行数和列数。
-- 空间复杂度：$\mathcal{O}()$。
-
-## 专题训练
-
-见下面x题单的「****」。
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别是 $\textit{matrix}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
 
 ## 分类题单
 
