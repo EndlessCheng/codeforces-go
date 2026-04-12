@@ -1,6 +1,8 @@
 本题是 [179. 最大数](https://leetcode.cn/problems/largest-number/) 的二进制版本，做法是一样的。
 
-对于本题，无需先生成字符串再比较。对于两个片段 $S$ 和 $T$，如果 $S$ 中的 $\texttt{1}$ 更多，那么 $S$ 在 $T$ 左边。如果 $S$ 和 $T$ 中的 $\texttt{1}$ 一样多，那么 $\texttt{0}$ 更少的在左边。
+暴力做法是，直接生成 $n$ 个长为 $\textit{nums}_1[i] + \textit{nums}_0[i]$ 的字符串，然后排序。
+
+但由于这个字符串的特殊性，无需先生成字符串再比较。对于两个片段 $S$ 和 $T$，如果 $S$ 中的 $\texttt{1}$ 更多，那么 $S$ 在 $T$ 左边。如果 $S$ 和 $T$ 中的 $\texttt{1}$ 一样多，那么 $\texttt{0}$ 更少的在左边。
 
 **特殊情况**：没有 $\texttt{0}$ 的片段（全为 $\texttt{1}$）排在最前面。
 
@@ -11,9 +13,9 @@
 
 代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-由于本题 $k$ 比较小，可以预处理所有 $2^k$。
+本题由于 $k$ 比较小，可以预处理所有 $2^k$。如果本题值域更大，可以用**快速幂**计算 $2^k$，原理见[【图解】一张图秒懂快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV14hDQBDEUu/?t=8m18s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
@@ -155,8 +157,6 @@ func maxValue(nums1, nums0 []int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}_1$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$。
-
-**注**：对于更大的值域范围，可以用**快速幂**，原理见[【图解】一张图秒懂快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
 ## 分类题单
 

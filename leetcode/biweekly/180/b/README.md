@@ -1,6 +1,4 @@
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
-## 用字符串
+## 写法一：用字符串
 
 ```py [sol-Python3]
 class Solution:
@@ -56,7 +54,7 @@ func countDigitOccurrences(nums []int, digit int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(\log U)$。
 
-## 不用字符串
+## 写法二：不用字符串
 
 不断地把 $x$ 除以 $10$（下取整）直到 $0$，例如 $123\to 12\to 1\to 0$。在这个过程中的 $x\bmod 10$，即为每个数位。
 

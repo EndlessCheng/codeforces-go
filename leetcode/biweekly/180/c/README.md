@@ -1,8 +1,8 @@
-用筛法预处理每个数是不是质数。
+用**埃氏筛**预处理每个数是不是质数。
 
 如何找下一个质数（非质数）？可以暴力枚举，也可以在质数列表中二分查找。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV14hDQBDEUu/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 100_004  # 1e5 的下一个质数是 1e5 + 3
@@ -16,6 +16,8 @@ class Solution:
     def minOperations(self, nums: List[int]) -> int:
         ans = 0
         for i, x in enumerate(nums):
+            # 如果 i 是偶数，那么循环直到 is_prime[x] == 1（x 是质数）
+            # 如果 i 是奇数，那么循环直到 is_prime[x] == 0（x 不是质数）
             while is_prime[x] == i % 2:
                 ans += 1
                 x += 1
@@ -48,6 +50,8 @@ class Solution {
         int ans = 0;
         for (int i = 0; i < nums.length; i++) {
             int x = nums[i];
+            // 如果 i 是偶数，那么循环直到 notPrime[x] == 0（x 是质数）
+            // 如果 i 是奇数，那么循环直到 notPrime[x] == 1（x 不是质数）
             while (notPrime[x] != i % 2) {
                 ans++;
                 x++;
@@ -80,6 +84,8 @@ public:
         int ans = 0;
         for (int i = 0; i < nums.size(); i++) {
             int x = nums[i];
+            // 如果 i 是偶数，那么循环直到 not_prime[x] == 0（x 是质数）
+            // 如果 i 是奇数，那么循环直到 not_prime[x] == 1（x 不是质数）
             while (not_prime[x] != i % 2) {
                 ans++;
                 x++;
@@ -106,6 +112,8 @@ func init() {
 
 func minOperations(nums []int) (ans int) {
 	for i, x := range nums {
+		// 如果 i 是偶数，那么循环直到 notPrime[x] == 0（x 是质数）
+		// 如果 i 是奇数，那么循环直到 notPrime[x] == 1（x 不是质数）
 		for notPrime[x] != i%2 {
 			ans++
 			x++
