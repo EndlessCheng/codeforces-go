@@ -1,10 +1,12 @@
 package main
 
+import "math"
+
 // github.com/EndlessCheng/codeforces-go
-func getMinDistance(a []int, tar, start int) int {
-	ans := int(1e9)
-	for i, v := range a {
-		if v == tar {
+func getMinDistance1(nums []int, target int, start int) int {
+	ans := math.MaxInt
+	for i, x := range nums {
+		if x == target {
 			ans = min(ans, abs(i-start))
 		}
 	}
@@ -18,9 +20,11 @@ func abs(x int) int {
 	return x
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
+func getMinDistance(nums []int, target int, start int) int {
+	for k := 0; ; k++ {
+		if start >= k && nums[start-k] == target ||
+			start+k < len(nums) && nums[start+k] == target {
+			return k
+		}
 	}
-	return b
 }
