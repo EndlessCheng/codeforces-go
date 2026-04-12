@@ -1,36 +1,41 @@
-## 一
+## 分析
 
-如果子序列的 GCD 等于 $p$，那么 $p$ 是子序列每个元素的因子，或者说，子序列每个元素都是 $p$ 的倍数。
+如果子序列的 GCD 等于 $p$，那么 $p$ 是子序列每个数的因子，或者说，子序列每个数都是 $p$ 的倍数。
 
 对于 $\textit{nums}$ 中的不是 $p$ 的倍数的数，一定不能在子序列中。
 
-参与 GCD 的元素越多，GCD 越小。把所有是 $p$ 的倍数的数都选上，如果 GCD 不等于 $p$，那么选更少的数，GCD 也无法等于 $p$。
+参与 GCD 的数越多，GCD 越小。那么把所有是 $p$ 的倍数的数都选上，如果这些数的 GCD 不等于 $p$，那么选更少的数，GCD 也无法等于 $p$。所以我们必须知道所有是 $p$ 的倍数的数的 GCD。本题有单点修改操作，这可以用**线段树**维护。
 
-所以我们必须知道所有是 $p$ 的倍数的数的 GCD。本题有单点修改操作，这可以用**线段树**维护。
+- 如果所有是 $p$ 的倍数的数的 GCD 等于 $p$，且这样的数不足 $n$ 个，那么万事大吉，答案加一。
+- 如果所有是 $p$ 的倍数的数的 GCD 等于 $p$，且这样的数有 $n$ 个，那就麻烦了，我们必须删除一个数（不选一个数）。暴力枚举删除哪个数？太慢了。如何处理这种特殊情况？
 
-然而，本题不能把 $\textit{nums}$ 的所有数都选上，这是本题的难点。
+## 特殊情况
 
-换句话说，如果 $\textit{nums}$ 的每个数都是 $p$ 的倍数，且 $\textit{nums}$ 所有数的 GCD 等于 $p$，我们必须删除一个数（不选一个数）。
+> 注意，下面讨论的前提是，$\textit{nums}$ 的每个数都是 $p$ 的倍数，且 $\textit{nums}$ 所有数的 GCD 等于 $p$。
 
-## 二
+如果存在一个 $\textit{nums}[i]$，删除后（不选它），剩余 $n-1$ 个数的 GCD 等于 $p$，那么万事大吉，答案加一。
 
-万一删除一个数后，剩余元素的 GCD 大于 $p$ 呢？
+但如果删除任意一个数，都会导致剩余 $n-1$ 个数的 GCD 大于 $p$ 呢？
 
-这样的数组长什么样？删除任意一个数，都会导致剩余元素的 GCD 大于 $p$。
+这样的数组长什么样？
 
 设 $a[i] = \dfrac{nums[i]}{p}$，那么 $a$ 的所有数的 GCD 等于 $1$。
 
 如果删除 $a[i]$ 后，剩余 $n-1$ 个数的 GCD 大于 $1$，那么剩余 $n-1$ 个数都包含某个质因子 $q_i$，且 $a[i]$ 不含质因子 $q_i$。
 
-要让每个 $a[i]$ 都具有这样的性质，至少要有 $n$ 个**不同**的质数，每个 $a[i]$ 至少是 $n-1$ 个不同质数的乘积。
+**定理**：要让每个 $a[i]$ 都具有这样的性质，至少要有 $n$ 个**不同**的质数。
 
-由于 $2\times 3\times 5 \times 7 \times 11 \times 13 = 30030$，再乘一个质数就超过值域上界 $5\times 10^4$，所以 $a[i]$ 至多是 $6$ 个不同质数的乘积。所以如果「删除一个数后，所有数的 GCD 大于 $p$」，那么必须满足 $n-1\le 6$，即 $n\le 7$。
+**证明**：反证法。不妨设 $q_1 = q_2$，根据 $q_1$ 的定义，$q_1$ 整除 $a[2]$；根据 $q_2$ 的定义，$q_2$ 不整除 $a[2]$。这就矛盾了，故原命题成立。
 
-如果 $n>7$，那么一定可以删除一个数，使得剩余元素的 GCD 等于 $p$。
+所以每个 $a[i]$ 至少是 $n-1$ 个不同质数的乘积。或者说，$a[i]$ 是 $n$ 个不同质数的乘积，再除以其中一个质数。
 
-所以我们只需处理 $n\le 7$ 的情况，暴力枚举删除的数即可。
+考虑 $a$ 中最大的那个数，它可以不包含 $2$。由于 $3\times 5 \times 7 \times 11 \times 13 = 15015$，再乘一个质数就超过值域上界 $5\times 10^4$，所以 $a$ 中最大的那个数至多是 $5$ 个不同质数的乘积。所以如果「删除一个数后，所有数的 GCD 大于 $p$」，那么必须满足 $n-1\le 5$，即 $n\le 6$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+如果 $n>6$，那么一定可以删除一个数，使得剩余 $n-1$ 个数的 GCD 等于 $p$。
+
+所以只需判断 $n\le 6$ 的情况，暴力枚举删除的数即可。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1JNDQBBE7n/?t=24m31s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 模板来源 https://leetcode.cn/circle/discuss/mOr1u6/
@@ -58,6 +63,7 @@ class SegmentTree:
     # 时间复杂度 O(n)
     def _build(self, a: List[int], node: int, l: int, r: int) -> None:
         if l == r:  # 叶子
+            # 0 和任何数 g 的 GCD 都是 g，所以设置为 0 不影响所有数的 GCD
             self._tree[node] = a[l] if a[l] % self._target_gcd == 0 else 0  # 初始化叶节点的值
             return
         m = (l + r) // 2
@@ -67,6 +73,7 @@ class SegmentTree:
 
     def _update(self, node: int, l: int, r: int, i: int, val: int) -> None:
         if l == r:  # 叶子（到达目标）
+            # 0 和任何数 g 的 GCD 都是 g，所以设置为 0 不影响所有数的 GCD
             self._tree[node] = val if val % self._target_gcd == 0 else 0
             return
         m = (l + r) // 2
@@ -123,7 +130,7 @@ class Solution:
             nums[i] = x
             t.update(i, x)
 
-            if t.query_all() == p and (cnt_p < n or n > 7 or t.check(n)):
+            if t.query_all() == p and (cnt_p < n or n > 6 or t.check(n)):
                 ans += 1
 
         return ans
@@ -181,6 +188,7 @@ class SegmentTree {
     // 时间复杂度 O(n)
     private void build(int[] a, int node, int l, int r) {
         if (l == r) { // 叶子
+            // 0 和任何数 g 的 GCD 都是 g，所以设置为 0 不影响所有数的 GCD
             tree[node] = a[l] % targetGcd == 0 ? a[l] : 0; // 初始化叶节点的值
             return;
         }
@@ -192,6 +200,7 @@ class SegmentTree {
 
     private void update(int node, int l, int r, int i, int val) {
         if (l == r) { // 叶子（到达目标）
+            // 0 和任何数 g 的 GCD 都是 g，所以设置为 0 不影响所有数的 GCD
             tree[node] = val % targetGcd == 0 ? val : 0;
             return;
         }
@@ -259,7 +268,7 @@ class Solution {
             nums[i] = x;
             t.update(i, x);
 
-            if (t.queryAll() == p && (cntP < n || n > 7 || t.check(n))) {
+            if (t.queryAll() == p && (cntP < n || n > 6 || t.check(n))) {
                 ans++;
             }
         }
@@ -292,6 +301,7 @@ class SegmentTree {
     // 时间复杂度 O(n)
     void build(const vector<T>& a, int node, int l, int r) {
         if (l == r) { // 叶子
+            // 0 和任何数 g 的 GCD 都是 g，所以设置为 0 不影响所有数的 GCD
             tree[node] = a[l] % target_gcd == 0 ? a[l] : 0; // 初始化叶节点的值
             return;
         }
@@ -303,6 +313,7 @@ class SegmentTree {
 
     void update(int node, int l, int r, int i, T val) {
         if (l == r) { // 叶子（到达目标）
+            // 0 和任何数 g 的 GCD 都是 g，所以设置为 0 不影响所有数的 GCD
             tree[node] = val % target_gcd == 0 ? val : 0;
             return;
         }
@@ -386,7 +397,7 @@ public:
             nums[i] = x;
             t.update(i, x);
 
-            if (t.query_all() == p && (cnt_p < n || n > 7 || t.check(n))) {
+            if (t.query_all() == p && (cnt_p < n || n > 6 || t.check(n))) {
                 ans++;
             }
         }
@@ -399,65 +410,88 @@ public:
 ```go [sol-Go]
 var targetGcd int
 
-type seg []struct{ l, r, gcd int }
+// 模板来源 https://leetcode.cn/circle/discuss/mOr1u6/
+// 线段树有两个下标，一个是线段树节点的下标，另一个是线段树维护的区间的下标
+// 节点的下标：从 1 开始，如果你想改成从 0 开始，需要把左右儿子下标分别改成 node*2+1 和 node*2+2
+// 区间的下标：从 0 开始
+type seg []int
 
-func (t seg) maintain(o int) {
-	t[o].gcd = gcd(t[o<<1].gcd, t[o<<1|1].gcd)
+// 线段树维护数组 a
+func newSegmentTreeWithArray(a []int) seg {
+	n := len(a)
+	t := make(seg, 2<<bits.Len(uint(n-1)))
+	t.build(a, 1, 0, n-1)
+	return t
 }
 
-func (t seg) build(a []int, o, l, r int) {
-	t[o].l, t[o].r = l, r
-	if l == r {
+// 合并左右儿子的 val 到当前节点的 val
+func (t seg) maintain(node int) {
+	t[node] = gcd(t[node*2], t[node*2+1])
+}
+
+// 用 a 初始化线段树
+// 时间复杂度 O(n)
+func (t seg) build(a []int, node, l, r int) {
+	if l == r { // 叶子
 		if a[l]%targetGcd == 0 {
-			t[o].gcd = a[l]
+			t[node] = a[l] // 初始化叶节点的值
 		}
 		return
 	}
-	m := (l + r) >> 1
-	t.build(a, o<<1, l, m)
-	t.build(a, o<<1|1, m+1, r)
-	t.maintain(o)
+	m := (l + r) / 2
+	t.build(a, node*2, l, m)     // 初始化左子树
+	t.build(a, node*2+1, m+1, r) // 初始化右子树
+	t.maintain(node)
 }
 
-func (t seg) update(o, i, val int) {
-	cur := &t[o]
-	if cur.l == cur.r {
+// 更新 a[i]
+// 调用 t.update(1, 0, n-1, i, val)
+// 0 <= i <= n-1
+// 时间复杂度 O(log n)
+func (t seg) update(node, l, r, i, val int) {
+	if l == r { // 叶子（到达目标）
 		if val%targetGcd == 0 {
-			cur.gcd = val
+			t[node] = val
 		} else {
-			cur.gcd = 0
+			t[node] = 0 // 0 和任何数 g 的 GCD 都是 g，所以设置为 0 不影响所有数的 GCD
 		}
 		return
 	}
-	m := (cur.l + cur.r) >> 1
-	if i <= m {
-		t.update(o<<1, i, val)
-	} else {
-		t.update(o<<1|1, i, val)
+	m := (l + r) / 2
+	if i <= m { // i 在左子树
+		t.update(node*2, l, m, i, val)
+	} else { // i 在右子树
+		t.update(node*2+1, m+1, r, i, val)
 	}
-	t.maintain(o)
+	t.maintain(node)
 }
 
-func (t seg) query(o, l, r int) int {
-	if l > r {
+// 返回用 GCD 合并所有 a[i] 的计算结果，其中 i 在闭区间 [ql, qr] 中
+// 调用 t.query(1, 0, n-1, ql, qr)
+// 0 <= ql <= qr <= n-1
+// 时间复杂度 O(log n)
+func (t seg) query(node, l, r, ql, qr int) int {
+	if ql > qr {
 		return 0
 	}
-	if l <= t[o].l && t[o].r <= r {
-		return t[o].gcd
+	if ql <= l && r <= qr { // 当前子树完全在 [ql, qr] 内
+		return t[node]
 	}
-	m := (t[o].l + t[o].r) >> 1
-	if r <= m {
-		return t.query(o<<1, l, r)
+	m := (l + r) / 2
+	if qr <= m { // [ql, qr] 在左子树
+		return t.query(node*2, l, m, ql, qr)
 	}
-	if m < l {
-		return t.query(o<<1|1, l, r)
+	if ql > m { // [ql, qr] 在右子树
+		return t.query(node*2+1, m+1, r, ql, qr)
 	}
-	return gcd(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
+	lRes := t.query(node*2, l, m, ql, qr)
+	rRes := t.query(node*2+1, m+1, r, ql, qr)
+	return gcd(lRes, rRes)
 }
 
 func (t seg) check(n int) bool {
 	for i := range n {
-		if gcd(t.query(1, 0, i-1), t.query(1, i+1, n-1)) == targetGcd {
+		if gcd(t.query(1, 0, n-1, 0, i-1), t.query(1, 0, n-1, i+1, n-1)) == targetGcd {
 			return true
 		}
 	}
@@ -465,7 +499,7 @@ func (t seg) check(n int) bool {
 }
 
 func countGoodSubseq(nums []int, p int, queries [][]int) (ans int) {
-	targetGcd = p
+	n := len(nums)
 	cntP := 0
 	for _, x := range nums {
 		if x%p == 0 {
@@ -473,9 +507,8 @@ func countGoodSubseq(nums []int, p int, queries [][]int) (ans int) {
 		}
 	}
 
-	n := len(nums)
-	t := make(seg, 2<<bits.Len(uint(n-1)))
-	t.build(nums, 1, 0, n-1)
+	targetGcd = p
+	t := newSegmentTreeWithArray(nums)
 
 	for _, q := range queries {
 		i, x := q[0], q[1]
@@ -487,9 +520,9 @@ func countGoodSubseq(nums []int, p int, queries [][]int) (ans int) {
 			cntP++
 		}
 		nums[i] = x
-		t.update(1, q[0], x)
+		t.update(1, 0, n-1, q[0], x)
 
-		if t[1].gcd == p && (cntP < n || n > 7 || t.check(n)) {
+		if t[1] == p && (cntP < n || n > 6 || t.check(n)) {
 			ans++
 		}
 	}
