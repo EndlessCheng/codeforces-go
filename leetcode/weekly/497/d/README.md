@@ -542,6 +542,12 @@ func gcd(a, b int) int {
 - 时间复杂度：$\mathcal{O}(n\log U + q(\log n + \log U))$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度，$U=\max(\textit{nums})$。在线段树的 $\texttt{update}$ 过程中，从叶子到根的路径上，GCD 要么不变（此时退出辗转相除过程），要么至少减半（此时继续辗转相除过程），所以辗转相除的**总**循环次数只有 $\mathcal{O}(\log n + \log U)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 思考题
+
+如果有区间修改操作呢？
+
+欢迎在评论区分享你的思路/代码。
+
 ## 专题训练
 
 见下面数据结构题单的「**§8.3 线段树**」。
