@@ -1,39 +1,43 @@
 package main
 
-func hasValidPath(grid [][]int) bool {
-	n, m := len(grid), len(grid[0])
+var dirs = [7][2][2]int{
+	{},
+	{{0, -1}, {0, 1}},  // 站在街道 1，可以往左或者往右
+	{{-1, 0}, {1, 0}},  // 站在街道 2，可以往上或者往下
+	{{0, -1}, {1, 0}},  // 站在街道 3，可以往左或者往下
+	{{0, 1}, {1, 0}},   // 站在街道 4，可以往右或者往下
+	{{0, -1}, {-1, 0}}, // 站在街道 5，可以往左或者往上
+	{{0, 1}, {-1, 0}},  // 站在街道 6，可以往右或者往上
+}
 
-	// 右下左上
-	dir4 := [4][2]int{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
-	dir4ID := [6][2]int{{0, 2}, {1, 3}, {1, 2}, {0, 1}, {2, 3}, {0, 3}}
-	g := make([][]int, n*m)
-	for i, row := range grid {
-		for j, street := range row {
-			v := i*m + j
-			for _, id := range dir4ID[street-1] {
-				d := dir4[id]
-				if x, y := i+d[0], j+d[1]; x >= 0 && x < n && y >= 0 && y < m {
-					g[v] = append(g[v], x*m+y)
-				} else {
-					g[v] = append(g[v], -1)
-				}
-			}
-		}
+// 判断街道 street 是否包含移动方向 dir
+func contains(street int, dir [2]int) bool {
+	// 也可以写 slices.Contains(dirs[street][:], dir)
+	return dirs[street][0] == dir || dirs[street][1] == dir
+}
+
+func hasValidPath(grid [][]int) bool {
+	m, n := len(grid), len(grid[0])
+	vis := make([][]bool, m)
+	for i := range vis {
+		vis[i] = make([]bool, n)
 	}
 
-	vis := make([]bool, n*m)
-	var f func(v int) bool
-	f = func(v int) bool {
-		if v == n*m-1 {
+	var dfs func(int, int) bool
+	dfs = func(x, y int) bool {
+		if x == m-1 && y == n-1 {
 			return true
 		}
-		vis[v] = true
-		for _, w := range g[v] {
-			if w != -1 && !vis[w] && (g[w][0] == v || g[w][1] == v) && f(w) {
+		vis[x][y] = true // 标记 (x, y) 访问过，从而避免重复访问
+		for _, d := range dirs[grid[x][y]] { // 枚举下一步往哪走
+			i, j := x+d[0], y+d[1]
+			if 0 <= i && i < m && 0 <= j && j < n && !vis[i][j] &&
+				contains(grid[i][j], [2]int{-d[0], -d[1]}) && dfs(i, j) {
 				return true
 			}
 		}
 		return false
 	}
-	return f(0)
+
+	return dfs(0, 0)
 }
