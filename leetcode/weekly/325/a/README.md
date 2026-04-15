@@ -1,3 +1,5 @@
+## 方法一：从左到右遍历
+
 从 $i$ 到 $j$：
 
 - 如果不跨过 $\textit{words}$ 的首尾，那么距离为 $|i-j|$。
@@ -126,6 +128,112 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{words}$ 的长度，$m$ 是 $\textit{target}$ 的长度。比较字符串是否相等需要 $\mathcal{O}(m)$ 的时间。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：从 startIndex 往两侧遍历
+
+枚举答案 $k=0,1,2,\ldots,\left\lfloor\dfrac{n}{2}\right\rfloor$，判断 $\textit{nums}[\textit{startIndex}-k] = \textit{target}$ 或者 $\textit{nums}[\textit{startIndex}+k] = \textit{target}$ 是否成立，如果成立，直接返回 $k$。
+
+由于 $\textit{words}$ 是环形数组，下标 $-1$ 即下标 $n-1$，下标 $-2$ 即下标 $n-2$，依此类推，通过计算 $(i+n)\bmod n$，任意下标 $i$ 可以通过取模调整到 $[0,n-1]$ 中。
+
+```py [sol-Python3]
+class Solution:
+    def closestTarget(self, words: list[str], target: str, startIndex: int) -> int:
+        n = len(words)
+        for k in range(n // 2 + 1):
+            if words[startIndex - k] == target or words[(startIndex + k) % n] == target:
+                return k
+        return -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int closestTarget(String[] words, String target, int startIndex) {
+        int n = words.length;
+        for (int k = 0; k <= n / 2; k++) {
+            if (words[(startIndex - k + n) % n].equals(target) || words[(startIndex + k) % n].equals(target)) {
+                return k;
+            }
+        }
+        return -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int closestTarget(vector<string>& words, string target, int startIndex) {
+        int n = words.size();
+        for (int k = 0; k <= n / 2; k++) {
+            if (words[(startIndex - k + n) % n] == target || words[(startIndex + k) % n] == target) {
+                return k;
+            }
+        }
+        return -1;
+    }
+};
+```
+
+```c [sol-C]
+int closestTarget(char** words, int wordsSize, char* target, int startIndex) {
+    int n = wordsSize;
+    for (int k = 0; k <= n / 2; k++) {
+        if (strcmp(words[(startIndex - k + n) % n], target) == 0 ||
+            strcmp(words[(startIndex + k) % n], target) == 0) {
+            return k;
+        }
+    }
+    return -1;
+}
+```
+
+```go [sol-Go]
+func closestTarget(words []string, target string, startIndex int) int {
+	n := len(words)
+	for k := range n/2 + 1 {
+		if words[(startIndex-k+n)%n] == target || words[(startIndex+k)%n] == target {
+			return k
+		}
+	}
+	return -1
+}
+```
+
+```js [sol-JavaScript]
+var closestTarget = function(words, target, startIndex) {
+    const n = words.length;
+    for (let k = 0; k <= n / 2; k++) {
+        if (words[(startIndex - k + n) % n] === target || words[(startIndex + k) % n] === target) {
+            return k;
+        }
+    }
+    return -1;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn closest_target(words: Vec<String>, target: String, start_index: i32) -> i32 {
+        let n = words.len();
+        let start_index = start_index as usize;
+        for k in 0..=n / 2 {
+            if words[(start_index + n - k) % n] == target || words[(start_index + k) % n] == target {
+                return k as _;
+            }
+        }
+        -1
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{words}$ 的长度，$m$ 是 $\textit{target}$ 的长度。比较字符串是否相等需要 $\mathcal{O}(m)$ 的时间。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 相似题目
+
+[1848. 到目标元素的最小距离](https://leetcode.cn/problems/minimum-distance-to-the-target-element/)
 
 ## 分类题单
 
