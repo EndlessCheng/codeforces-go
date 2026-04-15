@@ -17,7 +17,7 @@ $$
 
 然后一边遍历 $\textit{nums}$，一边计算 $[1,i]$ 中的奇数下标的总操作次数 $\textit{pre}$，用 $\textit{pre} + \textit{suf}[i+3]$ 更新答案的最小值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1abSSBnERm/)，欢迎点赞关注~
 
 ## 优化前
 
@@ -241,9 +241,13 @@ func minIncrease(nums []int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 其他写法
+
+本题也可以用状态机 DP 做，从而做到一次遍历。欢迎在评论区分享你的代码。
+
 ## 专题训练
 
-见下面动态规划题单的「**专题：前后缀分解**」。
+见下面动态规划题单的「**专题：前后缀分解**」和「**六、状态机 DP**」。
 
 ## 分类题单
 
