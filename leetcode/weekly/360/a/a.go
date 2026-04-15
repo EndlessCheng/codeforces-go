@@ -4,7 +4,14 @@ import "strings"
 
 // https://space.bilibili.com/206214
 func furthestDistanceFromOrigin(moves string) int {
-	return abs(strings.Count(moves, "R")-strings.Count(moves, "L")) + strings.Count(moves, "_")
+	cntR := strings.Count(moves, "R")
+	cntL := strings.Count(moves, "L")
+	return abs(cntR-cntL) + len(moves) - cntR - cntL
 }
 
-func abs(x int) int { if x < 0 { return -x }; return x }
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
