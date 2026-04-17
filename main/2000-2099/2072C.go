@@ -14,7 +14,7 @@ func cf2072C(in io.Reader, _w io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &or)
 		lb0 := (or + 1) &^ or
-		if n >= lb0 {
+		if n > lb0 {
 			for i := range lb0 {
 				Fprint(out, i, " ")
 			}
