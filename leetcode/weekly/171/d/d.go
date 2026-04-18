@@ -14,16 +14,14 @@ func init() {
 }
 
 func minimumDistance(word string) int {
-	var f, nf [26]int
-
+	f := [26]int{}
 	for i := range len(word) - 1 {
 		x, y := word[i]-'A', word[i+1]-'A'
+		fy := f[y]
 		for anotherFinger := range 26 {
-			nf[anotherFinger] = min(f[anotherFinger]+dis[x][y], f[y]+dis[x][anotherFinger])
+			f[anotherFinger] = min(f[anotherFinger]+dis[x][y], fy+dis[x][anotherFinger])
 		}
-		f, nf = nf, f
 	}
-
 	return slices.Min(f[:])
 }
 
