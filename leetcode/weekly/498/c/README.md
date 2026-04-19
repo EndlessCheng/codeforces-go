@@ -1,8 +1,8 @@
 本题是多源 BFS 问题，关键是题目的这个要求：如果多个颜色在同一时间步到达同一个未着色单元格，该单元格将采用具有**最大值**的颜色。
 
-我们可以先把 $\textit{sources}$ 按照 $\textit{color}$ **从大到小排序**，然后把 $\textit{sources}$ 中的所有元素入队。这样在 BFS 的过程中，我们会优先扩散颜色大的单元格。
+我们可以先把 $\textit{sources}$ 按照 $\textit{color}$ **从大到小排序**，然后把 $\textit{sources}$ 中的所有元素入队。这样在 BFS 的过程中，我们会优先扩散颜色大的单元格，这些单元格的邻居会先入队。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1agddBJEnQ/?t=7m45s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -36,20 +36,20 @@ class Solution {
         Queue<int[]> q = new ArrayDeque<>();
         for (int[] p : sources) {
             ans[p[0]][p[1]] = p[2]; // 初始颜色
-            q.offer(p);
+            q.offer(new int[]{p[0], p[1]});
         }
 
         while (!q.isEmpty()) {
             int[] p = q.poll();
             int i = p[0];
             int j = p[1];
-            int c = p[2];
+            int c = ans[i][j];
             for (int[] dir : DIRS) { // 向四个方向扩散
                 int x = i + dir[0];
                 int y = j + dir[1];
                 if (0 <= x && x < n && 0 <= y && y < m && ans[x][y] == 0) { // (x, y) 未着色
                     ans[x][y] = c; // 着色
-                    q.offer(new int[]{x, y, c}); // 继续扩散
+                    q.offer(new int[]{x, y}); // 继续扩散
                 }
             }
         }
@@ -72,20 +72,20 @@ class Solution {
         int tail = 0;
         for (int[] p : sources) {
             ans[p[0]][p[1]] = p[2]; // 初始颜色
-            q[tail++] = p;
+            q[tail++] = new int[]{p[0], p[1]};
         }
 
         while (head < tail) {
             int[] p = q[head++];
             int i = p[0];
             int j = p[1];
-            int c = p[2];
+            int c = ans[i][j];
             for (int[] dir : DIRS) { // 向四个方向扩散
                 int x = i + dir[0];
                 int y = j + dir[1];
                 if (0 <= x && x < n && 0 <= y && y < m && ans[x][y] == 0) { // (x, y) 未着色
                     ans[x][y] = c; // 着色
-                    q[tail++] = new int[]{x, y, c}; // 继续扩散
+                    q[tail++] = new int[]{x, y}; // 继续扩散
                 }
             }
         }
@@ -104,20 +104,20 @@ public:
         ranges::sort(sources, {}, [](auto& a) { return -a[2]; });
 
         vector ans(n, vector<int>(m));
-        queue<tuple<int, int, int>> q;
+        queue<pair<int, int>> q;
         for (auto& p : sources) {
             ans[p[0]][p[1]] = p[2]; // 初始颜色
-            q.emplace(p[0], p[1], p[2]);
+            q.emplace(p[0], p[1]);
         }
 
         while (!q.empty()) {
-            auto [i, j, c] = q.front();
+            auto [i, j] = q.front();
             q.pop();
             for (auto [dx, dy] : DIRS) { // 向四个方向扩散
                 int x = i + dx, y = j + dy;
                 if (0 <= x && x < n && 0 <= y && y < m && ans[x][y] == 0) { // (x, y) 未着色
-                    ans[x][y] = c; // 着色
-                    q.emplace(x, y, c); // 继续扩散
+                    ans[x][y] = ans[i][j]; // 着色
+                    q.emplace(x, y); // 继续扩散
                 }
             }
         }

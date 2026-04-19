@@ -22,7 +22,7 @@
 
 为了方便判断 $i$ 是否在路径中，我们可以预处理一个长为 $n$ 的布尔数组，表示每个位置是否在路径中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1agddBJEnQ/?t=15m52s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
