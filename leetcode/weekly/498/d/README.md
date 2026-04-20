@@ -1,3 +1,5 @@
+## 方法一：数位 DP
+
 **前置知识**：
 
 [数位 DP v1.0 视频讲解](https://www.bilibili.com/video/BV1rS4y1s721/)
@@ -241,6 +243,282 @@ func countGoodIntegersOnPath(l, r int64, directions string) int64 {
 
 - 时间复杂度：$\mathcal{O}(D^2\log r)$，其中 $\mathcal{O}(\log r)$ 是 $r$ 的十进制长度，$D=10$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(D\log r)$，单个状态的计算时间为 $\mathcal{O}(D)$，所以总的时间复杂度为 $\mathcal{O}(D^2\log r)$。
 - 空间复杂度：$\mathcal{O}(D\log r)$。保存多少状态，就需要多少空间。
+
+## 方法二：组合数学
+
+**前置题目**：[3519. 统计逐位非递减的整数](https://leetcode.cn/problems/count-numbers-with-non-decreasing-digits/)，[我的题解](https://leetcode.cn/problems/count-numbers-with-non-decreasing-digits/solutions/3649556/mo-ban-shang-xia-jie-shu-wei-dp-by-endle-rhuw/)。
+
+为方便计算，用小于 $r+1$ 的合法数字个数减去小于 $l$ 的合法数字个数。
+
+设 $r+1$ 的十进制字符串为 $s$，设 $\textit{hi}=\texttt{int}(s[i])$，设上一个在路径中的数为 $\textit{pre}$。
+
+分类讨论：
+
+- 如果 $s[i]$ 不在路径上，那么当前位置（在不受约束的情况下）可以填 $0,1,\ldots,\textit{hi}-1$，一共 $\textit{hi}$ 种数字。后面有 $n-1-i$ 个位置，设其中有 $m$ 个位置在路径上，那么：
+  - 对于在路径上的位置，根据 3519 题解的公式，有 $\dbinom {m+9-\textit{pre}} {m}$ 种填法。
+  - 对于不在路径上的位置，每个位置 $0$ 到 $9$ 随便填，有 $10^{n-1-i-m}$ 种填法。
+  - 一共有 $\textit{hi}\cdot \dbinom {m+9-\textit{pre}} {m}\cdot 10^{n-1-i-m}$ 种填法。
+- 如果 $s[i]$ 在路径上，那么：
+  - 对于在路径上的位置（包括 $i$），根据 3519 题解的公式，有 $\dbinom {m+10-\textit{pre}} {m+1} - \dbinom {m+10-\textit{hi}} {m+1}$ 种填法。
+  - 对于不在路径上的位置，每个位置 $0$ 到 $9$ 随便填，有 $10^{n-1-i-m}$ 种填法。
+  - 一共有 $\left(\dbinom {m+10-\textit{pre}} {m+1} - \dbinom {m+10-\textit{hi}} {m+1}\right)\cdot 10^{n-1-i-m}$ 种填法。
+
+```py [sol-Python3]
+class Solution:
+    def countGoodIntegersOnPath(self, l: int, r: int, directions: str) -> int:
+        r = str(r + 1)  # 注意这里加一了
+        n = len(r)
+        l = str(l).zfill(n)
+
+        in_path = [False] * n
+        in_path[-1] = True  # 终点一定在路径中
+        pos = n - 1
+        for d in reversed(directions):
+            pos -= 1 if d == 'R' else 4  # 倒着往上相当于往左数 4 个位置
+            if pos < 0:  # 只需要对网格图的后 n 个格子做标记
+                break
+            in_path[pos] = True  # 标记在路径中的格子
+
+        # suf[i] 表示后缀 [i, n-1] 在路径中的下标个数
+        suf = [0] * (n + 1)
+        for i in range(n - 1, -1, -1):
+            suf[i] = suf[i + 1] + in_path[i]
+
+        # 计算小于 r 的合法整数个数
+        def solve(r: str) -> int:
+            res = pre = 0
+            for i, ch in enumerate(r):
+                hi = int(ch)
+                m = suf[i + 1]
+                if not in_path[i]:
+                    res += hi * comb(m + 9 - pre, m) * 10 ** (n - 1 - i - m)
+                    continue
+                if hi < pre:
+                    break
+                res += (comb(m + 10 - pre, m + 1) - comb(m + 10 - hi, m + 1)) * 10 ** (n - 1 - i - m)
+                pre = hi  # 这一位填 hi，继续计算剩余数位的方案数
+            return res
+
+        return solve(r) - solve(l)
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MAX_M = 7;
+    private static final long[][] comb = new long[MAX_M + 10][MAX_M + 1];
+    private static boolean initialized = false;
+
+    // 这样写比 static block 快
+    public Solution() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        // 预处理组合数
+        for (int i = 0; i < comb.length; i++) {
+            comb[i][0] = 1;
+            for (int j = 1; j < Math.min(i + 1, comb[i].length); j++) {
+                comb[i][j] = comb[i - 1][j - 1] + comb[i - 1][j];
+            }
+        }
+    }
+
+    public long countGoodIntegersOnPath(long l, long r, String directions) {
+        char[] highS = String.valueOf(r + 1).toCharArray(); // 注意这里加一了
+        int n = highS.length;
+        String tmp = String.valueOf(l);
+        char[] lowS = ("0".repeat(n - tmp.length()) + tmp).toCharArray();
+
+        boolean[] inPath = new boolean[n];
+        int pos = n - 16; // 右下角是下标 n-1，那么左上角是下标 n-16
+        for (char d : directions.toCharArray()) {
+            if (pos >= 0) { // 只需要对网格图中的后 n 个格子做标记
+                inPath[pos] = true; // 标记在路径中的格子
+            }
+            pos += d == 'R' ? 1 : 4; // 往下相当于往右数 4 个位置
+        }
+        inPath[n - 1] = true; // 终点一定在路径中
+
+        // suf[i] 表示后缀 [i, n-1] 在路径中的下标个数
+        int[] suf = new int[n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            suf[i] = suf[i + 1] + (inPath[i] ? 1 : 0);
+        }
+
+        long[] pow10 = new long[n + 1];
+        pow10[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            pow10[i] = pow10[i - 1] * 10;
+        }
+
+        return solve(highS, inPath, suf, pow10) - solve(lowS, inPath, suf, pow10);
+    }
+
+    private long solve(char[] s, boolean[] inPath, int[] suf, long[] pow10) {
+        int n = s.length;
+        long res = 0;
+        int pre = 0;
+        for (int i = 0; i < n; i++) {
+            int hi = s[i] - '0';
+            int m = suf[i + 1];
+            if (!inPath[i]) {
+                res += hi * comb[m + 9 - pre][m] * pow10[n - 1 - i - m];
+                continue;
+            }
+            if (hi < pre) {
+                break;
+            }
+            res += (comb[m + 10 - pre][m + 1] - comb[m + 10 - hi][m + 1]) * pow10[n - 1 - i - m];
+            pre = hi; // 这一位填 hi，继续计算剩余数位的方案数
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MAX_M = 7;
+long long comb[MAX_M + 10][MAX_M + 1];
+
+int init = [] {
+    // 预处理组合数
+    for (int i = 0; i < MAX_M + 10; i++) {
+        comb[i][0] = 1;
+        for (int j = 1; j <= min(i, MAX_M); j++) {
+            comb[i][j] = comb[i - 1][j - 1] + comb[i - 1][j];
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    long long countGoodIntegersOnPath(long long l, long long r, string directions) {
+        string high_s = to_string(r + 1); // 注意这里加一了
+        int n = high_s.size();
+        string low_s = to_string(l);
+        low_s = string(n - low_s.size(), '0') + low_s;
+
+        vector<int8_t> in_path(n);
+        int pos = n - 16; // 右下角是下标 n-1，那么左上角是下标 n-16
+        for (char d : directions) {
+            if (pos >= 0) { // 只需要对网格图中的后 n 个格子做标记
+                in_path[pos] = true; // 标记在路径中的格子
+            }
+            pos += d == 'R' ? 1 : 4; // 往下相当于往右数 4 个位置
+        }
+        in_path[n - 1] = true; // 终点一定在路径中
+
+        // suf[i] 表示后缀 [i, n-1] 在路径中的下标个数
+        vector<int> suf(n + 1);
+        for (int i = n - 1; i >= 0; i--) {
+            suf[i] = suf[i + 1] + in_path[i];
+        }
+
+        vector<long long> pow10(n + 1);
+        pow10[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            pow10[i] = pow10[i - 1] * 10;
+        }
+
+        auto solve = [&](string& s) -> long long {
+            long long res = 0;
+            int pre = 0;
+            for (int i = 0; i < n; i++) {
+                int hi = s[i] - '0';
+                int m = suf[i + 1];
+                if (!in_path[i]) {
+                    res += hi * comb[m + 9 - pre][m] * pow10[n - 1 - i - m];
+                    continue;
+                }
+                if (hi < pre) {
+                    break;
+                }
+                res += (comb[m + 10 - pre][m + 1] - comb[m + 10 - hi][m + 1]) * pow10[n - 1 - i - m];
+                pre = hi; // 这一位填 hi，继续计算剩余数位的方案数
+            }
+            return res;
+        };
+
+        return solve(high_s) - solve(low_s);
+    }
+};
+```
+
+```go [sol-Go]
+const maxM = 7
+
+var comb [maxM + 10][maxM + 1]int
+
+func init() {
+	// 预处理组合数
+	for i := range comb {
+		comb[i][0] = 1
+		for j := 1; j < min(i+1, len(comb[i])); j++ {
+			comb[i][j] = comb[i-1][j-1] + comb[i-1][j]
+		}
+	}
+}
+
+func countGoodIntegersOnPath(l, r int64, directions string) int64 {
+	highS := strconv.FormatInt(r+1, 10) // 注意这里加一了
+	n := len(highS)
+	lowS := strconv.FormatInt(l, 10)
+	lowS = strings.Repeat("0", n-len(lowS)) + lowS
+
+	inPath := make([]bool, n)
+	pos := n - 16 // 右下角是下标 n-1，那么左上角是下标 n-16
+	for _, d := range directions {
+		if pos >= 0 { // 只需要对网格图中的后 n 个格子做标记
+			inPath[pos] = true // 标记在路径中的格子
+		}
+		if d == 'R' { // 往右
+			pos++
+		} else { // 往下
+			pos += 4 // 相当于往右数 4 个位置
+		}
+	}
+	inPath[n-1] = true // 终点一定在路径中
+
+	// suf[i] 表示后缀 [i, n-1] 在路径中的下标个数
+	suf := make([]int, n+1)
+	for i := n - 1; i >= 0; i-- {
+		suf[i] = suf[i+1]
+		if inPath[i] {
+			suf[i]++
+		}
+	}
+
+	// 计算小于 r 的合法整数个数
+	solve := func(r string) (res int) {
+		pre := 0
+		for i, ch := range r {
+			hi := int(ch - '0')
+			m := suf[i+1]
+			if !inPath[i] {
+				res += hi * comb[m+9-pre][m] * int(math.Pow10(n-1-i-m))
+				continue
+			}
+			if hi < pre {
+				break
+			}
+			res += (comb[m+10-pre][m+1] - comb[m+10-hi][m+1]) * int(math.Pow10(n-1-i-m))
+			pre = hi // 这一位填 hi，继续计算剩余数位的方案数
+		}
+		return res
+	}
+
+	return int64(solve(highS) - solve(lowS))
+}
+```
+
+#### 复杂度分析
+
+不计入预处理的时间和空间。（Python3 预处理组合数的代码见 3519 题）
+
+- 时间复杂度：$\mathcal{O}(\log r)$，其中 $\mathcal{O}(\log r)$ 是 $r$ 的十进制长度。
+- 空间复杂度：$\mathcal{O}(\log r)$。
 
 ## 专题训练
 
