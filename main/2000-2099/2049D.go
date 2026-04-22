@@ -26,9 +26,9 @@ func cf2049D(in io.Reader, out io.Writer) {
 			}
 			for shift := range m {
 				s := int(1e18)
-				for x := range m {
-					s = min(s, f[x]) + a[(x+shift)%m]
-					nf[x] = min(nf[x], s+shift*k)
+				for j := range m {
+					s = min(s, f[j]) + a[(j+shift)%m]
+					nf[j] = min(nf[j], s+shift*k)
 				}
 			}
 			f = nf
