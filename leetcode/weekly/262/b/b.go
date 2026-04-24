@@ -1,6 +1,6 @@
 package main
 
-import "math/rand"
+import "slices"
 
 /* 中位数
 
@@ -15,52 +15,30 @@ import "math/rand"
 */
 
 // github.com/EndlessCheng/codeforces-go
-func minOperations(g [][]int, x int) (ans int) {
-	n := len(g) * len(g[0])
-	for _, r := range g {
-		for _, v := range r {
-			if (v-g[0][0])%x != 0 {
+func minOperations(grid [][]int, x int) (ans int) {
+	k := len(grid) * len(grid[0])
+	a := make([]int, 0, k) // 预分配空间
+	target := grid[0][0] % x
+
+	// 1. 判断是否无解
+	for _, row := range grid {
+		for _, v := range row {
+			if v%x != target { // 每个数模 x 都必须相等
 				return -1
 			}
 		}
+		a = append(a, row...)
 	}
-	a := make([]int, 0, n)
-	for _, r := range g {
-		a = append(a, r...)
-	}
-	quickSelect(a)
+
+	// 2. 计算 grid 的中位数 median
+	slices.Sort(a)
+	median := a[k/2]
+
+	// 3. 计算操作次数
 	for _, v := range a {
-		ans += abs(v-a[n/2]) / x
+		ans += abs(v-median) / x // 把 a[i] 变成 median 的操作次数
 	}
 	return
-}
-
-func quickSelect(a []int) int {
-	k := len(a) / 2
-	rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
-	for l, r := 0, len(a)-1; l < r; {
-		v := a[l]
-		i, j := l, r+1
-		for {
-			for i++; i < r && a[i] < v; i++ {
-			}
-			for j--; j > l && a[j] > v; j-- {
-			}
-			if i >= j {
-				break
-			}
-			a[i], a[j] = a[j], a[i]
-		}
-		a[l], a[j] = a[j], v
-		if j == k {
-			break
-		} else if j < k {
-			l = j + 1
-		} else {
-			r = j - 1
-		}
-	}
-	return a[k]
 }
 
 func abs(x int) int {
