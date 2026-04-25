@@ -15,7 +15,7 @@ import "slices"
 */
 
 // github.com/EndlessCheng/codeforces-go
-func minOperations(grid [][]int, x int) (ans int) {
+func minOperations(grid [][]int, x int) int {
 	k := len(grid) * len(grid[0])
 	a := make([]int, 0, k) // 预分配空间
 	target := grid[0][0] % x
@@ -35,10 +35,11 @@ func minOperations(grid [][]int, x int) (ans int) {
 	median := a[k/2]
 
 	// 3. 计算操作次数
+	ans := 0
 	for _, v := range a {
-		ans += abs(v-median) / x // 把 a[i] 变成 median 的操作次数
+		ans += abs(v - median)
 	}
-	return
+	return ans / x
 }
 
 func abs(x int) int {
