@@ -2,11 +2,13 @@
 
 首先，统计 $s$ 包含哪些元音，以及这些元音的出现次数。
 
-然后，把这些元音按照出现次数从大到小排序。这里的排序是**稳定排序**，这样在出现次数相同时，会自动把位置靠前的元音排在前面。
+然后，把这些元音按照其出现次数从大到小排序。
 
-最后重新填入元音，每填一个，就把出现次数减一。出现次数为 $0$ 时，就准备填入下一种元音。
+> 这里的排序是**稳定排序**，这样在出现次数相同时，会自动把位置靠前的元音排在前面。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+最后重新填入元音，每填一个元音，就把该元音的出现次数减一。该元音的出现次数为 $0$ 时，切换到下一种元音，作为后续要填入的元音。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1xzZcBZEpe/?t=4m13s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -33,7 +35,7 @@ class Solution:
             t[i] = c = vowels[j]
             cnt[c] -= 1
             if cnt[c] == 0:
-                j += 1
+                j += 1  # c 消耗完了，切换到下一种元音
         return ''.join(t)
 ```
 
@@ -76,7 +78,7 @@ class Solution {
             }
             t[i] = vowels.get(j);
             if (--cnt[mp[t[i]]] == 0) {
-                j++;
+                j++; // 消耗完了，切换到下一种元音
             }
         }
         return new String(t);
@@ -122,7 +124,7 @@ public:
             }
             ch = vowels[j];
             if (--cnt[mp[ch]] == 0) {
-                j++;
+                j++; // 消耗完了，切换到下一种元音
             }
         }
         return s;
@@ -160,7 +162,7 @@ func sortVowels(s string) string {
 		x := mp[t[i]] - 1
 		cnt[x]--
 		if cnt[x] == 0 {
-			j++
+			j++ // 消耗完了，切换到下一种元音
 		}
 	}
 	return string(t)

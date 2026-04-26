@@ -34,7 +34,7 @@ func sortVowels(s string) string {
 		x := mp[t[i]] - 1
 		cnt[x]--
 		if cnt[x] == 0 {
-			j++
+			j++ // 消耗完了，切换到下一种元音
 		}
 	}
 	return string(t)

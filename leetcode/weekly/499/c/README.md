@@ -24,7 +24,7 @@ $$
 \sum_{i=0}^{n-2} \max(-d[i], 0) = \sum_{i=1}^{n-1} \max(\textit{nums}[i-1] - \textit{nums}[i], 0)
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1xzZcBZEpe/?t=9m44s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

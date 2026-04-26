@@ -23,7 +23,7 @@ $$
 
 对于下标的限制，我们可以在遍历到 $\textit{nums}[i]$ 时，才把 $\textit{f}_{\textit{inc}}[i-k]$ 和 $\textit{f}_{\textit{dec}}[i-k]$ 添加到值域树状数组中，从而保证转移来源的下标 $\le i-k$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1xzZcBZEpe/?t=25m21s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Fenwick:
@@ -151,7 +151,7 @@ public:
     }
 
     T pre_max(int i) const {
-        T res = 0;
+        T res{};
         for (; i > 0; i &= i - 1) {
             res = max(res, f[i]);
         }
