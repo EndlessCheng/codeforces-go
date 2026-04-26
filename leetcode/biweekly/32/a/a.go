@@ -1,17 +1,11 @@
 package main
 
+import "sort"
+
 // github.com/EndlessCheng/codeforces-go
-func findKthPositive(a []int, k int) (ans int) {
-	has := map[int]bool{}
-	for _, v := range a {
-		has[v] = true
-	}
-	for i := 1; ; i++ {
-		if !has[i] {
-			if k == 1 {
-				return i
-			}
-			k--
-		}
-	}
+func findKthPositive(arr []int, k int) int {
+	i := sort.Search(len(arr), func(i int) bool {
+		return arr[i]-1-i >= k
+	})
+	return i + k // 推导过程见题解
 }
