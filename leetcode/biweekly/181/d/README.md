@@ -134,7 +134,7 @@ public:
             // 计算询问对应的 even_pos 子数组
             int li = ranges::lower_bound(even_pos, q[0]) - even_pos.begin();
             int ri = ranges::upper_bound(even_pos, q[1]) - even_pos.begin();
-            int k = k = q[2];
+            int k = q[2];
 
             auto check = [&](int x) -> bool {
                 // 计算子数组中的 <= x*2 的偶数个数
@@ -295,7 +295,7 @@ public:
             // 计算询问对应的 even_pos 子数组
             int li = ranges::lower_bound(even_pos, q[0]) - even_pos.begin();
             int ri = ranges::upper_bound(even_pos, q[1]) - even_pos.begin();
-            int k = k = q[2];
+            int k = q[2];
 
             int left = -1, right = ri - li;
             while (left + 1 < right) {
