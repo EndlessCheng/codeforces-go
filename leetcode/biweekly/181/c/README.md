@@ -9,7 +9,9 @@
 1. 由于节点值只有 $0$ 和 $1$，节点值之和是偶数，等价于节点值是异或和为 $0$。
 2. 用二进制表示集合，用位运算实现集合操作，具体请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV15pZcBzEmR/?t=4m47s)，欢迎点赞关注~
+
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -195,7 +197,190 @@ func evenSumSubgraphs(nums []int, edges [][]int) (ans int) {
 - 时间复杂度：$\mathcal{O}(2^n(n+m))$，其中 $n$ 是 $\textit{nums}$ 的长度，$m$ 是 $\textit{edges}$ 的长度。每次 DFS 需要 $\mathcal{O}(n+m)$ 的时间。
 - 空间复杂度：$\mathcal{O}(n+m)$。
 
-**注**：也可以用二进制保存 $g$，这样可以做到 $\mathcal{O}(n)$ 空间。
+## 优化：位运算 BFS
+
+1. 既然 $\textit{nums}$ 只有 $0$ 和 $1$，可以将其压缩成一个二进制数 $\textit{ones}$，这样可以 $\mathcal{O}(1)$ 计算子集的点权和。
+2. 用二进制数保存 $g$ 的邻居节点。
+3. 把 DFS 换成 BFS，用一个二进制数 $q$ 代替队列，表示在队列中的节点。
+
+```py [sol-Python3]
+class Solution:
+    def evenSumSubgraphs(self, nums: list[int], edges: list[list[int]]) -> int:
+        n = len(nums)
+        g = [0] * n
+        for x, y in edges:
+            g[x] |= 1 << y
+            g[y] |= 1 << x
+
+        ones = 0
+        for i, x in enumerate(nums):
+            ones |= x << i
+
+        # 枚举节点集合 U = {0,1,2,...,n-1} 的非空子集 sub
+        u = (1 << n) - 1
+        ans = 0
+        for sub in range(1, u + 1):
+            # 计算子图的点权和
+            s = (sub & ones).bit_count()
+            if s % 2:
+                continue
+
+            # 判断子图是否连通
+            vis = u ^ sub  # 技巧：把不在子图中的节点都标记为已访问
+            q = sub & -sub  # 随便选一个在子图中的节点，开始 BFS
+            vis |= q
+            while q > 0:
+                x = q & -q  # 出队
+                q ^= x
+                to = g[x.bit_length() - 1] & ~vis  # 访问 x 的（尚未访问过的）邻居
+                q |= to  # x 的邻居入队
+                vis |= to
+            if vis == u:  # 所有节点都已访问，子图是连通的
+                ans += 1
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int evenSumSubgraphs(int[] nums, int[][] edges) {
+        int n = nums.length;
+        int[] g = new int[n];
+        for (int[] e : edges) {
+            int x = e[0];
+            int y = e[1];
+            g[x] |= 1 << y;
+            g[y] |= 1 << x;
+        }
+
+        int ones = 0;
+        for (int i = 0; i < nums.length; i++) {
+            ones |= nums[i] << i;
+        }
+
+        // 枚举节点集合 U = {0,1,2,...,n-1} 的非空子集 sub
+        int u = (1 << n) - 1;
+        int ans = 0;
+        for (int sub = 1; sub <= u; sub++) {
+            // 计算子图的点权和
+            int sum = Integer.bitCount(sub & ones);
+            if (sum % 2 != 0) {
+                continue;
+            }
+
+            // 判断子图是否连通
+            int vis = u ^ sub; // 技巧：把不在子图中的节点都标记为已访问
+            int q = sub & -sub; // 随便选一个在子图中的节点，开始 BFS
+            vis |= q;
+            while (q > 0) {
+                int x = q & -q; // 出队
+                q ^= x;
+                int to = g[Integer.numberOfTrailingZeros(x)] & ~vis; // 访问 x 的（尚未访问过的）邻居
+                q |= to; // x 的邻居入队
+                vis |= to;
+            }
+            if (vis == u) { // 所有节点都已访问，子图是连通的
+                ans++;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int evenSumSubgraphs(vector<int>& nums, vector<vector<int>>& edges) {
+        int n = nums.size();
+        vector<int> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            g[x] |= 1 << y;
+            g[y] |= 1 << x;
+        }
+
+        int ones = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            ones |= nums[i] << i;
+        }
+
+        // 枚举节点集合 U = {0,1,2,...,n-1} 的非空子集 sub
+        int u = (1 << n) - 1;
+        int ans = 0;
+        for (int sub = 1; sub <= u; sub++) {
+            // 计算子图的点权和
+            int sum = popcount((uint32_t) sub & ones);
+            if (sum % 2) {
+                continue;
+            }
+
+            // 判断子图是否连通
+            int vis = u ^ sub; // 技巧：把不在子图中的节点都标记为已访问
+            int q = sub & -sub; // 随便选一个在子图中的节点，开始 BFS
+            vis |= q;
+            while (q > 0) {
+                int x = q & -q; // 出队
+                q ^= x;
+                int to = g[countr_zero((uint32_t) x)] & ~vis; // 访问 x 的（尚未访问过的）邻居
+                q |= to; // x 的邻居入队
+                vis |= to;
+            }
+            ans += vis == u; // 所有节点都已访问，子图是连通的
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func evenSumSubgraphs(nums []int, edges [][]int) (ans int) {
+	n := len(nums)
+	g := make([]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] |= 1 << y
+		g[y] |= 1 << x
+	}
+
+	ones := 0
+	for i, x := range nums {
+		ones |= x << i
+	}
+
+	// 枚举节点集合 U = {0,1,2,...,n-1} 的非空子集 sub
+	u := 1<<n - 1
+	for sub := 1; sub <= u; sub++ {
+		// 计算子图的点权和
+		sum := bits.OnesCount(uint(sub & ones))
+		if sum%2 != 0 {
+			continue
+		}
+
+		// 判断子图是否连通
+		vis := u ^ sub // 技巧：把不在子图中的节点都标记为已访问
+		q := sub & -sub // 随便选一个在子图中的节点，开始 BFS
+		vis |= q
+		for q > 0 {
+			x := q & -q // 出队
+			q ^= x
+			to := g[bits.TrailingZeros(uint(x))] &^ vis // 访问 x 的（尚未访问过的）邻居
+			q |= to // x 的邻居入队
+			vis |= to
+		}
+
+		if vis == u { // 所有节点都已访问，子图是连通的
+			ans++
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(m + n2^n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$m$ 是 $\textit{edges}$ 的长度。每次 BFS 至多出队 $n$ 个点，需要 $\mathcal{O}(n)$ 的时间。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练
 
