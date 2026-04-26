@@ -21,6 +21,7 @@
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
+# 这个做法很慢，更快的做法见方法二
 class Solution:
     def kthRemainingInteger(self, nums: list[int], queries: list[list[int]]) -> list[int]:
         # 记录所有偶数的下标
@@ -209,6 +210,7 @@ func kthRemainingInteger(nums []int, queries [][]int) []int {
 换个方式描述问题：找不在子数组中的第 $k$ 个缺失的正偶数。这不就是 1539 题吗？
 
 ```py [sol-Python3]
+# 更快的写法请看【Python3 写法二】
 class Solution:
     def kthRemainingInteger(self, nums: list[int], queries: list[list[int]]) -> list[int]:
         # 记录所有偶数的下标
@@ -220,8 +222,30 @@ class Solution:
             li = bisect_left(even_pos, l)
             ri = bisect_right(even_pos, r)
 
+            # 推导过程见 1539 题解
             j = bisect_left(range(ri - li), True, key=lambda j: nums[even_pos[li + j]] // 2 - 1 - j >= k)
-            ans[i] = (j + k) * 2  # 推导过程见 1539 题解
+            ans[i] = (j + k) * 2
+
+        return ans
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def kthRemainingInteger(self, nums: list[int], queries: list[list[int]]) -> list[int]:
+        # 记录所有偶数的下标
+        even_pos = [i for i, x in enumerate(nums) if x % 2 == 0]
+        #       nums[even_pos[li + j]] // 2 - 1 - j >= k
+        # 等价于 nums[even_pos[j']] // 2 - 1 - (j' - li) >= k
+        # 等价于 nums[even_pos[j']] // 2 - 1 - j' >= k - li
+        # 所以在 a 中二分 k - li 即可
+        a = [nums[idx] // 2 - 1 - i for i, idx in enumerate(even_pos)]
+        ans = [0] * len(queries)
+
+        for i, (l, r, k) in enumerate(queries):
+            li = bisect_left(even_pos, l)
+            ri = bisect_right(even_pos, r)
+            j = bisect_left(a, k - li, lo=li, hi=ri) - li
+            ans[i] = (j + k) * 2
 
         return ans
 ```

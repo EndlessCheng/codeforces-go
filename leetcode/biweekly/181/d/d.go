@@ -52,10 +52,11 @@ func kthRemainingInteger(nums []int, queries [][]int) []int {
 		pos := evenPos[l:r]
 		k := q[2]
 
+		// 推导过程见 1539 题解
 		j := sort.Search(len(pos), func(j int) bool {
 			return nums[pos[j]]/2-1-j >= k
 		})
-		ans[i] = (j + k) * 2 // 推导过程见 1539 题解
+		ans[i] = (j + k) * 2
 	}
 	return ans
 }
