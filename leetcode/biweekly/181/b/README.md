@@ -2,9 +2,12 @@
 
 根据 $\textit{diff}$ 与 $0$ 的大小关系，返回答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+也可以先找到 [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/)，然后分别计算峰顶左右两侧的元素和。见 Python3 写法二。
+
+[本题视频讲解](https://www.bilibili.com/video/BV15pZcBzEmR/?t=2m6s)，欢迎点赞关注~
 
 ```py [sol-Python3]
+# 更快的写法见【Python3 写法二】
 class Solution:
     def compareBitonicSums(self, nums: list[int]) -> int:
         diff = 0
@@ -15,6 +18,26 @@ class Solution:
             else:  # 注意峰顶抵消掉了，不算入 diff
                 diff += x if inc else -x
         return -1 if diff == 0 else int(diff < 0)
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    # 852. 山脉数组的峰顶索引
+    def peakIndexInMountainArray(self, arr: List[int]) -> int:
+        left, right = 0, len(arr) - 2
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if arr[mid] > arr[mid + 1]:
+                right = mid
+            else:
+                left = mid
+        return right
+
+    def compareBitonicSums(self, nums: list[int]) -> int:
+        i = self.peakIndexInMountainArray(nums)
+        s1 = sum(nums[:i])
+        s2 = sum(nums[i + 1:])
+        return -1 if s1 == s2 else int(s1 < s2)
 ```
 
 ```java [sol-Java]

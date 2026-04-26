@@ -18,8 +18,6 @@
 - **开区间二分下界**：$k-1$。答案至少是第 $k$ 个正偶数。
 - **开区间二分上界**：$k+m$，其中 $m$ 是子数组中的偶数个数。答案至多是第 $k+m$ 个正偶数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 # 这个做法很慢，更快的做法见方法二
 class Solution:
@@ -207,10 +205,14 @@ func kthRemainingInteger(nums []int, queries [][]int) []int {
 
 **前置题目**：[1539. 第 k 个缺失的正整数](https://leetcode.cn/problems/kth-missing-positive-number/)，[我的题解](https://leetcode.cn/problems/kth-missing-positive-number/solutions/3959163/olog-n-xiang-xi-tui-dao-jian-ji-xie-fa-p-67ag/)。
 
-换个方式描述问题：找不在子数组中的第 $k$ 个缺失的正偶数。这不就是 1539 题吗？
+换个方式描述问题：找不在子数组中的第 $k$ 个缺失的正偶数。
+
+如果把偶数都除以 $2$，那不就是 1539 题吗？
+
+[本题视频讲解](https://www.bilibili.com/video/BV15pZcBzEmR/?t=11m2s)，欢迎点赞关注~
 
 ```py [sol-Python3]
-# 更快的写法请看【Python3 写法二】
+# 更快的写法见【Python3 写法二】
 class Solution:
     def kthRemainingInteger(self, nums: list[int], queries: list[list[int]]) -> list[int]:
         # 记录所有偶数的下标
@@ -352,10 +354,11 @@ func kthRemainingInteger(nums []int, queries [][]int) []int {
 		pos := evenPos[l:r]
 		k := q[2]
 
+		// 推导过程见 1539 题解
 		j := sort.Search(len(pos), func(j int) bool {
 			return nums[pos[j]]/2-1-j >= k
 		})
-		ans[i] = (j + k) * 2 // 推导过程见 1539 题解
+		ans[i] = (j + k) * 2
 	}
 	return ans
 }
