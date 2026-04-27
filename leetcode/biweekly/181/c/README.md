@@ -203,6 +203,8 @@ func evenSumSubgraphs(nums []int, edges [][]int) (ans int) {
 2. 用二进制数保存 $g$ 的邻居节点。
 3. 把 DFS 换成 BFS，用一个二进制数 $q$ 代替队列，表示在队列中的节点。
 
+> **注**：严格来说这不是 BFS，只是遍历图的一种方法。
+
 ```py [sol-Python3]
 class Solution:
     def evenSumSubgraphs(self, nums: list[int], edges: list[list[int]]) -> int:
