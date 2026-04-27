@@ -111,6 +111,7 @@ func (st sparseTableWithIndex) query(l, r int) int {
 //
 
 // 不相交 ST 表（Disjoint Sparse Table，DST）
+// 可以用来查询区间 GCD 等
 // 国内算法竞赛圈称其为「猫树」 https://oi-wiki.org/ds/cat-tree/
 // 类似算法：双栈滑动窗口
 // https://codeforces.com/edu/course/3/lesson/18/3
