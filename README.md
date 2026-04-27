@@ -34,7 +34,7 @@
     - 可持久化并查集
     - 回滚并查集 & 动态图连通性
   - [ST 表 sparse_table.go](/copypasta/sparse_table.go)
-    - 不相交 ST 表
+    - 不相交 ST 表（猫树）
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
     - 差分树状数组（支持区间加、区间求和）
     - 二维树状数组
