@@ -6,15 +6,15 @@ import (
 )
 
 // https://github.com/EndlessCheng
-type fenwick []int
+type fenwick43 []int
 
-func (t fenwick) update(i, v int) {
+func (t fenwick43) update(i, v int) {
 	for ; i < len(t); i += i & -i {
 		t[i] += v
 	}
 }
 
-func (t fenwick) pre(i int) (res int) {
+func (t fenwick43) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res += t[i]
 	}
@@ -26,25 +26,31 @@ func cf2143D2(in io.Reader, out io.Writer) {
 	var T, n, v int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
-		row := make([]fenwick, n+1)
-		col := make([]fenwick, n+1)
-		for i := range row {
-			row[i] = make(fenwick, n+1)
-			col[i] = make(fenwick, n+1)
+		row := make([]fenwick43, n+1)
+		col := make([]fenwick43, n+1)
+		for i := range col {
+			row[i] = make(fenwick43, n+1)
+			col[i] = make(fenwick43, n+1)
 		}
 		upd := func(x, y, v int) {
-			row[y].update(x, v)
-			col[x].update(y, v)
+			row[x].update(y, v)
+			col[y].update(x, v)
 		}
 
+		// 定义 f[x][y] 表示表示第一个递增子序列以 x 结尾、第二个递增子序列以 y 结尾时，好子序列的数目
+		// 为避免重复统计，规定 x >= y
 		upd(1, 1, 1)
 		for range n {
 			Fscan(in, &v)
+			// 把 v 添加到第一个子序列的后面，必须满足 x <= v 且 y <= v
+			// 枚举 y，f[v][y] += sum_{x <= v} f[x][y]
 			for y := 1; y <= v; y++ {
-				upd(v, y, row[y].pre(v)%mod)
+				upd(v, y, col[y].pre(v)%mod)
 			}
+			// 把 v 添加到第二个子序列的后面，必须满足 y <= v < x，这里 v != x 从而避免重复统计
+			// 枚举 x，f[x][v] += sum_{y <= v} f[x][y]
 			for x := v + 1; x <= n; x++ {
-				upd(x, v, col[x].pre(v)%mod)
+				upd(x, v, row[x].pre(v)%mod)
 			}
 		}
 
