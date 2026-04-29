@@ -44,6 +44,7 @@ class Solution:
             return max(dfs(i - 1, j, k), dfs(i, j - 1, k)) + x
 
         ans = dfs(len(grid) - 1, len(grid[0]) - 1, k)
+        dfs.cache_clear()  # 避免超出内存限制
         return -1 if ans < 0 else ans
 ```
 
