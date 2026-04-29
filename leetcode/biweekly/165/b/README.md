@@ -19,7 +19,7 @@
 
 元素 $x = \textit{arrivals}[i]$ 进入窗口时：
 
-- 如果 $\textit{cnt}[x]=m$，那么丢弃 $x$，答案加一。⚠**易错点**：$x$ 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 $\textit{cnt}$。为了方便实现，我们可以把 $\textit{arrivals}[i]$ 改成 $0$（或者负数），表示已丢弃。
+- 如果 $\textit{cnt}[x]=m$，那么丢弃 $x$，答案加一。⚠**易错点**：$x$ 在未来要离开窗口，但由于已经丢弃，不能在离开窗口时修改 $\textit{cnt}$。为了方便实现，我们可以把 $\textit{arrivals}[i]$ 改成任意不在 $\textit{arrivals}$ 中的数，比如 $0$，表示已丢弃（删除）。
 - 否则把 $\textit{cnt}[x]$ 加一。
 
 元素 $x = \textit{arrivals}[i+1-w]$ 离开窗口时：
