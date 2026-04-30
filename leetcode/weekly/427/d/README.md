@@ -45,15 +45,19 @@ class Solution:
         tree = Fenwick(len(ys))
         tree.add(bisect_left(ys, points[0][1]) + 1)  # 离散化
         pre = {}
-        for (x1, y1), (x2, y2) in pairwise(points):
+
+        for (x1, y1), (x2, y2) in pairwise(points):  # 枚举矩形的右下角和右上角
             y = bisect_left(ys, y2) + 1  # 离散化
             tree.add(y)
             if x1 != x2:  # 两点不在同一列
                 continue
+
             cur = tree.query(bisect_left(ys, y1) + 1, y)
+            # 左下角为 pre[y2]
             if y2 in pre and pre[y2][1] == y1 and pre[y2][2] + 2 == cur:
                 ans = max(ans, (x2 - pre[y2][0]) * (y2 - y1))
             pre[y2] = (x1, y1, cur)
+
         return ans
 ```
 
@@ -103,7 +107,9 @@ class Solution {
         Fenwick tree = new Fenwick(n + 1);
         tree.add(Arrays.binarySearch(ys, points[0][1]) + 1); // 离散化
         int[][] pre = new int[n][3];
+
         for (int i = 1; i < n; i++) {
+            // 枚举矩形的右下角 (x1,y1) 和右上角 (x2,y2)
             int x1 = points[i - 1][0];
             int y1 = points[i - 1][1];
             int x2 = points[i][0];
@@ -113,8 +119,9 @@ class Solution {
             if (x1 != x2) { // 两点不在同一列
                 continue;
             }
+
             int cur = tree.query(Arrays.binarySearch(ys, y1) + 1, y + 1);
-            int[] p = pre[y];
+            int[] p = pre[y]; // 左下角
             if (p[2] > 0 && p[2] + 2 == cur && p[1] == y1) {
                 ans = Math.max(ans, (long) (x2 - p[0]) * (y2 - y1));
             }
@@ -122,6 +129,7 @@ class Solution {
             p[1] = y1;
             p[2] = cur;
         }
+
         return ans;
     }
 }
@@ -175,7 +183,9 @@ public:
         Fenwick tree(ys.size() + 1);
         tree.add(ranges::lower_bound(ys, points[0].second) - ys.begin() + 1); // 离散化
         vector<tuple<int, int, int>> pre(ys.size(), {-1, -1, -1});
+
         for (int i = 1; i < points.size(); i++) {
+            // 枚举矩形的右下角 (x1,y1) 和右上角 (x2,y2)
             auto& [x1, y1] = points[i - 1];
             auto& [x2, y2] = points[i];
             int y = ranges::lower_bound(ys, y2) - ys.begin(); // 离散化
@@ -183,13 +193,15 @@ public:
             if (x1 != x2) { // 两点不在同一列
                 continue;
             }
+
             int cur = tree.query(ranges::lower_bound(ys, y1) - ys.begin() + 1, y + 1);
-            auto& [pre_x, pre_y, p] = pre[y];
+            auto& [pre_x, pre_y, p] = pre[y]; // 左下角
             if (pre_y == y1 && p + 2 == cur) {
                 ans = max(ans, (long long) (x2 - pre_x) * (y2 - y1));
             }
             pre[y] = {x1, y1, cur};
         }
+
         return ans;
     }
 };
@@ -235,7 +247,9 @@ func maxRectangleArea(xCoord, ys []int) int64 {
 	tree.add(sort.SearchInts(ys, points[0].y) + 1) // 离散化
 	type tuple struct{ x, y, c int }
 	pre := make([]tuple, len(ys))
+
 	for i := 1; i < len(points); i++ {
+		// 枚举矩形的右下角 (x1,y1) 和右上角 (x2,y2)
 		x1, y1 := points[i-1].x, points[i-1].y
 		x2, y2 := points[i].x, points[i].y
 		y := sort.SearchInts(ys, y2) // 离散化
@@ -243,13 +257,15 @@ func maxRectangleArea(xCoord, ys []int) int64 {
 		if x1 != x2 { // 两点不在同一列
 			continue
 		}
+
 		cur := tree.query(sort.SearchInts(ys, y1)+1, y+1)
-		p := pre[y]
+		p := pre[y] // 左下角
 		if p.c > 0 && p.c+2 == cur && p.y == y1 {
 			ans = max(ans, (x2-p.x)*(y2-y1))
 		}
 		pre[y] = tuple{x1, y1, cur}
 	}
+
 	return int64(ans)
 }
 ```
