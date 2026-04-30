@@ -1,11 +1,11 @@
 做法类似 [3418. 机器人可以获得的最大金币数](https://leetcode.cn/problems/maximum-amount-of-money-robot-can-earn/)，[我的题解](https://leetcode.cn/problems/maximum-amount-of-money-robot-can-earn/solutions/3045103/wang-ge-tu-dp-by-endlesscheng-g96j/)。
 
-和 3418 题一样，定义 $\textit{dfs}(i,j,k)$ 表示从 $(0,0)$ 走到 $(i,j)$，在剩余金额为 $k$ 的情况下，可以获得的最大分数。
+和 3418 题一样，定义 $\textit{dfs}(i,j,k)$ 表示从 $(0,0)$ 走到 $(i,j)$，在总花费不超过 $k$ 的情况下，可以获得的最大分数。
 
 - 设 $x = \textit{grid}[i][j]$。
 - 首先，如果 $x>0$，把 $k$ 减少一。设新的 $k$ 为 $k'$。
-- 如果最后一步从 $(i-1,j)$ 走到 $(i,j)$，那么问题变成从 $(0,0)$ 走到 $(i-1,j)$，在剩余金额为 $k'$ 的情况下，可以获得的最大分数，即 $\textit{dfs}(i-1, j, k')$。所以有 $\textit{dfs}(i,j,k) = \textit{dfs}(i-1, j, k') + x$。
-- 如果最后一步从 $(i,j-1)$ 走到 $(i,j)$，那么问题变成从 $(0,0)$ 走到 $(i,j-1)$，在剩余金额为 $k'$ 的情况下，可以获得的最大分数，即 $\textit{dfs}(i, j-1, k')$。所以有 $\textit{dfs}(i,j,k) = \textit{dfs}(i, j-1, k') + x$。
+- 如果最后一步从 $(i-1,j)$ 走到 $(i,j)$，那么问题变成从 $(0,0)$ 走到 $(i-1,j)$，在总花费不超过 $k'$ 的情况下，可以获得的最大分数，即 $\textit{dfs}(i-1, j, k')$。所以有 $\textit{dfs}(i,j,k) = \textit{dfs}(i-1, j, k') + x$。
+- 如果最后一步从 $(i,j-1)$ 走到 $(i,j)$，那么问题变成从 $(0,0)$ 走到 $(i,j-1)$，在总花费不超过 $k'$ 的情况下，可以获得的最大分数，即 $\textit{dfs}(i, j-1, k')$。所以有 $\textit{dfs}(i,j,k) = \textit{dfs}(i, j-1, k') + x$。
 
 两种情况取最大值，得
 
