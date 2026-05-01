@@ -19,7 +19,7 @@ $$
 \textit{f}_{\textit{dec}}[i] = \max_{\substack{0\le j\le i-k \\ \textit{nums}[j] > \textit{nums}[i]}} \textit{f}_{\textit{inc}}[j] + \textit{nums}[i]
 $$
 
-这里要计算的是 $\textit{f}_{\textit{dec}}$ 的**值域前缀最大值**，以及 $\textit{f}_{\textit{inc}}$ 的**值域后缀最大值**，这可以用两个**值域树状数组**分别维护。
+这里要计算的是 $\textit{f}_{\textit{dec}}$ 的**值域前缀最大值**，以及 $\textit{f}_{\textit{inc}}$ 的**值域后缀最大值**，这可以用两个值域线段树分别维护。本题转移方程没有负数，也可以用更轻量的**值域树状数组**。
 
 对于下标的限制，我们可以在遍历到 $\textit{nums}[i]$ 时，才把 $\textit{f}_{\textit{inc}}[i-k]$ 和 $\textit{f}_{\textit{dec}}[i-k]$ 添加到值域树状数组中，从而保证转移来源的下标 $\le i-k$。
 
