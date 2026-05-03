@@ -8,7 +8,7 @@
 
 计算从左到右一步步移动的代价的前缀和，以及从右到左一步步移动的代价的前缀和，即可 $\mathcal{O}(1)$ 回答询问。关于前缀和的原理，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1719oB4EWf/?t=7m34s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

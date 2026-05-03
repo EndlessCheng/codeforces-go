@@ -1,8 +1,14 @@
 用筛法（例如埃氏筛）预处理每个数是不是质数，然后把非质数视作 $0$，计算 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
+如何反转数字？不用字符串。
+
+不断地把 $n$ 除以 $10$（下取整）直到 $0$，例如 $123\to 12\to 1\to 0$。在这个过程中的 $d = n\bmod 10$，即为每个数位。
+
+计算 $r \cdot 10 + d$，可以把数字 $d$ 添加到 $r$ 的末尾。例如 $32\cdot 10 + 1 = 321$。
+
 算出 $r$ 后，用前缀和可以 $\mathcal{O}(1)$ 求出 $[\min(n,r),\max(n,r)]$ 中的质数之和。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1719oB4EWf/?t=3m)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 1001

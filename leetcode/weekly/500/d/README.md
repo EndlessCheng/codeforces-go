@@ -25,7 +25,7 @@ $\textit{nums}[i]$ 要想成为固定点，它必须位于下标 $\textit{nums}[
 
 **答**：设我们从排序后的列表中选出了两个二元组 $(x_i,i-x_i)$ 和 $(x_j,j-x_j)$，由于 $x_i < x_j$ 且 $i-x_i\le j-x_j$，所以 $x_i+(i-x_i) < x_j+(j-x_j)$，即 $i < j$。所以我们选出的子序列在原数组中的下标一定是递增的。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1719oB4EWf/?t=19m58s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
