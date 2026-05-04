@@ -167,7 +167,7 @@ func minArrivalsToDiscard(arrivals []int, w, m int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n + U)$，其中 $n$ 是 $\textit{arrivals}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n + U)$，其中 $n$ 是 $\textit{arrivals}$ 的长度，$U=\max(\textit{arrivals})$。
 - 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n + U)$。
 
 ## 专题训练
