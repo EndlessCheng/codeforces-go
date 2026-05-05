@@ -16,42 +16,34 @@ func cf611C(in io.Reader, _w io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	sum := make([][]int, n+1)
-	sumR := make([][]int, n+1)
-	for i := range sum {
-		sum[i] = make([]int, m+1)
-		sumR[i] = make([]int, m+1)
-	}
-	sumC := make([][]int, m)
-	for i := range sumC {
-		sumC[i] = make([]int, n+1)
+	sr := make([][]int, n+1)
+	sc := make([][]int, n+1)
+	for i := range sr {
+		sr[i] = make([]int, m+1)
+		sc[i] = make([]int, m+1)
 	}
 	for i, row := range a {
 		for j, b := range row {
-			sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j]
-			sumR[i][j+1] = sumR[i][j]
-			sumC[j][i+1] = sumC[j][i]
+			sr[i+1][j+1] = sr[i+1][j] + sr[i][j+1] - sr[i][j]
+			sc[i+1][j+1] = sc[i+1][j] + sc[i][j+1] - sc[i][j]
 			if b == '.' {
 				if j < m-1 && row[j+1] == '.' {
-					sum[i+1][j+1]++
-					sumR[i][j+1]++
+					sr[i+1][j+1]++
 				}
 				if i < n-1 && a[i+1][j] == '.' {
-					sum[i+1][j+1]++
-					sumC[j][i+1]++
+					sc[i+1][j+1]++
 				}
 			}
 		}
+	}
+	query := func(s [][]int, r1, c1, r2, c2 int) int {
+		return s[r2][c2] - s[r2][c1] - s[r1][c2] + s[r1][c1]
 	}
 
 	Fscan(in, &q)
 	for range q {
 		Fscan(in, &r1, &c1, &r2, &c2)
-		r1--
-		c1--
-		r2--
-		c2--
-		Fprintln(out, sum[r2][c2]-sum[r2][c1]-sum[r1][c2]+sum[r1][c1]+sumR[r2][c2]-sumR[r2][c1]+sumC[c2][r2]-sumC[c2][r1])
+		Fprintln(out, query(sr, r1-1, c1-1, r2, c2-1)+query(sc, r1-1, c1-1, r2-1, c2))
 	}
 }
 
