@@ -2,15 +2,15 @@
 
 其中 $\textit{height}[i]$ 定义为后缀 $\textit{sa}[i]$ 和后缀 $\textit{sa}[i-1]$ 的 LCP。
 
-对于后缀 $\textit{sa}[i]$，它与其他后缀的最长公共前缀，即后缀 $\textit{sa}[i]$ 和 $\textit{sa}[i-1]$ 的 LCP，以及后缀 $\textit{sa}[i]$ 和 $\textit{sa}[i+1]$ 的 LCP，这二者的最大值，即
+对于后缀 $\textit{sa}[i]$，它与其他后缀的最长公共前缀，来自后缀 $\textit{sa}[i]$ 和 $\textit{sa}[i-1]$ 的 LCP，以及后缀 $\textit{sa}[i]$ 和 $\textit{sa}[i+1]$ 的 LCP，这二者的最大值，即
 
 $$
 \max(\textit{height}[i],\textit{height}[i+1])
 $$
 
-这个值再加一，即为后缀 $\textit{sa}[i]$ 中的最长唯一前缀（可以用反证法证明，如果还有更长的，那么 $\textit{height}[i]$ 或 $\textit{height}[i+1]$ 会更大，矛盾）。
+这个值再加一，即为后缀 $\textit{sa}[i]$ 中的最短**唯一**前缀（可以用反证法证明，如果不唯一，那么 $\textit{height}[i]$ 或 $\textit{height}[i+1]$ 还能更大，矛盾）。
 
-注意 $\max(\textit{height}[i],\textit{height}[i+1])+1$ 必须小于等于后缀 $\textit{sa}[i]$ 的长度，即
+注意 $\max(\textit{height}[i],\textit{height}[i+1])+1$ 不能超过后缀 $\textit{sa}[i]$ 的长度，即
 
 $$
 \max(\textit{height}[i],\textit{height}[i+1])+1 \le n - \textit{sa}[i]
@@ -18,15 +18,17 @@ $$
 
 如果上式成立，用 $\max(\textit{height}[i],\textit{height}[i+1])+1$ 更新答案的最小值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+> 注：本题也可以用二分答案 + 字符串哈希做，时间复杂度 $\mathcal{O}(n\log n)$。
+
+[本题视频讲解](https://www.bilibili.com/video/BV18gLE6VETZ/?t=43m37s)，欢迎点赞关注~
 
 ```go
 func smallestUniqueSubarray(nums []int) int {
 	n := len(nums)
-	// 把 1 个 int 拆成 4 个 byte，从而可以调用库函数计算 SA
-	tmp := make([]byte, 0, n*4)
+	// 把 1 个 int 拆成 3 个 byte（题目保证 nums[i] <= 1e5），从而可以调用库函数计算后缀数组
+	tmp := make([]byte, 0, n*3)
 	for _, x := range nums {
-		tmp = append(tmp, byte(x>>24), byte(x>>16), byte(x>>8), byte(x))
+		tmp = append(tmp, byte(x>>16), byte(x>>8), byte(x))
 	}
 
 	type _tp struct {
@@ -37,8 +39,8 @@ func smallestUniqueSubarray(nums []int) int {
 
 	sa := make([]int32, 0, n)
 	for _, p := range _sa {
-		if p&3 == 0 { // 是 4 的倍数的 _sa[i] 就对应着 nums 的 sa[i]
-			sa = append(sa, p>>2)
+		if p%3 == 0 { // 是 3 的倍数的 _sa[i] 就对应着 nums 的 sa[i]
+			sa = append(sa, p/3)
 		}
 	}
 
@@ -94,12 +96,12 @@ func smallestUniqueSubarray(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。注：库函数用的是 SA-IS 算法。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 专题训练
 
-见下面字符串题单的「**八、后缀数组/后缀自动机**」。
+见下面字符串题单的「**四、字符串哈希**」和「**八、后缀数组/后缀自动机**」。
 
 ## 分类题单
 

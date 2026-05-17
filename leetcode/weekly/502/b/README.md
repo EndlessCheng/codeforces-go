@@ -6,11 +6,11 @@ $$
 
 $x^k\le n$ 即 $x\le n^{1/k}$，所以 $x$ 的范围为 $[0,\lfloor n^{1/k} \rfloor]$，这有 $\lfloor n^{1/k} \rfloor + 1$ 个。
 
-计算 $n^{1/k}$ 注意浮点误差，可能正确值是 $6$，但算出来的是 $5.99999\cdots$ 下取整后是 $5$。
+⚠**注意**：由于浮点运算有误差，可能 $n^{1/k} = 6$，但计算机算出来的是 $5.99999\cdots$，下取整后是 $5$。
 
-设 $u = \lfloor n^{1/k} \rfloor$，我们可以额外验证 $(u+1)^k\le n$ 是否成立，如果成立则把 $u$ 加一。为保险起见，计算 $(u+1)^k$ 可以用快速幂，见 [50. Pow(x, n)](https://leetcode.cn/problems/powx-n/)，[【图解】一张图秒懂快速幂！](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)
+设 $u = \lfloor n^{1/k} \rfloor$，我们可以额外验证 $(u+1)^k\le n$ 是否成立，如果成立则把 $u$ 加一。保险起见，计算 $(u+1)^k$ 可以用快速幂，原理见 [50. Pow(x, n)](https://leetcode.cn/problems/powx-n/)，[【图解】一张图秒懂快速幂！](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV18gLE6VETZ/?t=33m30s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -19,7 +19,7 @@ class Solution:
             return 0
         x = floor(n ** (1 / k))
         # 可能 x 的正确值是 6，但算出来的 x = floor(5.99999...) = 5
-        if (x + 1) ** k <= n:  # 避免浮点误差，这里用整数计算 pow
+        if (x + 1) ** k <= n:  # 为避免浮点误差，这里用整数计算 pow
             x += 1
         return x + 1
 
@@ -29,31 +29,30 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    public int f(int n, int k) {
+    public int countKthRoots(int l, int r, int k) {
+        return f(r, k) - f(l - 1, k);
+    }
+
+    private int f(int n, int k) {
         if (n < 0) {
             return 0;
         }
         int x = (int) Math.pow(n, 1.0 / k);
         // 可能 x 的正确值是 6，但算出来的 x = int(5.99999...) = 5
-        if (pow(x + 1, k) <= n) { // 避免浮点误差，这里用整数计算 pow
+        if (pow(x + 1, k) <= n) { // 为避免浮点误差，这里用整数计算 pow
             x++;
         }
         return x + 1;
     }
 
-    public int countKthRoots(int l, int r, int k) {
-        return f(r, k) - f(l - 1, k);
-    }
-
     // 50. Pow(x, n)
     private long pow(long x, int k) {
         long res = 1;
-        while (k > 0) {
+        for (; k > 0; k /= 2) {
             if (k % 2 > 0) {
                 res *= x;
             }
             x *= x;
-            k /= 2;
         }
         return res;
     }
@@ -80,7 +79,7 @@ class Solution {
         }
         int x = pow(n, 1.0 / k);
         // 可能 x 的正确值是 6，但算出来的 x = int(5.99999...) = 5
-        if (qpow(x + 1, k) <= n) { // 避免浮点误差，这里用整数计算 pow
+        if (qpow(x + 1, k) <= n) { // 为避免浮点误差，这里用整数计算 pow
             x++;
         }
         return x + 1;
@@ -94,22 +93,6 @@ public:
 ```
 
 ```go [sol-Go]
-func f(n, k int) int {
-	if n < 0 {
-		return 0
-	}
-	x := int(math.Pow(float64(n), 1/float64(k)))
-	// 可能 x 的正确值是 6，但算出来的 x = int(5.99999...) = 5
-	if pow(x+1, k) <= n { // 避免浮点误差，这里用整数计算 pow
-		x++
-	}
-	return x + 1
-}
-
-func countKthRoots(l, r, k int) int {
-	return f(r, k) - f(l-1, k)
-}
-
 // 50. Pow(x, n)
 func pow(x, k int) int {
 	res := 1
@@ -121,11 +104,27 @@ func pow(x, k int) int {
 	}
 	return res
 }
+
+func f(n, k int) int {
+	if n < 0 {
+		return 0
+	}
+	x := int(math.Pow(float64(n), 1/float64(k)))
+	// 可能 x 的正确值是 6，但算出来的 x = int(5.99999...) = 5
+	if pow(x+1, k) <= n { // 为避免浮点误差，这里用整数计算 pow
+		x++
+	}
+	return x + 1
+}
+
+func countKthRoots(l, r, k int) int {
+	return f(r, k) - f(l-1, k)
+}
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(\log k)$。
+- 时间复杂度：$\mathcal{O}(\log k)$。瓶颈在计算快速幂上。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单

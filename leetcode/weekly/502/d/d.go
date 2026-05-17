@@ -8,10 +8,10 @@ import (
 // https://space.bilibili.com/206214
 func smallestUniqueSubarray(nums []int) int {
 	n := len(nums)
-	// 把 1 个 int 拆成 4 个 byte，从而可以调用库函数计算 SA
-	tmp := make([]byte, 0, n*4)
+	// 把 1 个 int 拆成 3 个 byte，从而可以调用库函数计算后缀数组
+	tmp := make([]byte, 0, n*3)
 	for _, x := range nums {
-		tmp = append(tmp, byte(x>>24), byte(x>>16), byte(x>>8), byte(x))
+		tmp = append(tmp, byte(x>>16), byte(x>>8), byte(x))
 	}
 
 	type _tp struct {
@@ -22,8 +22,8 @@ func smallestUniqueSubarray(nums []int) int {
 
 	sa := make([]int32, 0, n)
 	for _, p := range _sa {
-		if p&3 == 0 { // 是 4 的倍数的 _sa[i] 就对应着 nums 的 sa[i]
-			sa = append(sa, p>>2)
+		if p%3 == 0 { // 是 3 的倍数的 _sa[i] 就对应着 nums 的 sa[i]
+			sa = append(sa, p/3)
 		}
 	}
 
