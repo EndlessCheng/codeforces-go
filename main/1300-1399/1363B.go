@@ -1,37 +1,27 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
+	"strings"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF1363B(_r io.Reader, out io.Writer) {
-	in := bufio.NewReader(_r)
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-
-	var t int
-	var S []byte
-	for Fscan(in, &t); t > 0; t-- {
-		Fscan(in, &S)
-		n := len(S)
-		s := make([][2]int, n+1)
-		for i, b := range S {
-			s[i+1] = s[i]
-			s[i+1][b-'0']++
-		}
+// https://github.com/EndlessCheng
+func cf1363B(in io.Reader, out io.Writer) {
+	T, s := 0, ""
+	for Fscan(in, &T); T > 0; T-- {
+		Fscan(in, &s)
+		n := len(s)
+		suf1 := strings.Count(s, "1")
+		pre1 := 0
 		ans := n
-		for _, p := range s {
-			ans = min(ans, min(p[1]+s[n][0]-p[0], p[0]+s[n][1]-p[1]))
+		for i, b := range s {
+			suf1 -= int(b - '0')
+			pre1 += int(b - '0')
+			ans = min(ans, i+1-pre1+suf1, pre1+n-i-1-suf1)
 		}
 		Fprintln(out, ans)
 	}
 }
 
-//func main() { CF1363B(os.Stdin, os.Stdout) }
+//func main() { cf1363B(bufio.NewReader(os.Stdin), os.Stdout) }
