@@ -105,7 +105,7 @@ func newSparseTable[T any](a []T, op func(T, T) T) sparseTable[T] {
 }
 
 func (s sparseTable[T]) query(l, r int) T {
-	k := bits.Len(uint(r-l)) - 1
+	k := bits.Len8(uint8(r-l)) - 1
 	return s.op(s.st[k][l], s.st[k][r-1<<k])
 }
 

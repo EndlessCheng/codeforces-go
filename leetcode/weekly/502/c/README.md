@@ -314,7 +314,7 @@ func countLocalMaximums(matrix [][]int) (ans int) {
 		c1 = max(c1, 0)
 		r2 = min(r2, n)
 		c2 = min(c2, m)
-		k1 := bits.Len8(uint8(r2-r1)) - 1
+		k1 := bits.Len8(uint8(r2-r1)) - 1 // 本题数据范围小，可以用 Len8
 		k2 := bits.Len8(uint8(c2-c1)) - 1
 		// 视作四个子矩阵的并集
 		return max(
@@ -625,7 +625,7 @@ func newSparseTable[T any](a []T, op func(T, T) T) sparseTable[T] {
 }
 
 func (s sparseTable[T]) query(l, r int) T {
-	k := bits.Len(uint(r-l)) - 1
+	k := bits.Len8(uint8(r-l)) - 1 // 本题数据范围小，可以用 Len8
 	return s.op(s.st[k][l], s.st[k][r-1<<k])
 }
 
