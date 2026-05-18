@@ -112,8 +112,7 @@ public:
 
         add(x);
         while (true) {
-            auto tmp = q;
-            q.clear();
+            auto tmp = move(q); // move 后 q 为空
             for (int v : tmp) {
                 if (v == y) {
                     return min(ans, step);
