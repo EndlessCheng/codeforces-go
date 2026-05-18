@@ -153,8 +153,7 @@ public:
         vector<int> q = {0};
 
         for (int ans = 0; ; ans++) {
-            auto tmp = q;
-            q.clear();
+            auto tmp = move(q); // move 后 q 为空
             for (int i : tmp) {
                 if (i == n - 1) {
                     return ans;
@@ -393,8 +392,7 @@ public:
         vector<int> q = {n - 1};
 
         for (int ans = 0; ; ans++) {
-            auto tmp = q;
-            q.clear();
+            auto tmp = move(q); // move 后 q 为空
             for (int i : tmp) {
                 if (i == 0) {
                     return ans;
