@@ -245,3 +245,50 @@ func sparseTable2DExample() {
 	// 注意是左闭右开
 	fmt.Println(st.query(0, 1, 2, 3)) // 9
 }
+
+// 
+
+// 也可以用线段树套 ST 表实现，如果 N*M ~ Q，那么总体复杂度是 O(Q log Q)，比二维 ST 表少一个 log
+type segST []sparseTable[int]
+
+func newSegSt(a [][]int) segST {
+	n := len(a)
+	// 线段树每个节点 [l, r] 保存的是，当上下边界固定为 l 和 r 时，把每一列的最大值视作一个 int，这 m 个数的一维 ST 表
+	t := make(segST, 2<<bits.Len(uint(n-1)))
+	t.build(a, 1, 0, n-1)
+	return t
+}
+
+func (t segST) build(a [][]int, node, l, r int) {
+	if l == r { // 叶子
+		t[node] = newSparseTable(a[l], func(a, b int) int { return max(a, b) })
+		return
+	}
+
+	m := (l + r) / 2
+	t.build(a, node*2, l, m)     // 初始化左子树
+	t.build(a, node*2+1, m+1, r) // 初始化右子树
+
+	merged := make([]int, len(a[0]))
+	p, q := t[node*2].st[0], t[node*2+1].st[0]
+	for i, x := range p {
+		merged[i] = max(x, q[i]) // 行号 [l, r] 中的第 i 列的最大值
+	}
+	t[node] = newSparseTable(merged, func(a, b int) int { return max(a, b) })
+}
+
+// 行号闭区间 [r1, r2]，列号左闭右开 [c1, c2)，下标从 0 开始
+// t.query(1, 0, n-1, r1, r2, c1, c2)
+func (t segST) query(node, l, r, r1, r2, c1, c2 int) int {
+	if r1 <= l && r <= r2 { // 当前子树完全在 [r1, r2] 内
+		return t[node].query(c1, c2)
+	}
+	m := (l + r) / 2
+	if r2 <= m { // [r1, r2] 在左子树
+		return t.query(node*2, l, m, r1, r2, c1, c2)
+	}
+	if r1 > m { // [r1, r2] 在右子树
+		return t.query(node*2+1, m+1, r, r1, r2, c1, c2)
+	}
+	return max(t.query(node*2, l, m, r1, r2, c1, c2), t.query(node*2+1, m+1, r, r1, r2, c1, c2))
+}

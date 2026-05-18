@@ -36,6 +36,7 @@
   - [ST 表 sparse_table.go](/copypasta/sparse_table.go)
     - 不相交 ST 表（猫树）
     - 二维 ST 表
+    - 线段树套 ST 表
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
     - 差分树状数组（支持区间加、区间求和）
     - 二维树状数组
