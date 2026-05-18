@@ -159,8 +159,7 @@ public:
         vector<Node> q = {{sx, sy, energy, 0}};
 
         for (int ans = 0; !q.empty(); ans++) {
-            auto tmp = q;
-            q.clear();
+            auto tmp = move(q); // move 后 q 为空
             for (auto& [x, y, e, mask] : tmp) {
                 if (mask == u - 1) { // 所有垃圾收集完毕
                     return ans;
@@ -397,8 +396,7 @@ public:
         vector<Node> q = {{sx, sy, energy, 0}};
 
         for (int ans = 0; !q.empty(); ans++) {
-            auto tmp = q;
-            q.clear();
+            auto tmp = move(q); // move 后 q 为空
             for (auto& [x, y, e, mask] : tmp) {
                 if (mask == u - 1) {
                     return ans;
