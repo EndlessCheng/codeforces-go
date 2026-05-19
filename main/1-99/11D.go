@@ -5,8 +5,6 @@ import (
 	"io"
 )
 
-// https://blog.csdn.net/fangzhenpeng/article/details/49078233
-
 // github.com/EndlessCheng/codeforces-go
 func CF11D(in io.Reader, out io.Writer) {
 	var n, m, v, w int
