@@ -3,14 +3,16 @@ package main
 import (
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
 // github.com/EndlessCheng/codeforces-go
 func CF11D(in io.Reader, out io.Writer) {
-	var n, m, v, w int
+	var n, m, ans int
 	Fscan(in, &n, &m)
 	g := make([][]int, n)
-	for i := 0; i < m; i++ {
+	for range m {
+		var v, w int
 		Fscan(in, &v, &w)
 		v--
 		w--
@@ -18,32 +20,26 @@ func CF11D(in io.Reader, out io.Writer) {
 		g[w] = append(g[w], v)
 	}
 
-	ans := int64(0)
-	dp := make([][]int64, 1<<n)
-	for i := range dp {
-		dp[i] = make([]int64, n)
+	f := make([][19]int, 1<<n)
+	for i := range n {
+		f[1<<i][i] = 1
 	}
-	for i := 0; i < n; i++ {
-		dp[1<<i][i] = 1
-	}
-	for s := range dp {
-		for v, dv := range dp[s] {
-			if dv == 0 {
+	for mask := range f {
+		st := bits.TrailingZeros32(uint32(mask))
+		for v, fv := range f[mask][:n] {
+			if fv == 0 {
 				continue
 			}
 			for _, w := range g[v] {
-				if 1<<w < s&-s {
-					continue
-				}
-				if 1<<w&s == 0 {
-					dp[s|1<<w][w] += dv
-				} else if 1<<w == s&-s {
-					ans += dv
+				if w == st {
+					ans += fv
+				} else if w > st && mask>>w&1 == 0 {
+					f[mask|1<<w][w] += fv
 				}
 			}
 		}
 	}
-	Fprint(out, (ans-int64(m))/2)
+	Fprint(out, (ans-m)/2)
 }
 
 //func main() { CF11D(os.Stdin, os.Stdout) }
