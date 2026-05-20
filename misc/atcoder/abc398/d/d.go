@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	. "fmt"
 	"io"
+	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -29,4 +31,4 @@ func run(in io.Reader, out io.Writer) {
 	Fprintf(out, "%s", s)
 }
 
-//func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
+func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
