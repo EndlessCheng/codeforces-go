@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io"
 	"math/bits"
+	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -30,4 +31,4 @@ func run(in io.Reader, out io.Writer) {
 	Fprintf(out, "%.6f", f[tot][1<<n-1])
 }
 
-//func main() { run(os.Stdin, os.Stdout) }
+func main() { run(os.Stdin, os.Stdout) }
