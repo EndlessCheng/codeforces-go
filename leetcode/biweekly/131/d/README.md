@@ -1,46 +1,43 @@
-### 方法一：正序回答询问+有序集合+线段树
+## 方法一：正序回答询问+有序集合+线段树
 
 ![b131d.png](https://pic.leetcode.cn/1716685098-OuZZol-b131d.png)
 
 看示例 2：
 
-- 首先，在 $x=7$ 处放置一个障碍物，这会产生一个长度为 $7$ 的没有障碍物的区域。
-- 然后，在 $x=2$ 处放置一个障碍物，去掉原来的 $7$，产生两个长度分别为 $2,5$ 的没有障碍物的区域。
+- 首先，在 $x=7$ 处放置一个障碍物。这会产生一个长度为 $7$ 的没有障碍物的区间 $[0,7]$（边界上的障碍物不计入）。
+- 然后，在 $x=2$ 处放置一个障碍物。移除原来的长度 $7$，分裂成两个长度分别为 $2,5$ 的没有障碍物的区间 $[0,2],[2,7]$。
 
-这里的区域长度 $2,5,7$ 应该保存在哪个位置，从而方便我们查询？
+这个过程中的区间长度 $7,2,5$ 应该保存在哪些位置上，从而方便我们查询？
 
-查询的范围是 $[0,x]$，这可以分为两个部分。以 $x=8$ 为例：
+例如 $x=8$，也就是查询的范围是 $[0,8]$。在上图中，$8$ 左侧最近障碍物的位置为 $7$。我们可以把这个查询分成两个部分：
 
-- 设 $\textit{pre}$ 是在 $x$ 左侧最近的障碍物的位置，这里 $\textit{pre}=7$。
-- 查询「完整」的没有障碍物的区域，这有 $[0,2],[2,7]$ 两段。
-- 查询「不完整」的没有障碍物的区域，也就是 $[7,8]$ 这一段。
+1. 查询「完整」的没有障碍物的区间，这有 $[0,2],[2,7]$ 两段。问题变成计算这两个区间的最大长度。
+2. 查询「不完整」的没有障碍物的区间，也就是 $[7,8]$ 这一段。问题变成计算这个区间的长度，也就是 $x$ 到其左侧最近障碍物的距离。
 
-如果区域的**右端点**在 $[0,x]$ 中，这个区域一定是「完整」的。
+如果二者的最大值 $\ge \textit{sz}$，那么可以放入长为 $\textit{sz}$ 的物块。
 
-所以，**把区域的长度保存在区域的右端点处。**
+由于**右端点**在 $[0,x]$ 中的区间是「完整」的，所以要把区间的长度保存在区间的右端点处。如此一来，计算最长长度，就变成一个 RMQ（区间最值查询）问题。
 
-设 $d[x]$ 为右端点为 $x$ 的区域的长度。
+设 $d[x]$ 是右端点为 $x$ 的区间的长度。
 
-- 如果 $x$ 没有障碍物则 $d[x]=0$；
+- 如果 $x$ 处没有障碍物，那么 $d[x]=0$。
 - 否则 $d[x]$ 等于 $x$ 到其左侧最近障碍物的距离。
 
 为方便讨论，假设 $x=0$ 处有障碍物。
 
-例如示例 2：
+在示例 2 中：
 
 - 一开始所有 $d[x]=0$。
 - 首先，在 $x=7$ 处放置一个障碍物，现在 $d[7]=7$。
 - 然后，在 $x=2$ 处放置一个障碍物，现在 $d[2]=2,\ d[7]=5$。
 
-问题变成如何维护和查询 $d$ 数组，我们需要支持单点更新，区间查询，这可以用**线段树**解决。
+如何维护和查询 $d$ 数组？我们需要一个数据结构，支持单点更新（修改 $d[i]$），区间查询（查询 $d$ 的子数组的最大值）。这可以用**线段树**解决。
 
-此外，我们还需要知道离 $x$ 左右最近的障碍物的位置，这可以用平衡树维护。
+此外，我们还需要知道在 $x$ 左右最近的障碍物位置（处理操作 1 需要知道右边最近的障碍物位置），这可以用有序集合维护。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1SU411d7wj/) 第四题，欢迎点赞关注！
+[本题视频讲解](https://www.bilibili.com/video/BV1SU411d7wj/?t=7m56s)，欢迎点赞关注~
 
 ```py [sol-Python3]
-from sortedcontainers import SortedList
-
 class Solution:
     def getResults(self, queries: List[List[int]]) -> List[bool]:
         m = max(q[1] for q in queries) + 1
@@ -274,7 +271,7 @@ func getResults(queries [][]int) (ans []bool) {
 
 注：如果要做到值域无关，可以用动态开点线段树。
 
-### 方法二：倒序回答询问+有序集合+树状数组
+## 方法二：倒序回答询问+有序集合+树状数组
 
 倒序回答询问，在 $x$ 处添加障碍物就变成删除障碍物了。
 
@@ -285,8 +282,6 @@ func getResults(queries [][]int) (ans []bool) {
 由于询问的是前缀，并且 $d$ 不会变小，所以可以用树状数组维护 $d$。
 
 ```py [sol-Python3]
-from sortedcontainers import SortedList
-
 class Solution:
     def getResults(self, queries: List[List[int]]) -> List[bool]:
         m = max(q[1] for q in queries) + 1
@@ -323,7 +318,9 @@ class Solution:
                 # 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
                 max_gap = max(pre_max(pre), x - pre)
                 ans.append(max_gap >= q[2])
-        return ans[::-1]
+
+        ans.reverse()
+        return ans
 ```
 
 ```java [sol-Java]
@@ -512,7 +509,7 @@ func getResults(queries [][]int) (ans []bool) {
 - 时间复杂度：$\mathcal{O}(U + q\log U)$，其中 $q$ 是 $\textit{queries}$ 的长度，$U$ 是 $\textit{x}$ 的最大值。注意题目保证 $U\le 3q$。
 - 空间复杂度：$\mathcal{O}(U)$。
 
-### 方法三：倒序回答询问+并查集+树状数组
+## 方法三：倒序回答询问+并查集+树状数组
 
 用并查集实现方法二中有序集合的删除、查找前驱和查找后继。
 
@@ -571,7 +568,9 @@ class Solution:
                 # 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
                 max_gap = max(pre_max(pre), x - pre)
                 ans.append(max_gap >= q[2])
-        return ans[::-1]
+
+        ans.reverse()
+        return ans
 ```
 
 ```java [sol-Java]
@@ -842,20 +841,24 @@ func getResults(queries [][]int) (ans []bool) {
 
 改成在 $[\textit{left},x]$ 区间内询问，要怎么做？
 
+欢迎在评论区分享你的思路/代码。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
