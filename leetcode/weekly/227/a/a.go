@@ -1,14 +1,16 @@
 package main
 
-import "sort"
-
 // github.com/EndlessCheng/codeforces-go
-func check(a []int) (ans bool) {
-	for i := 0; i < len(a); i++ {
-		if sort.IntsAreSorted(a) {
-			return true
+func check(nums []int) bool {
+	n := len(nums)
+	sorted := nums[0] >= nums[n-1]
+	for i := 1; i < n; i++ {
+		if nums[i-1] > nums[i] { // 严格递减
+			if !sorted { // 之前出现过严格递减，说明至少有三个递增段
+				return false
+			}
+			sorted = false // 标记遇到了严格递减
 		}
-		a = append(a[1:], a[:1]...)
 	}
-	return
+	return true
 }
