@@ -48,7 +48,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int longestCommonPrefix(vector<int> &arr1, vector<int> &arr2) {
+    int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
         unordered_set<string> st;
         for (int x : arr1) {
             string s = to_string(x);
@@ -108,7 +108,7 @@ class Solution:
     def longestCommonPrefix(self, arr1: List[int], arr2: List[int]) -> int:
         st = set()
         for x in arr1:
-            while x:
+            while x and x not in st:  # 如果 x 在 st 中，那么剩余前缀也在 st 中
                 st.add(x)
                 x //= 10
 
@@ -125,8 +125,8 @@ class Solution {
     public int longestCommonPrefix(int[] arr1, int[] arr2) {
         Set<Integer> st = new HashSet<>();
         for (int x : arr1) {
-            for (; x > 0; x /= 10) {
-                st.add(x);
+            while (x > 0 && st.add(x)) { // 如果 x 在 st 中，那么剩余前缀也在 st 中
+                x /= 10;
             }
         }
 
@@ -145,11 +145,11 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int longestCommonPrefix(vector<int> &arr1, vector<int> &arr2) {
+    int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
         unordered_set<int> st;
         for (int x : arr1) {
-            for (; x > 0; x /= 10) {
-                st.insert(x);
+            while (x > 0 && st.insert(x).second) { // 如果 x 在 st 中，那么剩余前缀也在 st 中
+                x /= 10;
             }
         }
 
@@ -168,17 +168,19 @@ public:
 ```go [sol-Go]
 func longestCommonPrefix(arr1, arr2 []int) int {
 	has := map[int]bool{}
-	for _, v := range arr1 {
-		for ; v > 0; v /= 10 {
-			has[v] = true
+	for _, x := range arr1 {
+		for x > 0 && !has[x] { // 如果 x 在 st 中，那么剩余前缀也在 st 中
+			has[x] = true
+			x /= 10
 		}
 	}
 
 	mx := 0
-	for _, v := range arr2 {
-		for ; v > 0 && !has[v]; v /= 10 {
+	for _, x := range arr2 {
+		for x > 0 && !has[x] {
+			x /= 10
 		}
-		mx = max(mx, v)
+		mx = max(mx, x)
 	}
 
 	if mx == 0 {

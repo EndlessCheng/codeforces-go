@@ -5,18 +5,21 @@ import "strconv"
 // https://space.bilibili.com/206214
 func longestCommonPrefix(arr1, arr2 []int) int {
 	has := map[int]bool{}
-	for _, v := range arr1 {
-		for ; v > 0; v /= 10 {
-			has[v] = true
+	for _, x := range arr1 {
+		for x > 0 && !has[x] { // 如果 x 在 st 中，那么剩余前缀也在 st 中
+			has[x] = true
+			x /= 10
 		}
 	}
 
 	mx := 0
-	for _, v := range arr2 {
-		for ; v > 0 && !has[v]; v /= 10 {
+	for _, x := range arr2 {
+		for x > 0 && !has[x] {
+			x /= 10
 		}
-		mx = max(mx, v)
+		mx = max(mx, x)
 	}
+
 	if mx == 0 {
 		return 0
 	}
