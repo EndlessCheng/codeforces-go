@@ -94,7 +94,7 @@ func longestCommonPrefix(arr1, arr2 []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)\log^2 U)$，其中 $n$ 是 $\textit{arr}_1$ 的长度，$m$ 是 $\textit{arr}_2$ 的长度，$U$ 是数组元素的最大值。值为 $x$ 的数的十进制长度为 $\mathcal{O}(\log x)$。
+- 时间复杂度：$\mathcal{O}((n+m)\log^2 U)$，其中 $n$ 是 $\textit{arr}_1$ 的长度，$m$ 是 $\textit{arr}_2$ 的长度，$U$ 是数组元素的最大值。值为 $x$ 的数的十进制长度为 $\mathcal{O}(\log x)$。一共执行了 $\mathcal{O}((n+m)\log U)$ 次插入和查询，每次 $\mathcal{O}(\log U)$ 时间。
 - 空间复杂度：$\mathcal{O}(n\log^2 U)$。
 
 ## 方法二：用整数处理
@@ -192,7 +192,7 @@ func longestCommonPrefix(arr1, arr2 []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)\log U)$，其中 $n$ 是 $\textit{arr}_1$ 的长度，$m$ 是 $\textit{arr}_2$ 的长度，$U$ 是数组元素的最大值。
+- 时间复杂度：$\mathcal{O}((n+m)\log U)$，其中 $n$ 是 $\textit{arr}_1$ 的长度，$m$ 是 $\textit{arr}_2$ 的长度，$U$ 是数组元素的最大值。一共执行了 $\mathcal{O}((n+m)\log U)$ 次插入和查询，每次 $\mathcal{O}(1)$ 时间。
 - 空间复杂度：$\mathcal{O}(n\log U)$。
 
 ## 分类题单
