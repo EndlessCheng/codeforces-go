@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,19 @@ func Test_b(t *testing.T) {
 }
 // https://leetcode.cn/contest/biweekly-contest-183/problems/minimum-operations-to-make-array-modulo-alternating-i/
 // https://leetcode.cn/problems/minimum-operations-to-make-array-modulo-alternating-i/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a []int, k int) {
+		//return
+		rg.Clear()
+		n := rg.Int(1, 13)
+		a = rg.IntSlice(n, 1, 7)
+		k = rg.Int(2, 7)
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, minOperations1, minOperations)
+}
