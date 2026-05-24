@@ -1,8 +1,10 @@
 设 $m$ 是 $\textit{nums}_1$ 的长度，$n$ 是 $\textit{nums}_2$ 的长度。注意 $m\le 5$。
 
+暴力的想法是，用一个哈希表维护 $\textit{nums}_2$ 每个元素的出现次数，这样可以 $\mathcal{O}(m)$ 计算询问 2。但处理询问 1 需要 $\mathcal{O}(n)$ 时间，太慢了。
+
 把 $\textit{nums}_2$ 分成若干段，每段 $B$ 个元素（最后一段可能不足 $B$ 个），一共有 $\left\lceil\dfrac{n}{B}\right\rceil$ 段。
 
-对于每一段，用一个哈希表维护每个元素的出现次数，用一个变量 $\textit{add}$ 记录这一段整体增加了 $\textit{add}$（借鉴 Lazy 线段树的思想）。
+对于每一段，用一个哈希表维护每个元素的出现次数，用一个变量 $\textit{add}$ 记录这一段整体增加了 $\textit{add}$（借鉴 Lazy 线段树的懒标记思想）。
 
 - 询问 1：对于每一段，如果该段完全在 $[x,y]$ 中，把该段的 $\textit{add}$ 增加 $\textit{val}$；如果该段只有一部分在 $[x,y]$ 中，那么暴力更新在 $[x,y]$ 中的这部分的 $\textit{nums}_2$ 以及元素出现次数。时间复杂度为 $\mathcal{O}(B + n/B)$。
 - 询问 2：遍历每一段以及 $\textit{nums}_1$，我们需要计算有多少个 $\textit{nums}_2[k]$ 满足 $\textit{nums}_1[j] + (\textit{nums}_2[k] + \textit{add}) = \textit{tot}$，即哈希表中的 $\textit{tot} - \textit{nums}_1[j] - \textit{add}$ 的出现次数。时间复杂度为 $\mathcal{O}(mn/B)$。
@@ -16,10 +18,10 @@ $$
 根据基本不等式（或者对勾函数的性质），当 $B=\sqrt{mn}$ 时，上式取到最小值
 
 $$
-\mathcal{O}(n + q\sqrt{mn}))
+\mathcal{O}(n + q\sqrt{mn})
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV16FG76JEQo/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -40,7 +42,7 @@ class Solution:
         for q in queries:
             if q[0] == 1:
                 l, r, val = q[1], q[2] + 1, q[3]
-                for i, (bl, br, cnt, add) in enumerate(blocks):
+                for i, (bl, br, cnt, _) in enumerate(blocks):
                     if br <= l:
                         continue
                     if bl >= r:
@@ -57,7 +59,7 @@ class Solution:
                         cnt[nums2[j]] += 1  # 添加新的
             else:
                 res = 0
-                for bl, br, cnt, add in blocks:
+                for _, _, cnt, add in blocks:
                     target = q[1] - add
                     for x in nums1:
                         res += cnt.get(target - x, 0)  # 避免把不在 cnt 中的 key 插入哈希表
@@ -191,7 +193,7 @@ public:
                 }
             } else {
                 int res = 0;
-                for (auto& [_, __, cnt, add] : blocks) {
+                for (auto& [_, _, cnt, add] : blocks) {
                     int target = q[1] - add;
                     for (int x : nums1) {
                         // 避免把 target - x 插入哈希表
@@ -273,7 +275,7 @@ func numberOfPairs(nums1, nums2 []int, queries [][]int) (ans []int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n + q\sqrt{mn})$，其中 $m$ 是 $\textit{nums}_1$ 的长度，$n$ 是 $\textit{nums}_2$ 的长度。注意 $m\le 5$。
-- 空间复杂度：$\mathcal{O}(n)$。所有哈希表的长度之和为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。返回值不计入。所有哈希表的大小之和为 $\mathcal{O}(n)$。
 
 ## 专题训练
 

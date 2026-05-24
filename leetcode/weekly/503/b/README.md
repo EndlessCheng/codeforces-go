@@ -2,8 +2,6 @@
 
 注意同一个字符只能算一次得分。可以用一个 $\textit{vis}$ 哈希集合（或者布尔数组）标记遍历过的字符。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def passwordStrength(self, password: str) -> int:

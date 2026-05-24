@@ -4,8 +4,6 @@
 
 用一个变量 $j$ 表示把 $\textit{nums}[i]$ 填入 $\textit{nums}[j]$，初始 $j=0$，每填一个数就把 $j$ 增加一。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def limitOccurrences(self, nums: list[int], k: int) -> list[int]:
