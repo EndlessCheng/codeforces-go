@@ -6,6 +6,8 @@
 
 - 在一个长为 $k$ 的环上，计算 $a = \textit{nums}[i]\bmod k$ 到 $x$ 的最短距离。
 
+例如 $k=12$，类似生活中的圆形挂钟（闹钟），把小时从 $17$ 点（即 $5$ 点位置）拨到 $3$ 点位置，需要往回拨 $2$ 圈。
+
 设 $d = |a - x|$，分类讨论：
 
 - 不经过 $0$，直接从 $a$ 走到 $x$，需要 $d$ 步。
@@ -13,7 +15,7 @@
 
 取二者的最小值 $\min(d, k-d)$，即为 $a$ 到 $x$ 的最短距离。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1iuG76VEXy/?t=4m4s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -118,7 +120,7 @@ func abs(x int) int {
 - 时间复杂度：$\mathcal{O}(nk^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-**注**：用环形中位数的结论，可以做到 $\mathcal{O}(n\log n)$ 时间复杂度。
+**注**：分别解决奇偶，本题是**环形邮局问题**，利用 [中位数贪心](https://zhuanlan.zhihu.com/p/1922938031687595039) 的结论，可以做到 $\mathcal{O}(n\log n)$ 时间复杂度（瓶颈在排序上）。
 
 ## 专题训练
 

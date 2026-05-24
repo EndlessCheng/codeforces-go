@@ -2,7 +2,7 @@
 
 所以问题等价于每行每列的 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，[我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
 
-需要特别注意子数组长度为 $1$ 的情况，两人在交点处的移动路径只能形如佛教符号（如下图）。这意味着，交点不能在 $\textit{grid}$ 的边界上。所以边界上的子数组长度至少为 $2$。
+需要特别注意子数组长度为 $1$ 的情况，两人在交点处的移动路径只能形如佛教符号（如下图）。这意味着，交点不能在 $\textit{grid}$ 的边界上。所以边界上的子数组长度至少为 $2$（由示例 2 可知，子数组长度为 $2$ 的情况是存在的）。
 
 ![lc3938.png](https://pic.leetcode.cn/1779581072-bPmSGA-lc3938.png){:width=50px}
 
@@ -12,7 +12,7 @@
 
 我们可以在 [DP 做法](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/) 上略作修改，先计算 `ans = max(ans, f + nums[i])`，再更新 `f = max(f, 0) + nums[i]`，这样 `f + nums[i]` 就可以保证子数组至少有两个数了。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1iuG76VEXy/?t=15m42s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 手写 max 更快

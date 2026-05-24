@@ -4,7 +4,7 @@
 
 那么 $\textit{nums}$ 的前 $\textit{cnt}$ 个数中的 $0$，要和 $\textit{nums}$ 的后 $n-\textit{cnt}$ 个数中的非零元素交换。答案为 $\textit{nums}$ 的前 $\textit{cnt}$ 个数中的 $0$ 的个数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1iuG76VEXy/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -78,11 +78,11 @@ func minimumSwaps(nums []int) (ans int) {
 
 ## 方法二：相向双指针
 
-如果 $\textit{nums}[0] \ne 0$，无需交换，问题变成剩下 $n-1$ 个数的子问题。
+如果 $\textit{nums}[0] \ne 0$，无需交换，问题变成剩余 $n-1$ 个数的子问题。
 
-如果 $\textit{nums}[n-1] = 0$，无需交换，问题变成剩下 $n-1$ 个数的子问题。
+如果 $\textit{nums}[n-1] = 0$，无需交换，问题变成剩余 $n-1$ 个数的子问题。
 
-如果 $\textit{nums}[0] = 0$ 且 $\textit{nums}[n-1] \ne 0$，必须交换，问题变成剩下 $n-2$ 个数的子问题。
+如果 $\textit{nums}[0] = 0$ 且 $\textit{nums}[n-1] \ne 0$，必须交换，问题变成剩余 $n-2$ 个数的子问题。
 
 用两个指针 $\ell$ 和 $r$ 表示 $\textit{nums}$ 的剩余元素为子数组 $[\ell, r]$。
 

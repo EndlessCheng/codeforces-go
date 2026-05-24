@@ -20,13 +20,15 @@
 - 如果选 $x$，那么 $y_c$ 一定不能选。在不选 $y_c$ 的情况下，枚举从子树 $y_c$ 中选出的子集点权和模 $k$ 为 $i=0,1,2,\ldots,k-1$，对应的方案数为 $\textit{dfs}(y)_0[i]$；然后枚举从 $x$ 以及子树 $y_1,y_2,\ldots,y_{c-1}$ 中，选出的子集点权和模 $k$ 为 $j$，对应的方案数为 $f_{x,1}[c-1][j]$，根据**乘法原理**，用**刷表法**把 $f_{x,1}[c][(i+j)\bmod k]$ 增加 $\textit{dfs}(y)_0[i]\cdot f_{x,1}[c-1][j]$。
 - 如果不选 $x$，那么 $y_c$ 可选可不选，同理，把 $f_{x,0}[c][(i+j)\bmod k]$ 增加 $(\textit{dfs}(y)_0[i] + \textit{dfs}(y)_1[i]) \cdot f_{x,0}[c-1][j]$。
 
+> **注**：在动态规划中，根据转移来源计算状态叫**查表法**，用当前状态更新其他状态叫**刷表法**。
+
 初始值 $f_{x,0}[0][0] = 1$，$f_{x,1}[0][\textit{nums}[x]\bmod k] = 1$。
 
 代码实现时，计算 $f_{x,i}$ 可以用滚动数组优化。
 
 为什么子集点权和可以在中途取模？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1iuG76VEXy/?t=23m46s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
