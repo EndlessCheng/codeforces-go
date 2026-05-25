@@ -137,6 +137,7 @@ https://codeforces.com/problemset/problem/2008/E 1500
 https://codeforces.com/problemset/problem/2106/D 1500
 https://codeforces.com/problemset/problem/2107/C 1500
 https://codeforces.com/problemset/problem/2140/C 1500
+https://codeforces.com/problemset/problem/2163/C 1500
 https://codeforces.com/problemset/problem/1029/C 1600
 https://codeforces.com/problemset/problem/2028/C 1600
 https://codeforces.com/problemset/problem/2031/D 1700
@@ -268,6 +269,7 @@ LC1180（会员）https://leetcode.cn/problems/count-substrings-with-only-one-di
 LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 - https://atcoder.jp/contests/abc317/tasks/abc317_e
 LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-having-even-product/
+https://codeforces.com/problemset/problem/1743/C 1100
 https://codeforces.com/problemset/problem/2094/D 1100
 https://codeforces.com/problemset/problem/2111/C 1100
 https://codeforces.com/problemset/problem/1272/C 1200
@@ -278,6 +280,7 @@ https://codeforces.com/problemset/problem/2146/C 1300
 https://codeforces.com/problemset/problem/363/C 1400 分组循环 + 分组循环
 https://codeforces.com/problemset/problem/1380/C 1400
 https://codeforces.com/problemset/problem/620/C 1500
+https://codeforces.com/problemset/problem/858/C 1500
 https://codeforces.com/problemset/problem/1753/A2 1500
 https://codeforces.com/problemset/problem/2093/E 1500
 https://codeforces.com/problemset/problem/525/C 1600
@@ -433,6 +436,7 @@ https://codeforces.com/problemset/problem/1579/D 1400
 - LC1953 https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/
 https://codeforces.com/problemset/problem/1822/E 1600
 https://codeforces.com/problemset/problem/1954/D 1800
+https://codeforces.com/problemset/problem/2209/D 1800
 https://codeforces.com/problemset/problem/1450/F 2400
 https://codeforces.com/problemset/problem/884/F 2500
 https://codeforces.com/problemset/problem/1521/E 2700 二维+对角不同
@@ -481,6 +485,7 @@ https://codeforces.com/problemset/problem/1811/C 1100
 https://codeforces.com/problemset/problem/1997/B 1100
 https://codeforces.com/problemset/problem/1822/D 1200
 https://codeforces.com/problemset/problem/1954/B 1200
+https://codeforces.com/problemset/problem/2202/B 1200
 https://codeforces.com/problemset/problem/1077/C 1300
 https://codeforces.com/problemset/problem/1364/B 1300
 https://codeforces.com/problemset/problem/1844/C 1300 假设答案是某些数之和，经过什么样的操作可以得到这些数？
@@ -490,6 +495,7 @@ https://codeforces.com/problemset/problem/1765/K 1500
 https://codeforces.com/problemset/problem/1990/C 1500
 https://codeforces.com/problemset/problem/877/C  1600
 https://codeforces.com/problemset/problem/1980/E 1600 交换行列把矩阵 A 变成矩阵 B
+https://codeforces.com/problemset/problem/2128/D 1600
 https://codeforces.com/problemset/problem/1608/C 1700
 https://codeforces.com/problemset/problem/1930/C 1700
 https://codeforces.com/problemset/problem/2124/D 1700
@@ -523,6 +529,7 @@ https://codeforces.com/problemset/problem/1009/B 1400
 https://codeforces.com/problemset/problem/1883/F 1400
 https://codeforces.com/problemset/problem/1904/C 1400
 https://codeforces.com/problemset/problem/2034/C 1400
+https://codeforces.com/problemset/problem/2131/E 1400
 https://codeforces.com/problemset/problem/1012/A 1500
 https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/2140/C 1500
@@ -575,6 +582,7 @@ https://codeforces.com/problemset/problem/1998/B  1000
 https://codeforces.com/problemset/problem/2037/C  1000
 https://codeforces.com/problemset/problem/2039/B  1000 分析性质
 https://codeforces.com/problemset/problem/2040/B  1000
+https://codeforces.com/problemset/problem/1793/B  1100 思路好猜，证明更有意思
 https://codeforces.com/problemset/problem/1957/B  1100
 https://codeforces.com/problemset/problem/2044/D  1100 脑筋急转弯
 https://codeforces.com/problemset/problem/2162/C  1100 分类讨论 XOR a -> b
@@ -584,10 +592,12 @@ https://codeforces.com/problemset/problem/482/A   1200
 https://codeforces.com/problemset/problem/651/B   1200
 https://codeforces.com/problemset/problem/1028/B  1200
 https://codeforces.com/problemset/problem/1384/A  1200
+https://codeforces.com/problemset/problem/1635/C  1200
 https://codeforces.com/problemset/problem/1713/C  1200
 https://codeforces.com/problemset/problem/1793/C  1200
 https://codeforces.com/problemset/problem/1990/B  1200
 https://codeforces.com/problemset/problem/2056/C  1200
+https://codeforces.com/problemset/problem/2072/C  1200
 https://codeforces.com/problemset/problem/2118/B  1200
 https://codeforces.com/problemset/problem/2134/B  1200 操作至多 k 次：把 a 的一个子序列的元素都增加 k，最终让 gcd(a) > 1（提示：从特殊到一般）
 https://codeforces.com/problemset/problem/1717/C  1300
@@ -662,7 +672,7 @@ https://codeforces.com/problemset/problem/1550/D  2300 组合数学
 https://codeforces.com/problemset/problem/1028/E  2400 推荐 找特殊位置
 https://codeforces.com/problemset/problem/1098/C  2400 树
 https://codeforces.com/problemset/problem/1244/G  2400
-https://codeforces.com/problemset/problem/1333/E  2400 棋盘周游，车传送次数小于皇后（提示：把问题规模缩小为 n=3） 
+https://codeforces.com/problemset/problem/1333/E  2400 棋盘周游，车传送次数小于皇后（提示：把问题规模缩小为 n=3）
 https://codeforces.com/problemset/problem/1667/C  2400
 https://codeforces.com/problemset/problem/1761/E  2400
 https://codeforces.com/problemset/problem/2111/F  2400
@@ -737,6 +747,7 @@ https://codeforces.com/problemset/problem/1051/C  1500
 https://codeforces.com/problemset/problem/1180/B  1500
 https://codeforces.com/problemset/problem/1250/L  1500
 https://codeforces.com/problemset/problem/2137/E  1500
+https://codeforces.com/problemset/problem/2200/E  1500
 https://codeforces.com/problemset/problem/150/B   1600
 https://codeforces.com/problemset/problem/750/C   1600 *也有偏数学的做法
 https://codeforces.com/problemset/problem/898/E   1600
@@ -1401,6 +1412,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/1922/C 1300
 	// https://codeforces.com/problemset/problem/2033/D 1300
 	// https://codeforces.com/problemset/problem/2169/C 1300
+	// https://codeforces.com/problemset/problem/2175/B 1300
 	// https://codeforces.com/problemset/problem/1923/C 1400 构造
 	// https://codeforces.com/problemset/problem/1141/C 1500
 	// https://codeforces.com/problemset/problem/2009/F 1700
@@ -1455,6 +1467,44 @@ func _() {
 			return s1 + s2
 		}
 
+		// EXTRA: 所有数变成模 k 同余的最小距离和
+		// https://leetcode.cn/problems/minimum-operations-to-make-array-modulo-alternating-i/
+		minDistanceSum := func(a []int, k int) (int, int) {
+			n := len(a)
+			for i := range a {
+				a[i] %= k
+			}
+			slices.Sort(a)
+			for _, x := range a {
+				a = append(a, x+k)
+			}
+
+			sum := make([]int, n*2+1)
+			for i, x := range a {
+				sum[i+1] = sum[i] + x
+			}
+
+			// 都变成 target 的最小距离和
+			calcDisSum := func(target int) int {
+				i := sort.SearchInts(a[:n], target)
+				j := i + sort.SearchInts(a[i:i+n], target+k/2+1)
+				return (sum[j] - sum[i]) - (j-i)*target + // [i, j) 中的数都减小到 target
+					(n-j+i)*(target+k) - (sum[i+n] - sum[j]) // [j, i+n) 中的数都增大到 target+k
+			}
+
+			minDisSum, bestX := math.MaxInt, 0
+			for i, x := range a[:n] {
+				if i > 0 && a[i] == a[i-1] { // 优化：相同的值无需重复计算
+					continue
+				}
+				ds := calcDisSum(x)
+				if ds < minDisSum {
+					minDisSum, bestX = ds, x
+				}
+			}
+			return minDisSum, bestX
+		}
+
 		// +1 操作执行 maxOp 次，最大化最小值   fill
 		// ！需要保证 a 是有序的
 		// LC3081 https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/
@@ -1484,7 +1534,7 @@ func _() {
 		// 一次询问（下标从 1 开始）https://codeforces.com/problemset/problem/1141/E
 		// 多次询问（下标从 0 开始）https://codeforces.com/problemset/problem/1490/G
 
-		_ = []any{distanceSum, distanceSumRange, moveSum, maxLow, minHigh}
+		_ = []any{distanceSum, distanceSumRange, moveSum, minDistanceSum, maxLow, minHigh}
 	}
 
 	// 同余前缀和，a 的下标从 0 开始，md 为模数
