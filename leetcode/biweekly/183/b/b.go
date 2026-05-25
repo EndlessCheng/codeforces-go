@@ -52,12 +52,11 @@ func calc(a []int, k int) (int, int, int) {
 			continue
 		}
 		op := calcOp(x)
+		// 维护最小次小操作次数
 		if op < mn {
-			if x != bestX { // 保证最小次小的 x 不同
-				mn2 = mn
-			}
+			mn2 = mn
 			mn, bestX = op, x
-		} else if op < mn2 && x != bestX {
+		} else if op < mn2 {
 			mn2 = op
 		}
 	}
