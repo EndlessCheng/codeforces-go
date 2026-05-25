@@ -131,7 +131,7 @@ func abs(x int) int {
 枚举 $a[i]$ 作为目标数字，那么在 $[a[i], a[i]+k/2]$ 中的数，**减少**至 $a[i]$ 更好（相比增加）；在 $[a[i]+k/2 +1, a[i] + k]$ 中的数，**增加**至 $a[i]+k$ 更好（相比减少）。
 
 把 $a$ 复制一份（每个数都加 $k$），拼在 $a$ 的后面，得到数组 $b$。在 $b$
-中二分查找，可以快速找到哪些数要减少，那些数要增加。关于二分查找的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+中二分查找 $\le a[i]+k/2$ 的最后一个数（或者 $\ge a[i]+k/2 +1$ 的第一个数），可以快速找到哪些数要减少，哪些数要增加。关于二分查找的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 利用前缀和，可以快速求出操作次数。计算方法见 [图解](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/)。
 
