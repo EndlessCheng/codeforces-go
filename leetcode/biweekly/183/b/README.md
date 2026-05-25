@@ -126,14 +126,18 @@ func abs(x int) int {
 
 如果不考虑 $x\ne y$ 的要求，偶数下标和奇数下标是互相独立的，可以分别计算。
 
-设 $a$ 是环形数组。我们要把每个 $a[i]$ 都变成相同的（模 $k$ 意义下）。根据 [中位数贪心](https://zhuanlan.zhihu.com/p/1922938031687595039)，可以都变成 $a$ 中的某个元素。
+以偶数为例，把偶数下标的数模 $k$ 后记在数组 $a$ 中。想象有一个长为 $k$ 的环，上面有一些人，坐标记在 $a$ 中。把这些人集中到环上的哪个位置，可以让总移动距离之和最小？
 
-枚举 $a[i]$ 作为目标数字，那么在 $[a[i], a[i]+k/2]$ 中的数，**减少**至 $a[i]$ 更好（相比增加）；在 $[a[i]+k/2 +1, a[i] + k]$ 中的数，**增加**至 $a[i]+k$ 更好（相比减少）。
+**核心思路**：如果 $x$ 是集中位置，那么在 $x$ 右手边的到 $x$ 距离在 $k/2$ 以内的数，从右边移动到 $x$；其余数从左边移动到 $x$。
 
-把 $a$ 复制一份（每个数都加 $k$），拼在 $a$ 的后面，得到数组 $b$。在 $b$
+**注**：这意味着，在 $x$ 对面的那段弧是没人经过的，那么断开这段弧，变成一个普通数组问题。根据 [中位数贪心](https://zhuanlan.zhihu.com/p/1922938031687595039)，可以都变成 $a$ 中的某个元素。
+
+枚举 $a[i]$ 作为集中的位置，那么在 $[a[i], a[i]+k/2]$ 中的数，**减少**至 $a[i]$ 更好（相比增加）；在 $[a[i]+k/2 +1, a[i] + k]$ 中的数，**增加**至 $a[i]+k$ 更好（相比减少）。**注**：在模 $k$ 意义下，$x$ 和 $x+k$ 是同一个位置。
+
+为方便计算，把 $a$ 复制一份（每个数都加 $k$），拼在 $a$ 的后面，得到数组 $b$。在 $b$
 中二分查找 $\le a[i]+k/2$ 的最后一个数（或者 $\ge a[i]+k/2 +1$ 的第一个数），可以快速找到哪些数要减少，哪些数要增加。关于二分查找的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-利用前缀和，可以快速求出操作次数。计算方法见 [图解](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/)。
+然后利用前缀和，可以快速求出操作次数。计算方法见 [图解](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/)。
 
 计算过程中，额外记录最小操作次数对应的 $a[i]$。
 
@@ -166,11 +170,12 @@ class Solution:
 
         for x in set(a[:n]):
             op = calc_op(x)
+            # 维护最小次小操作次数
             if op < mn:
-                if x != best_x:  # 保证最小次小的 x 不同
-                    mn2 = mn
-                mn, best_x = op, x
-            elif op < mn2 and x != best_x:
+                mn2 = mn
+                mn = op
+                best_x = x
+            elif op < mn2:
                 mn2 = op
 
         # 还可以都变成 best_x-1 或者 best_x+1
@@ -250,13 +255,12 @@ class Solution {
             }
 
             int op = calcOp(b, sum, n, k, x);
+            // 维护最小次小操作次数
             if (op < mn) {
-                if (x != bestX) { // 保证最小次小的 x 不同
-                    mn2 = mn;
-                }
+                mn2 = mn;
                 mn = op;
                 bestX = x;
-            } else if (op < mn2 && x != bestX) {
+            } else if (op < mn2) {
                 mn2 = op;
             }
         }
@@ -322,13 +326,12 @@ class Solution {
             }
 
             int op = calc_op(x);
+            // 维护最小次小操作次数
             if (op < mn) {
-                if (x != best_x) { // 保证最小次小的 x 不同
-                    mn2 = mn;
-                }
+                mn2 = mn;
                 mn = op;
                 best_x = x;
-            } else if (op < mn2 && x != best_x) {
+            } else if (op < mn2) {
                 mn2 = op;
             }
         }
@@ -388,12 +391,11 @@ func calc(a []int, k int) (int, int, int) {
 			continue
 		}
 		op := calcOp(x)
+		// 维护最小次小操作次数
 		if op < mn {
-			if x != bestX { // 保证最小次小的 x 不同
-				mn2 = mn
-			}
+			mn2 = mn
 			mn, bestX = op, x
-		} else if op < mn2 && x != bestX {
+		} else if op < mn2 {
 			mn2 = op
 		}
 	}
