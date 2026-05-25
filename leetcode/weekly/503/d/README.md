@@ -112,7 +112,7 @@ class Solution {
                     }
                     // b 在 [l, r) 中
                     if (l <= b.l && b.r <= r) {
-                        blocks[i] = new Block(b.l, b.r, b.cnt, Math.min(b.add + val, MX)); // 避免溢出
+                        blocks[i] = new Block(b.l, b.r, b.cnt, b.add + val);
                         continue;
                     }
                     // b 的一部分在 [l, r) 中
@@ -178,7 +178,7 @@ public:
                     }
                     // b 在 [l, r) 中
                     if (l <= bl && br <= r) {
-                        add = min(add + val, MX); // 避免溢出
+                        add += val;
                         continue;
                     }
                     // b 的一部分在 [l, r) 中
