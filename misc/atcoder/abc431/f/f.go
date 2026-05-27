@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"slices"
-	"sort"
 )
 
 // https://github.com/EndlessCheng
@@ -36,8 +35,11 @@ func run(in io.Reader, out io.Writer) {
 	slices.Sort(a)
 
 	ans := pow(dup, mod-2)
+	j := 0
 	for i, v := range a {
-		j := sort.SearchInts(a, v-d)
+		for a[j] < v-d {
+			j++
+		}
 		ans = ans * (i - j + 1) % mod
 	}
 	Fprint(out, ans)
