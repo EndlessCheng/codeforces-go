@@ -15,6 +15,14 @@ inputCopy
 7 8 9
 outputCopy
 0
-DDRR`
+RRDD
+inputCopy
+3
+10 10 10
+0 10 10
+10 10 10
+outputCopy
+1
+DRRD`
 	testutil.AssertEqualCase(t, rawText, 0, CF2B)
 }
