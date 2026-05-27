@@ -2,34 +2,12 @@ package main
 
 // https://space.bilibili.com/206214
 func limitOccurrences(nums []int, k int) []int {
-	ans := nums[:0]
-	cnt := 0
-	for i, x := range nums {
-		if i == 0 || x == nums[i-1] {
-			cnt++
-		} else {
-			cnt = 1
-		}
-		if cnt <= k {
-			ans = append(ans, x)
+	stackSize := k // 栈的大小，前 k 个元素默认保留
+	for i := k; i < len(nums); i++ {
+		if nums[i] != nums[stackSize-k] { // 和栈的倒数第 k 个数比较
+			nums[stackSize] = nums[i] // 入栈
+			stackSize++
 		}
 	}
-	return ans
-}
-
-func limitOccurrences2(nums []int, k int) []int {
-	cnt := 0
-	j := 0
-	for i, x := range nums {
-		if i == 0 || x == nums[i-1] {
-			cnt++
-		} else {
-			cnt = 1
-		}
-		if cnt <= k {
-			nums[j] = x
-			j++
-		}
-	}
-	return nums[:j]
+	return nums[:stackSize]
 }

@@ -1,42 +1,30 @@
-遍历 $\textit{nums}$ 的同时，用一个变量 $\textit{cnt}$ 维护连续相同元素的个数。
+本题是 [80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/) 更一般的版本，那题相当于 $k=2$。做法见 [我的题解](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/solutions/3060042/yong-zhan-si-kao-yuan-di-shi-xian-python-zw8l/)。
 
-只有 $\textit{cnt}\le k$ 时才能把 $\textit{nums}[i]$ 添加到答案中。
-
-用一个变量 $j$ 表示把 $\textit{nums}[i]$ 填入 $\textit{nums}[j]$，初始 $j=0$，每填一个数就把 $j$ 增加一。
+注意本题保证 $k\le n$。
 
 ```py [sol-Python3]
 class Solution:
     def limitOccurrences(self, nums: list[int], k: int) -> list[int]:
-        cnt = j = 0
-        for i, x in enumerate(nums):
-            if i == 0 or x == nums[i - 1]:
-                cnt += 1
-            else:
-                cnt = 1
-            if cnt <= k:
-                nums[j] = x
-                j += 1
+        stack_size = k  # 栈的大小，前 k 个元素默认保留
+        for i in range(k, len(nums)):
+            if nums[i] != nums[stack_size - k]:  # 和栈的倒数第 k 个数比较
+                nums[stack_size] = nums[i]  # 入栈
+                stack_size += 1
 
-        del nums[j:]
+        del nums[stack_size:]
         return nums
 ```
 
 ```java [sol-Java]
 class Solution {
     public int[] limitOccurrences(int[] nums, int k) {
-        int cnt = 0;
-        int j = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (i == 0 || nums[i] == nums[i - 1]) {
-                cnt++;
-            } else {
-                cnt = 1;
-            }
-            if (cnt <= k) {
-                nums[j++] = nums[i];
+        int stackSize = k; // 栈的大小，前 k 个元素默认保留
+        for (int i = k; i < nums.length; i++) {
+            if (nums[i] != nums[stackSize - k]) { // 和栈的倒数第 k 个数比较
+                nums[stackSize++] = nums[i]; // 入栈
             }
         }
-        return Arrays.copyOf(nums, j);
+        return Arrays.copyOf(nums, stackSize);
     }
 }
 ```
@@ -45,20 +33,14 @@ class Solution {
 class Solution {
 public:
     vector<int> limitOccurrences(vector<int>& nums, int k) {
-        int cnt = 0;
-        int j = 0;
-        for (int i = 0; i < nums.size(); i++) {
-            if (i == 0 || nums[i] == nums[i - 1]) {
-                cnt++;
-            } else {
-                cnt = 1;
-            }
-            if (cnt <= k) {
-                nums[j++] = nums[i];
+        int stack_size = k; // 栈的大小，前 k 个元素默认保留
+        for (int i = k; i < nums.size(); i++) {
+            if (nums[i] != nums[stack_size - k]) { // 和栈的倒数第 k 个数比较
+                nums[stack_size++] = nums[i]; // 入栈
             }
         }
 
-        nums.resize(j);
+        nums.resize(stack_size);
         return nums;
     }
 };
@@ -66,30 +48,25 @@ public:
 
 ```go [sol-Go]
 func limitOccurrences(nums []int, k int) []int {
-	ans := nums[:0]
-	cnt := 0
-	for i, x := range nums {
-		if i == 0 || x == nums[i-1] {
-			cnt++
-		} else {
-			cnt = 1
-		}
-		if cnt <= k {
-			ans = append(ans, x)
+	stackSize := k // 栈的大小，前 k 个元素默认保留
+	for i := k; i < len(nums); i++ {
+		if nums[i] != nums[stackSize-k] { // 和栈的倒数第 k 个数比较
+			nums[stackSize] = nums[i] // 入栈
+			stackSize++
 		}
 	}
-	return ans
+	return nums[:stackSize]
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n-k)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
 
-见下面双指针题单的「**§3.5 原地修改**」和「**六、分组循环**」。
+见下面双指针题单的「**§3.5 原地修改**」。
 
 ## 分类题单
 
