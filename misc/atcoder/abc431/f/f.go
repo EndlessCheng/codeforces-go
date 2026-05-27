@@ -25,24 +25,24 @@ func run(in io.Reader, out io.Writer) {
 	var n, d int
 	Fscan(in, &n, &d)
 	a := make([]int, n)
-	cnt := [1e6 + 1]int{}
-	dup := 1
 	for i := range a {
 		Fscan(in, &a[i])
-		cnt[a[i]]++
-		dup = dup * cnt[a[i]] % mod
 	}
 	slices.Sort(a)
 
-	ans := pow(dup, mod-2)
+	cnt := [1e6 + 1]int{}
+	ans := 1
+	dup := 1
 	j := 0
 	for i, v := range a {
+		cnt[v]++
+		dup = dup * cnt[v] % mod
 		for a[j] < v-d {
 			j++
 		}
 		ans = ans * (i - j + 1) % mod
 	}
-	Fprint(out, ans)
+	Fprint(out, ans*pow(dup, mod-2)%mod)
 }
 
 func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
