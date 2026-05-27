@@ -34,11 +34,7 @@ func run(in io.Reader, _w io.Writer) {
 				return abs(cn-cp) <= 1
 			}
 		}
-		if mn > 0 == (mx > 0) {
-			slices.Sort(a)
-		} else {
-			slices.SortFunc(a, func(a, b int) int { return abs(a) - abs(b) })
-		}
+		slices.SortFunc(a, func(a, b int) int { return abs(a) - abs(b) })
 		for i := 1; i < n-1; i++ {
 			if a[i]*a[i] != a[i-1]*a[i+1] {
 				return false
