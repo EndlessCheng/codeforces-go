@@ -39,14 +39,16 @@ LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-
 - 变形：改成环形数组要怎么做
 - 相似题目 https://codeforces.com/problemset/problem/1624/E 2000
 https://codeforces.com/problemset/problem/1987/C 1200
-https://codeforces.com/problemset/problem/1547/E 1500
+https://codeforces.com/problemset/problem/1547/E 1500 两次扫描
 https://codeforces.com/problemset/problem/1881/E 1500
+https://codeforces.com/problemset/problem/1741/E 1600
 https://codeforces.com/problemset/problem/1875/D 1600
 https://codeforces.com/problemset/problem/1994/C 1600 结合滑窗
 https://codeforces.com/problemset/problem/2061/C 1600 也可以状态机 DP
 https://codeforces.com/problemset/problem/30/C 1800
 https://codeforces.com/problemset/problem/2114/F 2000
 https://codeforces.com/problemset/problem/1627/E 2200 刷表法 双指针
+https://codeforces.com/problemset/problem/283/D 2400 x 可以被表示为 y 个连续整数的和
 https://codeforces.com/problemset/problem/526/E 2400 滑动窗口
 - 相似题目 https://leetcode.cn/problems/maximize-the-distance-between-points-on-a-square/ 我题解方法五
 https://codeforces.com/problemset/problem/1739/E 2400
@@ -62,6 +64,7 @@ https://codeforces.com/problemset/problem/2027/D1 1700
 https://codeforces.com/problemset/problem/2145/D 1800 构造
 https://codeforces.com/problemset/problem/404/D 1900
 https://codeforces.com/problemset/problem/1920/E 2000
+https://codeforces.com/problemset/problem/1303/E 2200 状态设计 经典题
 https://codeforces.com/problemset/problem/2027/D2 2200 在 DP 数组上滑窗
 https://codeforces.com/problemset/problem/2045/H 2200
 https://codeforces.com/problemset/problem/31/E 2400
@@ -122,18 +125,21 @@ https://codeforces.com/problemset/problem/1163/D 与 KMP 结合
 https://codeforces.com/problemset/problem/1168/C
 https://codeforces.com/problemset/problem/1542/D
 https://codeforces.com/problemset/problem/1845/E
+https://codeforces.com/problemset/problem/822/E 2400 适合刷表法
 https://www.luogu.com.cn/problem/T576294?contestId=224129
 
-适合刷表法的题
-https://codeforces.com/problemset/problem/822/E
-
 不相交区间 DP
-https://codeforces.com/problemset/problem/1801/C
+https://codeforces.com/problemset/problem/1801/C 1900
 
-排列型/插入型
-LC629 https://leetcode.cn/problems/k-inverse-pairs-array/ https://www.luogu.com.cn/problem/P2513
-https://www.lanqiao.cn/problems/240/learning/
+插入 DP / 连续段 DP
+https://codeforces.com/problemset/problem/1515/E 2200
+https://codeforces.com/problemset/problem/626/F 2400
+https://codeforces.com/problemset/problem/704/B 2500
 https://atcoder.jp/contests/abc282/tasks/abc282_g
+https://www.luogu.com.cn/problem/P2513
+- LC629 https://leetcode.cn/problems/k-inverse-pairs-array/
+https://www.luogu.com.cn/problem/P5999
+https://www.lanqiao.cn/problems/240/learning/
 
 介值定理
 https://codeforces.com/contest/1695/problem/C
@@ -144,8 +150,9 @@ https://codeforces.com/contest/2043/problem/C
 - [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
 	- https://atcoder.jp/contests/dp/tasks/dp_h
 - [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)
-	- 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C
-    - https://atcoder.jp/contests/arc137/tasks/arc137_b 也用到了这个思想
+	- https://codeforces.com/problemset/problem/1695/C 1700 变形：连续性 & 上下界思想
+    -- https://atcoder.jp/contests/arc137/tasks/arc137_b 也用到了这个思想
+    - https://codeforces.com/problemset/problem/2049/D 1900 rotate 每行
 - [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
 	- https://www.luogu.com.cn/problem/P1216
     - 额外状态 https://www.luogu.com.cn/problem/P1544
@@ -154,11 +161,12 @@ https://codeforces.com/contest/2043/problem/C
    - https://www.luogu.com.cn/problem/P1004 [NOIP2000 提高组] 方格取数
    - https://atcoder.jp/contests/abc320/tasks/abc320_f 2042
 - [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/) 1957
-   - 回文串 https://codeforces.com/problemset/problem/570/E
-每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
+   - 回文串 https://codeforces.com/problemset/problem/570/E 2300
+https://atcoder.jp/contests/abc175/tasks/abc175_e 每行至多选三个
 https://atcoder.jp/contests/abc147/tasks/abc147_e 1713
 
 图 DP
+https://codeforces.com/problemset/problem/2122/D 2400 t 时刻只能去 g[v][t%len(g[v])] 
 https://codeforces.com/problemset/problem/346/D 2600
 
 思考过程：
@@ -210,7 +218,8 @@ https://codeforces.com/problemset/problem/939/F 2400
 https://codeforces.com/problemset/problem/1093/F 2400 容斥
 https://codeforces.com/problemset/problem/1348/E 2400 做到 O(nk) todo 需要复习
 https://codeforces.com/problemset/problem/840/C 2500 多重集排列，相邻元素不同
-https://codeforces.com/problemset/problem/845/F 2500 状态设计
+https://codeforces.com/problemset/problem/1437/F 2600 钓鱼佬 情绪化展示顺序的方案数
+https://codeforces.com/problemset/problem/1793/E 2600 读书 满足尽量多的人
 https://codeforces.com/problemset/problem/938/F 2700 扩散至超集的写法
 https://codeforces.com/problemset/problem/1152/F2 3000 值域 插入法
 https://codeforces.com/problemset/problem/1342/F 3000
@@ -301,11 +310,14 @@ https://codeforces.com/problemset/problem/414/B 1400 刷表法
 https://codeforces.com/problemset/problem/1794/D 1900
 https://codeforces.com/problemset/problem/1767/C 2100 带约束的计数 DP
 https://codeforces.com/problemset/problem/2060/F 2200
+https://codeforces.com/problemset/problem/316/D3 2400 交换环
 https://codeforces.com/problemset/problem/626/F 2400 转换
+https://codeforces.com/problemset/problem/2109/E 2400 翻转前缀的不同操作顺序的个数
 https://codeforces.com/problemset/problem/382/E 2600
 https://codeforces.com/problemset/problem/1237/F 2600
 https://codeforces.com/problemset/problem/1580/B 2600
 https://codeforces.com/problemset/problem/995/F 2700 也可以用拉格朗日插值
+https://codeforces.com/problemset/problem/2034/F2 2800
 https://www.luogu.com.cn/problem/P5664 状态设计
 todo https://atcoder.jp/contests/abc234/tasks/abc234_f
 
@@ -615,8 +627,9 @@ func _(abs func(int) int) {
 		return
 	}
 
+	// Slope Trick
 	// 修改序列为非降或非增的最小修改次数，单次修改可以把某个数 +1 或 -1（L1 error）
-	// https://writings.sh/post/slope-trick-mono-sequence
+	// https://hit9.dev/post/slope-trick-mono-sequence
 	//
 	// 注：如果是差值的平方（L2 error），那么是 isotonic regression / monotonic regression
 	// https://en.wikipedia.org/wiki/Isotonic_regression
@@ -632,8 +645,12 @@ func _(abs func(int) int) {
 	// 但是实际上有更优的修改 1 4 4 4 4 4，总的修改次数为 11
 	// 同上，把这个序列视作 1 2 2 4 2 2，总的修改次数仍然为 11
 	// ...
-	// LC2263 https://leetcode.cn/problems/make-array-non-decreasing-or-non-increasing/
+	//
+	// 技巧：如果要求 a[0] 不变，可以在序列前面添加 n 个 a[0]（或者更多？），从而让修改 a[0] 的代价变得很大。如果要求 a[n-1] 不变，同理
+	//
 	// https://codeforces.com/problemset/problem/13/C 2200
+	// - https://www.luogu.com.cn/problem/P4597 数据加强版
+	// - LC2263 https://leetcode.cn/problems/make-array-non-decreasing-or-non-increasing/
 	// https://codeforces.com/problemset/problem/713/C 2300 严格单调递增 https://codeforces.com/blog/entry/47094?#comment-315161
 	//     这道题做了一个 a[i]-=i 的操作（i 从 1 开始），把严格单调递增变成了非降的情况，从而可以应用该算法
 	//     这一技巧的原理是，对于整数来说，单调递增的最小情况是 y=x+C，减去这一函数，就得到了非降序列的最小情况 y=C
@@ -646,8 +663,9 @@ func _(abs func(int) int) {
 		h := hp{} // 大根堆
 		ans := 0
 		for _, v := range a {
-			h.push(v)
-			if d := h.IntSlice[0] - v; d > 0 {
+			heap.Push(&h, v)
+			d := h.IntSlice[0] - v
+			if d > 0 {
 				ans += d
 				h.IntSlice[0] = v
 				heap.Fix(&h, 0)
@@ -818,6 +836,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1350/B 1400
 	// https://codeforces.com/problemset/problem/2167/G 1600
 	// https://codeforces.com/problemset/problem/1562/E 2500
+	// https://www.luogu.com.cn/problem/P3903
 	//【网络流 24 题】能取出多少个长为 len(LIS) 的不相交子序列 https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766
 	// http://acm.hdu.edu.cn/showproblem.php?pid=1950
 	lisSlow := func(a []int) int {
@@ -852,6 +871,8 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P1091 合唱队形
 	// https://www.luogu.com.cn/problem/P1020 最小划分数（导弹拦截）
 	// - https://atcoder.jp/contests/abc134/tasks/abc134_e
+	// - https://atcoder.jp/contests/abc457/tasks/abc457_g 式子变形
+	// - https://www.luogu.com.cn/problem/P5939
 	// - LC3231 https://leetcode.cn/problems/minimum-number-of-increasing-subsequence-to-be-removed/
 	// https://www.luogu.com.cn/problem/P1439 技巧：若其中一个序列无重复元素，LCS 可以转换成 LIS 
 	// - LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/
@@ -871,6 +892,7 @@ func _(abs func(int) int) {
 	// - 改成 a[i] 在区间中选一个 https://codeforces.com/problemset/problem/2121/H 2300 狸猫换太子
 	// - https://codeforces.com/gym/105158 C
 	// https://codeforces.com/problemset/problem/960/F 2100 图上的路径的 LIS
+	// https://codeforces.com/problemset/problem/1575/L 2100 删除元素使得 a[i] = i 尽量多
 	// https://codeforces.com/problemset/problem/486/E 2200 将所有 a[i] 分成三类：不在任何 LIS 中 / 在至少一个 LIS 中 / 在所有 LIS 中
 	// - 详细证明 https://www.luogu.com.cn/article/m4267u8v
 	// - （弱化版）在至少一个 LIS 中 https://atcoder.jp/contests/abc354/tasks/abc354_f
@@ -904,9 +926,10 @@ func _(abs func(int) int) {
 		return len(f)
 	}
 
-	// 返回一个具体的 LIS
+	// 返回一个具体的 LIS   findOneLIS
 	// 如果有多个 LIS，返回的是下标字典序最大的
 	// 时间复杂度 O(nlogn)
+	// https://www.openjudges.com/p/C2316
 	lisGetOne := func(a []int) (res []int) {
 		n := len(a)
 		if n == 0 {
@@ -1210,6 +1233,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1912/K 1800
 	// https://www.luogu.com.cn/problem/P4933
 	// - LC446 https://leetcode.cn/problems/arithmetic-slices-ii-subsequence/
+	// https://www.luogu.com.cn/problem/P9242
 
 	// 本质不同非空子序列个数
 	// 详细讲解见 https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/
@@ -1351,6 +1375,7 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P2871 模板题 
 	// https://atcoder.jp/contests/dp/tasks/dp_d 模板题 
 	// https://atcoder.jp/contests/dp/tasks/dp_x 转换
+	// https://atcoder.jp/contests/abc390/tasks/abc390_e 枚举
 	// https://atcoder.jp/contests/abc274/tasks/abc274_d 转换
 	// https://atcoder.jp/contests/abc281/tasks/abc281_d 二维
 	// https://atcoder.jp/contests/abc192/tasks/abc192_f 枚举+二维
@@ -1358,6 +1383,9 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1516/C 1700 转换
 	// https://codeforces.com/problemset/problem/2086/D 1700
 	// https://codeforces.com/problemset/problem/1381/B 1800 转换
+	// https://codeforces.com/problemset/problem/1862/F 1800
+	// https://codeforces.com/problemset/problem/1954/D 1800
+	// https://atcoder.jp/contests/abc441/tasks/abc441_f ~CF1811 前后缀背包：找出必选物品，可选可不选的物品，一定不能选的物品
 	// https://codeforces.com/problemset/problem/577/B 1900 抽屉原理
 	// https://codeforces.com/problemset/problem/687/C 1900 恰好组成 k 的数中能恰好组成哪些数
 	// https://codeforces.com/problemset/problem/864/E 2000 打印方案
@@ -1552,6 +1580,7 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P2918 至少
 	// https://www.luogu.com.cn/problem/P1450 容斥
 	// https://codeforces.com/problemset/problem/632/E 2400
+	// https://codeforces.com/problemset/problem/1997/F 2700
 	// LC322 https://leetcode.cn/problems/coin-change/ 恰好装满 
 	// LC1449 https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/ 恰好装满+打印方案 
 	// 【脑洞】求极限：lim_{maxW->∞} f[maxW]/maxW
@@ -2270,6 +2299,7 @@ func _(abs func(int) int) {
 	https://atcoder.jp/contests/abc346/tasks/abc346_d
 	https://codeforces.com/problemset/problem/327/A 1200
 	https://codeforces.com/problemset/problem/1178/B 1300
+	https://codeforces.com/problemset/problem/2144/C 1300 做法不止一种
 	https://codeforces.com/problemset/problem/698/A 1400
 	https://codeforces.com/problemset/problem/2033/C 1400
 	https://codeforces.com/problemset/problem/855/B 1500
@@ -2277,6 +2307,7 @@ func _(abs func(int) int) {
 	- LC1955 https://leetcode.cn/problems/count-number-of-special-subsequences/
 	https://codeforces.com/problemset/problem/446/A 1600
 	https://codeforces.com/problemset/problem/2061/C 1600 也可以线性 DP
+	https://codeforces.com/problemset/problem/2193/F 1600
 	https://codeforces.com/problemset/problem/1826/D 1700 式子变形
 	https://codeforces.com/problemset/problem/2052/F 1700 地板镶嵌
 	https://codeforces.com/problemset/problem/2029/C 1700
@@ -2287,6 +2318,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/796/E 2400
 	https://codeforces.com/problemset/problem/946/G 2500 LIS
 	https://codeforces.com/problemset/problem/1701/E 2500 LCS 变形题
+	https://www.luogu.com.cn/problem/P3903
 	*/
 
 	/* 分治 DP
@@ -2344,6 +2376,9 @@ func _(abs func(int) int) {
 	https://www.cnblogs.com/TinyWong/p/12887591.html 包含一些题目
 	https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
 
+	概率 式子变形
+	https://codeforces.com/problemset/problem/641/D 2400
+
 	概率 DP
 	https://atcoder.jp/contests/dp/tasks/dp_i 入门题
 	- 在本题中，选或不选不是人为决定的，而是由概率决定的
@@ -2354,6 +2389,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/678/E 2200
 	https://codeforces.com/problemset/problem/2028/E 2300
 	https://codeforces.com/problemset/problem/258/D 2600
+	https://codeforces.com/problemset/problem/98/E 2700 纳什均衡
 	LC688 https://leetcode.cn/problems/knight-probability-in-chessboard/
 	LC808 https://leetcode.cn/problems/soup-servings/
 	LC837 https://leetcode.cn/problems/new-21-game/
@@ -2373,6 +2409,7 @@ func _(abs func(int) int) {
 	- https://atcoder.jp/contests/abc144/tasks/abc144_f 可以删一条边
 	https://www.luogu.com.cn/problem/P1850 好题，注意这句话：所有的申请只能在学期开始前一次性提交。我们不能在计算的过程中，根据当前位置，决策是否申请换课
 	https://atcoder.jp/contests/abc326/tasks/abc326_e 后缀和优化
+	https://atcoder.jp/contests/abc402/tasks/abc402_e ~CF1777
 	https://codeforces.com/problemset/problem/2081/A 1800
 	https://codeforces.com/problemset/problem/235/B 2000
 	https://codeforces.com/problemset/problem/1753/C 2000
@@ -2385,12 +2422,17 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/498/B 2400
 	https://codeforces.com/problemset/problem/698/C 2400
 	https://codeforces.com/problemset/problem/865/C 2400
+	https://codeforces.com/problemset/problem/1866/M 2400 期望的线性性
+	https://codeforces.com/problemset/problem/1556/F 2500 状压 DP
+	https://codeforces.com/problemset/problem/1854/C 2500 期望的线性性（独立计算）
+	https://codeforces.com/problemset/problem/248/E 2600 移动架子上的蜂蜜罐
 	https://codeforces.com/problemset/problem/494/C 2600
 	https://codeforces.com/problemset/problem/1172/C2 2600
 	https://codeforces.com/problemset/problem/1823/F 2600 树上随机游走
 	https://codeforces.com/problemset/problem/183/D 2700
 	https://codeforces.com/problemset/problem/850/F 2800 鞅与停时定理
 	https://codeforces.com/problemset/problem/1842/G 2800 题解 https://codeforces.com/blog/entry/117640
+	https://codeforces.com/problemset/problem/2034/F2 2800 todo 复习
 	https://codeforces.com/problemset/problem/1025/G 3200 鞅与停时定理
 	https://codeforces.com/problemset/problem/1349/D 3200 鞅与停时定理
 	https://codeforces.com/problemset/problem/1479/E 3500 鞅与停时定理
@@ -2430,16 +2472,11 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/698/C 2400 概率
 	https://codeforces.com/problemset/problem/744/C 2400 状态设计
 	https://codeforces.com/problemset/problem/543/C 2500 状态转移
-	https://codeforces.com/problemset/problem/845/F 2500 状态设计 一个格子一个格子地算
-	- LCP76 魔法棋盘 https://leetcode.cn/problems/1ybDKD/
-	- NOI01 炮兵阵地 https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
-	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
-	    - 对于二进制来说，那个 3^m 中的 3 就是空集的子集个数 1 + 一个元素的子集个数 2
-	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
 	https://codeforces.com/problemset/problem/1209/E2 2500 循环移位
 	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压
 	https://codeforces.com/problemset/problem/662/C 2600 状态设计 也可以 FWT
 	- https://atcoder.jp/contests/abc396/tasks/abc396_g
+	https://codeforces.com/problemset/problem/1380/G 2600 放 k 个宝箱怪 贡献法 排序不等式 式子变形
 	https://codeforces.com/problemset/problem/1430/G 2600
 	https://codeforces.com/problemset/problem/79/D 2800 BFS
 	https://codeforces.com/problemset/problem/1152/F2 3000 状态设计 值域 插入法
@@ -2453,6 +2490,14 @@ func _(abs func(int) int) {
 	https://www.luogu.com.cn/training/215#problems
 	https://ac.nowcoder.com/acm/problem/collection/808
 	https://ac.nowcoder.com/acm/problem/collection/810
+
+	轮廓线 DP
+	https://codeforces.com/problemset/problem/845/F 2500 状态设计 一个格子一个格子地算
+	LCP76 魔法棋盘 https://leetcode.cn/problems/1ybDKD/
+	NOI01 炮兵阵地 https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
+	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
+	    - 对于二进制来说，那个 3^m 中的 3 就是空集的子集个数 1 + 一个元素的子集个数 2
+	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
@@ -2493,6 +2538,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1886/E 2400 状态设计 打印具体方案
 	// https://codeforces.com/problemset/problem/1598/F 2400 合法括号字符串
 	// https://codeforces.com/problemset/problem/1550/E 2500 状态设计
+	// https://atcoder.jp/contests/abc402/tasks/abc402_e ~CF1777
 	// https://www.luogu.com.cn/problem/P3694 前缀和
 	// LC3530 https://leetcode.cn/problems/maximum-profit-from-valid-topological-order-in-dag/ DAG 排列
 	permDP := func(a []int, check func(int, int) bool) int {
@@ -2648,8 +2694,8 @@ func _(abs func(int) int) {
 	}
 
 	// 无向图简单环数量
-	// https://blog.csdn.net/fangzhenpeng/article/details/49078233
-	// https://codeforces.com/problemset/problem/11/D
+	// https://codeforces.com/problemset/problem/11/D 2200
+	// https://atcoder.jp/contests/abc411/tasks/abc411_g 加强版
 	countCycle := func(g [][]int, n, m int) int {
 		ans := 0
 		// 取集合 s 的最小值作为起点
@@ -2699,6 +2745,7 @@ func _(abs func(int) int) {
 	// 训练指南第一章例题 29，UVa11825 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=226&page=show_problem&problem=2925
 	//    - 将 n 个集合分成尽量多组，使得对于每组，组内所有集合的并集等于全集
 	// 训练指南第一章例题 32，WF10，UVa1099 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=245&page=show_problem&problem=3540
+	// https://codeforces.com/problemset/problem/1556/F 2500 期望 DP
 	// https://codeforces.com/problemset/problem/599/E 2600 树上子集状压 DP
 	// https://codeforces.com/problemset/problem/1342/F 3000 状态设计
 	// https://atcoder.jp/contests/arc171/tasks/arc171_d 转换 图染色
@@ -2847,7 +2894,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1620/G 2400 容斥
 	// https://codeforces.com/problemset/problem/1679/E 2400
 	// https://codeforces.com/problemset/problem/1903/D2 2500 状态设计
-	// https://codeforces.com/problemset/problem/1208/F 2600
+	// https://codeforces.com/problemset/problem/1208/F 2600 也有枚举子集+剪枝的做法
 	//    求 ai|(aj&ak) 的最大值，其中 i<j<k
 	//    根据 a|b = (^a)&b + a
 	//    问题变成 (^ai)&aj&ak + ai 的最大值
@@ -3105,6 +3152,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/497/E 2900
 	https://codeforces.com/gym/104337/problem/B 【妙】数位众数，把 freq 排序作为 key
 	https://atcoder.jp/contests/arc133/tasks/arc133_d 2658 【转换】选两个不超过 U 的数，满足异或和为 target
+	https://www.luogu.com.cn/problem/P3413
 	https://www.luogu.com.cn/problem/P6669 两个上界约束
 	- https://www.luogu.com.cn/problem/P8688
 	- https://codeforces.com/problemset/problem/582/D 3300 模数为 p^a
@@ -3113,6 +3161,7 @@ func _(abs func(int) int) {
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
 	http://acm.hdu.edu.cn/showproblem.php?pid=6796
 	注：一些第 k 小的题目需要与二分结合，或者用试填法（见后面的 kth666）
+	https://atcoder.jp/contests/abc406/tasks/abc406_e
 	https://atcoder.jp/contests/arc173/tasks/arc173_a 也可以用九进制
 	todo 套题 https://www.luogu.com.cn/blog/s-r-f/oi-bi-ji-shuo-wei-dp-ge-ji-dui-shuo-wei-dp-di-yi-dian-li-xie
 	todo 套题 https://codeforces.com/blog/entry/53960
@@ -3185,16 +3234,15 @@ func _(abs func(int) int) {
 				d = 1
 			}
 
-			//preNum := !limitLow || i > diffLH // 前面是否填了数字
+			//preNum := !limitLow || i > diffLH // true 表示前面填了数字
 			for ; d <= hi; d++ {
 				c0 := cnt0
 				if d == 0 {
 					c0++
 				}
-				res += dfs(i+1, c0,
-					limitLow && d == lo, limitHigh && d == hi)
-				res %= mod
+				res += dfs(i+1, c0, limitLow && d == lo, limitHigh && d == hi)
 			}
+			res %= mod
 			return
 		}
 		ans := dfs(0, 0, true, true)
@@ -3310,6 +3358,7 @@ func _(abs func(int) int) {
 	// 上下界数位 DP · 求和型 （v2.1 模板）
 	// 每个元素 x 有一个对应的价值 f(x)，比如 f(x) = x，或者 f(x) = x 中的峰谷个数
 	// 返回 [low, high] 中的所有元素的价值总和
+	// https://atcoder.jp/contests/abc406/tasks/abc406_e
 	// https://codeforces.com/problemset/problem/1073/E 2300
 	// LC3753 https://leetcode.cn/problems/total-waviness-of-numbers-in-range-ii/
 	digitDPContribution := func(low, high int, k int) int {
@@ -3370,8 +3419,8 @@ func _(abs func(int) int) {
 				res.sum = (res.sum + sub.sum) % mod
 				// if d 合法
 				{
-					//v := 1
-					v := d * int(math.Pow10(n-1-i)) % mod
+					// 如果只是统计峰谷个数，这里 v = 1
+					v := d * int(math.Pow10(n-1-i)) % mod // 满足条件的元素之和（贡献法）
 					res.sum = (res.sum + v*sub.cnt) % mod
 				}
 			}
@@ -3593,6 +3642,7 @@ func _(abs func(int) int) {
 	https://oi-wiki.org/basic/binary-lifting/
 	https://atcoder.jp/contests/arc060/tasks/arc060_c 入门题
 	- LC3534 https://leetcode.cn/problems/path-existence-queries-in-a-graph-ii/ 重新编号（下标映射）
+	https://codeforces.com/problemset/problem/1142/B 2000
 	https://codeforces.com/problemset/problem/1516/D 2100
 	https://codeforces.com/problemset/problem/1175/E 2200
 	- 相似题目 https://www.luogu.com.cn/problem/P4155
@@ -3614,10 +3664,10 @@ func _(abs func(int) int) {
 		for i, l := range left {
 			pa[i][0] = l // 从 i 往左，最远可以跳到 l
 		}
-		for i := range mx - 1 {
-			for x := range pa {
-				p := pa[x][i]
-				pa[x][i+1] = pa[p][i]
+		for j := range mx - 1 {
+			for i := range pa {
+				p := pa[i][j]
+				pa[i][j+1] = pa[p][j]
 			}
 		}
 
@@ -3740,6 +3790,7 @@ func _(abs func(int) int) {
 	- k=3 https://atcoder.jp/contests/abc397/tasks/abc397_f
 	https://codeforces.com/problemset/problem/1295/E 2200
 	https://codeforces.com/problemset/problem/1788/E 2200
+	https://codeforces.com/problemset/problem/2143/D2 2200 两个递增子序列 二维树状数组优化 DP
 	https://codeforces.com/problemset/problem/1842/E 2300
 	https://codeforces.com/problemset/problem/115/E 2400 线段树 式子变形 划分型 DP
 	https://codeforces.com/problemset/problem/1304/F2 2400 单调队列
@@ -3761,6 +3812,7 @@ func _(abs func(int) int) {
 	- 加强版：前缀约束 LC3193 https://leetcode.cn/problems/count-the-number-of-inversions/
 	https://www.luogu.com.cn/problem/P2513
 	https://codeforces.com/problemset/problem/2091/F 1800
+	- https://leetcode.cn/problems/count-routes-to-climb-a-rectangular-grid/
 	https://codeforces.com/problemset/problem/46/E 1900 前缀最大值/后缀最大值
 	https://codeforces.com/problemset/problem/479/E 1900
 	- https://atcoder.jp/contests/abc253/tasks/abc253_e
@@ -4131,7 +4183,8 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1059/E 2400 取往上冲的最高的点（子树）
 	https://codeforces.com/problemset/problem/1088/E 2400
 	https://codeforces.com/problemset/problem/23/E 2500
-	https://codeforces.com/problemset/problem/1146/F 2500 状态设计
+	https://codeforces.com/problemset/problem/1065/F 2500 可以跳到叶子，也可以往上跳至多 k 步，问：至多可以访问多少个叶子？
+	https://codeforces.com/problemset/problem/1146/F 2500 把叶子分成若干集合，每个集合的斯坦纳树互不相交    状态设计 todo 复习
 	https://codeforces.com/problemset/problem/627/D 2600 看似换根，但其实不是
 	https://codeforces.com/problemset/problem/633/F 2600 形状设计
 	https://atcoder.jp/contests/dp/tasks/dp_p
@@ -4154,6 +4207,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1238/F 2200
 	// https://codeforces.com/problemset/problem/1042/F 2400 贪心
 	// https://codeforces.com/problemset/problem/835/F 2500 基环树 形状设计
+	// https://codeforces.com/problemset/problem/1338/D 2700 橡皮筋嵌套 最长长度 形状设计 todo 复习
 	// 虚树直径 https://www.luogu.com.cn/problem/P4103
 	diameter := func(st int, g [][]int) (diameter int) {
 		var dfs func(int, int) int
@@ -4386,13 +4440,15 @@ func _(abs func(int) int) {
 	// 每个点有选和不选两种决策，接受子树转移时，选的决策只能加上不选子树，而不选的决策可以加上 max{不选子树, 选子树}
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
+	//
 	// 经典题：没有上司的舞会 LC337 https://leetcode.cn/problems/house-robber-iii/ https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
 	// - EXTRA：可以修改树上的点权 https://www.luogu.com.cn/problem/P4719 https://www.luogu.com.cn/problem/P4751
 	// 边独立集 LC2378 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/
 	// 变形 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 	// 方案是否唯一 Tehran06，紫书例题 9-13，UVa 1220 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=247&page=show_problem&problem=3661
 	// 变形：同一层至多选一个节点（蓝桥杯）
-	// 相似，但不完全是 https://codeforces.com/problemset/problem/1988/D
+	// https://codeforces.com/problemset/problem/1646/D 2000 输出具体方案
+	// https://codeforces.com/problemset/problem/1988/D 2000 相似，但不完全是 
 	maxIndependentSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (int, int)
 		f = func(v, fa int) (notChosen, chosen int) {
@@ -4441,14 +4497,15 @@ func _(abs func(int) int) {
 	// f[i][2]：不选 i，且 i 被父亲支配 = ∑min(f[w][0],f[w][1])
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	//
-	// 监控二叉树 LC968 https://leetcode.cn/problems/binary-tree-cameras/
-	// - https://codeforces.com/problemset/problem/1029/E
-	// 保安站岗 https://www.luogu.com.cn/problem/P2458
-	// 手机网络 https://www.luogu.com.cn/problem/P2899
+	// LC968 https://leetcode.cn/problems/binary-tree-cameras/ 监控二叉树
+	// - https://codeforces.com/problemset/problem/1029/E 2100
+	// https://codeforces.com/problemset/problem/735/E 2500 支配距离 <= k 的方案数
+	// - https://atcoder.jp/contests/arc116/tasks/arc116_e
+	// - https://www.luogu.com.cn/problem/P3942
+	// - https://www.luogu.com.cn/problem/P2279 k=2
+	// https://www.luogu.com.cn/problem/P2458
+	// https://www.luogu.com.cn/problem/P2899
 	// https://ac.nowcoder.com/acm/problem/24953
-	// todo EXTRA: 消防局的设立（支配距离为 2） https://www.luogu.com.cn/problem/P2279
-	// todo EXTRA: 将军令（支配距离为 k） https://www.luogu.com.cn/problem/P3942
-	//                                https://atcoder.jp/contests/arc116/tasks/arc116_e
 	minDominatingSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		const inf int = 1e18
 		var f func(int, int) (chosen, bySon, byFa int)
@@ -4641,6 +4698,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1822/F 1700
 	// https://codeforces.com/problemset/problem/1866/K 2500 凸包
 	// https://codeforces.com/problemset/problem/633/F 2600 计算最大次大第三大（也可以直接树形 DP，无需换根）
+	// https://codeforces.com/problemset/problem/2209/F 2700
 	reroot2 := func(g [][]struct{ to, wt int }) []int {
 		n := len(g)
 		// subRes[v] 保存子树 v 的最大深度 maxD，次大深度 maxD2，以及最大深度要往儿子 w 走
@@ -4654,7 +4712,7 @@ func _(abs func(int) int) {
 					continue
 				}
 				dfs(w, v)
-				wt := 2 - w%2
+				wt := e.wt
 				// 从 v 出发，往 w 方向的最大深度
 				maxD := subRes[w].maxD + wt
 				if maxD > res.maxD {
