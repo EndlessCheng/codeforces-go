@@ -107,30 +107,28 @@ class Solution {
         Node* son[26]{};
         int min_len = INT_MAX; // 子树中的最短字符串的长度
         int best_index; // 子树中的最短字符串的下标
-    };
 
-    void clear(Node* node) {
-        for (int i = 0; i < 26; i++) {
-            if (node->son[i]) {
-                clear(node->son[i]);
+        // 本题需要写析构函数，否则会 MLE
+        ~Node() {
+            for (Node* s : son) {
+                delete s;
             }
         }
-        delete node;
-    }
+    };
 
 public:
     vector<int> stringIndices(vector<string>& wordsContainer, vector<string>& wordsQuery) {
-        Node* root = new Node();
+        Node root{};
         for (int i = 0; i < wordsContainer.size(); i++) {
             auto& s = wordsContainer[i];
             int len = s.size();
-            if (len < root->min_len) {
-                root->min_len = len;
-                root->best_index = i;
+            if (len < root.min_len) {
+                root.min_len = len;
+                root.best_index = i;
             }
 
             // 把 reverse(s) 插入字典树
-            auto cur = root;
+            Node* cur = &root;
             for (int j = len - 1; j >= 0; j--) {
                 int b = s[j] - 'a';
                 if (cur->son[b] == nullptr) {
@@ -149,15 +147,13 @@ public:
         vector<int> ans;
         ans.reserve(wordsQuery.size());
         for (auto& s : wordsQuery) {
-            auto cur = root;
+            Node* cur = &root;
             for (int j = s.size() - 1; j >= 0 && cur->son[s[j] - 'a']; j--) {
                 cur = cur->son[s[j] - 'a'];
             }
             // 退出循环时，cur 即最长公共前缀（的对应节点），cur->best_index 是前缀为 cur 的最短字符串的下标
             ans.push_back(cur->best_index);
         }
-
-        clear(root);
         return ans;
     }
 };
