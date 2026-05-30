@@ -89,8 +89,8 @@ public:
         }
 
         string ans;
-        for (auto& p : st) {
-            ans += string(p.second, p.first);
+        for (auto& [b, cnt] : st) {
+            ans += string(cnt, b);
         }
         return ans;
     }
