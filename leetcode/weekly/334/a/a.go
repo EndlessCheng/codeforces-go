@@ -1,18 +1,23 @@
 package main
 
 // https://space.bilibili.com/206214
-func leftRigthDifference(nums []int) []int {
-	rightSum := 0
+func leftRightDifference(nums []int) []int {
+	total := 0
 	for _, x := range nums {
-		rightSum += x
+		total += x
 	}
+
 	leftSum := 0
 	for i, x := range nums {
-		rightSum -= x
-		nums[i] = abs(leftSum - rightSum)
+		nums[i] = abs(leftSum*2 + x - total)
 		leftSum += x
 	}
 	return nums
 }
 
-func abs(x int) int { if x < 0 { return -x }; return x }
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}

@@ -8,7 +8,7 @@ import (
 
 func Test_a(t *testing.T) {
 	targetCaseNum := 0 // -1
-	if err := testutil.RunLeetCodeFuncWithFile(t, leftRigthDifference, "a.txt", targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithFile(t, leftRightDifference, "a.txt", targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }
