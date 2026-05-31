@@ -157,6 +157,7 @@ class Solution:
         cnt_multi = [0] * (max_factor + 1)
         f = [0] * (budget + 1)
         min_price = inf
+        sum_price = 0
 
         for factor, price in items:
             min_price = min(min_price, price)
@@ -167,8 +168,11 @@ class Solution:
             cnt = cnt_multi[factor]
 
             # 视作一个体积为 price，价值为 cnt 的物品
-            for j in range(budget, price - 1, -1):
-                f[j] = max(f[j], f[j - price] + cnt)
+            # 优化：已遍历的物品的体积和至多为 sum_price，大于这个值的体积和无法凑出来
+            sum_price = min(sum_price + price, budget)
+            for j in range(sum_price, price - 1, -1):
+                v = f[j - price] + cnt
+                if v > f[j]: f[j] = v  # 手写 max 更快
 
         return max(fi + (budget - i) // min_price for i, fi in enumerate(f))
 ```
@@ -189,6 +193,7 @@ class Solution {
         }
         int[] cntMulti = new int[maxFactor + 1];
         int[] f = new int[budget + 1];
+        int sumPrice = 0;
 
         for (int[] p : items) {
             int factor = p[0], price = p[1];
@@ -201,7 +206,9 @@ class Solution {
             int cnt = cntMulti[factor];
 
             // 视作一个体积为 price，价值为 cnt 的物品
-            for (int j = budget; j >= price; j--) {
+            // 优化：已遍历的物品的体积和至多为 sumPrice，大于这个值的体积和无法凑出来
+            sumPrice = Math.min(sumPrice + price, budget);
+            for (int j = sumPrice; j >= price; j--) {
                 f[j] = Math.max(f[j], f[j - price] + cnt);
             }
         }
@@ -232,6 +239,7 @@ public:
         }
         vector<int> cnt_multi(max_factor + 1);
         vector<int> f(budget + 1);
+        int sum_price = 0;
 
         for (auto& p : items) {
             int factor = p[0], price = p[1];
@@ -244,7 +252,9 @@ public:
             }
 
             // 视作一个体积为 price，价值为 cnt 的物品
-            for (int j = budget; j >= price; j--) {
+            // 优化：已遍历的物品的体积和至多为 sum_price，大于这个值的体积和无法凑出来
+            sum_price = min(sum_price + price, budget);
+            for (int j = sum_price; j >= price; j--) {
                 f[j] = max(f[j], f[j - price] + cnt);
             }
         }
@@ -273,6 +283,7 @@ func maximumSaleItems(items [][]int, budget int) (ans int) {
 	}
 	cntMulti := make([]int, maxFactor+1)
 	f := make([]int, budget+1)
+	sumPrice := 0
 
 	for _, p := range items {
 		factor, price := p[0], p[1]
@@ -285,7 +296,9 @@ func maximumSaleItems(items [][]int, budget int) (ans int) {
 		cnt := cntMulti[factor]
 
 		// 视作一个体积为 price，价值为 cnt 的物品
-		for j := budget; j >= price; j-- {
+		// 优化：已遍历的物品的体积和至多为 sumPrice，大于这个值的体积和无法凑出来
+		sumPrice = min(sumPrice+price, budget)
+		for j := sumPrice; j >= price; j-- {
 			f[j] = max(f[j], f[j-price]+cnt)
 		}
 	}

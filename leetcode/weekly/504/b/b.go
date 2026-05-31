@@ -44,6 +44,7 @@ func maximumSaleItems(items [][]int, budget int) (ans int) {
 	}
 	cntMulti := make([]int, maxFactor+1)
 	f := make([]int, budget+1)
+	sumPrice := 0
 
 	for _, p := range items {
 		factor, price := p[0], p[1]
@@ -56,7 +57,9 @@ func maximumSaleItems(items [][]int, budget int) (ans int) {
 		cnt := cntMulti[factor]
 
 		// 视作一个体积为 price，价值为 cnt 的物品
-		for j := budget; j >= price; j-- {
+		// 优化：已遍历的物品的体积和至多为 sumPrice，大于这个值的体积和无法凑出来
+		sumPrice = min(sumPrice+price, budget)
+		for j := sumPrice; j >= price; j-- {
 			f[j] = max(f[j], f[j-price]+cnt)
 		}
 	}
