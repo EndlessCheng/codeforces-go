@@ -18,6 +18,20 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1KwVn6zEZB/?t=2m6s)，欢迎点赞关注~
 
+## 答疑
+
+**问**：最后枚举 $i$ 的过程，如果最便宜的物品不在 $f_i$ 中，且 $\left\lfloor\dfrac{\textit{budget} - i}{\textit{minPrice}}\right\rfloor > 0$，那我们没有计入购买最便宜物品后，免费获得的物品个数（如果有）。这是否会导致返回值小于正确值？
+
+**答**：设 $j$ 是最便宜物品的下标。如果算少了，意味着 $\textit{cnt}_j\ge 2$。
+
+当我们枚举到 $i=x$ 的时候，如果最便宜的物品不在 $f_x$ 中，那么继续枚举到 $i = x+\textit{minPrice}$ 的时候，由状态转移方程可知，$f_{x+\textit{minPrice}} \ge f_x + \textit{cnt}_{j} \ge f_x + 2$。所以有
+
+$$
+f_x + \left\lfloor\dfrac{\textit{budget} - x}{\textit{minPrice}}\right\rfloor = f_x + 1 + \left\lfloor\dfrac{\textit{budget} - (x + \textit{minPrice})}{\textit{minPrice}}\right\rfloor < f_{x+\textit{minPrice}} + \left\lfloor\dfrac{\textit{budget} - (x + \textit{minPrice})}{\textit{minPrice}}\right\rfloor
+$$
+
+上式表明，如果 $i=x$ 时可以买最便宜的物品，但 $f_x$ 不包含最便宜的物品，那么 $i=x$ 时算出的物品个数**严格小于** $i = x+\textit{minPrice}$ 时算出的物品个数。如果最优解买了最便宜的物品，那么我们一定会枚举到包含最便宜的物品的 $f_i$。
+
 ## 优化前
 
 ```py [sol-Python3]
