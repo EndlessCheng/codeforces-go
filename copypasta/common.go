@@ -259,8 +259,8 @@ https://atcoder.jp/contests/abc353/tasks/abc353_c
 
 分组循环
 https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/
-**适用场景**：按照题目要求，数组会被分割成若干组，每一组的判断/处理逻辑是相同的。
-**核心思想**：
+适用场景：按照题目要求，数组会被分割成若干组，每一组的判断/处理逻辑是相同的。
+核心思想：
 - 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
 - 内层循环负责遍历组，找出这一组最远在哪结束。
 这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
@@ -279,6 +279,7 @@ https://codeforces.com/problemset/problem/1873/F 1300
 https://codeforces.com/problemset/problem/2146/C 1300
 https://codeforces.com/problemset/problem/363/C 1400 分组循环 + 分组循环
 https://codeforces.com/problemset/problem/1380/C 1400
+https://codeforces.com/problemset/problem/1628/A 1400 注：这题被力扣抄去当周赛题了 https://leetcode.cn/problems/lexicographically-maximum-mex-array/
 https://codeforces.com/problemset/problem/620/C 1500
 https://codeforces.com/problemset/problem/858/C 1500
 https://codeforces.com/problemset/problem/1753/A2 1500
@@ -430,6 +431,7 @@ https://codeforces.com/problemset/problem/1380/G 2600 放 k 个宝箱怪
 每次取两个数减一，最后剩下的数最小 / 操作次数最多
 或者说，每次删除两个不同元素，最多能删多少次？
 讲解 https://zhuanlan.zhihu.com/p/1945782212176909162
+模板代码：https://atcoder.jp/contests/abc459/tasks/abc459_d
 https://codeforces.com/problemset/problem/296/A 1100
 https://codeforces.com/problemset/problem/1574/B 1100
 https://codeforces.com/problemset/problem/1579/D 1400
@@ -741,6 +743,7 @@ https://codeforces.com/problemset/problem/1292/A  1400 也有简单写法
 https://codeforces.com/problemset/problem/1605/C  1400
 https://codeforces.com/problemset/problem/1989/C  1400
 https://codeforces.com/problemset/problem/2110/C  1400
+https://atcoder.jp/contests/abc413/tasks/abc413_d 1424 ~CF
 https://codeforces.com/problemset/problem/115/B   1500
 https://codeforces.com/problemset/problem/960/B   1500
 https://codeforces.com/problemset/problem/1051/C  1500
@@ -761,6 +764,7 @@ https://codeforces.com/problemset/problem/382/C   1700
 https://codeforces.com/problemset/problem/411/C   1700
 https://codeforces.com/problemset/problem/1516/C  1700
 https://codeforces.com/problemset/problem/1799/C  1700
+https://atcoder.jp/contests/abc457/tasks/abc457_e 1791 ~CF
 https://codeforces.com/problemset/problem/1468/J  1800 MST
 https://codeforces.com/problemset/problem/1833/G  1800 样例给得挺良心的
 https://codeforces.com/problemset/problem/1955/F  1800
