@@ -16,7 +16,7 @@ func maximumMEX(nums []int) (ans []int) {
 		// 枚举这一段的 mex，越大越好（字典序越大）
 		mex := 0
 		for ; ; mex++ {
-			// 清理掉在 start 之前的下标
+			// 清理在 start 之前的下标
 			for len(pos[mex]) > 0 && pos[mex][0] < start {
 				pos[mex] = pos[mex][1:]
 			}
