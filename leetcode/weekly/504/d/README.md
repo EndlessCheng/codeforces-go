@@ -9,14 +9,22 @@
 
 ---
 
-对于本题，先统计每个元素 $x$ 的所有下标，记在 $\textit{pos}[x]$ 中。
+本题相当于把 $\textit{nums}$ 分成若干段，每段计算一个 $\textit{mex}$（不在段中的最小非负整数），得到一个 $\textit{mex}$ 序列，要求最大化这个序列的字典序。
+
+想一想，第一刀切在哪？
+
+子数组 $\textit{mex}$ 的性质是，子数组越长，$\textit{mex}$ 越大（或者不变）。当 $\textit{mex}$ 无法再增大时，切一刀是最合适的，因为剩下的元素越多，下一个 $\textit{mex}$ 的值就越大。
+
+如何快速判断 $\textit{mex}$ 不会变大了？
+
+先统计每个元素 $x$ 的所有下标，记在 $\textit{pos}[x]$ 中。
 
 对于每一组（每一段），枚举这一段的 $\textit{mex}=0,1,2,\ldots$
 
 - 如果 $\textit{nums}$ 的剩余元素包含 $\textit{mex}$，那么为了最大化字典序，这一段必须包含剩余元素中的最左边的 $\textit{mex}$。然后继续枚举 $\textit{mex}$。
 - 如果 $\textit{nums}$ 的剩余元素不包含 $\textit{mex}$，跳出内层循环，把 $\textit{mex}$ 添加到答案中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1KwVn6zEZB/?t=28m20s)，欢迎点赞关注~
 
 ## 写法一
 

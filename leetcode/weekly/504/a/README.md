@@ -2,7 +2,7 @@
 
 不用字符串做。不断地把 $n$ 除以 $10$（下取整）直到 $0$，例如 $123\to 12\to 1\to 0$。在这个过程中的 $n\bmod 10$，即为 $n$ 的各个数位。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1KwVn6zEZB/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

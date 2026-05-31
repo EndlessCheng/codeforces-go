@@ -16,7 +16,7 @@ $$
 \max_{i=0}^{\textit{budget}} f_i + \left\lfloor\dfrac{\textit{budget} - i}{\textit{minPrice}}\right\rfloor
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1KwVn6zEZB/?t=2m6s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -144,7 +144,7 @@ func maximumSaleItems(items [][]int, budget int) (ans int) {
 
 设 $U=\max(\textit{factor}_i)$。
 
-统计 $\textit{factor}_i$ 的倍数个数时，上面代码写了一个 $\mathcal{O}(n^2)$ 的暴力。改成枚举 $x = 1,2,\ldots,U$ 以及 $x$ 的倍数 $y=x,2x,\ldots$ 计算 $y$ 的个数之和。由调和级数可知，这只需要 $\mathcal{O}(U\log U)$ 的时间。
+统计 $\textit{factor}_i$ 的倍数个数时，上面代码写了一个 $\mathcal{O}(n^2)$ 的暴力。改成枚举 $x = 1,2,\ldots,U$ 以及 $x$ 的倍数 $y=x,2x,\ldots$ 计算 $y$ 的个数之和。由调和级数可知，这只需 $\mathcal{O}(U\log U)$ 的时间。
 
 ```py [sol-Python3]
 class Solution:

@@ -3,6 +3,8 @@
 - 前 $\textit{cnt}_i$ 次购买物品 $i$，每次可以获得 $2$ 个物品。
 - 继续购买物品 $i$，每次只能获得 $1$ 个物品。
 
+想象有多家商场做活动，**都是买一送一**，去哪家商场买东西？优先去最便宜的。
+
 设最便宜的物品的价格为 $\textit{minPrice}$。分类讨论：
 
 - 对于价格 $< 2\cdot \textit{minPrice}$ 的物品，购买 $\textit{cnt}_i$ 次，每次可以获得 $2$ 个物品。为了最大化所获得的物品总数，贪心地，**按照价格从低到高购买**。
@@ -10,7 +12,7 @@
 
 代码实现时，我们需要快速计算 $\textit{cnt}_i$。枚举 $x = 1,2,\ldots, n$ 以及 $x$ 的倍数 $y=x,2x,\ldots$ 计算 $y$ 的个数之和。由调和级数可知，这只需要 $\mathcal{O}(n\log n)$ 的时间。其中 $n$ 是 $\textit{items}$ 的长度。注意题目保证 $\textit{factor}_i\le n$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1KwVn6zEZB/?t=19m10s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
