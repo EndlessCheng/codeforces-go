@@ -18,6 +18,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1KwVn6zEZB/?t=19m10s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def maximumSaleItems(self, items: list[list[int]], budget: int) -> int:
@@ -39,8 +41,9 @@ class Solution:
                 for j in range(factor, n + 1, factor):
                     cnt_multi[factor] += cnt_factor[j]
 
-            if cnt_multi[factor] > 1:
-                a.append((price, cnt_multi[factor] - 1))  # factor 的倍数不包括该物品
+            cnt = cnt_multi[factor] - 1  # factor 的倍数不包括该物品
+            if cnt > 0:
+                a.append((price, cnt))
 
         a.sort(key=lambda p: p[0])
 
@@ -80,8 +83,9 @@ class Solution {
                 }
             }
 
-            if (cntMulti[factor] > 1) {
-                a.add(new int[]{price, cntMulti[factor] - 1}); // factor 的倍数不包括该物品
+            int cnt = cntMulti[factor] - 1; // factor 的倍数不包括该物品
+            if (cnt > 0) {
+                a.add(new int[]{price, cnt});
             }
         }
 
@@ -175,8 +179,9 @@ func maximumSaleItems(items [][]int, budget int) (ans int) {
 			}
 		}
 
-		if cntMulti[factor] > 1 {
-			a = append(a, pair{price, cntMulti[factor] - 1}) // factor 的倍数不包括该物品
+		cnt := cntMulti[factor] - 1 // factor 的倍数不包括该物品
+		if cnt > 0 {
+			a = append(a, pair{price, cnt})
 		}
 	}
 
@@ -188,6 +193,184 @@ func maximumSaleItems(items [][]int, budget int) (ans int) {
 		}
 		c := min(p.cnt, budget/p.price) // 该物品最多买 c 个
 		budget -= p.price * c
+		ans += c * 2
+	}
+
+	// 剩余的钱买最便宜的物品
+	return ans + budget/minPrice
+}
+```
+
+## 小优化
+
+如果有很多价格相同的物品，那么这些物品的 $\textit{cnt}_i$ 可以合并，从而缩短排序时数组的长度，减少排序的耗时。
+
+也可以用有序集合代替数组。
+
+```py [sol-Python3]
+class Solution:
+    def maximumSaleItems(self, items: list[list[int]], budget: int) -> int:
+        n = len(items)
+        cnt_factor = [0] * (n + 1)
+        min_price = inf
+        for factor, price in items:
+            cnt_factor[factor] += 1
+            min_price = min(min_price, price)
+
+        cnt_multi = [0] * (n + 1)
+        sum_cnt = defaultdict(int)  # price -> 相同 price 的 cnt 之和
+
+        for factor, price in items:
+            if price >= min_price * 2:
+                continue
+
+            if cnt_multi[factor] == 0:  # 之前没有计算过
+                for j in range(factor, n + 1, factor):
+                    cnt_multi[factor] += cnt_factor[j]
+
+            cnt = cnt_multi[factor] - 1  # factor 的倍数不包括该物品
+            if cnt > 0:
+                sum_cnt[price] += cnt
+
+        ans = 0
+        for price in sorted(sum_cnt):
+            if budget < price:  # 没钱了
+                break
+            c = min(sum_cnt[price], budget // price)  # 该物品最多买 c 个
+            budget -= price * c
+            ans += c * 2
+        return ans + budget // min_price  # 剩余的钱买最便宜的物品
+```
+
+```java [sol-Java]
+class Solution {
+    public int maximumSaleItems(int[][] items, int budget) {
+        int n = items.length;
+        int[] cntFactor = new int[n + 1];
+        int minPrice = Integer.MAX_VALUE;
+        for (int[] p : items) {
+            cntFactor[p[0]]++;
+            minPrice = Math.min(minPrice, p[1]);
+        }
+
+        int[] cntMulti = new int[n + 1];
+        Map<Integer, Long> sumCnt = new TreeMap<>();
+
+        for (int[] p : items) {
+            int factor = p[0], price = p[1];
+            if (price >= minPrice * 2) {
+                continue;
+            }
+
+            if (cntMulti[factor] == 0) { // 之前没有计算过
+                for (int j = factor; j <= n; j += factor) {
+                    cntMulti[factor] += cntFactor[j];
+                }
+            }
+
+            int cnt = cntMulti[factor] - 1; // factor 的倍数不包括该物品
+            if (cnt > 0) {
+                sumCnt.merge(price, (long) cnt, Long::sum); // sumCnt[price] += cnt;
+            }
+        }
+
+        int ans = 0;
+        for (Map.Entry<Integer, Long> e : sumCnt.entrySet()) {
+            int price = e.getKey();
+            if (budget < price) { // 没钱了
+                break;
+            }
+            int c = (int) Math.min(e.getValue(), budget / price); // 该物品最多买 c 个
+            budget -= price * c;
+            ans += c * 2;
+        }
+        return ans + budget / minPrice; // 剩余的钱买最便宜的物品
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maximumSaleItems(vector<vector<int>>& items, int budget) {
+        int n = items.size();
+        vector<int> cnt_factor(n + 1);
+        int min_price = INT_MAX;
+        for (auto& p : items) {
+            cnt_factor[p[0]]++;
+            min_price = min(min_price, p[1]);
+        }
+        vector<int> cnt_multi(n + 1);
+        map<int, long long> sum_cnt;
+
+        for (auto& p : items) {
+            int factor = p[0], price = p[1];
+            if (price >= min_price * 2) {
+                continue;
+            }
+
+            int& cnt = cnt_multi[factor]; // 注意这里是引用
+            if (cnt == 0) { // 之前没有计算过
+                for (int j = factor; j <= n; j += factor) {
+                    cnt += cnt_factor[j];
+                }
+            }
+
+            if (cnt > 1) {
+                sum_cnt[price] += cnt - 1; // factor 的倍数不包括该物品
+            }
+        }
+
+        int ans = 0;
+        for (auto& [price, cnt] : sum_cnt) {
+            if (budget < price) { // 没钱了
+                break;
+            }
+            int c = min(cnt, 1LL * budget / price); // 该物品最多买 c 个
+            budget -= price * c;
+            ans += c * 2;
+        }
+        return ans + budget / min_price; // 剩余的钱买最便宜的物品
+    }
+};
+```
+
+```go [sol-Go]
+func maximumSaleItems(items [][]int, budget int) (ans int) {
+	n := len(items)
+	cntFactor := make([]int, n+1)
+	minPrice := math.MaxInt
+	for _, p := range items {
+		cntFactor[p[0]]++
+		minPrice = min(minPrice, p[1])
+	}
+	cntMulti := make([]int, n+1)
+	sumCnt := map[int]int{} // price -> 相同 price 的 cnt 之和
+
+	for _, p := range items {
+		factor, price := p[0], p[1]
+		if price >= minPrice*2 {
+			continue
+		}
+
+		if cntMulti[factor] == 0 { // 之前没有计算过
+			for j := factor; j <= n; j += factor {
+				cntMulti[factor] += cntFactor[j]
+			}
+		}
+
+		cnt := cntMulti[factor] - 1 // factor 的倍数不包括该物品
+		if cnt > 0 {
+			sumCnt[price] += cnt
+		}
+	}
+
+	for _, price := range slices.Sorted(maps.Keys(sumCnt)) {
+		if budget < price { // 没钱了
+			break
+		}
+		c := min(sumCnt[price], budget/price) // 该物品最多买 c 个
+		budget -= price * c
 		ans += c * 2
 	}
 
