@@ -21,7 +21,7 @@ while a * a * a * 2 <= MX:
         b += 1
     a += 1
 
-good_integers = sorted(x for x, c in cnt.items() if c > 1)
+good_integers = sorted(x for x, c in cnt.items() if c > 1)  # 1554 个
 
 class Solution:
     def findGoodIntegers(self, n: int) -> List[int]:
@@ -32,7 +32,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     private static final int MX = 1_000_000_000;
-    private static final List<Integer> goodIntegers = new ArrayList<>();
+    private static final List<Integer> goodIntegers = new ArrayList<>(); // 1554 个
     private static boolean initialized = false;
 
     public Solution() {
@@ -69,7 +69,7 @@ class Solution {
 
 ```cpp [sol-C++]
 constexpr int MX = 1'000'000'000;
-vector<int> good_integers;
+vector<int> good_integers; // 1554 个
 
 auto init = [] {
     map<int, int> cnt;
