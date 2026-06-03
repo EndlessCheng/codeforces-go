@@ -494,13 +494,13 @@ $$
 枚举 $\ell$，累加得
 
 $$
-\sum_{\ell=0}^{L-1} -\ell^2+9\ell+45 = \dfrac{-2L^3 + 30L^2 + 242L}{6}
+\sum_{\ell=0}^{L-1} -\ell^2+9\ell+45 = \dfrac{-L^3 + 15L^2 + 121L}{3}
 $$
 
 所以**情况二对答案的贡献**为
 
 $$
-\dfrac{-2L^3 + 30L^2 + 242L}{6}\cdot 10^i
+\dfrac{-L^3 + 15L^2 + 121L}{3}\cdot 10^i
 $$
 
 ### 情况三
@@ -589,7 +589,7 @@ class Solution:
             cnt = max_prefix * 570 - 45  # 先不与 pow10 相乘
 
             # 2. prefix = max_prefix 且 l < L
-            cnt += (242 + L * 30 - L * L * 2) * L // 6
+            cnt += (121 + L * 15 - L * L) * L // 3
 
             # 3. prefix = max_prefix 且 l = L 且 m < M
             cnt += (L + M) * max(M - L - 1, 0) // 2   # 峰
@@ -641,7 +641,7 @@ class Solution {
             long cnt = maxPrefix * 570 - 45;  // 先不与 pow10 相乘
 
             // 2. prefix = maxPrefix 且 l < L
-            cnt += (242 + L * 30 - L * L * 2) * L / 6;
+            cnt += (121 + L * 15 - L * L) * L / 3;
 
             // 3. prefix = maxPrefix 且 l = L 且 m < M
             cnt += (L + M) * Math.max(M - L - 1, 0) / 2;       // 峰
@@ -689,7 +689,7 @@ class Solution {
             long long cnt = max_prefix * 570 - 45; // 先不与 pow10 相乘
 
             // 2. prefix = max_prefix 且 l < L
-            cnt += (242 + L * 30 - L * L * 2) * L / 6;
+            cnt += (121 + L * 15 - L * L) * L / 3;
 
             // 3. prefix = max_prefix 且 l = L 且 m < M
             cnt += (L + M) * max(M - L - 1, 0) / 2;  // 峰
@@ -737,7 +737,7 @@ func calc(n int64) (ans int64) {
 		cnt := maxPrefix*570 - 45 // 先不与 pow10 相乘
 
 		// 2. prefix = maxPrefix 且 l < L
-		cnt += (242 + L*30 - L*L*2) * L / 6
+		cnt += (121 + L*15 - L*L) * L / 3
 
 		// 3. prefix = maxPrefix 且 l = L 且 m < M
 		cnt += (L + M) * max(M-L-1, 0) / 2      // 峰

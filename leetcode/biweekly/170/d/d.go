@@ -117,7 +117,7 @@ func calc(n int64) (ans int64) {
 		cnt := maxPrefix*570 - 45 // 先不与 pow10 相乘
 
 		// 2. prefix = maxPrefix 且 l < L
-		cnt += (242 + L*30 - L*L*2) * L / 6
+		cnt += (121 + L*15 - L*L) * L / 3
 
 		// 3. prefix = maxPrefix 且 l = L 且 m < M
 		cnt += (L + M) * max(M-L-1, 0) / 2      // 峰
