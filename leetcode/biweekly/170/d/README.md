@@ -1,10 +1,12 @@
-## 前置知识
+## 方法一：数位 DP
+
+### 前置知识
 
 [数位 DP v1.0 模板讲解](https://www.bilibili.com/video/BV1rS4y1s721/?t=19m36s)
 
 [数位 DP v2.0 模板讲解](https://www.bilibili.com/video/BV1Fg4y1Q7wv/?t=31m28s)（上下界数位 DP）
 
-## 写法一：波动值作为参数
+### 写法一：波动值作为参数
 
 在递归的过程中，我们需要知道：
 
@@ -200,7 +202,7 @@ func totalWaviness(num1, num2 int64) int64 {
 - 时间复杂度：$\mathcal{O}(D^2n^2)$，其中 $n = \mathcal{O}(\log \textit{num}_2)$ 是 $\textit{num}_2$ 的十进制长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(Dn^2)$，单个状态的计算时间为 $\mathcal{O}(D)$，所以总的时间复杂度为 $\mathcal{O}(D^2n^2)$。
 - 空间复杂度：$\mathcal{O}(Dn^2)$。
 
-## 写法二：贡献法
+### 写法二：贡献法
 
 去掉 $\textit{dfs}$ 中的 $\textit{waviness}$ 参数，写在返回值中。也就是**自底向上**计算所有 $\textit{waviness}$ 的总和。
 
@@ -210,7 +212,7 @@ func totalWaviness(num1, num2 int64) int64 {
 - 递归右子树，拿到右子树的节点个数 $\textit{rightSize}$。
 - 加上当前节点（$1$ 个），得到当前子树的节点个数 $\textit{leftSize} + \textit{rightSize} + 1$。
 
-本题如果只考虑每个数位怎么填，可以视作一棵十叉树。
+本题如果只考虑每个数位怎么填，可以视作一棵**十叉树**。
 
 统计波动值的总和：
 
@@ -402,9 +404,382 @@ func totalWaviness(num1, num2 int64) int64 {
 - 时间复杂度：$\mathcal{O}(D^2n)$，其中 $n = \mathcal{O}(\log \textit{num}_2)$ 是 $\textit{num}_2$ 的十进制长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(Dn)$，单个状态的计算时间为 $\mathcal{O}(D)$，所以总的时间复杂度为 $\mathcal{O}(D^2n)$。
 - 空间复杂度：$\mathcal{O}(Dn)$。
 
+## 方法二：贡献法 + 数学公式
+
+定义 $f(n)$ 表示 $[1,n]$ 中所有整数的波动值之和。
+
+答案为
+
+$$
+f(\textit{num}_2) - f(\textit{num}_1-1)
+$$
+
+下面来算 $f(n)$。
+
+如果暴力枚举 $[1,n]$ 中的整数 $x$，计算 $x$ 的波动值，就太慢了。
+
+横看成岭侧成峰，对于 $[1,n]$ 中的整数：
+
+- 在最低三位中，一共出现了多少个峰和谷？
+- 在低二位到低四位中，一共出现了多少个峰和谷？
+- 在低三位到低五位中，一共出现了多少个峰和谷？
+- ……
+
+把整数 $x$ 拆分成五段：
+
+$$
+\textit{prefix}\ |\ \ell\ | \ m\ |\ r\ |\ \textit{suffix}
+$$
+
+设 $n$ 的十进制长度为 $k$。枚举 $\textit{suffix}$ 的长度 $i=0,1,2,\ldots,k-3$。对于一个固定的 $i$，有多少个整数可以让 $\ell < m > r$ 或者 $\ell > m < r$？
+
+定义：
+
+- $\textit{prefix}$ 的最大值为 $\textit{maxPrefix} = \left\lfloor\dfrac{n}{10^{i+3}}\right\rfloor$。
+- 在上界约束下，$\ell$ 的最大值为 $L = \left\lfloor\dfrac{n}{10^{i+2}}\right\rfloor\bmod 10$。
+- 在上界约束下，$m$ 的最大值为 $M = \left\lfloor\dfrac{n}{10^{i+1}}\right\rfloor\bmod 10$。
+- 在上界约束下，$r$ 的最大值为 $R = \left\lfloor\dfrac{n}{10^i}\right\rfloor\bmod 10$。
+- 在上界约束下，$\textit{suffix}$ 的最大值为 $\textit{maxSuffix} = n\bmod 10^i$。
+
+### 情况一
+
+$\textit{prefix} < \textit{maxPrefix}$。
+
+此时低位可以随便填。有多少个三元组 $(\ell,m,r)$ 是峰（$\ell < m > r$）？枚举 $\ell = 0,1,2\ldots,9$，枚举 $m=\ell+1,\ell+2,\ldots,9$，那么 $r$ 可以从 $0$ 到 $m-1$，有 $m$ 种填法，所以峰三元组的个数为
+
+$$
+\sum_{\ell=0}^9\sum_{m=\ell+1}^9 m = 285
+$$
+
+由对称性可知，谷三元组的个数也是 $285$。
+
+下文把峰三元组和谷三元组统称为合法三元组。
+
+所以当 $\textit{prefix} < \textit{maxPrefix}$ 时，对于固定的 $\textit{prefix}$ 和固定的 $\textit{suffix}$，有 $285\cdot 2 = 570$ 个合法三元组 $(\ell,m,r)$。
+
+$\textit{prefix}$ 从 $0$ 到 $\textit{maxPrefix}-1$，有 $\textit{maxPrefix}$ 个。在允许前导零的情况下，对于固定的 $\textit{suffix}$，合法三元组的贡献为 $\textit{maxPrefix}\cdot 570$。本题不允许前导零，所以当 $\textit{prefix} = 0$ 且 $\ell=0$ 时，三元组是不合法的，要减掉。$\ell=0$ 的三元组只能是峰三元组，枚举 $m$，不合法的峰三元组的个数为 $\sum\limits_{m=1}^9 m = 45$。所以对于固定的 $\textit{suffix}$，合法三元组的贡献为 $\textit{maxPrefix}\cdot 570 - 45$。
+
+$\textit{suffix}$ 从 $0$ 到 $10^i-1$，有 $10^i$ 个。
+
+所以**情况一对答案的贡献**为
+
+$$
+(\textit{maxPrefix}\cdot 570 - 45)\cdot 10^i
+$$
+
+### 情况二
+
+$\textit{prefix} = \textit{maxPrefix}$ 且 $\ell < L$。
+
+对于固定的 $\ell$ 和固定的 $\textit{suffix}$，峰三元组的个数为
+
+$$
+\sum_{m=\ell+1}^9 m = \dfrac{(\ell+10)(9-\ell)}{2}
+$$
+
+谷三元组的个数为
+
+$$
+\sum_{m=0}^{\ell-1} 9-m = \dfrac{(19-\ell)\ell}{2}
+$$
+
+> **注**：$r$ 的范围是 $[m+1,9]$，有 $9-m$ 种填法。
+
+相加得
+
+$$
+\dfrac{(\ell+10)(9-\ell)}{2} + \dfrac{(19-\ell)\ell}{2} = -\ell^2+9\ell+45
+$$
+
+枚举 $\ell$，累加得
+
+$$
+\sum_{\ell=0}^{L-1} -\ell^2+9\ell+45 = \dfrac{-2L^3 + 30L^2 + 242L}{6}
+$$
+
+所以**情况二对答案的贡献**为
+
+$$
+\dfrac{-2L^3 + 30L^2 + 242L}{6}\cdot 10^i
+$$
+
+### 情况三
+
+$\textit{prefix} = \textit{maxPrefix}$ 且 $\ell = L$ 且 $m < M$。
+
+对于固定的 $\textit{suffix}$，如果 $L+1 < M$，峰三元组的个数为
+
+$$
+\sum_{m = L+1}^{M-1} m = \dfrac{(L+M)(M-L-1)}{2}
+$$
+
+可以把 $M-L-1$ 和 $0$ 取最大值，这样无需讨论 $L+1 < M$ 是否成立，即
+
+$$
+\dfrac{(L+M)\cdot \max(M-L-1, 0)}{2}
+$$
+
+谷三元组的个数为
+
+$$
+\sum_{m = 0}^{\min(L,M)-1} 9-m = \dfrac{(19 - \min(L,M))\cdot \min(L,M)}{2}
+$$
+
+所以**情况三对答案的贡献**为
+
+$$
+\dfrac{(L+M)\cdot \max(M-L-1, 0) + (19 - \min(L,M))\cdot \min(L,M)}{2}\cdot 10^i
+$$
+
+### 情况四
+
+$\textit{prefix} = \textit{maxPrefix}$ 且 $\ell = L$ 且 $m = M$ 且 $r < R$。
+
+如果 $L = M$，没有合法三元组。
+
+如果 $L < M$，那么三元组只能是峰，$r$ 只能在 $[0,\min(M,R)-1]$ 中，有 $\min(M,R)$ 种填法。
+
+如果 $L > M$，那么三元组只能是谷，$r$ 只能在 $[M+1, R-1]$ 中，有 $\max(R-M-1,0)$ 种填法。和 $0$ 取最大值可避免出现负数。
+
+所以**情况四对答案的贡献**为
+
+$$
+\begin{cases} 
+0, & L = M     \\
+\min(M,R)\cdot 10^i, & L < M     \\
+\max(R-M-1,0)\cdot 10^i, & L > M     \\
+\end{cases}
+$$
+
+### 情况五
+
+$\textit{prefix} = \textit{maxPrefix}$ 且 $\ell = L$ 且 $m = M$ 且 $r = R$。
+
+此时必须满足 $(L,M,R)$ 是合法三元组。$\textit{suffix}$ 可以填 $0$ 到 $\textit{maxSuffix}$，有 $\textit{maxSuffix}+1$ 个。
+
+所以**情况五对答案的贡献**为
+
+$$
+\begin{cases}
+0, & (L,M,R)\ 不是合法三元组     \\
+\textit{maxSuffix}+1, & (L,M,R)\ 是合法三元组     \\
+\end{cases}
+$$
+
+综上，枚举 $i=0,1,2,\ldots,k-3$，累加情况一到情况五的贡献，即为 $f(n)$。
+
+```py [sol-Python3]
+class Solution:
+    # 计算 [1, n] 中的整数的波动值之和
+    def calc(self, n: int) -> int:
+        ans = 0
+
+        # 把整数划分成五段：prefix | l | m | r | suffix
+        # 从低到高枚举 (l, m, r) 的位置，计算 (l, m, r) 对答案的贡献
+        pow10 = 1
+        while n >= pow10 * 100:
+            max_prefix = n // (pow10 * 1000)
+
+            # 1. prefix < max_prefix 时，低位不受约束
+            # 但 prefix=0 且 l=0 的情况是不合法的，需要减掉
+            cnt = max_prefix * 570 - 45  # 先不与 pow10 相乘
+
+            n2 = n // pow10
+            L = n2 // 100 % 10
+            M = n2 // 10 % 10
+            R = n2 % 10
+
+            # 2. prefix = max_prefix 且 l < L
+            cnt += (242 + L * 30 - L * L * 2) * L // 6
+
+            # 3. prefix = max_prefix 且 l = L 且 m < M
+            cnt += (L + M) * max(M - L - 1, 0) // 2   # 峰
+            cnt += (19 - min(L, M)) * min(L, M) // 2  # 谷
+
+            # 4. prefix = max_prefix 且 l = L 且 m = M 且 r < R
+            if L < M:  # 只能是峰
+                cnt += min(M, R)
+            elif L > M:  # 只能是谷
+                cnt += max(R - M - 1, 0)
+
+            # 到此为止，suffix 可以随便填，有 pow10 种填法
+            ans += cnt * pow10
+
+            # 5. prefix = max_prefix 且 l = L 且 m = M 且 r = R
+            if (L - M) * (M - R) < 0:  # 峰或谷
+                max_suffix = n % pow10
+                ans += max_suffix + 1  # suffix 可以填 [0, max_suffix] 中的任意整数
+
+            pow10 *= 10
+
+        return ans
+
+    def totalWaviness(self, num1: int, num2: int) -> int:
+        return self.calc(num2) - self.calc(num1 - 1)
+```
+
+```java [sol-Java]
+class Solution {
+    public long totalWaviness(long num1, long num2) {
+        return calc(num2) - calc(num1 - 1);
+    }
+
+    // 计算 [1, n] 中的整数的波动值之和
+    private long calc(long n) {
+        long ans = 0;
+
+        // 把整数划分成五段：prefix | l | m | r | suffix
+        // 从低到高枚举 (l, m, r) 的位置，计算 (l, m, r) 对答案的贡献
+        for (long pow10 = 1; n >= pow10 * 100; pow10 *= 10) {
+            long maxPrefix = n / (pow10 * 1000);
+
+            // 1. prefix < maxPrefix 时，低位不受约束
+            // 但 prefix=0 且 l=0 的情况是不合法的，需要减掉
+            long cnt = maxPrefix * 570 - 45;  // 先不与 pow10 相乘
+
+            long n2 = n / pow10;
+            int L = (int) (n2 / 100 % 10);
+            int M = (int) (n2 / 10 % 10);
+            int R = (int) (n2 % 10);
+
+            // 2. prefix = maxPrefix 且 l < L
+            cnt += (242 + L * 30 - L * L * 2) * L / 6;
+
+            // 3. prefix = maxPrefix 且 l = L 且 m < M
+            cnt += (L + M) * Math.max(M - L - 1, 0) / 2;       // 峰
+            cnt += (19 - Math.min(L, M)) * Math.min(L, M) / 2; // 谷
+
+            // 4. prefix = maxPrefix 且 l = L 且 m = M 且 r < R
+            if (L < M) { // 只能是峰
+                cnt += Math.min(M, R);
+            } else if (L > M) { // 只能是谷
+                cnt += Math.max(R - M - 1, 0);
+            }
+
+            // 到此为止，suffix 可以随便填，有 pow10 种填法
+            ans += cnt * pow10;
+
+            // 5. prefix = maxPrefix 且 l = L 且 m = M 且 r = R
+            if ((L - M) * (M - R) < 0) { // 峰或谷
+                long maxSuffix = n % pow10;
+                ans += maxSuffix + 1; // suffix 可以填 [0, maxSuffix] 中的任意整数
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 计算 [1, n] 中的整数的波动值之和
+    long long calc(long long n) {
+        long long ans = 0;
+
+        // 把整数划分成五段：prefix | l | m | r | suffix
+        // 从低到高枚举 (l, m, r) 的位置，计算 (l, m, r) 对答案的贡献
+        for (long long pow10 = 1; n >= pow10 * 100; pow10 *= 10) {
+            long long max_prefix = n / (pow10 * 1000);
+
+            // 1. prefix < max_prefix 时，低位不受约束
+            // 但 prefix=0 且 l=0 的情况是不合法的，需要减掉
+            long long cnt = max_prefix * 570 - 45; // 先不与 pow10 相乘
+
+            long long n2 = n / pow10;
+            int L = n2 / 100 % 10;
+            int M = n2 / 10 % 10;
+            int R = n2 % 10;
+
+            // 2. prefix = max_prefix 且 l < L
+            cnt += (242 + L * 30 - L * L * 2) * L / 6;
+
+            // 3. prefix = max_prefix 且 l = L 且 m < M
+            cnt += (L + M) * max(M - L - 1, 0) / 2;  // 峰
+            cnt += (19 - min(L, M)) * min(L, M) / 2; // 谷
+
+            // 4. prefix = max_prefix 且 l = L 且 m = M 且 r < R
+            if (L < M) { // 只能是峰
+                cnt += min(M, R);
+            } else if (L > M) { // 只能是谷
+                cnt += max(R - M - 1, 0);
+            }
+
+            // 到此为止，suffix 可以随便填，有 pow10 种填法
+            ans += cnt * pow10;
+
+            // 5. prefix = max_prefix 且 l = L 且 m = M 且 r = R
+            if ((L - M) * (M - R) < 0) { // 峰或谷
+                long long max_suffix = n % pow10;
+                ans += max_suffix + 1; // suffix 可以填 [0, max_suffix] 中的任意整数
+            }
+        }
+
+        return ans;
+    }
+
+public:
+    long long totalWaviness(long long num1, long long num2) {
+        return calc(num2) - calc(num1 - 1);
+    }
+};
+```
+
+```go [sol-Go]
+// 计算 [1, n] 中的整数的波动值之和
+func calc(n int64) (ans int64) {
+	// 把整数划分成五段：prefix | l | m | r | suffix
+	// 从低到高枚举 (l, m, r) 的位置，计算 (l, m, r) 对答案的贡献
+	for pow10 := int64(1); n >= pow10*100; pow10 *= 10 {
+		maxPrefix := n / (pow10 * 1000)
+
+		// 1. prefix < maxPrefix 时，低位不受约束
+		// 但 prefix=0 且 l=0 的情况是不合法的，需要减掉
+		cnt := maxPrefix*570 - 45 // 先不与 pow10 相乘
+
+		n2 := n / pow10
+		L, M, R := n2/100%10, n2/10%10, n2%10
+
+		// 2. prefix = maxPrefix 且 l < L
+		cnt += (242 + L*30 - L*L*2) * L / 6
+
+		// 3. prefix = maxPrefix 且 l = L 且 m < M
+		cnt += (L + M) * max(M-L-1, 0) / 2      // 峰
+		cnt += (19 - min(L, M)) * min(L, M) / 2 // 谷
+
+		// 4. prefix = maxPrefix 且 l = L 且 m = M 且 r < R
+		if L < M { // 只能是峰
+			cnt += min(M, R)
+		} else if L > M { // 只能是谷
+			cnt += max(R-M-1, 0)
+		}
+
+		// 到此为止，suffix 可以随便填，有 pow10 种填法
+		ans += cnt * pow10
+
+		// 5. prefix = maxPrefix 且 l = L 且 m = M 且 r = R
+		if (L-M)*(M-R) < 0 { // 峰或谷
+			maxSuffix := n % pow10
+			ans += maxSuffix + 1 // suffix 可以填 [0, maxSuffix] 中的任意整数
+		}
+	}
+	return
+}
+
+func totalWaviness(num1, num2 int64) int64 {
+	return calc(num2) - calc(num1-1)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\log \textit{num}_2)$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
 ## 专题训练
 
-见下面动态规划题单的「**十、数位 DP**」。
+1. 动态规划题单的「**十、数位 DP**」。
+2. 思维题单的「**§5.5 贡献法**」。
 
 ## 分类题单
 
@@ -424,3 +799,5 @@ func totalWaviness(num1, num2 int64) int64 {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
