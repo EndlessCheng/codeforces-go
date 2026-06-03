@@ -109,13 +109,12 @@ func calc(n int64) (ans int64) {
 	// 从低到高枚举 (l, m, r) 的位置，计算 (l, m, r) 对答案的贡献
 	for pow10 := int64(1); n >= pow10*100; pow10 *= 10 {
 		maxPrefix := n / (pow10 * 1000)
+		n2 := n / pow10
+		L, M, R := n2/100%10, n2/10%10, n2%10
 
 		// 1. prefix < maxPrefix 时，低位不受约束
 		// 但 prefix=0 且 l=0 的情况是不合法的，需要减掉
 		cnt := maxPrefix*570 - 45 // 先不与 pow10 相乘
-
-		n2 := n / pow10
-		L, M, R := n2/100%10, n2/10%10, n2%10
 
 		// 2. prefix = maxPrefix 且 l < L
 		cnt += (242 + L*30 - L*L*2) * L / 6
