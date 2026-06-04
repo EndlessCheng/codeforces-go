@@ -1,14 +1,16 @@
-[视频讲解](https://www.bilibili.com/video/BV1zt4y1R7Tc/) 第三题。
-
 ## 方法一：二分答案 + 数位 DP
 
-由于 $\textit{num}$ 越大，价值和也越大，有单调性，可以二分答案。
+$\textit{num}$ 越大，价值和也越大；$\textit{num}$ 越小，价值和也越小。
 
-于是问题转换成：计算从 $1$ 到 $\textit{num}$ 的价值和，判断其是否 $\le k$。
+据此，可以**二分猜答案**。关于二分算法的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-思路和 [233. 数字 1 的个数](https://leetcode.cn/problems/number-of-digit-one/) 是一样的，原理请看我的 [题解](https://leetcode.cn/problems/number-of-digit-one/solution/by-endlesscheng-h9ua/) 或者视频讲解 [数位 DP 通用模板 v1.0](https://www.bilibili.com/video/BV1rS4y1s721/?t=19m36s)（本题没有下界约束，用 v1.0 就够了）。
+现在问题转化成一个判定性问题：
 
-设 $\textit{num}$ 的二进制长度为 $n$，我们只需要在 [题解](https://leetcode.cn/problems/number-of-digit-one/solution/by-endlesscheng-h9ua/) 的基础上，额外在 $d=1$ 时判断当前下标是否为 $x$ 的倍数，如果是，把 $\textit{cnt}_1$ 加一。
+- 给定 $\textit{num}$，计算从 $1$ 到 $\textit{num}$ 的价值和，判断其是否 $\le k$。
+
+思路和 [233. 数字 1 的个数](https://leetcode.cn/problems/number-of-digit-one/) 是一样的，请看 [我的题解](https://leetcode.cn/problems/number-of-digit-one/solution/by-endlesscheng-h9ua/)。
+
+设 $\textit{num}$ 的二进制长度为 $n$，我们只需要在 233 题的基础上，额外在 $d=1$ 时判断当前下标是否为 $x$ 的倍数，如果是，把 $\textit{cnt}_1$ 加一。
 
 最后还剩一个问题：二分的上界取多少合适？
 
@@ -98,7 +100,7 @@ class Solution {
 class Solution {
 public:
     long long findMaximumNumber(long long k, int x) {
-        auto check = [&](long long num) {
+        auto check = [&](long long num) -> bool {
             int m = __lg(num) + 1;
             vector<vector<long long>> memo(m, vector<long long>(m + 1, -1));
             auto dfs = [&](auto&& dfs, int i, int cnt1, bool is_limit) -> long long {
@@ -180,63 +182,30 @@ func findMaximumNumber(k int64, x int) int64 {
 - 时间复杂度：$\mathcal{O}((x + \log k)^3)$。$\textit{num}$ 的二进制长度为 $\mathcal{O}(x + \log k)$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}((x + \log k)^2)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以动态规划的时间复杂度为 $\mathcal{O}((x + \log k)^2)$。再算上 $\mathcal{O}(x + \log k)$ 的二分次数，总的时间复杂度为 $\mathcal{O}((x + \log k)^3)$。
 - 空间复杂度：$\mathcal{O}((x + \log k)^2)$。
 
-## 方法二：二分答案+数学公式
+## 方法二：二分答案 + 数学公式
 
-举例说明，$1$ 到 $\textit{num}=6$ 的二进制表示如下：
-
-$$
-\begin{aligned}
-&001\\
-&010\\
-&011\\
-&100\\
-&101\\
-&110
-\end{aligned}
-$$
-
-考虑计算 $1$ 到 $\textit{num}$ 的每个比特位上有多少个 $1$。
-
-最低位：相当于计算 $1$ 到 $\textit{num}$ 中有多少个奇数，这有 $\left\lfloor\dfrac{\textit{num}+1}{2}\right\rfloor = 3$ 个。
-
-次低位：我们可以把每个数都除以 $2$（右移 $1$ 位），忽略 $00$，得到：
-
-$$
-\begin{aligned}
-&01\\
-&01\\
-&10\\
-&10\\
-&11
-\end{aligned}
-$$
-
-同样地，考虑其中的奇数，发现 $1$ 到 $\left\lfloor\dfrac{\textit{num}}{2}\right\rfloor-1$ 中的每个奇数都出现了 $2$ 次，但是 $\left\lfloor\dfrac{\textit{num}}{2}\right\rfloor$ 只出现了 $1$ 次。所以次低位中有 $3$ 个 $1$。
-
-从右往左第三位：我们可以把每个数都除以 $2^2=4$（右移 $2$ 位）。同样地，考虑其中的奇数，发现 $1$ 到 $\left\lfloor\dfrac{\textit{num}}{4}\right\rfloor-1$ 中的每个奇数都出现了 $4$ 次，但是 $\left\lfloor\dfrac{\textit{num}}{4}\right\rfloor=1$ 出现了 $3$ 次。这个 $3$ 怎么算？我们可以把 $\textit{num}=6$ 和 $2^2-1 = 3$ 取 AND，得到 $2$，说明把 $\left\lfloor\dfrac{\textit{num}}{4}\right\rfloor$ 作为前缀的二进制数，最低位和次低位是 $00,01,10$，这有 $2+1=3$ 个。
-
-一般地，从低到高第 $i$ 位（$i$ 从 $0$ 开始）的 $1$ 的个数，我们分两部分计算：
-
-1. 设 $n = \left\lfloor\dfrac{\textit{num}}{2^i}\right\rfloor$，从 $1$ 到 $n-1$ 有 $\left\lfloor\dfrac{n}{2}\right\rfloor$ 个奇数，每个奇数作为 $1$ 到 $\textit{num}$ 的二进制数的前缀，出现了 $2^i$ 次。所以一共有 $\left\lfloor\dfrac{n}{2}\right\rfloor\cdot 2^i$ 个 $1$。
-2. $n$ 单独作为 $1$ 到 $\textit{num}$ 的二进制数的前缀，出现了 $(\textit{num} & (2^i-1))+1$ 次。如果 $n$ 是奇数，那么它为第 $i$ 位贡献了 $(\textit{num} & (2^i-1))+1$ 个 $1$，否则为第 $i$ 位贡献了 $0$ 个 $1$。
-
-最后，按照题目要求，只统计 $x$ 的倍数位置上的 $1$ 的个数。
+做法同 [233 题我的题解](https://leetcode.cn/problems/number-of-digit-one/solution/by-endlesscheng-h9ua/) 的方法二。
 
 ```py [sol-Python3]
 class Solution:
     def findMaximumNumber(self, k: int, x: int) -> int:
+        # 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
         def count(num: int) -> int:
             res = 0
-            # 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
             i = x - 1  # 注意比特位从 0 开始，不是从 1 开始，所以要减一
             while num >> i:
-                n = num >> i
-                res += n >> 1 << i
-                if n & 1:
-                    mask = (1 << i) - 1
-                    res += (num & mask) + 1
+                max_prefix = num >> (i + 1)
+                # 1. prefix < max_prefix 时，低位不受约束
+                # i 位填 1，suffix 随便填
+                res += max_prefix << i
+                if num >> i & 1:
+                    # 2. prefix = max_prefix 且 i 位可以填 1
+                    # i 位填 1，suffix 可以填 [0, max_suffix] 中的任意整数
+                    max_suffix = num & ((1 << i) - 1)
+                    res += max_suffix + 1
                 i += x
             return res
+
         return bisect_left(range((k + 1) << x), k + 1, key=count) - 1
 ```
 
@@ -257,17 +226,21 @@ class Solution {
         return left;
     }
 
+    // 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
     private long countDigitOne(long num, int x) {
         long res = 0;
-        // 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
-        // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+        // 注意比特位从 0 开始，不是从 1 开始，所以 i 从 x - 1 开始
         for (int i = x - 1; (num >> i) > 0; i += x) {
-            long n = num >> i;
-            res += n >> 1 << i;
-            if ((n & 1) > 0) {
-                long mask = (1L << i) - 1;
-                res += (num & mask) + 1;
-            }
+			long maxPrefix = num >> (i + 1);
+			// 1. prefix < maxPrefix 时，低位不受约束
+			// i 位填 1，suffix 随便填
+			res += maxPrefix << i;
+			if ((num >> i & 1) > 0) {
+				// 2. prefix = maxPrefix 且 i 位可以填 1
+				// i 位填 1，suffix 可以填 [0, maxSuffix] 中的任意整数
+				long maxSuffix = num & ((1L << i) - 1);
+				res += maxSuffix + 1;
+			}
         }
         return res;
     }
@@ -278,16 +251,20 @@ class Solution {
 class Solution {
 public:
     long long findMaximumNumber(long long k, int x) {
-        auto check = [&](long long num) {
+        // 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
+        auto check = [&](long long num) -> bool {
             long long res = 0;
-            // 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
-            // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+            // 注意比特位从 0 开始，不是从 1 开始，所以 i 从 x - 1 开始
             for (int i = x - 1; num >> i; i += x) {
-                long long n = num >> i;
-                res += n >> 1 << i;
-                if (n & 1) {
-                    long long mask = (1LL << i) - 1;
-                    res += (num & mask) + 1;
+                long long max_prefix = num >> (i + 1);
+                // 1. prefix < max_prefix 时，低位不受约束
+                // i 位填 1，suffix 随便填
+                res += max_prefix << i;
+                if (num >> i & 1) {
+                    // 2. prefix = max_prefix 且 i 位可以填 1
+                    // i 位填 1，suffix 可以填 [0, max_suffix] 中的任意整数
+                    long long max_suffix = num & ((1LL << i) - 1);
+                    res += max_suffix + 1;
                 }
             }
             return res <= k;
@@ -306,22 +283,26 @@ public:
 
 ```go [sol-Go]
 func findMaximumNumber(k int64, x int) int64 {
-    ans := sort.Search(int(k+1)<<x, func(num int) bool {
-        num++
-        res := 0
-        // 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
-        // 注意比特位从 0 开始，不是从 1 开始，所以要减一
-        for i := x - 1; num>>i > 0; i += x {
-            n := num >> i
-            res += n >> 1 << i
-            if n&1 > 0 {
-                mask := 1<<i - 1
-                res += num&mask + 1
-            }
-        }
-        return res > int(k)
-    })
-    return int64(ans)
+	ans := sort.Search(int(k+1)<<x, func(num int) bool {
+		num++
+		// 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
+		// 注意比特位从 0 开始，不是从 1 开始，所以 i 从 x - 1 开始
+		res := 0
+		for i := x - 1; num>>i > 0; i += x {
+			maxPrefix := num >> (i + 1)
+			// 1. prefix < maxPrefix 时，低位不受约束
+			// i 位填 1，suffix 随便填
+			res += maxPrefix << i
+			if num>>i&1 > 0 {
+				// 2. prefix = maxPrefix 且 i 位可以填 1
+				// i 位填 1，suffix 可以填 [0, maxSuffix] 中的任意整数
+				maxSuffix := num & (1<<i - 1)
+				res += maxSuffix + 1
+			}
+		}
+		return res > int(k)
+	})
+	return int64(ans)
 }
 ```
 
@@ -429,7 +410,11 @@ func findMaximumNumber(K int64, x int) int64 {
 - 时间复杂度：$\mathcal{O}(x+\log k)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-更多相似题目，见下面的位运算题单。
+## 专题训练
+
+1. 动态规划题单的「**十、数位 DP**」。
+2. 思维题单的「**§5.5 贡献法**」。
+3. 位运算题单的「**五、试填法**」。
 
 ## 分类题单
 

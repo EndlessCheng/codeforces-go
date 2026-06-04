@@ -30,11 +30,15 @@ func findMaximumNumber2(k int64, x int) int64 {
 		// 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
 		// 注意比特位从 0 开始，不是从 1 开始，所以要减一
 		for i := x - 1; num>>i > 0; i += x {
-			n := num >> i
-			res += n >> 1 << i
-			if n&1 > 0 {
-				mask := 1<<i - 1
-				res += num&mask + 1
+			maxPrefix := num >> (i + 1)
+			// 1. prefix < maxPrefix 时，低位不受约束
+			// i 位填 1，suffix 随便填
+			res += maxPrefix << i
+			if num>>i&1 > 0 {
+				// 2. prefix = maxPrefix 且 i 位可以填 1
+				// i 位填 1，suffix 可以填 [0, maxSuffix] 中的任意整数
+				maxSuffix := num & (1<<i - 1)
+				res += maxSuffix + 1
 			}
 		}
 		return res > int(k)
