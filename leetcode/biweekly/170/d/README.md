@@ -445,10 +445,10 @@ $$
 
 $\textit{prefix} < \textit{maxPrefix}$。
 
-此时低位可以随便填。有多少个三元组 $(\ell,m,r)$ 是峰（$\ell < m > r$）？枚举 $\ell = 0,1,2\ldots,9$，枚举 $m=\ell+1,\ell+2,\ldots,9$，那么 $r$ 可以从 $0$ 到 $m-1$，有 $m$ 种填法，所以峰三元组的个数为
+此时低位可以随便填。有多少个三元组 $(\ell,m,r)$ 是峰（$\ell < m > r$）？枚举 $\ell = 0,1,2\ldots,8$，枚举 $m=\ell+1,\ell+2,\ldots,9$，那么 $r$ 可以从 $0$ 到 $m-1$，有 $m$ 种填法，所以峰三元组的个数为
 
 $$
-\sum_{\ell=0}^9\sum_{m=\ell+1}^9 m = 285
+\sum_{\ell=0}^8\sum_{m=\ell+1}^9 m = 285
 $$
 
 由对称性可知，谷三元组的个数也是 $285$。
@@ -638,7 +638,7 @@ class Solution {
 
             // 1. prefix < maxPrefix 时，低位不受约束
             // 但 prefix=0 且 l=0 的情况是不合法的，需要减掉
-            long cnt = maxPrefix * 570 - 45;  // 先不与 pow10 相乘
+            long cnt = maxPrefix * 570 - 45; // 先不与 pow10 相乘
 
             // 2. prefix = maxPrefix 且 l < L
             cnt += (121 + L * 15 - L * L) * L / 3;

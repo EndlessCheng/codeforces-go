@@ -53,7 +53,7 @@ class Solution {
 
     private long calc(int[] nums, int distinctLimit, int k, int m) {
         Map<Integer, Integer> cnt = new HashMap<>();
-        int geM = 0;  // 窗口中的出现次数 >= m 的元素个数
+        int geM = 0; // 窗口中的出现次数 >= m 的元素个数
         int left = 0;
         long ans = 0;
         for (int x : nums) {
@@ -92,7 +92,7 @@ public:
     long long countSubarrays(vector<int>& nums, int k, int m) {
         auto calc = [&](int distinct_limit) -> long long {
             unordered_map<int, int> cnt;
-            int ge_m = 0;  // 窗口中的出现次数 >= m 的元素个数
+            int ge_m = 0; // 窗口中的出现次数 >= m 的元素个数
             int left = 0;
             long long ans = 0;
             for (int x : nums) {

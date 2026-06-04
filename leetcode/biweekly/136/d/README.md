@@ -179,8 +179,8 @@ public:
                     continue;
                 }
                 dfs(y, x);
-                int w = 2 - y % 2;  // 从 x 到 y 的边权
-                int max_y = get<0>(sub_res[y]) + w;  // 从 x 出发，往 y 方向的最大深度
+                int w = 2 - y % 2; // 从 x 到 y 的边权
+                int max_y = get<0>(sub_res[y]) + w; // 从 x 出发，往 y 方向的最大深度
                 if (max_y > max_d) {
                     max_d2 = max_d;
                     max_d = max_y;
@@ -206,8 +206,8 @@ public:
                 // 站在 x 的角度，不往 y 走，能走多远？
                 // 要么往上走（from_up），要么往除了 y 的其余子树走（mx），二者取最大值
                 int mx = y != my ? max_d : max_d2;
-                int w = 2 - x % 2;  // 从 y 到 x 的边权
-                reroot(y, x, max(from_up, mx) + w);  // 对于 y 来说，加上从 y 到 x 的边权
+                int w = 2 - x % 2; // 从 y 到 x 的边权
+                reroot(y, x, max(from_up, mx) + w); // 对于 y 来说，加上从 y 到 x 的边权
             }
         };
         reroot(0, -1, 0);
