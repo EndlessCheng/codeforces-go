@@ -29,9 +29,15 @@
 
 递归入口：$\textit{dfs}(0,0,0,0,\texttt{true},\texttt{true})$。
 
-⚠**小技巧**：有没有觉得初始化 $\textit{memo}$ 数组为 $-1$ 比较麻烦？我们可以把要记忆化的值加一，并在取值时减一，就可以把 $\textit{memo}$ 数组初始化成 $0$ 了。
-
 [本题视频讲解](https://www.bilibili.com/video/BV1fbUKBqEa7/?t=17m20s)，欢迎点赞关注~
+
+#### 答疑
+
+**问**：下面的代码，为什么只在 `!limitLow && !limitHigh` 成立时才记忆化？（Python 选手可以跳过这个问题）
+
+**答**：记忆化的原理是，当我们再次遇到相同状态时，可以直接返回 $\textit{memo}$ 中保存的结果。数位 DP 本质是暴力枚举，枚举每个数位填什么。$\textit{low}$ 是我们枚举的第一个数，$\textit{high}$ 是我们枚举的最后一个数。所以「填入的数字组成了 $\textit{low}$」以及「填入的数字组成了 $\textit{high}$」在整个递归过程中只会枚举一次。状态 $(\ldots, \textit{limitLow}, \textit{limitHigh})$ 中的 $\textit{limitLow}$ 和 $\textit{limitHigh}$ 如果其中一个是 $\texttt{true}$，说明我们正在填 $\textit{low}$ 或者正在填 $\textit{high}$，**这样的状态只会出现一次，不会再次遇到**，所以不需要记忆化这种状态。
+
+**小技巧**：有没有觉得初始化 $\textit{memo}$ 数组为 $-1$ 比较麻烦？我们可以把要记忆化的值加一，并在取值时减一，就可以把 $\textit{memo}$ 数组初始化成 $0$ 了。
 
 下面是数位 DP v2.1 模板。相比 v2.0，不需要写 $\textit{isNum}$ 参数。
 
