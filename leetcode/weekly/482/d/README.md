@@ -69,7 +69,7 @@ class Solution {
         char[] highS = String.valueOf(high).toCharArray();
 
         int n = highS.length;
-        // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+        // diff 最小 -floor(n/2) * 9，最大 ceil(n/2) * 9，值域大小 n * 9
         long[][] memo = new long[n][n * 9 + 1];
 
         return dfs(0, n / 2 * 9, true, true, lowS, highS, memo);
@@ -130,7 +130,7 @@ public:
         int n = high_s.size();
         int diff_lh = n - low_s.size();
 
-        // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+        // diff 最小 -floor(n/2) * 9，最大 ceil(n/2) * 9，值域大小 n * 9
         vector memo(n, vector<long long>(n * 9 + 1, -1));
 
         auto dfs = [&](this auto&& dfs, int i, int diff, bool limit_low, bool limit_high) -> long long {
@@ -187,7 +187,7 @@ func countBalanced(low, high int64) int64 {
 	diffLH := n - len(lowS)
 	memo := make([][]int64, n)
 	for i := range memo {
-		// diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+		// diff 最小 -floor(n/2) * 9，最大 ceil(n/2) * 9，值域大小 n * 9
 		memo[i] = make([]int64, n*9+1)
 	}
 
@@ -283,7 +283,7 @@ class Solution {
         char[] highS = String.valueOf(high).toCharArray();
 
         int n = highS.length;
-        // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+        // diff 最小 -floor(n/2) * 9，最大 ceil(n/2) * 9，值域大小 n * 9
         long[][] memo = new long[n][n * 9 + 1];
 
         return dfs(0, n / 2 * 9, true, true, lowS, highS, memo);
@@ -335,7 +335,7 @@ public:
         int n = high_s.size();
         int diff_lh = n - low_s.size();
 
-        // diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+        // diff 最小 -floor(n/2) * 9，最大 ceil(n/2) * 9，值域大小 n * 9
         vector memo(n, vector<long long>(n * 9 + 1, -1));
 
         auto dfs = [&](this auto&& dfs, int i, int diff, bool limit_low, bool limit_high) -> long long {
@@ -383,7 +383,7 @@ func countBalanced(low, high int64) int64 {
 	diffLH := n - len(lowS)
 	memo := make([][]int64, n)
 	for i := range memo {
-		// diff 至少 floor(n/2) * 9，至多 ceil(n/2) * 9，值域大小 n * 9
+		// diff 最小 -floor(n/2) * 9，最大 ceil(n/2) * 9，值域大小 n * 9
 		memo[i] = make([]int64, n*9+1)
 	}
 
