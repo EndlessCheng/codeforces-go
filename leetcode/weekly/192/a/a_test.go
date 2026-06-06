@@ -6,8 +6,7 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {
-	t.Log("Current test is [a]")
+func Test_a(t *testing.T) {
 	examples := [][]string{
 		{
 			`[2,5,1,3,4,7]`, `3`, 
@@ -21,8 +20,14 @@ func Test(t *testing.T) {
 			`[1,1,2,2]`, `2`, 
 			`[1,2,1,2]`,
 		},
-		// TODO 测试参数的下界和上界
-		
+		{
+			`[0,1,2,3,4,5]`, `3`,
+			`[]`,
+		},
+		{
+			`[0,1,2,3,4,5,6,7]`, `4`,
+			`[]`,
+		},
 	}
 	targetCaseNum := 0
 	if err := testutil.RunLeetCodeFuncWithExamples(t, shuffle, examples, targetCaseNum); err != nil {
