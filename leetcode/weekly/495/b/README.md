@@ -158,7 +158,7 @@ func (h *hp) Pop() any     { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; retur
 - 时间复杂度：
    - 初始化：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{events}$ 的长度。
    - $\texttt{updatePriority}$：$\mathcal{O}(\log (n+q))$，其中 $q$ 是 $\textit{updatePriority}$ 的调用次数。
-   - $\texttt{pollHighest}$：均摊 $\mathcal{O}(\log (n+q))$。
+   - $\texttt{pollHighest}$：均摊 $\mathcal{O}(\log (n+q))$。每个元素至多入堆出堆各一次。
 - 空间复杂度：$\mathcal{O}(n+q)$。
 
 ## 专题训练
@@ -181,3 +181,7 @@ func (h *hp) Pop() any     { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; retur
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
