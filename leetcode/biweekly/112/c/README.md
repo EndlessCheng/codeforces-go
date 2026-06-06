@@ -1,6 +1,25 @@
-[【套路】教你解决定长滑窗！适用于所有定长滑窗题目！](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)
+**前置知识**：[【套路】教你解决定长滑窗！适用于所有定长滑窗题目！](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)
 
-### 定长滑窗套路
+## 分析
+
+给你一个数组 $a$，如何统计 $a$ 中有多少个不同元素？
+
+把 $a$ 中元素全部扔进一个哈希集合中，哈希集合的大小即为 $a$ 中不同元素个数。
+
+然而，对于滑动窗口来说，当元素 $x$ 离开窗口时，要不要把 $x$ 从哈希集合中删除呢？
+
+- 如果 $x$ 是窗口中的唯一元素，那么删除。
+- 如果 $x$ 不是窗口中的唯一元素，那么不能删除。
+
+怎么知道 $x$ 是不是窗口中的唯一元素？
+
+我们需要知道 $x$ 在窗口中的出现次数。所以不用哈希集合，而是用**哈希表**，统计窗口中的每个元素的出现次数。哈希表的 key 是元素值，value 是元素的出现次数。
+
+当 $x$ 进入窗口时，把 $x$ 在窗口中的出现次数增加一。
+
+当 $x$ 离开窗口时，把 $x$ 在窗口中的出现次数减少一。如果减一后，$x$ 在窗口中的出现次数等于 $0$，那么从哈希表中删除 $x$。
+
+## 总结
 
 1. **入**：元素 $x=\textit{nums}[i]$ 进入窗口，把 $x$ 加到元素和 $s$ 中，把 $x$ 加到哈希表中（统计 $x$ 的出现次数）。如果 $i<k-1$ 则重复第一步。
 2. **更新**：如果哈希表的大小 $\ge m$，用 $s$ 更新答案的最大值。
