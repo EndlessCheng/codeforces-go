@@ -1,3 +1,5 @@
+## 方法一：遍历二进制数
+
 遍历二进制 $n$，如果相邻两个数字都是 $1$，计数器 $\textit{cnt}$ 增加一。
 
 最后判断 $\textit{cnt}$ 是否等于 $1$。
@@ -57,6 +59,52 @@ func consecutiveSetBits(n int) bool {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(\log n)$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：位运算技巧
+
+由于 `n` 和 `n >> 1` 错开一位，所以计算 `n & (n >> 1)` 等价于计算所有相邻比特位的 `&`。所有相邻的 $11$ 变成 $1$，其余变成 $0$。
+
+例如二进制数 $n = 10011001110$，`n & (n >> 1)` 为 $1000110$。 
+
+如果 $n$ 只有一个 $11$，那么 `n & (n >> 1)` 只有一个 $1$，问题变成判断一个数是不是 [231. 2 的幂](https://leetcode.cn/problems/power-of-two/)，请看 [我的题解](https://leetcode.cn/problems/power-of-two/solutions/2973442/yan-ge-zheng-ming-yi-xing-xie-fa-pythonj-h04o/)。
+
+```py [sol-Python3]
+class Solution:
+    def consecutiveSetBits(self, n: int) -> bool:
+        m = n & (n >> 1)
+        return m > 0 and m & (m - 1) == 0
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean consecutiveSetBits(int n) {
+        int m = n & (n >> 1);
+        return m > 0 && (m & (m - 1)) == 0;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool consecutiveSetBits(int n) {
+        int m = n & (n >> 1);
+        return m > 0 && (m & (m - 1)) == 0;
+    }
+};
+```
+
+```go [sol-Go]
+func consecutiveSetBits(n int) bool {
+	m := n & (n >> 1)
+	return m > 0 && m&(m-1) == 0
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
