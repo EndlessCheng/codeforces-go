@@ -1,7 +1,7 @@
 对于 DP 问题，思考「**最后一步发生了什么**」，可以帮助我们找到状态定义和状态转移方程。
 
 - 如果没有选 $\textit{nums}[n-1]$，问题变成在前 $n-1$ 个数中选子数组。
-- 如果选了 $\textit{nums}[n-1]$，还需要枚举子数组的左端点 $L$，问题变成在 $[0,L-1]$ 中选子数组。
+- 如果选了 $\textit{nums}[n-1]$，还需要枚举子数组的左端点 $L$，问题变成在前 $L$ 个数（下标 $[0,L-1]$）中选子数组。
 
 和划分型 DP 一样，定义 $f[i][j]$ 表示在 $\textit{nums}$ 的前 $j$ 个数（下标 $[0,j-1]$）中选出**恰好** $i$ 个连续子数组，所选元素之和的最大值。枚举恰好选 $i=1,2,\ldots,m$ 个子数组，答案就是 $f[i][n]$ 的最大值。
 
@@ -14,7 +14,7 @@
 
 设 $\textit{nums}$ 的**前缀和**数组为 $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。子数组 $[L,j-1]$ 的元素和可以表示为 $s[j] - s[L]$。
 
-取最大值，得
+所有情况取最大值，得到状态转移方程
 
 $$
 f[i][j] = \max\left\{f[i][j-1], \max_{L=j-r}^{j-\ell} f[i-1][L] + s[j] - s[L] \right\}
@@ -31,6 +31,8 @@ $$
 
 ## 单调队列优化
 
+式子变形，把和 $L$ 无关的 $s[j]$ 提到外面：
+
 $$
 \max_{L=j-r}^{j-\ell} f[i-1][L] + s[j] - s[L] = s[j] + \max_{L=j-r}^{j-\ell} f[i-1][L] - s[L]
 $$
@@ -41,7 +43,7 @@ $$
 \max_{L=j-r}^{j-\ell} f[i-1][L] - s[L] = \max_{L=j-r}^{j-\ell} d_{i-1}[L]
 $$
 
-由于 $j$ 每增加 $1$，窗口 $[j-r,j-\ell]$ 就向右滑动 $1$，所以这是一个标准的 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/) 问题，请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
+由于 $j$ 每增加 $1$，定长窗口 $[j-r,j-\ell]$ 就向右滑动 $1$，所以这是一个标准的 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/) 问题，请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
 
 用单调队列优化后，就可以 $\mathcal{O}(1)$ 计算转移了。
 
@@ -143,7 +145,7 @@ public:
 
         // f[i][j] 表示在前 j 个数（下标 0 到 j-1）中选出恰好 i 个子数组，所选元素之和的最大值
         vector f(m + 1, vector<long long>(n + 1, LLONG_MIN / 2)); // 防止溢出
-        fill(f[0].begin(), f[0].end(), 0);
+        ranges::fill(f[0], 0);
         long long ans = LLONG_MIN;
 
         for (int i = 1; i <= m; i++) {
