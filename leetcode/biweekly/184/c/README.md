@@ -6,7 +6,7 @@
 
 特别地，如果 $s[0] = \texttt{1}$，那么第一段可以全选，最小值可以视作 $0$（题目保证 $\textit{nums}[i]$ 非负）。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1mREx6KEp1/?t=5m55s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

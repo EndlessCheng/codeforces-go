@@ -4,8 +4,6 @@
 
 最后判断 $\textit{cnt}$ 是否等于 $1$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def consecutiveSetBits(self, n: int) -> bool:
@@ -63,24 +61,26 @@ func consecutiveSetBits(n int) bool {
 
 ## 方法二：位运算技巧
 
-由于 `n` 和 `n >> 1` 错开一位，所以计算 `n & (n >> 1)` 等价于计算所有相邻比特位的 `&`。所有相邻的 $11$ 变成 $1$，其余变成 $0$。
+对于 `n` 和 `n >> 1` 这两个二进制数，同一个比特位上的数字，对应着 $n$ 中一对相邻比特位上的数字。所以计算 `n & (n >> 1)` 等价于计算 $n$ 的所有相邻比特位的 `&`。所有相邻的 $11$ 变成 $1$，其余变成 $0$。
 
 例如二进制数 $n = 10011001110$，`n & (n >> 1)` 为 $1000110$。 
 
-如果 $n$ 只有一个 $11$，那么 `n & (n >> 1)` 只有一个 $1$，问题变成判断一个数是不是 [231. 2 的幂](https://leetcode.cn/problems/power-of-two/)，请看 [我的题解](https://leetcode.cn/problems/power-of-two/solutions/2973442/yan-ge-zheng-ming-yi-xing-xie-fa-pythonj-h04o/)。
+$n$ 只有一个 $11$，等价于 `n & (n >> 1)` 只有一个 $1$，即 [231. 2 的幂](https://leetcode.cn/problems/power-of-two/)。请看 [我的题解](https://leetcode.cn/problems/power-of-two/solutions/2973442/yan-ge-zheng-ming-yi-xing-xie-fa-pythonj-h04o/)。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1mREx6KEp1/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def consecutiveSetBits(self, n: int) -> bool:
-        m = n & (n >> 1)
-        return m > 0 and m & (m - 1) == 0
+        m = n & (n >> 1)  # 所有相邻比特位的 &
+        return m > 0 and m & (m - 1) == 0  # m 是否恰好有一个 1
 ```
 
 ```java [sol-Java]
 class Solution {
     public boolean consecutiveSetBits(int n) {
-        int m = n & (n >> 1);
-        return m > 0 && (m & (m - 1)) == 0;
+        int m = n & (n >> 1); // 所有相邻比特位的 &
+        return m > 0 && (m & (m - 1)) == 0; // m 是否恰好有一个 1
     }
 }
 ```
@@ -89,16 +89,16 @@ class Solution {
 class Solution {
 public:
     bool consecutiveSetBits(int n) {
-        int m = n & (n >> 1);
-        return m > 0 && (m & (m - 1)) == 0;
+        int m = n & (n >> 1); // 所有相邻比特位的 &
+        return m > 0 && (m & (m - 1)) == 0; // m 是否恰好有一个 1
     }
 };
 ```
 
 ```go [sol-Go]
 func consecutiveSetBits(n int) bool {
-	m := n & (n >> 1)
-	return m > 0 && m&(m-1) == 0
+	m := n & (n >> 1) // 所有相邻比特位的 &
+	return m > 0 && m&(m-1) == 0 // m 是否恰好有一个 1
 }
 ```
 

@@ -6,11 +6,13 @@ $$
 
 个灯泡。
 
-有多少个单位时间被至少一个区间覆盖？这等价于 [56. 合并区间](https://leetcode.cn/problems/merge-intervals/) 之后的区间长度之和 $\textit{sumLen}$，请看 [我的题解](https://leetcode.cn/problems/merge-intervals/solutions/2798138/jian-dan-zuo-fa-yi-ji-wei-shi-yao-yao-zh-f2b3/)。
+有多少个单位时间被至少一个区间覆盖？这等价于 [56. 合并区间](https://leetcode.cn/problems/merge-intervals/) 之后的区间长度（整数个数）之和 $\textit{sumLen}$，请看 [我的题解](https://leetcode.cn/problems/merge-intervals/solutions/2798138/jian-dan-zuo-fa-yi-ji-wei-shi-yao-yao-zh-f2b3/)。
 
-答案为 $\textit{bulbs}\cdot \textit{sumLen}$。
+答案为 
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+$$
+\textit{bulbs}\cdot \textit{sumLen}
+$$
 
 ```py [sol-Python3]
 class Solution:
