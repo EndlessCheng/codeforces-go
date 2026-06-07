@@ -12,7 +12,7 @@ func sumOfGoodIntegers1(n, k int) (ans int) {
 	return
 }
 
-func sumOfGoodIntegers(n, k int) int {
+func sumOfGoodIntegers2(n, k int) int {
 	low := max(n-k, 1)
 	high := n + k
 	m := bits.Len(uint(high))
@@ -59,4 +59,38 @@ func sumOfGoodIntegers(n, k int) int {
 	}
 
 	return dfs(m-1, true, true).sum
+}
+
+// 计算小于 high 的正整数中，AND n 等于 0 的数之和
+func calc(high, n int) (res int) {
+	m := bits.Len(uint(high))
+	freeMask := (1<<m - 1) &^ n
+	freeCnt := bits.OnesCount(uint(freeMask))
+	prefix := 0
+
+	for i := m - 1; i >= 0; i-- {
+		if n>>i&1 == 0 {
+			freeCnt--
+			freeMask ^= 1 << i
+		}
+		if high>>i&1 > 0 {
+			// 这一位填 0
+			res += prefix << freeCnt            // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
+			res += 1 << freeCnt >> 1 * freeMask // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
+
+			// 这一位填 1，继续计算
+			if n>>i&1 > 0 { // 这一位不能填 1
+				break
+			}
+			prefix |= 1 << i
+		}
+	}
+
+	return
+}
+
+func sumOfGoodIntegers(n, k int) int {
+	low := max(n-k, 1)
+	high := n + k
+	return calc(high+1, n) - calc(low, n)
 }

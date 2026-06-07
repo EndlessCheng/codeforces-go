@@ -90,7 +90,7 @@ class Solution:
 
             for d in range(lo, hi + 1):
                 bit = d << i
-                if n & bit:
+                if n & bit:  # 不满足要求
                     continue
                 sub_cnt, sub_sum = dfs(i - 1, limit_low and d == lo, limit_high and d == hi)
                 cnt += sub_cnt  # 累加子树的合法二进制数个数
@@ -249,6 +249,162 @@ func sumOfGoodIntegers(n, k int) int {
 
 - 时间复杂度：$\mathcal{O}(\log (n + k))$。由于每个状态只会计算一次，记忆化搜索的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(\log (n + k))$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(\log (n + k))$。
 - 空间复杂度：$\mathcal{O}(\log (n + k))$。保存多少状态，就需要多少空间。
+
+## 方法三：贡献法
+
+```py [sol-Python3]
+class Solution:
+    # 计算小于 high 的正整数中，AND n 等于 0 的数之和
+    def calc(self, high: int, n: int) -> int:
+        m = high.bit_length()
+        free_mask = ((1 << m) - 1) & ~n
+        free_cnt = free_mask.bit_count()
+        res = prefix = 0
+
+        for i in range(m - 1, -1, -1):
+            if n >> i & 1 == 0:
+                free_cnt -= 1
+                free_mask ^= 1 << i
+
+            if high >> i & 1:
+                # 这一位填 0
+                res += prefix << free_cnt  # 前缀的贡献：后面 free_cnt 个位置，0 和 1 随便填
+                res += (1 << free_cnt >> 1) * free_mask  # 后缀的贡献：每个 free 位置固定为 1 时，其余 free_cnt-1 个位置 0 和 1 随便填
+
+                # 这一位填 1，继续计算
+                if n >> i & 1:  # 这一位不能填 1
+                    break
+                prefix |= 1 << i
+
+        return res
+
+    def sumOfGoodIntegers(self, n: int, k: int) -> int:
+        low = max(n - k, 1)
+        high = n + k
+        return self.calc(high + 1, n) - self.calc(low, n)
+```
+
+```java [sol-Java]
+class Solution {
+    public int sumOfGoodIntegers(int n, int k) {
+        int low = Math.max(n - k, 1);
+        int high = n + k;
+        return calc(high + 1, n) - calc(low, n);
+    }
+
+    // 计算小于 high 的正整数中，AND n 等于 0 的数之和
+    private int calc(int high, int n) {
+        int m = 32 - Integer.numberOfLeadingZeros(high);
+        int freeMask = ((1 << m) - 1) & ~n;
+        int freeCnt = Integer.bitCount(freeMask);
+        int prefix = 0;
+        int res = 0;
+
+        for (int i = m - 1; i >= 0; i--) {
+            if ((n >> i & 1) == 0) {
+                freeCnt--;
+                freeMask ^= 1 << i;
+            }
+
+            if ((high >> i & 1) > 0) {
+                // 这一位填 0
+                res += prefix << freeCnt; // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
+                res += ((1 << freeCnt) >> 1) * freeMask; // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
+
+                // 这一位填 1，继续计算
+                if ((n >> i & 1) > 0) { // 这一位不能填 1
+                    break;
+                }
+                prefix |= 1 << i;
+            }
+        }
+
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 计算小于 high 的正整数中，AND n 等于 0 的数之和
+    int calc(int high, int n) {
+        int m = bit_width(1u * high);
+        int free_mask = ((1 << m) - 1) & ~n;
+        int free_cnt = popcount(1u * free_mask);
+        int prefix = 0;
+        int res = 0;
+
+        for (int i = m - 1; i >= 0; i--) {
+            if ((n >> i & 1) == 0) {
+                free_cnt--;
+                free_mask ^= 1 << i;
+            }
+
+            if (high >> i & 1) {
+                // 这一位填 0
+                res += prefix << free_cnt; // 前缀的贡献：后面 free_cnt 个位置，0 和 1 随便填
+                res += (1 << free_cnt >> 1) * free_mask; // 后缀的贡献：每个 free 位置固定为 1 时，其余 free_cnt-1 个位置 0 和 1 随便填
+
+                // 这一位填 1，继续计算
+                if (n >> i & 1) { // 这一位不能填 1
+                    break;
+                }
+                prefix |= 1 << i;
+            }
+        }
+
+        return res;
+    }
+
+public:
+    int sumOfGoodIntegers(int n, int k) {
+        int low = std::max(n - k, 1);
+        int high = n + k;
+        return calc(high + 1, n) - calc(low, n);
+    }
+};
+```
+
+```go [sol-Go]
+// 计算小于 high 的正整数中，AND n 等于 0 的数之和
+func calc(high, n int) (res int) {
+	m := bits.Len(uint(high))
+	freeMask := (1<<m - 1) &^ n
+	freeCnt := bits.OnesCount(uint(freeMask))
+	prefix := 0
+
+	for i := m - 1; i >= 0; i-- {
+		if n>>i&1 == 0 {
+			freeCnt--
+			freeMask ^= 1 << i
+		}
+		if high>>i&1 > 0 {
+			// 这一位填 0
+			res += prefix << freeCnt            // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
+			res += 1 << freeCnt >> 1 * freeMask // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
+
+			// 这一位填 1，继续计算
+			if n>>i&1 > 0 { // 这一位不能填 1
+				break
+			}
+			prefix |= 1 << i
+		}
+	}
+
+	return
+}
+
+func sumOfGoodIntegers(n, k int) int {
+	low := max(n-k, 1)
+	high := n + k
+	return calc(high+1, n) - calc(low, n)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\log (n + k))$。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
 
