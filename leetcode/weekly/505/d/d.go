@@ -6,9 +6,9 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type pair struct{ f, cnt int }
+type pair struct{ f, cnt int } // DP 值, 子数组个数
 
-// 相等的时候，子数组个数 cnt 更大的劣
+// 相等的时候，子数组个数更大的劣
 func less(a, b pair) bool {
 	return a.f < b.f || a.f == b.f && a.cnt > b.cnt
 }
@@ -73,7 +73,7 @@ func maximumSum(nums []int, m, l, r int) int64 {
 		k++
 		res := dpWithoutLimit(k)
 		if res.cnt <= m {
-			ans = res.f + m*k // 直接算，二分会缩小到凸函数中的 x=m 所在的那条线段
+			ans = res.f + m*k // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
 			return true
 		}
 		return false
