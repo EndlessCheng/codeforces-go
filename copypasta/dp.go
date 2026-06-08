@@ -166,7 +166,7 @@ https://atcoder.jp/contests/abc175/tasks/abc175_e 每行至多选三个
 https://atcoder.jp/contests/abc147/tasks/abc147_e 1713
 
 图 DP
-https://codeforces.com/problemset/problem/2122/D 2400 t 时刻只能去 g[v][t%len(g[v])] 
+https://codeforces.com/problemset/problem/2122/D 2400 t 时刻只能去 g[v][t%len(g[v])]
 https://codeforces.com/problemset/problem/346/D 2600
 
 思考过程：
@@ -881,7 +881,9 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/4/D 1700 二维 LIS + 打印方案
 	// https://codeforces.com/problemset/problem/1893/B 1700 插入后最小化 LIS
 	// https://codeforces.com/problemset/problem/1582/F1 1800
-	// https://codeforces.com/problemset/problem/67/D 1900 经典转换（最多相交问题） 
+	// https://codeforces.com/problemset/problem/67/D 1900 最多相交问题 典题
+	// - https://atcoder.jp/contests/abc439/tasks/abc439_e
+	// - https://www.luogu.com.cn/problem/P2782
 	// https://codeforces.com/problemset/problem/582/B 1900 重复数组的 LIS
 	// - todo https://codeforces.com/problemset/problem/261/D 2600
 	//        https://codeforces.com/contest/261/submission/31860735
@@ -1230,6 +1232,7 @@ func _(abs func(int) int) {
 	}
 
 	// 合法子序列 DP
+	// https://atcoder.jp/contests/abc446/tasks/abc446_d
 	// https://codeforces.com/problemset/problem/1912/K 1800
 	// https://www.luogu.com.cn/problem/P4933
 	// - LC446 https://leetcode.cn/problems/arithmetic-slices-ii-subsequence/
@@ -4028,80 +4031,82 @@ func _(abs func(int) int) {
 	//  https://www.luogu.com.cn/problem/P5308
 	//  IOI16 aliens https://www.luogu.com.cn/problem/P5896
 	//  https://www.luogu.com.cn/problem/U72600
-	wqs := func(a []int, k int) (ans int) {
-		// 代码分为两部分：dpWithFee 和 sort.Search
+	wqs := func(a []int, m, l, r int) (ans int) {
+		// 代码分为两部分：dpWithoutLimit 和 sort.Search
 		// 前者是需要实现的 DP，后者是固定的模板，一般只需要注意二分上界
+		// 下面以 LC3957. 非重叠子数组最大和 II https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-ii/ 为例
+		// 至多选 m 个不重叠的子数组（至少选一个），每个子数组的长度在 [l, r] 中，计算所选元素之和的最大值
 
-		// dpWithFee 是一个更容易解决的 DP：每次产生一次「选择」的时候（例如完成一次买卖），额外有手续费 fee，但没有至多 k 次的限制了
-		// 返回最大收益，以及在收益最大的前提下，「选择」次数的最大值
-		// LC714 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
-		dpWithFee := func(fee int) (res, cnt int) {
-			f0, f1 := 0, math.MinInt/2
-			cnt0, cnt1 := 0, 0
-			for _, p := range a {
-				if f0-p >= f1 { // 取等号，让交易次数尽量多
-					f1 = f0 - p
-					cnt1 = cnt0
-				}
-				if f1+p-fee >= f0 { // 取等号，让交易次数尽量多
-					f0 = f1 + p - fee
-					cnt0 = cnt1 + 1 // 卖出才算完整交易
-				}
+		n := len(a)
+		sum := make([]int, n+1)
+		posSum := 0 // nums 中的正数之和，用于二分上界
+		for i, x := range a {
+			sum[i+1] = sum[i] + x
+			if x > 0 {
+				posSum += x
 			}
-			return f0, cnt0
 		}
 
-		// 下面是 WQS 二分模板
-		// 以 LC188 为例 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
-		// 二分交易「手续费」fee，做一个 LC714 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
-		// 那么 fee 越小，交易次数越多；fee 越大，交易次数越小
-		// 如果交易次数小于 k，说明 fee 取大了，反之 fee 取小了
-		// 如果某个 fee 对应着恰好 k 次交易，就得到了正确答案
-		//
-		// fee 最大为 slices.Max(a)，此时可以保证收益为 0（但仍然可以完成交易，比如卖出价格-买入价格-fee=0）
-		// +1 可以保证至少触发一次 ans 赋值
-		sort.Search(slices.Max(a)+1, func(fee int) bool {
-			res, cnt := dpWithFee(fee)
-			if cnt >= k { // 至少 k 次交易
-				ans = res + k*fee // 直接算，因为最终一定会二分到恰好 k 次交易
-				return false
-			}
-			if fee == 0 { // 说明无论如何，交易次数都小于 k
-				ans = res // fee 为 0 时，res 最大，也就是答案
-			}
-			return true
-		})
+		type pair struct{ f, cnt int }
+		less := func(a, b pair) bool {
+			// 计算规则：DP 值相同时，子数组个数 cnt 少的更优
+			return a.f < b.f || a.f == b.f && a.cnt > b.cnt
+		}
 
-		// 下面是另一个例子 https://www.luogu.com.cn/problem/P1484
-		// 这题的 dpWithFee 就只需要实现一个打家劫舍的 DP
-		dpWithFee = func(fee int) (res, cnt int) {
-			var f0, f1, cnt0, cnt1 int
-			for _, v := range a {
-				v -= fee
-				if f1 > f0+v { // 不选
-					f0 = f1
-					cnt0 = cnt1
-				} else { // 选（相等时也选）
-					f0, f1 = f1, f0+v
-					cnt0, cnt1 = cnt1, cnt0+1
+		// 没有 m 约束，但每选一个子数组就要把元素和减少 fee
+		dpWithoutLimit := func(fee int) pair {
+			f := make([]pair, n+1)
+			q := []int{}
+			res := pair{math.MinInt, 0}
+
+			for i := l; i <= n; i++ {
+				// 1. 入
+				j := i - l
+				v := pair{f[j].f - sum[j], f[j].cnt}
+				for len(q) > 0 && less(pair{f[q[len(q)-1]].f - sum[q[len(q)-1]], f[q[len(q)-1]].cnt}, v) {
+					q = q[:len(q)-1]
+				}
+				q = append(q, j)
+
+				// 2. 更新答案
+				choose := pair{f[q[0]].f - sum[q[0]] + sum[i] - fee, f[q[0]].cnt + 1}
+				if less(res, choose) {
+					// choose 保证我们至少选了一个子数组
+					res = choose
+				}
+
+				// 更新 DP
+				if less(f[i-1], choose) {
+					f[i] = choose
+				} else {
+					f[i] = f[i-1]
+				}
+
+				// 3. 出，下一轮循环队首离开窗口
+				if q[0] <= i-r {
+					q = q[1:]
 				}
 			}
-			return f1, cnt1
-		}
-		// WQS 模板（代码和上面一样）
-		// fee 最大为 slices.Max(a)，此时可以保证收益为 0
-		sort.Search(slices.Max(a)+1, func(fee int) bool {
-			res, cnt := dpWithFee(fee)
-			if cnt >= k {
-				ans = res + k*fee
-				return false
-			}
-			if fee == 0 {
-				ans = res
-			}
-			return true
-		})
 
+			return res
+		}
+
+		res0 := dpWithoutLimit(0)
+		if res0.cnt <= m { // 直接满足题目要求
+			return res0.f
+		}
+
+		// 现在专注于解决「选恰好 m 个子数组」的问题
+		left, right := 1, posSum+1
+		sort.Search(right-left, func(fee int) bool {
+			fee += left
+			res := dpWithoutLimit(fee)
+			if res.cnt <= m {
+				ans = res.f + m*fee // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
+				return true
+			}
+			return false
+		})
 		return
 	}
 
