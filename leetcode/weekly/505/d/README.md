@@ -115,7 +115,7 @@ class Solution:
             k = (left + right) // 2
             res, cnt = dp_without_limit(k)
             if cnt <= m:
-                ans = res + m * k  # 直接算，二分会缩小到凸函数中的 x=m 所在的那条线段
+                ans = res + m * k  # 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
                 right = k
             else:
                 left = k
@@ -157,7 +157,7 @@ class Solution {
             long k = left + (right - left) / 2;
             Pair res = dpWithoutLimit(k, n, l, r, s);
             if (res.cnt <= m) {
-                ans = res.f + m * k; // 直接算，二分会缩小到凸函数中的 x=m 所在的那条线段
+                ans = res.f + m * k; // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
                 right = k;
             } else {
                 left = k;
@@ -220,9 +220,9 @@ public:
         // 没有 m 约束，但每选一个子数组就要把元素和减少 k
         using Pair = pair<long long, int>; // (DP 值, 子数组个数)，其中子数组个数取反，方便比大小
         auto dp_without_limit = [&](long long k) -> Pair {
-            vector<pair<long long, int>> f(n + 1);
+            vector<Pair> f(n + 1);
             deque<int> q;
-            pair<long long, int> res = {LLONG_MIN, 0};
+            Pair res = {LLONG_MIN, 0};
 
             for (int i = l; i <= n; i++) {
                 // 1. 入
@@ -263,7 +263,7 @@ public:
             long long k = left + (right - left) / 2;
             auto [res, cnt] = dp_without_limit(k);
             if (cnt <= m) {
-                ans = res + m * k; // 直接算，二分会缩小到凸函数中的 x=m 所在的那条线段
+                ans = res + m * k; // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
                 right = k;
             } else {
                 left = k;
@@ -342,7 +342,7 @@ func maximumSum(nums []int, m, l, r int) int64 {
 		k++
 		res := dpWithoutLimit(k)
 		if res.cnt <= m {
-			ans = res.f + m*k // 直接算，二分会缩小到凸函数中的 x=m 所在的那条线段
+			ans = res.f + m*k // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
 			return true
 		}
 		return false
