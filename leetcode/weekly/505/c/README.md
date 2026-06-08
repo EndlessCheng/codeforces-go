@@ -417,6 +417,12 @@ func maximumSum(nums []int, m, left, right int) int64 {
 - 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然写了个三重循环，但对于内层的两重循环，每个下标入队出队各至多一次，所以内层的两重循环是 $\mathcal{O}(n)$ 时间的。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 更快的做法：WQS 二分
+
+见下一题 [3957. 非重叠子数组最大和 II](https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-ii/)，[我的题解](https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-ii/solutions/3980778/la-ge-lang-ri-song-chi-wqs-er-fen-python-m2iw/)。
+
+**注**：利用下一题的结论，对于本题的做法，可以在 $f[i][n]\le \textit{ans}$ 时，提前返回答案。
+
 ## 专题训练
 
 见下面动态规划题单的「**§5.3 约束划分个数**」和「**§11.3 单调队列优化 DP**」。
