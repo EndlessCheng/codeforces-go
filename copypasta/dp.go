@@ -4031,19 +4031,22 @@ func _(abs func(int) int) {
 	//  https://www.luogu.com.cn/problem/P5308
 	//  IOI16 aliens https://www.luogu.com.cn/problem/P5896
 	//  https://www.luogu.com.cn/problem/U72600
-	wqs := func(a []int, m, l, r int) (ans int) {
+	wqs := func(a []int, least, m, l, r int) (ans int) {
 		// 代码分为两部分：dpWithoutLimit 和 sort.Search
 		// 前者是需要实现的 DP，后者是固定的模板，一般只需要注意二分上界
 		// 下面以 LC3957. 非重叠子数组最大和 II https://leetcode.cn/problems/maximum-sum-of-m-non-overlapping-subarrays-ii/ 为例
-		// 至多选 m 个不重叠的子数组（至少选一个），每个子数组的长度在 [l, r] 中，计算所选元素之和的最大值
+		// 至少选 least 个、至多选 m 个不重叠的子数组，每个子数组的长度在 [l, r] 中，计算所选元素之和的最大值
 
 		n := len(a)
 		sum := make([]int, n+1)
 		posSum := 0 // nums 中的正数之和，用于二分上界
+		negSum := 0 // nums 中的负数之和，用于二分下界
 		for i, x := range a {
 			sum[i+1] = sum[i] + x
 			if x > 0 {
 				posSum += x
+			} else {
+				negSum += x
 			}
 		}
 
@@ -4054,10 +4057,10 @@ func _(abs func(int) int) {
 		}
 
 		// 没有 m 约束，但每选一个子数组就要把元素和减少 fee
+		// **所有参与状态转移的量，在比大小时，都要改成：在值相等时，额外比较 cnt 的大小**
 		dpWithoutLimit := func(fee int) pair {
 			f := make([]pair, n+1)
 			q := []int{}
-			res := pair{math.MinInt, 0}
 
 			for i := l; i <= n; i++ {
 				// 1. 入
@@ -4068,14 +4071,8 @@ func _(abs func(int) int) {
 				}
 				q = append(q, j)
 
-				// 2. 更新答案
+				// 2. 更新
 				choose := pair{f[q[0]].f - sum[q[0]] + sum[i] - fee, f[q[0]].cnt + 1}
-				if less(res, choose) {
-					// choose 保证我们至少选了一个子数组
-					res = choose
-				}
-
-				// 更新 DP
 				if less(f[i-1], choose) {
 					f[i] = choose
 				} else {
@@ -4088,21 +4085,26 @@ func _(abs func(int) int) {
 				}
 			}
 
-			return res
+			return f[n]
 		}
 
 		res0 := dpWithoutLimit(0)
-		if res0.cnt <= m { // 直接满足题目要求
+		if least <= res0.cnt && res0.cnt <= m { // 直接满足题目要求
 			return res0.f
 		}
 
-		// 现在专注于解决「选恰好 m 个子数组」的问题
-		left, right := 1, posSum+1
+		target := m
+		if res0.cnt < least {
+			target = least
+		}
+
+		// 现在专注于解决「选恰好 target 个子数组」的问题
+		left, right := negSum, posSum+1
 		sort.Search(right-left, func(fee int) bool {
 			fee += left
 			res := dpWithoutLimit(fee)
-			if res.cnt <= m {
-				ans = res.f + m*fee // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
+			if res.cnt <= target {
+				ans = res.f + target*fee // 不需要取 max，二分最终会缩小到凸函数中的 x=target 所在的那条线段
 				return true
 			}
 			return false
