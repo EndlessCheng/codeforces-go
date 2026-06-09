@@ -1,37 +1,29 @@
 package main
 
-import "sort"
+import "slices"
 
-// github.com/EndlessCheng/codeforces-go
-func maxBuilding(n int, r [][]int) (ans int) {
-	sort.Slice(r, func(i, j int) bool { return r[i][0] < r[j][0] })
-	r = append([][]int{{1, 0}}, r...)
-	if r[len(r)-1][0] != n {
-		r = append(r, []int{n, n - 1})
+// https://space.bilibili.com/206214
+func maxBuilding(n int, restrictions [][]int) int {
+	m := len(restrictions)
+	if m == 0 {
+		return n - 1
 	}
-	m := len(r)
+
+	slices.SortFunc(restrictions, func(a, b []int) int { return a[0] - b[0] })
+
+	// h[i] 表示编号为 id[i] 的建筑的最大高度
+	h := make([]int, m)
+	h[0] = min(restrictions[0][0]-1, restrictions[0][1])
 	for i := 1; i < m; i++ {
-		r[i][1] = min(r[i][1], r[i-1][1]+r[i][0]-r[i-1][0])
+		h[i] = min(h[i-1]+restrictions[i][0]-restrictions[i-1][0], restrictions[i][1])
 	}
 	for i := m - 2; i >= 0; i-- {
-		r[i][1] = min(r[i][1], r[i+1][1]+r[i+1][0]-r[i][0])
+		h[i] = min(h[i], h[i+1]+restrictions[i+1][0]-restrictions[i][0])
 	}
-	for i := 0; i < m-1; i++ {
-		p, q := r[i], r[i+1]
-		ans = max(ans, (q[0]-p[0]+p[1]+q[1])/2)
-	}
-	return
-}
 
-func min(a, b int) int {
-	if a < b {
-		return a
+	ans := max((restrictions[0][0]-1+h[0])/2, h[m-1]+n-restrictions[m-1][0])
+	for i := range m - 1 {
+		ans = max(ans, (restrictions[i+1][0]-restrictions[i][0]+h[i]+h[i+1])/2)
 	}
-	return b
-}
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
+	return ans
 }
