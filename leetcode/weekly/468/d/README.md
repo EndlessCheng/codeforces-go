@@ -1,6 +1,6 @@
 ## 方法一：最大堆求前 k 大
 
-示例 2 的 $\textit{nums}=[4,2,5,1]$，我们把所有子数组的值算出来，可以得到一个矩阵 $M$，其中 $M_{l,r}$ 表示子数组 $[l,r]$ 的值。规定 $l>r$ 时值为 $0$。
+示例 2 的 $\textit{nums}=[4,2,5,1]$，把所有连续子数组的值（极差）算出来，可以得到一个矩阵 $M$，其中 $M_{l,r}$ 表示子数组 $[l,r]$ 的极差。规定 $l>r$ 时极差为 $0$。
 
 $$
 M = \begin{bmatrix}
@@ -11,19 +11,19 @@ M = \begin{bmatrix}
 \end{bmatrix}
 $$
 
-当左端点固定时，右端点越大，子数组的最小值越小，最大值越大，所以子数组的值也就越大。
+当左端点固定时，右端点越大，子数组的最小值越小，最大值越大，所以子数组的极差也就越大。
 
-所以矩阵**每一行都是递增的**。问题相当于：
+所以矩阵 $M$ **每一行都是递增的**。问题相当于：
 
 - 合并 $n$ 个递增列表，计算前 $k$ 大元素之和。
 
 根据 [23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/) 的 [堆的做法](https://leetcode.cn/problems/merge-k-sorted-lists/solutions/2384305/liang-chong-fang-fa-zui-xiao-dui-fen-zhi-zbzx/)：
 
-1. 把矩阵每一行的最后一个数 $M_{l,n-1}$ 加到最大堆中。
+1. 把矩阵每一行的最后一个数 $M_{l,n-1}$ 加到一个**最大堆**中。
 2. 循环 $k$ 次。
-3. 每次循环，弹出堆顶，把堆顶 $M_{l,r}$ 加入答案，然后把左边元素 $M_{l,r-1}$ 入堆。**优化**：如果堆顶是 $0$，那么堆中剩余元素，以及后续未入堆的值都是 $0$，答案不会增大，所以可以跳出循环。 
+3. 每次循环，弹出堆顶，把堆顶 $M_{l,r}$ 加入答案，然后把左边元素 $M_{l,r-1}$ 入堆。**优化**：如果堆顶是 $0$，那么堆中剩余元素，以及后续未入堆的值都是 $0$，答案不会增大，直接跳出循环。
 
-我们不能直接把整个 $M$ 算出来（太慢了），而是在入堆的时候计算。这需要一个数据结构，支持查询区间最小值和区间最大值。可以用线段树，或者 ST 表。下面用的 ST 表。
+我们不能直接把整个矩阵 $M$ 算出来（太慢了），而是在入堆的时候计算矩阵值。这需要一个数据结构，支持查询**区间最小值**和**区间最大值**。这可以用线段树，或者 ST 表。由于只有查询没有更新，我选择用 ST 表。[ST 表原理讲解](https://www.bilibili.com/video/BV18gLE6VETZ/)。
 
 [本题视频讲解](https://www.bilibili.com/video/BV19GWcziEYE/?t=20m56s)，欢迎点赞关注~
 
@@ -59,7 +59,7 @@ class Solution:
         n = len(nums)
         st = ST(nums)
 
-        # 最大堆中保存 (子数组值，左端点，右端点加一)
+        # 最大堆中保存 (子数组极差，左端点，右端点加一)
         h = [(st.query(i, n), i, n) for i in range(n)]
         # 由于 h 是递减的，无需堆化
 
@@ -113,7 +113,7 @@ class Solution{
 
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]); // 最大堆
         for (int i = 0; i < n; i++) {
-            pq.add(new int[]{st.query(i, n), i, n}); // 子数组值，左端点，右端点加一
+            pq.add(new int[]{st.query(i, n), i, n}); // 子数组极差，左端点，右端点加一
         }
 
         long ans = 0;
@@ -171,7 +171,7 @@ public:
 
         priority_queue<tuple<int, int, int>> pq;
         for (int i = 0; i < n; i++) {
-            pq.emplace(st.query(i, n), i, n); // 子数组值，左端点，右端点加一
+            pq.emplace(st.query(i, n), i, n); // 子数组极差，左端点，右端点加一
         }
 
         long long ans = 0;
@@ -222,7 +222,7 @@ func maxTotalValue(nums []int, k int) (ans int64) {
 	st := newST(nums)
 	h := make(hp, n)
 	for i := range h {
-		h[i] = tuple{st.query(i, n), i, n} // 子数组值，左端点，右端点加一
+		h[i] = tuple{st.query(i, n), i, n} // 子数组极差，左端点，右端点加一
 	}
 	// 由于 h 是递减的，无需堆化
 
@@ -286,16 +286,16 @@ class Solution:
         n = len(nums)
         st = ST(nums)
 
-        h = [(-st.query(0, n), 0, n)]
+        h = [(st.query(0, n), 0, n)]
         ans = 0
         for _ in range(k):
             d, l, r = h[0]
             if d == 0:  # 堆中剩余元素全是 0
                 break
-            ans -= d
-            heapreplace(h, (-st.query(l, r - 1), l, r - 1))
+            ans += d
+            heapreplace_max(h, (st.query(l, r - 1), l, r - 1))
             if r == n and l + 1 < n:
-                heappush(h, (-st.query(l + 1, n), l + 1, n))
+                heappush_max(h, (st.query(l + 1, n), l + 1, n))
         return ans
 ```
 
@@ -338,7 +338,7 @@ class Solution{
         ST st = new ST(nums);
 
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]); // 最大堆
-        pq.add(new int[]{st.query(0, n), 0, n}); // 子数组值，左端点，右端点加一
+        pq.add(new int[]{st.query(0, n), 0, n}); // 子数组极差，左端点，右端点加一
 
         long ans = 0;
         while (k-- > 0 && pq.peek()[0] > 0) {
@@ -396,7 +396,7 @@ public:
         ST st(nums);
 
         priority_queue<tuple<int, int, int>> pq;
-        pq.emplace(st.query(0, n), 0, n); // 子数组值，左端点，右端点加一
+        pq.emplace(st.query(0, n), 0, n); // 子数组极差，左端点，右端点加一
 
         long long ans = 0;
         while (k-- && get<0>(pq.top())) {
@@ -447,7 +447,7 @@ func (st ST) query(l, r int) int {
 func maxTotalValue(nums []int, k int) (ans int64) {
 	n := len(nums)
 	st := newST(nums)
-	h := hp{{st.query(0, n), 0, n}} // 子数组值，左端点，右端点加一
+	h := hp{{st.query(0, n), 0, n}} // 子数组极差，左端点，右端点加一
 
 	for ; k > 0 && h[0].d > 0; k-- {
 		ans += int64(h[0].d)
@@ -478,6 +478,8 @@ func (hp) Pop() (_ any)         { return }
 - 空间复杂度：$\mathcal{O}(n\log n)$。用线段树可以做到 $\mathcal{O}(n)$ 空间。
 
 ## 方法二：二分 + 滑动窗口 + 单调队列 + 单调栈 + Lazy 线段树 + 线段树二分
+
+如果 $k$ 更大，方法一就超时了。下面介绍一种时间复杂度和 $k$ 无关的做法。
 
 这个做法会多次用到一个简单又重要的**性质**：
 
@@ -514,7 +516,7 @@ func (hp) Pop() (_ any)         { return }
 
 对于最大值的维护，做法同理。
 
-然后，我们需要查询满足子数组值 $\ge \textit{lowD}$ 的最大左端点下标。根据性质，我们可以**在线段树上二分**。对于线段树二分，我们需要知道对于一棵子树，我们是否需要递归这棵子树，还是完全没有必要递归。由于左端点越小，子数组的最小值越小，最大值越大，我们需要记录最靠左的最小值和最大值，如果发现最靠左的最大值减去最小值 $< \textit{lowD}$，那么就无需递归这棵子树。
+然后，我们需要查询满足子数组值 $\ge \textit{lowD}$ 的最大左端点下标。根据性质，我们可以**在线段树上二分**。对于线段树二分，我们需要知道对于一棵子树，是否要递归这棵子树，还是完全没有必要递归。由于左端点越小，子数组的最小值越小，最大值越大，我们需要记录最靠左的最小值和最大值，如果发现最靠左的最大值减去最小值 $< \textit{lowD}$，那么就无需递归这棵子树。
 
 设线段树二分得到的下标为 $l$，那么满足子数组值 $\ge \textit{lowD}$ 的子数组左端点可以是 $0,1,2,\dots,l$，这一共有 $l+1$ 个，加到 $\textit{cnt}$ 中。
 
