@@ -32,7 +32,7 @@ class Solution {
     private static final int MOD = 1_000_000_007;
 
     public int countTrapezoids(int[][] points) {
-        Map<Integer, Integer> cnt = new HashMap<>(points.length, 1); // 预分配空间
+        Map<Integer, Integer> cnt = HashMap.newHashMap(points.length); // 预分配空间
         for (int[] p : points) {
             cnt.merge(p[1], 1, Integer::sum); // 统计每一行（水平线）有多少个点
         }
