@@ -75,8 +75,8 @@ func calc(high, n int) (res int) {
 		}
 		if high>>i&1 > 0 {
 			// 这一位填 0
-			res += prefix << freeCnt            // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
-			res += 1 << freeCnt >> 1 * freeMask // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
+			res += prefix << freeCnt              // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
+			res += freeMask * (1 << freeCnt >> 1) // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
 
 			// 这一位填 1，继续计算
 			if n>>i&1 > 0 { // 这一位不能填 1

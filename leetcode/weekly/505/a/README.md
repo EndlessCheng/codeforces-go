@@ -269,7 +269,7 @@ class Solution:
             if high >> i & 1:
                 # 这一位填 0
                 res += prefix << free_cnt  # 前缀的贡献：后面 free_cnt 个位置，0 和 1 随便填
-                res += (1 << free_cnt >> 1) * free_mask  # 后缀的贡献：每个 free 位置固定为 1 时，其余 free_cnt-1 个位置 0 和 1 随便填
+                res += free_mask * (1 << free_cnt >> 1)  # 后缀的贡献：每个 free 位置固定为 1 时，其余 free_cnt-1 个位置 0 和 1 随便填
 
                 # 这一位填 1，继续计算
                 if n >> i & 1:  # 这一位不能填 1
@@ -309,7 +309,7 @@ class Solution {
             if ((high >> i & 1) > 0) {
                 // 这一位填 0
                 res += prefix << freeCnt; // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
-                res += ((1 << freeCnt) >> 1) * freeMask; // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
+                res += freeMask * (1 << freeCnt >> 1); // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
 
                 // 这一位填 1，继续计算
                 if ((n >> i & 1) > 0) { // 这一位不能填 1
@@ -343,7 +343,7 @@ class Solution {
             if (high >> i & 1) {
                 // 这一位填 0
                 res += prefix << free_cnt; // 前缀的贡献：后面 free_cnt 个位置，0 和 1 随便填
-                res += (1 << free_cnt >> 1) * free_mask; // 后缀的贡献：每个 free 位置固定为 1 时，其余 free_cnt-1 个位置 0 和 1 随便填
+                res += free_mask * (1 << free_cnt >> 1); // 后缀的贡献：每个 free 位置固定为 1 时，其余 free_cnt-1 个位置 0 和 1 随便填
 
                 // 这一位填 1，继续计算
                 if (n >> i & 1) { // 这一位不能填 1
@@ -380,8 +380,8 @@ func calc(high, n int) (res int) {
 		}
 		if high>>i&1 > 0 {
 			// 这一位填 0
-			res += prefix << freeCnt            // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
-			res += 1 << freeCnt >> 1 * freeMask // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
+			res += prefix << freeCnt              // 前缀的贡献：后面 freeCnt 个位置，0 和 1 随便填
+			res += freeMask * (1 << freeCnt >> 1) // 后缀的贡献：每个 free 位置固定为 1 时，其余 freeCnt-1 个位置 0 和 1 随便填
 
 			// 这一位填 1，继续计算
 			if n>>i&1 > 0 { // 这一位不能填 1
