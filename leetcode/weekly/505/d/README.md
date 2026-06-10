@@ -132,7 +132,7 @@ class Solution:
             k = (left + right) // 2
             res, cnt = dp_without_limit(k)
             if cnt <= m:
-                ans = res + m * k  # 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
+                ans = res + m * k  # 见题解【细节 1】
                 right = k
             else:
                 left = k
@@ -174,7 +174,7 @@ class Solution {
             long k = left + (right - left) / 2;
             Pair res = dpWithoutLimit(k, n, l, r, s);
             if (res.cnt <= m) {
-                ans = res.f + m * k; // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
+                ans = res.f + m * k; // 见题解【细节 1】
                 right = k;
             } else {
                 left = k;
@@ -282,7 +282,7 @@ public:
             long long k = left + (right - left) / 2;
             auto [res, cnt] = dp_without_limit(k);
             if (cnt <= m) {
-                ans = res + m * k; // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
+                ans = res + m * k; // 见题解【细节 1】
                 right = k;
             } else {
                 left = k;
@@ -361,7 +361,7 @@ func maximumSum(nums []int, m, l, r int) int64 {
 		k++
 		res := dpWithoutLimit(k)
 		if res.cnt <= m {
-			ans = res.f + m*k // 不需要取 max，二分最终会缩小到凸函数中的 x=m 所在的那条线段
+			ans = res.f + m*k // 见题解【细节 1】
 			return true
 		}
 		return false
