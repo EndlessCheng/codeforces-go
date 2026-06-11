@@ -1,20 +1,9 @@
 package main
 
-// https://space.bilibili.com/206214
-func maxTotal(nums []int, s string) int64 {
-	f0, f1 := 0, 0
-	for i, x := range nums {
-		if s[i] == '0' {
-			f1 = f0 + x
-		} else {
-			f0 = max(f0+x, f1)
-			f1 += x
-		}
-	}
-	return int64(f0)
-}
+import "math"
 
-func maxTotal2(nums []int, s string) int64 {
+// https://space.bilibili.com/206214
+func maxTotal1(nums []int, s string) int64 {
 	n := len(s)
 	ans, mn := 0, 0
 	for i, x := range nums {
@@ -30,4 +19,30 @@ func maxTotal2(nums []int, s string) int64 {
 		}
 	}
 	return int64(ans)
+}
+
+func maxTotal(nums []int, s string) int64 {
+	ans, mn := 0, math.MaxInt
+	for i := len(s) - 1; i >= 0; i-- {
+		mn = min(mn, nums[i])
+		ans += nums[i]
+		if s[i] == '0' {
+			ans -= mn
+			mn = math.MaxInt
+		}
+	}
+	return int64(ans)
+}
+
+func maxTotal2(nums []int, s string) int64 {
+	f0, f1 := 0, 0
+	for i, x := range nums {
+		if s[i] == '0' {
+			f1 = f0 + x
+		} else {
+			f0 = max(f0+x, f1)
+			f1 += x
+		}
+	}
+	return int64(f0)
 }

@@ -8,6 +8,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1mREx6KEp1/?t=5m55s)，欢迎点赞关注~
 
+### 写法一：正序遍历
+
 ```py [sol-Python3]
 class Solution:
     def maxTotal(self, nums: list[int], s: str) -> int:
@@ -89,6 +91,74 @@ func maxTotal(nums []int, s string) int64 {
 		} else if i < n-1 && s[i+1] == '1' { // 0111..11 段的开头
 			ans += x
 			mn = x
+		}
+	}
+	return int64(ans)
+}
+```
+
+### 写法二：倒序遍历
+
+```py [sol-Python3]
+class Solution:
+    def maxTotal(self, nums: list[int], s: str) -> int:
+        ans = 0
+        mn = inf
+        for i in range(len(nums) - 1, -1, -1):
+            mn = min(mn, nums[i])
+            ans += nums[i]
+            if s[i] == '0':
+                ans -= mn
+                mn = inf
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxTotal(int[] nums, String s) {
+        long ans = 0;
+        int mn = Integer.MAX_VALUE;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            mn = Math.min(mn, nums[i]);
+            ans += nums[i];
+            if (s.charAt(i) == '0') {
+                ans -= mn;
+                mn = Integer.MAX_VALUE;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxTotal(vector<int>& nums, string s) {
+        long long ans = 0;
+        int mn = INT_MAX;
+        for (int i = nums.size() - 1; i >= 0; i--) {
+            mn = min(mn, nums[i]);
+            ans += nums[i];
+            if (s[i] == '0') {
+                ans -= mn;
+                mn = INT_MAX;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxTotal(nums []int, s string) int64 {
+	ans, mn := 0, math.MaxInt
+	for i := len(nums) - 1; i >= 0; i-- {
+		mn = min(mn, nums[i])
+		ans += nums[i]
+		if s[i] == '0' {
+			ans -= mn
+			mn = math.MaxInt
 		}
 	}
 	return int64(ans)
