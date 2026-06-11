@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -67,6 +68,9 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	if _, err := url.Parse(problemURL); err != nil {
 		return err
 	}
+
+	// 移除 '?' 及其后的内容
+	problemURL, _, _ = strings.Cut(problemURL, "?")
 
 	var contestID, problemID string
 	isGYM := false
@@ -171,14 +175,14 @@ import (
 	"testing"
 )
 
-// %s%s
+// %s%s %s
 // %s
 func Test_cf%s(t *testing.T) {
 	testCases := [][2]string{%s
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf%s)
 }
-`, problemURL, ratingS, statusURL, problemID, exampleStr, problemID)
+`, problemURL, ratingS, time.Now().Format("2006.1.2"), statusURL, problemID, exampleStr, problemID)
 
 	var dir string
 	if isGYM {
@@ -193,7 +197,7 @@ func Test_cf%s(t *testing.T) {
 	mainFilePath := dir + problemID + ".go"
 	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
 		open.Run(absPath(mainFilePath))
-		return fmt.Errorf("文件已存在")
+		return fmt.Errorf("文件已存在 %v", err)
 	}
 	if err := os.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
 		return err
