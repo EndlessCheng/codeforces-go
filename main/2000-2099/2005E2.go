@@ -3,7 +3,6 @@ package main
 import (
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -69,4 +68,4 @@ func cf2005E2(in io.Reader, out io.Writer) {
 	}
 }
 
-func main() { cf2005E2(os.Stdin, os.Stdout) }
+//func main() { cf2005E2(os.Stdin, os.Stdout) }
