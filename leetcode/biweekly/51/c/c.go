@@ -1,16 +1,27 @@
 package main
 
-import "sort"
+import "slices"
 
 // github.com/EndlessCheng/codeforces-go
-func maximumElementAfterDecrementingAndRearranging(a []int) int {
-	sort.Ints(a)
-	a[0] = 1
-	n := len(a)
+func maximumElementAfterDecrementingAndRearranging1(arr []int) int {
+	slices.Sort(arr)
+	n := len(arr)
+	arr[0] = 1
 	for i := 1; i < n; i++ {
-		if a[i]-a[i-1] > 1 {
-			a[i] = a[i-1] + 1
-		}
+		arr[i] = min(arr[i], arr[i-1]+1)
 	}
-	return a[n-1]
+	return arr[n-1]
+}
+
+func maximumElementAfterDecrementingAndRearranging(arr []int) (ans int) {
+	n := len(arr)
+	cnt := make([]int, n+1)
+	for _, x := range arr {
+		cnt[min(x, n)]++
+	}
+
+	for x := 1; x <= n; x++ {
+		ans = min(ans+cnt[x], x)
+	}
+	return
 }
