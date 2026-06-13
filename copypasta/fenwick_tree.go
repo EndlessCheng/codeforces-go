@@ -11,51 +11,24 @@ import (
 树状数组 = 没有右子树的线段树
 
 https://en.wikipedia.org/wiki/Fenwick_tree
-【推荐阅读】带你发明树状数组！https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/
-
+带你发明树状数组 https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/
 可视化 https://visualgo.net/zh/fenwicktree
-
-todo 从0到inf，超详细的树状数组详解 https://www.luogu.com.cn/article/6ewhbfs5
- 浅谈树状数组的优化及扩展 https://www.luogu.com.cn/article/790vjft4
- 浅谈树状数组套权值树 https://www.luogu.com.cn/article/8uekknpx
 https://oi-wiki.org/ds/bit/
+从0到inf，超详细的树状数组详解 https://www.luogu.com.cn/article/6ewhbfs5
+浅谈树状数组的优化及扩展 https://www.luogu.com.cn/article/790vjft4
+浅谈树状数组套权值树 https://www.luogu.com.cn/article/8uekknpx
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
 模板题
 LC307 https://leetcode.cn/problems/range-sum-query-mutable/
 https://www.luogu.com.cn/problem/P3374
 
-问：给一堆区间，计算有多少对区间相交。
-答：按右端点从小到大排序，这样之前遍历过的区间一定在左边。
-   然后查询 [l,r] 中有多少个之前遍历过的区间的右端点，即为在 [l,r] 左边的与 [l,r] 相交的区间个数。
-   至于其他的与 [l,r] 相交的区间，会在后续遍历中统计。
-
-https://codeforces.com/problemset/problem/1234/D 1600
-https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
-https://atcoder.jp/contests/arc075/tasks/arc075_c
-静态区间种类 - 离线做法
-    https://www.luogu.com.cn/problem/P1972
-    https://atcoder.jp/contests/abc174/tasks/abc174_f
-    https://codeforces.com/problemset/problem/246/E 2400
-    https://codeforces.com/problemset/problem/594/D 2500
-置换 LC2179 https://leetcode.cn/problems/count-good-triplets-in-an-array/
-- 同样的置换思想 LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/
-题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
-树状数组的性质能使其支持动态 [1,x] 或 [x,n] 范围上的最值更新查询等操作
-    https://codeforces.com/problemset/problem/629/D
-    https://codeforces.com/problemset/problem/1635/F
-好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
-多变量统计 https://codeforces.com/problemset/problem/1194/E
-         T4 https://www.nowcoder.com/discuss/1022136
-最多交换 k 次相邻字母后，得到的最小字典序
-- LC1505 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
-LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
-
 https://codeforces.com/problemset/problem/1915/F 1500
 https://codeforces.com/problemset/problem/1234/D 1600
-https://atcoder.jp/contests/abc157/tasks/abc157_e 1443~CF1600
 https://codeforces.com/problemset/problem/627/B 1700 模板题
+https://atcoder.jp/contests/abc461/tasks/abc461_e 1793 ~CF
 https://codeforces.com/problemset/problem/652/D 1800 区间包含计数
+https://atcoder.jp/contests/abc157/tasks/abc157_e 1802 ~CF
 https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列个数
 https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
 https://codeforces.com/problemset/problem/2042/D 1900
@@ -98,6 +71,30 @@ https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 https://codeforces.com/gym/101649 I 题
 http://poj.org/problem?id=2155
 http://poj.org/problem?id=2886
+
+https://atcoder.jp/contests/arc075/tasks/arc075_c
+静态区间种类 - 离线做法
+    https://www.luogu.com.cn/problem/P1972
+    https://atcoder.jp/contests/abc174/tasks/abc174_f
+    https://codeforces.com/problemset/problem/246/E 2400
+    https://codeforces.com/problemset/problem/594/D 2500
+置换 LC2179 https://leetcode.cn/problems/count-good-triplets-in-an-array/
+- 同样的置换思想 LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/
+题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
+树状数组的性质能使其支持动态 [1,x] 或 [x,n] 范围上的最值更新查询等操作
+    https://codeforces.com/problemset/problem/629/D
+    https://codeforces.com/problemset/problem/1635/F
+好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
+多变量统计 https://codeforces.com/problemset/problem/1194/E
+         T4 https://www.nowcoder.com/discuss/1022136
+最多交换 k 次相邻字母后，得到的最小字典序
+- LC1505 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
+LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
+
+问：给一堆区间，计算有多少对区间相交。
+答：按右端点从小到大排序，这样之前遍历过的区间一定在左边。
+   然后查询 [l,r] 中有多少个之前遍历过的区间的右端点，即为在 [l,r] 左边的与 [l,r] 相交的区间个数。
+   至于其他的与 [l,r] 相交的区间，会在后续遍历中统计。
 
 有关【逆序对】的题目，见下面的 cntInversions
 
