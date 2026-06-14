@@ -1,14 +1,16 @@
 先特判 $n=1$ 的情况。不移动单元更好，答案为所有 $\textit{units}[i][0]$ 之和。
 
-下面讨论 $n\ge 2$ 的情况。设 $\textit{units}[i][j]$ 的最小值为 $\textit{mn}$。
+下面讨论 $n\ge 2$ 的情况。
 
-对于每个设备，移走最小的单元，该设备的评分就从其最小值变成其**次小值**。
+设所有 $\textit{units}[i][j]$ 的最小值为 $\textit{mn}$（全局最小值）。
+
+对于每个设备，移走最小的单元，该设备的评分就从其最小值变成其**次小值**。由于每个设备只能操作一次，所以设备的评分至多为其次小值。
 
 如果我们能直接把单元扔掉，那么答案就是**所有次小值之和**。
 
-但我们不能扔，那么 $\textit{mn}$ 放哪里呢？必须有一个设备的评分是 $\textit{mn}$（这是个定值）。换句话说，必须有一个设备的评分不能取次小值，只能取全局最小值 $\textit{mn}$。
+但我们不能扔，那么全局最小值 $\textit{mn}$ 放哪里呢？必须有一个设备的评分是 $\textit{mn}$（这是个定值）。换句话说，必须有一个设备的评分不能取其次小值，只能取全局最小值 $\textit{mn}$。
 
-设所有次小值中的最小值为 $\textit{mn}_2$。贪心地，把每个设备的最小值都扔到包含 $\textit{mn}_2$ 的那个设备中是最优的。
+设所有次小值中的最小值为 $\textit{mn}_2$。贪心地，把每个设备的最小值都扔到包含 $\textit{mn}_2$ 的那个设备（记作 $A$）中是最优的。这样，除了设备 $A$ 以外的每个设备，都可以取到其次小值。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1ptJw6hENZ/?t=9m23s)，欢迎点赞关注~
 
@@ -27,7 +29,7 @@ class Solution:
             mn2 = min(mn2, unit[1])
             mn = min(mn, unit[0])
 
-        # 把包含 mn2 的那个设备作为集中站
+        # 把包含 mn2 的那个设备作为集中站，存放每个设备的最小值
         ans += mn - mn2  # 把 ans 中的 mn2 替换成 mn
         return ans
 ```
@@ -55,7 +57,7 @@ class Solution:
             mn2 = min(mn2, unit_min2)
             mn = min(mn, unit_min)
 
-        # 把包含 mn2 的那个设备作为集中站
+        # 把包含 mn2 的那个设备作为集中站，存放每个设备的最小值
         ans += mn - mn2  # 把 ans 中的 mn2 替换成 mn
         return ans
 ```
@@ -92,7 +94,7 @@ class Solution {
             mn = Math.min(mn, unitMin);
         }
 
-        // 把包含 mn2 的那个设备作为集中站
+        // 把包含 mn2 的那个设备作为集中站，存放每个设备的最小值
         ans += mn - mn2; // 把 ans 中的 mn2 替换成 mn
         return ans;
     }
@@ -130,7 +132,7 @@ public:
             mn = min(mn, unit_min);
         }
 
-        // 把包含 mn2 的那个设备作为集中站
+        // 把包含 mn2 的那个设备作为集中站，存放每个设备的最小值
         ans += mn - mn2; // 把 ans 中的 mn2 替换成 mn
         return ans;
     }
@@ -166,7 +168,7 @@ func maxRatings(units [][]int) int64 {
 		mn = min(mn, unitMin)
 	}
 
-	// 把包含 mn2 的那个设备作为集中站
+	// 把包含 mn2 的那个设备作为集中站，存放每个设备的最小值
 	ans += mn - mn2 // 把 ans 中的 mn2 替换成 mn
 	return int64(ans)
 }
