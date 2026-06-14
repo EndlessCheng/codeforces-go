@@ -2,6 +2,8 @@ package copypasta
 
 import (
 	"bytes"
+	"cmp"
+	"fmt"
 	"math"
 	"regexp"
 	"slices"
@@ -1266,4 +1268,180 @@ func mergeIntervals(a [][]int) [][]int {
 	}
 
 	return merged
+}
+
+/*
+2026.6.13
+《Heroes of Sokoban》https://www.puzzlescript.net/play.html?p=6860122
+《Heroes of Sokoban II: Monsters》https://www.puzzlescript.net/play.html?p=6910207
+《Heroes of Sokoban III: The Bard and The Druid》https://www.puzzlescript.net/play.html?p=7072276
+《Mirror Isles》https://alan.draknek.org/games/puzzlescript/mirrors.php
+《Skipping Stones To Lonely Homes》https://alan.draknek.org/games/puzzlescript/skipping-stones.php
+《PROMESST》https://silverspaceship.com/promesst/
+《ENIGMASH》https://jacklance.github.io/PuzzleScript/play.html?p=cfdcc6e23f1fb3e9de2fd42fafaf4d4c
+
+牧师 {2 0}
+===
+法师换牧师 {0 0} {2 0}
+法师换怪物 {2 0} {4 0}
+===
+牧师 {4 1}
+===
+法师换牧师 {4 0} {4 1}
+法师换怪物 {4 1} {4 4}
+法师换怪物 {4 4} {0 4}
+法师 {1 1}
+法师换怪物 {1 1} {4 1}
+法师换怪物 {4 1} {4 4}
+法师 {2 2}
+===
+牧师 {2 1}
+===
+法师换牧师 {2 2} {2 1}
+法师换怪物 {2 1} {4 1}
+
+*/
+func heroesOfSokobanII() []string {
+	type point struct{ x, y int }
+	dir4 := []point{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
+
+	getMask := func(a []point) int {
+		return a[0].x<<15 | a[0].y<<12 | a[1].x<<9 | a[1].y<<6 | a[2].x<<3 | a[2].y
+	}
+
+	const n = 5
+	done := map[int]bool{}
+	for x := range n {
+		for y := range n {
+			for i, d1 := range dir4 {
+				x2, y2 := x+d1.x, y+d1.y
+				if !(0 <= x2 && x2 < n && 0 <= y2 && y2 < n) {
+					continue
+				}
+				for j := i + 1; j < len(dir4); j++ {
+					d2 := dir4[j]
+					x3, y3 := x+d2.x, y+d2.y
+					if !(0 <= x3 && x3 < n && 0 <= y3 && y3 < n) {
+						continue
+					}
+					a := []point{{x, y}, {x2, y2}, {x3, y3}}
+					slices.SortFunc(a, func(a, b point) int { return cmp.Or(a.x-b.x, a.y-b.y) })
+					done[getMask(a)] = true
+				}
+			}
+		}
+	}
+
+	near := func(p, q point) bool {
+		for _, d := range dir4 {
+			if (point{p.x + d.x, p.y + d.y}) == q {
+				return true
+			}
+		}
+		return false
+	}
+
+	const whoPriest = 0
+	const whoMage = 1
+	type data struct {
+		monster [3]point
+		priest  point
+		mage    point
+		who     int
+	}
+	vis := map[data]bool{}
+	Q := []data{}
+	type pair struct {
+		data
+		s string
+	}
+	from := map[data]pair{}
+	add := func(fr, d data, s string) {
+		if !vis[d] {
+			vis[d] = true
+			Q = append(Q, d)
+			from[d] = pair{fr, s}
+		}
+	}
+
+	levelMap := data{[3]point{{0, 4}, {4, 0}, {4, 4}}, point{2, 2}, point{0, 0}, whoMage}
+	add(data{}, levelMap, "")
+
+	for {
+		d := Q[0]
+		Q = Q[1:]
+		// 检查三个怪是否相邻
+		if done[getMask(d.monster[:])] {
+			path := []string{}
+			for d != (data{}) {
+				path = append(path, from[d].s)
+				d = from[d].data
+			}
+			slices.Reverse(path)
+			return path
+		}
+
+		// 只有两个怪相邻
+		if near(d.monster[0], d.monster[1]) || near(d.monster[0], d.monster[2]) || near(d.monster[1], d.monster[2]) {
+			continue
+		}
+
+		// 如果法师旁边没有牧师，但有怪
+		if !near(d.mage, d.priest) && (near(d.mage, d.monster[0]) || near(d.mage, d.monster[1]) || near(d.mage, d.monster[2])) {
+			continue
+		}
+
+		if d.who == whoPriest {
+			// 移动牧师
+			for _, dir := range dir4 {
+				x, y := d.priest.x+dir.x, d.priest.y+dir.y
+				np := point{x, y}
+				if 0 <= x && x < n && 0 <= y && y < n && np != d.mage && !slices.Contains(d.monster[:], np) {
+					add(d, data{d.monster, np, d.mage, d.who}, fmt.Sprint("牧师 ", np))
+				}
+			}
+		} else {
+			// 移动魔法师
+		o:
+			for _, dir := range dir4 {
+				// 该方向上是否有其他人？
+				x, y := d.mage.x, d.mage.y
+				for {
+					x += dir.x
+					y += dir.y
+					if !(0 <= x && x < n && 0 <= y && y < n) { // 没人
+						break
+					}
+
+					np := point{x, y}
+					if np == d.priest { // 和牧师交换位置
+						add(d, data{d.monster, d.mage, np, d.who}, fmt.Sprint("法师换牧师 ", d.mage, np))
+						continue o
+					}
+
+					for i, q := range d.monster {
+						if np != q {
+							continue
+						}
+						// 和怪交换位置
+						newMonster := d.monster
+						newMonster[i] = d.mage
+						slices.SortFunc(newMonster[:], func(a, b point) int { return cmp.Or(a.x-b.x, a.y-b.y) })
+						add(d, data{newMonster, d.priest, np, d.who}, fmt.Sprint("法师换怪物 ", d.mage, np))
+						continue o
+					}
+				}
+
+				x, y = d.mage.x+dir.x, d.mage.y+dir.y
+				// 普通移动一步
+				np := point{x, y}
+				if 0 <= x && x < n && 0 <= y && y < n && np != d.priest && !slices.Contains(d.monster[:], np) {
+					add(d, data{d.monster, d.priest, np, d.who}, fmt.Sprint("法师 ", np))
+				}
+			}
+		}
+
+		// 单纯换人
+		add(d, data{d.monster, d.priest, d.mage, d.who ^ 1}, "===")
+	}
 }
