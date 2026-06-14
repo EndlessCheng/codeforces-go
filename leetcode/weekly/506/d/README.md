@@ -22,8 +22,10 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1ptJw6hENZ/?t=20m58s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
-# 超时了！请看优化后的代码
+# ⚠ 超时了！请看优化后的代码
 class Fenwick:
     def __init__(self, n: int, sorted: list[int], width: int):
         self.n = n
@@ -78,8 +80,7 @@ class Solution:
     def maxSum(self, nums: list[int], k: int) -> int:
         # 离散化
         n = len(nums)
-        sorted_ = nums.copy()
-        sorted_.sort()
+        sorted_ = sorted(set(nums))
         m = len(sorted_)
         width_m = m.bit_length()
         rank = [0] * n  # rank[i] 是 nums[i] 离散化后的值（从 1 开始）
@@ -130,6 +131,8 @@ class Solution:
                 ans = max(ans, sub_sum + delta)
 
         return ans
+
+# ⚠ 超时了！请看优化后的代码
 ```
 
 ```java [sol-Java]
@@ -181,7 +184,7 @@ class Fenwick {
             }
         }
         // 加上等于第 k 小的数
-        return res + 1L * sorted[i] * k;
+        return res + (long) sorted[i] * k;
     }
 
     public Fenwick copy() {
@@ -203,9 +206,10 @@ class Solution {
         Fenwick allTree = new Fenwick(n + 1, sorted, widthN); // 包含所有元素的树状数组
         long total = 0;
         for (int i = 0; i < n; i++) {
-            rank[i] = Arrays.binarySearch(sorted, nums[i]) + 1;
-            allTree.update(rank[i], 1, nums[i]);
-            total += nums[i];
+            int x = nums[i];
+            rank[i] = Arrays.binarySearch(sorted, x) + 1;
+            allTree.update(rank[i], 1, x);
+            total += x;
         }
 
         long ans = Long.MIN_VALUE;
@@ -323,9 +327,10 @@ public:
         Fenwick all_tree(m + 1, sorted, width_m); // 包含所有元素的树状数组
         long long total = 0;
         for (int i = 0; i < n; i++) {
-            rank[i] = ranges::lower_bound(sorted, nums[i]) - sorted.begin() + 1;
-            all_tree.update(rank[i], 1, nums[i]);
-            total += nums[i];
+            int x = nums[i];
+            rank[i] = ranges::lower_bound(sorted, x) - sorted.begin() + 1;
+            all_tree.update(rank[i], 1, x);
+            total += x;
         }
 
         long long ans = LLONG_MIN;
@@ -479,6 +484,588 @@ func maxSum(nums []int, k int) int64 {
 			if needSwap > 0 {
 				inSum := inTree.preSum(needSwap, sorted)
 				outSum := total - subSum - outTree.preSum(n-sz-needSwap, sorted)
+				delta = outSum - inSum
+			}
+
+			ans = max(ans, subSum+delta)
+		}
+	}
+
+	return int64(ans)
+}
+```
+
+## 优化
+
+### 1) 特判
+
+设 $\textit{nums}$ 中的正数个数为 $p$。跑一个 [定长滑窗](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)，如果存在一个长为 $p$ 的窗口，其中 $正数个数+k\ge p$，则说明可以在 $k$ 次操作内把窗口外的正数全部换入窗口内，从而把所有正数都聚在一起，此时直接返回所有正数之和（这是答案的上界）。
+
+特别地，如果 $p=0$，没有正数，则返回 $\max(\textit{nums})$（题目不允许子数组为空）。
+
+在下面的讨论中，$\textit{nums}$ 包含正数。
+
+### 2) 只需考虑正数与负数的交换
+
+首先，对于和最大的子数组 $[\ell,r]$，有如下简单的性质：
+
+1. $\textit{nums}[\ell-1]$ 和 $\textit{nums}[r+1]$（如果有）一定都 $\le 0$。**反证法**：如果其中有正数，则子数组扩大更好，矛盾。
+2. $\textit{nums}[\ell]$ 和 $\textit{nums}[r]$ 一定都 $\ge 0$。**反证法**：如果其中有负数，则子数组缩小更好，矛盾。
+
+这个性质有什么用？
+
+1. 与其交换窗口内的正数（以及 $0$）与窗口外的正数，不如直接把窗口外的正数与 $\textit{nums}[\ell-1]$ 或者 $\textit{nums}[r+1]$ 交换，然后扩大子数组，包含这个正数，可以得到更大的子数组和。
+2. 与其交换窗口内的负数与窗口外的负数，不如直接把窗口内的负数与 $\textit{nums}[\ell]$ 或者 $\textit{nums}[r]$ 交换，然后缩小子数组，移除这个负数，可以得到更大的子数组和。
+
+所以我们只需考虑正数与负数的交换。
+
+这样交换次数 $\textit{needSwap}$ 就很简单了，设子数组中的负数个数为 $\textit{negCnt}$，子数组外的正数个数为 $\textit{posCnt}$，那么
+
+$$
+\textit{needSwap} = \min(\textit{negCnt}, \textit{posCnt}, k)
+$$
+
+```py [sol-Python3]
+class Fenwick:
+    def __init__(self, n: int, sorted: list[int], width: int):
+        self.n = n
+        self.width = width
+        self.sorted = sorted
+        self.cnt = [0] * n
+        self.sum = [0] * n
+
+    def copy(self) -> Fenwick:
+        t = Fenwick(self.n, self.sorted, self.width)
+        t.cnt = self.cnt.copy()
+        t.sum = self.sum.copy()
+        return t
+
+    # 添加 num 个 val，其中 val 离散化后的值为 i
+    # 如果 num < 0，表示减少 -num 个 val
+    def update(self, i: int, num: int, val: int) -> None:
+        while i < self.n:
+            self.cnt[i] += num
+            self.sum[i] += val
+            i += i & -i
+
+    # 返回第 k 小的数（k 从 1 开始）
+    def kth(self, k: int) -> int:
+        i = 0
+        b = 1 << (self.width - 1)
+        while b > 0:
+            nxt = i | b
+            if nxt < self.n and self.cnt[nxt] < k:
+                k -= self.cnt[nxt]
+                i = nxt
+            b >>= 1
+        return self.sorted[i]
+
+    # 返回前 k 小的数之和（k 从 1 开始）
+    def pre_sum(self, k: int) -> int:
+        res = 0
+        i = 0
+        b = 1 << (self.width - 1)
+        while b > 0:
+            nxt = i | b
+            if nxt < self.n and self.cnt[nxt] < k:
+                k -= self.cnt[nxt]
+                res += self.sum[nxt]
+                i = nxt
+            b >>= 1
+        # 加上等于第 k 小的数
+        return res + self.sorted[i] * k
+
+
+class Solution:
+    def maxSum(self, nums: list[int], k: int) -> int:
+        # 特判：能否把正数都聚在一起
+        all_pos_sum = all_pos_cnt = 0
+        for x in nums:
+            if x > 0:
+                all_pos_sum += x
+                all_pos_cnt += 1
+        if all_pos_cnt == 0:  # 没有正数
+            return max(nums)
+        # 定长滑动窗口模板，窗口长度为 all_pos_cnt
+        cnt = 0
+        for i, x in enumerate(nums):
+            if x > 0:
+                cnt += 1
+            left = i - all_pos_cnt + 1
+            if left < 0:
+                continue
+            if cnt + k >= all_pos_cnt:  # 可以把正数都聚在一起
+                return all_pos_sum
+            if nums[left] > 0:
+                cnt -= 1
+
+        # 离散化
+        n = len(nums)
+        sorted_ = sorted(set(nums))
+        m = len(sorted_)
+        width_m = m.bit_length()
+        rank = [0] * n  # rank[i] 是 nums[i] 离散化后的值（从 1 开始）
+        all_pos_tree = Fenwick(m + 1, sorted_, width_m)  # 包含所有正数的树状数组
+        total = 0
+        for i, x in enumerate(nums):
+            rank[i] = bisect_left(sorted_, x) + 1
+            if x > 0:
+                all_pos_tree.update(rank[i], 1, x)
+
+        ans = -inf
+
+        # 枚举子数组左端点
+        for left in range(n):
+            neg_tree = Fenwick(m + 1, sorted_, width_m)
+            pos_tree = all_pos_tree.copy()
+            pos_sum = all_pos_sum
+            pos_cnt = all_pos_cnt
+            neg_cnt = 0
+            sub_sum = 0
+
+            # 枚举子数组右端点
+            for right in range(left, n):
+                # x 从子数组外移到子数组内
+                x = nums[right]
+                rk = rank[right]
+                sub_sum += x
+                if x > 0:
+                    pos_tree.update(rk, -1, -x)
+                    pos_sum -= x
+                    pos_cnt -= 1
+                elif x < 0:
+                    neg_tree.update(rk, 1, x)
+                    neg_cnt += 1
+
+                # 计算通过交换导致的元素和的增量
+                delta = 0
+                need_swap = min(neg_cnt, pos_cnt, k)
+                if need_swap > 0:
+                    in_sum = neg_tree.pre_sum(need_swap)
+                    out_sum = pos_sum - pos_tree.pre_sum(pos_cnt - need_swap)
+                    delta = out_sum - in_sum
+
+                ans = max(ans, sub_sum + delta)
+
+        return ans
+```
+
+```java [sol-Java]
+class Fenwick {
+    private final int width;
+    private final int[] sorted;
+    private final int[] cnt;
+    private final long[] sum;
+
+    public Fenwick(int n, int[] sorted, int width) {
+        this.width = width;
+        this.sorted = sorted;
+        cnt = new int[n];
+        sum = new long[n];
+    }
+
+    // 添加 num 个 val，其中 val 离散化后的值为 i
+    // 如果 num < 0，表示减少 -num 个 val
+    public void update(int i, int num, int val) {
+        for (; i < cnt.length; i += i & -i) {
+            cnt[i] += num;
+            sum[i] += val;
+        }
+    }
+
+    // 返回第 k 小的数（k 从 1 开始）
+    public int kth(int k) {
+        int i = 0;
+        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+            int nxt = i | b;
+            if (nxt < cnt.length && cnt[nxt] < k) {
+                k -= cnt[nxt];
+                i = nxt;
+            }
+        }
+        return sorted[i];
+    }
+
+    // 返回前 k 小的数之和（k 从 1 开始）
+    public long preSum(int k) {
+        long res = 0;
+        int i = 0;
+        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+            int nxt = i | b;
+            if (nxt < cnt.length && cnt[nxt] < k) {
+                k -= cnt[nxt];
+                res += sum[nxt];
+                i = nxt;
+            }
+        }
+        // 加上等于第 k 小的数
+        return res + (long) sorted[i] * k;
+    }
+
+    public Fenwick copy() {
+        Fenwick f = new Fenwick(cnt.length, sorted, width);
+        System.arraycopy(this.cnt, 0, f.cnt, 0, cnt.length);
+        System.arraycopy(this.sum, 0, f.sum, 0, sum.length);
+        return f;
+    }
+}
+
+class Solution {
+    public long maxSum(int[] nums, int k) {
+        int n = nums.length;
+        // O(n) 特判：能否把正数都聚在一起
+        long allPosSum = 0;
+        int allPosCnt = 0;
+        int mx = Integer.MIN_VALUE;
+        for (int x : nums) {
+            if (x > 0) {
+                allPosSum += x;
+                allPosCnt++;
+            } else {
+                mx = Math.max(mx, x);
+            }
+        }
+        if (allPosCnt == 0) { // 没有正数
+            return mx;
+        }
+        // 定长滑动窗口模板，窗口长度为 allPosCnt
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            if (x > 0) {
+                cnt++;
+            }
+            int left = i - allPosCnt + 1;
+            if (left < 0) {
+                continue;
+            }
+            if (cnt + k >= allPosCnt) { // 可以把正数都聚在一起
+                return allPosSum;
+            }
+            if (nums[left] > 0) {
+                cnt--;
+            }
+        }
+
+        // 离散化
+        int[] sorted = nums.clone();
+        Arrays.sort(sorted);
+        int widthN = 32 - Integer.numberOfLeadingZeros(n);
+        int[] rank = new int[n]; // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
+        Fenwick allPosTree = new Fenwick(n + 1, sorted, widthN); // 包含所有正数的树状数组
+        long total = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            rank[i] = Arrays.binarySearch(sorted, x) + 1;
+            if (x > 0) {
+                allPosTree.update(rank[i], 1, x);
+            }
+        }
+
+        long ans = Long.MIN_VALUE;
+
+        // 枚举子数组左端点
+        for (int left = 0; left < n; left++) {
+            Fenwick negTree = new Fenwick(n + 1, sorted, widthN);
+            Fenwick posTree = allPosTree.copy();
+            long posSum = allPosSum;
+            int posCnt = allPosCnt;
+            int negCnt = 0;
+            long subSum = 0;
+
+            // 枚举子数组右端点
+            for (int right = left; right < n; right++) {
+                // x 从子数组外移到子数组内
+                int x = nums[right];
+                int rk = rank[right];
+                subSum += x;
+                if (x > 0) {
+                    posTree.update(rk, -1, -x);
+                    posSum -= x;
+                    posCnt--;
+                } else if (x < 0) {
+                    negTree.update(rk, 1, x);
+                    negCnt++;
+                }
+
+                // 计算通过交换导致的元素和的增量
+                long delta = 0;
+                int needSwap = Math.min(Math.min(negCnt, posCnt), k);
+                if (needSwap > 0) {
+                    long inSum = negTree.preSum(needSwap);
+                    long outSum = posSum - posTree.preSum(posCnt - needSwap);
+                    delta = outSum - inSum;
+                }
+
+                ans = Math.max(ans, subSum + delta);
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Fenwick {
+    const int width;
+    const vector<int>& sorted;
+    vector<int> cnt;
+    vector<long long> sum;
+
+public:
+    Fenwick(int n, const vector<int>& sorted, int width) : cnt(n), sum(n), sorted(sorted), width(width) {}
+
+    // 添加 num 个 val，其中 val 离散化后的值为 i
+    // 如果 num < 0，表示减少 -num 个 val
+    void update(int i, int num, int val) {
+        for (; i < cnt.size(); i += i & -i) {
+            cnt[i] += num;
+            sum[i] += val;
+        }
+    }
+
+    // 返回第 k 小的数（k 从 1 开始）
+    int kth(int k) {
+        int i = 0;
+        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+            int nxt = i | b;
+            if (nxt < cnt.size() && cnt[nxt] < k) {
+                k -= cnt[nxt];
+                i = nxt;
+            }
+        }
+        return sorted[i];
+    }
+
+    // 返回前 k 小的数之和（k 从 1 开始）
+    long long pre_sum(int k) {
+        long long res = 0;
+        int i = 0;
+        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+            int nxt = i | b;
+            if (nxt < cnt.size() && cnt[nxt] < k) {
+                k -= cnt[nxt];
+                res += sum[nxt];
+                i = nxt;
+            }
+        }
+        // 加上等于第 k 小的数
+        return res + 1LL * sorted[i] * k;;
+    }
+};
+
+class Solution {
+public:
+    long long maxSum(vector<int>& nums, int k) {
+        int n = nums.size();
+        // O(n) 特判：能否把正数都聚在一起
+        int all_pos_sum = 0;
+        int all_pos_cnt = 0;
+        for (int x : nums) {
+            if (x > 0) {
+                all_pos_sum += x;
+                all_pos_cnt++;
+            }
+        }
+        if (all_pos_cnt == 0) { // 没有正数
+            return ranges::max(nums);
+        }
+        // 定长滑动窗口模板，窗口长度为 all_pos_cnt
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            cnt += x > 0;
+            int left = i - all_pos_cnt + 1;
+            if (left < 0) {
+                continue;
+            }
+            if (cnt + k >= all_pos_cnt) { // 可以把正数都聚在一起
+                return all_pos_sum;
+            }
+            cnt -= nums[left] > 0;
+        }
+
+        // 离散化
+        auto sorted = nums;
+        ranges::sort(sorted);
+        sorted.erase(ranges::unique(sorted).begin(), sorted.end());
+        int m = sorted.size();
+        int width_m = bit_width(1u * m);
+        vector<int> rank(n); // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
+        Fenwick all_pos_tree(m + 1, sorted, width_m); // 包含所有正数的树状数组
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            rank[i] = ranges::lower_bound(sorted, x) - sorted.begin() + 1;
+            if (x > 0) {
+                all_pos_tree.update(rank[i], 1, x);
+            }
+        }
+
+        long long ans = LLONG_MIN;
+
+        // 枚举子数组左端点
+        for (int left = 0; left < n; left++) {
+            Fenwick neg_tree(m + 1, sorted, width_m);
+            Fenwick pos_tree = all_pos_tree;
+            long long pos_sum = all_pos_sum;
+            int pos_cnt = all_pos_cnt;
+            int neg_cnt = 0;
+            long long sub_sum = 0;
+
+            // 枚举子数组右端点
+            for (int right = left; right < n; right++) {
+                // x 从子数组外移到子数组内
+                int x = nums[right];
+                int rk = rank[right];
+                sub_sum += x;
+                if (x > 0) {
+                    pos_tree.update(rk, -1, -x);
+                    pos_sum -= x;
+                    pos_cnt--;
+                } else if (x < 0) {
+                    neg_tree.update(rk, 1, x);
+                    neg_cnt++;
+                }
+
+                long long delta = 0;
+                int need_swap = min({neg_cnt, pos_cnt, k});
+                if (need_swap > 0) {
+                    long long in_sum = neg_tree.pre_sum(need_swap);
+                    long long out_sum = pos_sum - pos_tree.pre_sum(pos_cnt - need_swap);
+                    delta = out_sum - in_sum;
+                }
+
+                ans = max(ans, sub_sum + delta);
+            }
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+var widthM int
+
+type pair struct{ cnt, sum int }
+type fenwick []pair
+
+// 添加 num 个 val，其中 val 离散化后的值为 i
+// 如果 num < 0，表示减少 -num 个 val
+func (t fenwick) update(i, num, val int) {
+	for ; i < len(t); i += i & -i {
+		t[i].cnt += num
+		t[i].sum += val
+	}
+}
+
+// 返回第 k 小的数（k 从 1 开始）
+func (t fenwick) kth(k int, sorted []int) int {
+	i := 0
+	for b := 1 << (widthM - 1); b > 0; b >>= 1 {
+		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
+			k -= t[nxt].cnt
+			i = nxt
+		}
+	}
+	return sorted[i]
+}
+
+// 返回前 k 小的数之和（k 从 1 开始）
+func (t fenwick) preSum(k int, sorted []int) (res int) {
+	i := 0
+	for b := 1 << (widthM - 1); b > 0; b >>= 1 {
+		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
+			k -= t[nxt].cnt
+			res += t[nxt].sum
+			i = nxt
+		}
+	}
+	// 加上等于第 k 小的数
+	res += sorted[i] * k
+	return
+}
+
+func maxSum(nums []int, k int) int64 {
+	// O(n) 特判：能否把正数都聚在一起
+	allPosSum := 0
+	allPosCnt := 0
+	for _, x := range nums {
+		if x > 0 {
+			allPosSum += x
+			allPosCnt++
+		}
+	}
+	if allPosCnt == 0 { // 没有正数
+		return int64(slices.Max(nums))
+	}
+	// 定长滑动窗口模板，窗口长度为 allPosCnt
+	cnt := 0
+	for i, x := range nums {
+		if x > 0 {
+			cnt++
+		}
+		left := i - allPosCnt + 1
+		if left < 0 {
+			continue
+		}
+		if cnt+k >= allPosCnt { // 可以把正数都聚在一起
+			return int64(allPosSum)
+		}
+		if nums[left] > 0 {
+			cnt--
+		}
+	}
+
+	// 离散化
+	n := len(nums)
+	sorted := slices.Clone(nums)
+	slices.Sort(sorted)
+	sorted = slices.Compact(sorted)
+	m := len(sorted)
+	widthM = bits.Len(uint(m))
+	rank := make([]int, n) // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
+	allPosTree := make(fenwick, m+1) // 包含所有正数的树状数组
+	for i, x := range nums {
+		rank[i] = sort.SearchInts(sorted, x) + 1
+		if x > 0 {
+			allPosTree.update(rank[i], 1, x)
+		}
+	}
+
+	ans := math.MinInt
+
+	// 枚举子数组左端点
+	for left := range nums {
+		negTree := make(fenwick, m+1)
+		posTree := slices.Clone(allPosTree)
+		posSum := allPosSum
+		posCnt := allPosCnt
+		negCnt := 0
+		subSum := 0
+
+		// 枚举子数组右端点
+		for right := left; right < n; right++ {
+			// x 从子数组外移到子数组内
+			x := nums[right]
+			rk := rank[right]
+			subSum += x
+			if x > 0 {
+				posTree.update(rk, -1, -x)
+				posSum -= x
+				posCnt--
+			} else if x < 0 {
+				negTree.update(rk, 1, x)
+				negCnt++
+			}
+
+			// 计算通过交换导致的元素和的增量
+			delta := 0
+			needSwap := min(negCnt, posCnt, k)
+			if needSwap > 0 {
+				inSum := negTree.preSum(needSwap, sorted)
+				outSum := posSum - posTree.preSum(posCnt-needSwap, sorted)
 				delta = outSum - inSum
 			}
 
