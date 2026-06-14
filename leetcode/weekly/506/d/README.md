@@ -7,7 +7,7 @@
 - 子数组内的前 $k$ **小**元素和。
 - 子数组外的前 $k$ **大**元素和。
 
-这可以用**对顶堆**或者**值域树状数组**维护。题解用的后者，原理见 [OI-wiki](https://oi-wiki.org/ds/fenwick/#%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9%E6%9F%A5%E8%AF%A2%E5%85%A8%E5%B1%80%E7%AC%AC-k-%E5%B0%8F)。
+这可以用**对顶堆**或者**值域树状数组**维护，题解用的后者。我们可以在值域树状数组上二分，从而求出第 $k$ 小以及前 $k$ 小元素和，原理见 [OI-wiki](https://oi-wiki.org/ds/fenwick/#%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9%E6%9F%A5%E8%AF%A2%E5%85%A8%E5%B1%80%E7%AC%AC-k-%E5%B0%8F)。
 
 但是，如果子数组内的第 $k$ 小比子数组外的第 $k$ 大还要大，那么不能交换。这意味着，实际交换次数可能小于 $k$。
 
@@ -26,21 +26,15 @@
 
 ```py [sol-Python3]
 # ⚠ 超时了！请看优化后的代码
-class Fenwick:
-    def __init__(self, n: int, sorted: list[int], width: int):
-        self.n = n
-        self.width = width
-        self.sorted = sorted
-        self.cnt = [0] * n
-        self.sum = [0] * n
+class FenwickTree:
+    def __init__(self, sorted_nums: List[int]):
+        self.n = n = len(sorted_nums)
+        self.high_bit = 1 << (n.bit_length() - 1)
+        self.sorted_nums = sorted_nums
+        self.cnt = [0] * (n + 1)
+        self.sum = [0] * (n + 1)
 
-    def copy(self) -> Fenwick:
-        t = Fenwick(self.n, self.sorted, self.width)
-        t.cnt = self.cnt.copy()
-        t.sum = self.sum.copy()
-        return t
-
-    # 添加 num 个 val，其中 val 离散化后的值为 i
+    # 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
     # 如果 num < 0，表示减少 -num 个 val
     def update(self, i: int, num: int, val: int) -> None:
         while i < self.n:
@@ -51,43 +45,46 @@ class Fenwick:
     # 返回第 k 小的数（k 从 1 开始）
     def kth(self, k: int) -> int:
         i = 0
-        b = 1 << (self.width - 1)
+        b = self.high_bit
         while b > 0:
             nxt = i | b
             if nxt < self.n and self.cnt[nxt] < k:
                 k -= self.cnt[nxt]
                 i = nxt
             b >>= 1
-        return self.sorted[i]
+        return self.sorted_nums[i]
 
     # 返回前 k 小的数之和（k 从 1 开始）
     def pre_sum(self, k: int) -> int:
-        res = 0
-        i = 0
-        b = 1 << (self.width - 1)
+        s = i = 0
+        b = self.high_bit
         while b > 0:
             nxt = i | b
             if nxt < self.n and self.cnt[nxt] < k:
                 k -= self.cnt[nxt]
-                res += self.sum[nxt]
+                s += self.sum[nxt]
                 i = nxt
             b >>= 1
         # 加上等于第 k 小的数
-        return res + self.sorted[i] * k
+        return s + self.sorted_nums[i] * k
+
+    def copy(self) -> FenwickTree:
+        t = FenwickTree(self.sorted_nums)
+        t.cnt[:] = self.cnt
+        t.sum[:] = self.sum
+        return t
 
 
 class Solution:
     def maxSum(self, nums: list[int], k: int) -> int:
         # 离散化
         n = len(nums)
-        sorted_ = sorted(set(nums))
-        m = len(sorted_)
-        width_m = m.bit_length()
+        sorted_nums = sorted(set(nums))
         rank = [0] * n  # rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-        all_tree = Fenwick(m + 1, sorted_, width_m)  # 包含所有元素的树状数组
+        all_tree = FenwickTree(sorted_nums)  # 包含所有元素的树状数组
         total = 0
         for i, x in enumerate(nums):
-            rank[i] = bisect_left(sorted_, x) + 1
+            rank[i] = bisect_left(sorted_nums, x) + 1
             all_tree.update(rank[i], 1, x)
             total += x
 
@@ -95,7 +92,7 @@ class Solution:
 
         # 枚举子数组左端点
         for left in range(n):
-            in_tree = Fenwick(m + 1, sorted_, width_m)
+            in_tree = FenwickTree(sorted_nums)
             out_tree = all_tree.copy()
             need_swap = sub_sum = 0
 
@@ -136,20 +133,21 @@ class Solution:
 ```
 
 ```java [sol-Java]
-class Fenwick {
-    private final int width;
+class FenwickTree {
+    private final int highBit;
     private final int[] sorted;
     private final int[] cnt;
     private final long[] sum;
 
-    public Fenwick(int n, int[] sorted, int width) {
-        this.width = width;
+    public FenwickTree(int[] sorted) {
+        int n = sorted.length;
+        highBit = 1 << (31 - Integer.numberOfLeadingZeros(n));
         this.sorted = sorted;
-        cnt = new int[n];
-        sum = new long[n];
+        cnt = new int[n + 1];
+        sum = new long[n + 1];
     }
 
-    // 添加 num 个 val，其中 val 离散化后的值为 i
+    // 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
     // 如果 num < 0，表示减少 -num 个 val
     public void update(int i, int num, int val) {
         for (; i < cnt.length; i += i & -i) {
@@ -161,7 +159,7 @@ class Fenwick {
     // 返回第 k 小的数（k 从 1 开始）
     public int kth(int k) {
         int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+        for (int b = highBit; b > 0; b >>= 1) {
             int nxt = i | b;
             if (nxt < cnt.length && cnt[nxt] < k) {
                 k -= cnt[nxt];
@@ -173,24 +171,24 @@ class Fenwick {
 
     // 返回前 k 小的数之和（k 从 1 开始）
     public long preSum(int k) {
-        long res = 0;
+        long s = 0;
         int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+        for (int b = highBit; b > 0; b >>= 1) {
             int nxt = i | b;
             if (nxt < cnt.length && cnt[nxt] < k) {
                 k -= cnt[nxt];
-                res += sum[nxt];
+                s += sum[nxt];
                 i = nxt;
             }
         }
         // 加上等于第 k 小的数
-        return res + (long) sorted[i] * k;
+        return s + (long) sorted[i] * k;
     }
 
-    public Fenwick copy() {
-        Fenwick f = new Fenwick(cnt.length, sorted, width);
-        System.arraycopy(this.cnt, 0, f.cnt, 0, cnt.length);
-        System.arraycopy(this.sum, 0, f.sum, 0, sum.length);
+    public FenwickTree copy() {
+        FenwickTree f = new FenwickTree(sorted);
+        System.arraycopy(cnt, 0, f.cnt, 0, cnt.length);
+        System.arraycopy(sum, 0, f.sum, 0, sum.length);
         return f;
     }
 }
@@ -201,9 +199,8 @@ class Solution {
         int n = nums.length;
         int[] sorted = nums.clone();
         Arrays.sort(sorted);
-        int widthN = 32 - Integer.numberOfLeadingZeros(n);
         int[] rank = new int[n]; // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-        Fenwick allTree = new Fenwick(n + 1, sorted, widthN); // 包含所有元素的树状数组
+        FenwickTree allTree = new FenwickTree(sorted); // 包含所有元素的树状数组
         long total = 0;
         for (int i = 0; i < n; i++) {
             int x = nums[i];
@@ -216,8 +213,8 @@ class Solution {
 
         // 枚举子数组左端点
         for (int left = 0; left < n; left++) {
-            Fenwick inTree = new Fenwick(n + 1, sorted, widthN);
-            Fenwick outTree = allTree.copy();
+            FenwickTree inTree = new FenwickTree(sorted);
+            FenwickTree outTree = allTree.copy();
             int needSwap = 0;
             long subSum = 0;
 
@@ -265,16 +262,20 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-class Fenwick {
-    const int width;
+class FenwickTree {
+    const int high_bit;
     const vector<int>& sorted;
     vector<int> cnt;
     vector<long long> sum;
 
 public:
-    Fenwick(int n, const vector<int>& sorted, int width) : cnt(n), sum(n), sorted(sorted), width(width) {}
+    FenwickTree(const vector<int>& sorted) : 
+        cnt(sorted.size() + 1), 
+        sum(sorted.size() + 1), 
+        sorted(sorted), 
+        high_bit(1 << (bit_width(sorted.size()) - 1)) {}
 
-    // 添加 num 个 val，其中 val 离散化后的值为 i
+    // 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
     // 如果 num < 0，表示减少 -num 个 val
     void update(int i, int num, int val) {
         for (; i < cnt.size(); i += i & -i) {
@@ -284,9 +285,9 @@ public:
     }
 
     // 返回第 k 小的数（k 从 1 开始）
-    int kth(int k) {
+    int kth(int k) const {
         int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+        for (int b = high_bit; b > 0; b >>= 1) {
             int nxt = i | b;
             if (nxt < cnt.size() && cnt[nxt] < k) {
                 k -= cnt[nxt];
@@ -297,19 +298,19 @@ public:
     }
 
     // 返回前 k 小的数之和（k 从 1 开始）
-    long long pre_sum(int k) {
-        long long res = 0;
+    long long pre_sum(int k) const {
+        long long s = 0;
         int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+        for (int b = high_bit; b > 0; b >>= 1) {
             int nxt = i | b;
             if (nxt < cnt.size() && cnt[nxt] < k) {
                 k -= cnt[nxt];
-                res += sum[nxt];
+                s += sum[nxt];
                 i = nxt;
             }
         }
         // 加上等于第 k 小的数
-        return res + 1LL * sorted[i] * k;;
+        return s + 1LL * sorted[i] * k;;
     }
 };
 
@@ -321,10 +322,8 @@ public:
         vector<int> sorted = nums;
         ranges::sort(sorted);
         sorted.erase(ranges::unique(sorted).begin(), sorted.end());
-        int m = sorted.size();
-        int width_m = bit_width(1u * m);
         vector<int> rank(n); // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-        Fenwick all_tree(m + 1, sorted, width_m); // 包含所有元素的树状数组
+        FenwickTree all_tree(sorted); // 包含所有元素的树状数组
         long long total = 0;
         for (int i = 0; i < n; i++) {
             int x = nums[i];
@@ -337,8 +336,8 @@ public:
 
         // 枚举子数组左端点
         for (int left = 0; left < n; left++) {
-            Fenwick in_tree(m + 1, sorted, width_m);
-            Fenwick out_tree = all_tree;
+            FenwickTree in_tree(sorted);
+            FenwickTree out_tree = all_tree;
             int need_swap = 0;
             long long sub_sum = 0;
 
@@ -386,44 +385,55 @@ public:
 ```
 
 ```go [sol-Go]
-var widthM int
-
 type pair struct{ cnt, sum int }
-type fenwick []pair
+type fenwick struct {
+	t       []pair
+	sorted  []int
+	highBit int
+}
 
-// 添加 num 个 val，其中 val 离散化后的值为 i
+func newFenwickTree(sorted []int) fenwick {
+	n := len(sorted)
+	return fenwick{
+		t:       make([]pair, n+1),
+		sorted:  sorted,
+		highBit: 1 << (bits.Len(uint(n)) - 1),
+	}
+}
+
+// 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
 // 如果 num < 0，表示减少 -num 个 val
-func (t fenwick) update(i, num, val int) {
-	for ; i < len(t); i += i & -i {
-		t[i].cnt += num
-		t[i].sum += val
+func (f *fenwick) update(i, num, val int) {
+	for ; i < len(f.t); i += i & -i {
+		f.t[i].cnt += num
+		f.t[i].sum += val
 	}
 }
 
 // 返回第 k 小的数（k 从 1 开始）
-func (t fenwick) kth(k int, sorted []int) int {
+func (f *fenwick) kth(k int) int {
 	i := 0
-	for b := 1 << (widthM - 1); b > 0; b >>= 1 {
-		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
-			k -= t[nxt].cnt
+	for b := f.highBit; b > 0; b >>= 1 {
+		if nxt := i | b; nxt < len(f.t) && f.t[nxt].cnt < k {
+			k -= f.t[nxt].cnt
 			i = nxt
 		}
 	}
-	return sorted[i]
+	return f.sorted[i]
 }
 
 // 返回前 k 小的数之和（k 从 1 开始）
-func (t fenwick) preSum(k int, sorted []int) (res int) {
+func (f *fenwick) preSum(k int) (s int) {
 	i := 0
-	for b := 1 << (widthM - 1); b > 0; b >>= 1 {
-		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
-			k -= t[nxt].cnt
-			res += t[nxt].sum
+	for b := f.highBit; b > 0; b >>= 1 {
+		if nxt := i | b; nxt < len(f.t) && f.t[nxt].cnt < k {
+			k -= f.t[nxt].cnt
+			s += f.t[nxt].sum
 			i = nxt
 		}
 	}
 	// 加上等于第 k 小的数
-	res += sorted[i] * k
+	s += f.sorted[i] * k
 	return
 }
 
@@ -433,10 +443,8 @@ func maxSum(nums []int, k int) int64 {
 	sorted := slices.Clone(nums)
 	slices.Sort(sorted)
 	sorted = slices.Compact(sorted)
-	m := len(sorted)
-	widthM = bits.Len(uint(m))
 	rank := make([]int, n) // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-	allTree := make(fenwick, m+1) // 包含所有元素的树状数组
+	allTree := newFenwickTree(sorted) // 包含所有元素的树状数组
 	total := 0
 	for i, x := range nums {
 		rank[i] = sort.SearchInts(sorted, x) + 1
@@ -444,12 +452,14 @@ func maxSum(nums []int, k int) int64 {
 		total += x
 	}
 
+	inTree := newFenwickTree(sorted)
+	outTree := newFenwickTree(sorted)
 	ans := math.MinInt
 
 	// 枚举子数组左端点
 	for left := range nums {
-		inTree := make(fenwick, m+1)
-		outTree := slices.Clone(allTree)
+		clear(inTree.t)
+		copy(outTree.t, allTree.t)
 		needSwap := 0
 		subSum := 0
 
@@ -466,7 +476,7 @@ func maxSum(nums []int, k int) int64 {
 			sz := right - left + 1
 			if needSwap < k && needSwap < sz && needSwap < n-sz {
 				// 能否多交换一次
-				if inTree.kth(needSwap+1, sorted) < outTree.kth(n-sz-needSwap, sorted) {
+				if inTree.kth(needSwap+1) < outTree.kth(n-sz-needSwap) {
 					inc = true
 					needSwap++
 				}
@@ -474,7 +484,7 @@ func maxSum(nums []int, k int) int64 {
 
 			if !inc && needSwap > 0 {
 				// 是否要减少交换次数
-				if inTree.kth(needSwap, sorted) >= outTree.kth(n-sz-needSwap+1, sorted) {
+				if inTree.kth(needSwap) >= outTree.kth(n-sz-needSwap+1) {
 					needSwap--
 				}
 			}
@@ -482,8 +492,8 @@ func maxSum(nums []int, k int) int64 {
 			// 计算通过交换导致的元素和的增量
 			delta := 0
 			if needSwap > 0 {
-				inSum := inTree.preSum(needSwap, sorted)
-				outSum := total - subSum - outTree.preSum(n-sz-needSwap, sorted)
+				inSum := inTree.preSum(needSwap)
+				outSum := total - subSum - outTree.preSum(n-sz-needSwap)
 				delta = outSum - inSum
 			}
 
@@ -512,35 +522,29 @@ func maxSum(nums []int, k int) int64 {
 1. $\textit{nums}[\ell-1]$ 和 $\textit{nums}[r+1]$（如果有）一定都 $\le 0$。**反证法**：如果其中有正数，则子数组扩大更好，矛盾。
 2. $\textit{nums}[\ell]$ 和 $\textit{nums}[r]$ 一定都 $\ge 0$。**反证法**：如果其中有负数，则子数组缩小更好，矛盾。
 
-这个性质有什么用？
+这些性质有什么用？
 
-1. 与其交换窗口内的正数（以及 $0$）与窗口外的正数，不如直接把窗口外的正数与 $\textit{nums}[\ell-1]$ 或者 $\textit{nums}[r+1]$ 交换，然后扩大子数组，包含这个正数，可以得到更大的子数组和。
-2. 与其交换窗口内的负数与窗口外的负数，不如直接把窗口内的负数与 $\textit{nums}[\ell]$ 或者 $\textit{nums}[r]$ 交换，然后缩小子数组，移除这个负数，可以得到更大的子数组和。
+1. 与其交换子数组内的正数（以及 $0$）与子数组外的正数，不如把子数组外的正数与 $\textit{nums}[\ell-1]$ 或者 $\textit{nums}[r+1]$ 交换，然后扩大子数组，包含这个正数，可以得到更大的子数组和。
+2. 与其交换子数组内的负数与子数组外的负数，不如把子数组内的负数与 $\textit{nums}[\ell]$ 或者 $\textit{nums}[r]$ 交换，然后缩小子数组，移除这个负数，可以得到更大的子数组和。
 
-所以我们只需考虑正数与负数的交换。
+所以我们只需考虑子数组内的负数与子数组外的正数的交换。
 
-这样交换次数 $\textit{needSwap}$ 就很简单了，设子数组中的负数个数为 $\textit{negCnt}$，子数组外的正数个数为 $\textit{posCnt}$，那么
+这样计算交换次数 $\textit{needSwap}$ 就很简单了。设子数组内的负数个数为 $\textit{negCnt}$，子数组外的正数个数为 $\textit{posCnt}$，那么
 
 $$
 \textit{needSwap} = \min(\textit{negCnt}, \textit{posCnt}, k)
 $$
 
 ```py [sol-Python3]
-class Fenwick:
-    def __init__(self, n: int, sorted: list[int], width: int):
-        self.n = n
-        self.width = width
-        self.sorted = sorted
-        self.cnt = [0] * n
-        self.sum = [0] * n
+class FenwickTree:
+    def __init__(self, sorted_nums: List[int]):
+        self.n = n = len(sorted_nums)
+        self.high_bit = 1 << (n.bit_length() - 1)
+        self.sorted_nums = sorted_nums
+        self.cnt = [0] * (n + 1)
+        self.sum = [0] * (n + 1)
 
-    def copy(self) -> Fenwick:
-        t = Fenwick(self.n, self.sorted, self.width)
-        t.cnt = self.cnt.copy()
-        t.sum = self.sum.copy()
-        return t
-
-    # 添加 num 个 val，其中 val 离散化后的值为 i
+    # 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
     # 如果 num < 0，表示减少 -num 个 val
     def update(self, i: int, num: int, val: int) -> None:
         while i < self.n:
@@ -548,37 +552,30 @@ class Fenwick:
             self.sum[i] += val
             i += i & -i
 
-    # 返回第 k 小的数（k 从 1 开始）
-    def kth(self, k: int) -> int:
-        i = 0
-        b = 1 << (self.width - 1)
-        while b > 0:
-            nxt = i | b
-            if nxt < self.n and self.cnt[nxt] < k:
-                k -= self.cnt[nxt]
-                i = nxt
-            b >>= 1
-        return self.sorted[i]
-
     # 返回前 k 小的数之和（k 从 1 开始）
     def pre_sum(self, k: int) -> int:
-        res = 0
-        i = 0
-        b = 1 << (self.width - 1)
+        s = i = 0
+        b = self.high_bit
         while b > 0:
             nxt = i | b
             if nxt < self.n and self.cnt[nxt] < k:
                 k -= self.cnt[nxt]
-                res += self.sum[nxt]
+                s += self.sum[nxt]
                 i = nxt
             b >>= 1
         # 加上等于第 k 小的数
-        return res + self.sorted[i] * k
+        return s + self.sorted_nums[i] * k
+
+    def copy(self) -> FenwickTree:
+        t = FenwickTree(self.sorted_nums)
+        t.cnt[:] = self.cnt
+        t.sum[:] = self.sum
+        return t
 
 
 class Solution:
     def maxSum(self, nums: list[int], k: int) -> int:
-        # 特判：能否把正数都聚在一起
+        # O(n) 特判：能否把正数都聚在一起
         all_pos_sum = all_pos_cnt = 0
         for x in nums:
             if x > 0:
@@ -601,14 +598,11 @@ class Solution:
 
         # 离散化
         n = len(nums)
-        sorted_ = sorted(set(nums))
-        m = len(sorted_)
-        width_m = m.bit_length()
+        sorted_nums = sorted(set(nums))
         rank = [0] * n  # rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-        all_pos_tree = Fenwick(m + 1, sorted_, width_m)  # 包含所有正数的树状数组
-        total = 0
+        all_pos_tree = FenwickTree(sorted_nums)  # 包含所有正数的树状数组
         for i, x in enumerate(nums):
-            rank[i] = bisect_left(sorted_, x) + 1
+            rank[i] = bisect_left(sorted_nums, x) + 1
             if x > 0:
                 all_pos_tree.update(rank[i], 1, x)
 
@@ -616,7 +610,7 @@ class Solution:
 
         # 枚举子数组左端点
         for left in range(n):
-            neg_tree = Fenwick(m + 1, sorted_, width_m)
+            neg_tree = FenwickTree(sorted_nums)
             pos_tree = all_pos_tree.copy()
             pos_sum = all_pos_sum
             pos_cnt = all_pos_cnt
@@ -651,20 +645,21 @@ class Solution:
 ```
 
 ```java [sol-Java]
-class Fenwick {
-    private final int width;
+class FenwickTree {
+    private final int highBit;
     private final int[] sorted;
     private final int[] cnt;
     private final long[] sum;
 
-    public Fenwick(int n, int[] sorted, int width) {
-        this.width = width;
+    public FenwickTree(int[] sorted) {
+        int n = sorted.length;
+        highBit = 1 << (31 - Integer.numberOfLeadingZeros(n));
         this.sorted = sorted;
-        cnt = new int[n];
-        sum = new long[n];
+        cnt = new int[n + 1];
+        sum = new long[n + 1];
     }
 
-    // 添加 num 个 val，其中 val 离散化后的值为 i
+    // 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
     // 如果 num < 0，表示减少 -num 个 val
     public void update(int i, int num, int val) {
         for (; i < cnt.length; i += i & -i) {
@@ -673,39 +668,26 @@ class Fenwick {
         }
     }
 
-    // 返回第 k 小的数（k 从 1 开始）
-    public int kth(int k) {
-        int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
-            int nxt = i | b;
-            if (nxt < cnt.length && cnt[nxt] < k) {
-                k -= cnt[nxt];
-                i = nxt;
-            }
-        }
-        return sorted[i];
-    }
-
     // 返回前 k 小的数之和（k 从 1 开始）
     public long preSum(int k) {
-        long res = 0;
+        long s = 0;
         int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+        for (int b = highBit; b > 0; b >>= 1) {
             int nxt = i | b;
             if (nxt < cnt.length && cnt[nxt] < k) {
                 k -= cnt[nxt];
-                res += sum[nxt];
+                s += sum[nxt];
                 i = nxt;
             }
         }
         // 加上等于第 k 小的数
-        return res + (long) sorted[i] * k;
+        return s + (long) sorted[i] * k;
     }
 
-    public Fenwick copy() {
-        Fenwick f = new Fenwick(cnt.length, sorted, width);
-        System.arraycopy(this.cnt, 0, f.cnt, 0, cnt.length);
-        System.arraycopy(this.sum, 0, f.sum, 0, sum.length);
+    public FenwickTree copy() {
+        FenwickTree f = new FenwickTree(sorted);
+        System.arraycopy(cnt, 0, f.cnt, 0, cnt.length);
+        System.arraycopy(sum, 0, f.sum, 0, sum.length);
         return f;
     }
 }
@@ -750,10 +732,8 @@ class Solution {
         // 离散化
         int[] sorted = nums.clone();
         Arrays.sort(sorted);
-        int widthN = 32 - Integer.numberOfLeadingZeros(n);
         int[] rank = new int[n]; // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-        Fenwick allPosTree = new Fenwick(n + 1, sorted, widthN); // 包含所有正数的树状数组
-        long total = 0;
+        FenwickTree allPosTree = new FenwickTree(sorted); // 包含所有正数的树状数组
         for (int i = 0; i < n; i++) {
             int x = nums[i];
             rank[i] = Arrays.binarySearch(sorted, x) + 1;
@@ -766,8 +746,8 @@ class Solution {
 
         // 枚举子数组左端点
         for (int left = 0; left < n; left++) {
-            Fenwick negTree = new Fenwick(n + 1, sorted, widthN);
-            Fenwick posTree = allPosTree.copy();
+            FenwickTree negTree = new FenwickTree(sorted);
+            FenwickTree posTree = allPosTree.copy();
             long posSum = allPosSum;
             int posCnt = allPosCnt;
             int negCnt = 0;
@@ -807,51 +787,40 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-class Fenwick {
-    const int width;
+class FenwickTree {
+    const int high_bit;
     const vector<int>& sorted;
-    vector<int> cnt;
-    vector<long long> sum;
+    vector<pair<int, long long>> t; // {cnt, sum}
 
 public:
-    Fenwick(int n, const vector<int>& sorted, int width) : cnt(n), sum(n), sorted(sorted), width(width) {}
+    FenwickTree(const vector<int>& sorted) : 
+        t(sorted.size() + 1), 
+        sorted(sorted), 
+        high_bit(1 << (bit_width(sorted.size()) - 1)) {}
 
     // 添加 num 个 val，其中 val 离散化后的值为 i
     // 如果 num < 0，表示减少 -num 个 val
     void update(int i, int num, int val) {
-        for (; i < cnt.size(); i += i & -i) {
-            cnt[i] += num;
-            sum[i] += val;
+        for (; i < t.size(); i += i & -i) {
+            t[i].first += num;
+            t[i].second += val;
         }
-    }
-
-    // 返回第 k 小的数（k 从 1 开始）
-    int kth(int k) {
-        int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
-            int nxt = i | b;
-            if (nxt < cnt.size() && cnt[nxt] < k) {
-                k -= cnt[nxt];
-                i = nxt;
-            }
-        }
-        return sorted[i];
     }
 
     // 返回前 k 小的数之和（k 从 1 开始）
-    long long pre_sum(int k) {
-        long long res = 0;
+    long long pre_sum(int k) const {
+        long long s = 0;
         int i = 0;
-        for (int b = 1 << (width - 1); b > 0; b >>= 1) {
+        for (int b = high_bit; b > 0; b >>= 1) {
             int nxt = i | b;
-            if (nxt < cnt.size() && cnt[nxt] < k) {
-                k -= cnt[nxt];
-                res += sum[nxt];
+            if (nxt < t.size() && t[nxt].first < k) {
+                k -= t[nxt].first;
+                s += t[nxt].second;
                 i = nxt;
             }
         }
         // 加上等于第 k 小的数
-        return res + 1LL * sorted[i] * k;;
+        return s + 1LL * sorted[i] * k;;
     }
 };
 
@@ -890,10 +859,8 @@ public:
         auto sorted = nums;
         ranges::sort(sorted);
         sorted.erase(ranges::unique(sorted).begin(), sorted.end());
-        int m = sorted.size();
-        int width_m = bit_width(1u * m);
         vector<int> rank(n); // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-        Fenwick all_pos_tree(m + 1, sorted, width_m); // 包含所有正数的树状数组
+        FenwickTree all_pos_tree(sorted); // 包含所有正数的树状数组
         for (int i = 0; i < n; i++) {
             int x = nums[i];
             rank[i] = ranges::lower_bound(sorted, x) - sorted.begin() + 1;
@@ -906,8 +873,8 @@ public:
 
         // 枚举子数组左端点
         for (int left = 0; left < n; left++) {
-            Fenwick neg_tree(m + 1, sorted, width_m);
-            Fenwick pos_tree = all_pos_tree;
+            FenwickTree neg_tree(sorted);
+            FenwickTree pos_tree = all_pos_tree;
             long long pos_sum = all_pos_sum;
             int pos_cnt = all_pos_cnt;
             int neg_cnt = 0;
@@ -946,44 +913,43 @@ public:
 ```
 
 ```go [sol-Go]
-var widthM int
-
 type pair struct{ cnt, sum int }
-type fenwick []pair
+type fenwick struct {
+	t       []pair
+	sorted  []int
+	highBit int
+}
 
-// 添加 num 个 val，其中 val 离散化后的值为 i
-// 如果 num < 0，表示减少 -num 个 val
-func (t fenwick) update(i, num, val int) {
-	for ; i < len(t); i += i & -i {
-		t[i].cnt += num
-		t[i].sum += val
+func newFenwickTree(sorted []int) fenwick {
+	n := len(sorted)
+	return fenwick{
+		t:       make([]pair, n+1),
+		sorted:  sorted,
+		highBit: 1 << (bits.Len(uint(n)) - 1),
 	}
 }
 
-// 返回第 k 小的数（k 从 1 开始）
-func (t fenwick) kth(k int, sorted []int) int {
-	i := 0
-	for b := 1 << (widthM - 1); b > 0; b >>= 1 {
-		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
-			k -= t[nxt].cnt
-			i = nxt
-		}
+// 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
+// 如果 num < 0，表示减少 -num 个 val
+func (f *fenwick) update(i, num, val int) {
+	for ; i < len(f.t); i += i & -i {
+		f.t[i].cnt += num
+		f.t[i].sum += val
 	}
-	return sorted[i]
 }
 
 // 返回前 k 小的数之和（k 从 1 开始）
-func (t fenwick) preSum(k int, sorted []int) (res int) {
+func (f *fenwick) preSum(k int) (s int) {
 	i := 0
-	for b := 1 << (widthM - 1); b > 0; b >>= 1 {
-		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
-			k -= t[nxt].cnt
-			res += t[nxt].sum
+	for b := f.highBit; b > 0; b >>= 1 {
+		if nxt := i | b; nxt < len(f.t) && f.t[nxt].cnt < k {
+			k -= f.t[nxt].cnt
+			s += f.t[nxt].sum
 			i = nxt
 		}
 	}
 	// 加上等于第 k 小的数
-	res += sorted[i] * k
+	s += f.sorted[i] * k
 	return
 }
 
@@ -1023,10 +989,8 @@ func maxSum(nums []int, k int) int64 {
 	sorted := slices.Clone(nums)
 	slices.Sort(sorted)
 	sorted = slices.Compact(sorted)
-	m := len(sorted)
-	widthM = bits.Len(uint(m))
 	rank := make([]int, n) // rank[i] 是 nums[i] 离散化后的值（从 1 开始）
-	allPosTree := make(fenwick, m+1) // 包含所有正数的树状数组
+	allPosTree := newFenwickTree(sorted) // 包含所有正数的树状数组
 	for i, x := range nums {
 		rank[i] = sort.SearchInts(sorted, x) + 1
 		if x > 0 {
@@ -1034,12 +998,14 @@ func maxSum(nums []int, k int) int64 {
 		}
 	}
 
+	negTree := newFenwickTree(sorted)
+	posTree := newFenwickTree(sorted)
 	ans := math.MinInt
 
 	// 枚举子数组左端点
 	for left := range nums {
-		negTree := make(fenwick, m+1)
-		posTree := slices.Clone(allPosTree)
+		clear(negTree.t)
+		copy(posTree.t, allPosTree.t)
 		posSum := allPosSum
 		posCnt := allPosCnt
 		negCnt := 0
@@ -1064,8 +1030,8 @@ func maxSum(nums []int, k int) int64 {
 			delta := 0
 			needSwap := min(negCnt, posCnt, k)
 			if needSwap > 0 {
-				inSum := negTree.preSum(needSwap, sorted)
-				outSum := posSum - posTree.preSum(posCnt-needSwap, sorted)
+				inSum := negTree.preSum(needSwap)
+				outSum := posSum - posTree.preSum(posCnt-needSwap)
 				delta = outSum - inSum
 			}
 
