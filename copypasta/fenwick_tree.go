@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"maps"
+	"math/bits"
 	"slices"
 	"sort"
 )
@@ -144,12 +145,8 @@ func (t fenwick) query(l, r int) int {
 	return t.pre(r) - t.pre(l-1)
 }
 
-// 求权值树状数组第 k 小的数（k 从 1 开始）
+// 值域树状数组
 // 这里每个叶子 t[i] 表示 i 的个数
-// 返回最小的 x 满足 ∑i=[1..x] t[i] >= k
-// 思路类似【倍增】的查询，不断寻找 ∑<k 的数（位置），最后 +1 就是答案
-// 如果第 k 小的数不存在，返回 len(t)
-// 注：如果是普通树状数组，相当于查找前缀和 >= k 的最小下标（lowerBound），见 https://codeforces.com/problemset/problem/992/E
 // https://oi-wiki.org/ds/fenwick/#%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9%E6%9F%A5%E8%AF%A2%E5%85%A8%E5%B1%80%E7%AC%AC-k-%E5%B0%8F
 // https://codeforces.com/blog/entry/61364
 //
@@ -159,15 +156,60 @@ func (t fenwick) query(l, r int) int {
 // https://atcoder.jp/contests/abc287/tasks/abc287_g
 // https://www.luogu.com.cn/problem/P4137 二分
 // - 代码见本页面的 rangeMex
-func (t fenwick) kth(k int) (res int) {
-	const height = 17 // bits.Len(uint(n))
-	for b := 1 << (height - 1); b > 0; b >>= 1 {
-		if nxt := res | b; nxt < len(t) && t[nxt] < k {
-			k -= t[nxt]
-			res = nxt
+type fenwickPair struct{ cnt, sum int }
+type fenwickK struct {
+	t       []fenwickPair
+	sorted  []int
+	highBit int
+}
+
+// sorted 是所有插入数据（update 的参数 val）排序去重后的结果
+func newFenwickTreeK(sorted []int) fenwickK {
+	n := len(sorted)
+	return fenwickK{
+		t:       make([]fenwickPair, n+1),
+		sorted:  sorted,
+		highBit: 1 << (bits.Len(uint(n)) - 1),
+	}
+}
+
+// 添加 num 个 val，其中 val 离散化后的值为 i（i 从 1 开始）
+// 如果 num < 0，表示减少 -num 个 val
+func (f *fenwickK) update(i, num, val int) {
+	for ; i < len(f.t); i += i & -i {
+		f.t[i].cnt += num
+		f.t[i].sum += val
+	}
+}
+
+// 返回第 k 小的数（k 从 1 开始）
+// 注：如果是普通树状数组，相当于查找前缀和 >= k 的最小下标（lowerBound），见 https://codeforces.com/problemset/problem/992/E
+func (f *fenwickK) kth(k int) int {
+	t := f.t
+	i := 0
+	for b := f.highBit; b > 0; b >>= 1 {
+		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
+			k -= t[nxt].cnt
+			i = nxt
 		}
 	}
-	return res + 1
+	return f.sorted[i]
+}
+
+// 返回前 k 小的数之和（k 从 1 开始）
+func (f *fenwickK) preSum(k int) (s int) {
+	t := f.t
+	i := 0
+	for b := f.highBit; b > 0; b >>= 1 {
+		if nxt := i | b; nxt < len(t) && t[nxt].cnt < k {
+			k -= t[nxt].cnt
+			s += t[nxt].sum
+			i = nxt
+		}
+	}
+	// 加上等于第 k 小的数
+	s += f.sorted[i] * k
+	return
 }
 
 // 离线二维数点
