@@ -237,17 +237,18 @@ func (ac *acam) buildDFN() {
 	//}
 }
 
-// 有多少个下标不同的模式串在文本串 text 里出现过
+// 有多少个模式串（只统计一次）在文本串 text 里出现过
 // https://www.luogu.com.cn/problem/P3808
-// https://www.luogu.com.cn/record/136447022
-func (ac *acam) sumCountAllPatterns(text string) (cnt int) {
+// - https://www.luogu.com.cn/record/136447022
+// https://leetcode.cn/problems/number-of-strings-that-appear-as-substrings-in-word/
+func (ac *acam) sumCountAllPatterns(text string) (res int) {
 	o := ac.root
 	for _, b := range text {
-		o = o.son[ac.ord(b)] // 如果没有匹配相当于移动到 fail 的 son[t.ord(b)]
-		// 遍历 fail 链（fail 树上的从 o 到 root 的路径）
-		for match := o; match != ac.root && match.cnt != -1; match = match.last {
-			cnt += match.cnt
-			match.cnt = -1 // 访问标记
+		o = o.son[ac.ord(b)] // 如果没有匹配，相当于移动到 fail 的 son[t.ord(b)]
+		// 可能匹配更短的模式串，要继续在 last 链上找
+		for match := o; match.cnt >= 0; match = match.last {
+			res += match.cnt
+			match.cnt = -1 // 避免重复统计
 		}
 	}
 	return
