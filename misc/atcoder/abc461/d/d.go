@@ -10,10 +10,10 @@ import (
 // https://github.com/EndlessCheng
 func f(a []int, k int) (res int) {
 	var s1, s2, l1, l2 int
-	for _, x := range a {
+	for i, x := range a {
 		s1 += x
 		s2 += x
-		for s1 >= k {
+		for l1 <= i && s1 >= k {
 			s1 -= a[l1]
 			l1++
 		}
