@@ -11,6 +11,7 @@ import (
 模板题 LC850 https://leetcode.cn/problems/rectangle-area-ii/
 模板题 https://www.luogu.com.cn/problem/P5490
 LC3454 https://leetcode.cn/problems/separate-squares-ii/
+https://atcoder.jp/contests/abc346/tasks/abc346_g 2349 ~CF
 https://codeforces.com/problemset/problem/258/E 2400 转化
 https://ac.nowcoder.com/acm/contest/66651/C
 */
@@ -18,39 +19,40 @@ https://ac.nowcoder.com/acm/contest/66651/C
 // 线段树每个节点维护一段横坐标区间 [lx, rx]
 type segRect []struct {
 	l, r        int
-	minCoverLen int // 区间内被矩形覆盖次数最少的底边长之和
 	minCover    int // 区间内被矩形覆盖的最小次数
+	minCoverLen int // 区间内被矩形覆盖次数最少的底边长之和
 	todo        int // 子树内的所有节点的 minCover 需要增加的量，注意这可能是负数
 }
 
 // 根据左右儿子的信息，更新当前节点的信息
 func (t segRect) maintain(o int) {
-	lo, ro := &t[o<<1], &t[o<<1|1]
+	cur, lo, ro := &t[o], &t[o<<1], &t[o<<1|1]
 	mn := min(lo.minCover, ro.minCover)
-	t[o].minCover = mn
-	t[o].minCoverLen = 0
+	cur.minCover = mn
+	cur.minCoverLen = 0
 	if lo.minCover == mn { // 只统计等于 minCover 的底边长之和
-		t[o].minCoverLen = lo.minCoverLen
+		cur.minCoverLen = lo.minCoverLen
 	}
 	if ro.minCover == mn {
-		t[o].minCoverLen += ro.minCoverLen
+		cur.minCoverLen += ro.minCoverLen
 	}
 }
 
 // 仅更新节点信息，不下传懒标记
-func (t segRect) do(o, v int) {
-	t[o].minCover += v
-	t[o].todo += v
+func (t segRect) apply(o, f int) {
+	t[o].minCover += f
+	t[o].todo += f
 }
 
 // 下传懒标记
 func (t segRect) spread(o int) {
-	v := t[o].todo
-	if v != 0 {
-		t.do(o<<1, v)
-		t.do(o<<1|1, v)
-		t[o].todo = 0
+	f := t[o].todo
+	if f == 0 {
+		return
 	}
+	t.apply(o<<1, f)
+	t.apply(o<<1|1, f)
+	t[o].todo = 0
 }
 
 // 建树
@@ -67,20 +69,39 @@ func (t segRect) build(xs []int, o, l, r int) {
 }
 
 // 区间更新
-func (t segRect) update(o, l, r, v int) {
+func (t segRect) update(o, l, r, f int) {
 	if l <= t[o].l && t[o].r <= r {
-		t.do(o, v)
+		t.apply(o, f)
 		return
 	}
 	t.spread(o)
 	m := (t[o].l + t[o].r) >> 1
 	if l <= m {
-		t.update(o<<1, l, r, v)
+		t.update(o<<1, l, r, f)
 	}
 	if m < r {
-		t.update(o<<1|1, l, r, v)
+		t.update(o<<1|1, l, r, f)
 	}
 	t.maintain(o)
+}
+
+// 查询区间没被矩形覆盖的长度
+func (t segRect) query(o, l, r int) int {
+	if l <= t[o].l && t[o].r <= r {
+		if t[o].minCover == 0 {
+			return t[o].minCoverLen
+		}
+		return 0
+	}
+	t.spread(o)
+	m := (t[o].l + t[o].r) >> 1
+	if r <= m {
+		return t.query(o<<1, l, r)
+	}
+	if l > m {
+		return t.query(o<<1|1, l, r)
+	}
+	return t.query(o<<1, l, r) + t.query(o<<1|1, l, r)
 }
 
 // 输入格式 (x1,y1,x2,y2)，分别表示矩形的左下角和右上角（平面直角坐标系）
