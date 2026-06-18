@@ -1,18 +1,11 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func largestAltitude(a []int) (ans int) {
-	sum := 0
-	for _, v := range a {
-		sum += v
-		ans = max(ans, sum)
+func largestAltitude(gain []int) (ans int) {
+	h := 0
+	for _, d := range gain {
+		h += d
+		ans = max(ans, h)
 	}
 	return
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
