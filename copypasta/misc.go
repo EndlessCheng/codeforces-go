@@ -1278,6 +1278,7 @@ func mergeIntervals(a [][]int) [][]int {
 《Mirror Isles》https://alan.draknek.org/games/puzzlescript/mirrors.php
 《Skipping Stones To Lonely Homes》https://alan.draknek.org/games/puzzlescript/skipping-stones.php
 《PROMESST》https://silverspaceship.com/promesst/
+《PROMESST2》https://silverspaceship.com/promesst2/
 《ENIGMASH》https://jacklance.github.io/PuzzleScript/play.html?p=cfdcc6e23f1fb3e9de2fd42fafaf4d4c
 
 牧师 {2 0}
@@ -1301,7 +1302,7 @@ func mergeIntervals(a [][]int) [][]int {
 法师换怪物 {2 1} {4 1}
 
 */
-func heroesOfSokobanII() []string {
+func heroesOfSokoban() []string {
 	type point struct{ x, y int }
 	dir4 := []point{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
 
@@ -1443,5 +1444,372 @@ func heroesOfSokobanII() []string {
 
 		// 单纯换人
 		add(d, data{d.monster, d.priest, d.mage, d.who ^ 1}, "===")
+	}
+}
+
+/*
+法师换石头 {1 1} {2 1}
+法师 {4 1}
+法师换石头 {4 1} {1 1}
+法师换石头 {1 1} {1 2}
+法师换石头 {1 2} {2 2}
+法师 {4 3}
+法师换石头 {4 3} {4 1}
+法师换石头 {4 1} {1 1}
+法师换石头 {1 1} {1 2}
+法师 {4 5}
+法师换石头 {4 5} {4 3}
+法师换石头 {4 3} {4 1}
+法师换石头 {4 1} {1 1}
+
+小结：和推箱子反过来，从近到远，链式把石头传递到远方
+*/
+func heroesOfSokobanWizardAndStones() []string {
+	type point struct{ x, y int }
+	dir4 := []point{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
+
+	type data struct {
+		stones [3]point
+		wizard point
+	}
+	vis := map[data]bool{}
+	Q := []data{}
+	type pair struct {
+		data
+		s string
+	}
+	from := map[data]pair{}
+	add := func(fr, d data, s string) {
+		if !vis[d] {
+			vis[d] = true
+			Q = append(Q, d)
+			from[d] = pair{fr, s}
+		}
+	}
+
+	levelMap := []string{
+		".....##",
+		".....##",
+		".......",
+		"...#...",
+		".......",
+		"...#...",
+	}
+	n := len(levelMap)
+	m := len(levelMap[0])
+	isValidPos := func(x, y int) bool {
+		// todo 目前只看不是 '#'
+		return 0 <= x && x < n && 0 <= y && y < m && levelMap[x][y] != '#'
+	}
+
+	levelData := data{[3]point{{1, 2}, {2, 1}, {2, 2}}, point{1, 1}}
+	add(data{}, levelData, "")
+
+	for {
+		d := Q[0]
+		Q = Q[1:]
+		// 检查石头是否在目标位置
+		if d.stones[0] == (point{4, 1}) && d.stones[1] == (point{4, 3}) && d.stones[2] == (point{4, 5}) {
+			path := []string{}
+			for d != (data{}) {
+				path = append(path, from[d].s)
+				d = from[d].data
+			}
+			slices.Reverse(path)
+			return path
+		}
+
+		// 移动法师
+	o:
+		for _, dir := range dir4 {
+			// 该方向上是否有石头？
+			x, y := d.wizard.x, d.wizard.y
+			for {
+				x += dir.x
+				y += dir.y
+				if !isValidPos(x, y) { // 出界或者有障碍物
+					break
+				}
+
+				np := point{x, y}
+				for i, q := range d.stones {
+					if np != q {
+						continue
+					}
+					// 和石头交换位置
+					ns := d.stones
+					ns[i] = d.wizard
+					slices.SortFunc(ns[:], func(a, b point) int { return cmp.Or(a.x-b.x, a.y-b.y) })
+					add(d, data{ns, np}, fmt.Sprint("法师换石头 ", d.wizard, np))
+					continue o
+				}
+			}
+
+			x, y = d.wizard.x+dir.x, d.wizard.y+dir.y
+			// 普通移动一步
+			np := point{x, y}
+			if isValidPos(x, y) && !slices.Contains(d.stones[:], np) {
+				add(d, data{d.stones, np}, fmt.Sprint("法师 ", np))
+			}
+		}
+	}
+}
+
+/* 镜子、多控
+人移动 [{2 3} {4 3}]
+人移动 [{1 3} {3 3}]
+反射 [{7 9} {3 3}]
+人移动 [{2 3} {6 9}]
+人移动 [{2 4} {6 10}]
+推镜子 [{2 4} {7 10}]
+人移动 [{2 4} {7 11}]
+人移动 [{2 4} {8 11}]
+推镜子 [{2 3} {8 10}]
+人移动 [{2 4} {8 11}]
+人移动 [{2 4} {9 11}]
+人移动 [{2 3} {9 10}]
+人移动 [{1 3} {8 10}]
+反射 [{7 9} {7 9}]
+
+右上X 上右下右下左 右下左上X  上上右
+*/
+func heroesOfSokobanMirrors() []string {
+	type point struct{ x, y int }
+	dir4 := []point{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
+	dirString := []rune("左右上下")
+	less := func(a, b point) bool {
+		return a.x < b.x || a.x == b.x && a.y < b.y
+	}
+
+	type mirror struct {
+		point
+		tp int
+	}
+	mirrorDirs := [...]map[point]point{
+		{{0, 1}: {1, 0}, {-1, 0}: {0, -1}}, // \ 方向，镜面朝下
+		{{1, 0}: {0, 1}, {0, -1}: {-1, 0}}, // \ 方向，镜面朝上
+	}
+
+	type data struct {
+		man     [2]point
+		mirrors [2]mirror
+	}
+	vis := map[data]bool{}
+	Q := []data{}
+	type pair struct {
+		data
+		s string
+	}
+	from := map[data]pair{}
+	add := func(fr, d data, s string) {
+		if !less(d.man[0], d.man[1]) {
+			d.man[0], d.man[1] = d.man[1], d.man[0]
+		}
+		if !less(d.mirrors[0].point, d.mirrors[1].point) {
+			d.mirrors[0].point, d.mirrors[1].point = d.mirrors[1].point, d.mirrors[0].point
+		}
+
+		if !vis[d] {
+			vis[d] = true
+			Q = append(Q, d)
+			from[d] = pair{fr, s}
+		}
+	}
+
+	levelMap := []string{
+		"##.#####...####",
+		"#...####.M..###",
+		"#.@..##.......#",
+		"....###........",
+		"..@.##.........",
+		"....##.........",
+		"#..####........",
+		"#######...M...#",
+		"########......#",
+		"#########...###",
+	}
+	n := len(levelMap)
+	m := len(levelMap[0])
+	isValidPos := func(x, y int) bool {
+		// todo 目前只看不是 '#'
+		return 0 <= x && x < n && 0 <= y && y < m && levelMap[x][y] != '#'
+	}
+
+	var man, mirrors []point
+	for i, row := range levelMap {
+		for j, b := range row {
+			p := point{i, j}
+			if b == '@' {
+				man = append(man, p)
+			} else if b == 'M' {
+				mirrors = append(mirrors, p)
+			}
+		}
+	}
+
+	levelData := data{
+		man:     [2]point{man[0], man[1]},
+		mirrors: [2]mirror{{mirrors[0], 0}, {mirrors[1], 1}},
+	}
+
+	add(data{}, levelData, "")
+
+	for {
+		d := Q[0]
+		Q = Q[1:]
+
+		// 检查两人是否重合
+		if d.man[0] == d.man[1] {
+			path := []string{}
+			for d != (data{}) {
+				path = append(path, from[d].s)
+				d = from[d].data
+			}
+			slices.Reverse(path)
+			return path
+		}
+
+		// 枚举键盘输入（左右上下）
+	nextMan:
+		for dIdx, dir := range dir4 {
+			newMan := d.man
+			newMirrors := d.mirrors
+			pushed := false
+		o:
+			for idx, p := range d.man {
+				x, y := p.x+dir.x, p.y+dir.y
+				np := point{x, y}
+				if !isValidPos(x, y) { // 人出界
+					continue
+				}
+				for mi, mr := range d.mirrors {
+					if mr.point != np {
+						continue
+					}
+					// 推镜子
+					nmr := mr.point
+					nmr.x += dir.x
+					nmr.y += dir.y
+					if !isValidPos(x, y) { // 镜子入水
+						// 禁止这种操作
+						continue nextMan
+					}
+					if nmr == d.mirrors[mi^1].point { // 不能连续推多个镜子
+						continue o
+					}
+					pushed = true
+					newMirrors[mi].point = nmr // 推镜子，人也移动一步
+					break
+				}
+				newMan[idx] = np
+			}
+
+			// 碰撞检测
+			valid := newMan[0] != newMan[1]
+
+			if valid {
+				info := "人移动"
+				if pushed {
+					info = "推镜子"
+				}
+				s := fmt.Sprintf("%s %c %v", info, dirString[dIdx], newMan)
+				//fmt.Println(s)
+				add(d, data{newMan, newMirrors}, s)
+			}
+		}
+
+		// X 键：以人/物为主体，首先找到其到所反射的镜子的距离 d，然后让光路走恰好 d 步，期间遇到其他镜子就反射
+		// 如果光路遇到其他非镜子物品，则禁止反射
+		newMan := d.man
+		validSwap := true
+		swapped := [2]bool{} // 标记是否换过
+
+	outer:
+		for idx, p := range d.man {
+		nextDir:
+			for _, dir := range dir4 {
+				x, y := p.x, p.y
+				for step := 1; ; step++ {
+					x += dir.x
+					y += dir.y
+
+					// 没有任何物品
+					if !(0 <= x && x < n && 0 <= y && y < m) {
+						break
+					}
+					// 遇到另一个非镜子物品，不会触发交换
+					np := point{x, y}
+					if np == d.man[idx^1] {
+						// todo 这里是遇到另一个人
+						break
+					}
+
+					// 遇到镜子，但需要保证镜子朝向是对的
+					for mi, mr := range d.mirrors {
+						if mr.point != np {
+							continue
+						}
+						mDir, ok := mirrorDirs[mr.tp][dir]
+						if !ok {
+							continue
+						}
+
+						// 反射！从 mr.point 出发，往 mDir 方向走 step 步
+						nx, ny := mr.x, mr.y
+						for range step {
+							nx += mDir.x
+							nx += mDir.y
+							// 出界、遇到，或者光路有其他人/物，挡住了，无法交换
+							if (point{nx, ny}) == d.man[idx^1] {
+								validSwap = false
+								break outer
+							}
+							// 改变光路
+							if (point{nx, ny}) == d.mirrors[mi^1].point {
+								mDir, ok = mirrorDirs[d.mirrors[mi^1].tp][dir]
+								if !ok { // 镜子朝向不对
+									// 挡住了
+									validSwap = false
+									break outer
+								}
+							}
+						}
+
+						// 落脚点出界，或者在水上
+						if !isValidPos(nx, ny) {
+							validSwap = false
+							break outer
+						}
+
+						np = point{nx, ny}
+						// 目标点不能有任何物品，包括镜子
+						// 由于上面检查了人/物，这里只需检查镜子
+						for _, tmp := range d.mirrors {
+							if tmp.point == np {
+								// 挡住了
+								validSwap = false
+								break outer
+							}
+						}
+
+						// 可以反射！
+						if swapped[idx] {
+							// todo 这里禁止分身
+							validSwap = false
+							break outer
+						}
+						swapped[idx] = true
+						newMan[idx] = np
+						continue nextDir
+					}
+				}
+			}
+		}
+
+		if validSwap && (swapped[0] || swapped[1]) {
+			s := fmt.Sprint("反射 ", newMan)
+			//fmt.Println(s)
+			add(d, data{newMan, d.mirrors}, s)
+		}
 	}
 }
