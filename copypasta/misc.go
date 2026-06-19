@@ -1448,111 +1448,598 @@ func heroesOfSokoban() []string {
 }
 
 /*
-法师换石头 {1 1} {2 1}
-法师 {4 1}
-法师换石头 {4 1} {1 1}
-法师换石头 {1 1} {1 2}
-法师换石头 {1 2} {2 2}
-法师 {4 3}
-法师换石头 {4 3} {4 1}
-法师换石头 {4 1} {1 1}
-法师换石头 {1 1} {1 2}
-法师 {4 5}
-法师换石头 {4 5} {4 3}
-法师换石头 {4 3} {4 1}
-法师换石头 {4 1} {1 1}
 
+".....#f",
+".Ws..#n",
+".ss....",
+"...#...",
+".*.*.*.",
+"...#...",
+法师交换 下 {2 1}
+法师 下 {3 1}
+法师 下 {4 1}
+法师交换 上 {1 1}
+法师交换 右 {1 2}
+法师 右 {1 3}
+法师 右 {1 4}
+法师 下 {2 4}
+法师 右 {2 5}
+法师交换 左 {2 2}
+法师 下 {3 2}
+法师 下 {4 2}
+法师 右 {4 3}
+法师交换 左 {4 1}
+法师交换 上 {1 1}
+法师 右 {1 2}
+法师 右 {1 3}
+法师 右 {1 4}
+法师 下 {2 4}
+法师 下 {3 4}
+法师 右 {3 5}
+法师 下 {4 5}
+法师交换 上 {2 5}
+法师 右 {2 6}
+法师 上 {1 6}
+法师 上 {0 6}
 小结：和推箱子反过来，从近到远，链式把石头传递到远方
+
+
+".......",
+"...#...",
+"g..B..g",
+"...#...",
+".......",
+左上上右右下下右上上右下左
+
+
+"sf*###",
+"##.###",
+"...nW#",
+"##.#.B",
+"sfs###",
+法师 下 {3 4}
+法师交换 右 {3 5}
+=== 换成诗人 ===
+诗人 上 {2 4}
+=== 换成法师 ===
+法师 左 {3 4}
+法师交换 上 {2 4}
+=== 换成诗人 ===
+诗人 右 {3 5}
+=== 换成法师 ===
+法师 下 {3 4}
+法师交换 右 {3 5}
+=== 换成诗人 ===
+诗人 上 {2 4}
+=== 换成法师 ===
+法师 左 {3 4}
+法师交换 上 {2 4}
+=== 换成诗人 ===
+诗人 右 {3 5}
+=== 换成法师 ===
+法师 下 {3 4}
+法师交换 右 {3 5}
+=== 换成诗人 ===
+诗人 上 {2 4}
+=== 换成法师 ===
+法师 左 {3 4}
+法师交换 上 {2 4}
+=== 换成诗人 ===
+诗人 右 {3 5}
+=== 换成法师 ===
+法师 下 {3 4}
+法师交换 右 {3 5}
+=== 换成诗人 ===
+诗人 上 {2 4}
+=== 换成法师 ===
+法师 左 {3 4}
+法师交换 上 {2 4}
+法师 左 {2 3}
+法师 左 {2 2}
+法师 左 {2 1}
+=== 换成诗人 ===
+诗人 上 {2 4}
+=== 换成法师 ===
+法师交换 右 {2 4}
+=== 换成诗人 ===
+诗人 右 {2 2}
+=== 换成法师 ===
+法师交换 左 {2 2}
+法师交换 上 {0 2}
+=== 换成诗人 ===
+诗人 左 {2 3}
+诗人 左 {2 2}
+诗人 下 {3 2}
+诗人 下 {4 2}
+诗人 左 {4 1}
+
+
+".....##",
+".#s..##",
+".ss....",
+".......",
+".*P*B*.",
+"...*...",
+只需移动诗人
+上下下左上上上上右下右下下
+
+
 */
-func heroesOfSokobanWizardAndStones() []string {
+func heroesOfSokoban3() []string {
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+
 	type point struct{ x, y int }
 	dir4 := []point{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
+	dirString := []rune("左右上下")
+	type pointWithDir struct {
+		point
+		dir int
+	}
+	manhattanDis := func(p, q point) int { return abs(p.x-q.x) + abs(p.y-q.y) }
+	chebyshevDis := func(p, q point) int { return max(abs(p.x-q.x), abs(p.y-q.y)) }
+	_ = manhattanDis
+	_ = chebyshevDis
 
+	cmpPoint := func(a, b point) int { return cmp.Or(a.x-b.x, a.y-b.y) }
+	sort := func(a ...point) []point {
+		slices.SortFunc(a, cmpPoint)
+		return a
+	}
+	_ = sort
+	isNeighbor := func(p, q point) bool {
+		for _, dir := range dir4 {
+			if (point{p.x + dir.x, p.y + dir.y}) == q {
+				return true
+			}
+		}
+		return false
+	}
+
+	const (
+		charDefault = iota
+		charWarrior
+		charThief
+		charWizard
+		charPriest
+		charBard
+		charDruid
+	)
+	charName := [...]string{
+		charWarrior: "战士",
+		charThief:   "盗贼",
+		charWizard:  "法师",
+		charPriest:  "牧师",
+		charBard:    "诗人",
+		charDruid:   "德鲁伊",
+	}
+	mpChar := [...]int{
+		'A': charWarrior,
+		'T': charThief,
+		'W': charWizard,
+		'P': charPriest,
+		'B': charBard,
+		'D': charDruid,
+	}
+	_ = mpChar
+
+	// todo
+	levelMap := []string{
+		".....#f",
+		".Ws..#n",
+		".ss....",
+		"...#...",
+		".*.*.*.",
+		"...#...",
+	}
+
+	// . 空地
+	// # 墙
+	// * 压力开关
+	// n 活塞门
+	// f 终点
 	type data struct {
-		stones [3]point
-		wizard point
+		curChar int
+		warrior point // A 推多个物品
+		thief   point // T 拉一个物品
+		wizard  point // W 交换
+		priest  point // P 自己以及上下左右无敌
+		bard    point // B 同时移动切比雪夫距离 <= 2 的对象
+		druid   point // D 把草变成石头
+
+		// todo
+		stones  [3]point        // s
+		goblins [0]point        // g
+		dragons [0]pointWithDir // d
+
+		//mirrors // m
 	}
-	vis := map[data]bool{}
-	Q := []data{}
-	type pair struct {
-		data
-		s string
-	}
-	from := map[data]pair{}
-	add := func(fr, d data, s string) {
-		if !vis[d] {
-			vis[d] = true
-			Q = append(Q, d)
-			from[d] = pair{fr, s}
+
+	changePos := func(d *data, oldP, newP point) {
+		switch {
+		case oldP == d.warrior:
+			d.warrior = newP
+		case oldP == d.thief:
+			d.thief = newP
+		case oldP == d.wizard:
+			d.wizard = newP
+		case oldP == d.priest:
+			d.priest = newP
+		case oldP == d.bard:
+			d.bard = newP
+		case oldP == d.druid:
+			d.druid = newP
+		default:
+			i := slices.Index(d.stones[:], oldP)
+			if i >= 0 {
+				d.stones[i] = newP
+			}
+
+			j := slices.Index(d.goblins[:], oldP)
+			if j >= 0 {
+				d.goblins[j] = newP
+			}
+
+			if i < 0 && j < 0 {
+				panic("没有发生修改")
+			}
 		}
 	}
 
-	levelMap := []string{
-		".....##",
-		".....##",
-		".......",
-		"...#...",
-		".......",
-		"...#...",
-	}
-	n := len(levelMap)
-	m := len(levelMap[0])
+	n, m := len(levelMap), len(levelMap[0])
 	isValidPos := func(x, y int) bool {
-		// todo 目前只看不是 '#'
 		return 0 <= x && x < n && 0 <= y && y < m && levelMap[x][y] != '#'
 	}
 
-	levelData := data{[3]point{{1, 2}, {2, 1}, {2, 2}}, point{1, 1}}
+	noPos := point{-99, -99}
+	__warrior := noPos
+	__thief := noPos
+	__wizard := noPos
+	__priest := noPos
+	__bard := noPos
+	__druid := noPos
+	var __stones, __goblins, __dragons, weightSwitches, doors, finals []point
+	__curChar := -1
+	for i, row := range levelMap {
+		for j, b := range row {
+			p := point{i, j}
+			switch b {
+			case 'A':
+				if __curChar < 0 {
+					__curChar = charWarrior
+				}
+				__warrior = p
+			case 'T':
+				if __curChar < 0 {
+					__curChar = charThief
+				}
+				__thief = p
+			case 'W':
+				if __curChar < 0 {
+					__curChar = charWizard
+				}
+				__wizard = p
+			case 'P':
+				if __curChar < 0 {
+					__curChar = charPriest
+				}
+				__priest = p
+			case 'B':
+				if __curChar < 0 {
+					__curChar = charBard
+				}
+				__bard = p
+			case 'D':
+				if __curChar < 0 {
+					__curChar = charDruid
+				}
+				__druid = p
+			case 's':
+				__stones = append(__stones, p)
+			case 'g':
+				__goblins = append(__goblins, p)
+			case 'd':
+				__dragons = append(__dragons, p)
+			case '*':
+				weightSwitches = append(weightSwitches, p)
+			case 'n':
+				doors = append(doors, p)
+			case 'f':
+				finals = append(finals, p)
+			}
+		}
+	}
+
+	validChars := []int{}
+	if __warrior != noPos {
+		validChars = append(validChars, charWarrior)
+	}
+	if __thief != noPos {
+		validChars = append(validChars, charThief)
+	}
+	if __wizard != noPos {
+		validChars = append(validChars, charWizard)
+	}
+	if __priest != noPos {
+		validChars = append(validChars, charPriest)
+	}
+	if __bard != noPos {
+		validChars = append(validChars, charBard)
+	}
+	if __druid != noPos {
+		validChars = append(validChars, charDruid)
+	}
+
+	// 已经有序，无需排序
+	//slices.SortFunc(weightSwitches, cmpPoint)
+	//slices.SortFunc(doors, cmpPoint)
+	//slices.SortFunc(finals, cmpPoint)
+
+	levelData := data{
+		curChar: __curChar,
+
+		warrior: __warrior,
+		thief:   __thief,
+		wizard:  __wizard,
+		priest:  __priest,
+		bard:    __bard,
+		druid:   __druid,
+
+		// todo
+		stones: [3]point{__stones[0], __stones[1], __stones[2]},
+		//goblins: [2]point{__goblins[0], __goblins[1]},
+		//dragons: [0]pointWithDir{},
+	}
+
+	for _, row := range levelMap {
+		fmt.Println(row)
+	}
+	fmt.Println("levelData", levelData)
+	fmt.Println("weightSwitches", weightSwitches)
+	fmt.Println("doors", doors)
+	fmt.Println("finals", finals)
+
+	vis := map[data]bool{}
+	queue := []data{}
+	type pair struct {
+		data
+		info string
+	}
+	from := map[data]pair{}
+	add := func(last, d data, info string) {
+		slices.SortFunc(d.stones[:], cmpPoint)
+		slices.SortFunc(d.goblins[:], cmpPoint)
+		// todo 其他物品的排序
+		if !vis[d] {
+			vis[d] = true
+			queue = append(queue, d)
+			from[d] = pair{last, info}
+		}
+	}
+
 	add(data{}, levelData, "")
 
-	for {
-		d := Q[0]
-		Q = Q[1:]
-		// 检查石头是否在目标位置
-		if d.stones[0] == (point{4, 1}) && d.stones[1] == (point{4, 3}) && d.stones[2] == (point{4, 5}) {
+nextQ:
+	for len(queue) > 0 {
+		d := queue[0]
+		queue = queue[1:]
+
+		allChars := []point{}
+		if d.warrior != noPos {
+			allChars = append(allChars, d.warrior)
+		}
+		if d.thief != noPos {
+			allChars = append(allChars, d.thief)
+		}
+		if d.wizard != noPos {
+			allChars = append(allChars, d.wizard)
+		}
+		if d.priest != noPos {
+			allChars = append(allChars, d.priest)
+		}
+		if d.bard != noPos {
+			allChars = append(allChars, d.bard)
+		}
+		if d.druid != noPos {
+			allChars = append(allChars, d.druid)
+		}
+		slices.SortFunc(allChars, cmpPoint)
+
+		allObj := append(allChars, d.stones[:]...)
+		allObj = append(allObj, d.goblins[:]...)
+		//allObj = append(allObj, d.dragons[:]...)
+
+		open := true
+		for _, w := range weightSwitches {
+			if !slices.Contains(allObj, w) {
+				open = false
+			}
+		}
+
+		canMoveTo := func(p point) bool {
+			return isValidPos(p.x, p.y) &&
+				!slices.Contains(allObj, p) &&
+				(open || !slices.Contains(doors, p))
+		}
+
+		// 是否有人死了（被怪物攻击、被压死）
+		for _, char := range allChars {
+			// 被压死
+			if !open && slices.Contains(doors, char) {
+				continue nextQ
+			}
+
+			// 被怪物攻击
+			if char == d.priest || d.priest != noPos && isNeighbor(char, d.priest) {
+				continue
+			}
+			for _, g := range d.goblins {
+				if isNeighbor(g, char) {
+					continue nextQ
+				}
+			}
+
+			// todo 喷火龙
+		}
+
+		// todo 是否达成目标
+		// 标准版：所有人都到达终点
+		pass := slices.Equal(allChars, finals)
+		// 简化版：石头都在开关上
+		//pass := slices.Equal(sort(d.stones[0], d.stones[1], d.stones[2], d.bard), weightSwitches)
+		if pass {
 			path := []string{}
 			for d != (data{}) {
-				path = append(path, from[d].s)
+				path = append(path, from[d].info)
 				d = from[d].data
 			}
 			slices.Reverse(path)
 			return path
 		}
 
-		// 移动法师
-	o:
-		for _, dir := range dir4 {
-			// 该方向上是否有石头？
-			x, y := d.wizard.x, d.wizard.y
-			for {
-				x += dir.x
-				y += dir.y
-				if !isValidPos(x, y) { // 出界或者有障碍物
-					break
-				}
-
+		// 移动当前角色
+		switch d.curChar {
+		case charWarrior:
+			panic("todo")
+		case charThief:
+			// 普通移动一步
+			cur := d.thief
+			for dIdx, dir := range dir4 {
+				x, y := cur.x+dir.x, cur.y+dir.y
 				np := point{x, y}
-				for i, q := range d.stones {
-					if np != q {
+				if !canMoveTo(np) {
+					continue
+				}
+				newData := d
+				back := point{cur.x - dir.x, cur.y - dir.y}
+				if slices.Contains(allObj, back) {
+					// 拉人/物 -> 当前位置
+					changePos(&newData, back, cur)
+				}
+				newData.thief = np
+				info := fmt.Sprintf("盗贼 %c %v", dirString[dIdx], np)
+				add(d, newData, info)
+			}
+		case charWizard:
+			cur := d.wizard
+		nextDir:
+			for dIdx, dir := range dir4 {
+				// 该方向上是否有人/物
+				x, y := cur.x, cur.y
+				for {
+					x += dir.x
+					y += dir.y
+					// 出界或者有障碍物
+					np := point{x, y}
+					if !isValidPos(np.x, np.y) || !open && slices.Contains(doors, np) {
+						break
+					}
+					if !slices.Contains(allObj, np) { // 空地
 						continue
 					}
-					// 和石头交换位置
-					ns := d.stones
-					ns[i] = d.wizard
-					slices.SortFunc(ns[:], func(a, b point) int { return cmp.Or(a.x-b.x, a.y-b.y) })
-					add(d, data{ns, np}, fmt.Sprint("法师换石头 ", d.wizard, np))
-					continue o
+					// 和人/物交换位置
+					newData := d
+					changePos(&newData, np, cur)
+					newData.wizard = np
+					info := fmt.Sprintf("法师交换 %c %v", dirString[dIdx], np)
+					add(d, newData, info)
+					continue nextDir
+				}
+
+				// 没有，那就普通移动一步
+				np := point{cur.x + dir.x, cur.y + dir.y}
+				if !canMoveTo(np) {
+					continue
+				}
+				newData := d
+				newData.wizard = np
+				info := fmt.Sprintf("法师 %c %v", dirString[dIdx], np)
+				add(d, newData, info)
+			}
+		case charPriest:
+			// 普通移动一步
+			cur := d.priest
+			for dIdx, dir := range dir4 {
+				np := point{cur.x + dir.x, cur.y + dir.y}
+				if !canMoveTo(np) {
+					continue
+				}
+				newData := d
+				newData.priest = np
+				info := fmt.Sprintf("牧师 %c %v", dirString[dIdx], np)
+				add(d, newData, info)
+			}
+		case charBard:
+			cur := d.bard
+			items := []point{}
+			for _, p := range allObj {
+				if chebyshevDis(p, cur) <= 2 {
+					items = append(items, p)
 				}
 			}
 
-			x, y = d.wizard.x+dir.x, d.wizard.y+dir.y
 			// 普通移动一步
-			np := point{x, y}
-			if isValidPos(x, y) && !slices.Contains(d.stones[:], np) {
-				add(d, data{d.stones, np}, fmt.Sprint("法师 ", np))
+			// 切比雪夫距离 <= 2 的物品（包括自己）都移动一步
+			for dIdx, dir := range dir4 {
+				x, y := cur.x+dir.x, cur.y+dir.y
+				if !isValidPos(x, y) {
+					continue
+				}
+				slices.SortFunc(items, func(a, b point) int {
+					if dir.x != 0 {
+						return b.x*dir.x - a.x*dir.x
+					}
+					return b.y*dir.y - a.y*dir.y
+				})
+				newData := d
+				unmovedItems := []point{}
+				for _, item := range items {
+					np := point{item.x + dir.x, item.y + dir.y}
+					if !isValidPos(np.x, np.y) || !open && slices.Contains(doors, np) { // 挡住了
+						unmovedItems = append(unmovedItems, item)
+						continue
+					}
+					if chebyshevDis(np, cur) > 2 { // 力场最前面的点
+						if !canMoveTo(np) { // 不能与力场外的物品碰撞
+							unmovedItems = append(unmovedItems, item)
+							continue
+						}
+					} else if slices.Contains(unmovedItems, np) {
+						// 力场后面的点，不能与前面移动失败的物品碰撞
+						unmovedItems = append(unmovedItems, item)
+						continue
+					}
+					changePos(&newData, item, np)
+				}
+				if !slices.Contains(unmovedItems, cur) {
+					np := point{x, y}
+					if newData.bard != np {
+						panic("移动错误")
+					}
+					info := fmt.Sprintf("诗人 %c %v", dirString[dIdx], np)
+					add(d, newData, info)
+				}
+			}
+		case charDruid:
+			panic("todo")
+		}
+
+		// 换成其他人
+		for _, char := range validChars {
+			if char != d.curChar {
+				newData := d
+				newData.curChar = char
+				info := fmt.Sprintf("=== 换成%s ===", charName[char])
+				add(d, newData, info)
 			}
 		}
 	}
+
+	return nil
 }
 
 /* 镜子、多控
