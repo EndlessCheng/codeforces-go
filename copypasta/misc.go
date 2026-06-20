@@ -1571,6 +1571,19 @@ func heroesOfSokoban() []string {
 上下下左上上上上右下右下下
 
 
+大地图 法师
+#......nf
+.......##
+..~*~W.##
+.......##
+~*~~g####
+.g...####
+上上左换下换上 
+左左左换换
+上上左到头上右下
+右右右上上左上左
+下下上
+
 */
 func heroesOfSokoban3() []string {
 	abs := func(x int8) int8 {
@@ -1638,12 +1651,14 @@ func heroesOfSokoban3() []string {
 
 	// todo 改下面的个数
 	levelMap := []string{
-		"g..B..g",
-		".......",
-		"...#..f",
-		".......",
-		".......",
+		"#......nf",
+		".......##",
+		"..~*~W.##",
+		".......##",
+		"~*~~g####",
+		".g...####",
 	}
+	__done := true // todo
 
 	// . 空地
 	// ~ 水
@@ -1694,7 +1709,6 @@ func heroesOfSokoban3() []string {
 		}
 		return allChars
 	}
-
 	changePos := func(d *data, oldP, newP point) {
 		switch {
 		case oldP == d.warrior:
@@ -1729,7 +1743,6 @@ func heroesOfSokoban3() []string {
 	stoneInitArr := stoneArrType{}
 	goblinInitArr := goblinArrType{}
 	dragonInitArr := dragonArrType{}
-
 	__curChar := -1
 	__warrior := noPos
 	__thief := noPos
@@ -1844,6 +1857,8 @@ func heroesOfSokoban3() []string {
 		stones:  stoneInitArr,
 		goblins: goblinInitArr,
 		dragons: dragonInitArr,
+
+		done: __done,
 	}
 
 	for _, row := range levelMap {
@@ -1900,10 +1915,11 @@ func heroesOfSokoban3() []string {
 			}
 		}
 		// todo 怪物之间的攻击（如果是落水的情况呢？攻击还是死）
-		if !d.done && isNeighbor(d.goblins[0], d.goblins[1]) {
-			d.goblins[0] = noPos
-			d.goblins[1] = noPos
-			d.done = true // todo
+		if !d.done && isNeighbor(gob[0], gob[1]) {
+			return
+			gob[0] = noPos
+			gob[1] = noPos
+			d.done = false // todo
 		}
 		slices.SortFunc(gob, cmpPoint)
 
@@ -1968,7 +1984,7 @@ nextQ:
 
 		// todo 是否达成目标
 		// 标准版：所有人都到达终点
-		pass := d.done && slices.Equal(allChars, finals)
+		pass := slices.Equal(allChars, finals) // d.done && 
 		// 简化版：石头都在开关上
 		//pass := slices.Equal(sort(d.stones[0], d.stones[1], d.stones[2], d.bard), weightSwitches)
 		if pass {
