@@ -7,8 +7,7 @@
 ```py [sol-Python3]
 class Solution:
     def createGrid(self, m: int, n: int) -> list[str]:
-        row = '#' * (n - 1) + '.'  # 避免在循环中反复创建字符串
-        return ['.' * n] + [row for _ in range(m - 1)]
+        return ['.' * n] + ['#' * (n - 1) + '.'] * (m - 1)
 ```
 
 ```java [sol-Java]
