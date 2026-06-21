@@ -53,7 +53,7 @@ func createGrid(m, n int) []string {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mn)$。
+- 时间复杂度：$\mathcal{O}(m+n)$ 或 $\mathcal{O}(mn)$。对于 Python3、Java 和 Go，我们只创建了一个长为 $m$ 的数组和两个长为 $n$ 的字符串，这一共只需要 $\mathcal{O}(m+n)$ 的时间。
 - 空间复杂度：$\mathcal{O}(1)$。返回值不计入。**注**：对于 Python3、Java 和 Go，因为答案保存了同一个字符串的引用，所以即使计入返回值，空间复杂度也只有 $\mathcal{O}(m+n)$。
 
 ## 专题训练
