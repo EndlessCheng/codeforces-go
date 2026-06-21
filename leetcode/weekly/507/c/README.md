@@ -11,8 +11,6 @@
 
 **注**：根据 Dijkstra 算法的原理，当节点 $n-1$ 首次出堆时，我们就算出了从节点 $0$ 到节点 $n-1$ 的最短路，可以直接返回答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def shortestPath(self, n: int, edges: list[list[int]], labels: str, k: int) -> int:

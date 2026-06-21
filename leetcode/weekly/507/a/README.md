@@ -1,7 +1,5 @@
 本题是 [2833. 距离原点最远的点](https://leetcode.cn/problems/furthest-point-from-origin/) 的二维版本，思路是一样的，请看 [我的题解](https://leetcode.cn/problems/furthest-point-from-origin/solutions/2413317/nao-jin-ji-zhuan-wan-yi-xing-dai-ma-by-e-yfn0/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def maxDistance(self, moves: str) -> int:

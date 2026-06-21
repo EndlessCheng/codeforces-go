@@ -1,6 +1,12 @@
 ## 方法一：暴力枚举
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+枚举子数组的左右端点。
+
+在枚举右端点的同时，维护子数组的元素和 $s$。
+
+$s\bmod 10$ 即 $s$ 的个位数。
+
+不断把 $s$ 除以 $10$（下取整），直到 $s\le 9$，此时的 $s$ 即为 $s$ 的最高位数字。
 
 ```py [sol-Python3]
 class Solution:
@@ -129,6 +135,12 @@ func countValidSubarrays(nums []int, x int) (ans int) {
 
 设 $\textit{nums}$ 的**前缀和**数组为 $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
+子数组 $[\ell,r)$ 的元素和为 
+
+$$
+s[r] - s[\ell]
+$$
+
 子数组和的个位数是 $x$，等价于
 
 $$
@@ -145,9 +157,11 @@ $$
 
 > 注意上式等号右边有减法，代码实现时，要保证取模结果非负。
 
-在枚举 $r$ 的过程中，用一个滑动窗口维护满足 $x\cdot 10^k\le s[r] - s[\ell] < (x+1)\cdot 10^k$ 的 $s[\ell]\bmod 10$ 的个数。 
+本题元素值非负，可以用**滑动窗口**。在枚举 $r$ 的过程中，用一个滑动窗口维护满足 $x\cdot 10^k\le s[r] - s[\ell] < (x+1)\cdot 10^k$ 的 $s[\ell]\bmod 10$ 的个数。 
 
-> 本题元素值非负，可以用滑动窗口。如果不保证，则需要用有序集合。
+> 如果元素值有负数，则需要用有序集合。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1uqjt6zEMT/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -274,7 +288,6 @@ func countValidSubarrays(nums []int, x int) (ans int) {
 			ans += cnt[(s-x+10)%10]
 		}
 	}
-
 	return
 }
 ```
@@ -282,7 +295,7 @@ func countValidSubarrays(nums []int, x int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log S)$，其中 $n$ 是 $\textit{nums}$ 的长度，$S$ 是 $\textit{nums}$ 中的所有元素之和。我们跑了 $\mathcal{O}(\log S)$ 次 $\mathcal{O}(n)$ 的滑动窗口。
-- 空间复杂度：$\mathcal{O}(n + D)$。其中 $D=10$。
+- 空间复杂度：$\mathcal{O}(n + D)$。其中 $D=10$。**注**：也可以在滑窗的同时计算前缀和，从而做到 $\mathcal{O}(D)$ 的空间复杂度。
 
 ## 专题训练
 
