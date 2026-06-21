@@ -1,0 +1,1 @@
+本题和 [3969. 求和后首尾数字相同的有效子数组 I](https://leetcode.cn/problems/valid-subarrays-with-matching-sum-digits-i/) 是一样的，请看 [我的题解](https://leetcode.cn/problems/valid-subarrays-with-matching-sum-digits-i/solutions/3986177/onlogs-zuo-fa-qian-zhui-he-hua-dong-chua-y1o3/)。
