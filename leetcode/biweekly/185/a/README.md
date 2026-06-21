@@ -7,7 +7,8 @@
 ```py [sol-Python3]
 class Solution:
     def createGrid(self, m: int, n: int) -> list[str]:
-        return ['.' * n] + ['#' * (n - 1) + '.' for _ in range(m - 1)]
+        row = '#' * (n - 1) + '.'  # 避免在循环中反复创建字符串
+        return ['.' * n] + [row for _ in range(m - 1)]
 ```
 
 ```java [sol-Java]
@@ -15,8 +16,9 @@ class Solution {
     public String[] createGrid(int m, int n) {
         String[] ans = new String[m];
         ans[0] = ".".repeat(n);
+        String row = "#".repeat(n - 1) + "."; // 避免在循环中反复创建字符串
         for (int i = 1; i < m; i++) {
-            ans[i] = "#".repeat(n - 1) + ".";
+            ans[i] = row;
         }
         return ans;
     }
@@ -42,8 +44,9 @@ public:
 func createGrid(m, n int) []string {
 	ans := make([]string, m)
 	ans[0] = strings.Repeat(".", n)
+	row := strings.Repeat("#", n-1) + "." // 避免在循环中反复创建字符串
 	for i := 1; i < m; i++ {
-		ans[i] = strings.Repeat("#", n-1) + "."
+		ans[i] = row
 	}
 	return ans
 }
@@ -52,7 +55,7 @@ func createGrid(m, n int) []string {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn)$。
-- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。**注**：对于 Python3、Java 和 Go，因为答案保存了同一个字符串的引用，所以即使计入返回值，空间复杂度也只有 $\mathcal{O}(m+n)$。
 
 ## 专题训练
 
