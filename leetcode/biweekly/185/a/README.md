@@ -2,7 +2,7 @@
 
 最简单的方式是，选一条先往右到右上角，再往下到右下角的路径（也可以先往下再往右）。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Xujb62EqL/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

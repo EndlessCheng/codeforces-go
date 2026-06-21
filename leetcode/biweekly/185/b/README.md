@@ -8,7 +8,7 @@
 
 > **注**：位置 $i+1$ 一定没有灯泡，否则位置 $i$ 一定已被照亮，矛盾。 
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Xujb62EqL/?t=3m13s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
