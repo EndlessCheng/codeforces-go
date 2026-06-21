@@ -26,6 +26,3 @@ func finishTime(n int, edges [][]int, baseTime []int) int64 {
 
 	return int64(dfs(0))
 }
-
-// todo 添加爆 LL 的数据
-// todo hack 边排序
