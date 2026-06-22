@@ -1484,6 +1484,7 @@ func heroesOfSokoban() []string {
 小结：和推箱子反过来，从近到远，链式把石头传递到远方
 
 
+原型
 ".......",
 "...#...",
 "g..B..g",
@@ -1499,6 +1500,7 @@ func heroesOfSokoban() []string {
 ".......",
 下左下下右右上右下右下左 右上上
 
+原型
 "sf*###",
 "##.###",
 "...nW#",
@@ -1561,6 +1563,7 @@ func heroesOfSokoban() []string {
 诗人 左 {4 1}
 
 
+原型
 ".....##",
 ".#s..##",
 ".ss....",
@@ -1578,14 +1581,45 @@ func heroesOfSokoban() []string {
 .......##
 ~*~~g####
 .g...####
-上上左换下换上 
+上上左换下换上
 左左左换换
 上上左到头上右下
 右右右上上左上左
 下下上
 
+
+"#.######",
+"ww######",
+"ww######",
+"ww######",
+"ww##wwff",
+"wwwwww##",
+"wwDwW###",
+德 法
+左上右 左左
+ 上 右上左下左
+ 左 上右下左上
+ 左 下左
+ 左上 上右上
+ 上 左下右上左
+ 上 右上
+ 上 左下右上
+ 上 左上
+ 上 右下
+ 上 上上上下下
+ 上左 上左下下下右
+ 上 上左下下下右
+ 上 上左下下下右
+ 上 上左下右下左左上右下右上
+ 左 左下右右右
+ 右左 上左下右右
+ 右上左 上
+ 右 下右
+ 右 上右右
+ 右右
+
 */
-func heroesOfSokoban3() []string {
+func orderOfTheSinkingStar() []string {
 	abs := func(x int8) int8 {
 		if x < 0 {
 			return -x
@@ -1594,8 +1628,9 @@ func heroesOfSokoban3() []string {
 	}
 
 	type point struct{ x, y, z int8 }
-	dir4 := []point{{0, -1, 0}, {0, 1, 0}, {-1, 0, 0}, {1, 0, 0}}
-	dirString := []rune("左右上下")
+	dir4 := []point{{0, 1, 0}, {-1, 0, 0}, {1, 0, 0}, {0, -1, 0}}
+	dirString := []rune("右上下左")
+	//dirString := "dwsa"
 	type pointWithDir struct {
 		point
 		dir int8
@@ -1603,7 +1638,7 @@ func heroesOfSokoban3() []string {
 	manhattanDis := func(p, q point) int { return int(abs(p.x-q.x) + abs(p.y-q.y)) }     // todo z 轴
 	chebyshevDis := func(p, q point) int { return int(max(abs(p.x-q.x), abs(p.y-q.y))) } // todo z 轴
 	_ = manhattanDis
-	noPos := point{-99, -99, -99}
+	noPos := point{-60, -60, -60}
 
 	cmpPoint := func(a, b point) int { return int(cmp.Or(a.x-b.x, a.y-b.y, a.z-b.z)) }
 	cmpPointWithDir := func(a, b pointWithDir) int { return int(cmp.Or(a.x-b.x, a.y-b.y)) }
@@ -1651,14 +1686,16 @@ func heroesOfSokoban3() []string {
 
 	// todo 改下面的个数
 	levelMap := []string{
-		"#......nf",
-		".......##",
-		"..~*~W.##",
-		".......##",
-		"~*~~g####",
-		".g...####",
+		"#.######",
+		"ww######",
+		"ww######",
+		"ww######",
+		"ww##wwff",
+		"wwwwww##",
+		"wwDwW###",
 	}
 	__done := true // todo
+	hasMonster := false
 
 	// . 空地
 	// ~ 水
@@ -1666,8 +1703,9 @@ func heroesOfSokoban3() []string {
 	// * / xyz 压力开关
 	// n / XYZ 活塞门
 	// f 终点
-	type stoneArrType [0]point // todo
-	type goblinArrType [2]point
+	type grassArrType [19]point // todo
+	type stoneArrType [19]point // todo
+	type goblinArrType [0]point
 	type dragonArrType [0]pointWithDir
 	type data struct {
 		curChar int
@@ -1678,6 +1716,7 @@ func heroesOfSokoban3() []string {
 		bard    point // B 同时移动切比雪夫距离 <= 2 的对象
 		druid   point // D 把草变成石头
 
+		grasses grassArrType  // w
 		stones  stoneArrType  // s
 		goblins goblinArrType // g
 		dragons dragonArrType // d
@@ -1740,7 +1779,14 @@ func heroesOfSokoban3() []string {
 		}
 	}
 
+	grassInitArr := grassArrType{}
+	for i := range grassInitArr {
+		grassInitArr[i] = noPos
+	}
 	stoneInitArr := stoneArrType{}
+	for i := range stoneInitArr {
+		stoneInitArr[i] = noPos
+	}
 	goblinInitArr := goblinArrType{}
 	dragonInitArr := dragonArrType{}
 	__curChar := -1
@@ -1750,6 +1796,7 @@ func heroesOfSokoban3() []string {
 	__priest := noPos
 	__bard := noPos
 	__druid := noPos
+	__grasses := grassInitArr[:0]
 	__stones := stoneInitArr[:0]
 	__goblins := goblinInitArr[:0]
 	__dragons := dragonInitArr[:0]
@@ -1790,11 +1837,15 @@ func heroesOfSokoban3() []string {
 					__curChar = charDruid
 				}
 				__druid = p
+			case 'w':
+				__grasses = append(__grasses, p)
 			case 's':
 				__stones = append(__stones, p)
 			case 'g':
+				hasMonster = true
 				__goblins = append(__goblins, p)
 			case 'd':
+				hasMonster = true
 				__dragons = append(__dragons, pointWithDir{p, -1}) // todo 用 <>^v 表示？
 			case '*':
 				weightSwitches = append(weightSwitches, p)
@@ -1804,6 +1855,16 @@ func heroesOfSokoban3() []string {
 				finals = append(finals, p)
 			}
 		}
+	}
+
+	//if len(__stones) != len(stoneInitArr) {
+	//	panic("石头个数错误")
+	//}
+	if len(__goblins) != len(goblinInitArr) {
+		panic("哥布林个数错误")
+	}
+	if len(__dragons) != len(dragonInitArr) {
+		panic("喷火龙个数错误")
 	}
 
 	fallIntoWater := func(d *data, p point) bool {
@@ -1854,6 +1915,7 @@ func heroesOfSokoban3() []string {
 		bard:    __bard,
 		druid:   __druid,
 
+		grasses: grassInitArr,
 		stones:  stoneInitArr,
 		goblins: goblinInitArr,
 		dragons: dragonInitArr,
@@ -1870,8 +1932,9 @@ func heroesOfSokoban3() []string {
 	fmt.Println("finals", finals)
 
 	n, m := int8(len(levelMap)), int8(len(levelMap[0]))
-	isValidPos := func(x, y int8) bool {
-		return 0 <= x && x < n && 0 <= y && y < m && levelMap[x][y] != '#'
+	isValidPos := func(d *data, x, y int8) bool {
+		return 0 <= x && x < n && 0 <= y && y < m && levelMap[x][y] != '#' &&
+			!slices.Contains(d.grasses[:], point{x, y, 0}) // todo
 	}
 
 	vis := map[data]bool{}
@@ -1883,18 +1946,24 @@ func heroesOfSokoban3() []string {
 	from := map[data]pair{}
 	add := func(last, d data, info string) {
 		// 先判断是否有人被怪物攻击
-		allChars := getAllChar(&d)
-		for _, char := range allChars {
-			if char == d.priest || d.priest != noPos && isNeighbor(char, d.priest) {
-				continue
-			}
-			for _, g := range d.goblins {
-				if isNeighbor(g, char) {
-					return
+		if hasMonster { // todo 改成实时的？
+			allChars := getAllChar(&d)
+			for _, char := range allChars {
+				if char == d.priest || d.priest != noPos && isNeighbor(char, d.priest) {
+					continue
+				}
+				for _, g := range d.goblins {
+					if isNeighbor(g, char) {
+						return
+					}
 				}
 			}
+
+			// todo 喷火龙
 		}
-		// todo 喷火龙
+
+		// 草排序
+		slices.SortFunc(d.grasses[:], cmpPoint)
 
 		// 在水中且下面没有物品的石头，落入水中
 		sto := d.stones[:]
@@ -1924,6 +1993,7 @@ func heroesOfSokoban3() []string {
 		slices.SortFunc(gob, cmpPoint)
 
 		slices.SortFunc(d.dragons[:], cmpPointWithDir)
+
 		// todo 其他物品（镜子）的排序
 
 		if !vis[d] {
@@ -1944,7 +2014,17 @@ nextQ:
 		allChars := getAllChar(&d)
 		slices.SortFunc(allChars, cmpPoint)
 
-		allObj := append(allChars, d.stones[:]...)
+		allObj := allChars
+		for _, p := range d.stones {
+			if p != noPos {
+				allObj = append(allObj, p)
+			}
+		}
+		//for _, p := range d.grasses {
+		//	if p != noPos {
+		//		allObj = append(allObj, p)
+		//	}
+		//}
 		for _, p := range d.goblins {
 			if p != noPos {
 				allObj = append(allObj, p)
@@ -1963,8 +2043,8 @@ nextQ:
 			}
 		}
 
-		canMoveTo := func(p point) bool {
-			return isValidPos(p.x, p.y) &&
+		canMoveTo := func(d *data, p point) bool {
+			return isValidPos(d, p.x, p.y) &&
 				!slices.Contains(allObj, p) &&
 				(open || !slices.Contains(doors, p))
 		}
@@ -1983,8 +2063,8 @@ nextQ:
 		}
 
 		// todo 是否达成目标
-		// 标准版：所有人都到达终点
-		pass := slices.Equal(allChars, finals) // d.done && 
+		// 标准版：所有人都到达终点     d.done && 
+		pass := slices.Equal(allChars, finals)
 		// 简化版：石头都在开关上
 		//pass := slices.Equal(sort(d.stones[0], d.stones[1], d.stones[2], d.bard), weightSwitches)
 		if pass {
@@ -2019,7 +2099,7 @@ nextQ:
 					projP.z += dir.z
 				}
 				// 前面是否有空地
-				if !canMoveTo(projP) {
+				if !canMoveTo(&d, projP) {
 					continue
 				}
 
@@ -2040,7 +2120,7 @@ nextQ:
 			for dIdx, dir := range dir4 {
 				x, y, z := cur.x+dir.x, cur.y+dir.y, cur.z+dir.z
 				np := point{x, y, z}
-				if !canMoveTo(np) {
+				if !canMoveTo(&d, np) {
 					continue
 				}
 				newData := d
@@ -2068,7 +2148,7 @@ nextQ:
 					z += dir.z
 					// 出界或者有障碍物
 					np := point{x, y, z}
-					if !isValidPos(np.x, np.y) || !open && slices.Contains(doors, np) {
+					if !isValidPos(&d, np.x, np.y) || !open && slices.Contains(doors, np) {
 						break
 					}
 					if !slices.Contains(allObj, np) { // 空地
@@ -2078,7 +2158,7 @@ nextQ:
 					newData := d
 					changePos(&newData, np, cur)
 					newData.wizard = np
-					info := fmt.Sprintf("法师交换 %c %v", dirString[dIdx], np)
+					info := fmt.Sprintf("法 %c", dirString[dIdx]) // 法交换
 
 					//fmt.Println(info)
 
@@ -2088,12 +2168,12 @@ nextQ:
 
 				// 没有，那就普通移动一步
 				np := point{cur.x + dir.x, cur.y + dir.y, cur.z + dir.z}
-				if !canMoveTo(np) {
+				if !canMoveTo(&d, np) {
 					continue
 				}
 				newData := d
 				newData.wizard = np
-				info := fmt.Sprintf("法师 %c %v", dirString[dIdx], np)
+				info := fmt.Sprintf("法 %c", dirString[dIdx])
 
 				//fmt.Println(info)
 
@@ -2104,12 +2184,12 @@ nextQ:
 			cur := d.priest
 			for dIdx, dir := range dir4 {
 				np := point{cur.x + dir.x, cur.y + dir.y, cur.z + dir.z}
-				if !canMoveTo(np) {
+				if !canMoveTo(&d, np) {
 					continue
 				}
 				newData := d
 				newData.priest = np
-				info := fmt.Sprintf("牧师 %c %v", dirString[dIdx], np)
+				info := fmt.Sprintf("牧 %c %v", dirString[dIdx], np)
 				add(d, newData, info)
 			}
 		case charBard:
@@ -2121,11 +2201,13 @@ nextQ:
 				}
 			}
 
+			// todo 如果踩在物品上，可以多走一格（前提是撞墙或者前面一个格子也可以踩）
+
 			// 普通移动一步
 			// 切比雪夫距离 <= 2 的物品（包括自己）都移动一步
 			for dIdx, dir := range dir4 {
 				x, y, z := cur.x+dir.x, cur.y+dir.y, cur.z+dir.z
-				if !isValidPos(x, y) {
+				if !isValidPos(&d, x, y) {
 					continue
 				}
 				slices.SortFunc(items, func(a, b point) int {
@@ -2134,16 +2216,17 @@ nextQ:
 					}
 					return int(b.y*dir.y - a.y*dir.y)
 				})
+
 				newData := d
 				unmovedItems := []point{}
 				for _, item := range items {
 					np := point{item.x + dir.x, item.y + dir.y, item.z + dir.z}
-					if !isValidPos(np.x, np.y) || !open && slices.Contains(doors, np) { // 挡住了
+					if !isValidPos(&d, np.x, np.y) || !open && slices.Contains(doors, np) { // 挡住了
 						unmovedItems = append(unmovedItems, item)
 						continue
 					}
 					if chebyshevDis(np, cur) > 2 { // 力场最前面的点
-						if !canMoveTo(np) { // 不能与力场外的物品碰撞
+						if !canMoveTo(&d, np) { // 不能与力场外的物品碰撞
 							unmovedItems = append(unmovedItems, item)
 							continue
 						}
@@ -2154,6 +2237,7 @@ nextQ:
 					}
 					changePos(&newData, item, np)
 				}
+
 				if !slices.Contains(unmovedItems, cur) {
 					np := point{x, y, z}
 					if newData.bard != np {
@@ -2164,7 +2248,35 @@ nextQ:
 				}
 			}
 		case charDruid:
-			panic("todo")
+			cur := d.druid
+			for dIdx, dir := range dir4 {
+				np := point{cur.x + dir.x, cur.y + dir.y, cur.z + dir.z}
+				// todo 目前只实现了草 <-> 石头的逻辑
+				if i := slices.Index(d.grasses[:], np); i >= 0 {
+					newData := d
+					newData.stones[0] = newData.grasses[i] // 草变石
+					newData.grasses[i] = noPos
+					info := fmt.Sprintf("德 %c 草变石", dirString[dIdx])
+					add(d, newData, info)
+					continue
+				}
+				if i := slices.Index(d.stones[:], np); i >= 0 {
+					newData := d
+					newData.grasses[0] = newData.stones[i] // 石变草
+					newData.stones[i] = noPos
+					info := fmt.Sprintf("德 %c 石变草", dirString[dIdx])
+					add(d, newData, info)
+					continue
+				}
+				if !canMoveTo(&d, np) {
+					continue
+				}
+				// 普通移动一步
+				newData := d
+				newData.druid = np
+				info := fmt.Sprintf("德 %c", dirString[dIdx])
+				add(d, newData, info)
+			}
 		}
 
 		// 换成其他人
@@ -2173,10 +2285,7 @@ nextQ:
 				newData := d
 				newData.curChar = char
 				//info := "换" // fmt.Sprint() charName[char]
-				info := ""
-
-				//fmt.Println(info)
-
+				info := "c"
 				add(d, newData, info)
 			}
 		}
@@ -2186,22 +2295,20 @@ nextQ:
 }
 
 /* 镜子、多控
-人移动 [{2 3} {4 3}]
-人移动 [{1 3} {3 3}]
-反射 [{7 9} {3 3}]
-人移动 [{2 3} {6 9}]
-人移动 [{2 4} {6 10}]
-推镜子 [{2 4} {7 10}]
-人移动 [{2 4} {7 11}]
-人移动 [{2 4} {8 11}]
-推镜子 [{2 3} {8 10}]
-人移动 [{2 4} {8 11}]
-人移动 [{2 4} {9 11}]
-人移动 [{2 3} {9 10}]
-人移动 [{1 3} {8 10}]
-反射 [{7 9} {7 9}]
 
-右上X 上右下右下左 右下左上X  上上右
+"##.#####...####",
+"#...####.M..###",
+"#.@..##.......#",
+"....###........",
+"..@.##.........",
+"....##....n....",
+"#..####........",
+"#######...M...#",
+"########......#",
+"#########...###",
+右上X 上右下右下左 右下左上X
+上上右
+
 */
 func heroesOfSokobanMirrors() []string {
 	type point struct{ x, y int }
@@ -2223,6 +2330,7 @@ func heroesOfSokobanMirrors() []string {
 	type data struct {
 		man     [2]point
 		mirrors [2]mirror
+		done    bool
 	}
 	vis := map[data]bool{}
 	Q := []data{}
@@ -2252,12 +2360,23 @@ func heroesOfSokobanMirrors() []string {
 		"#.@..##.......#",
 		"....###........",
 		"..@.##.........",
-		"....##.........",
+		"....##....n....",
 		"#..####........",
 		"#######...M...#",
 		"########......#",
 		"#########...###",
 	}
+
+	final := point{}
+	for i, row := range levelMap {
+		for j, b := range row {
+			p := point{i, j}
+			if b == 'n' {
+				final = p
+			}
+		}
+	}
+
 	n := len(levelMap)
 	m := len(levelMap[0])
 	isValidPos := func(x, y int) bool {
@@ -2276,7 +2395,7 @@ func heroesOfSokobanMirrors() []string {
 			}
 		}
 	}
-
+	noPos := point{-60, -60}
 	levelData := data{
 		man:     [2]point{man[0], man[1]},
 		mirrors: [2]mirror{{mirrors[0], 0}, {mirrors[1], 1}},
@@ -2287,9 +2406,15 @@ func heroesOfSokobanMirrors() []string {
 	for {
 		d := Q[0]
 		Q = Q[1:]
+		mn := d.man
+		done := d.done
+		if !done && mn[0] == mn[1] {
+			mn[0] = noPos
+			done = true
+		}
 
 		// 检查两人是否重合
-		if d.man[0] == d.man[1] {
+		if done && mn[1] == final {
 			path := []string{}
 			for d != (data{}) {
 				path = append(path, from[d].s)
@@ -2302,11 +2427,14 @@ func heroesOfSokobanMirrors() []string {
 		// 枚举键盘输入（左右上下）
 	nextMan:
 		for dIdx, dir := range dir4 {
-			newMan := d.man
+			newMan := mn
 			newMirrors := d.mirrors
 			pushed := false
 		o:
-			for idx, p := range d.man {
+			for idx, p := range mn {
+				if p == noPos {
+					continue
+				}
 				x, y := p.x+dir.x, p.y+dir.y
 				np := point{x, y}
 				if !isValidPos(x, y) { // 人出界
@@ -2344,18 +2472,21 @@ func heroesOfSokobanMirrors() []string {
 				}
 				s := fmt.Sprintf("%s %c %v", info, dirString[dIdx], newMan)
 				//fmt.Println(s)
-				add(d, data{newMan, newMirrors}, s)
+				add(d, data{newMan, newMirrors, done}, s)
 			}
 		}
 
-		// X 键：以人/物为主体，首先找到其到所反射的镜子的距离 d，然后让光路走恰好 d 步，期间遇到其他镜子就反射
+		// X 键：以人/物为主体，首先算出其到镜子的距离 d，然后让光路走恰好 d 步，反射期间遇到其他镜子就继续反射
 		// 如果光路遇到其他非镜子物品，则禁止反射
-		newMan := d.man
+		newMan := mn
 		validSwap := true
 		swapped := [2]bool{} // 标记是否换过
 
 	outer:
-		for idx, p := range d.man {
+		for idx, p := range mn {
+			if p == noPos {
+				continue
+			}
 		nextDir:
 			for _, dir := range dir4 {
 				x, y := p.x, p.y
@@ -2369,7 +2500,7 @@ func heroesOfSokobanMirrors() []string {
 					}
 					// 遇到另一个非镜子物品，不会触发交换
 					np := point{x, y}
-					if np == d.man[idx^1] {
+					if np == mn[idx^1] {
 						// todo 这里是遇到另一个人
 						break
 					}
@@ -2390,7 +2521,7 @@ func heroesOfSokobanMirrors() []string {
 							nx += mDir.x
 							nx += mDir.y
 							// 出界、遇到，或者光路有其他人/物，挡住了，无法交换
-							if (point{nx, ny}) == d.man[idx^1] {
+							if (point{nx, ny}) == mn[idx^1] {
 								validSwap = false
 								break outer
 							}
@@ -2439,7 +2570,7 @@ func heroesOfSokobanMirrors() []string {
 		if validSwap && (swapped[0] || swapped[1]) {
 			s := fmt.Sprint("反射 ", newMan)
 			//fmt.Println(s)
-			add(d, data{newMan, d.mirrors}, s)
+			add(d, data{newMan, d.mirrors, done}, s)
 		}
 	}
 }
