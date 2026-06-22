@@ -1,4 +1,4 @@
-package copypasta
+package oss
 
 import (
 	"cmp"
@@ -8,6 +8,8 @@ import (
 
 /*
 2026.6.13
+
+《沉星之序》游戏原型：
 《Heroes of Sokoban》https://www.puzzlescript.net/play.html?p=6860122
 《Heroes of Sokoban II: Monsters》https://www.puzzlescript.net/play.html?p=6910207
 《Heroes of Sokoban III: The Bard and The Druid》https://www.puzzlescript.net/play.html?p=7072276
@@ -16,6 +18,11 @@ import (
 《PROMESST》https://silverspaceship.com/promesst/
 《PROMESST2》https://silverspaceship.com/promesst2/
 《ENIGMASH》https://jacklance.github.io/PuzzleScript/play.html?p=cfdcc6e23f1fb3e9de2fd42fafaf4d4c
+
+C 切换角色
+X 主要操作
+V 次要操作
+F 特殊操作
 
 牧师 {2 0}
 ===
