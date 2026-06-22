@@ -336,6 +336,9 @@ https://codeforces.com/problemset/problem/864/E
 https://codeforces.com/problemset/problem/883/I
 https://training.olinfo.it/#/task/preoii_yutaka/statement
 
+随机游走优化 DP
+https://www.luogu.com.cn/article/7zl18kne
+
 我的视频讲解：
 https://www.bilibili.com/video/BV1Xj411K7oF 从记忆化搜索到递推
 https://www.bilibili.com/video/BV16Y411v7Y6 背包问题
@@ -2506,7 +2509,8 @@ func _(abs func(int) int) {
 	https://en.wikipedia.org/wiki/Hamiltonian_path
 	https://en.wikipedia.org/wiki/Hamiltonian_path_problem
 
-	DDP / DP of DP
+	DP 套 DP / DP of DP / DDP
+	https://oi-wiki.org/dp/dp-of-dp/
 	f 差分后如果只有 0 和 1，可以考虑状压差分数组
 	https://atcoder.jp/contests/abc391/tasks/abc391_g LCS
 	- https://www.luogu.com.cn/problem/P10614
@@ -3098,6 +3102,7 @@ func _(abs func(int) int) {
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
 	      https://codeforces.com/problemset/problem/1036/C
+	      https://www.luogu.com.cn/problem/P2188
 	二进制 1 的个数恰为 k 的数字个数 https://codeforces.com/problemset/problem/431/D https://www.acwing.com/problem/content/1083/
 	是 m 的倍数且偶数位为 d 且奇数位不为 d 的数字个数 https://codeforces.com/problemset/problem/628/D
 	所有数字均出现偶数次的数字个数 https://codeforces.com/problemset/problem/855/E
@@ -4750,8 +4755,11 @@ func _(abs func(int) int) {
 				if w == sub.w {
 					mx = sub.maxD2
 				}
-				// 对于 w 来说，还要加上从 w 到 v 的边权
-				reroot(w, v, max(fromUp, mx)+e.wt)
+				// 还可以往父节点走
+				mx = max(mx, fromUp)
+				// 对于 w 来说，还要加上「从 w 到 v」的边权
+				mx += e.wt
+				reroot(w, v, mx)
 			}
 		}
 		reroot(0, -1, 0)
