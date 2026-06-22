@@ -235,6 +235,191 @@ func maxTotalValue(value, decay []int, m int) (ans int) {
 }
 ```
 
+**优化**：力扣喜欢出随机数据，此时每个下标可以选择的次数是期望 $\mathcal{O}(1)$ 的，一共能选期望 $\mathcal{O}(n)$ 个价值。由于随机数据下 $n \ll m$，所以 $\text{check}(0)$ 大概率是 $\texttt{false}$，$\textit{low}$ 大概率是 $0$，我们可以先判断这种情况。
+
+```py [sol-Python3]
+class Solution:
+    def maxTotalValue(self, value: list[int], decay: list[int], m: int) -> int:
+        def check(low: int) -> bool:
+            left_m = m
+            for v, d in zip(value, decay):
+                if v >= low:
+                    left_m -= (v - low) // d + 1
+                    if left_m < 0:  # 提前跳出循环
+                        return True
+            return False
+
+        if not check(0):  # 可以选所有价值
+            low = 0
+        else:
+            left, right = 0, max(value) + 1
+            while left + 1 < right:
+                mid = (left + right) // 2
+                if check(mid):
+                    left = mid
+                else:
+                    right = mid
+            low = left
+
+        ans = 0
+        # 计算价值严格大于 low 的价值和，以及这些价值的个数
+        for v, d in zip(value, decay):
+            if v > low:
+                k = (v - low - 1) // d + 1
+                m -= k
+                ans += (v * 2 - d * (k - 1)) * k
+        ans //= 2  # 把除以 2 提到循环外面
+        ans += m * low  # 剩余 m 次选的价值都是 low
+        return ans % 1_000_000_007
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxTotalValue(int[] value, int[] decay, int m) {
+        int low = 0;
+
+        if (check(0, value, decay, m)) {
+            int mx = 0;
+            for (int v : value) {
+                mx = Math.max(mx, v);
+            }
+
+            int left = 0;
+            int right = mx + 1;
+            while (left + 1 < right) {
+                int mid = left + (right - left) / 2;
+                if (check(mid, value, decay, m)) {
+                    left = mid;
+                } else {
+                    right = mid;
+                }
+            }
+
+            low = left;
+        }
+
+        long ans = 0;
+        // 计算价值 >= low 的价值和，以及这些价值的个数
+        for (int i = 0; i < value.length; i++) {
+            int v = value[i];
+            if (v > low) {
+                int d = decay[i];
+                int k = (v - low - 1) / d + 1;
+                m -= k;
+                ans += (v * 2 - (long) d * (k - 1)) * k;
+            }
+        }
+        ans /= 2; // 把除以 2 提到循环外面
+        ans += (long) m * low; // 剩余 m 次选的价值都是 low
+        return (int) (ans % 1_000_000_007);
+    }
+
+    private boolean check(int low, int[] value, int[] decay, int m) {
+        int leftM = m;
+        for (int i = 0; i < value.length; i++) {
+            int v = value[i];
+            if (v >= low) {
+                leftM -= (v - low) / decay[i] + 1;
+                if (leftM < 0) { // 提前跳出循环
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxTotalValue(vector<int>& value, vector<int>& decay, int m) {
+        auto check = [&](int low) -> bool {
+            int left_m = m;
+            for (int i = 0; i < value.size(); i++) {
+                int v = value[i];
+                if (v >= low) {
+                    left_m -= (v - low) / decay[i] + 1;
+                    if (left_m < 0) { // 提前跳出循环
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        int low = 0;
+        if (check(0)) {
+            int left = 0, right = ranges::max(value) + 1;
+            while (left + 1 < right) {
+                int mid = left + (right - left) / 2;
+                (check(mid) ? left : right) = mid;
+            }
+            low = left;
+        }
+
+        long long ans = 0;
+        // 计算价值严格大于 low 的价值和，以及这些价值的个数
+        for (int i = 0; i < value.size(); i++) {
+            int v = value[i];
+            if (v > low) {
+                int d = decay[i];
+                int k = (v - low - 1) / d + 1;
+                m -= k;
+                ans += (v * 2 - 1LL * d * (k - 1)) * k;
+            }
+        }
+        ans /= 2; // 把除以 2 提到循环外面
+        ans += 1LL * m * low; // 剩余 m 次选的价值都是 low
+        return ans % 1'000'000'007;
+    }
+};
+```
+
+```go [sol-Go]
+func maxTotalValue(value, decay []int, m int) (ans int) {
+	check := func(low int) bool {
+		leftM := m
+		for i, v := range value {
+			if v >= low {
+				leftM -= (v-low)/decay[i] + 1
+				if leftM < 0 { // 提前跳出循环
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	low := 0
+	if check(0) {
+		left, right := 0, slices.Max(value)+1
+		for left+1 < right {
+			mid := left + (right-left)/2
+			if check(mid) {
+				left = mid
+			} else {
+				right = mid
+			}
+		}
+		low = left
+	}
+
+	// 计算价值严格大于 low 的价值和，以及这些价值的个数
+	for i, v := range value {
+		if v > low {
+			dec := decay[i]
+			k := (v-low-1)/dec + 1
+			m -= k
+			ans += (v*2 - dec*(k-1)) * k
+		}
+	}
+	ans /= 2 // 把除以 2 提到循环外面
+	ans += m * low // 剩余 m 次选的价值都是 low
+	return ans % 1_000_000_007
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{value}$ 的长度，$U=\max(\textit{value})$。二分 $\mathcal{O}(\log U)$ 次，每次 $\mathcal{O}(n)$ 时间。

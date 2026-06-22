@@ -2,24 +2,36 @@ package main
 
 import (
 	"slices"
-	"sort"
 )
 
 // https://space.bilibili.com/206214
 func maxTotalValue(value, decay []int, m int) (ans int) {
-	low := sort.Search(slices.Max(value), func(low int) bool {
-		low++
+	check := func(low int) bool {
 		leftM := m
 		for i, v := range value {
 			if v >= low {
 				leftM -= (v-low)/decay[i] + 1
 				if leftM < 0 { // 提前跳出循环
-					return false
+					return true
 				}
 			}
 		}
-		return true
-	})
+		return false
+	}
+
+	low := 0
+	if check(0) {
+		left, right := 0, slices.Max(value)+1
+		for left+1 < right {
+			mid := left + (right-left)/2
+			if check(mid) {
+				left = mid
+			} else {
+				right = mid
+			}
+		}
+		low = left
+	}
 
 	// 计算价值严格大于 low 的价值和，以及这些价值的个数
 	for i, v := range value {
