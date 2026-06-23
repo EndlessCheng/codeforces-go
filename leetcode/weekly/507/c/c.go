@@ -21,15 +21,8 @@ func shortestPath(n int, edges [][]int, labels string, k int) int {
 			dis[i][j] = math.MaxInt
 		}
 	}
-	h := hp{}
-	add := func(x, y, d int) {
-		if d < dis[x][y] {
-			dis[x][y] = d
-			heap.Push(&h, tuple{d, x, y})
-		}
-	}
+	h := hp{{0, 0, 1}}
 
-	add(0, 1, 0)
 	for len(h) > 0 {
 		top := heap.Pop(&h).(tuple)
 		d := top.dis
@@ -42,13 +35,18 @@ func shortestPath(n int, edges [][]int, labels string, k int) int {
 		}
 		for _, e := range g[x] {
 			y := e.to
-			if labels[y] != labels[x] {
-				add(y, 1, d+e.w)
-			} else if cnt+1 <= k {
-				add(y, cnt+1, d+e.w)
+			newCnt := 1
+			if labels[y] == labels[x] {
+				newCnt = cnt + 1
+			}
+			newDis := d + e.w
+			if newCnt <= k && newDis < dis[y][newCnt] {
+				dis[y][newCnt] = newDis
+				heap.Push(&h, tuple{newDis, y, newCnt})
 			}
 		}
 	}
+
 	return -1
 }
 

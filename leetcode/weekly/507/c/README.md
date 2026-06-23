@@ -1,6 +1,6 @@
 **前置知识**：[Dijkstra 算法介绍](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)
 
-定义 $\textit{dis}[x][\textit{cnt}]$ 表示从节点 $0$ 到节点 $x$ 的最短路长度，且最后连续相同字母个数为 $\textit{cnt}$。
+定义 $\textit{dis}[x][\textit{cnt}]$ 表示从节点 $0$ 到节点 $x$ 的最短路长度，满足路径中的最后连续相同字母个数为 $\textit{cnt}$。
 
 初始值 $\textit{dis}[0][1] = 0$。
 
@@ -19,14 +19,7 @@ class Solution:
             g[x].append((y, w))
 
         dis = [[inf] * (k + 1) for _ in range(n)]
-        h = []  # (最短路长度, 节点编号, 最后连续相同字母个数)
-
-        def add(x: int, cnt: int, d: int) -> None:
-            if d < dis[x][cnt]:
-                dis[x][cnt] = d
-                heappush(h, (d, x, cnt))
-
-        add(0, 1, 0)
+        h = [(0, 0, 1)]  # (最短路长度, 节点编号, 最后连续相同字母个数)
 
         while h:
             d, x, cnt = heappop(h)
@@ -35,10 +28,11 @@ class Solution:
             if d > dis[x][cnt]:
                 continue
             for y, w in g[x]:
-                if labels[y] != labels[x]:
-                    add(y, 1, d + w)
-                elif cnt + 1 <= k:
-                    add(y, cnt + 1, d + w)
+                new_cnt = 1 if labels[y] != labels[x] else cnt + 1
+                new_dis = d + w
+                if new_cnt <= k and new_dis < dis[y][new_cnt]:
+                    dis[y][new_cnt] = new_dis
+                    heappush(h, (new_dis, y, new_cnt))
 
         return -1
 ```
@@ -60,8 +54,7 @@ class Solution {
 
         // int[]{最短路长度, 节点编号, 最后连续相同字母个数}
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-
-        add(0, 1, 0, pq, dis);
+        pq.add(new int[]{0, 0, 1});
 
         while (!pq.isEmpty()) {
             int[] top = pq.poll();
@@ -76,22 +69,16 @@ class Solution {
             }
             for (int[] e : g[x]) {
                 int y = e[0];
-                if (s[y] != s[x]) {
-                    add(y, 1, d + e[1], pq, dis);
-                } else if (cnt + 1 <= k) {
-                    add(y, cnt + 1, d + e[1], pq, dis);
+                int newCnt = s[y] == s[x] ? cnt + 1 : 1;
+                int newDis = d + e[1];
+                if (newCnt <= k && newDis < dis[y][newCnt]) {
+                    dis[y][newCnt] = newDis;
+                    pq.add(new int[]{newDis, y, newCnt});
                 }
             }
         }
 
         return -1;
-    }
-
-    private void add(int x, int cnt, int d, PriorityQueue<int[]> pq, int[][] dis) {
-        if (d < dis[x][cnt]) {
-            dis[x][cnt] = d;
-            pq.add(new int[]{d, x, cnt});
-        }
     }
 }
 ```
@@ -107,20 +94,12 @@ public:
 
         vector dis(n, vector<int>(k + 1, INT_MAX));
         // tuple{最短路长度, 节点编号, 最后连续相同字母个数}
-        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> h;
+        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> pq;
+        pq.emplace(0, 0, 1);
 
-        auto add = [&](int x, int cnt, int d) -> void {
-            if (d < dis[x][cnt]) {
-                dis[x][cnt] = d;
-                h.emplace(d, x, cnt);
-            }
-        };
-
-        add(0, 1, 0);
-
-        while (!h.empty()) {
-            auto [d, x, cnt] = h.top();
-            h.pop();
+        while (!pq.empty()) {
+            auto [d, x, cnt] = pq.top();
+            pq.pop();
             if (x == n - 1) {
                 return d;
             }
@@ -128,10 +107,11 @@ public:
                 continue;
             }
             for (auto& [y, w] : g[x]) {
-                if (labels[y] != labels[x]) {
-                    add(y, 1, d + w);
-                } else if (cnt + 1 <= k) {
-                    add(y, cnt + 1, d + w);
+                int new_cnt = labels[y] == labels[x] ? cnt + 1 : 1;
+                int new_dis = d + w;
+                if (new_cnt <= k && new_dis < dis[y][new_cnt]) {
+                    dis[y][new_cnt] = new_dis;
+                    pq.emplace(new_dis, y, new_cnt);
                 }
             }
         }
@@ -157,16 +137,7 @@ func shortestPath(n int, edges [][]int, labels string, k int) int {
 			dis[i][j] = math.MaxInt
 		}
 	}
-	h := hp{}
-
-	add := func(x, y, d int) {
-		if d < dis[x][y] {
-			dis[x][y] = d
-			heap.Push(&h, tuple{d, x, y})
-		}
-	}
-
-	add(0, 1, 0)
+	h := hp{{0, 0, 1}}
 
 	for len(h) > 0 {
 		top := heap.Pop(&h).(tuple)
@@ -180,10 +151,14 @@ func shortestPath(n int, edges [][]int, labels string, k int) int {
 		}
 		for _, e := range g[x] {
 			y := e.to
-			if labels[y] != labels[x] {
-				add(y, 1, d+e.w)
-			} else if cnt+1 <= k {
-				add(y, cnt+1, d+e.w)
+			newCnt := 1
+			if labels[y] == labels[x] {
+				newCnt = cnt + 1
+			}
+			newDis := d + e.w
+			if newCnt <= k && newDis < dis[y][newCnt] {
+				dis[y][newCnt] = newDis
+				heap.Push(&h, tuple{newDis, y, newCnt})
 			}
 		}
 	}
@@ -191,7 +166,7 @@ func shortestPath(n int, edges [][]int, labels string, k int) int {
 	return -1
 }
 
-// 最短路长度, 节点, 最后连续相同字母个数
+// 最短路长度, 节点编号, 最后连续相同字母个数
 type tuple struct{ dis, x, cnt int }
 type hp []tuple
 
