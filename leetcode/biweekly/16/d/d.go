@@ -1,56 +1,99 @@
 package main
 
+import "math"
+
 // github.com/EndlessCheng/codeforces-go
-func pathsWithMaxScore(a []string) (ans []int) {
-	type pair struct {
-		s, c int
-		ok   bool
-	}
-	const mod int = 1e9 + 7
-	n, m := len(a), len(a[0])
-	dp := make([][]pair, n+1)
-	for i := range dp {
-		dp[i] = make([]pair, m+1)
-	}
-	dp[0][0] = pair{0, 1, true}
-	for i, r := range a {
-		if i == 0 {
-			for j := 1; j < m; j++ {
-				if r[j] != 'X' {
-					dp[i][j] = dp[i][j-1]
-					dp[i][j].s += int(r[j] & 15)
-				}
-			}
-			continue
+func pathsWithMaxScore1(board []string) []int {
+	const mod = 1_000_000_007
+	m, n := len(board), len(board[0])
+	maxSum := make([][]int, m+1) // 定义同 64 题（改成最大路径和）
+	ways := make([][]int, m+1)   // 定义同 63 题
+	for i := range maxSum {
+		maxSum[i] = make([]int, n+1)
+		for j := range maxSum[i] {
+			maxSum[i][j] = math.MinInt
 		}
-		for j, b := range r {
-			if b == 'X' {
+		ways[i] = make([]int, n+1)
+	}
+	maxSum[0][0] = 0 // 为什么这样写？见 64 题我的题解
+	ways[0][0] = 1
+
+	for i, row := range board {
+		for j, ch := range row {
+			if ch == 'X' {
 				continue
 			}
-			if j == 0 {
-				dp[i][j] = dp[i-1][j]
-				dp[i][j].s += int(r[j] & 15)
-				continue
+			// 左上、正上、正左
+			maxSum[i+1][j+1] = max(maxSum[i][j], maxSum[i][j+1], maxSum[i+1][j])
+			s := maxSum[i+1][j+1]
+			w := 0
+			// 如果路径和相同，则累加方案数（加法原理）
+			if maxSum[i][j] == s {
+				w += ways[i][j]
 			}
-			p := dp[i-1][j-1]
-			for _, q := range []pair{dp[i-1][j], dp[i][j-1]} {
-				if q.s > p.s {
-					p = q
-				} else if q.s == p.s {
-					p.c += q.c
-				}
-				p.ok = p.ok || q.ok
+			if maxSum[i][j+1] == s {
+				w += ways[i][j+1]
 			}
-			if i < n-1 || j < m-1 {
-				p.s += int(b & 15)
+			if maxSum[i+1][j] == s {
+				w += ways[i+1][j]
 			}
-			p.c %= mod
-			dp[i][j] = p
+			ways[i+1][j+1] = w % mod
+			if '1' <= ch && ch <= '9' {
+				maxSum[i+1][j+1] += int(ch - '0') // 加上当前格子的值
+			}
 		}
 	}
-	p := dp[n-1][m-1]
-	if !p.ok { // 由于取模的原因，用 p.c == 0 来判断是错误的
-		p.s = 0
+
+	if maxSum[m][n] < 0 {
+		return []int{0, 0}
 	}
-	return []int{p.s, p.c}
+	return []int{maxSum[m][n], ways[m][n]}
+}
+
+func pathsWithMaxScore(board []string) []int {
+	const mod = 1_000_000_007
+	n := len(board[0])
+	maxSum := make([]int, n+1) // 定义同 64 题（改成最大路径和）
+	for i := 1; i <= n; i++ {
+		maxSum[i] = math.MinInt
+	}
+	ways := make([]int, n+1) // 定义同 63 题
+	ways[0] = 1
+
+	for _, row := range board {
+		preS, preW := maxSum[0], ways[0]
+		maxSum[0], ways[0] = math.MinInt, 0
+		for j, ch := range row {
+			if ch == 'X' {
+				preS, preW = maxSum[j+1], ways[j+1]
+				maxSum[j+1], ways[j+1] = math.MinInt, 0
+				continue
+			}
+			tmpS, tmpW := maxSum[j+1], ways[j+1]
+			// 左上、正上、正左
+			s := max(preS, maxSum[j+1], maxSum[j])
+			// 如果路径和相同，则累加方案数（加法原理）
+			w := 0
+			if preS == s {
+				w += preW
+			}
+			if maxSum[j+1] == s {
+				w += ways[j+1]
+			}
+			if maxSum[j] == s {
+				w += ways[j]
+			}
+			ways[j+1] = w % mod
+			maxSum[j+1] = s
+			if '1' <= ch && ch <= '9' {
+				maxSum[j+1] += int(ch - '0') // 加上当前格子的值
+			}
+			preS, preW = tmpS, tmpW
+		}
+	}
+
+	if maxSum[n] < 0 {
+		return []int{0, 0}
+	}
+	return []int{maxSum[n], ways[n]}
 }
