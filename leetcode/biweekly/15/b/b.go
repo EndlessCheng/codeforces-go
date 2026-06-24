@@ -15,7 +15,7 @@ func removeCoveredIntervals(intervals [][]int) (ans int) {
 
 	maxRight := 0 // 已遍历区间中的最大右端点
 	for _, p := range intervals {
-		// 由于区间左端点是从小到大排序的，遍历过的区间的左端点都 <= 当前区间的左端点
+		// 由于区间左端点是从小到大排序的，已遍历区间的左端点都 <= 当前区间的左端点
 		// 如果当前区间右端点 <= maxRight，说明当前区间被另一个区间覆盖，否则没被覆盖
 		if p[1] > maxRight {
 			maxRight = p[1]
