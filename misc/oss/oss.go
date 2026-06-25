@@ -24,9 +24,7 @@ import (
 
 const loopLevel = false
 
-var levelMap = wizard4
-var n = int8(len(levelMap))
-var m = int8(len(levelMap[0]))
+var levelMap []string
 
 // . 空地
 // ~ 水
@@ -35,7 +33,7 @@ var m = int8(len(levelMap[0]))
 // n / XYZ 活塞门
 // f 终点
 type mortalArrType [0]point
-type stoneArrType [3]point
+type stoneArrType [0]point
 type grassArrType [0]point
 type goblinArrType [0]point
 type dragonArrType [0]pointWithDir
@@ -58,9 +56,13 @@ type data struct {
 	dragons dragonArrType // d
 }
 
+var n, m int8
 var initCharNum uint8
 
-func init() {
+func initLevel() {
+	n = int8(len(levelMap))
+	m = int8(len(levelMap[0]))
+
 	var stoneNum, grassesNum, goblinNum, dragonNum, mirrorNum int
 	for _, row := range levelMap {
 		for _, ch := range row {
