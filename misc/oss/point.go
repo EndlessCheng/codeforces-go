@@ -2,6 +2,17 @@ package oss
 
 import "cmp"
 
+var rawDir = [...]struct {
+	p     point
+	dirZH string
+	dirEN string
+}{
+	{point{-1, 0, 0}, "上", "w"},
+	{point{1, 0, 0}, "下", "s"},
+	{point{0, -1, 0}, "左", "a"},
+	{point{0, 1, 0}, "右", "d"},
+}
+
 type point struct {
 	x, y, z int8
 }
@@ -36,12 +47,6 @@ func chebyshevDis(p, q point) int {
 //	return int(abs(p.x-q.x) + abs(p.y-q.y) + abs(p.z-q.z))
 //}
 
-var dir4 = []point{{0, 1, 0}, {-1, 0, 0}, {1, 0, 0}, {0, -1, 0}}
-var debugDirString = []string{"右", "上", "下", "左"}
-var dirString = []string{"d", "w", "s", "a"}
-
-var noPos = point{-60, -60, -60}
-
 func cmpPoint(a, b point) int {
 	return int(cmp.Or(a.x-b.x, a.y-b.y, a.z-b.z))
 }
@@ -54,3 +59,9 @@ func cmpPointWithDir(a, b pointWithDir) int {
 //	slices.SortFunc(a, cmpPoint)
 //	return a
 //}
+
+// 直接改 rawDir 中的顺序
+var dir4 = []point{rawDir[0].p, rawDir[1].p, rawDir[2].p, rawDir[3].p}
+var debugDirString = []string{rawDir[0].dirZH, rawDir[1].dirZH, rawDir[2].dirZH, rawDir[3].dirZH}
+var dirString = []string{rawDir[0].dirEN, rawDir[1].dirEN, rawDir[2].dirEN, rawDir[3].dirEN}
+var noPos = point{-60, -60, -60}
