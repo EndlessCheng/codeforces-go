@@ -79,7 +79,7 @@ func init() {
 			case '9':
 				merchantNum++
 			default:
-				if strings.ContainsRune("ATWPBD@", ch) {
+				if strings.ContainsRune("ATWPBD789", ch) {
 					initCharNum++
 				}
 			}
