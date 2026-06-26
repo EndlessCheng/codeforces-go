@@ -2,8 +2,6 @@
 
 对于不为零的数位 $d$，通过 $d\cdot 10^k$ 组合起来，其中 $k$ 是当前 $x$ 的十进制长度。$k$ 从 $0$ 开始，每添加一个数位就加一。
 
-[本题视频讲解](https://www.bilibili.com/video/BV1arUKBbEks/?t=48m9s)，欢迎点赞关注~
-
 ```py [sol-Python3]
 class Solution:
     def sumAndMultiply(self, n: int) -> int:
@@ -95,3 +93,5 @@ func sumAndMultiply(n int) int64 {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
