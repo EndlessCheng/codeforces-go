@@ -181,22 +181,36 @@ func (d *data) getAllMovableObjPos() ([]point, []point) {
 }
 
 // 非实体
-func (d *data) isValidPos(x, y int8) bool {
-	if !(0 <= x && x < n && 0 <= y && y < m) || levelMap[x][y] == '#' { // 墙
+func (d *data) isValidPos(p point) bool {
+	x, y, z := p.x, p.y, p.z
+	if !(0 <= x && x < n && 0 <= y && y < m) {
 		return false
 	}
-	if slices.Contains(d.grasses[:], point{x, y, 0}) { // 草
-		return false
-	}
-	if !d.monsterDoorOpened && slices.Contains(monsterDoors[:], point{x, y, 0}) { // 怪物门
-		return false
-	}
-	for i, opened := range d.doorOpened {
-		if !opened && slices.Contains(doors[i][:], point{x, y, 0}) { // 压力门
+	if z == 0 {
+		if levelMap[x][y] == '#' { // 墙
 			return false
 		}
+		if slices.Contains(d.grasses[:], point{x, y, 0}) { // 草
+			return false
+		}
+		if !d.monsterDoorOpened && slices.Contains(monsterDoors[:], point{x, y, 0}) { // 怪物门
+			return false
+		}
+		for i, opened := range d.doorOpened {
+			if !opened && slices.Contains(doors[i][:], point{x, y, 0}) { // 压力门
+				return false
+			}
+		}
+		return true
 	}
-	return true
+	if z == -1 {
+		// todo 水中的门
+		if levelMap[x][y] != '~' {
+			return false
+		}
+		return true
+	}
+	panic("todo z > 0 的情况")
 }
 
 func (d *data) isProtected(char point) bool {
@@ -531,7 +545,7 @@ func solveLevel(debug bool) []string {
 					cur.x += dir.x
 					cur.y += dir.y
 					cur.z += dir.z
-					if !d.isValidPos(cur.x, cur.y) {
+					if !d.isValidPos(cur) {
 						break
 					}
 					if slices.Contains(allMovableObjs, cur) {
@@ -712,7 +726,7 @@ func solveLevel(debug bool) []string {
 					cur.z += dir.z
 				}
 				// 前面是否有空地
-				if !d.isValidPos(cur.x, cur.y) {
+				if !d.isValidPos(cur) {
 					continue // 枚举另一个方向
 				}
 
@@ -738,7 +752,7 @@ func solveLevel(debug bool) []string {
 			for dIdx, dir := range dir4 {
 				x, y, z := p0.x+dir.x, p0.y+dir.y, p0.z+dir.z
 				np := point{x, y, z}
-				if !d.isValidPos(np.x, np.y) || slices.Contains(allMovableObjs, np) {
+				if !d.isValidPos(np) || slices.Contains(allMovableObjs, np) {
 					continue // 枚举另一个方向
 				}
 				newData := d
@@ -768,7 +782,7 @@ func solveLevel(debug bool) []string {
 					z += dir.z
 					// 出界或者有障碍物
 					np := point{x, y, z}
-					if !d.isValidPos(np.x, np.y) {
+					if !d.isValidPos(np) {
 						break
 					}
 					if !slices.Contains(allMovableObjs, np) { // 空地
@@ -791,7 +805,7 @@ func solveLevel(debug bool) []string {
 
 				// 没有，那就普通移动一步
 				np := point{p0.x + dir.x, p0.y + dir.y, p0.z + dir.z}
-				if !d.isValidPos(np.x, np.y) {
+				if !d.isValidPos(np) {
 					continue
 				}
 				newData := d
@@ -810,7 +824,7 @@ func solveLevel(debug bool) []string {
 			p0 := d.priest
 			for dIdx, dir := range dir4 {
 				np := point{p0.x + dir.x, p0.y + dir.y, p0.z + dir.z}
-				if !d.isValidPos(np.x, np.y) || slices.Contains(allMovableObjs, np) {
+				if !d.isValidPos(np) || slices.Contains(allMovableObjs, np) {
 					continue // 枚举另一个方向
 				}
 				newData := d
@@ -838,7 +852,7 @@ func solveLevel(debug bool) []string {
 			// 切比雪夫距离 <= 2 的物品（包括自己）都移动一步
 			for dIdx, dir := range dir4 {
 				x, y, z := p0.x+dir.x, p0.y+dir.y, p0.z+dir.z
-				if !d.isValidPos(x, y) {
+				if !d.isValidPos(point{x, y, z}) {
 					continue
 				}
 				slices.SortFunc(items, func(a, b point) int {
@@ -853,7 +867,7 @@ func solveLevel(debug bool) []string {
 				for _, item := range items {
 					// item 往前移动一格
 					nxtPos := point{item.x + dir.x, item.y + dir.y, item.z + dir.z}
-					if !d.isValidPos(nxtPos.x, nxtPos.y) { // 无法移动
+					if !d.isValidPos(nxtPos) { // 无法移动
 						unmovedItems = append(unmovedItems, item)
 						continue
 					}
@@ -871,8 +885,7 @@ func solveLevel(debug bool) []string {
 				}
 
 				if !slices.Contains(unmovedItems, p0) {
-					np := point{x, y, z}
-					if newData.bard != np {
+					if newData.bard != (point{x, y, z}) {
 						panic("移动错误")
 					}
 					var info string
@@ -915,7 +928,7 @@ func solveLevel(debug bool) []string {
 					add(d, newData, info)
 					continue
 				}
-				if !d.isValidPos(np.x, np.y) || slices.Contains(allMovableObjs, np) {
+				if !d.isValidPos(np) || slices.Contains(allMovableObjs, np) {
 					continue // 枚举另一个方向
 				}
 				// 普通移动一步
@@ -951,7 +964,7 @@ func solveLevel(debug bool) []string {
 					}
 					nxt := point{p0.x + dir.x, p0.y + dir.y, p0.z + dir.z}
 					// 无法移动（注意岸边也是无法移动的）
-					if !d.isValidPos(nxt.x, nxt.y) || d.isFallIntoWater(nxt) || slices.Contains(unmovedMan, nxt) {
+					if !d.isValidPos(nxt) || d.isFallIntoWater(nxt) || slices.Contains(unmovedMan, nxt) {
 						unmovedMan = append(unmovedMan, p0)
 						continue
 					}
@@ -964,7 +977,7 @@ func solveLevel(debug bool) []string {
 						//}
 
 						// 无法推动前面的物品
-						if !d.isValidPos(nxt2.x, nxt2.y) ||
+						if !d.isValidPos(nxt2) ||
 							!slices.Contains(oldMerchant[:], nxt2) && slices.Contains(allMovableObjs, nxt2) ||
 							slices.Contains(unmovedMan, nxt2) {
 							unmovedMan = append(unmovedMan, p0)
@@ -1027,7 +1040,7 @@ func solveLevel(debug bool) []string {
 						cur0.x += dir0.x
 						cur0.y += dir0.y
 						cur0.z += dir0.z
-						if !d.isValidPos(cur0.x, cur0.y) {
+						if !d.isValidPos(cur0) {
 							continue nextMirror
 						}
 						// todo bitset
@@ -1042,7 +1055,7 @@ func solveLevel(debug bool) []string {
 						cur1.x += dir1.x
 						cur1.y += dir1.y
 						cur1.z += dir1.z
-						if !d.isValidPos(cur1.x, cur1.y) {
+						if !d.isValidPos(cur1) {
 							continue nextMirror
 						}
 						if pdContains(d.mirrors[:], cur1) || pdContains(d.mirrorAuxes[:], cur1) {
@@ -1101,7 +1114,7 @@ func solveLevel(debug bool) []string {
 							}
 							continue // 改变光路，继续反射
 						}
-						if !d.isValidPos(newP.x, newP.y) || slices.Contains(allMovableObjs, newP) {
+						if !d.isValidPos(newP) || slices.Contains(allMovableObjs, newP) {
 							return // 光路被障碍或非镜子对象挡住
 						}
 					}
