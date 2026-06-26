@@ -10,10 +10,10 @@ var rawDir = [...]struct {
 	dirZH string
 	dirEN string
 }{
-	{point{-1, 0, 0}, "上", "w"},
-	{point{1, 0, 0}, "下", "s"},
 	{point{0, -1, 0}, "左", "a"},
 	{point{0, 1, 0}, "右", "d"},
+	{point{-1, 0, 0}, "上", "w"},
+	{point{1, 0, 0}, "下", "s"},
 }
 
 func getDir(en byte) uint8 {

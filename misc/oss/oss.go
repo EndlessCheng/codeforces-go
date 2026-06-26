@@ -31,6 +31,7 @@ type grassArrType [stoneNumberInit + grassNumberInit]point
 type goblinArrType [goblinNumberInit]point
 type dragonArrType [len(dragonDirInit)]pointWithDir
 type mirrorArrType [len(mirrorDirInit) / 2]pointWithDir
+type mirrorAuxArrType [len(mirrorAuxDirInit) / 2]pointWithDir
 
 type data struct {
 	curChar  int8
@@ -47,11 +48,12 @@ type data struct {
 	goblins goblinArrType // g
 	dragons dragonArrType // d
 
-	// todo 辅助镜子用小写 m
-	mirrors mirrorArrType // M
+	mirrors     mirrorArrType    // M
+	mirrorAuxes mirrorAuxArrType // m
+	// R 可以反射镜子的镜子
 
 	// 门的开闭
-	doorOpened        [2]bool
+	doorOpened        [doorTypes]bool
 	monsterDoorOpened bool
 }
 
@@ -62,7 +64,7 @@ func init() {
 	n = int8(len(levelMap))
 	m = int8(len(levelMap[0]))
 
-	var stoneNum, grassesNum, goblinNum, dragonNum, mirrorNum, merchantNum int
+	var stoneNum, grassesNum, goblinNum, dragonNum, mirrorNum, mirrorAuxNum, merchantNum int
 	for _, row := range levelMap {
 		for _, ch := range row {
 			switch ch {
@@ -76,6 +78,8 @@ func init() {
 				dragonNum++
 			case 'M':
 				mirrorNum++
+			case 'm':
+				mirrorAuxNum++
 			case '9':
 				merchantNum++
 			default:
@@ -92,8 +96,9 @@ func init() {
 		goblinNum != len(goblinArrType{}) ||
 		dragonNum != len(dragonArrType{}) ||
 		mirrorNum != len(mirrorArrType{}) ||
-		merchantNum != len(merchantArrType{}) {
-		panic("没有修改数组大小")
+		mirrorAuxNum != len(mirrorAuxArrType{}) ||
+		!allowCloneMan && merchantNum != len(merchantArrType{}) {
+		panic("没有修改 const")
 	}
 }
 
@@ -148,6 +153,11 @@ func (d *data) getAllMovableObjPos() ([]point, []point) {
 	chars := d.getAllCharPos()
 	objs := chars
 	for _, p := range d.mirrors {
+		if p.point != noPos {
+			objs = append(objs, p.point)
+		}
+	}
+	for _, p := range d.mirrorAuxes {
 		if p.point != noPos {
 			objs = append(objs, p.point)
 		}
@@ -218,6 +228,7 @@ func (d *data) isFallIntoWater(p point) bool {
 
 func (d *data) isDie(p point, burnPos []point, isChar bool) bool {
 	// 被门压死
+	// todo 忽略向上的门（应该抬高角色）
 	for i, opened := range d.doorOpened {
 		if !opened && slices.Contains(doors[i][:], p) {
 			return false
@@ -277,6 +288,12 @@ func (d *data) changePos(oldP, newP point) {
 			d.mirrors[i].point = newP
 		}
 
+		i = pdIndex(d.mirrorAuxes[:], oldP)
+		if i >= 0 {
+			changed = true
+			d.mirrorAuxes[i].point = newP
+		}
+
 		i = slices.Index(d.stones[:], oldP)
 		if i >= 0 {
 			changed = true
@@ -309,6 +326,7 @@ func solveLevel(debug bool) []string {
 		merchantInitArr[i] = noPos
 	}
 	mirrorInitArr := mirrorArrType{}
+	mirrorAuxInitArr := mirrorAuxArrType{}
 	stoneInitArr := stoneArrType{}
 	for i := range stoneInitArr {
 		stoneInitArr[i] = noPos
@@ -328,6 +346,7 @@ func solveLevel(debug bool) []string {
 	__druid := noPos
 	__merchants := merchantInitArr[:0]
 	__mirrors := mirrorInitArr[:0]
+	__mirrorAuxes := mirrorAuxInitArr[:0]
 	__stones := stoneInitArr[:0]
 	__grasses := grassInitArr[:0]
 	__goblins := goblinInitArr[:0]
@@ -390,6 +409,11 @@ func solveLevel(debug bool) []string {
 				dir0 := getDir(mirrorDirInit[idx*2])
 				dir1 := getDir(mirrorDirInit[idx*2+1])
 				__mirrors = append(__mirrors, pointWithDir{p, dir1<<4 | dir0})
+			case 'm':
+				idx := len(__mirrorAuxes)
+				dir0 := getDir(mirrorAuxDirInit[idx*2])
+				dir1 := getDir(mirrorAuxDirInit[idx*2+1])
+				__mirrorAuxes = append(__mirrorAuxes, pointWithDir{p, dir1<<4 | dir0})
 			case 's':
 				__stones = append(__stones, p)
 			case 'w':
@@ -450,11 +474,13 @@ func solveLevel(debug bool) []string {
 		druid:    __druid,
 		merchant: merchantInitArr,
 
-		mirrors: mirrorInitArr,
 		stones:  stoneInitArr,
 		grasses: grassInitArr,
 		goblins: goblinInitArr,
 		dragons: dragonInitArr,
+
+		mirrors:     mirrorInitArr,
+		mirrorAuxes: mirrorAuxInitArr,
 	}
 
 	vis := map[data]bool{}
@@ -559,11 +585,25 @@ func solveLevel(debug bool) []string {
 			}
 		}
 
-		// todo 石头/镜子压在水中的镜子，水中的镜子会被摧毁
+		// todo 石头/镜子落入水中的镜子，水中的镜子会被摧毁
 
 		// 镜子
 		if len(d.mirrors) > 0 {
 			mir := d.mirrors[:]
+			for i, p := range mir {
+				if d.isFallIntoWater(p.point) {
+					if !canFallIntoWater {
+						return
+					}
+					mir[i].z = -1
+				}
+			}
+			slices.SortFunc(mir, cmpPointWithDir)
+		}
+
+		// 辅助镜子
+		if len(d.mirrorAuxes) > 0 {
+			mir := d.mirrorAuxes[:]
 			for i, p := range mir {
 				if d.isFallIntoWater(p.point) {
 					if !canFallIntoWater {
@@ -636,6 +676,9 @@ func solveLevel(debug bool) []string {
 				if !ok {
 					panic("代码修改了 d，与存入的 d 不符")
 				}
+				//if d.merchant[0] == (point{9, 3, 0}) {
+				//	fmt.Println(d)
+				//}
 				path = append(path, p.info)
 				d = p.data
 			}
@@ -646,6 +689,10 @@ func solveLevel(debug bool) []string {
 		// 移动当前角色
 
 		// todo 多控时，如果下一个位置是没有石头的水，则一个角色无法移动 todo
+
+		//if d.mirrorAuxes[0].x >= 3 && d.mirrorAuxes[1].x >= 3 {
+		//	panic(-1)
+		//}
 
 		switch d.curChar {
 		case charDefault:
@@ -911,8 +958,15 @@ func solveLevel(debug bool) []string {
 					// 如果前面是物品，则推动（能移动的人已经移动了）
 					if !slices.Contains(oldMerchant[:], nxt) && slices.Contains(allMovableObjs, nxt) {
 						nxt2 := point{nxt.x + dir.x, nxt.y + dir.y, nxt.z + dir.z}
+
+						//if slices.Contains(d.stones[:], nxt2) {
+						//	panic(-1)
+						//}
+
 						// 无法推动前面的物品
-						if !d.isValidPos(nxt2.x, nxt2.y) || !slices.Contains(oldMerchant[:], nxt) && slices.Contains(allMovableObjs, nxt2) || slices.Contains(unmovedMan, nxt2) {
+						if !d.isValidPos(nxt2.x, nxt2.y) ||
+							!slices.Contains(oldMerchant[:], nxt2) && slices.Contains(allMovableObjs, nxt2) ||
+							slices.Contains(unmovedMan, nxt2) {
 							unmovedMan = append(unmovedMan, p0)
 							continue
 						}
@@ -928,7 +982,6 @@ func solveLevel(debug bool) []string {
 				var info string
 				if debug {
 					info = fmt.Sprintf("人 %s", debugDirString[dIdx])
-					//fmt.Println(newData.merchant)
 				} else {
 					info = dirString[dIdx]
 				}
@@ -968,7 +1021,8 @@ func solveLevel(debug bool) []string {
 				dir1 := dir4[mirror.dir>>4]
 				foundMirror := uint8(0)
 				for step := 1; ; step++ {
-					found := uint8(0)
+					justFound := uint8(0) // 是否找到了非镜子对象
+					// 检查方向 0
 					if foundMirror&1 == 0 {
 						cur0.x += dir0.x
 						cur0.y += dir0.y
@@ -977,12 +1031,13 @@ func solveLevel(debug bool) []string {
 							continue nextMirror
 						}
 						// todo bitset
-						if pdContains(d.mirrors[:], cur0) {
+						if pdContains(d.mirrors[:], cur0) || pdContains(d.mirrorAuxes[:], cur0) {
 							foundMirror |= 1
 						} else if slices.Contains(allMovableObjs, cur0) {
-							found |= 1
+							justFound |= 1
 						}
 					}
+					// 检查方向 1
 					if foundMirror>>1 == 0 {
 						cur1.x += dir1.x
 						cur1.y += dir1.y
@@ -990,62 +1045,94 @@ func solveLevel(debug bool) []string {
 						if !d.isValidPos(cur1.x, cur1.y) {
 							continue nextMirror
 						}
-						if pdContains(d.mirrors[:], cur1) {
+						if pdContains(d.mirrors[:], cur1) || pdContains(d.mirrorAuxes[:], cur1) {
 							foundMirror |= 2
 						} else if slices.Contains(allMovableObjs, cur1) {
-							found |= 2
+							justFound |= 2
 						}
 					}
-					// 不能两方向最近都是镜子，也不能同时都是对象
-					if foundMirror == 3 || found == 3 {
-						return
+					if foundMirror == 3 {
+						return // 不能两方向最近都是镜子
 					}
-					if found == 0 {
-						continue
+					if justFound == 3 {
+						return // 不能反射位置都是对象
+					}
+					if justFound == 0 {
+						continue // 都是空地，继续找
 					}
 
 					oldP := cur0
 					dir := dir1
-					if found == 2 {
+					if justFound == 2 {
 						oldP = cur1
 						dir = dir0 // 往另一个方向反射
 					}
 
+					// 无法反射的石头
+					if !areStonesReflectable && slices.Contains(d.stones[:], oldP) {
+						return
+					}
+
 					// 反射：从 mirror.point 出发，往 dir 方向走 step 步
 					newP := mirror.point
-					for range step {
+					for k := range step {
 						newP.x += dir.x
 						newP.y += dir.y
 						newP.z += dir.z
-						// 遇到另一面镜子
+						// 遇到另一面主镜子
 						if i := pdIndex(d.mirrors[:], newP); i >= 0 {
+							if k == step-1 {
+								return // 最终反射到了镜子上
+							}
 							dir = reflectToDir(d.mirrors[i].dir, dir)
-							if dir == (point{}) { // 镜子背对我们
-								return
+							if dir == (point{}) {
+								return // 镜子背对我们
+							}
+							continue // 改变光路，继续反射
+						}
+						// 遇到另一面辅助镜子
+						if i := pdIndex(d.mirrorAuxes[:], newP); i >= 0 {
+							if k == step-1 {
+								return // 最终反射到了辅助镜子上
+							}
+							dir = reflectToDir(d.mirrorAuxes[i].dir, dir)
+							if dir == (point{}) {
+								return // 镜子背对我们
 							}
 							continue // 改变光路，继续反射
 						}
 						if !d.isValidPos(newP.x, newP.y) || slices.Contains(allMovableObjs, newP) {
-							return
+							return // 光路被障碍或非镜子对象挡住
 						}
 					}
 
 					// 反射成功
 					itemIdx := slices.Index(allMovableObjs, oldP)
 					if swapped>>itemIdx&1 > 0 {
-						// todo 分身：同一个对象用不同的镜子反射成多个对象
-						return // 暂时禁止
+						// todo 所有对象的分身
+						// 不能再分身了
+						if slices.Contains(d.merchant[:], oldP) {
+							if newData.merchant[0] != noPos {
+								return
+							}
+							newData.merchant[0] = newP
+						} else if areStonesReflectable && slices.Contains(d.stones[:], oldP) {
+							//newData.stones[0] = newP // todo
+						} else {
+							// todo 其他对象的分身
+						}
+					} else {
+						swapped |= 1 << itemIdx
+						newData.changePos(oldP, newP)
 					}
-					swapped |= 1 << itemIdx
-					newData.changePos(oldP, newP)
 					break
 				}
 
 				// todo 合二为一
 				// todo 这里恰有两人
-				//if newData.merchant[0] == newData.merchant[1] {
-				//	//fmt.Println("合并！")
-				//	newData.merchant[0] = noPos
+				//if newData.merchant[0] != noPos && newData.merchant[0] == newData.merchant[1] {
+				//	//newData.merchant[0] = noPos
+				//	return
 				//}
 			}
 
@@ -1053,7 +1140,6 @@ func solveLevel(debug bool) []string {
 				return
 			}
 
-			//fmt.Println("反射！")
 			var info string
 			if !debug {
 				info = "x"
@@ -1090,6 +1176,7 @@ const (
 //	charBard:    "诗人",
 //	charDruid:   "德鲁伊",
 //}
+
 //mpChar := [...]int{
 //	'A': charWarrior,
 //	'T': charThief,
@@ -1099,4 +1186,3 @@ const (
 //	'D': charDruid,
 //	'9': charMerchant,
 //}
-//_ = mpChar
