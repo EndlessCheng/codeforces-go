@@ -42,7 +42,7 @@ func (p point) add(q point) point {
 }
 
 func isNeighbor(p, q point) bool {
-	for _, dir := range dir4 {
+	for _, dir := range directions {
 		if (point{p.x + dir.x, p.y + dir.y, p.z + dir.z}) == q {
 			return true
 		}
@@ -68,16 +68,21 @@ type pointWithDir struct {
 	dir uint8
 }
 
-func reflectToDir(dir uint8, v point) point {
-	rev := point{-v.x, -v.y, -v.z}
-	d0, d1 := dir4[dir&0xf], dir4[dir>>4]
-	if d0 == rev {
+func (mirror *pointWithDir) reflectToAnotherDir(dir point) point {
+	revDir := point{-dir.x, -dir.y, -dir.z}
+	d0, d1 := directions[mirror.dir&0xf], directions[mirror.dir>>4]
+	if d0 == revDir {
 		return d1
 	}
-	if d1 == rev {
+	if d1 == revDir {
 		return d0
 	}
 	return point{}
+}
+
+func (mirror *pointWithDir) canReflect(dir point) bool {
+	revDir := point{-dir.x, -dir.y, -dir.z}
+	return directions[mirror.dir&0xf] == revDir || directions[mirror.dir>>4] == revDir
 }
 
 func pdContains(a []pointWithDir, p point) bool {
@@ -102,13 +107,8 @@ func cmpPointWithDir(a, b pointWithDir) int {
 	return int(cmp.Or(a.x-b.x, a.y-b.y, a.z-b.z))
 }
 
-//func sortPoints(a ...point) []point {
-//	slices.SortFunc(a, cmpPoint)
-//	return a
-//}
-
 // 直接改 rawDir 中的顺序
-var dir4 = []point{rawDir[0].p, rawDir[1].p, rawDir[2].p, rawDir[3].p}
+var directions = []point{rawDir[0].p, rawDir[1].p, rawDir[2].p, rawDir[3].p}
 var debugDirString = []string{rawDir[0].dirZH, rawDir[1].dirZH, rawDir[2].dirZH, rawDir[3].dirZH}
 var dirString = []string{rawDir[0].dirEN, rawDir[1].dirEN, rawDir[2].dirEN, rawDir[3].dirEN}
 var noPos = point{-60, -60, -60}
