@@ -3,7 +3,6 @@ package oss
 import (
 	"fmt"
 	"slices"
-	"strings"
 )
 
 /*
@@ -27,6 +26,7 @@ var levelMap = curMap
 
 type merchantArrType [merchantNumberInit]point
 type stoneArrType [stoneNumberInit + grassNumberInit]point
+type stoneFloatArrType [stoneFloatNumberInit]point
 type grassArrType [stoneNumberInit + grassNumberInit]point
 type goblinArrType [goblinNumberInit]point
 type dragonArrType [len(dragonDirInit)]pointWithDir
@@ -39,19 +39,25 @@ type data struct {
 	warrior  point           // A 推多个对象
 	thief    point           // T 拉一个对象
 	wizard   point           // W 交换对象
-	priest   point           // P 自己以及上下左右无敌
+	cleric   point           // C 自己以及上下左右无敌
 	bard     point           // B 同时移动切比雪夫距离 <= 2 的对象
-	druid    point           // D 把草变成石头
+	druid    point           // D 把对象变成石头
 	merchant merchantArrType // 9 普通角色，推一个对象
 
-	stones  stoneArrType  // s
-	grass   grassArrType  // w
-	goblins goblinArrType // g
-	dragons dragonArrType // d
+	stones stoneArrType // s
+	// 用大写 S 表示可以反射的石头？
+	stoneFloats stoneFloatArrType // F todo
+
+	grass grassArrType // w
 
 	mirrors     mirrorArrType    // M
 	mirrorRefs  mirrorRefArrType // R 主镜子 + 可以被反射
 	mirrorAuxes mirrorAuxArrType // m
+
+	beams struct{} // todo
+
+	goblins goblinArrType // g
+	dragons dragonArrType // d
 
 	// 门的开闭
 	doorOpened        [doorTypes]bool
@@ -85,10 +91,9 @@ func init() {
 				mirrorAuxNum++
 			case '9':
 				merchantNum++
-			default:
-				if strings.ContainsRune("ATWPBD789", ch) {
-					initCharNum++
-				}
+				initCharNum++
+			case 'A', 'T', 'W', 'C', 'B', 'D', '7', '8':
+				initCharNum++
 			}
 		}
 	}
@@ -147,8 +152,8 @@ func (d *data) getAllCharPos() []point {
 	if d.wizard != noPos {
 		allChars = append(allChars, d.wizard)
 	}
-	if d.priest != noPos {
-		allChars = append(allChars, d.priest)
+	if d.cleric != noPos {
+		allChars = append(allChars, d.cleric)
 	}
 	if d.bard != noPos {
 		allChars = append(allChars, d.bard)
@@ -237,7 +242,7 @@ func (d *data) isValidPos(p point) bool {
 }
 
 func (d *data) isProtected(char point) bool {
-	return char == d.priest || d.priest != noPos && isNeighbor(char, d.priest)
+	return char == d.cleric || d.cleric != noPos && isNeighbor(char, d.cleric)
 }
 
 // 在水面上且下面没有石头（或者门）的对象，落入水中
@@ -306,8 +311,8 @@ func (d *data) changePos(oldP, newP point) {
 		d.thief = newP
 	case oldP == d.wizard:
 		d.wizard = newP
-	case oldP == d.priest:
-		d.priest = newP
+	case oldP == d.cleric:
+		d.cleric = newP
 	case oldP == d.bard:
 		d.bard = newP
 	case oldP == d.druid:
@@ -387,7 +392,7 @@ func solveLevel(debug bool) []string {
 	__warrior := warriorPosInit
 	__thief := thiefPosInit
 	__wizard := wizardPosInit
-	__priest := noPos
+	__cleric := noPos
 	__bard := noPos
 	__druid := noPos
 	__merchants := merchantInitArr[:0]
@@ -425,12 +430,12 @@ func solveLevel(debug bool) []string {
 				if __wizard == noPos {
 					__wizard = p
 				}
-			case 'P':
+			case 'C':
 				if __curChar < 0 {
-					__curChar = charPriest
+					__curChar = charCleric
 				}
-				if __priest == noPos {
-					__priest = p
+				if __cleric == noPos {
+					__cleric = p
 				}
 			case 'B':
 				if __curChar < 0 {
@@ -487,7 +492,9 @@ func solveLevel(debug bool) []string {
 				monsterDoors = append(monsterDoors, p)
 			case 'f':
 				finals = append(finals, p)
-			case '$', '%':
+			case '.', '#', '~':
+				// pass
+			default:
 				panic("不支持的符号")
 			}
 		}
@@ -503,8 +510,8 @@ func solveLevel(debug bool) []string {
 	if __wizard != noPos {
 		validChars = append(validChars, charWizard)
 	}
-	if __priest != noPos {
-		validChars = append(validChars, charPriest)
+	if __cleric != noPos {
+		validChars = append(validChars, charCleric)
 	}
 	if __bard != noPos {
 		validChars = append(validChars, charBard)
@@ -521,7 +528,7 @@ func solveLevel(debug bool) []string {
 		warrior:  __warrior,
 		thief:    __thief,
 		wizard:   __wizard,
-		priest:   __priest,
+		cleric:   __cleric,
 		bard:     __bard,
 		druid:    __druid,
 		merchant: merchantInitArr,
@@ -872,16 +879,16 @@ func solveLevel(debug bool) []string {
 				}
 				add(d, newData, info)
 			}
-		case charPriest:
+		case charCleric:
 			// 普通移动一步
-			p0 := d.priest
+			p0 := d.cleric
 			for dIdx, dir := range directions {
 				np := point{p0.x + dir.x, p0.y + dir.y, p0.z + dir.z}
 				if !d.isValidPos(np) || slices.Contains(allMovableObjs, np) {
 					continue // 枚举另一个方向
 				}
 				newData := d
-				newData.priest = np
+				newData.cleric = np
 				var info string
 				if debug {
 					info = fmt.Sprintf("牧 %s", debugDirString[dIdx])
@@ -1076,8 +1083,6 @@ func solveLevel(debug bool) []string {
 					} else {
 						info = "c"
 					}
-				} else {
-					//fmt.Println("换人")
 				}
 				add(d, newData, info)
 			}
@@ -1246,29 +1251,10 @@ const (
 	charWarrior
 	charThief
 	charWizard
-	charPriest
+	charCleric
 	charBard
 	charDruid
 	charExplorer
-	charGirl
-	charMerchant
+	charSailor
+	charMerchant // Trader
 )
-
-//charName := [...]string{
-//	charWarrior: "战士",
-//	charThief:   "盗贼",
-//	charWizard:  "法师",
-//	charPriest:  "牧师",
-//	charBard:    "诗人",
-//	charDruid:   "德鲁伊",
-//}
-
-//mpChar := [...]int{
-//	'A': charWarrior,
-//	'T': charThief,
-//	'W': charWizard,
-//	'P': charPriest,
-//	'B': charBard,
-//	'D': charDruid,
-//	'9': charMerchant,
-//}
