@@ -112,3 +112,4 @@ var directions = []point{rawDir[0].p, rawDir[1].p, rawDir[2].p, rawDir[3].p}
 var debugDirString = []string{rawDir[0].dirZH, rawDir[1].dirZH, rawDir[2].dirZH, rawDir[3].dirZH}
 var dirString = []string{rawDir[0].dirEN, rawDir[1].dirEN, rawDir[2].dirEN, rawDir[3].dirEN}
 var noPos = point{-60, -60, -60}
+var noPosDir = pointWithDir{noPos, uint8(math.MaxUint8)}
