@@ -38,11 +38,20 @@ func (p point) add(q point) point {
 	if !loopLevel {
 		return point{p.x + q.x, p.y + q.y, p.z + q.z}
 	}
-	return point{(p.x + q.x + n) % n, (p.y + q.y + m) % m, p.z + q.z}
+	return point{(p.x + q.x + mapSizeN) % mapSizeN, (p.y + q.y + mapSizeM) % mapSizeM, p.z + q.z}
 }
 
-func isNeighbor(p, q point) bool {
-	for _, dir := range directions {
+func isNeighbor4(p, q point) bool {
+	for _, dir := range directions4 {
+		if (point{p.x + dir.x, p.y + dir.y, p.z + dir.z}) == q {
+			return true
+		}
+	}
+	return false
+}
+
+func isNeighbor6(p, q point) bool {
+	for _, dir := range directions6 {
 		if (point{p.x + dir.x, p.y + dir.y, p.z + dir.z}) == q {
 			return true
 		}
@@ -60,7 +69,8 @@ func chebyshevDis(p, q point) int {
 //}
 
 func cmpPoint(a, b point) int {
-	return int(cmp.Or(a.x-b.x, a.y-b.y, a.z-b.z))
+	// 和遍历 levelMap 的顺序保持一致
+	return int(cmp.Or(a.z-b.z, a.x-b.x, a.y-b.y))
 }
 
 type pointWithDir struct {
@@ -70,7 +80,7 @@ type pointWithDir struct {
 
 func (mirror *pointWithDir) reflectToAnotherDir(dir point) point {
 	revDir := point{-dir.x, -dir.y, -dir.z}
-	d0, d1 := directions[mirror.dir&0xf], directions[mirror.dir>>4]
+	d0, d1 := directions4[mirror.dir&0xf], directions4[mirror.dir>>4]
 	if d0 == revDir {
 		return d1
 	}
@@ -82,7 +92,7 @@ func (mirror *pointWithDir) reflectToAnotherDir(dir point) point {
 
 func (mirror *pointWithDir) canReflect(dir point) bool {
 	revDir := point{-dir.x, -dir.y, -dir.z}
-	return directions[mirror.dir&0xf] == revDir || directions[mirror.dir>>4] == revDir
+	return directions4[mirror.dir&0xf] == revDir || directions4[mirror.dir>>4] == revDir
 }
 
 func pdContains(a []pointWithDir, p point) bool {
@@ -104,12 +114,14 @@ func pdIndex(a []pointWithDir, p point) int {
 }
 
 func cmpPointWithDir(a, b pointWithDir) int {
-	return int(cmp.Or(a.x-b.x, a.y-b.y, a.z-b.z))
+	// 和遍历 levelMap 的顺序保持一致
+	return int(cmp.Or(a.z-b.z, a.x-b.x, a.y-b.y))
 }
 
 // 直接改 rawDir 中的顺序
-var directions = []point{rawDir[0].p, rawDir[1].p, rawDir[2].p, rawDir[3].p}
-var debugDirString = []string{rawDir[0].dirZH, rawDir[1].dirZH, rawDir[2].dirZH, rawDir[3].dirZH}
-var dirString = []string{rawDir[0].dirEN, rawDir[1].dirEN, rawDir[2].dirEN, rawDir[3].dirEN}
+var directions4 = []point{rawDir[0].p, rawDir[1].p, rawDir[2].p, rawDir[3].p}
+var directions6 = append(directions4, point{0, 0, 1}, point{0, 0, -1})
+var debugDir4String = []string{rawDir[0].dirZH, rawDir[1].dirZH, rawDir[2].dirZH, rawDir[3].dirZH}
+var dir4String = []string{rawDir[0].dirEN, rawDir[1].dirEN, rawDir[2].dirEN, rawDir[3].dirEN}
 var noPos = point{-60, -60, -60}
 var noPosDir = pointWithDir{noPos, uint8(math.MaxUint8)}
