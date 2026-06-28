@@ -1,6 +1,6 @@
 **前置题目**：
 
-1. 本题的无修改版本 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，[我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
+1. 本题的无操作版本 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，[我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
 2. 本题做法类似 [1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)，但 1186 题更简单，推荐先完成 1186 题，并阅读 [我的题解](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solutions/2321829/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)。
 
 子数组中的元素，从左到右，至多会经过三个阶段：
@@ -42,6 +42,7 @@ class Solution:
             res = -inf
 
             for i, x in enumerate(nums):
+                # 不想用浮点数的话，可以把 int(x/k) 换成 x//k if x>=0 else -(-x//k)
                 y = x * k if is_mul else int(x / k)
                 # 不修改 x，和 f[i][0] 拼起来，或者 x 是子数组的第一个数
                 f[i + 1][0] = max(f[i][0], 0) + x
@@ -171,6 +172,7 @@ class Solution:
             res = -inf
 
             for x in nums:
+                # 不想用浮点数的话，可以把 int(x/k) 换成 x//k if x>=0 else -(-x//k)
                 y = x * k if is_mul else int(x / k)
                 f2 = max(f1, f2) + x
                 f1 = max(f0, f1, 0) + y
