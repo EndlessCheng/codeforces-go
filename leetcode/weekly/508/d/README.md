@@ -1,3 +1,5 @@
+## 方法一：Dijkstra 算法（分层图最短路）
+
 做法和上场周赛的 [3970. 最多 K 个连续相同字符的最短路径](https://leetcode.cn/problems/shortest-path-with-at-most-k-consecutive-identical-characters/) 是一样的，[我的题解](https://leetcode.cn/problems/shortest-path-with-at-most-k-consecutive-identical-characters/solutions/3986163/dijkstra-suan-fa-fen-ceng-tu-zui-duan-lu-magt/)。
 
 定义 $\textit{dis}[x][\textit{rem}]$ 表示从起点 $\textit{source}$ 到节点 $x$ 的最短路长度，且在 $x$ 处的剩余电量为 $\textit{rem}$。
@@ -12,7 +14,7 @@
 
 ```py [sol-Python3]
 class Solution:
-    def minTimeMaxPower(self, n: int, edges: List[List[int]], power: int, cost: List[int], source: int, target: int) -> List[int]:
+    def minTimeMaxPower(self, n: int, edges: list[list[int]], power: int, cost: list[int], source: int, target: int) -> list[int]:
         g = [[] for _ in range(n)]
         for x, y, t in edges:
             g[x].append((y, t))
@@ -185,9 +187,165 @@ func (h *hp) Pop() (v any) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return 
 - 时间复杂度：$\mathcal{O}(nk + mk\log (mk))$，其中 $m$ 是 $\textit{edges}$ 的长度，$k = \textit{power}$。分层图中有 $\mathcal{O}(nk)$ 个点，$\mathcal{O}(mk)$ 条边。注意我们用的是懒更新堆，堆中有 $\mathcal{O}(mk)$ 个元素。创建 $\textit{dis}$ 数组需要 $\mathcal{O}(nk)$ 时间。
 - 空间复杂度：$\mathcal{O}(nk + mk)$。
 
+## 方法二：DAG DP
+
+由于 $\textit{cost}[i] > 0$，所以分层图是一个 DAG，我们可以直接用 DAG DP 计算最短路长度。
+
+```py [sol-Python3]
+class Solution:
+    def minTimeMaxPower(self, n: int, edges: list[list[int]], power: int, cost: list[int], source: int, target: int) -> list[int]:
+        g = [[] for _ in range(n)]
+        for x, y, t in edges:
+            g[x].append((y, t))
+
+        f = [[inf] * n for _ in range(power + 1)]
+        f[power][source] = 0
+        min_dis = inf
+        max_rem = -1
+
+        for rem in range(power, -1, -1):
+            if f[rem][target] < min_dis:
+                min_dis = f[rem][target]
+                max_rem = rem
+            for x in range(n):
+                v = f[rem][x]
+                if v == inf or rem < cost[x]:
+                    continue
+                nxt_rem = rem - cost[x]
+                for y, t in g[x]:
+                    f[nxt_rem][y] = min(f[nxt_rem][y], v + t)  # 刷表法
+
+        return [-1, -1] if max_rem < 0 else [min_dis, max_rem]
+```
+
+```java [sol-Java]
+class Solution {
+    public long[] minTimeMaxPower(int n, int[][] edges, int power, int[] cost, int source, int target) {
+        List<int[]>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
+        for (int[] e : edges) {
+            g[e[0]].add(new int[]{e[1], e[2]});
+        }
+
+        long[][] f = new long[power + 1][n];
+        for (int i = 0; i <= power; i++) {
+            Arrays.fill(f[i], Long.MAX_VALUE);
+        }
+        f[power][source] = 0;
+        long minDis = Long.MAX_VALUE;
+        int maxRem = -1;
+
+        for (int rem = power; rem >= 0; rem--) {
+            if (f[rem][target] < minDis) {
+                minDis = f[rem][target];
+                maxRem = rem;
+            }
+            for (int x = 0; x < n; x++) {
+                long v = f[rem][x];
+                if (v == Long.MAX_VALUE || rem < cost[x]) {
+                    continue;
+                }
+                int nxtRem = rem - cost[x];
+                for (int[] e : g[x]) {
+                    f[nxtRem][e[0]] = Math.min(f[nxtRem][e[0]], v + e[1]); // 刷表法
+                }
+            }
+        }
+
+        return maxRem < 0 ? new long[]{-1, -1} : new long[]{minDis, maxRem};
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<long long> minTimeMaxPower(int n, vector<vector<int>>& edges, int power, vector<int>& cost, int source, int target) {
+        vector<vector<pair<int, int>>> g(n);
+        for (auto& e : edges) {
+            g[e[0]].emplace_back(e[1], e[2]);
+        }
+
+        vector f(power + 1, vector<long long>(n, LLONG_MAX));
+        f[power][source] = 0;
+        long long min_dis = LLONG_MAX;
+        int max_rem = -1;
+
+        for (int rem = power; rem >= 0; rem--) {
+            if (f[rem][target] < min_dis) {
+                min_dis = f[rem][target];
+                max_rem = rem;
+            }
+            for (int x = 0; x < n; x++) {
+                auto v = f[rem][x];
+                if (v == LLONG_MAX || rem < cost[x]) {
+                    continue;
+                }
+                int nxt_rem = rem - cost[x];
+                for (auto& [y, t] : g[x]) {
+                    f[nxt_rem][y] = min(f[nxt_rem][y], v + t); // 刷表法
+                }
+            }
+        }
+
+        if (max_rem < 0) {
+            return {-1, -1};
+        }
+        return {min_dis, max_rem};
+    }
+};
+```
+
+```go [sol-Go]
+func minTimeMaxPower(n int, edges [][]int, power int, cost []int, source int, target int) []int64 {
+	type edge struct{ to, t int }
+	g := make([][]edge, n)
+	for _, e := range edges {
+		x, y, t := e[0], e[1], e[2]
+		g[x] = append(g[x], edge{y, t})
+	}
+
+	f := make([][]int, power+1)
+	for i := range f {
+		f[i] = make([]int, n)
+		for j := range f[i] {
+			f[i][j] = math.MaxInt
+		}
+	}
+	f[power][source] = 0
+
+	minDis, maxRem := math.MaxInt, -1
+	for rem := power; rem >= 0; rem-- {
+		if f[rem][target] < minDis {
+			minDis, maxRem = f[rem][target], rem
+		}
+		for x, v := range f[rem] {
+			if v == math.MaxInt || rem < cost[x] {
+				continue
+			}
+			nxtRem := rem - cost[x]
+			for _, e := range g[x] {
+				f[nxtRem][e.to] = min(f[nxtRem][e.to], v+e.t) // 刷表法
+			}
+		}
+	}
+
+	if maxRem < 0 {
+		return []int64{-1, -1}
+	}
+	return []int64{int64(minDis), int64(maxRem)}
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(k(n+m))$，其中 $m$ 是 $\textit{edges}$ 的长度，$k = \textit{power}$。
+- 空间复杂度：$\mathcal{O}(kn)$。
+
 ## 专题训练
 
-见下面图论题单的「**§3.1 单源最短路：Dijkstra 算法**」。
+1. 图论题单的「**§3.1 单源最短路：Dijkstra 算法**」。
+2. 动态规划题单的「**十三、图 DP**」。
 
 ## 分类题单
 
