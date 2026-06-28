@@ -19,6 +19,7 @@ import (
 《PROMESST》https://silverspaceship.com/promesst/
 《PROMESST2》https://silverspaceship.com/promesst2/
 《ENIGMASH》https://jacklance.github.io/PuzzleScript/play.html?p=cfdcc6e23f1fb3e9de2fd42fafaf4d4c
+交互式地图 https://joric.github.io/ootss https://github.com/joric/ootss
 
 */
 
@@ -44,6 +45,7 @@ type data struct {
 	cleric   point           // C 自己以及上下左右无敌
 	bard     point           // B 同时移动切比雪夫距离 <= 2 的对象
 	druid    point           // D 把对象变成石头
+	sailor   merchantArrType // 8 普通角色，推一个对象
 	merchant merchantArrType // 9 普通角色，推一个对象
 
 	stones stoneArrType // s
@@ -181,6 +183,11 @@ func (d *data) getAllCharPos() []point {
 	if d.druid != noPos {
 		allChars = append(allChars, d.druid)
 	}
+	for _, p := range d.sailor {
+		if p != noPos {
+			allChars = append(allChars, p)
+		}
+	}
 	for _, p := range d.merchant {
 		if p != noPos {
 			allChars = append(allChars, p)
@@ -273,6 +280,8 @@ func (d *data) isValidPos(p point) bool {
 func (d *data) withinBeams(p point, allMovableObjs []point) (mask uint8) {
 	for _, beam := range d.beams {
 		dir := directions[beam.dir&0xf]
+
+		// 剪枝：先粗略判断是否在光束方向上（不考虑障碍）
 		if dir.x != 0 { // 上下，必须同 y
 			if beam.y != p.y { // todo z
 				continue
@@ -290,6 +299,7 @@ func (d *data) withinBeams(p point, allMovableObjs []point) (mask uint8) {
 		} else {
 			panic("todo dir.z != 0")
 		}
+
 		cur := beam.point
 		for {
 			cur.x += dir.x
@@ -343,7 +353,7 @@ func (d *data) isDie(p point, burnPos []point, isChar bool) bool {
 	// todo 忽略向上的门（应该抬高角色）
 	for i, opened := range d.doorOpened {
 		if !opened && slices.Contains(doors[i][:], p) {
-			return false
+			return true
 		}
 	}
 
@@ -458,50 +468,47 @@ func (d *data) changePos(oldP, newP point) {
 	default:
 		changed := false
 
-		i := slices.Index(d.merchant[:], oldP)
-		if i >= 0 {
+		if i := slices.Index(d.sailor[:], oldP); i >= 0 {
+			changed = true
+			d.sailor[i] = newP
+		}
+
+		if i := slices.Index(d.merchant[:], oldP); i >= 0 {
 			changed = true
 			d.merchant[i] = newP
 		}
 
-		i = pdIndex(d.mirrors[:], oldP)
-		if i >= 0 {
+		if i := pdIndex(d.mirrors[:], oldP); i >= 0 {
 			changed = true
 			d.mirrors[i].point = newP
 		}
 
-		i = pdIndex(d.mirrorRefs[:], oldP)
-		if i >= 0 {
+		if i := pdIndex(d.mirrorRefs[:], oldP); i >= 0 {
 			changed = true
 			d.mirrorRefs[i].point = newP
 		}
 
-		i = pdIndex(d.mirrorAuxes[:], oldP)
-		if i >= 0 {
+		if i := pdIndex(d.mirrorAuxes[:], oldP); i >= 0 {
 			changed = true
 			d.mirrorAuxes[i].point = newP
 		}
 
-		i = slices.Index(d.stones[:], oldP)
-		if i >= 0 {
+		if i := slices.Index(d.stones[:], oldP); i >= 0 {
 			changed = true
 			d.stones[i] = newP
 		}
 
-		i = slices.Index(d.goblins[:], oldP)
-		if i >= 0 {
+		if i := slices.Index(d.goblins[:], oldP); i >= 0 {
 			changed = true
 			d.goblins[i] = newP
 		}
 
-		i = pdIndex(d.dragons[:], oldP)
-		if i >= 0 {
+		if i := pdIndex(d.dragons[:], oldP); i >= 0 {
 			changed = true
 			d.dragons[i].point = newP
 		}
 
-		i = pdIndex(d.beams[:], oldP)
-		if i >= 0 {
+		if i := pdIndex(d.beams[:], oldP); i >= 0 {
 			changed = true
 			d.beams[i].point = newP
 		}
@@ -513,6 +520,10 @@ func (d *data) changePos(oldP, newP point) {
 }
 
 func solveLevel(debug bool) []string {
+	sailorInitArr := merchantArrType{}
+	for i := range sailorInitArr {
+		sailorInitArr[i] = noPos
+	}
 	merchantInitArr := merchantArrType{}
 	for i := range merchantInitArr {
 		merchantInitArr[i] = noPos
@@ -538,6 +549,7 @@ func solveLevel(debug bool) []string {
 	__cleric := noPos
 	__bard := noPos
 	__druid := noPos
+	__sailors := sailorInitArr[:0]
 	__merchants := merchantInitArr[:0]
 	__mirrors := mirrorInitArr[:0]
 	__mirrorRefs := mirrorRefInitArr[:0]
@@ -594,6 +606,11 @@ func solveLevel(debug bool) []string {
 				if __druid == noPos {
 					__druid = p
 				}
+			case '8':
+				if __curChar < 0 {
+					__curChar = charSailor
+				}
+				__sailors = append(__sailors, p)
 			case '9':
 				if __curChar < 0 {
 					__curChar = charMerchant
@@ -667,6 +684,9 @@ func solveLevel(debug bool) []string {
 	if __druid != noPos {
 		validChars = append(validChars, charDruid)
 	}
+	if len(sailorInitArr) > 0 {
+		validChars = append(validChars, charSailor)
+	}
 	if len(merchantInitArr) > 0 {
 		validChars = append(validChars, charMerchant)
 	}
@@ -679,6 +699,7 @@ func solveLevel(debug bool) []string {
 		cleric:   __cleric,
 		bard:     __bard,
 		druid:    __druid,
+		sailor:   sailorInitArr,
 		merchant: merchantInitArr,
 
 		stones:  stoneInitArr,
@@ -758,6 +779,7 @@ func solveLevel(debug bool) []string {
 			}
 		}
 
+		die := false
 		if !d.monsterDoorOpened {
 			// 哥布林
 			goblins := d.goblins
@@ -767,6 +789,7 @@ func solveLevel(debug bool) []string {
 						if !canDestroyObj {
 							return
 						}
+						die = true
 						goblins[i] = noPos
 					}
 				}
@@ -781,6 +804,7 @@ func solveLevel(debug bool) []string {
 						if !canDestroyObj {
 							return
 						}
+						die = true
 						dragons[i].point = noPos
 					}
 				}
@@ -858,6 +882,9 @@ func solveLevel(debug bool) []string {
 		}
 
 		// 人排序
+		if len(d.sailor) > 0 {
+			slices.SortFunc(d.sailor[:], cmpPoint)
+		}
 		if len(d.merchant) > 0 {
 			slices.SortFunc(d.merchant[:], cmpPoint)
 		}
@@ -868,6 +895,9 @@ func solveLevel(debug bool) []string {
 		}
 
 		if _, ok := from[d]; !ok {
+			if die {
+				info += "K" // 怪物死亡的动画
+			}
 			from[d] = pair{last, info}
 			queue = append(queue, d)
 		}
@@ -1166,18 +1196,20 @@ func solveLevel(debug bool) []string {
 				}
 
 				// 石变草
-				if i := slices.Index(d.stones[:], newP); i >= 0 {
-					newData := d
-					newData.grass[:][0] = newData.stones[i]
-					newData.stones[i] = noPos
-					var info string
-					if debug {
-						info = fmt.Sprintf("德 %s 石变草", debugDirString[dIdx])
-					} else {
-						info = dirString[dIdx]
+				if !druidOnlyToStone {
+					if i := slices.Index(d.stones[:], newP); i >= 0 {
+						newData := d
+						newData.grass[:][0] = newData.stones[i]
+						newData.stones[i] = noPos
+						var info string
+						if debug {
+							info = fmt.Sprintf("德 %s 石变草", debugDirString[dIdx])
+						} else {
+							info = dirString[dIdx]
+						}
+						add(d, newData, info)
+						continue
 					}
-					add(d, newData, info)
-					continue
 				}
 
 				// 普通移动一步
@@ -1189,6 +1221,33 @@ func solveLevel(debug bool) []string {
 				var info string
 				if debug {
 					info = fmt.Sprintf("德 %s", debugDirString[dIdx])
+				} else {
+					info = dirString[dIdx]
+				}
+				add(d, newData, info)
+			}
+		case charSailor:
+			// 普通移动一步
+			// todo 目前只考虑一个人
+			p0 := d.sailor[:][0]
+			for dIdx, dir := range directions {
+				newP := point{p0.x + dir.x, p0.y + dir.y, p0.z + dir.z}
+				if !d.isValidPos(newP) {
+					continue // 枚举另一个方向
+				}
+				newData := d
+				if i := slices.Index(allMovableObjs, newP); i >= 0 {
+					// 推物品
+					nxt2 := point{newP.x + dir.x, newP.y + dir.y, newP.z + dir.z}
+					if !d.isValidPos(nxt2) || slices.Contains(allMovableObjs, nxt2) {
+						continue // 枚举另一个方向
+					}
+					newData.changePos(newP, nxt2)
+				}
+				newData.sailor[:][0] = newP
+				var info string
+				if debug {
+					info = fmt.Sprintf("船员 %s", debugDirString[dIdx])
 				} else {
 					info = dirString[dIdx]
 				}
