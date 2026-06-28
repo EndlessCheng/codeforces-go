@@ -1230,9 +1230,7 @@ func minJumpNumbers(a []int) (ans int) {
 }
 
 // 区间合并
-// 合并 a 中所有重叠的闭区间（哪怕只有一个端点重叠，也算重叠）
-// 注意 [1,1] 和 [2,2] 不能合并成 [1,2]
-// 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
+// 合并 a 中所有重叠的闭区间
 // LC56 https://leetcode.cn/problems/merge-intervals/
 // https://codeforces.com/problemset/problem/1101/C 1500
 // https://codeforces.com/problemset/problem/1626/C 1700
@@ -1241,20 +1239,19 @@ func minJumpNumbers(a []int) (ans int) {
 // https://codeforces.com/problemset/problem/1260/D 1900
 // 另见 common.go 中的「区间贪心」
 func mergeIntervals(a [][]int) [][]int {
-	slices.SortFunc(a, func(a, b []int) int { return a[0] - b[0] }) // 按区间左端点排序
+	slices.SortFunc(a, func(a, b []int) int { return a[0] - b[0] }) // 按照左端点从小到大排序
 	merged := [][]int{}
-	l0 := a[0][0]
-	maxR := a[0][1]
-	for _, p := range a[1:] { // 从第二个区间开始
-		l, r := p[0], p[1]
-		// 如果要合并 [1,1] 和 [2,2]，下面改成 if l-1 > maxR
-		if l > maxR { // 发现一个新区间
-			merged = append(merged, []int{l0, maxR}) // 先把旧的加入答案
-			l0 = l                                   // 记录新区间左端点
+	left, right := math.MaxInt, math.MinInt
+	for i, p := range a {
+		left = min(left, p[0])
+		right = max(right, p[1])
+		// 这里 [1,1] 和 [2,2] 不合并
+		// 如果要合并 [1,1] 和 [2,2]，下面改成 a[i+1][0]-1 > right
+		if i == len(a)-1 || a[i+1][0] > right {
+			merged = append(merged, []int{left, right})
+			left = math.MaxInt
 		}
-		maxR = max(maxR, r)
 	}
-	merged = append(merged, []int{l0, maxR}) // 最后发现的新区间加入答案
 
 	{
 		// 包含 x 的闭区间
