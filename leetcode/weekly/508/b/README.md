@@ -2,15 +2,14 @@
 
 本题区间不能包含 $[\textit{freeStart}, \textit{freeEnd}]$ 中的整数。
 
-对于一个合并后的区间 $[\ell,r]$，按照它在 $[\textit{freeStart}, \textit{freeEnd}]$ 的左边还是右边，分类讨论：
+对于一个合并后的区间 $[\ell,r]$，讨论 $[\ell,r]$ 与 $[\textit{freeStart}, \textit{freeEnd}]$ 的位置关系：
 
-- 如果 $\ell < \textit{freeStart}$：
-   - 如果 $r\le \textit{freeEnd}$，那么剩余区间为 $[\ell, \min(r, \textit{freeStart}-1)]$。
-   - 如果 $r> \textit{freeEnd}$，那么剩余区间为 $[\ell, \textit{freeStart}-1]$ 和 $[\textit{freeEnd}+1, r]$。
-- 否则 $\ell \ge \textit{freeStart}$。如果此时 $r > \textit{freeEnd}$，那么剩余区间为 $[\max(\ell, \textit{freeEnd}+1), r]$。
-- 其余情况，剩余区间为空。
+- 如果 $r < \textit{freeStart}$ 或者 $\ell > \textit{freeEnd}$，那么两区间不相交，$[\ell,r]$ 不变。
+- 否则：
+    - 如果 $\ell < \textit{freeStart}$，那么一个剩余区间为 $[\ell, \textit{freeStart}-1]$。
+    - 如果 $r > \textit{freeEnd}$，那么另一个剩余区间为 $[\textit{freeEnd}+1, r]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wwTu6EEcG/?t=3m37s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -19,14 +18,13 @@ class Solution:
         ans = []
 
         def add(l: int, r: int) -> None:
+            if r < freeStart or l > freeEnd:  # 不相交
+                ans.append([l, r])
+                return
             if l < freeStart:
-                if r <= freeEnd:
-                    ans.append([l, min(r, freeStart - 1)])
-                else:
-                    ans.append([l, freeStart - 1])
-                    ans.append([freeEnd + 1, r])
-            elif r > freeEnd:
-                ans.append([max(l, freeEnd + 1), r])
+                ans.append([l, freeStart - 1])  # 余留前缀
+            if r > freeEnd:
+                ans.append([freeEnd + 1, r])  # 余留后缀
 
         left, max_r = occupiedIntervals[0]
         for l, r in occupiedIntervals[1:]:  # 从第二个区间开始
@@ -62,15 +60,15 @@ class Solution {
     }
 
     private void add(List<List<Integer>> ans, int l, int r, int freeStart, int freeEnd) {
+        if (r < freeStart || l > freeEnd) { // 不相交
+            ans.add(List.of(l, r));
+            return;
+        }
         if (l < freeStart) {
-            if (r <= freeEnd) {
-                ans.add(List.of(l, Math.min(r, freeStart - 1)));
-            } else {
-                ans.add(List.of(l, freeStart - 1));
-                ans.add(List.of(freeEnd + 1, r));
-            }
-        } else if (r > freeEnd) {
-            ans.add(List.of(Math.max(l, freeEnd + 1), r));
+            ans.add(List.of(l, freeStart - 1)); // 余留前缀
+        }
+        if (r > freeEnd) {
+            ans.add(List.of(freeEnd + 1, r)); // 余留后缀
         }
     }
 }
@@ -84,15 +82,15 @@ public:
         vector<vector<int>> ans;
 
         auto add = [&](int l, int r) -> void {
+            if (r < freeStart || l > freeEnd) { // 不相交
+                ans.push_back({l, r});
+                return;
+            }
             if (l < freeStart) {
-                if (r <= freeEnd) {
-                    ans.push_back({l, min(r, freeStart - 1)});
-                } else {
-                    ans.push_back({l, freeStart - 1});
-                    ans.push_back({freeEnd + 1, r});
-                }
-            } else if (r > freeEnd) {
-                ans.push_back({max(l, freeEnd + 1), r});
+                ans.push_back({l, freeStart - 1}); // 余留前缀
+            }
+            if (r > freeEnd) {
+                ans.push_back({freeEnd + 1, r}); // 余留后缀
             }
         };
 
@@ -119,14 +117,15 @@ func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd i
 	slices.SortFunc(occupiedIntervals, func(a, b []int) int { return a[0] - b[0] }) // 按照左端点从小到大排序
 
 	add := func(l, r int) {
+		if r < freeStart || l > freeEnd { // 不相交
+			ans = append(ans, []int{l, r})
+			return
+		}
 		if l < freeStart {
-			if r <= freeEnd {
-				ans = append(ans, []int{l, min(r, freeStart-1)})
-			} else {
-				ans = append(ans, []int{l, freeStart - 1}, []int{freeEnd + 1, r})
-			}
-		} else if r > freeEnd {
-			ans = append(ans, []int{max(l, freeEnd+1), r})
+			ans = append(ans, []int{l, freeStart - 1}) // 余留前缀
+		}
+		if r > freeEnd {
+			ans = append(ans, []int{freeEnd + 1, r}) // 余留后缀
 		}
 	}
 
@@ -149,7 +148,7 @@ func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd i
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{occupiedIntervals}$ 的长度。瓶颈在排序上。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销，返回值不计入。
 
 ## 专题训练
 

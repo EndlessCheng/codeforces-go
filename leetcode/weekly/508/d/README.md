@@ -189,7 +189,11 @@ func (h *hp) Pop() (v any) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return 
 
 ## 方法二：DAG DP
 
-由于 $\textit{cost}[i] > 0$，所以分层图是一个 DAG，我们可以直接用 DAG DP 计算最短路长度。
+注意 $\textit{cost}[i] > 0$，每走一步，剩余电量严格递减。所以我们不可能从一个剩余电量为 $100$ 的点出发，最后又回到剩余电量为 $100$ 的点。所以分层图是一个有向无环图（DAG），我们可以直接用 DAG DP 计算最短路长度。
+
+设当前节点为 $x$，剩余电量为 $\textit{rem}$，最短路长度为 $d$。设 $x$ 的邻居为 $y$，边权为 $t$，那么用 $d+t$ 更新节点为 $y$、剩余电量为 $\textit{rem}-\textit{cost}[x]$ 的最短路长度的最小值。
+
+为了实现这一过程，需要从大到小枚举剩余电量。
 
 ```py [sol-Python3]
 class Solution:
@@ -207,8 +211,7 @@ class Solution:
             if f[rem][target] < min_dis:
                 min_dis = f[rem][target]
                 max_rem = rem
-            for x in range(n):
-                v = f[rem][x]
+            for x, v in enumerate(f[rem]):
                 if v == inf or rem < cost[x]:
                     continue
                 nxt_rem = rem - cost[x]

@@ -33,6 +33,7 @@ func maxSubarraySum1(nums []int, k int) int64 {
 	return max(solve(true), solve(false))
 }
 
+// todo 正数只需算 53 题
 func maxSubarraySum(nums []int, k int) int64 {
 	solve := func(isMul bool) int64 {
 		res := int64(math.MinInt)

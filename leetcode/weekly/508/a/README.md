@@ -13,6 +13,16 @@ class Solution:
         return ans
 ```
 
+```py [sol-Python3 写法二]
+class Solution:
+    def maxSum(self, nums: list[int], k: int, mul: int) -> int:
+        ans = 0
+        for x in nlargest(k, nums):
+            ans += x * mul if mul > 1 else x
+            mul -= 1
+        return ans
+```
+
 ```java [sol-Java]
 public class Solution {
     public static long maxSum(int[] nums, int k, int mul) {
@@ -56,8 +66,8 @@ func maxSum(nums []int, k int, mul int) (ans int64) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+- 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n\log k)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。如果用堆维护前 $k$ 大，可以做到 $\mathcal{O}(n\log k)$ 时间。
+- 空间复杂度：$\mathcal{O}(1)$ 或 $\mathcal{O}(k)$。忽略排序的栈开销。堆的做法需要 $\mathcal{O}(k)$ 的空间。
 
 ## 专题训练
 

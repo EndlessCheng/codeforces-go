@@ -1,4 +1,7 @@
-**前置题目**：[53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，[我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
+**前置题目**：
+
+1. 本题的无修改版本 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，[我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
+2. 本题做法类似 [1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)，但 1186 题更简单，推荐先完成 1186 题，并阅读 [我的题解](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solutions/2321829/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)。
 
 子数组中的元素，从左到右，至多会经过三个阶段：
 
@@ -24,7 +27,7 @@
 
 > **注**：本题不能只用最大子数组和计算。一个反例：$\textit{nums}=[2,-1,-1,2,-1,-1,2],\ k=2$。正确答案为 $5$，计算方法是把 $-1,-1,2,-1,-1$ 中的每个数都除以 $2$，得到 $\textit{nums}=[2,0,0,1,0,0,2]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wwTu6EEcG/?t=12m20s)，欢迎点赞关注~
 
 ## 优化前
 

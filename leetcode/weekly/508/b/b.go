@@ -7,14 +7,15 @@ func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd i
 	slices.SortFunc(occupiedIntervals, func(a, b []int) int { return a[0] - b[0] }) // 按照左端点从小到大排序
 
 	add := func(l, r int) {
+		if r < freeStart || l > freeEnd { // 不相交
+			ans = append(ans, []int{l, r})
+			return
+		}
 		if l < freeStart {
-			if r <= freeEnd {
-				ans = append(ans, []int{l, min(r, freeStart-1)})
-			} else {
-				ans = append(ans, []int{l, freeStart - 1}, []int{freeEnd + 1, r})
-			}
-		} else if r > freeEnd {
-			ans = append(ans, []int{max(l, freeEnd+1), r})
+			ans = append(ans, []int{l, freeStart - 1}) // 余留前缀
+		}
+		if r > freeEnd {
+			ans = append(ans, []int{freeEnd + 1, r}) // 余留后缀
 		}
 	}
 
@@ -29,5 +30,6 @@ func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd i
 		maxR = max(maxR, r)
 	}
 	add(left, maxR)
+
 	return
 }
