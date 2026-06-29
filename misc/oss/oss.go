@@ -126,7 +126,7 @@ func init() {
 		panic("没有修改 goblin number")
 	}
 	if dragonNum != len(dragonArrType{}) {
-		panic("没有修改 dragon number")
+		panic("没有修改 dragon dir")
 	}
 	if beamNum != len(beamArrType{}) {
 		panic("没有修改 beam number")
@@ -135,13 +135,13 @@ func init() {
 		panic("没有修改 beam type")
 	}
 	if mirrorNum != len(mirrorArrType{}) {
-		panic("没有修改 mirrorDir")
+		panic("没有修改 mirror dir")
 	}
 	if mirrorRefNum != len(mirrorRefArrType{}) {
-		panic("没有修改 mirrorRefDir")
+		panic("没有修改 mirror ref dir")
 	}
 	if mirrorAuxNum != len(mirrorAuxArrType{}) {
-		panic("没有修改 mirrorAuxDir")
+		panic("没有修改 mirror aux dir")
 	}
 	if !allowCloneMan && merchantNum != len(merchantArrType{}) {
 		panic("没有修改 merchant number")
@@ -544,7 +544,7 @@ func (d *data) changePos(oldP, newP point, newDir uint8) {
 	}
 }
 
-func solveLevel(debug bool) []string {
+func solveLevel() []string {
 	sailorInitArr := merchantArrType{}
 	for i := range sailorInitArr {
 		sailorInitArr[i] = noPos
@@ -997,14 +997,17 @@ func solveLevel(debug bool) []string {
 		if pass {
 			// 生成操作序列
 			path := []string{}
-			for d != (data{}) {
+			for {
 				var ok bool
-				p, ok := from[d]
+				pre, ok := from[d]
 				if !ok {
 					panic("代码修改了 d，与存入的 d 不符")
 				}
-				path = append(path, p.info)
-				d = p.data
+				d = pre.data
+				if d == (data{}) { // 初始状态
+					break
+				}
+				path = append(path, pre.info)
 			}
 			slices.Reverse(path)
 			return path
