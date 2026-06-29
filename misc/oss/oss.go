@@ -22,10 +22,6 @@ import (
 
 */
 
-const loopLevel = false
-
-var levelMap = curMap
-
 type merchantArrType [merchantNumberInit]point
 type stoneArrType [stoneArrLen]point
 type grassArrType [grassArrLen]point
@@ -1018,10 +1014,14 @@ func solveLevel(debug bool) []string {
 			return path
 		}
 
-		// 移动当前角色
 		// todo 如果角色的头上有物品，物品会跟着移动（注意镜子的方向会变）    堆叠上限是多少？？
 		// todo 即使人没有移动，切换方向也会改变头上物品（镜子、激光等）的方向
 		// todo 多控时，如果下一个位置是没有石头的水，则一个角色无法移动（已在商人中实现）
+
+		// todo 修改 changePos 的代码，添加一个参数 alsoMoveTop bool，
+		//      使得当物品移动时，物品上方的物品（如果有）也跟着移动
+
+		// 移动当前角色
 		switch d.curChar {
 		case charDefault:
 			panic("代码有误，当前角色不能为 charDefault")

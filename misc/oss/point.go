@@ -35,7 +35,7 @@ type point struct {
 }
 
 func (p point) add(q point) point {
-	if !loopLevel {
+	if !isLevelLooped {
 		return point{p.x + q.x, p.y + q.y, p.z + q.z}
 	}
 	return point{(p.x + q.x + mapSizeN) % mapSizeN, (p.y + q.y + mapSizeM) % mapSizeM, p.z + q.z}
