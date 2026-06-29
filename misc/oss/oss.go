@@ -976,11 +976,7 @@ func solveLevel(debug bool) []string {
 		}
 	}
 
-	info0 := ""
-	if debug {
-		info0 = "init"
-	}
-	add(data{}, levelData, info0)
+	add(data{}, levelData, "")
 
 	for len(queue) > 0 {
 		// 注意入队的时候修改了物品的位置（重力落下）
@@ -1052,13 +1048,7 @@ func solveLevel(debug bool) []string {
 				}
 				np := point{x, y, z}
 				newData.warrior = np
-				var info string
-				if debug {
-					info = fmt.Sprintf("士 %s", debugDir4String[dIdx])
-				} else {
-					info = dir4String[dIdx]
-				}
-				add(d, newData, info)
+				add(d, newData, dir4String[dIdx])
 			}
 		case charThief:
 			// 普通移动一步
@@ -1076,13 +1066,7 @@ func solveLevel(debug bool) []string {
 					newData.changePos(back, p0, math.MaxUint8)
 				}
 				newData.thief = np
-				var info string
-				if debug {
-					info = fmt.Sprintf("贼 %s", debugDir4String[dIdx])
-				} else {
-					info = dir4String[dIdx]
-				}
-				add(d, newData, info)
+				add(d, newData, dir4String[dIdx])
 			}
 		case charWizard:
 			p0 := d.wizard
@@ -1125,13 +1109,7 @@ func solveLevel(debug bool) []string {
 					newData := d
 					newData.changePos(newP, p0, math.MaxUint8) // newP 换到 p0
 					newData.wizard = newP                      // 法师换到 newP
-					var info string
-					if debug {
-						info = fmt.Sprintf("法 %s 交换", debugDir4String[dIdx])
-					} else {
-						info = dir4String[dIdx]
-					}
-					add(d, newData, info)
+					add(d, newData, dir4String[dIdx])          // swap
 					continue nextDir
 				}
 
@@ -1142,13 +1120,7 @@ func solveLevel(debug bool) []string {
 				}
 				newData := d
 				newData.wizard = newP
-				var info string
-				if debug {
-					info = fmt.Sprintf("法 %s", debugDir4String[dIdx])
-				} else {
-					info = dir4String[dIdx]
-				}
-				add(d, newData, info)
+				add(d, newData, dir4String[dIdx]) // move
 			}
 		case charCleric:
 			// 普通移动一步
@@ -1237,13 +1209,7 @@ func solveLevel(debug bool) []string {
 						// todo （待确认）如果 z-2 也移动了，那么再再走一格
 					}
 
-					var info string
-					if debug {
-						info = fmt.Sprintf("诗人 %s", debugDir4String[dIdx])
-					} else {
-						info = dir4String[dIdx]
-					}
-					add(d, newData, info)
+					add(d, newData, dir4String[dIdx])
 				}
 			}
 		case charDruid:
@@ -1256,13 +1222,7 @@ func solveLevel(debug bool) []string {
 					newData := d
 					newData.stones[:][0] = newData.grass[i] // 加个切片避免报错
 					newData.grass[i] = noPos
-					var info string
-					if debug {
-						info = fmt.Sprintf("德 %s 草变石", debugDir4String[dIdx])
-					} else {
-						info = dir4String[dIdx]
-					}
-					add(d, newData, info)
+					add(d, newData, dir4String[dIdx]) // trans
 					continue
 				}
 
@@ -1272,13 +1232,7 @@ func solveLevel(debug bool) []string {
 						newData := d
 						newData.grass[:][0] = newData.stones[i]
 						newData.stones[i] = noPos
-						var info string
-						if debug {
-							info = fmt.Sprintf("德 %s 石变草", debugDir4String[dIdx])
-						} else {
-							info = dir4String[dIdx]
-						}
-						add(d, newData, info)
+						add(d, newData, dir4String[dIdx]) // trans
 						continue
 					}
 				}
@@ -1289,13 +1243,7 @@ func solveLevel(debug bool) []string {
 				}
 				newData := d
 				newData.druid = newP
-				var info string
-				if debug {
-					info = fmt.Sprintf("德 %s", debugDir4String[dIdx])
-				} else {
-					info = dir4String[dIdx]
-				}
-				add(d, newData, info)
+				add(d, newData, dir4String[dIdx]) // move
 			}
 		case charExplorer:
 			// 普通移动一步
