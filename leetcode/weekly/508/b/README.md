@@ -11,10 +11,12 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1wwTu6EEcG/?t=3m37s)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def filterOccupiedIntervals(self, occupiedIntervals: list[list[int]], freeStart: int, freeEnd: int) -> list[list[int]]:
-        occupiedIntervals.sort()
+        occupiedIntervals.sort(key=lambda p: p[0])  # 按照左端点从小到大排序
         ans = []
 
         def add(l: int, r: int) -> None:
@@ -140,6 +142,125 @@ func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd i
 		maxR = max(maxR, r)
 	}
 	add(left, maxR)
+
+	return
+}
+```
+
+## 写法二
+
+```py [sol-Python3]
+class Solution:
+    def filterOccupiedIntervals(self, occupiedIntervals: list[list[int]], freeStart: int, freeEnd: int) -> list[list[int]]:
+        occupiedIntervals.sort(key=lambda p: p[0])  # 按照左端点从小到大排序
+        ans = []
+        n = len(occupiedIntervals)
+        left, right = inf, 0
+
+        for i, (l, r) in enumerate(occupiedIntervals):
+            left = min(left, l)
+            right = max(right, r)
+            if i == n - 1 or occupiedIntervals[i + 1][0] - 1 > right:
+                if right < freeStart or left > freeEnd:  # 不相交
+                    ans.append([left, right])
+                else:
+                    if left < freeStart:
+                        ans.append([left, freeStart - 1])  # 余留前缀
+                    if right > freeEnd:
+                        ans.append([freeEnd + 1, right])  # 余留后缀
+                left = inf
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public List<List<Integer>> filterOccupiedIntervals(int[][] occupiedIntervals, int freeStart, int freeEnd) {
+        Arrays.sort(occupiedIntervals, (a, b) -> a[0] - b[0]); // 按照左端点从小到大排序
+        List<List<Integer>> ans = new ArrayList<>();
+        int n = occupiedIntervals.length;
+        int left = Integer.MAX_VALUE;
+        int right = 0;
+
+        for (int i = 0; i < n; i++) {
+            int[] p = occupiedIntervals[i];
+            left = Math.min(left, p[0]);
+            right = Math.max(right, p[1]);
+            if (i == n - 1 || occupiedIntervals[i + 1][0] - 1 > right) {
+                if (right < freeStart || left > freeEnd) { // 不相交
+                    ans.add(List.of(left, right));
+                } else {
+                    if (left < freeStart) {
+                        ans.add(List.of(left, freeStart - 1)); // 余留前缀
+                    }
+                    if (right > freeEnd) {
+                        ans.add(List.of(freeEnd + 1, right)); // 余留后缀
+                    }
+                }
+                left = Integer.MAX_VALUE;
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<vector<int>> filterOccupiedIntervals(vector<vector<int>>& occupiedIntervals, int freeStart, int freeEnd) {
+        ranges::sort(occupiedIntervals, {}, [](auto& a) { return a[0]; }); // 按照左端点从小到大排序
+        vector<vector<int>> ans;
+        int n = occupiedIntervals.size();
+        int left = INT_MAX, right = 0;
+
+        for (int i = 0; i < n; i++) {
+            auto& p = occupiedIntervals[i];
+            left = min(left, p[0]);
+            right = max(right, p[1]);
+            if (i == n - 1 || occupiedIntervals[i + 1][0] - 1 > right) {
+                if (right < freeStart || left > freeEnd) { // 不相交
+                    ans.push_back({left, right});
+                } else {
+                    if (left < freeStart) {
+                        ans.push_back({left, freeStart - 1}); // 余留前缀
+                    }
+                    if (right > freeEnd) {
+                        ans.push_back({freeEnd + 1, right}); // 余留后缀
+                    }
+                }
+                left = INT_MAX;
+            }
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func filterOccupiedIntervals(occupiedIntervals [][]int, freeStart int, freeEnd int) (ans [][]int) {
+	slices.SortFunc(occupiedIntervals, func(a, b []int) int { return a[0] - b[0] }) // 按照左端点从小到大排序
+
+	left, right := math.MaxInt, 0
+	for i, p := range occupiedIntervals {
+		left = min(left, p[0])
+		right = max(right, p[1])
+		if i == len(occupiedIntervals)-1 || occupiedIntervals[i+1][0]-1 > right {
+			if right < freeStart || left > freeEnd { // 不相交
+				ans = append(ans, []int{left, right})
+			} else {
+				if left < freeStart {
+					ans = append(ans, []int{left, freeStart - 1}) // 余留前缀
+				}
+				if right > freeEnd {
+					ans = append(ans, []int{freeEnd + 1, right}) // 余留后缀
+				}
+			}
+			left = math.MaxInt
+		}
+	}
 
 	return
 }
