@@ -1,10 +1,26 @@
 package main
 
 import (
+	"slices"
 	"strconv"
 )
 
-func sequentialDigits1(low, high int) (ans []int) {
+func sequentialDigits(low, high int) (ans []int) {
+	for d := 1; d <= 9; d++ {
+		x := d
+		for i := d; i <= 9 && x <= high; i++ {
+			if x >= low {
+				ans = append(ans, x)
+			}
+			// 把 i+1 加到 x 的末尾
+			x = x*10 + i + 1
+		}
+	}
+	slices.Sort(ans)
+	return
+}
+
+func sequentialDigits2(low, high int) (ans []int) {
 	const digits = "123456789"
 	minLen := len(strconv.Itoa(low))
 	maxLen := len(strconv.Itoa(high))
@@ -20,7 +36,7 @@ func sequentialDigits1(low, high int) (ans []int) {
 	return
 }
 
-func sequentialDigits(low, high int) (ans []int) {
+func sequentialDigits3(low, high int) (ans []int) {
 	x0 := 12 // 第一个窗口
 	pow10 := 10
 	for length := 2; x0 <= high; length++ {
