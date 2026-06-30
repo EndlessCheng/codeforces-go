@@ -1,11 +1,13 @@
 package main
 
 // https://space.bilibili.com/206214
+type pair struct{ x, y int }
+var dir4 = []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+
 func maximumSafenessFactor(grid [][]int) int {
 	n := len(grid)
-	type pair struct{ x, y int }
-	q := []pair{}
 	dis := make([][]int, n)
+	q := []pair{}
 	for i, row := range grid {
 		dis[i] = make([]int, n)
 		for j, x := range row {
@@ -17,8 +19,8 @@ func maximumSafenessFactor(grid [][]int) int {
 		}
 	}
 
-	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 	groups := [][]pair{q}
+	// 多源 BFS
 	for len(q) > 0 {
 		tmp := q
 		q = nil
@@ -26,12 +28,12 @@ func maximumSafenessFactor(grid [][]int) int {
 			for _, d := range dir4 {
 				x, y := p.x+d.x, p.y+d.y
 				if 0 <= x && x < n && 0 <= y && y < n && dis[x][y] < 0 {
-					q = append(q, pair{x, y})
 					dis[x][y] = len(groups)
+					q = append(q, pair{x, y})
 				}
 			}
 		}
-		groups = append(groups, q)
+		groups = append(groups, q) // 相同 dis 分组记录
 	}
 
 	// 并查集模板
@@ -47,13 +49,13 @@ func maximumSafenessFactor(grid [][]int) int {
 		return fa[x]
 	}
 
-	for ans := len(groups) - 2; ans >= 0; ans-- {
+	// 从大到小枚举答案
+	for ans := len(groups) - 2; ans > 0; ans-- {
 		for _, p := range groups[ans] {
 			i, j := p.x, p.y
 			for _, d := range dir4 {
 				x, y := p.x+d.x, p.y+d.y
-				if 0 <= x && x < n && 0 <= y && y < n && dis[x][y] >= dis[i][j] {
-					q = append(q, pair{x, y})
+				if 0 <= x && x < n && 0 <= y && y < n && dis[x][y] >= ans {
 					fa[find(x*n+y)] = find(i*n + j)
 				}
 			}
