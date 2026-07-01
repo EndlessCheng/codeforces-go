@@ -8,6 +8,8 @@
 
 代码用到了一些位运算技巧，原理请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
+⚠**注意**：虽然本题 $\text{check}(0)$ 一定是 $\texttt{true}$，但由于代码的做法是在 $\text{check}$ 中更新答案，为了保证在正方形边长为 $0$ 的情况下也能更新答案，二分范围要包含 $0$。
+
 #### 答疑
 
 **问**：为什么可以直接更新 $\textit{ans}$，为什么不需要写 `ans = max(ans, ...)`？
@@ -28,6 +30,7 @@ class Solution:
             nonlocal ans
             ans = len(vis)
             return False
+
         # 注意 range 并不会创建 list，它是 O(1) 的
         bisect_left(range(1_000_000_001), True, key=check)
         return ans
@@ -75,6 +78,7 @@ class Solution {
 public:
     int maxPointsInsideSquare(vector<vector<int>>& points, string s) {
         int ans = 0;
+
         auto check = [&](int size) -> bool {
             int vis = 0;
             for (int i = 0; i < points.size(); i++) {
@@ -87,9 +91,10 @@ public:
                     vis |= 1 << c; // 把 c 加入集合
                 }
             }
-            ans = __builtin_popcount(vis);
+            ans = popcount(1u * vis);
             return true;
         };
+
         int left = -1, right = 1'000'000'001;
         while (left + 1 < right) {
             int mid = (left + right) / 2;
