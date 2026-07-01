@@ -17,6 +17,7 @@ https://codeforces.com/problemset/problem/1698/D 1600
 https://codeforces.com/problemset/problem/1479/A 1700 数组（同 LC162）
 https://codeforces.com/problemset/problem/1999/G2 1700 三分
 https://codeforces.com/problemset/problem/1010/B 1800
+https://codeforces.com/problemset/problem/2168/B ~1800 通信题
 https://codeforces.com/problemset/problem/1063/C 1900
 https://codeforces.com/problemset/problem/1486/C2 1900 数组
 https://codeforces.com/problemset/problem/1697/D 1900
@@ -25,6 +26,7 @@ https://codeforces.com/problemset/problem/1624/F 2000 动态二分
 https://codeforces.com/problemset/problem/1363/D 2100
 https://codeforces.com/problemset/problem/713/B 2200 分类讨论
 https://codeforces.com/problemset/problem/1520/F2 2200
+https://codeforces.com/problemset/problem/2163/D2 2500
 https://codeforces.com/problemset/problem/1838/F 3000
 
 ## 位运算
@@ -46,7 +48,7 @@ https://codeforces.com/problemset/problem/2013/C 1400
 https://codeforces.com/problemset/problem/1407/C 1600
 https://codeforces.com/problemset/problem/2037/E 1600
 https://codeforces.com/problemset/problem/1934/C 1700 网格图
-https://codeforces.com/problemset/problem/730/B 1800 C++ std::minmax_element 源码
+https://codeforces.com/problemset/problem/730/B 1800 C++ std::minmax 源码
 https://codeforces.com/problemset/problem/2038/G 1900
 https://codeforces.com/problemset/problem/896/B 2000
 https://codeforces.com/problemset/problem/1521/C 2000
