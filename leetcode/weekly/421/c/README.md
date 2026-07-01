@@ -44,6 +44,8 @@ $$
 
 **递归入口**：$\textit{dfs}(n-1,0,0)-1$，也就是答案。减一是去掉两个子序列都为空的情况。
 
+代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+
 ### 3) 递归搜索 + 保存递归返回值 = 记忆化搜索
 
 视频讲解 [动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
@@ -57,17 +59,19 @@ $$
 
 > Python 用户可以无视上面这段，直接用 `@cache` 装饰器。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1hn1MYhEtC/?t=6m35s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1hn1MYhEtC/?t=6m35s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def subsequencePairCount(self, nums: List[int]) -> int:
         MOD = 1_000_000_007
+
         @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int, j: int, k: int) -> int:
             if i < 0:
                 return 1 if j == k else 0
             return (dfs(i - 1, j, k) + dfs(i - 1, gcd(j, nums[i]), k) + dfs(i - 1, j, gcd(k, nums[i]))) % MOD
+
         return (dfs(len(nums) - 1, 0, 0) - 1) % MOD
 ```
 
@@ -90,7 +94,7 @@ class Solution {
         return (dfs(n - 1, 0, 0, nums, memo) - 1 + MOD) % MOD; // +MOD 防止减一后变成负数
     }
 
-    int dfs(int i, int j, int k, int[] nums, int[][][] memo) {
+    private int dfs(int i, int j, int k, int[] nums, int[][][] memo) {
         if (i < 0) {
             return j == k ? 1 : 0;
         }
@@ -118,23 +122,25 @@ class Solution {
 class Solution {
 public:
     int subsequencePairCount(vector<int>& nums) {
-        const int MOD = 1'000'000'007;
+        constexpr int MOD = 1'000'000'007;
         int n = nums.size();
         int m = ranges::max(nums);
-        vector<vector<vector<int>>> memo(n, vector<vector<int>>(m + 1, vector<int>(m + 1, -1))); // -1 表示没有计算过
-        auto dfs = [&](auto&& dfs, int i, int j, int k) -> int {
+        vector memo(n, vector(m + 1, vector<int>(m + 1, -1))); // -1 表示没有计算过
+
+        auto dfs = [&](this auto&& dfs, int i, int j, int k) -> int {
             if (i < 0) {
                 return j == k;
             }
             int& res = memo[i][j][k]; // 注意这里是引用
             if (res < 0) {
-                res = ((long long) dfs(dfs, i - 1, j, k) +
-                       dfs(dfs, i - 1, gcd(j, nums[i]), k) +
-                       dfs(dfs, i - 1, j, gcd(k, nums[i]))) % MOD;
+                res = ((long long) dfs(i - 1, j, k) +
+                       dfs(i - 1, gcd(j, nums[i]), k) +
+                       dfs(i - 1, j, gcd(k, nums[i]))) % MOD;
             }
             return res;
         };
-        return (dfs(dfs, n - 1, 0, 0) - 1 + MOD) % MOD; // +MOD 防止减一后变成负数
+
+        return (dfs(n - 1, 0, 0) - 1 + MOD) % MOD; // +MOD 防止减一后变成负数
     }
 };
 ```
@@ -154,6 +160,7 @@ func subsequencePairCount2(nums []int) int {
 			}
 		}
 	}
+
 	var dfs func(int, int, int) int
 	dfs = func(i, j, k int) int {
 		if i < 0 {
@@ -168,6 +175,7 @@ func subsequencePairCount2(nums []int) int {
 		}
 		return *p
 	}
+
 	// 减去两个子序列都是空的情况
 	return (dfs(n-1, 0, 0) - 1 + mod) % mod // +mod 防止减一后变成负数
 }
@@ -182,7 +190,7 @@ func gcd(a, b int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nU^2\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nU^2)$，单个状态的计算时间为 $\mathcal{O}(\log U)$，所以总的时间复杂度为 $\mathcal{O}(nU^2\log U)$。
+- 时间复杂度：$\mathcal{O}(nU^2\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nU^2)$，单个状态的计算时间为 $\mathcal{O}(\log U)$，所以总的时间复杂度为 $\mathcal{O}(nU^2\log U)$。
 - 空间复杂度：$\mathcal{O}(nU^2)$。保存多少状态，就需要多少空间。
 
 ### 4) 1:1 翻译成递推
@@ -265,7 +273,7 @@ public:
         const int MOD = 1'000'000'007;
         int n = nums.size();
         int m = ranges::max(nums);
-        vector<vector<vector<int>>> f(n + 1, vector<vector<int>>(m + 1, vector<int>(m + 1)));
+        vector f(n + 1, vector(m + 1, vector<int>(m + 1)));
         for (int j = 1; j <= m; j++) {
             f[0][j][j] = 1;
         }
@@ -317,10 +325,10 @@ func gcd(a, b int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nU^2\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(nU^2\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(nU^2)$。
 
-注：可以预处理 $200$ 内所有数对的 GCD，加快计算效率。另外可以用滚动数组优化空间。
+**注**：可以预处理 $200$ 内所有数对的 GCD，加快计算效率。另外可以用滚动数组优化空间。
 
 ## 方法二：倍数容斥
 
@@ -449,8 +457,15 @@ class Solution {
     private static final int[] pow2 = new int[MX];
     private static final int[] pow3 = new int[MX];
     private static final int[] mu = new int[MX];
+    private static boolean initialized = false;
 
-    static {
+    // 这样写比 static block 快
+    public Solution() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
         for (int i = 1; i < MX; i++) {
             for (int j = 1; j < MX; j++) {
                 lcms[i][j] = lcm(i, j);
@@ -527,8 +542,8 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-const int MOD = 1'000'000'007;
-const int MX = 201;
+static constexpr int MOD = 1'000'000'007;
+static constexpr int MX = 201;
 
 int lcms[MX][MX], pow2[MX], pow3[MX], mu[MX];
 
@@ -569,7 +584,7 @@ public:
             }
         }
 
-        vector<vector<int>> f(m + 1, vector<int>(m + 1));
+        vector f(m + 1, vector<int>(m + 1));
         for (int g1 = 1; g1 <= m; g1++) {
             for (int g2 = 1; g2 <= m; g2++) {
                 int l = lcms[g1][g2];
@@ -674,26 +689,28 @@ func lcm(a, b int) int {
 
 #### 复杂度分析
 
-预处理的时间忽略不计。
+不计入预处理的时间和空间。
 
-- 时间复杂度：$\mathcal{O}(n+U^2)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。最后的三重循环，循环次数 $\sum\limits_{i} \left(\dfrac{U}{i}\right)^2 = U^2\sum\limits_{i} \dfrac{1}{i^2} < U^2\cdot \dfrac{\pi}{6}$，即 $\mathcal{O}(U^2)$。
+- 时间复杂度：$\mathcal{O}(n+U^2)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。最后的三重循环，循环次数 $\sum\limits_{i} \left(\dfrac{U}{i}\right)^2 = U^2\sum\limits_{i} \dfrac{1}{i^2} < U^2\cdot \dfrac{\pi}{6}$，即 $\mathcal{O}(U^2)$。
 - 空间复杂度：$\mathcal{O}(U^2)$。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
