@@ -1,4 +1,183 @@
-**前置题目**：[392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)，[我的题解](https://leetcode.cn/problems/is-subsequence/solution/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/)。
+## 方法一：前后缀分解
+
+枚举修改的下标 $i=0,1,2\ldots,|s|-1$，我们需要知道：
+
+- 看左边，如果 $s$ 的前缀 $[0,i-1]$ 是 $t$ 的 $[0,\textit{pre}[i-1]]$ 的子序列，那么 $\textit{pre}[i-1]$ 最小是多少？
+- 看右边，如果 $s$ 的后缀 $[i+1,|s|-1]$ 是 $t$ 的 $[\textit{suf}[i+1],|t|-1]$ 的子序列，那么 $\textit{suf}[i+1]$ 最大是多少？
+- 如果 $\textit{pre}[i-1]$ 和 $\textit{suf}[i+1]$ 之间至少有一个下标 $j$，也就是 $\textit{suf}[i+1] - \textit{pre}[i-1] > 1$，那么就可以把 $s[i]$ 改成 $t[j]$，从而使 $s$ 是 $t$ 的子序列。
+
+如何计算 $\textit{pre}$ 和 $\textit{suf}$？见 [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)，[我的题解](https://leetcode.cn/problems/is-subsequence/solution/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/)。  
+
+代码实现时，可以先计算 suf，然后在枚举修改的下标 $i$ 的同时计算 $\textit{pre}$。
+
+```py [sol-Python3]
+class Solution:
+    def canMakeSubsequence(self, s: str, t: str) -> bool:
+        n, m = len(s), len(t)
+
+        # s[i:] 是 t[suf[i]:] 的子序列（如果 suf[i]=-1 则不是子序列）
+        suf = [0] * (n + 1)
+        suf[n] = m
+        j = m
+        for i in range(n - 1, -1, -1):
+            # 上一轮循环 s[i+1] 匹配了 t[j]，减一后继续匹配 s[i]
+            j -= 1
+            while j >= 0 and t[j] != s[i]:
+                j -= 1
+            suf[i] = j
+
+        if suf[0] >= 0:
+            # s 已是 t 的子序列
+            return True
+
+        pre = -1
+        for i, ch in enumerate(s):
+            # 此时 s[:i] 是 t[:pre+1] 的子序列（如果 pre=m 则不是子序列）
+            # 修改 s[i]，那么在 pre 和 suf[i+1] 之间，至少要有一个字母
+            if suf[i + 1] - pre > 1:
+                return True
+
+            # 上一轮循环 s[i-1] 匹配了 t[pre]，加一后继续匹配 s[i]
+            pre += 1
+            while pre < m and t[pre] != ch:
+                pre += 1
+
+        return False
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean canMakeSubsequence(String S, String T) {
+        char[] s = S.toCharArray();
+        char[] t = T.toCharArray();
+        int n = s.length;
+        int m = t.length;
+
+        // s[i,n-1] 是 t[suf[i]m-1] 的子序列（如果 suf[i]=-1 则不是子序列）
+        int[] suf = new int[n + 1];
+        suf[n] = m;
+        int j = m;
+        for (int i = n - 1; i >= 0; i--) {
+            // 上一轮循环 s[i+1] 匹配了 t[j]，减一后继续匹配 s[i]
+            j--;
+            while (j >= 0 && t[j] != s[i]) {
+                j--;
+            }
+            suf[i] = j;
+        }
+
+        if (suf[0] >= 0) {
+            // s 已是 t 的子序列
+            return true;
+        }
+
+        int pre = -1;
+        for (int i = 0; i < n; i++) {
+            // 此时 s[0,i-1] 是 t[0,pre] 的子序列（如果 pre=m 则不是子序列）
+            // 修改 s[i]，那么在 pre 和 suf[i+1] 之间，至少要有一个字母
+            if (suf[i + 1] - pre > 1) {
+                return true;
+            }
+
+            // 上一轮循环 s[i-1] 匹配了 t[pre]，加一后继续匹配 s[i]
+            pre++;
+            while (pre < m && t[pre] != s[i]) {
+                pre++;
+            }
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool canMakeSubsequence(string s, string t) {
+        int n = s.size(), m = t.size();
+
+        // s[i,n-1] 是 t[suf[i],m-1] 的子序列（如果 suf[i]=-1 则不是子序列）
+        vector<int> suf(n + 1);
+        suf[n] = m;
+        int j = m;
+        for (int i = n - 1; i >= 0; i--) {
+            // 上一轮循环 s[i+1] 匹配了 t[j]，减一后继续匹配 s[i]
+            j--;
+            while (j >= 0 && t[j] != s[i]) {
+                j--;
+            }
+            suf[i] = j;
+        }
+
+        if (suf[0] >= 0) {
+            // s 已是 t 的子序列
+            return true;
+        }
+
+        int pre = -1;
+        for (int i = 0; i < n; i++) {
+            // 此时 s[0,i-1] 是 t[0,pre] 的子序列（如果 pre=m 则不是子序列）
+            // 修改 s[i]，那么在 pre 和 suf[i+1] 之间，至少要有一个字母
+            if (suf[i + 1] - pre > 1) {
+                return true;
+            }
+
+            // 上一轮循环 s[i-1] 匹配了 t[pre]，加一后继续匹配 s[i]
+            pre++;
+            while (pre < m && t[pre] != s[i]) {
+                pre++;
+            }
+        }
+        return false;
+    }
+};
+```
+
+```go [sol-Go]
+func canMakeSubsequence(s, t string) bool {
+	n, m := len(s), len(t)
+	// s[i:] 是 t[suf[i]:] 的子序列（如果 suf[i]=-1 则不是子序列）
+	suf := make([]int, n+1)
+	suf[n] = m
+	j := m
+	for i := n - 1; i >= 0; i-- {
+		// 上一轮循环 s[i+1] 匹配了 t[j]，减一后继续匹配 s[i]
+		j--
+		for j >= 0 && t[j] != s[i] {
+			j--
+		}
+		suf[i] = j
+	}
+
+	if suf[0] >= 0 {
+		// s 已是 t 的子序列
+		return true
+	}
+
+	pre := -1
+	for i, ch := range s {
+		// 此时 s[:i] 是 t[:pre+1] 的子序列（如果 pre=m 则不是子序列）
+		// 修改 s[i]，那么在 pre 和 suf[i+1] 之间，至少要有一个字母
+		if suf[i+1]-pre > 1 {
+			return true
+		}
+
+		// 上一轮循环 s[i-1] 匹配了 t[pre]，加一后继续匹配 s[i]
+		pre++
+		for pre < m && t[pre] != byte(ch) {
+			pre++
+		}
+	}
+	return false
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。虽然写了个二重循环，但内层循环中的下标只会减小（或增大），所以二重循环的总循环次数是 $\mathcal{O}(n+m)$ 的。
+- 空间复杂度：$\mathcal{O}(n)$
+
+## 方法二：状态机 DP
 
 在 392 题中，我们定义 $j_0$ 表示在不修改的情况下，$s$ 的前缀 $[0, j_0-1]$ 是 $t$ 的（当前正在遍历的）前缀的子序列，且 $j_0$ 尽量大。
 
@@ -14,8 +193,6 @@
 对于 $j_0$，只能普通匹配：如果 $s[j_0] = t[i]$，那么 $j_0$ 增加一。
 
 任意时刻，只要 $j_0=|s|$ 或者 $j_1=|s|$，则说明 $s$ 是 $t$ 的子序列。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -142,6 +319,7 @@ func canMakeSubsequence(s, t string) bool {
 
 1. 双指针题单的「**§4.2 判断子序列**」。
 2. 动态规划题单的「**六、状态机 DP**」。
+3. 动态规划题单的「**专题：前后缀分解**」。
 
 ## 分类题单
 

@@ -1,38 +1,44 @@
 package main
 
 // https://space.bilibili.com/206214
-func canMakeSubsequence1(s, t string) bool {
-	//n, m := len(s), len(t)
-	//// s[suf[i]:] 是 t[i:] 的子序列
-	//suf := make([]int, m+1)
-	//suf[m] = n
-	//j := n
-	//for i := m - 1; i >= 0; i-- {
-	//	if t[i] == s[j-1] {
-	//		j--
-	//		if j == 0 { // s 已是 t 的子序列
-	//			return true
-	//		}
-	//	}
-	//	suf[i] = j
-	//}
-	//
-	//pre := -1
-	//for i, ch := range t {
-	//	// 替换 ch
-	//	if byte(ch) == s[pre+1] {
-	//		pre++
-	//	}
-	//	// 现在，s[0,pre] 是 t[0,i] 的子序列
-	//	if pre+2 >= suf[i] {
-	//		return true
-	//	}
-	//}
+func canMakeSubsequence(s, t string) bool {
+	n, m := len(s), len(t)
+	// s[i:] 是 t[suf[i]:] 的子序列（如果 suf[i]=-1 则不是子序列）
+	suf := make([]int, n+1)
+	suf[n] = m
+	j := m
+	for i := n - 1; i >= 0; i-- {
+		// 上一轮循环 s[i+1] 匹配了 t[j]，减一后继续匹配 s[i]
+		j--
+		for j >= 0 && t[j] != s[i] {
+			j--
+		}
+		suf[i] = j
+	}
 
+	if suf[0] >= 0 {
+		// s 已是 t 的子序列
+		return true
+	}
+
+	pre := -1
+	for i, ch := range s {
+		// 此时 s[:i] 是 t[:pre+1] 的子序列（如果 pre=m 则不是子序列）
+		// 修改 s[i]，那么在 pre 和 suf[i+1] 之间，至少要有一个字母
+		if suf[i+1]-pre > 1 {
+			return true
+		}
+
+		// 上一轮循环 s[i-1] 匹配了 t[pre]，加一后继续匹配 s[i]
+		pre++
+		for pre < m && t[pre] != byte(ch) {
+			pre++
+		}
+	}
 	return false
 }
 
-func canMakeSubsequence(s, t string) bool {
+func canMakeSubsequence2(s, t string) bool {
 	n := len(s)
 	j0 := 0 // 在不修改的情况下，s 的前缀 [0, j0-1] 是 t 的当前前缀的子序列
 	j1 := 0 // 在改过一次的情况下，s 的前缀 [0, j1-1] 是 t 的当前前缀的子序列
