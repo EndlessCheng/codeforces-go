@@ -2,17 +2,20 @@
 
 否则，选 $\textit{nums}[i]$ 的因子作为 $k$ 是最优的，直接枚举。我们可以先收集所有因子，然后去重，再枚举因子。这样可以避免重复计算。
 
+进一步地，如果一个数是 $x$ 的倍数，那么也是 $x$ 的质因子的倍数，所以我们**只需枚举质因子**。
+
 对于一个固定的 $k$，设 $x=\textit{nums}[i]$，如果 $x$ 不是 $k$ 的倍数，则视作 $-x$（减去 Bob 的分数）。问题变成 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，请看 [我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
-# 预处理每个数的因子
+# 预处理每个数的质因子
 MX = 1_000_001
-divisors = [[] for _ in range(MX)]
-for i in range(2, MX):  # 本题 k > 1
-    for j in range(i, MX, i):  # 枚举 i 的倍数 j
-        divisors[j].append(i)  # i 是 j 的因子
+prime_divisors = [[] for _ in range(MX)]
+for i in range(2, MX):
+    if not prime_divisors[i]:  # i 是质数
+        for j in range(i, MX, i):  # 枚举 i 的倍数 j
+            prime_divisors[j].append(i)  # i 是 j 的质因子
 
 
 class Solution:
@@ -27,23 +30,23 @@ class Solution:
 
     def divisibleGame(self, nums: list[int]) -> int:
         MOD = 1_000_000_007
-        # 收集所有因子
-        all_divisors = []
+        # 收集所有质因子
+        all_prime_divisors = []
         for x in nums:
-            all_divisors += divisors[x]
+            all_prime_divisors += prime_divisors[x]
 
-        if not all_divisors:
+        if not all_prime_divisors:
             # 每个数都是 1
             # 最优是只选一个 1（分数差为 -1），最小 k 为 2
             return MOD - 2
 
         # 排序去重
-        all_divisors = sorted(set(all_divisors))
+        all_prime_divisors = sorted(set(all_prime_divisors))
 
         max_diff = -inf
         best_k = 0
-        # 枚举因子作为 k，计算最大子数组和
-        for k in all_divisors:
+        # 枚举质因子作为 k，计算最大子数组和
+        for k in all_prime_divisors:
             diff = self.maxSubArray(nums, k)
             if diff > max_diff:
                 max_diff = diff
@@ -54,49 +57,39 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    // 53. 最大子数组和（如果 nums[i] 不是 k 的倍数，则视作 -nums[i]）
-    private int maxSubArray(int[] nums, int k) {
-        int ans = Integer.MIN_VALUE;
-        int f = 0;
-        for (int x : nums) {
-            f = Math.max(f, 0) + (x % k == 0 ? x : -x);
-            ans = Math.max(ans, f);
-        }
-        return ans;
-    }
-
     public int divisibleGame(int[] nums) {
         final int MOD = 1_000_000_007;
 
-        // 收集所有因子
-        // 预处理超时了，改成不预处理的写法
-        List<Integer> allDivisors = new ArrayList<>();
+        // 收集所有质因子
+        // 预处理有些慢，改成不预处理的写法
+        List<Integer> allPrimeDivisors = new ArrayList<>();
         for (int x : nums) {
-            for (int d = 2; d * d <= x; d++) {
-                if (x % d == 0) {
-                    allDivisors.add(d);
-                    if (d != x / d) {
-                        allDivisors.add(x / d);
-                    }
+            for (int p = 2; p * p <= x; p++) {
+                if (x % p == 0) {
+                    allPrimeDivisors.add(p);
+                    do {
+                        x /= p;
+                    } while (x % p == 0);
                 }
             }
             if (x > 1) {
-                allDivisors.add(x);
+                allPrimeDivisors.add(x);
             }
         }
 
-        if (allDivisors.isEmpty()) {
+        if (allPrimeDivisors.isEmpty()) {
             // 每个数都是 1
             // 最优是只选一个 1（分数差为 -1），最小 k 为 2
             return MOD - 2;
         }
 
-        Collections.sort(allDivisors);
+        Collections.sort(allPrimeDivisors);
 
         int maxDiff = Integer.MIN_VALUE;
         int bestK = 0;
         int preK = 0;
-        for (int k : allDivisors) {
+        // 枚举质因子作为 k，计算最大子数组和
+        for (int k : allPrimeDivisors) {
             if (k == preK) {
                 continue;
             }
@@ -111,18 +104,31 @@ class Solution {
         // 保证结果非负
         return (int) (((long) maxDiff * bestK % MOD + MOD) % MOD);
     }
+
+    // 53. 最大子数组和（如果 nums[i] 不是 k 的倍数，则视作 -nums[i]）
+    private int maxSubArray(int[] nums, int k) {
+        int ans = Integer.MIN_VALUE;
+        int f = 0;
+        for (int x : nums) {
+            f = Math.max(f, 0) + (x % k == 0 ? x : -x);
+            ans = Math.max(ans, f);
+        }
+        return ans;
+    }
 }
 ```
 
 ```cpp [sol-C++]
 constexpr int MX = 1'000'001;
-vector<int> divisors[MX];
+vector<int> prime_divisors[MX];
 
+// 预处理每个数的质因子
 int init = [] {
-    // 本题 k > 1
     for (int i = 2; i < MX; i++) {
-        for (int j = i; j < MX; j += i) { // 枚举 i 的倍数 j
-            divisors[j].push_back(i); // i 是 j 的因子
+        if (prime_divisors[i].empty()) { // i 是质数
+            for (int j = i; j < MX; j += i) { // 枚举 i 的倍数 j
+                prime_divisors[j].push_back(i); // i 是 j 的因子
+            }
         }
     }
     return 0;
@@ -144,26 +150,27 @@ public:
     int divisibleGame(vector<int>& nums) {
         constexpr int MOD = 1'000'000'007;
 
-        // 收集所有因子
-        vector<int> all_divisors;
+        // 收集所有质因子
+        vector<int> all_prime_divisors;
         for (int x : nums) {
-            all_divisors.insert(all_divisors.end(), divisors[x].begin(), divisors[x].end());
+            auto& pd = prime_divisors[x];
+            all_prime_divisors.insert(all_prime_divisors.end(), pd.begin(), pd.end());
         }
 
-        if (all_divisors.empty()) {
+        if (all_prime_divisors.empty()) {
             // 每个数都是 1
             // 最优是只选一个 1（分数差为 -1），最小 k 为 2
             return MOD - 2;
         }
 
         // 排序去重
-        ranges::sort(all_divisors);
-        all_divisors.erase(ranges::unique(all_divisors).begin(), all_divisors.end());
+        ranges::sort(all_prime_divisors);
+        all_prime_divisors.erase(ranges::unique(all_prime_divisors).begin(), all_prime_divisors.end());
 
         int max_diff = INT_MIN;
         int best_k = 0;
-        // 枚举因子作为 k，计算最大子数组和
-        for (int k : all_divisors) {
+        // 枚举质因子作为 k，计算最大子数组和
+        for (int k : all_prime_divisors) {
             int diff = maxSubArray(nums, k);
             if (diff > max_diff) {
                 max_diff = diff;
@@ -179,13 +186,15 @@ public:
 
 ```go [sol-Go]
 const mx = 1_000_001
-var divisors [mx][]int32
+var primeDivisors [mx][]int32
 
+// 预处理每个数的质因子
 func init() {
-	// 本题 k > 1
 	for i := int32(2); i < mx; i++ {
-		for j := i; j < mx; j += i { // 枚举 i 的倍数 j
-			divisors[j] = append(divisors[j], i) // i 是 j 的因子
+		if primeDivisors[i] == nil { // i 是质数
+			for j := i; j < mx; j += i { // 枚举 i 的倍数 j
+				primeDivisors[j] = append(primeDivisors[j], i) // i 是 j 的质因子
+			}
 		}
 	}
 }
@@ -206,25 +215,25 @@ func maxSubArray(nums []int, k int) int {
 
 func divisibleGame(nums []int) (ans int) {
 	const mod = 1_000_000_007
-	// 收集所有因子
-	allDivisors := []int32{}
+	// 收集所有质因子
+	allPrimeDivisors := []int32{}
 	for _, x := range nums {
-		allDivisors = append(allDivisors, divisors[x]...)
+		allPrimeDivisors = append(allPrimeDivisors, primeDivisors[x]...)
 	}
 
-	if len(allDivisors) == 0 {
+	if len(allPrimeDivisors) == 0 {
 		// 每个数都是 1
 		// 最优是只选一个 1（分数差为 -1），最小 k 为 2
 		return mod - 2
 	}
 
 	// 排序去重
-	slices.Sort(allDivisors)
-	allDivisors = slices.Compact(allDivisors)
+	slices.Sort(allPrimeDivisors)
+	allPrimeDivisors = slices.Compact(allPrimeDivisors)
 
 	maxDiff, bestK := math.MinInt, 0
-	// 枚举因子作为 k，计算最大子数组和
-	for _, d := range allDivisors {
+	// 枚举质因子作为 k，计算最大子数组和
+	for _, d := range allPrimeDivisors {
 		k := int(d)
 		diff := maxSubArray(nums, k)
 		if diff > maxDiff {
@@ -241,12 +250,12 @@ func divisibleGame(nums []int) (ans int) {
 
 忽略预处理的时间和空间。
 
-- 时间复杂度：$\mathcal{O}(Dn)$，其中 $n$ 是 $\textit{nums}$ 的长度，$D$ 是 $\textit{nums}$ 中的不同因子个数。由于我们去重了，最坏情况是 $\textit{nums}$ 的所有元素互不相同。虽然一个数的因子个数可能很多，但在 $n$ 个不同元素的情况下，平均每个数有 $\mathcal{O}(\log U)$ 个因子（$U=\max(\textit{nums})$），所以 $D = \mathcal{O}(n\log U)$。这是一个比较松的估计，这里面有相同的因子，实际不同因子个数可能更少。
+- 时间复杂度：$\mathcal{O}(Dn)$，其中 $n$ 是 $\textit{nums}$ 的长度，$D$ 是 $\textit{nums}$ 中的不同质因子个数。由于我们去重了，最坏情况是 $\textit{nums}$ 的所有元素互不相同。在 $n$ 个不同元素的情况下，平均每个数有 $\mathcal{O}(\log\log U)$ 个质因子（$U=\max(\textit{nums})$），所以 $D = \mathcal{O}(n\log\log U)$。
 - 空间复杂度：$\mathcal{O}(D)$。
 
 ## 专题训练
 
-1. 数学题单的「**§1.5 因子**」。
+1. 数学题单的「**§1.3 质因数分解**」和「**§1.5 因子**」。
 2. 动态规划题单的「**§1.3 最大子数组和**」。
 
 ## 分类题单
