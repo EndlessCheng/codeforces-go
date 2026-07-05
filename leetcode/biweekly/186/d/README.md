@@ -4,12 +4,12 @@
 
 定义 $\textit{dfs}(i,j,k)$ 表示在 $\textit{word}_1$ 的前缀 $[0,j]$ 和 $\textit{word}_2$ 的前缀 $[0,k]$ 中选择字符（选择子序列），组成 $\textit{target}$ 的前缀 $[0,i]$ 的方案数。这里允许其中一个子序列为空。
 
-讨论 $\textit{word}_1[j]$ 和 $\textit{word}_2[k]$ **选或不选**，有四种情况：
+讨论 $\textit{word}_1[j]$ 和 $\textit{word}_2[k]$ **选或不选**（是否在 $\textit{target}$ 中），有四种情况：
 
 1. 都不选。
 2. 选 $\textit{word}_1[j]$，不选 $\textit{word}_2[k]$。
 3. 不选 $\textit{word}_1[j]$，选 $\textit{word}_2[k]$。
-4. 都选。这种情况的意思是 $\textit{word}_1[j] = \textit{word}_2[k] = \textit{target}[i]$，用 $\textit{word}_1[j]$ 还是 $\textit{word}_2[k]$ 组成 $\textit{target}[i]$ 都可以，算作**不同**的方案，要相加（加法原理）。
+4. 都选。意思是 $\textit{word}_1[j]$ 和 $\textit{word}_2[k]$ 都在 $\textit{target}$ 中。
 
 如果不选 $\textit{word}_1[j]$，问题变成在 $\textit{word}_1$ 的前缀 $[0,j-1]$ 和 $\textit{word}_2$ 的前缀 $[0,k]$ 中选择字符（选择子序列），组成 $\textit{target}$ 的前缀 $[0,i]$ 的方案数，即 $\textit{dfs}(i,j-1,k)$。注意 $\textit{dfs}(i,j-1,k)$ 包含了情况一和情况三。
 
@@ -23,7 +23,11 @@ $$
 \textit{dfs}(i,j-1,k) + \textit{dfs}(i,j,k-1) - \textit{dfs}(i,j-1,k-1)
 $$
 
-下面来算情况四（都选）的方案数。
+下面来算情况四（$\textit{word}_1[j]$ 和 $\textit{word}_2[k]$ 都在 $\textit{target}$ 中）的方案数。
+
+此时要么 $\textit{word}_1[j]$ 与 $\textit{target}[i]$ 匹配，要么 $\textit{word}_2[k]$ 与 $\textit{target}[i]$ 匹配。**解释**：如果两个字符都不与 $\textit{target}[i]$ 匹配，而是和 $\textit{target}$ 中更靠前的字符匹配，那么 $\textit{target}[i]$ 匹配谁呢？只能匹配 $\textit{word}_1$ 或 $\textit{word}_2$ 中的一个更靠前的字符，但这样我们选出的下标就不是严格递增的了。
+
+> 顺带一提，对于情况二，只保证 $\textit{word}_1[j]$ 在 $\textit{target}$ 中，并不能说明 $\textit{word}_1[j]$ 一定要与 $\textit{target}[i]$ 匹配。情况三同理。
 
 如果 $\textit{word}_1[j] = \textit{target}[i]$，那么 $\textit{word}_1[j]$ 可以直接选，此时我们需要计算：
 
@@ -60,11 +64,50 @@ $$
 
 代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~ **其他语言，以及递推写法，直播结束后补充**。
-
 关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
 
-```go
+下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~ **其他语言，以及递推写法，直播结束后补充**。
+
+```py [sol-Python3]
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        if n < m:
+            return 0
+
+        MOD = 1_000_000_007
+        f = [1] + [0] * m
+        for i, x in enumerate(s):
+            for j in range(min(i, m - 1), max(m - n + i, 0) - 1, -1):
+                if x == t[j]:
+                    f[j + 1] = (f[j + 1] + f[j]) % MOD
+        return f[m]
+
+    def interleaveCharacters(self, word1: str, word2: str, target: str) -> int:
+        MOD = 1_000_000_007
+        n, m1, m2 = len(target), len(word1), len(word2)
+
+        @cache
+        def dfs(i: int, j: int, k: int) -> int:
+            if j < -1 or k < -1 or j + k + 2 < i + 1:
+                return 0
+            if i < 0:
+                return 1
+
+            # 不选 word1[j] 或 word2[k]
+            res = dfs(i, j - 1, k) + dfs(i, j, k - 1) - dfs(i, j - 1, k - 1)  # 容斥
+            if j >= 0 and word1[j] == target[i]:
+                # 选 word1[j]
+                res += dfs(i - 1, j - 1, k) - dfs(i - 1, j - 1, k - 1)
+            if k >= 0 and word2[k] == target[i]:
+                # 选 word2[k]
+                res += dfs(i - 1, j, k - 1) - dfs(i - 1, j - 1, k - 1)
+            return res % MOD
+
+        return (dfs(n - 1, m1 - 1, m2 - 1) - self.numDistinct(word1, target) - self.numDistinct(word2, target)) % MOD
+```
+
+```go [sol-Go]
 const mod = 1_000_000_007
 
 // 115. 不同的子序列
