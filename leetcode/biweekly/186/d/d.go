@@ -26,6 +26,41 @@ func numDistinct(s, t string) int {
 
 func interleaveCharacters(word1, word2, target string) int {
 	n, m1, m2 := len(target), len(word1), len(word2)
+	f := make([][][]int, n+1)
+	for i := range f {
+		f[i] = make([][]int, m1+2)
+		for j := range f[i] {
+			f[i][j] = make([]int, m2+2)
+		}
+	}
+	for j := 1; j < m1+2; j++ {
+		for k := 1; k < m2+2; k++ {
+			f[0][j][k] = 1
+		}
+	}
+
+	for i, ch := range target {
+		for j := range m1 + 1 {
+			// j+k >= i+1
+			for k := max(0, i+1-j); k <= m2; k++ {
+				res := f[i+1][j][k+1] + f[i+1][j+1][k] - f[i+1][j][k]
+				if j > 0 && word1[j-1] == byte(ch) {
+					res += f[i][j][k+1] - f[i][j][k]
+				}
+				if k > 0 && word2[k-1] == byte(ch) {
+					res += f[i][j+1][k] - f[i][j][k]
+				}
+				f[i+1][j+1][k+1] = res % mod
+			}
+		}
+	}
+
+	ans := f[n][m1+1][m2+1] - numDistinct(word1, target) - numDistinct(word2, target)
+	return (ans%mod + mod) % mod // 保证 ans 非负
+}
+
+func interleaveCharacters1(word1, word2, target string) int {
+	n, m1, m2 := len(target), len(word1), len(word2)
 
 	memo := make([][][]int, n)
 	for i := range memo {

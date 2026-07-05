@@ -55,7 +55,7 @@ $$
 **递归边界**：
 
 - 如果 $j<-1$ 或者 $k<-1$，出界，返回 $0$。
-- 如果 $(j+1)+(k+1)<i+1$，字符个数不足以形成 $\textit{target}$ 的前缀 $[0,i]$，返回 $0$。
+- 如果 $(j+1)+(k+1)<i+1$，即 $j+k+1<i$，那么字符个数不足以形成 $\textit{target}$ 的前缀 $[0,i]$，返回 $0$。
 - 否则，如果 $i<0$，那么不选字符也是一种方案，返回 $1$（或者说我们找到了一种形成 $\textit{target}$ 的方案）。
 
 **递归入口**：$\textit{dfs}(n-1,m_1-1,m_2-1)$。其中 $n$ 是 $\textit{target}$ 的长度，$m_1$ 是 $\textit{word}_1$ 的长度，$m_2$ 是 $\textit{word}_2$ 的长度。
@@ -92,7 +92,7 @@ class Solution:
 
         @cache
         def dfs(i: int, j: int, k: int) -> int:
-            if j < -1 or k < -1 or j + k + 2 < i + 1:
+            if j < -1 or k < -1 or j + k + 1 < i:
                 return 0
             if i < 0:
                 return 1
@@ -137,7 +137,7 @@ class Solution {
     }
 
     private int dfs(int i, int j, int k, char[] word1, char[] word2, char[] target, int[][][] memo) {
-        if (j < -1 || k < -1 || j + k + 2 < i + 1) {
+        if (j < -1 || k < -1 || j + k + 1 < i) {
             return 0;
         }
         if (i < 0) {
@@ -221,7 +221,7 @@ public:
         vector memo(n, vector(m1 + 1, vector<int>(m2 + 1, INT_MIN)));
 
         auto dfs = [&](this auto&& dfs, int i, int j, int k) -> int {
-            if (j < -1 || k < -1 || j + k + 2 < i + 1) {
+            if (j < -1 || k < -1 || j + k + 1 < i) {
                 return 0;
             }
             if (i < 0) {
@@ -294,7 +294,7 @@ func interleaveCharacters(word1, word2, target string) int {
 	}
 	var dfs func(int, int, int) int
 	dfs = func(i, j, k int) int {
-		if j < -1 || k < -1 || j+k+2 < i+1 {
+		if j < -1 || k < -1 || j+k+1 < i {
 			return 0
 		}
 		if i < 0 {
@@ -324,6 +324,228 @@ func interleaveCharacters(word1, word2, target string) int {
 	}
 
 	ans := dfs(n-1, m1-1, m2-1) - numDistinct(word1, target) - numDistinct(word2, target)
+	return (ans%mod + mod) % mod // 保证 ans 非负
+}
+```
+
+## 写法二：1:1 翻译成递推
+
+变量范围：
+
+|   |  记忆化搜索 | 递推  |
+|---|---|---|
+|  $i$ | $[-1,n-1]$   |  $[0,n]$ |
+|  $j$ | $[-2,m_1-1]$ |  $[0,m_1+1]$ |
+|  $k$ | $[-2,m_2-1]$ |  $[0,m_2+1]$  |
+
+```py [sol-Python3]
+MOD = 1_000_000_007
+
+class Solution:
+    # 115. 不同的子序列
+    def numDistinct(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        if n < m:
+            return 0
+
+        f = [1] + [0] * m
+        for i, x in enumerate(s):
+            for j in range(min(i, m - 1), max(m - n + i, 0) - 1, -1):
+                if x == t[j]:
+                    f[j + 1] = (f[j + 1] + f[j]) % MOD
+        return f[m]
+
+    def interleaveCharacters(self, word1: str, word2: str, target: str) -> int:
+        n, m1, m2 = len(target), len(word1), len(word2)
+        f = [[[0] * (m2 + 2) for _ in range(m1 + 2)] for _ in range(n + 1)]
+        for j in range(1, m1 + 2):
+            for k in range(1, m2 + 2):
+                f[0][j][k] = 1
+
+        for i, ch in enumerate(target):
+            for j in range(m1 + 1):
+                # j+k >= i+1
+                for k in range(max(0, i + 1 - j), m2 + 1):
+                    res = f[i + 1][j][k + 1] + f[i + 1][j + 1][k] - f[i + 1][j][k]
+                    if j > 0 and word1[j - 1] == ch:
+                        res += f[i][j][k + 1] - f[i][j][k]
+                    if k > 0 and word2[k - 1] == ch:
+                        res += f[i][j + 1][k] - f[i][j][k]
+                    f[i + 1][j + 1][k + 1] = res % MOD
+
+        return (f[n][m1 + 1][m2 + 1] - self.numDistinct(word1, target) - self.numDistinct(word2, target)) % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int interleaveCharacters(String word1, String word2, String target) {
+        char[] w1 = word1.toCharArray();
+        char[] w2 = word2.toCharArray();
+        char[] t = target.toCharArray();
+        int n = t.length;
+        int m1 = w1.length;
+        int m2 = w2.length;
+
+        int[][][] f = new int[n + 1][m1 + 2][m2 + 2];
+        for (int j = 1; j < m1 + 2; j++) {
+            for (int k = 1; k < m2 + 2; k++) {
+                f[0][j][k] = 1;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m1 + 1; j++) {
+                // j+k >= i+1
+                for (int k = Math.max(0, i + 1 - j); k <= m2; k++) {
+                    long res = (long) f[i + 1][j][k + 1] + f[i + 1][j + 1][k] - f[i + 1][j][k];
+                    if (j > 0 && w1[j - 1] == t[i]) {
+                        res += f[i][j][k + 1] - f[i][j][k];
+                    }
+                    if (k > 0 && w2[k - 1] == t[i]) {
+                        res += f[i][j + 1][k] - f[i][j][k];
+                    }
+                    f[i + 1][j + 1][k + 1] = (int) (res % MOD);
+                }
+            }
+        }
+
+        long ans = (long) f[n][m1 + 1][m2 + 1] - numDistinct(w1, t) - numDistinct(w2, t);
+        return (int) ((ans % MOD + MOD) % MOD); // 保证 ans 非负
+    }
+
+    // 115. 不同的子序列
+    private int numDistinct(char[] s, char[] t) {
+        int n = s.length;
+        int m = t.length;
+        if (n < m) {
+            return 0;
+        }
+
+        int[] f = new int[m + 1];
+        f[0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = Math.min(i, m - 1); j >= Math.max(m - n + i, 0); j--) {
+                if (s[i] == t[j]) {
+                    f[j + 1] = (f[j + 1] + f[j]) % MOD;
+                }
+            }
+        }
+        return f[m];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    static constexpr int MOD = 1'000'000'007;
+
+    // 115. 不同的子序列
+    int numDistinct(string s, string t) {
+        int n = s.size(), m = t.size();
+        if (n < m) {
+            return 0;
+        }
+
+        vector<int> f(m + 1);
+        f[0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = min(i, m - 1); j >= max(m - n + i, 0); j--) {
+                if (s[i] == t[j]) {
+                    f[j + 1] = (f[j + 1] + f[j]) % MOD;
+                }
+            }
+        }
+        return f[m];
+    }
+
+public:
+    int interleaveCharacters(string word1, string word2, string target) {
+        int n = target.size(), m1 = word1.size(), m2 = word2.size();
+        vector f(n + 1, vector(m1 + 2, vector<int>(m2 + 2)));
+        for (int j = 1; j < m1 + 2; j++) {
+            for (int k = 1; k < m2 + 2; k++) {
+                f[0][j][k] = 1;
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m1 + 1; j++) {
+                // j+k >= i+1
+                for (int k = max(0, i + 1 - j); k <= m2; k++) {
+                    long long res = 1LL * f[i + 1][j][k + 1] + f[i + 1][j + 1][k] - f[i + 1][j][k];
+                    if (j > 0 && word1[j - 1] == target[i]) {
+                        res += f[i][j][k + 1] - f[i][j][k];
+                    }
+                    if (k > 0 && word2[k - 1] == target[i]) {
+                        res += f[i][j + 1][k] - f[i][j][k];
+                    }
+                    f[i + 1][j + 1][k + 1] = res % MOD;
+                }
+            }
+        }
+
+        long long ans = 1LL * f[n][m1 + 1][m2 + 1] - numDistinct(word1, target) - numDistinct(word2, target);
+        return (ans % MOD + MOD) % MOD; // 保证 ans 非负
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 1_000_000_007
+
+// 115. 不同的子序列
+func numDistinct(s, t string) int {
+	n, m := len(s), len(t)
+	if n < m {
+		return 0
+	}
+
+	f := make([]int, m+1)
+	f[0] = 1
+	for i, x := range s {
+		for j := min(i, m-1); j >= max(m-n+i, 0); j-- {
+			if byte(x) == t[j] {
+				f[j+1] = (f[j+1] + f[j]) % mod
+			}
+		}
+	}
+	return f[m]
+}
+
+func interleaveCharacters(word1, word2, target string) int {
+	n, m1, m2 := len(target), len(word1), len(word2)
+	f := make([][][]int, n+1)
+	for i := range f {
+		f[i] = make([][]int, m1+2)
+		for j := range f[i] {
+			f[i][j] = make([]int, m2+2)
+		}
+	}
+	for j := 1; j < m1+2; j++ {
+		for k := 1; k < m2+2; k++ {
+			f[0][j][k] = 1
+		}
+	}
+
+	for i, ch := range target {
+		for j := range m1 + 1 {
+			// j+k >= i+1
+			for k := max(0, i+1-j); k <= m2; k++ {
+				res := f[i+1][j][k+1] + f[i+1][j+1][k] - f[i+1][j][k]
+				if j > 0 && word1[j-1] == byte(ch) {
+					res += f[i][j][k+1] - f[i][j][k]
+				}
+				if k > 0 && word2[k-1] == byte(ch) {
+					res += f[i][j+1][k] - f[i][j][k]
+				}
+				f[i+1][j+1][k+1] = res % mod
+			}
+		}
+	}
+
+	ans := f[n][m1+1][m2+1] - numDistinct(word1, target) - numDistinct(word2, target)
 	return (ans%mod + mod) % mod // 保证 ans 非负
 }
 ```
