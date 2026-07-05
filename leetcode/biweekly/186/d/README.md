@@ -64,18 +64,22 @@ $$
 
 代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
+[本题视频讲解](https://www.bilibili.com/video/BV1qXTC63EQa/?t=12m21s)，欢迎点赞关注~
+
+## 写法一：记忆化搜索
+
 关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~ **其他语言，以及递推写法，直播结束后补充**。
-
 ```py [sol-Python3]
+MOD = 1_000_000_007
+
 class Solution:
+    # 115. 不同的子序列
     def numDistinct(self, s: str, t: str) -> int:
         n, m = len(s), len(t)
         if n < m:
             return 0
 
-        MOD = 1_000_000_007
         f = [1] + [0] * m
         for i, x in enumerate(s):
             for j in range(min(i, m - 1), max(m - n + i, 0) - 1, -1):
@@ -84,7 +88,6 @@ class Solution:
         return f[m]
 
     def interleaveCharacters(self, word1: str, word2: str, target: str) -> int:
-        MOD = 1_000_000_007
         n, m1, m2 = len(target), len(word1), len(word2)
 
         @cache
@@ -94,17 +97,164 @@ class Solution:
             if i < 0:
                 return 1
 
-            # 不选 word1[j] 或 word2[k]
+            # 不选 word1[j] 或 word2[k]（至少一个不在 target 中）
             res = dfs(i, j - 1, k) + dfs(i, j, k - 1) - dfs(i, j - 1, k - 1)  # 容斥
+
+            # 选 word1[j] 和 word2[k]（都在 target 中）
             if j >= 0 and word1[j] == target[i]:
-                # 选 word1[j]
+                # 选 word1[j]，减去不选 word2[k] 的方案数，就是 word2[k] 也在 target 中的方案数
                 res += dfs(i - 1, j - 1, k) - dfs(i - 1, j - 1, k - 1)
             if k >= 0 and word2[k] == target[i]:
-                # 选 word2[k]
+                # 选 word2[k]，减去不选 word1[j] 的方案数，就是 word1[j] 也在 target 中的方案数
                 res += dfs(i - 1, j, k - 1) - dfs(i - 1, j - 1, k - 1)
+
             return res % MOD
 
         return (dfs(n - 1, m1 - 1, m2 - 1) - self.numDistinct(word1, target) - self.numDistinct(word2, target)) % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int interleaveCharacters(String word1, String word2, String target) {
+        char[] w1 = word1.toCharArray();
+        char[] w2 = word2.toCharArray();
+        char[] t = target.toCharArray();
+        int n = t.length;
+        int m1 = w1.length;
+        int m2 = w2.length;
+
+        int[][][] memo = new int[n][m1 + 1][m2 + 1];
+        for (int[][] mat : memo) {
+            for (int[] row : mat) {
+                Arrays.fill(row, Integer.MIN_VALUE);
+            }
+        }
+
+        long ans = (long) dfs(n - 1, m1 - 1, m2 - 1, w1, w2, t, memo) - numDistinct(w1, t) - numDistinct(w2, t);
+        return (int) ((ans % MOD + MOD) % MOD); // 保证 ans 非负
+    }
+
+    private int dfs(int i, int j, int k, char[] word1, char[] word2, char[] target, int[][][] memo) {
+        if (j < -1 || k < -1 || j + k + 2 < i + 1) {
+            return 0;
+        }
+        if (i < 0) {
+            return 1;
+        }
+
+        if (memo[i][j + 1][k + 1] != Integer.MIN_VALUE) {
+            return memo[i][j + 1][k + 1];
+        }
+
+        // 不选 word1[j] 或 word2[k]（至少一个不在 target 中）
+        long res = (long) dfs(i, j - 1, k, word1, word2, target, memo)
+                + dfs(i, j, k - 1, word1, word2, target, memo)
+                - dfs(i, j - 1, k - 1, word1, word2, target, memo); // 容斥
+
+        // 选 word1[j] 和 word2[k]（都在 target 中）
+        if (j >= 0 && word1[j] == target[i]) {
+            // 选 word1[j]，减去不选 word2[k] 的方案数，就是 word2[k] 也在 target 中的方案数
+            res += dfs(i - 1, j - 1, k, word1, word2, target, memo)
+                 - dfs(i - 1, j - 1, k - 1, word1, word2, target, memo);
+        }
+        if (k >= 0 && word2[k] == target[i]) {
+            // 选 word2[k]，减去不选 word1[j] 的方案数，就是 word1[j] 也在 target 中的方案数
+            res += dfs(i - 1, j, k - 1, word1, word2, target, memo)
+                 - dfs(i - 1, j - 1, k - 1, word1, word2, target, memo);
+        }
+
+        res %= MOD;
+        memo[i][j + 1][k + 1] = (int) res;
+        return (int) res;
+    }
+
+    // 115. 不同的子序列
+    private int numDistinct(char[] s, char[] t) {
+        int n = s.length;
+        int m = t.length;
+        if (n < m) {
+            return 0;
+        }
+
+        int[] f = new int[m + 1];
+        f[0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = Math.min(i, m - 1); j >= Math.max(m - n + i, 0); j--) {
+                if (s[i] == t[j]) {
+                    f[j + 1] = (f[j + 1] + f[j]) % MOD;
+                }
+            }
+        }
+        return f[m];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    static constexpr int MOD = 1'000'000'007;
+
+    // 115. 不同的子序列
+    int numDistinct(string s, string t) {
+        int n = s.size(), m = t.size();
+        if (n < m) {
+            return 0;
+        }
+
+        vector<int> f(m + 1);
+        f[0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = min(i, m - 1); j >= max(m - n + i, 0); j--) {
+                if (s[i] == t[j]) {
+                    f[j + 1] = (f[j + 1] + f[j]) % MOD;
+                }
+            }
+        }
+        return f[m];
+    }
+
+public:
+    int interleaveCharacters(string word1, string word2, string target) {
+        int n = target.size(), m1 = word1.size(), m2 = word2.size();
+        vector memo(n, vector(m1 + 1, vector<int>(m2 + 1, INT_MIN)));
+
+        auto dfs = [&](this auto&& dfs, int i, int j, int k) -> int {
+            if (j < -1 || k < -1 || j + k + 2 < i + 1) {
+                return 0;
+            }
+            if (i < 0) {
+                return 1;
+            }
+
+            int& ref = memo[i][j + 1][k + 1];
+            if (ref != INT_MIN) {
+                return ref;
+            }
+
+            // 不选 word1[j] 或 word2[k]（至少一个不在 target 中）
+            long long res = 1LL * dfs(i, j - 1, k) + dfs(i, j, k - 1) - dfs(i, j - 1, k - 1); // 容斥
+
+            // 选 word1[j] 和 word2[k]（都在 target 中）
+            if (j >= 0 && word1[j] == target[i]) {
+                // 选 word1[j]，减去不选 word2[k] 的方案数，就是 word2[k] 也在 target 中的方案数
+                res += dfs(i - 1, j - 1, k) - dfs(i - 1, j - 1, k - 1);
+            }
+            if (k >= 0 && word2[k] == target[i]) {
+                // 选 word2[k]，减去不选 word1[j] 的方案数，就是 word1[j] 也在 target 中的方案数
+                res += dfs(i - 1, j, k - 1) - dfs(i - 1, j - 1, k - 1);
+            }
+
+            res %= MOD;
+            ref = res;
+            return res;
+        };
+
+        long long ans = 1LL * dfs(n - 1, m1 - 1, m2 - 1) - numDistinct(word1, target) - numDistinct(word2, target);
+        return (ans % MOD + MOD) % MOD; // 保证 ans 非负
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -155,18 +305,20 @@ func interleaveCharacters(word1, word2, target string) int {
 			return *p
 		}
 
-		// 不选 word1[j] 或 word2[k]
+		// 不选 word1[j] 或 word2[k]（至少一个不在 target 中）
 		res := dfs(i, j-1, k) + dfs(i, j, k-1) - dfs(i, j-1, k-1) // 容斥
+
+		// 选 word1[j] 和 word2[k]（都在 target 中）
 		if j >= 0 && word1[j] == target[i] {
-			// 选 word1[j]
+			// 选 word1[j]，减去不选 word2[k] 的方案数，就是 word2[k] 也在 target 中的方案数
 			res += dfs(i-1, j-1, k) - dfs(i-1, j-1, k-1)
 		}
 		if k >= 0 && word2[k] == target[i] {
-			// 选 word2[k]
+			// 选 word2[k]，减去不选 word1[j] 的方案数，就是 word1[j] 也在 target 中的方案数
 			res += dfs(i-1, j, k-1) - dfs(i-1, j-1, k-1)
 		}
-		res %= mod
 
+		res %= mod
 		*p = res
 		return res
 	}
