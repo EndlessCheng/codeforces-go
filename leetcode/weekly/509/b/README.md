@@ -2,9 +2,10 @@
 
 枚举修改的下标 $i=0,1,2\ldots,|s|-1$，我们需要知道：
 
-- 看左边，如果 $s$ 的前缀 $[0,i-1]$ 是 $t$ 的 $[0,\textit{pre}[i-1]]$ 的子序列，那么 $\textit{pre}[i-1]$ 最小是多少？
-- 看右边，如果 $s$ 的后缀 $[i+1,|s|-1]$ 是 $t$ 的 $[\textit{suf}[i+1],|t|-1]$ 的子序列，那么 $\textit{suf}[i+1]$ 最大是多少？
-- 如果 $\textit{pre}[i-1]$ 和 $\textit{suf}[i+1]$ 之间至少有一个下标 $j$，也就是 $\textit{suf}[i+1] - \textit{pre}[i-1] > 1$，那么就可以把 $s[i]$ 改成 $t[j]$，从而使 $s$ 是 $t$ 的子序列。
+- 看左边，设 $s$ 的前缀 $[0,i-1]$ 是 $t$ 的前缀 $[0,\textit{pre}[i-1]]$ 的子序列。
+- 看右边，设 $s$ 的后缀 $[i+1,|s|-1]$ 是 $t$ 的后缀 $[\textit{suf}[i+1],|t|-1]$ 的子序列。
+- 如果 $\textit{pre}[i-1]$ 和 $\textit{suf}[i+1]$ 之间至少有一个下标 $j$，也就是 $\textit{suf}[i+1] - \textit{pre}[i-1] > 1$，那么就可以把 $s[i]$ 改成 $t[j]$，使 $s$ 是 $t$ 的子序列。
+- 所以 $\textit{pre}[i-1]$ 越小越好，$\textit{suf}[i+1]$ 越大越好。
 
 如何计算 $\textit{pre}$ 和 $\textit{suf}$？见 [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)，[我的题解](https://leetcode.cn/problems/is-subsequence/solution/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/)。  
 
