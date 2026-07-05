@@ -1,12 +1,12 @@
-由于题目要求 $k>1$，我们先特判 $\textit{nums}$ 只包含 $1$ 的情况，此时最优解是只选一个 $1$，分数差为 $-1$，最小 $k$ 为 $2$。
+由于题目要求 $k>1$，我们先特判 $\textit{nums}$ 只包含 $1$ 的情况，此时最优解是只选一个 $1$，分数差为 $-1$，最小 $k$ 为 $2$（见示例 3）。
 
-否则，选 $\textit{nums}[i]$ 的因子作为 $k$ 是最优的，直接枚举。我们可以先收集所有因子，然后去重，再枚举因子。这样可以避免重复计算。
+否则，选 $\textit{nums}[i]$ 的因子作为 $k$ 更好（否则分数差一定是负数）。我们可以先收集所有因子，去重，再枚举因子，这样可以避免重复计算。
 
-进一步地，如果一个数是 $x$ 的倍数，那么也是 $x$ 的质因子的倍数，所以我们**只需枚举质因子**。
+进一步地，如果一个数是 $x$ 的倍数，那么也是 $x$ 的质因子的倍数，所以我们**只需枚举质因子**，这样倍数更多。即使倍数相同，质因子作为 $k$ 也更小，符合题目要求。
 
 对于一个固定的 $k$，设 $x=\textit{nums}[i]$，如果 $x$ 不是 $k$ 的倍数，则视作 $-x$（减去 Bob 的分数）。问题变成 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，请看 [我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ioTC6BECj/?t=13m11s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 预处理每个数的质因子
@@ -37,7 +37,7 @@ class Solution:
 
         if not all_prime_divisors:
             # 每个数都是 1
-            # 最优是只选一个 1（分数差为 -1），最小 k 为 2
+            # 最优是只选一个 1（分数差为 -1），最小 k 为 2（见示例 3）
             return MOD - 2
 
         # 排序去重
@@ -79,7 +79,7 @@ class Solution {
 
         if (allPrimeDivisors.isEmpty()) {
             // 每个数都是 1
-            // 最优是只选一个 1（分数差为 -1），最小 k 为 2
+            // 最优是只选一个 1（分数差为 -1），最小 k 为 2（见示例 3）
             return MOD - 2;
         }
 
@@ -101,8 +101,7 @@ class Solution {
             preK = k;
         }
 
-        // 保证结果非负
-        return (int) (((long) maxDiff * bestK % MOD + MOD) % MOD);
+        return (int) ((long) maxDiff * bestK % MOD);
     }
 
     // 53. 最大子数组和（如果 nums[i] 不是 k 的倍数，则视作 -nums[i]）
@@ -159,7 +158,7 @@ public:
 
         if (all_prime_divisors.empty()) {
             // 每个数都是 1
-            // 最优是只选一个 1（分数差为 -1），最小 k 为 2
+            // 最优是只选一个 1（分数差为 -1），最小 k 为 2（见示例 3）
             return MOD - 2;
         }
 
@@ -178,8 +177,7 @@ public:
             }
         }
 
-        // 保证结果非负
-        return (1LL * max_diff * best_k % MOD + MOD) % MOD;
+        return 1LL * max_diff * best_k % MOD;
     }
 };
 ```
@@ -223,7 +221,7 @@ func divisibleGame(nums []int) (ans int) {
 
 	if len(allPrimeDivisors) == 0 {
 		// 每个数都是 1
-		// 最优是只选一个 1（分数差为 -1），最小 k 为 2
+		// 最优是只选一个 1（分数差为 -1），最小 k 为 2（见示例 3）
 		return mod - 2
 	}
 
@@ -241,8 +239,7 @@ func divisibleGame(nums []int) (ans int) {
 		}
 	}
 
-	// 保证结果非负
-	return (maxDiff*bestK%mod + mod) % mod
+	return maxDiff * bestK % mod
 }
 ```
 

@@ -61,6 +61,5 @@ func divisibleGame(nums []int) (ans int) {
 		}
 	}
 
-	// 保证结果非负
-	return (maxDiff*bestK%mod + mod) % mod
+	return maxDiff * bestK % mod
 }
