@@ -1,0 +1,10 @@
+"cat"
+"chat"
+true
+
+"plane"
+"apple"
+false
+
+
+
