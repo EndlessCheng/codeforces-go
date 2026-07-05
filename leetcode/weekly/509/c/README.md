@@ -256,8 +256,6 @@ func divisibleGame(nums []int) (ans int) {
 
 ## 方法二：线段树维护动态最大子数组和
 
-这个方法可以解决 $n\le 10^5$ 的数据范围。
-
 先把所有 $\textit{nums}[i]$ 都变成 $-\textit{nums}[i]$。
 
 还是枚举质因子作为 $k$。对于一个固定的 $k$，我们需要把 $\textit{nums}$ 中是 $k$ 的倍数的那些数，从 $-\textit{nums}[i]$ 还原成 $\textit{nums}[i]$，然后计算 $\textit{nums}$ 的最大子数组和。
@@ -322,12 +320,12 @@ class SegmentTree:
 class Solution:
     def divisibleGame(self, nums: list[int]) -> int:
         MOD = 1_000_000_007
-        prime_divisors_to_indices = defaultdict(list)
+        prime_to_indices = defaultdict(list)
         for i, x in enumerate(nums):
-            for d in prime_divisors[x]:
-                prime_divisors_to_indices[d].append(i)
+            for p in prime_divisors[x]:
+                prime_to_indices[p].append(i)
 
-        if not prime_divisors_to_indices:
+        if not prime_to_indices:
             # 每个数都是 1
             # 最优是只选一个 1（分数差为 -1），最小 k 为 2（见示例 3）
             return MOD - 2
@@ -338,7 +336,7 @@ class Solution:
         best_k = 0
 
         # 枚举质因子作为 k，计算最大子数组和
-        for k, indices in prime_divisors_to_indices.items():
+        for k, indices in prime_to_indices.items():
             for i in indices:
                 # nums[i] 是质因子 k 的倍数
                 t.update(1, 0, n - 1, i, nums[i])
@@ -555,8 +553,8 @@ public:
         int n = nums.size();
         unordered_map<int, vector<int>> prime_to_indices;
         for (int i = 0; i < n; i++) {
-            for (int d : prime_divisors[nums[i]]) {
-                prime_to_indices[d].push_back(i);
+            for (int p : prime_divisors[nums[i]]) {
+                prime_to_indices[p].push_back(i);
             }
         }
 
@@ -654,14 +652,14 @@ func (t seg) update(node, l, r, i, val int) {
 func divisibleGame(nums []int) (ans int) {
 	const mod = 1_000_000_007
 
-	primeDivisorsToIndices := map[int32][]int{}
+	primeToIndices := map[int32][]int{}
 	for i, x := range nums {
-		for _, d := range primeDivisors[x] {
-			primeDivisorsToIndices[d] = append(primeDivisorsToIndices[d], i)
+		for _, p := range primeDivisors[x] {
+			primeToIndices[p] = append(primeToIndices[p], i)
 		}
 	}
 
-	if len(primeDivisorsToIndices) == 0 {
+	if len(primeToIndices) == 0 {
 		// 每个数都是 1
 		// 最优是只选一个 1（分数差为 -1），最小 k 为 2
 		return mod - 2
@@ -673,7 +671,7 @@ func divisibleGame(nums []int) (ans int) {
 	maxDiff, bestK := math.MinInt, int32(0)
 
 	// 枚举质因子作为 k，计算最大子数组和
-	for k, indices := range primeDivisorsToIndices {
+	for k, indices := range primeToIndices {
 		for _, i := range indices {
 			// nums[i] 是质因子 k 的倍数
 			t.update(1, 0, n-1, i, nums[i])
@@ -699,6 +697,237 @@ func divisibleGame(nums []int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}\left(\dfrac{n\log n\log U}{\log\log U} \right)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。最坏情况是所有元素都相同，每个数至多有 $\mathcal{O}\left(\dfrac{\log U}{\log\log U}\right)$ 个不同的质因子。
 - 空间复杂度：$\mathcal{O}\left(\dfrac{n\log U}{\log\log U}\right)$。
+
+## 方法三：前缀和 + 最大子数组和
+
+回顾最大子数组和的计算过程：
+
+- 对于一个固定的 $k$，夹在 $\textit{nums}$ 中的两个 $k$ 的倍数之间的数，都是负数。我们可以把这些负数合在一起，当作一个大负数。
+- 对于最大子数组和的 DP 算法（见 53 题），只有在当前元素是正数的情况下，我们才可能得到更大的子数组和。
+
+在遍历 $\textit{nums}$ 的同时，计算与 $\textit{nums}[i]$ 的质因子有关的最大子数组和。
+
+对每个质因子 $p$：
+
+- 记录其上一次算出的 DP 值 $f[p]$。
+- 记录其上一次出现的下标加一 $\textit{last}[p]$。
+
+设 $\textit{nums}$ 的**前缀和**数组为 $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
+
+从 $\textit{last}[p]$ 到 $i-1$ 之间（含）的元素之和为 $s[i] - s[\textit{last}[p]]$。其相反数就是我们合并的大负数。
+
+在下标 $i$ 遍历到质因子 $p$ 时，新的 DP 值为
+
+$$
+\max(f[p] - (s[i] - s[\textit{last}[p]]), 0) + \textit{nums}[i]
+$$
+
+记录到 $f[p]$ 中。
+
+```py [sol-Python3]
+# 预处理每个数的质因子
+MX = 1_000_001
+prime_divisors = [[] for _ in range(MX)]
+for i in range(2, MX):
+    if not prime_divisors[i]:  # i 是质数
+        for j in range(i, MX, i):  # 枚举 i 的倍数 j
+            prime_divisors[j].append(i)  # i 是 j 的质因子
+
+
+class Solution:
+    def divisibleGame(self, nums: list[int]) -> int:
+        MOD = 1_000_000_007
+
+        n = len(nums)
+        s = list(accumulate(nums, initial=0))
+
+        if s[n] == n:
+            # 每个数都是 1
+            # 最优是只选一个 1（分数差为 -1），最小 k 为 2
+            return MOD - 2
+
+        f = defaultdict(int)
+        last = defaultdict(int)
+        max_diff = -inf
+        best_k = 0
+
+        for i, x in enumerate(nums):
+            for p in prime_divisors[x]:
+                diff = f[p] = max(f[p] - s[i] + s[last[p]], 0) + x
+                if diff > max_diff or diff == max_diff and p < best_k:
+                    max_diff = diff
+                    best_k = p
+                last[p] = i + 1
+
+        return max_diff * best_k % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    public int divisibleGame(int[] nums) {
+        final int MOD = 1_000_000_007;
+
+        int n = nums.length;
+        int[] sum = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            sum[i + 1] = sum[i] + nums[i];
+        }
+
+        if (sum[n] == n) {
+            // 每个数都是 1
+            // 最优是只选一个 1（分数差为 -1），最小 k 为 2
+            return MOD - 2;
+        }
+
+        HashMap<Integer, Integer> f = new HashMap<>();
+        HashMap<Integer, Integer> last = new HashMap<>();
+        int maxDiff = Integer.MIN_VALUE;
+        int bestK = 0;
+
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            for (int p : getPrimeDivisors(x)) {
+                int midSum = sum[i] - sum[last.getOrDefault(p, 0)];
+                int diff = Math.max(f.getOrDefault(p, 0) - midSum, 0) + x;
+                f.put(p, diff);
+                if (diff > maxDiff || diff == maxDiff && p < bestK) {
+                    maxDiff = diff;
+                    bestK = p;
+                }
+                last.put(p, i + 1);
+            }
+        }
+
+        return (int) ((long) maxDiff * bestK % MOD);
+    }
+
+    private List<Integer> getPrimeDivisors(int x) {
+        List<Integer> divisors = new ArrayList<>();
+        for (int i = 2; i <= x / i; i++) {
+            if (x % i == 0) {
+                divisors.add(i);
+                while (x % i == 0) {
+                    x /= i;
+                }
+            }
+        }
+        if (x > 1) {
+            divisors.add(x);
+        }
+        return divisors;
+    }
+}
+```
+
+```cpp [sol-C++]
+constexpr int MX = 1'000'001;
+vector<int> prime_divisors[MX];
+
+// 预处理每个数的质因子
+int init = [] {
+    for (int i = 2; i < MX; i++) {
+        if (prime_divisors[i].empty()) { // i 是质数
+            for (int j = i; j < MX; j += i) { // 枚举 i 的倍数 j
+                prime_divisors[j].push_back(i); // i 是 j 的因子
+            }
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    int divisibleGame(vector<int>& nums) {
+        constexpr int MOD = 1'000'000'007;
+
+        int n = nums.size();
+        vector<int> sum(n + 1);
+        partial_sum(nums.begin(), nums.end(), sum.begin() + 1); // nums 的前缀和
+
+        if (sum[n] == n) {
+            // 每个数都是 1
+            // 最优是只选一个 1（分数差为 -1），最小 k 为 2
+            return MOD - 2;
+        }
+
+        unordered_map<int, int> f;
+        unordered_map<int, int> last;
+        int max_diff = INT_MIN;
+        int best_k = 0;
+
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            for (int p : prime_divisors[x]) {
+                int diff = max(f[p] - sum[i] + sum[last[p]], 0) + x;
+                f[p] = diff;
+                if (diff > max_diff || diff == max_diff && p < best_k) {
+                    max_diff = diff;
+                    best_k = p;
+                }
+                last[p] = i + 1;
+            }
+        }
+
+        return 1LL * max_diff * best_k % MOD;
+    }
+};
+```
+
+```go [sol-Go]
+const mx = 1_000_001
+var primeDivisors [mx][]int32
+
+// 预处理每个数的质因子
+func init() {
+	for i := int32(2); i < mx; i++ {
+		if primeDivisors[i] == nil { // i 是质数
+			for j := i; j < mx; j += i { // 枚举 i 的倍数 j
+				primeDivisors[j] = append(primeDivisors[j], i) // i 是 j 的质因子
+			}
+		}
+	}
+}
+
+func divisibleGame(nums []int) (ans int) {
+	const mod = 1_000_000_007
+
+	n := len(nums)
+	sum := make([]int, n+1)
+	for i, x := range nums {
+		sum[i+1] = sum[i] + x
+	}
+
+	if sum[n] == n {
+		// 每个数都是 1
+		// 最优是只选一个 1（分数差为 -1），最小 k 为 2
+		return mod - 2
+	}
+
+	f := map[int32]int{}
+	last := map[int32]int{}
+	maxDiff, bestK := math.MinInt, int32(0)
+
+	for i, x := range nums {
+		for _, p := range primeDivisors[x] {
+			diff := max(f[p]-sum[i]+sum[last[p]], 0) + x
+			f[p] = diff
+			if diff > maxDiff || diff == maxDiff && p < bestK {
+				maxDiff, bestK = diff, p
+			}
+			last[p] = i + 1
+		}
+	}
+
+	return maxDiff * int(bestK) % mod
+}
+```
+
+#### 复杂度分析
+
+忽略预处理的时间和空间。
+
+- 时间复杂度：$\mathcal{O}\left(\dfrac{n\log U}{\log\log U} \right)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。最坏情况同方法二。
+- 空间复杂度：$\mathcal{O}(n\log\log U)$。最坏情况同方法一。
 
 ## 专题训练
 
