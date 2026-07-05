@@ -2,12 +2,9 @@
 
 - 计算下标 $i$ 在 $[0,j-k]$ 中的最大的 $\textit{nums}[i]$（记作 $\textit{mx}$）。
 
-$\textit{mx}$ 可以在枚举 $j$ 的同时维护：
+$\textit{mx}$ 可以在枚举 $j$ 的同时维护。$j$ 每增加 $1$，范围 $[0,j-k]$ 的右边界就增加 $1$。所以只需考虑用新增的元素 $\textit{nums}[j-k]$ 去更新 $\textit{mx}$ 的最大值。
 
-- $j$ 每增加 $1$，范围 $[0,j-k]$ 的右边界就增加 $1$。
-- 所以在枚举 $j$ 的同时，用 $\textit{nums}[j-k]$ 更新 $\textit{mx}$ 的最大值。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1qXTC63EQa/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

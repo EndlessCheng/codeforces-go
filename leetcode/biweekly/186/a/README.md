@@ -5,8 +5,6 @@
 1. 统计 $\textit{nums}$ 中的 $\textit{nums}[m]$ 的出现次数，必须恰好为 $1$。
 2. $[0,m-1]$ 和 $[m+1,n-1]$ 必须都不包含 $\textit{nums}[m]$。这样写可以中途跳出循环，不需要完整遍历 $\textit{nums}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def isMiddleElementUnique(self, nums: list[int]) -> bool:
