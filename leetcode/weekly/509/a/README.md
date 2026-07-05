@@ -1,4 +1,10 @@
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+遍历的同时，维护数字范围的最大值 $\textit{maxRange}$。
+
+- 如果 $\textit{nums}[i]$ 的数字范围比 $\textit{maxRange}$ 还大，那么更新 $\textit{maxRange}$，同时重置答案为 $\textit{nums}[i]$（重新累加）。
+- 如果 $\textit{nums}[i]$ 的数字范围等于 $\textit{maxRange}$，那么把 $\textit{nums}[i]$ 加到答案中。
+- 如果 $\textit{nums}[i]$ 的数字范围小于 $\textit{maxRange}$，不变。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1ioTC6BECj/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

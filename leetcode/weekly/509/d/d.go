@@ -2,11 +2,6 @@ package main
 
 // https://space.bilibili.com/206214
 func getSum(s []int) (ans int64) {
-	sum := make([]int64, len(s)+1)
-	for i, x := range s {
-		sum[i+1] = sum[i] + int64(x)
-	}
-
 	// 将 s 改造为 t，这样就不需要分 len(s) 的奇偶来讨论了，因为新数组 t 的每个回文子数组都是奇回文子数组（都有回文中心）
 	// s 和 t 的下标转换关系：
 	// (si+1)*2 = ti
@@ -47,6 +42,11 @@ func getSum(s []int) (ans int64) {
 			boxM, boxR = i, i+hl
 		}
 		halfLen[i] = hl
+	}
+
+	sum := make([]int64, len(s)+1)
+	for i, x := range s {
+		sum[i+1] = sum[i] + int64(x)
 	}
 
 	for i := 2; i < len(halfLen); i++ {
