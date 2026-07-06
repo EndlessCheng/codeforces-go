@@ -56,7 +56,7 @@ func canMakeSubsequence2(s, t string) bool {
 			j0++
 		}
 
-		if j0 == n || j1 == n {
+		if j1 == n {
 			// s 是 t 的子序列
 			return true
 		}

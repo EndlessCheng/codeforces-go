@@ -193,7 +193,7 @@ func canMakeSubsequence(s, t string) bool {
 
 对于 $j_0$，只能普通匹配：如果 $s[j_0] = t[i]$，那么 $j_0$ 增加一。
 
-任意时刻，只要 $j_0=|s|$ 或者 $j_1=|s|$，则说明 $s$ 是 $t$ 的子序列。
+任意时刻，只要 $j_1=|s|$，则说明 $s$ 是 $t$ 的子序列。注：由于 $j_0\le j_1$，我们只需比较 $j_1$ 和 $|s|$。
 
 ```py [sol-Python3]
 class Solution:
@@ -214,7 +214,7 @@ class Solution:
             if s[j0] == ch:
                 j0 += 1
 
-            if j0 == n or j1 == n:
+            if j1 == n:
                 # s 是 t 的子序列
                 return True
 
@@ -242,7 +242,7 @@ class Solution {
                 j0++;
             }
 
-            if (j0 == n || j1 == n) {
+            if (j1 == n) {
                 // s 是 t 的子序列
                 return true;
             }
@@ -273,7 +273,7 @@ public:
                 j0++;
             }
 
-            if (j0 == n || j1 == n) {
+            if (j1 == n) {
                 // s 是 t 的子序列
                 return true;
             }
@@ -302,7 +302,7 @@ func canMakeSubsequence(s, t string) bool {
 			j0++
 		}
 
-		if j0 == n || j1 == n {
+		if j1 == n {
 			// s 是 t 的子序列
 			return true
 		}
