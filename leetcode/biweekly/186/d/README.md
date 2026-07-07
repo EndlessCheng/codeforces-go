@@ -66,6 +66,12 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1qXTC63EQa/?t=12m21s)，欢迎点赞关注~
 
+## 答疑
+
+**问**：本题和 115 题的区别在哪？
+
+**答**：在没有 $\textit{word}_2$ 的情况下，当我们选 $\textit{word}_1[j]$ 时，必须用 $\textit{word}_1[j]$ 去匹配 $\textit{target}[i]$（否则选的下标不是严格递增的）。对于本题，当我们选 $\textit{word}_1[j]$ 时，可能要用 $\textit{word}_1[j]$ 去匹配 $\textit{target}[i]$，也可能要用 $\textit{word}_2$ 的某个字符去匹配 $\textit{target}[i]$，情况更多。
+
 ## 写法一：记忆化搜索
 
 关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
@@ -376,6 +382,45 @@ class Solution:
         return (f[n][m1 + 1][m2 + 1] - self.numDistinct(word1, target) - self.numDistinct(word2, target)) % MOD
 ```
 
+```py [sol-Python3 滚动数组]
+MOD = 1_000_000_007
+
+class Solution:
+    # 115. 不同的子序列
+    def numDistinct(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        if n < m:
+            return 0
+
+        f = [1] + [0] * m
+        for i, x in enumerate(s):
+            for j in range(min(i, m - 1), max(m - n + i, 0) - 1, -1):
+                if x == t[j]:
+                    f[j + 1] = (f[j + 1] + f[j]) % MOD
+        return f[m]
+
+    def interleaveCharacters(self, word1: str, word2: str, target: str) -> int:
+        m1, m2 = len(word1), len(word2)
+        f = [[0] * (m2 + 2) for _ in range(m1 + 2)]
+        for j in range(1, m1 + 2):
+            for k in range(1, m2 + 2):
+                f[j][k] = 1
+
+        for i, ch in enumerate(target):
+            nf = [[0] * (m2 + 2) for _ in range(m1 + 2)]
+            for j in range(m1 + 1):
+                for k in range(max(0, i + 1 - j), m2 + 1):
+                    res = nf[j][k + 1] + nf[j + 1][k] - nf[j][k]
+                    if j > 0 and word1[j - 1] == ch:
+                        res += f[j][k + 1] - f[j][k]
+                    if k > 0 and word2[k - 1] == ch:
+                        res += f[j + 1][k] - f[j][k]
+                    nf[j + 1][k + 1] = res % MOD
+            f = nf
+
+        return (f[m1 + 1][m2 + 1] - self.numDistinct(word1, target) - self.numDistinct(word2, target)) % MOD
+```
+
 ```java [sol-Java]
 class Solution {
     private static final int MOD = 1_000_000_007;
@@ -553,7 +598,7 @@ func interleaveCharacters(word1, word2, target string) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(nm_1m_2)$，其中 $n$ 是 $\textit{target}$ 的长度，$m_1$ 是 $\textit{word}_1$ 的长度，$m_2$ 是 $\textit{word}_2$ 的长度。
-- 空间复杂度：$\mathcal{O}(nm_1m_2)$。
+- 空间复杂度：$\mathcal{O}(nm_1m_2)$ 或 $\mathcal{O}(m_1m_2)$。用滚动数组，可以优化至 $\mathcal{O}(m_1m_2)$ 空间，见 Python3 第二份代码。
 
 ## 专题训练
 
