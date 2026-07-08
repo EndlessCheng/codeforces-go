@@ -487,6 +487,30 @@ func canMakeSubsequence(s, t string) bool {
 - 时间复杂度：$\mathcal{O}(m)$，其中 $m$ 是 $t$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 附：记忆化搜索
+
+$\textit{dfs}(i, \textit{left})$ 返回 $s$ 的最长前缀长度，满足该前缀是 $t$ 的 $[0,i]$ 的子序列。参数 $\textit{left}$ 表示剩余修改次数。 
+
+```py [sol-Python3]
+class Solution:
+    def canMakeSubsequence(self, s: str, t: str) -> bool:
+        n = len(s)
+
+        @cache
+        def dfs(i: int, left: bool) -> bool:
+            if i < 0:
+                return 0
+            res = dfs(i - 1, left)
+            if res < n and s[res] == t[i]:  # 普通匹配
+                res += 1
+            if left > 0:
+                res = max(res, dfs(i - 1, left - 1) + 1)  # 直接修改
+            return res
+
+        k = 1  # 至多改 k 次（本题 k = 1）
+        return dfs(len(t) - 1, k) >= n
+```
+
 ## 专题训练
 
 1. 双指针题单的「**§4.2 判断子序列**」。
