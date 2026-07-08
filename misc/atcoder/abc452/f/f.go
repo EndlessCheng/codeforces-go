@@ -33,10 +33,10 @@ func run(in io.Reader, out io.Writer) {
 	f := func(k int) (res int) {
 		t := make(fenwick, n+1)
 		inv, l := 0, 0
-		for _, v := range a {
+		for i, v := range a {
 			inv += t.pre(n) - t.pre(v)
 			t.update(v, 1)
-			for inv >= k {
+			for l <= i && inv >= k {
 				t.update(a[l], -1)
 				inv -= t.pre(a[l])
 				l++
