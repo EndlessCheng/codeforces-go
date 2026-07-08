@@ -1,15 +1,170 @@
 ## 方法一：前后缀分解
 
-枚举修改的下标 $i=0,1,2\ldots,|s|-1$，我们需要知道：
+### 写法一
+
+设修改的字母与 $t[i]$ 匹配。枚举 $i=0,1,2\ldots,|t|-1$，我们需要知道：
+
+- 看左边，设 $t$ 的前缀 $[0,i-1]$ 中的最长匹配子序列为 $s$ 的前缀 $[0,\textit{pre}[i-1]]$。
+- 看右边，设 $t$ 的后缀 $[i+1,|t|-1]$ 中的最长匹配子序列为 $s$ 的后缀 $[\textit{suf}[i+1],|s|-1]$。
+- 如果 $s$ 的前缀 $[0,\textit{pre}[i-1]]$ 和后缀 $[\textit{suf}[i+1],|s|-1]$ 之间至多有一个字母，那么把这个字母改成 $t[i]$，即可让 $s$ 是 $t$ 的子序列。也就是 $(\textit{pre}[i-1]+1) + 1 + (n - \textit{suf}[i+1]) \ge n$，即 $\textit{pre}[i-1]+2\ge \textit{suf}[i+1]$。
+
+> 如果 $s$ 不是 $t$ 的子序列，上式中的 $\ge $ 可以写成 $=$。
+
+如何计算 $\textit{pre}$ 和 $\textit{suf}$？见 [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)，[我的题解](https://leetcode.cn/problems/is-subsequence/solution/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/)。  
+
+代码实现时，可以先计算 $\textit{suf}$，然后在枚举 $i$ 的同时计算 $\textit{pre}$。
+
+```py [sol-Python3]
+class Solution:
+    def canMakeSubsequence(self, s: str, t: str) -> bool:
+        n, m = len(s), len(t)
+
+        # s[suf[i]:] 是 t[i:] 的子序列
+        suf = [0] * (m + 1)
+        suf[m] = n
+        j = n
+        for i in range(m - 1, -1, -1):
+            if s[j - 1] == t[i]:
+                j -= 1
+                if j == 0:
+                    # s 已是 t 的子序列
+                    return True
+            suf[i] = j
+
+        pre = -1
+        for i, ch in enumerate(t):
+            # 此时 s[:pre+1] 是 t[:i] 的子序列
+            if pre + 2 == suf[i + 1]:  # 公式推导见题解
+                return True
+            if s[pre + 1] == ch:
+                pre += 1
+
+        return False
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean canMakeSubsequence(String S, String T) {
+        char[] s = S.toCharArray();
+        char[] t = T.toCharArray();
+        int n = s.length;
+        int m = t.length;
+
+        // s[suf[i]:] 是 t[i:] 的子序列
+        int[] suf = new int[m + 1];
+        suf[m] = n;
+        int j = n;
+        for (int i = m - 1; i >= 0; i--) {
+            if (s[j - 1] == t[i]) {
+                j--;
+                if (j == 0) {
+                    // s 已是 t 的子序列
+                    return true;
+                }
+            }
+            suf[i] = j;
+        }
+
+        int pre = -1;
+        for (int i = 0; i < m; i++) {
+            // 此时 s[:pre+1] 是 t[:i] 的子序列
+            if (pre + 2 == suf[i + 1]) { // 公式推导见题解
+                return true;
+            }
+            if (s[pre + 1] == t[i]) {
+                pre++;
+            }
+        }
+
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool canMakeSubsequence(string s, string t) {
+        int n = s.size(), m = t.size();
+
+        // s[suf[i]:] 是 t[i:] 的子序列
+        vector<int> suf(m + 1);
+        suf[m] = n;
+        int j = n;
+        for (int i = m - 1; i >= 0; i--) {
+            if (s[j - 1] == t[i]) {
+                j--;
+                if (j == 0) {
+                    // s 已是 t 的子序列
+                    return true;
+                }
+            }
+            suf[i] = j;
+        }
+
+        int pre = -1;
+        for (int i = 0; i < m; i++) {
+            // 此时 s[:pre+1] 是 t[:i] 的子序列
+            if (pre + 2 == suf[i + 1]) { // 公式推导见题解
+                return true;
+            }
+            if (s[pre + 1] == t[i]) {
+                pre++;
+            }
+        }
+
+        return false;
+    }
+};
+```
+
+```go [sol-Go]
+func canMakeSubsequence(s, t string) bool {
+	n, m := len(s), len(t)
+
+	// s[suf[i]:] 是 t[i:] 的子序列
+	suf := make([]int, m+1)
+	suf[m] = n
+	j := n
+	for i := m - 1; i >= 0; i-- {
+		if s[j-1] == t[i] {
+			j--
+			if j == 0 {
+				// s 已是 t 的子序列
+				return true
+			}
+		}
+		suf[i] = j
+	}
+
+	pre := -1
+	for i, ch := range t {
+		// 此时 s[:pre+1] 是 t[:i] 的子序列
+		if pre+2 == suf[i+1] { // 公式推导见题解
+			return true
+		}
+		if s[pre+1] == byte(ch) {
+			pre++
+		}
+	}
+
+	return false
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。
+- 空间复杂度：$\mathcal{O}(m)$。
+
+### 写法二
+
+枚举我们修改了哪个 $s[i]$，其中 $i=0,1,2\ldots,|s|-1$，我们需要知道：
 
 - 看左边，设 $s$ 的前缀 $[0,i-1]$ 是 $t$ 的前缀 $[0,\textit{pre}[i-1]]$ 的子序列。
 - 看右边，设 $s$ 的后缀 $[i+1,|s|-1]$ 是 $t$ 的后缀 $[\textit{suf}[i+1],|t|-1]$ 的子序列。
 - 如果 $\textit{pre}[i-1]$ 和 $\textit{suf}[i+1]$ 之间至少有一个下标 $j$，也就是 $\textit{suf}[i+1] - \textit{pre}[i-1] > 1$，那么就可以把 $s[i]$ 改成 $t[j]$，使 $s$ 是 $t$ 的子序列。
 - 所以 $\textit{pre}[i-1]$ 越小越好，$\textit{suf}[i+1]$ 越大越好。
-
-如何计算 $\textit{pre}$ 和 $\textit{suf}$？见 [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)，[我的题解](https://leetcode.cn/problems/is-subsequence/solution/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/)。  
-
-代码实现时，可以先计算 suf，然后在枚举修改的下标 $i$ 的同时计算 $\textit{pre}$。
 
 ```py [sol-Python3]
 class Solution:
@@ -137,6 +292,7 @@ public:
 ```go [sol-Go]
 func canMakeSubsequence(s, t string) bool {
 	n, m := len(s), len(t)
+
 	// s[i:] 是 t[suf[i]:] 的子序列（如果 suf[i]=-1 则不是子序列）
 	suf := make([]int, n+1)
 	suf[n] = m
@@ -176,7 +332,7 @@ func canMakeSubsequence(s, t string) bool {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。虽然写了个二重循环，但内层循环中的下标只会减小（或增大），所以二重循环的总循环次数是 $\mathcal{O}(n+m)$ 的。
-- 空间复杂度：$\mathcal{O}(n)$
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 方法二：状态机 DP
 
@@ -199,6 +355,9 @@ func canMakeSubsequence(s, t string) bool {
 class Solution:
     def canMakeSubsequence(self, s: str, t: str) -> bool:
         n = len(s)
+        if n > len(t):
+            return False
+
         j0 = 0  # 在不修改的情况下，s 的前缀 [0, j0-1] 是 t 的当前前缀的子序列
         j1 = 0  # 在改过一次的情况下，s 的前缀 [0, j1-1] 是 t 的当前前缀的子序列
 
@@ -224,6 +383,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public boolean canMakeSubsequence(String S, String t) {
+        if (S.length() > t.length()) {
+            return false;
+        }
+
         char[] s = S.toCharArray();
         int n = s.length;
         int j0 = 0; // 在不修改的情况下，s 的前缀 [0, j0-1] 是 t 的当前前缀的子序列
@@ -257,6 +420,10 @@ class Solution {
 public:
     bool canMakeSubsequence(string s, string t) {
         int n = s.size();
+        if (n > t.size()) {
+            return false;
+        }
+
         int j0 = 0; // 在不修改的情况下，s 的前缀 [0, j0-1] 是 t 的当前前缀的子序列
         int j1 = 0; // 在改过一次的情况下，s 的前缀 [0, j1-1] 是 t 的当前前缀的子序列
         for (char ch : t) {
@@ -286,6 +453,10 @@ public:
 ```go [sol-Go]
 func canMakeSubsequence(s, t string) bool {
 	n := len(s)
+	if n > len(t) {
+		return false
+	}
+
 	j0 := 0 // 在不修改的情况下，s 的前缀 [0, j0-1] 是 t 的当前前缀的子序列
 	j1 := 0 // 在改过一次的情况下，s 的前缀 [0, j1-1] 是 t 的当前前缀的子序列
 	for _, ch := range t {
@@ -313,7 +484,7 @@ func canMakeSubsequence(s, t string) bool {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。
+- 时间复杂度：$\mathcal{O}(m)$，其中 $m$ 是 $t$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练

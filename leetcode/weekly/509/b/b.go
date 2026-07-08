@@ -3,6 +3,36 @@ package main
 // https://space.bilibili.com/206214
 func canMakeSubsequence(s, t string) bool {
 	n, m := len(s), len(t)
+	// s[suf[i]:] 是 t[i:] 的子序列
+	suf := make([]int, m+1)
+	suf[m] = n
+	j := n
+	for i := m - 1; i >= 0; i-- {
+		if s[j-1] == t[i] {
+			j--
+			if j == 0 {
+				// s 已是 t 的子序列
+				return true
+			}
+		}
+		suf[i] = j
+	}
+
+	pre := -1
+	for i, ch := range t {
+		// 此时 s[:pre+1] 是 t[:i] 的子序列
+		if pre+2 == suf[i+1] { // 公式推导见题解
+			return true
+		}
+		if s[pre+1] == byte(ch) {
+			pre++
+		}
+	}
+	return false
+}
+
+func canMakeSubsequence2(s, t string) bool {
+	n, m := len(s), len(t)
 	// s[i:] 是 t[suf[i]:] 的子序列（如果 suf[i]=-1 则不是子序列）
 	suf := make([]int, n+1)
 	suf[n] = m
@@ -38,8 +68,12 @@ func canMakeSubsequence(s, t string) bool {
 	return false
 }
 
-func canMakeSubsequence2(s, t string) bool {
+func canMakeSubsequence3(s, t string) bool {
 	n := len(s)
+	if n > len(t) {
+		return false
+	}
+
 	j0 := 0 // 在不修改的情况下，s 的前缀 [0, j0-1] 是 t 的当前前缀的子序列
 	j1 := 0 // 在改过一次的情况下，s 的前缀 [0, j1-1] 是 t 的当前前缀的子序列
 	for _, ch := range t {
