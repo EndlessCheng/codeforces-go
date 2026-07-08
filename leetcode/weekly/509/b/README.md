@@ -6,7 +6,7 @@
 
 - 看左边，设 $t$ 的前缀 $[0,i-1]$ 中的最长匹配子序列为 $s$ 的前缀 $[0,\textit{pre}[i-1]]$。
 - 看右边，设 $t$ 的后缀 $[i+1,|t|-1]$ 中的最长匹配子序列为 $s$ 的后缀 $[\textit{suf}[i+1],|s|-1]$。
-- 如果 $s$ 的前缀 $[0,\textit{pre}[i-1]]$ 和后缀 $[\textit{suf}[i+1],|s|-1]$ 之间至多有一个字母，那么把这个字母改成 $t[i]$，即可让 $s$ 是 $t$ 的子序列。也就是 $(\textit{pre}[i-1]+1) + 1 + (n - \textit{suf}[i+1]) \ge n$，即 $\textit{pre}[i-1]+2\ge \textit{suf}[i+1]$。
+- 如果 $s$ 的前缀 $[0,\textit{pre}[i-1]]$ 和后缀 $[\textit{suf}[i+1],|s|-1]$ 之间至多有一个字母，那么把这个字母改成 $t[i]$，即可让 $s$ 是 $t$ 的子序列。也就是 $(\textit{pre}[i-1]+1) + 1 + (|s| - \textit{suf}[i+1]) \ge |s|$，即 $\textit{pre}[i-1]+2\ge \textit{suf}[i+1]$。
 
 > 如果 $s$ 不是 $t$ 的子序列，上式中的 $\ge $ 可以写成 $=$。
 
