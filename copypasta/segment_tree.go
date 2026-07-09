@@ -360,12 +360,16 @@ func newSegmentTree(a []int) seg {
 // = ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F 
 //     https://codeforces.com/problemset/problem/558/E 2300
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
+// 区间 GCD https://www.luogu.com.cn/problem/P10463
+// - 二维 https://www.luogu.com.cn/problem/P2086
 // https://codeforces.com/problemset/problem/292/E   1900 单点查询的简化写法
 // - https://codeforces.com/contest/292/submission/173659179
 // https://codeforces.com/problemset/problem/1881/G  2000 不含任何长度 >= 2 的回文串 
 // https://codeforces.com/problemset/problem/620/E   2100
+// https://atcoder.jp/contests/abc450/tasks/abc450_f 2199 ~CF
 // https://codeforces.com/problemset/problem/1295/E  2200
 // https://codeforces.com/problemset/problem/1557/D  2200 max max 离散化 
+// https://atcoder.jp/contests/abc441/tasks/abc441_g 2212 ~CF 多种不同的 update 操作
 // https://codeforces.com/problemset/problem/718/C   2300 矩阵乘法 ∑ 
 // https://codeforces.com/problemset/problem/1797/E  2300 phi*
 // https://codeforces.com/problemset/problem/115/E   2400 DP
@@ -913,7 +917,7 @@ func _(a []struct{ v, w int }, ranges []struct{ l, r int }, k, numQ int) {
 // https://codeforces.com/problemset/problem/1000/F 2400
 // https://codeforces.com/problemset/problem/1080/F 2400 强制在线
 // https://codeforces.com/problemset/problem/484/E 2500 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 
-// https://codeforces.com/problemset/problem/837/G 2500 todo
+// https://codeforces.com/problemset/problem/837/G 2500
 // https://codeforces.com/problemset/problem/840/D 2500 区间出现次数大于 区间长度/k 的最小元素
 // - LC1287 https://leetcode.cn/problems/element-appearing-more-than-25-in-sorted-array/
 // https://codeforces.com/problemset/problem/1771/F 2500 异或哈希
