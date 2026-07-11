@@ -1,25 +1,39 @@
 package main
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 // github.com/EndlessCheng/codeforces-go
-func arrayRankTransform(a []int) []int {
-	if len(a) == 0 {
-		return a
+func arrayRankTransform1(arr []int) []int {
+	// 排序去重
+	sortedArr := slices.Clone(arr)
+	slices.Sort(sortedArr)
+	sortedArr = slices.Compact(sortedArr)
+
+	for i, x := range arr {
+		// 二分得到编号
+		arr[i] = sort.SearchInts(sortedArr, x) + 1
 	}
-	type pair struct{ v, i int }
-	ps := make([]pair, len(a))
-	for i, v := range a {
-		ps[i] = pair{v, i}
-	}
-	sort.Slice(ps, func(i, j int) bool { return ps[i].v < ps[j].v })
-	k := 1
-	a[ps[0].i] = k
-	for i := 1; i < len(ps); i++ {
-		if ps[i].v != ps[i-1].v {
-			k++
+	return arr
+}
+
+func arrayRankTransform(arr []int) []int {
+	// 排序
+	sortedArr := slices.Clone(arr)
+	slices.Sort(sortedArr)
+
+	// 去重的同时构建哈希表
+	rank := make(map[int]int, len(sortedArr))
+	for i, x := range sortedArr {
+		if i == 0 || x != sortedArr[i-1] {
+			rank[x] = len(rank) + 1
 		}
-		a[ps[i].i] = k
 	}
-	return a
+
+	for i, x := range arr {
+		arr[i] = rank[x]
+	}
+	return arr
 }
