@@ -11,7 +11,7 @@
 
 答案：$\max(f)$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1YsNg6eEr9/?t=18m35s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -148,7 +148,7 @@ class Solution {
                         continue next; // 列 i 和列 j 不是一致的，枚举下一个 j
                     }
                 }
-                f[i] = f[j];
+                f[i] = f[j]; // +1 提到循环外面
             }
             f[i]++;
             ans = Math.max(ans, f[i]);
@@ -180,7 +180,7 @@ public:
                     }
                 }
                 if (ok) {
-                    f[i] = f[j];
+                    f[i] = f[j]; // +1 提到循环外面
                 }
             }
             f[i]++;
@@ -207,7 +207,7 @@ func maxConsistentColumns(grid [][]int, limit int) (ans int) {
 					continue next // 列 i 和列 j 不是一致的
 				}
 			}
-			f[i] = f[j]
+			f[i] = f[j] // +1 提到循环外面
 		}
 		f[i]++
 		ans = max(ans, f[i])
