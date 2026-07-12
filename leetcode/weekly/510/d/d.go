@@ -5,16 +5,19 @@ func maxConsistentColumns(grid [][]int, limit int) (ans int) {
 	n := len(grid[0])
 	f := make([]int, n)
 	for i := range n {
-		f[i] = 1 // 只保留列 i
 	next:
-		for j := range i { // 枚举上一个保留的列
+		for j := i - 1; j >= 0; j-- { // 枚举上一个保留的列
+			if f[j] <= f[i] {
+				continue
+			}
 			for _, row := range grid {
 				if abs(row[i]-row[j]) > limit {
 					continue next // 列 i 和列 j 不是一致的
 				}
 			}
-			f[i] = max(f[i], f[j]+1)
+			f[i] = f[j]
 		}
+		f[i]++
 		ans = max(ans, f[i])
 	}
 	return

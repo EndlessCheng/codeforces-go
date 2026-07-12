@@ -13,6 +13,8 @@
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def maxConsistentColumns(self, grid: list[list[int]], limit: int) -> int:
@@ -95,6 +97,119 @@ func maxConsistentColumns(grid [][]int, limit int) (ans int) {
 			}
 			f[i] = max(f[i], f[j]+1)
 		}
+		ans = max(ans, f[i])
+	}
+	return
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+```
+
+## 优化
+
+最优性优化：如果 $f[j]+1 \le f[i]$，那么 $f[i]$ 不会变大，无需判断一致性。
+
+为了配合这个优化，可以从大到小枚举 $j$，这样更可能先把 $f[i]$ 变得很大，更可能触发最优性优化。
+
+```py [sol-Python3]
+class Solution:
+    def maxConsistentColumns(self, grid: list[list[int]], limit: int) -> int:
+        n = len(grid[0])
+        f = [0] * n
+        for i in range(n):
+            mx = 0
+            for j in range(i - 1, -1, -1):  # 枚举上一个保留的列
+                if f[j] > mx and all(abs(row[i] - row[j]) <= limit for row in grid):
+                    mx = f[j]
+            f[i] = mx + 1
+        return max(f)
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxConsistentColumns(int[][] grid, int limit) {
+        int n = grid[0].length;
+        int[] f = new int[n];
+        int ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            next:
+            for (int j = i - 1; j >= 0; j--) { // 枚举上一个保留的列
+                if (f[j] <= f[i]) {
+                    continue;
+                }
+                for (int[] row : grid) {
+                    if (Math.abs(row[i] - row[j]) > limit) {
+                        continue next; // 列 i 和列 j 不是一致的，枚举下一个 j
+                    }
+                }
+                f[i] = f[j];
+            }
+            f[i]++;
+            ans = Math.max(ans, f[i]);
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxConsistentColumns(vector<vector<int>>& grid, int limit) {
+        int n = grid[0].size();
+        vector<int> f(n);
+        int ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i - 1; j >= 0; j--) { // 枚举上一个保留的列
+                if (f[j] <= f[i]) {
+                    continue;
+                }
+                bool ok = true;
+                for (const auto& row : grid) {
+                    if (abs(row[i] - row[j]) > limit) {
+                        ok = false; // 列 i 和列 j 不是一致的
+                        break;
+                    }
+                }
+                if (ok) {
+                    f[i] = f[j];
+                }
+            }
+            f[i]++;
+            ans = max(ans, f[i]);
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxConsistentColumns(grid [][]int, limit int) (ans int) {
+	n := len(grid[0])
+	f := make([]int, n)
+	for i := range n {
+	next:
+		for j := i - 1; j >= 0; j-- { // 枚举上一个保留的列
+			if f[j] <= f[i] {
+				continue
+			}
+			for _, row := range grid {
+				if abs(row[i]-row[j]) > limit {
+					continue next // 列 i 和列 j 不是一致的
+				}
+			}
+			f[i] = f[j]
+		}
+		f[i]++
 		ans = max(ans, f[i])
 	}
 	return
