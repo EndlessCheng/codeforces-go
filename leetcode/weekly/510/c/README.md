@@ -57,48 +57,46 @@ class Solution {
             return new String[]{"..#", "...", "#.."};
         }
 
-        char[][] a = new char[m][];
         if (m == 1 || n == 1) {
             // 单行或单列，只能有一种方案
             if (k > 1) {
                 return new String[0];
             }
-            for (int i = 0; i < m; i++) {
-                a[i] = new char[n];
-                Arrays.fill(a[i], '.');
+            String[] ans = new String[m];
+            Arrays.fill(ans, ".".repeat(n));
+            return ans;
+        }
+
+        // 至少要有 k 行或 k 列（特殊情况上面已判断）
+        if (m < k && n < k) {
+            return new String[0];
+        }
+
+        // 初始全为 '#'
+        char[][] a = new char[m][n];
+        for (char[] row : a) {
+            Arrays.fill(row, '#');
+        }
+
+        if (m >= k) { // 至少有 k 行
+            // 第一列改成 '.'
+            for (char[] row : a) {
+                row[0] = '.';
             }
-        } else {
-            // 至少要有 k 行或 k 列（特殊情况上面已判断）
-            if (m < k && n < k) {
-                return new String[0];
+            // 第二列末尾 k 个 '.'
+            for (int i = m - k; i < m; i++) {
+                a[i][1] = '.';
             }
-            // 初始全为 '#'
-            for (int i = 0; i < m; i++) {
-                a[i] = new char[n];
-                Arrays.fill(a[i], '#');
-            }
-            if (m >= k) { // 至少有 k 行
-                // 第一列改成 '.'
-                for (char[] row : a) {
-                    row[0] = '.';
-                }
-                // 第二列末尾 k 个 '.'
-                for (int i = m - k; i < m; i++) {
-                    a[i][1] = '.';
-                }
-                // 最后一行改成 '.'
-                Arrays.fill(a[m - 1], '.');
-            } else { // 至少有 k 列
-                // 第一行改成 '.'
-                Arrays.fill(a[0], '.');
-                // 第二行末尾 k 个 '.'
-                for (int j = n - k; j < n; j++) {
-                    a[1][j] = '.';
-                }
-                // 最后一列改成 '.'
-                for (char[] row : a) {
-                    row[n - 1] = '.';
-                }
+            // 最后一行改成 '.'
+            Arrays.fill(a[m - 1], '.');
+        } else { // 至少有 k 列
+            // 第一行改成 '.'
+            Arrays.fill(a[0], '.');
+            // 第二行末尾 k 个 '.'
+            Arrays.fill(a[1], n - k, n, '.');
+            // 最后一列改成 '.'
+            for (char[] row : a) {
+                row[n - 1] = '.';
             }
         }
 
@@ -126,8 +124,8 @@ public:
             if (k > 1) {
                 return {};
             }
-            for (int i = 0; i < m; i++) {
-                ans[i] = string(n, '.');
+            for (auto& row : ans) {
+                row = string(n, '.');
             }
         } else {
             // 至少要有 k 行或 k 列（特殊情况上面已判断）
@@ -135,8 +133,8 @@ public:
                 return {};
             }
             // 初始全为 '#'
-            for (int i = 0; i < m; i++) {
-                ans[i] = string(n, '#');
+            for (auto& row : ans) {
+                row = string(n, '#');
             }
             if (m >= k) { // 至少有 k 行
                 // 第一列改成 '.'
@@ -175,46 +173,50 @@ func createGrid(m, n, k int) []string {
 		return []string{"..#", "...", "#.."}
 	}
 
-	a := make([][]byte, m)
 	if m == 1 || n == 1 {
-		// 单行或单列，只能有一种方案
+		// 一行或一列，只能有一种方案
 		if k > 1 {
 			return nil
 		}
-		for i := range a {
-			a[i] = bytes.Repeat([]byte{'.'}, n)
+		ans := make([]string, m)
+		row := strings.Repeat(".", n)
+		for i := range ans {
+			ans[i] = row
 		}
-	} else {
-		// 至少要有 k 行或 k 列（特殊情况上面已判断）
-		if m < k && n < k {
-			return nil
+		return ans
+	}
+
+	// 至少要有 k 行或 k 列（特殊情况上面已判断）
+	if m < k && n < k {
+		return nil
+	}
+
+	// 初始全为 '#'
+	a := make([][]byte, m)
+	for i := range a {
+		a[i] = bytes.Repeat([]byte{'#'}, n)
+	}
+	if m >= k { // 至少有 k 行
+		// 第一列改成 '.'
+		for _, row := range a {
+			row[0] = '.'
 		}
-		// 初始全为 '#'
-		for i := range a {
-			a[i] = bytes.Repeat([]byte{'#'}, n)
+		// 第二列末尾 k 个 '.'
+		for _, row := range a[m-k : m] {
+			row[1] = '.'
 		}
-		if m >= k { // 至少有 k 行
-			// 第一列改成 '.'
-			for _, row := range a {
-				row[0] = '.'
-			}
-			// 第二列末尾 k 个 '.'
-			for _, row := range a[m-k : m] {
-				row[1] = '.'
-			}
-			// 最后一行改成 '.'
-			a[m-1] = bytes.Repeat([]byte{'.'}, n)
-		} else { // 至少有 k 列
-			// 第一行改成 '.'
-			a[0] = bytes.Repeat([]byte{'.'}, n)
-			// 第二行末尾 k 个 '.'
-			for j := n - k; j < n; j++ {
-				a[1][j] = '.'
-			}
-			// 最后一列改成 '.'
-			for _, row := range a {
-				row[n-1] = '.'
-			}
+		// 最后一行改成 '.'
+		a[m-1] = bytes.Repeat([]byte{'.'}, n)
+	} else { // 至少有 k 列
+		// 第一行改成 '.'
+		a[0] = bytes.Repeat([]byte{'.'}, n)
+		// 第二行末尾 k 个 '.'
+		for j := n - k; j < n; j++ {
+			a[1][j] = '.'
+		}
+		// 最后一列改成 '.'
+		for _, row := range a {
+			row[n-1] = '.'
 		}
 	}
 
@@ -237,13 +239,13 @@ func createGrid(m, n, k int) []string {
 
 先初始化全为 $\texttt{#}$ 的网格图，最右边那一列改成 $\texttt{.}$ 号。
 
-然后，在对角线上放一些 $2\times 2$ 的全为 $\texttt{.}$ 号的小网格（称作「**倍增器**」）。相邻倍增器的间隔为 $1$，用 $\texttt{.}$ 号连起来。
+然后，在对角线上不重叠地放一些 $2\times 2$ 的全为 $\texttt{.}$ 号的小网格（称作「**倍增器**」）。相邻倍增器间隔一行，用一个 L 型管道（三个 $\texttt{.}$ 号）连起来。
 
 对于这样的网格图，从左上角往右下角移动，每经过一个倍增器，方案数乘以 $2$。经过 $i$ 个倍增器的方案数为 $2^i$。
 
 把 $k$ 视作二进制数，拆分成若干个不同的 $2^i$ 之和。
 
-对于每个 $2^i$，从第 $i$ 个倍增器往右打一条隧道（改成 $\texttt{.}$ 号）通向最右边那列。这会贡献 $2^i$ 个方案数。
+对于每个 $2^i$，从第 $i$ 个倍增器的第二行往右打一条隧道（改成 $\texttt{.}$ 号）通向最右边那列。这会贡献 $2^i$ 个方案数。
 
 ## 专题训练
 
