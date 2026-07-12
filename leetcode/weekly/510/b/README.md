@@ -1,3 +1,5 @@
+## 方法一：模拟
+
 设当前剩余资源为 $\textit{left}$，设当前遍历到的元素为 $x = \textit{nums}[i]$。
 
 如果 $\textit{left} < x$，设需要操作 $\textit{op}$ 次，那么有
@@ -23,8 +25,6 @@ $$
 代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 > **注**：由于 $\textit{sum}(\textit{sum}+1)$ 一定是偶数，除以 $2$ 无需用逆元。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -59,7 +59,7 @@ class Solution {
         }
 
         // 1 + 2 + ... + sum
-        sum %= MOD;
+        sum %= MOD; // 避免乘法溢出
         return (int) (sum * (sum + 1) / 2 % MOD);
     }
 }
@@ -82,7 +82,7 @@ public:
         }
 
         // 1 + 2 + ... + sum
-        sum %= MOD;
+        sum %= MOD; // 避免乘法溢出
         return sum * (sum + 1) / 2 % MOD;
     }
 };
@@ -103,7 +103,70 @@ func minimumCost(nums []int, k int) int {
 	}
 
 	// 1 + 2 + ... + sum
-	sum %= mod
+	sum %= mod // 避免乘法溢出
+	return sum * (sum + 1) / 2 % mod
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：脑筋急转弯
+
+设 $\textit{nums}$ 的元素总和为 $\textit{total}$。
+
+本质上，我们需要把 $k$ 增大到 $\ge \textit{total}$，一共操作 
+
+$$
+\textit{sum} = \left\lceil\dfrac{\textit{total}-k}{k}\right\rceil = \left\lfloor\dfrac{\textit{total}-1}{k}\right\rfloor
+$$
+
+次。
+
+```py [sol-Python3]
+class Solution:
+    def minimumCost(self, nums: list[int], k: int) -> int:
+        MOD = 1_000_000_007
+        s = (sum(nums) - 1) // k
+        return s * (s + 1) // 2 % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumCost(int[] nums, int k) {
+        final int MOD = 1_000_000_007;
+        long total = 0;
+        for (int x : nums) {
+            total += x;
+        }
+        long sum = (total - 1) / k % MOD;
+        return (int) (sum * (sum + 1) / 2 % MOD);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumCost(vector<int>& nums, int k) {
+        constexpr int MOD = 1'000'000'007;
+        long long total = reduce(nums.begin(), nums.end(), 0LL);
+        long long sum = (total - 1) / k % MOD;
+        return sum * (sum + 1) / 2 % MOD;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumCost(nums []int, k int) int {
+	const mod = 1_000_000_007
+	total := 0
+	for _, x := range nums {
+		total += x
+	}
+	sum := (total - 1) / k % mod
 	return sum * (sum + 1) / 2 % mod
 }
 ```
