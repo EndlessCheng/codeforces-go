@@ -10,7 +10,7 @@ class Solution:
             return ["..#", "...", "#.."]
 
         if m == 1 or n == 1:
-            # 单行或单列，只能有一种方案
+            # 一行或一列，只能有一种方案
             if k > 1:
                 return []
             return ['.' * n] * m
@@ -19,33 +19,17 @@ class Solution:
         if m < k and n < k:
             return []
 
-        # 初始全为 '#'
-        a = [['#'] * n for _ in range(m)]
-
-        if m >= k:  # 至少有 k 行
-            # 第一列改成 '.'
-            for row in a:
-                row[0] = '.'
-
+        # 初始全为 '#'（第一列全为 '.'）
+        a = [['.'] + ['#'] * (n - 1) for _ in range(m)]
+        a[-1] = '.' * n  # 最后一行全为 '.'
+        if n >= k:  # 至少有 k 列
+            # 倒数第二行开头 k 个 '.'
+            for j in range(1, k):
+                a[-2][j] = '.'
+        else:  # 至少有 k 行
             # 第二列末尾 k 个 '.'
-            for i in range(m - k, m):
+            for i in range(m - k, m - 1):
                 a[i][1] = '.'
-
-            # 最后一行改成 '.'
-            a[-1] = ['.'] * n
-
-        else:  # 至少有 k 列
-            # 第一行改成 '.'
-            a[0] = ['.'] * n
-
-            # 第二行末尾 k 个 '.'
-            for j in range(n - k, n):
-                a[1][j] = '.'
-
-            # 最后一列改成 '.'
-            for row in a:
-                row[-1] = '.'
-
         return [''.join(row) for row in a]
 ```
 
@@ -58,10 +42,11 @@ class Solution {
         }
 
         if (m == 1 || n == 1) {
-            // 单行或单列，只能有一种方案
+            // 一行或一列，只能有一种方案
             if (k > 1) {
                 return new String[0];
             }
+            // 全为 '.'
             String[] ans = new String[m];
             Arrays.fill(ans, ".".repeat(n));
             return ans;
@@ -76,27 +61,18 @@ class Solution {
         char[][] a = new char[m][n];
         for (char[] row : a) {
             Arrays.fill(row, '#');
+            row[0] = '.'; // 第一列全为 '.'
         }
-
-        if (m >= k) { // 至少有 k 行
-            // 第一列改成 '.'
-            for (char[] row : a) {
-                row[0] = '.';
+        Arrays.fill(a[m - 1], '.'); // 最后一行全为 '.'
+        if (n >= k) { // 至少有 k 列
+            // 倒数第二行开头 k 个 '.'
+            for (int j = 1; j < k; j++) {
+                a[m - 2][j] = '.';
             }
+        } else { // 至少有 k 行
             // 第二列末尾 k 个 '.'
-            for (int i = m - k; i < m; i++) {
+            for (int i = m - k; i < m - 1; i++) {
                 a[i][1] = '.';
-            }
-            // 最后一行改成 '.'
-            Arrays.fill(a[m - 1], '.');
-        } else { // 至少有 k 列
-            // 第一行改成 '.'
-            Arrays.fill(a[0], '.');
-            // 第二行末尾 k 个 '.'
-            Arrays.fill(a[1], n - k, n, '.');
-            // 最后一列改成 '.'
-            for (char[] row : a) {
-                row[n - 1] = '.';
             }
         }
 
@@ -118,50 +94,38 @@ public:
             return {"..#", "...", "#.."};
         }
 
-        vector<string> ans(m);
         if (m == 1 || n == 1) {
-            // 单行或单列，只能有一种方案
+            // 一行或一列，只能有一种方案
             if (k > 1) {
                 return {};
             }
-            for (auto& row : ans) {
-                row = string(n, '.');
-            }
-        } else {
-            // 至少要有 k 行或 k 列（特殊情况上面已判断）
-            if (m < k && n < k) {
-                return {};
-            }
-            // 初始全为 '#'
-            for (auto& row : ans) {
-                row = string(n, '#');
-            }
-            if (m >= k) { // 至少有 k 行
-                // 第一列改成 '.'
-                for (auto& row : ans) {
-                    row[0] = '.';
-                }
-                // 第二列末尾 k 个 '.'
-                for (int i = m - k; i < m; i++) {
-                    ans[i][1] = '.';
-                }
-                // 最后一行改成 '.'
-                ans[m - 1] = string(n, '.');
-            } else { // 至少有 k 列
-                // 第一行改成 '.'
-                ans[0] = string(n, '.');
-                // 第二行末尾 k 个 '.'
-                for (int j = n - k; j < n; j++) {
-                    ans[1][j] = '.';
-                }
-                // 最后一列改成 '.'
-                for (auto& row : ans) {
-                    row[n - 1] = '.';
-                }
-            }
+            // 全为 '.'
+            return vector(m, string(n, '.'));
         }
 
-        return ans;
+        // 至少要有 k 行或 k 列（特殊情况上面已判断）
+        if (m < k && n < k) {
+            return {};
+        }
+
+        // 初始全为 '#'
+        vector a(m, string(n, '#'));
+        for (auto& row : a) {
+            row[0] = '.'; // 第一列全为 '.'
+        }
+        a[m - 1] = string(n, '.'); // 最后一行全为 '.'
+        if (n >= k) { // 至少有 k 列
+            // 倒数第二行开头 k 个 '.'
+            for (int j = 1; j < k; j++) {
+                a[m - 2][j] = '.';
+            }
+        } else { // 至少有 k 行
+            // 第二列末尾 k 个 '.'
+            for (int i = m - k; i < m - 1; i++) {
+                a[i][1] = '.';
+            }
+        }
+        return a;
     }
 };
 ```
@@ -178,6 +142,7 @@ func createGrid(m, n, k int) []string {
 		if k > 1 {
 			return nil
 		}
+		// 全为 '.'
 		ans := make([]string, m)
 		row := strings.Repeat(".", n)
 		for i := range ans {
@@ -193,30 +158,20 @@ func createGrid(m, n, k int) []string {
 
 	// 初始全为 '#'
 	a := make([][]byte, m)
-	for i := range a {
+	for i := range m - 1 {
 		a[i] = bytes.Repeat([]byte{'#'}, n)
+		a[i][0] = '.' // 第一列全为 '.'
 	}
-	if m >= k { // 至少有 k 行
-		// 第一列改成 '.'
-		for _, row := range a {
-			row[0] = '.'
+	a[m-1] = bytes.Repeat([]byte{'.'}, n) // 最后一行全为 '.'
+	if n >= k { // 至少有 k 列 
+		// 倒数第二行开头 k 个 '.'
+		for j := 1; j < k; j++ {
+			a[m-2][j] = '.'
 		}
+	} else { // 至少有 k 行
 		// 第二列末尾 k 个 '.'
-		for _, row := range a[m-k : m] {
+		for _, row := range a[m-k : m-1] {
 			row[1] = '.'
-		}
-		// 最后一行改成 '.'
-		a[m-1] = bytes.Repeat([]byte{'.'}, n)
-	} else { // 至少有 k 列
-		// 第一行改成 '.'
-		a[0] = bytes.Repeat([]byte{'.'}, n)
-		// 第二行末尾 k 个 '.'
-		for j := n - k; j < n; j++ {
-			a[1][j] = '.'
-		}
-		// 最后一列改成 '.'
-		for _, row := range a {
-			row[n-1] = '.'
 		}
 	}
 
