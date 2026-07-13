@@ -108,11 +108,8 @@ public:
             return {};
         }
 
-        // 初始全为 '#'
-        vector a(m, string(n, '#'));
-        for (auto& row : a) {
-            row[0] = '.'; // 第一列全为 '.'
-        }
+        // 初始全为 '#'（第一列全为 '.'）
+        vector a(m, "." + string(n - 1, '#'));
         a[m - 1] = string(n, '.'); // 最后一行全为 '.'
         if (n >= k) { // 至少有 k 列
             // 倒数第二行开头 k 个 '.'
