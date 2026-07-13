@@ -1,10 +1,10 @@
 本题属于**相邻相关型 DP**，代表题目为 [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/)。本题相当于选一个「最长一致子序列」。
 
-类似 300 题，定义 $f[i]$ 表示在 $[0,i]$ 列中能保留的最大列数。
+类似 300 题，定义 $f[i]$ 表示在 $[0,i]$ 列中能保留的最大列数，且列 $i$ 一定保留。
 
 用「**枚举选哪个**」思考：
 
-- 枚举上一个保留的列号 $j\ (0\le j\le i-1)$，问题变成在 $[0,j]$ 列中能保留的最大列数，即 $f[j]$。
+- 枚举上一个保留的列号 $j\ (0\le j\le i-1)$，问题变成在 $[0,j]$ 列中能保留的最大列数（列 $j$ 一定保留），即 $f[j]$。
 - 如果列 $i$ 和列 $j$ 是一致的，那么用 $f[j]+1$ 更新 $f[i]$ 的最大值。
 
 初始值：$f[i]=1$。可以只保留一列。
@@ -64,7 +64,7 @@ public:
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++) { // 枚举上一个保留的列
                 bool ok = true;
-                for (const auto& row : grid) {
+                for (auto& row : grid) {
                     if (abs(row[i] - row[j]) > limit) {
                         ok = false; // 列 i 和列 j 不是一致的
                         break;
@@ -173,7 +173,7 @@ public:
                     continue;
                 }
                 bool ok = true;
-                for (const auto& row : grid) {
+                for (auto& row : grid) {
                     if (abs(row[i] - row[j]) > limit) {
                         ok = false; // 列 i 和列 j 不是一致的
                         break;
