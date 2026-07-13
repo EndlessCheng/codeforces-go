@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/bits"
 	"slices"
+	"strings"
 )
 
 /*
@@ -47,7 +48,7 @@ type data struct {
 	// 石头/水晶
 	stones stoneArrType // s
 	// 用大写 S 表示可被反射的石头？
-	stoneFloats stoneFloatArrType // F todo
+	stoneFloats stoneFloatArrType // F todo 跳石
 
 	// 草
 	grass grassArrType // w
@@ -65,10 +66,11 @@ type data struct {
 	beams beamArrType // b 高 4 位是类型，低 4 位是方向
 
 	// 门的开闭
-	doorOpened        [len(doors)]bool
+	doorOpened        [doorKinds]bool
 	monsterDoorOpened bool
 
-	curChar int8
+	// 当前角色类型
+	curCharTypeNum int8
 }
 
 var mapSizeH, mapSizeN, mapSizeM int8
@@ -166,7 +168,11 @@ func (d *data) areMonstersDied() bool {
 }
 
 // 可以用 bitset 优化
-func (d *data) getAllCharPos() []point {
+func (d *data) getAllCharPos(isBigMap bool) []point {
+	if isBigMap {
+		return nil
+	}
+
 	// todo 改成直接计算 data 中各个 point 数组的长度之和
 	allChars := make([]point, 0, initCharNum)
 	if d.warrior != noPos {
@@ -201,8 +207,8 @@ func (d *data) getAllCharPos() []point {
 	return allChars
 }
 
-func (d *data) getAllMovableObjPos() ([]point, []point) {
-	chars := d.getAllCharPos()
+func (d *data) getAllMovableObjPos(isBigMap bool) ([]point, []point) {
+	chars := d.getAllCharPos(isBigMap)
 	objs := chars
 	for _, p := range d.mirrors {
 		if p.point != noPos {
@@ -544,6 +550,43 @@ func (d *data) changePos(oldP, newP point, newDir uint8) {
 	}
 }
 
+func (d *data) getCurCharTypeNumAndPos() (tp byte, pos point) {
+	switch d.curCharTypeNum {
+	case charDefault:
+		panic("代码有误，当前角色不能为 charDefault")
+	case charWarrior:
+		tp = 'A'
+		pos = d.warrior
+	case charThief:
+		tp = 'T'
+		pos = d.thief
+	case charWizard:
+		tp = 'W'
+		pos = d.wizard
+	case charCleric:
+		tp = 'C'
+		pos = d.cleric
+	case charBard:
+		tp = 'B'
+		pos = d.bard
+	case charDruid:
+		tp = 'D'
+		pos = d.druid
+	case charExplorer:
+		tp = '7'
+		pos = d.explorer
+	case charSailor:
+		tp = '8'
+		pos = d.sailor
+	case charMerchant:
+		tp = '9'
+		pos = d.merchant[:][0]
+	default:
+		panic("未找到当前角色")
+	}
+	return
+}
+
 func solveLevel() []string {
 	sailorInitArr := merchantArrType{}
 	for i := range sailorInitArr {
@@ -568,7 +611,7 @@ func solveLevel() []string {
 	dragonInitArr := dragonArrType{}
 	beamInitArr := beamArrType{}
 
-	__curChar := initChar
+	__curCharTypeNum := initCharTypeNum
 	__warrior := warriorPosInit
 	__thief := thiefPosInit
 	__wizard := wizardPosInit
@@ -594,57 +637,57 @@ func solveLevel() []string {
 				p := point{int8(x), int8(y), int8(z)}
 				switch ch {
 				case 'A':
-					if __curChar < 0 {
-						__curChar = charWarrior
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charWarrior
 					}
 					if __warrior == noPos {
 						__warrior = p
 					}
 				case 'T':
-					if __curChar < 0 {
-						__curChar = charThief
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charThief
 					}
 					if __thief == noPos {
 						__thief = p
 					}
 				case 'W':
-					if __curChar < 0 {
-						__curChar = charWizard
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charWizard
 					}
 					if __wizard == noPos {
 						__wizard = p
 					}
 				case 'C':
-					if __curChar < 0 {
-						__curChar = charCleric
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charCleric
 					}
 					if __cleric == noPos {
 						__cleric = p
 					}
 				case 'B':
-					if __curChar < 0 {
-						__curChar = charBard
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charBard
 					}
 					if __bard == noPos {
 						__bard = p
 					}
 				case 'D':
-					if __curChar < 0 {
-						__curChar = charDruid
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charDruid
 					}
 					if __druid == noPos {
 						__druid = p
 					}
 				case '7':
-					if __curChar < 0 {
-						__curChar = charExplorer
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charExplorer
 					}
 					if __explorer == noPos {
 						__explorer = p
 					}
 				case '8':
-					if __curChar < 0 {
-						__curChar = charSailor
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charSailor
 					}
 					if __sailor == noPos {
 						__sailor = p
@@ -652,8 +695,8 @@ func solveLevel() []string {
 					_ = __sailors
 					//__sailors = append(__sailors, p)
 				case '9':
-					if __curChar < 0 {
-						__curChar = charMerchant
+					if __curCharTypeNum < 0 {
+						__curCharTypeNum = charMerchant
 					}
 					__merchants = append(__merchants, p)
 				case 'M':
@@ -685,10 +728,6 @@ func solveLevel() []string {
 					dir := getDir(beamDirInit[idx])
 					tp := beamTypeInit[idx] - '0'
 					__beams = append(__beams, pointWithDir{p, tp<<4 | dir})
-				case '*': // 弃用
-					weightSwitches[:][0] = append(weightSwitches[:][0], p)
-				case 'n': // 弃用
-					doors[:][0] = append(doors[:][0], p)
 				case 'x', 'y', 'z', '{':
 					weightSwitches[ch-'x'] = append(weightSwitches[ch-'x'], p)
 				case 'X', 'Y', 'Z', '[':
@@ -763,7 +802,7 @@ func solveLevel() []string {
 		doorOpened:        doorOpenedInit,
 		monsterDoorOpened: monsterDoorOpenedInit,
 
-		curChar: __curChar,
+		curCharTypeNum: __curCharTypeNum,
 	}
 
 	type pair struct {
@@ -773,8 +812,15 @@ func solveLevel() []string {
 	from := map[data]pair{} // 同时充当 vis 的功能
 	queue := []data{}
 
+	//hasStone := map[point]bool{}
+
 	add := func(last, d data, info string) {
-		_, allMovableObjs := d.getAllMovableObjPos()
+		//if !hasStone[d.stones[0]] {
+		//	hasStone[d.stones[0]] = true
+		//	fmt.Println(d.stones[0])
+		//}
+
+		_, allMovableObjs := d.getAllMovableObjPos(isBigMap)
 
 		// 先确定门的开闭
 		for i, weightSwitch := range weightSwitches {
@@ -846,7 +892,7 @@ func solveLevel() []string {
 		}
 
 		// 先判断是否有角色死亡
-		for _, char := range d.getAllCharPos() {
+		for _, char := range d.getAllCharPos(isBigMap) {
 			if d.isDie(char, burnedPos, true) {
 				return
 			}
@@ -976,20 +1022,25 @@ func solveLevel() []string {
 		}
 	}
 
-	add(data{}, levelData, "")
+	add(data{}, levelData, "IGNORE")
 
 	for len(queue) > 0 {
 		// 注意入队的时候修改了物品的位置（重力落下）
 		d := queue[0]
 		queue = queue[1:]
 
-		allChars, allMovableObjs := d.getAllMovableObjPos()
+		allChars, allMovableObjs := d.getAllMovableObjPos(isBigMap)
 
 		var pass bool
 		if !targetIsClearAllMonsters {
 			// 标准版：所有人都到达终点
-			slices.SortFunc(allChars, cmpPoint)
-			pass = slices.Equal(allChars, finals)
+			if isBigMap {
+				_, p := d.getCurCharTypeNumAndPos()
+				pass = slices.Equal([]point{p}, finals)
+			} else {
+				slices.SortFunc(allChars, cmpPoint)
+				pass = slices.Equal(allChars, finals)
+			}
 		} else {
 			// 简化版：怪物门开启（怪物都被杀）
 			pass = d.monsterDoorOpened
@@ -1007,7 +1058,9 @@ func solveLevel() []string {
 				if d == (data{}) { // 初始状态
 					break
 				}
-				path = append(path, pre.info)
+				if pre.info != "IGNORE" {
+					path = append(path, pre.info)
+				}
 			}
 			slices.Reverse(path)
 			return path
@@ -1021,7 +1074,7 @@ func solveLevel() []string {
 		//      使得当物品移动时，物品上方的物品（如果有）也跟着移动
 
 		// 移动当前角色
-		switch d.curChar {
+		switch d.curCharTypeNum {
 		case charDefault:
 			panic("代码有误，当前角色不能为 charDefault")
 		case charWarrior:
@@ -1394,20 +1447,46 @@ func solveLevel() []string {
 				}
 				add(d, newData, dir4String[dIdx])
 			}
+		default:
+			// 跳石
+			oriChar := d.curCharTypeNum - skippingStoneDelta
+			_ = oriChar
+
 		}
 
 		// 换成其他人
-		for _, char := range validChars {
-			if char != d.curChar {
-				newData := d
-				newData.curChar = char
-				var info string
-				if len(allChars) > 2 {
-					info = digits[char : char+1]
-				} else {
-					info = "c"
+		if isBigMap {
+			curCharTypeNum, p := d.getCurCharTypeNumAndPos()
+			ch := levelMap[0][p.x][p.y]
+			if ch != curCharTypeNum {
+				if i := strings.IndexByte("ATWCDB", ch); i >= 0 {
+					newData := d
+					// 复原所有角色位置
+					newData.warrior = __warrior
+					newData.thief = __thief
+					newData.wizard = __wizard
+					newData.cleric = __cleric
+					newData.druid = __druid
+					newData.bard = __bard
+					newData.explorer = __explorer
+					newData.sailor = __sailor
+					newData.curCharTypeNum = int8(i + 1)
+					add(d, newData, "IGNORE")
 				}
-				add(d, newData, info)
+			}
+		} else {
+			for _, char := range validChars {
+				if char != d.curCharTypeNum {
+					newData := d
+					newData.curCharTypeNum = char
+					var info string
+					if len(allChars) > 2 {
+						info = digits[char : char+1]
+					} else {
+						info = "c"
+					}
+					add(d, newData, info)
+				}
 			}
 		}
 
