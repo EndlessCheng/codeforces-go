@@ -24,8 +24,8 @@ import (
 */
 
 type merchantArrType [merchantNumberInit]point
-type stoneArrType [stoneArrLen]point
-type grassArrType [grassArrLen]point
+type stoneArrType [stoneNumberInit + grassNumberInit]point
+type grassArrType [stoneNumberInit + grassNumberInit]point
 type stoneFloatArrType [stoneFloatNumberInit]point
 type goblinArrType [goblinNumberInit]pointWithDir
 type dragonArrType [len(dragonDirInit)]pointWithDir
@@ -153,7 +153,7 @@ func init() {
 	}
 }
 
-func (d *data) areMonstersDied() bool {
+func (d *data) areAllMonstersDied() bool {
 	for _, p := range d.goblins {
 		if p.point != noPos {
 			return false
@@ -377,8 +377,8 @@ func (d *data) isAttacked(p point, burnPos []point) bool {
 const (
 	dieTypeNo = iota
 	dieTypeCrushed
-	dieTypeDrown
 	dieTypeAttacked
+	dieTypeDrown
 )
 
 func (d *data) getDieType(p point, burnPos []point, isChar bool) int {
@@ -543,7 +543,8 @@ func (d *data) changePos(oldP, newP point, newDir uint8) {
 			changed = true
 			d.dragons[i].point = newP
 			if newDir != math.MaxUint8 {
-				d.dragons[i].dir = newDir
+				d.dragons[i].dir &^= 7
+				d.dragons[i].dir |= newDir
 			}
 		}
 
@@ -561,36 +562,27 @@ func (d *data) changePos(oldP, newP point, newDir uint8) {
 	}
 }
 
-func (d *data) getCurCharTypeNumAndPos() (tp byte, pos point) {
+func (d *data) getCurCharTypePos() (pos point) {
 	switch d.curCharTypeNum {
 	case charDefault:
 		panic("代码有误，当前角色不能为 charDefault")
 	case charWarrior:
-		tp = 'A'
 		pos = d.warrior
 	case charThief:
-		tp = 'T'
 		pos = d.thief
 	case charWizard:
-		tp = 'W'
 		pos = d.wizard
 	case charCleric:
-		tp = 'C'
 		pos = d.cleric
 	case charBard:
-		tp = 'B'
 		pos = d.bard
 	case charDruid:
-		tp = 'D'
 		pos = d.druid
 	case charExplorer:
-		tp = '7'
 		pos = d.explorer
 	case charSailor:
-		tp = '8'
 		pos = d.sailor
 	case charMerchant:
-		tp = '9'
 		pos = d.merchant[:][0]
 	default:
 		panic("未找到当前角色")
@@ -791,6 +783,10 @@ func solveLevel() []string {
 		validChars = append(validChars, charMerchant)
 	}
 
+	if !slices.Contains(validChars, __curCharTypeNum) {
+		panic(fmt.Sprint("请修改 initCharTypeNum"))
+	}
+
 	levelData := data{
 		warrior:  __warrior,
 		thief:    __thief,
@@ -865,6 +861,9 @@ func solveLevel() []string {
 		var burnedPos []point
 		if !d.monsterDoorOpened { // 喷火龙没有 die（如果没有怪物门，monsterDoorOpened = false）
 			for _, dra := range d.dragons {
+				if dra.dir&dirStoneDelta > 0 { // 是石头
+					continue
+				}
 				dir := directions4[dra.dir]
 				cur := point{dra.x, dra.y, dra.z}
 				for {
@@ -920,6 +919,7 @@ func solveLevel() []string {
 			goblins := d.goblins
 			if len(d.goblins) > 0 {
 				for i, p := range d.goblins {
+					// todo 变成石头的哥布林
 					if tp := d.getDieType(p.point, burnedPos, false); tp != dieTypeNo {
 						if !canDestroyObj {
 							return
@@ -935,6 +935,10 @@ func solveLevel() []string {
 			dragons := d.dragons
 			if len(d.dragons) > 0 {
 				for i, p := range d.dragons {
+					if p.dir&dirStoneDelta > 0 { // 是石头
+						// todo 落水
+						continue
+					}
 					if tp := d.getDieType(p.point, burnedPos, false); tp != dieTypeNo {
 						if !canDestroyObj {
 							return
@@ -949,7 +953,7 @@ func solveLevel() []string {
 			if canDestroyObj {
 				d.goblins = goblins
 				d.dragons = dragons
-				d.monsterDoorOpened = d.areMonstersDied()
+				d.monsterDoorOpened = d.areAllMonstersDied()
 			}
 		}
 
@@ -1005,6 +1009,7 @@ func solveLevel() []string {
 					if !allowFallIntoWater {
 						return
 					}
+					info += "W"
 					sto[i].z = -1
 				}
 			}
@@ -1032,6 +1037,8 @@ func solveLevel() []string {
 		if _, ok := from[d]; !ok {
 			if dieType == dieTypeAttacked {
 				info += "K" // 怪物攻击动画
+			} else if dieType == dieTypeDrown {
+				info += "W"
 			}
 			from[d] = pair{last, info}
 			queue = append(queue, d)
@@ -1051,7 +1058,7 @@ func solveLevel() []string {
 		if !targetIsClearAllMonsters {
 			// 标准版：所有人都到达终点
 			if isBigMap {
-				_, p := d.getCurCharTypeNumAndPos()
+				p := d.getCurCharTypePos()
 				pass = slices.Equal([]point{p}, finals)
 			} else {
 				slices.SortFunc(allChars, cmpPoint)
@@ -1288,7 +1295,6 @@ func solveLevel() []string {
 			p0 := d.druid
 			for dIdx, dir := range directions4 {
 				newP := point{p0.x + dir.x, p0.y + dir.y, p0.z + dir.z}
-				// todo 目前只实现了草 <-> 石头的逻辑
 				// 草变石
 				if i := slices.Index(d.grass[:], newP); i >= 0 {
 					newData := d
@@ -1309,6 +1315,22 @@ func solveLevel() []string {
 					}
 				}
 
+				// todo 在有牧师的情况下，哥布林切换
+				//if i := pdIndex(d.goblins[:], newP); i >= 0 {
+				//	newData := d
+				//	newData.goblins[i].dir ^= dirStoneDelta
+				//	add(d, newData, dir4String[dIdx]+"C") // trans
+				//	continue
+				//}
+
+				// 喷火龙切换
+				if i := pdIndex(d.dragons[:], newP); i >= 0 {
+					newData := d
+					newData.dragons[i].dir ^= dirStoneDelta
+					add(d, newData, dir4String[dIdx]+"C") // trans
+					continue
+				}
+
 				// 普通移动一步
 				if !d.isValidPos(newP) || slices.Contains(allMovableObjs, newP) {
 					continue
@@ -1327,7 +1349,8 @@ func solveLevel() []string {
 						// 如果头上有喷火龙或者镜子，修改其朝向
 						if i := pdIndex(d.dragons[:], point{p0.x, p0.y, p0.z + 1}); i >= 0 {
 							newData := d
-							newData.dragons[i].dir = uint8(dIdx)
+							newData.dragons[i].dir &^= 7
+							newData.dragons[i].dir |= uint8(dIdx)
 							add(d, newData, dir4String[dIdx])
 						}
 						// todo 镜子
@@ -1377,7 +1400,8 @@ func solveLevel() []string {
 						// 如果头上有喷火龙或者镜子，修改其朝向
 						if i := pdIndex(d.dragons[:], point{p0.x, p0.y, p0.z + 1}); i >= 0 {
 							newData := d
-							newData.dragons[i].dir = uint8(dIdx)
+							newData.dragons[i].dir &^= 7
+							newData.dragons[i].dir |= uint8(dIdx)
 							add(d, newData, dir4String[dIdx])
 						}
 						// todo 镜子
@@ -1472,10 +1496,10 @@ func solveLevel() []string {
 
 		// 换成其他人
 		if isBigMap {
-			curCharTypeNum, p := d.getCurCharTypeNumAndPos()
+			p := d.getCurCharTypePos()
 			ch := levelMap[0][p.x][p.y]
-			if ch != curCharTypeNum {
-				if i := strings.IndexByte("ATWCDB", ch); i >= 0 {
+			if ch != charNumToName[d.curCharTypeNum] {
+				if i := strings.IndexByte("ATWCDB789", ch); i >= 0 {
 					newData := d
 					// 复原所有角色位置
 					newData.warrior = __warrior
@@ -1500,6 +1524,9 @@ func solveLevel() []string {
 						info = digits[char : char+1]
 					} else {
 						info = "c"
+					}
+					if d.curCharTypeNum == charBard {
+						info = "B" + info // 等一下再换人
 					}
 					add(d, newData, info)
 				}
@@ -1634,6 +1661,23 @@ const (
 	charMerchant // Trader
 )
 
+var charNumToName = [...]byte{
+	charWarrior:  'A',
+	charThief:    'T',
+	charWizard:   'W',
+	charCleric:   'C',
+	charBard:     'B',
+	charDruid:    'D',
+	charExplorer: '7',
+	charSailor:   '8',
+	charMerchant: '9',
+}
+
+// 跳石，无法操纵，只能原地等待
+// 当跳石被推动后，额外进入该角色
+// 当跳石停止移动后，换回原来的角色（用 skippingStoneDelta + 原来的角色编号表示跳石的情况）
+const skippingStoneDelta = 1 << 6
+
 const (
 	beamDefault   = iota
 	beamOpen      // 红
@@ -1643,3 +1687,5 @@ const (
 	beamPush      // 青
 	beamTeleport  // 紫
 )
+
+const dirStoneDelta = 1 << 6
