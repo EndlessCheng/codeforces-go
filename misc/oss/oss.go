@@ -1096,6 +1096,114 @@ func solveLevel() []string {
 		// todo 修改 changePos 的代码，添加一个参数 alsoMoveTop bool，
 		//      使得当物品移动时，物品上方的物品（如果有）也跟着移动
 
+		// 先考虑按 x 镜子反射对象，这样后面移动更流畅
+		doMirrors := func() {
+			newData := d
+			swapped := uint(0)
+		nextMirror:
+			for _, mirror := range append(d.mirrors[:], d.mirrorRefs[:]...) {
+				// 找两个方向最近的可反射的对象
+				cur0 := mirror.point
+				cur1 := mirror.point
+				dir0 := directions4[mirror.dir&0xf]
+				dir1 := directions4[mirror.dir>>4]
+				foundMirror := uint8(0)
+				for step := 1; ; step++ {
+					justFound := uint8(0) // 是否找到了非镜子对象
+					// 检查方向 0
+					if foundMirror&1 == 0 {
+						cur0.x += dir0.x
+						cur0.y += dir0.y
+						cur0.z += dir0.z
+						if !d.isValidPos(cur0) {
+							continue nextMirror
+						}
+						// todo bitset
+						if pdContains(d.mirrors[:], cur0) || pdContains(d.mirrorAuxes[:], cur0) {
+							foundMirror |= 1
+						} else if slices.Contains(allMovableObjs, cur0) {
+							justFound |= 1
+						}
+					}
+					// 检查方向 1
+					if foundMirror>>1 == 0 {
+						cur1.x += dir1.x
+						cur1.y += dir1.y
+						cur1.z += dir1.z
+						if !d.isValidPos(cur1) {
+							continue nextMirror
+						}
+						if pdContains(d.mirrors[:], cur1) || pdContains(d.mirrorAuxes[:], cur1) {
+							foundMirror |= 2
+						} else if slices.Contains(allMovableObjs, cur1) {
+							justFound |= 2
+						}
+					}
+					if foundMirror == 3 {
+						return // 不能两方向最近都是镜子
+					}
+					if justFound == 3 {
+						return // 不能反射位置都是对象
+					}
+					if justFound == 0 {
+						continue // 都是空地，继续找
+					}
+
+					oldP := cur0
+					dir := dir1
+					if justFound == 2 {
+						oldP = cur1
+						dir = dir0 // 往另一个方向反射
+					}
+
+					// 无法反射的石头
+					if !areStonesReflectable && slices.Contains(d.stones[:], oldP) {
+						return
+					}
+
+					// 反射
+					newP := d.reflectTo(mirror, dir, step, allMovableObjs)
+					if newP == noPos {
+						return // 反射失败
+					}
+					itemIdx := slices.Index(allMovableObjs, oldP)
+					if swapped>>itemIdx&1 > 0 {
+						// todo 所有对象的分身
+						// 不能再分身了
+						if slices.Contains(d.merchant[:], oldP) {
+							if newData.merchant[:][0] != noPos {
+								return
+							}
+							newData.merchant[:][0] = newP
+						} else if areStonesReflectable && slices.Contains(d.stones[:], oldP) {
+							//newData.stones[0] = newP // todo
+						} else {
+							// todo 其他对象的分身
+						}
+					} else {
+						swapped |= 1 << itemIdx
+						// todo 如果是 oldP 是喷火龙，则朝向会变，需要修改朝向
+						newData.changePos(oldP, newP, math.MaxUint8)
+					}
+					break
+				}
+
+				// todo 合二为一
+				// todo 这里恰有两人
+				//if newData.merchant[0] != noPos && newData.merchant[0] == newData.merchant[1] {
+				//	//newData.merchant[0] = noPos
+				//	return
+				//}
+			}
+
+			if swapped == 0 {
+				return
+			}
+
+			add(d, newData, "x")
+		}
+		doMirrors()
+
 		// 移动当前角色
 		switch d.curCharTypeNum {
 		case charDefault:
@@ -1532,114 +1640,6 @@ func solveLevel() []string {
 				}
 			}
 		}
-
-		// 镜子反射对象
-		doMirrors := func() {
-			newData := d
-			swapped := uint(0)
-		nextMirror:
-			for _, mirror := range append(d.mirrors[:], d.mirrorRefs[:]...) {
-				// 找两个方向最近的可反射的对象
-				cur0 := mirror.point
-				cur1 := mirror.point
-				dir0 := directions4[mirror.dir&0xf]
-				dir1 := directions4[mirror.dir>>4]
-				foundMirror := uint8(0)
-				for step := 1; ; step++ {
-					justFound := uint8(0) // 是否找到了非镜子对象
-					// 检查方向 0
-					if foundMirror&1 == 0 {
-						cur0.x += dir0.x
-						cur0.y += dir0.y
-						cur0.z += dir0.z
-						if !d.isValidPos(cur0) {
-							continue nextMirror
-						}
-						// todo bitset
-						if pdContains(d.mirrors[:], cur0) || pdContains(d.mirrorAuxes[:], cur0) {
-							foundMirror |= 1
-						} else if slices.Contains(allMovableObjs, cur0) {
-							justFound |= 1
-						}
-					}
-					// 检查方向 1
-					if foundMirror>>1 == 0 {
-						cur1.x += dir1.x
-						cur1.y += dir1.y
-						cur1.z += dir1.z
-						if !d.isValidPos(cur1) {
-							continue nextMirror
-						}
-						if pdContains(d.mirrors[:], cur1) || pdContains(d.mirrorAuxes[:], cur1) {
-							foundMirror |= 2
-						} else if slices.Contains(allMovableObjs, cur1) {
-							justFound |= 2
-						}
-					}
-					if foundMirror == 3 {
-						return // 不能两方向最近都是镜子
-					}
-					if justFound == 3 {
-						return // 不能反射位置都是对象
-					}
-					if justFound == 0 {
-						continue // 都是空地，继续找
-					}
-
-					oldP := cur0
-					dir := dir1
-					if justFound == 2 {
-						oldP = cur1
-						dir = dir0 // 往另一个方向反射
-					}
-
-					// 无法反射的石头
-					if !areStonesReflectable && slices.Contains(d.stones[:], oldP) {
-						return
-					}
-
-					// 反射
-					newP := d.reflectTo(mirror, dir, step, allMovableObjs)
-					if newP == noPos {
-						return // 反射失败
-					}
-					itemIdx := slices.Index(allMovableObjs, oldP)
-					if swapped>>itemIdx&1 > 0 {
-						// todo 所有对象的分身
-						// 不能再分身了
-						if slices.Contains(d.merchant[:], oldP) {
-							if newData.merchant[:][0] != noPos {
-								return
-							}
-							newData.merchant[:][0] = newP
-						} else if areStonesReflectable && slices.Contains(d.stones[:], oldP) {
-							//newData.stones[0] = newP // todo
-						} else {
-							// todo 其他对象的分身
-						}
-					} else {
-						swapped |= 1 << itemIdx
-						// todo 如果是 oldP 是喷火龙，则朝向会变，需要修改朝向
-						newData.changePos(oldP, newP, math.MaxUint8)
-					}
-					break
-				}
-
-				// todo 合二为一
-				// todo 这里恰有两人
-				//if newData.merchant[0] != noPos && newData.merchant[0] == newData.merchant[1] {
-				//	//newData.merchant[0] = noPos
-				//	return
-				//}
-			}
-
-			if swapped == 0 {
-				return
-			}
-
-			add(d, newData, "x")
-		}
-		doMirrors()
 	}
 
 	// 无解
