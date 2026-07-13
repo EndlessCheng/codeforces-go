@@ -27,7 +27,7 @@ type merchantArrType [merchantNumberInit]point
 type stoneArrType [stoneArrLen]point
 type grassArrType [grassArrLen]point
 type stoneFloatArrType [stoneFloatNumberInit]point
-type goblinArrType [goblinNumberInit]point
+type goblinArrType [goblinNumberInit]pointWithDir
 type dragonArrType [len(dragonDirInit)]pointWithDir
 type beamArrType [len(beamDirInit)]pointWithDir
 type mirrorArrType [len(mirrorDirInit) / 2]pointWithDir
@@ -155,7 +155,7 @@ func init() {
 
 func (d *data) areMonstersDied() bool {
 	for _, p := range d.goblins {
-		if p != noPos {
+		if p.point != noPos {
 			return false
 		}
 	}
@@ -231,8 +231,8 @@ func (d *data) getAllMovableObjPos(isBigMap bool) ([]point, []point) {
 		}
 	}
 	for _, p := range d.goblins {
-		if p != noPos {
-			objs = append(objs, p)
+		if p.point != noPos {
+			objs = append(objs, p.point)
 		}
 	}
 	for _, p := range d.dragons {
@@ -366,7 +366,7 @@ func (d *data) isAttacked(p point, burnPos []point) bool {
 
 	// 哥布林
 	for _, g := range d.goblins {
-		if isNeighbor4(g, p) {
+		if isNeighbor4(g.point, p) {
 			return true
 		}
 	}
@@ -374,25 +374,36 @@ func (d *data) isAttacked(p point, burnPos []point) bool {
 	return false
 }
 
-func (d *data) isDie(p point, burnPos []point, isChar bool) bool {
+const (
+	dieTypeNo = iota
+	dieTypeCrushed
+	dieTypeDrown
+	dieTypeAttacked
+)
+
+func (d *data) getDieType(p point, burnPos []point, isChar bool) int {
 	// 被门压死
 	// todo 忽略向上的门（应该抬高角色）
 	for i, opened := range d.doorOpened {
 		if !opened && slices.Contains(doors[i][:], p) {
-			return true
+			return dieTypeCrushed
 		}
 	}
 
 	// 淹死
 	if d.isFallIntoWater(p) {
-		return true
+		return dieTypeDrown
 	}
 
 	if isChar && d.isProtected(p) {
-		return false
+		return dieTypeNo
 	}
 
-	return d.isAttacked(p, burnPos)
+	if d.isAttacked(p, burnPos) {
+		return dieTypeAttacked
+	}
+
+	return dieTypeNo
 }
 
 // 反射：从 mirror.point 出发，往 dir 方向走 step 步
@@ -523,9 +534,9 @@ func (d *data) changePos(oldP, newP point, newDir uint8) {
 			d.stones[i] = newP
 		}
 
-		if i := slices.Index(d.goblins[:], oldP); i >= 0 {
+		if i := pdIndex(d.goblins[:], oldP); i >= 0 {
 			changed = true
-			d.goblins[i] = newP
+			d.goblins[i].point = newP
 		}
 
 		if i := pdIndex(d.dragons[:], oldP); i >= 0 {
@@ -719,7 +730,7 @@ func solveLevel() []string {
 				case 'w':
 					__grass = append(__grass, p)
 				case 'g':
-					__goblins = append(__goblins, p)
+					__goblins = append(__goblins, pointWithDir{p, math.MaxUint8})
 				case 'd':
 					idx := len(__dragons)
 					__dragons = append(__dragons, pointWithDir{p, getDir(dragonDirInit[idx])})
@@ -744,6 +755,9 @@ func solveLevel() []string {
 			}
 		}
 	}
+
+	// 有时候会手动添加 finals 的初始值，总体不一定是有序的
+	slices.SortFunc(finals, cmpPoint)
 
 	validChars := []int8{}
 	if __warrior != noPos {
@@ -893,37 +907,39 @@ func solveLevel() []string {
 
 		// 先判断是否有角色死亡
 		for _, char := range d.getAllCharPos(isBigMap) {
-			if d.isDie(char, burnedPos, true) {
+			if d.getDieType(char, burnedPos, true) != dieTypeNo {
 				return
 			}
 		}
 
-		die := false
-		if !d.monsterDoorOpened {
+		dieType := dieTypeNo
+		// 一开始，以及切换角色，都不结算攻击
+		isSwitching := info[0] == 'c' || '1' <= info[0] && info[0] <= '9'
+		if !isSwitching && !d.monsterDoorOpened {
 			// 哥布林
 			goblins := d.goblins
 			if len(d.goblins) > 0 {
 				for i, p := range d.goblins {
-					if d.isDie(p, burnedPos, false) {
+					if tp := d.getDieType(p.point, burnedPos, false); tp != dieTypeNo {
 						if !canDestroyObj {
 							return
 						}
-						die = true
-						goblins[i] = noPos
+						dieType = tp
+						goblins[i].point = noPos
 					}
 				}
-				slices.SortFunc(goblins[:], cmpPoint)
+				slices.SortFunc(goblins[:], cmpPointWithDir)
 			}
 
 			// 喷火龙
 			dragons := d.dragons
 			if len(d.dragons) > 0 {
 				for i, p := range d.dragons {
-					if d.isDie(p.point, burnedPos, false) {
+					if tp := d.getDieType(p.point, burnedPos, false); tp != dieTypeNo {
 						if !canDestroyObj {
 							return
 						}
-						die = true
+						dieType = tp
 						dragons[i].point = noPos
 					}
 				}
@@ -1014,15 +1030,15 @@ func solveLevel() []string {
 		}
 
 		if _, ok := from[d]; !ok {
-			if die {
-				info += "K" // 怪物死亡的动画
+			if dieType == dieTypeAttacked {
+				info += "K" // 怪物攻击动画
 			}
 			from[d] = pair{last, info}
 			queue = append(queue, d)
 		}
 	}
 
-	add(data{}, levelData, "IGNORE")
+	add(data{}, levelData, "c")
 
 	for len(queue) > 0 {
 		// 注意入队的时候修改了物品的位置（重力落下）
@@ -1165,7 +1181,7 @@ func solveLevel() []string {
 					newData := d
 					newData.changePos(newP, p0, math.MaxUint8) // newP 换到 p0
 					newData.wizard = newP                      // 法师换到 newP
-					add(d, newData, dir4String[dIdx])          // swap
+					add(d, newData, dir4String[dIdx]+"P")      // swap
 					continue nextDir
 				}
 
@@ -1278,17 +1294,17 @@ func solveLevel() []string {
 					newData := d
 					newData.stones[:][0] = newData.grass[i] // 加个切片避免报错
 					newData.grass[i] = noPos
-					add(d, newData, dir4String[dIdx]) // trans
+					add(d, newData, dir4String[dIdx]+"C") // trans
 					continue
 				}
 
 				// 石变草
-				if !druidOnlyToStone {
+				if !druidOnlyGrassToStone {
 					if i := slices.Index(d.stones[:], newP); i >= 0 {
 						newData := d
 						newData.grass[:][0] = newData.stones[i]
 						newData.stones[i] = noPos
-						add(d, newData, dir4String[dIdx]) // trans
+						add(d, newData, dir4String[dIdx]+"C") // trans
 						continue
 					}
 				}
