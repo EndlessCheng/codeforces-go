@@ -1,6 +1,6 @@
 本题是 [3988. 创建一个恰好有 K 条路径的网格图 I](https://leetcode.cn/problems/create-grid-with-exactly-k-paths-i/) 的加强版，做法见 [我的题解](https://leetcode.cn/problems/create-grid-with-exactly-k-paths-i/solutions/3995102/gou-zao-ti-fu-geng-da-shu-ju-fan-wei-de-k4ebh/) 中的「更一般的构造方法」，包含图片解释。
 
-```py
+```py [sol-Python3]
 class Solution:
     def createGrid(self, k: int) -> list[str]:
         w = k.bit_length()
@@ -17,6 +17,103 @@ class Solution:
                     a[i * 2][j] = '.'
 
         return [''.join(row) for row in a]
+```
+
+```java [sol-Java]
+class Solution {
+    public List<String> createGrid(int k) {
+        int w = 32 - Integer.numberOfLeadingZeros(k);
+        int m = w * 2;
+        int n = w + 3;
+
+        char[][] a = new char[m][n];
+        for (char[] row : a) {
+            Arrays.fill(row, '#');
+            row[n - 1] = '.';
+        }
+
+        for (int j = 0; j < w; j++) {
+            int i = j * 2;
+            a[i][j] = a[i][j + 1] = a[i + 1][j] = a[i + 1][j + 1] = '.';
+        }
+
+        for (int i = 0; i < w; i++) {
+            if ((k >> i & 1) > 0) {
+                for (int j = i + 2; j < n - 1; j++) {
+                    a[i * 2][j] = '.';
+                }
+            }
+        }
+
+        List<String> ans = new ArrayList<>(m);
+        for (char[] row : a) {
+            ans.add(new String(row));
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<string> createGrid(int k) {
+        int w = bit_width(1u * k);
+        int m = w * 2;
+        int n = w + 3;
+        vector a(m, string(n - 1, '#') + ".");
+        for (int j = 0; j < w; j++) {
+            int i = j * 2;
+            a[i][j] = a[i][j + 1] = a[i + 1][j] = a[i + 1][j + 1] = '.';
+        }
+
+        for (int i = 0; i < w; i++) {
+            if (k >> i & 1) {
+                for (int j = i + 2; j < n - 1; j++) {
+                    a[i * 2][j] = '.';
+                }
+            }
+        }
+
+        return a;
+    }
+};
+```
+
+```go [sol-Go]
+func createGrid(k int) []string {
+	w := bits.Len(uint(k))
+	m := w * 2
+	n := w + 3
+
+	a := make([][]byte, m)
+	for i := range a {
+		a[i] = bytes.Repeat([]byte{'#'}, n)
+		a[i][n-1] = '.'
+	}
+
+	for j := range w {
+		i := j * 2
+		a[i][j] = '.'
+		a[i][j+1] = '.'
+		a[i+1][j] = '.'
+		a[i+1][j+1] = '.'
+	}
+
+	for i := range w {
+		if k>>i&1 > 0 {
+			for j := i + 2; j < n-1; j++ {
+				a[i*2][j] = '.'
+			}
+		}
+	}
+
+	ans := make([]string, m)
+	for i, row := range a {
+		ans[i] = string(row)
+	}
+	return ans
+}
 ```
 
 #### 复杂度分析
