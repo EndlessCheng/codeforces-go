@@ -82,6 +82,12 @@ func init() {
 	mapSizeM = int8(len(levelMap[0][0]))
 
 	var stoneNum, grassesNum, goblinNum, dragonNum, beamNum, mirrorNum, mirrorRefNum, mirrorAuxNum, merchantNum, doorMask int
+	for i, ds := range doors {
+		if len(ds) > 0 {
+			doorMask |= 1 << i
+		}
+	}
+
 	for _, grid := range levelMap {
 		for _, row := range grid {
 			if len(row) != int(mapSizeM) {
@@ -148,7 +154,7 @@ func init() {
 	if !allowCloneMan && merchantNum != len(merchantArrType{}) {
 		panic("没有修改 merchant number")
 	}
-	if bits.OnesCount(uint(doorMask)) != len(doors) {
+	if bits.OnesCount(uint(doorMask)) != doorKinds {
 		panic("没有修改 door kinds")
 	}
 }
@@ -351,11 +357,18 @@ func (d *data) isFallIntoWater(p point) bool {
 	if p.z == -1 || p == noPos || levelMap[0][p.x][p.y] != '~' {
 		return false
 	}
-	if !slices.Contains(d.stones[:], point{p.x, p.y, -1}) {
-		return true
+	downP := point{p.x, p.y, -1}
+	// 水中的门
+	for i, opened := range d.doorOpened {
+		if !opened && slices.Contains(doors[i][:], downP) {
+			return false
+		}
 	}
-	// todo 水中的门
-	return false
+	// 水中的石头
+	if slices.Contains(d.stones[:], downP) {
+		return false
+	}
+	return true
 }
 
 func (d *data) isAttacked(p point, burnPos []point) bool {
@@ -534,25 +547,31 @@ func (d *data) changePos(oldP, newP point, newDir uint8) {
 			d.stones[i] = newP
 		}
 
-		if i := pdIndex(d.goblins[:], oldP); i >= 0 {
-			changed = true
-			d.goblins[i].point = newP
-		}
-
-		if i := pdIndex(d.dragons[:], oldP); i >= 0 {
-			changed = true
-			d.dragons[i].point = newP
-			if newDir != math.MaxUint8 {
-				d.dragons[i].dir &^= 7
-				d.dragons[i].dir |= newDir
+		if canPushGoblin {
+			if i := pdIndex(d.goblins[:], oldP); i >= 0 {
+				changed = true
+				d.goblins[i].point = newP
 			}
 		}
 
-		if i := pdIndex(d.beams[:], oldP); i >= 0 {
-			changed = true
-			d.beams[i].point = newP
-			if newDir != math.MaxUint8 {
-				d.beams[i].dir = newDir
+		if canPushDragon {
+			if i := pdIndex(d.dragons[:], oldP); i >= 0 {
+				changed = true
+				d.dragons[i].point = newP
+				if newDir != math.MaxUint8 {
+					d.dragons[i].dir &^= 7
+					d.dragons[i].dir |= newDir
+				}
+			}
+		}
+
+		if canPushBeam {
+			if i := pdIndex(d.beams[:], oldP); i >= 0 {
+				changed = true
+				d.beams[i].point = newP
+				if newDir != math.MaxUint8 {
+					d.beams[i].dir = newDir
+				}
 			}
 		}
 
@@ -809,7 +828,7 @@ func solveLevel() []string {
 
 		beams: beamInitArr,
 
-		doorOpened:        doorOpenedInit,
+		//doorOpened:        doorOpenedInit,
 		monsterDoorOpened: monsterDoorOpenedInit,
 
 		curCharTypeNum: __curCharTypeNum,
@@ -834,10 +853,10 @@ func solveLevel() []string {
 
 		// 先确定门的开闭
 		for i, weightSwitch := range weightSwitches {
-			opened := true
+			opened := !doorOpenedInit[i]
 			for _, w := range weightSwitch {
 				if !slices.Contains(allMovableObjs, w) && !slices.Contains(d.grass[:], w) { // 草也可以按住地板
-					opened = false
+					opened = !opened // 反转开闭状态
 					break
 				}
 			}
@@ -928,7 +947,7 @@ func solveLevel() []string {
 						goblins[i].point = noPos
 					}
 				}
-				slices.SortFunc(goblins[:], cmpPointWithDir)
+				slices.SortFunc(goblins[:], cmpPointWithDir) // 一定要排序，不然状态数爆炸了
 			}
 
 			// 喷火龙
@@ -947,7 +966,7 @@ func solveLevel() []string {
 						dragons[i].point = noPos
 					}
 				}
-				slices.SortFunc(dragons[:], cmpPointWithDir)
+				slices.SortFunc(dragons[:], cmpPointWithDir) // 一定要排序，不然状态数爆炸了
 			}
 
 			if canDestroyObj {
@@ -1188,12 +1207,14 @@ func solveLevel() []string {
 					break
 				}
 
-				// todo 合二为一
-				// todo 这里恰有两人
-				//if newData.merchant[0] != noPos && newData.merchant[0] == newData.merchant[1] {
-				//	//newData.merchant[0] = noPos
-				//	return
-				//}
+				// 合二为一
+				if allowMerge {
+					// todo 这里恰有两人
+					man := newData.merchant[:]
+					if man[0] != noPos && man[0] == man[1] {
+						man[0] = noPos
+					}
+				}
 			}
 
 			if swapped == 0 {
