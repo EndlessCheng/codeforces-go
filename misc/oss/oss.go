@@ -752,6 +752,9 @@ func solveLevel() []string {
 					__beams = append(__beams, pointWithDir{p, tp<<4 | dir})
 				case 'x', 'y', 'z', '{':
 					weightSwitches[ch-'x'] = append(weightSwitches[ch-'x'], p)
+					if also := sameSwitches[ch]; also > 0 {
+						weightSwitches[also-'x'] = append(weightSwitches[also-'x'], p)
+					}
 				case 'X', 'Y', 'Z', '[':
 					doors[ch-'X'] = append(doors[ch-'X'], p)
 				case 'N':
@@ -841,12 +844,12 @@ func solveLevel() []string {
 	from := map[data]pair{} // 同时充当 vis 的功能
 	queue := []data{}
 
-	//hasStone := map[point]bool{}
+	//seenPoint := map[point]bool{}
 
 	add := func(last, d data, info string) {
-		//if !hasStone[d.stones[0]] {
-		//	hasStone[d.stones[0]] = true
-		//	fmt.Println(d.stones[0])
+		//if p := d.dragons[0].point; !seenPoint[p] {
+		//	seenPoint[p] = true
+		//	fmt.Println(p)
 		//}
 
 		_, allMovableObjs := d.getAllMovableObjPos(isBigMap)
@@ -924,7 +927,7 @@ func solveLevel() []string {
 		}
 
 		// 先判断是否有角色死亡
-		for _, char := range d.getAllCharPos(isBigMap) {
+		for _, char := range d.getAllCharPos(false) {
 			if d.getDieType(char, burnedPos, true) != dieTypeNo {
 				return
 			}
@@ -944,7 +947,7 @@ func solveLevel() []string {
 							return
 						}
 						dieType = tp
-						goblins[i].point = noPos
+						goblins[i] = noPosDir
 					}
 				}
 				slices.SortFunc(goblins[:], cmpPointWithDir) // 一定要排序，不然状态数爆炸了
@@ -963,7 +966,7 @@ func solveLevel() []string {
 							return
 						}
 						dieType = tp
-						dragons[i].point = noPos
+						dragons[i] = noPosDir
 					}
 				}
 				slices.SortFunc(dragons[:], cmpPointWithDir) // 一定要排序，不然状态数爆炸了
