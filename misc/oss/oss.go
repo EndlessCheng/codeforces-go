@@ -5,7 +5,6 @@ import (
 	"math"
 	"math/bits"
 	"slices"
-	"strings"
 )
 
 /*
@@ -581,7 +580,7 @@ func (d *data) changePos(oldP, newP point, newDir uint8) {
 	}
 }
 
-func (d *data) getCurCharTypePos() (pos point) {
+func (d *data) getCurCharPos() (pos point) {
 	switch d.curCharTypeNum {
 	case charDefault:
 		panic("代码有误，当前角色不能为 charDefault")
@@ -607,6 +606,44 @@ func (d *data) getCurCharTypePos() (pos point) {
 		panic("未找到当前角色")
 	}
 	return
+}
+
+func (newData *data) bigMapForceSwapChar(p point) {
+	if !isBigMap {
+		return
+	}
+	ch := levelMap[0][p.x][p.y]
+	if ch != '.' && ch != charNumToName[newData.curCharTypeNum] {
+		switch ch {
+		case 'A':
+			newData.warrior = p
+			newData.curCharTypeNum = charWarrior
+		case 'T':
+			newData.thief = p
+			newData.curCharTypeNum = charThief
+		case 'W':
+			newData.wizard = p
+			newData.curCharTypeNum = charWizard
+		case 'C':
+			newData.cleric = p
+			newData.curCharTypeNum = charCleric
+		case 'D':
+			newData.druid = p
+			newData.curCharTypeNum = charDruid
+		case 'B':
+			newData.bard = p
+			newData.curCharTypeNum = charBard
+		case '7':
+			newData.explorer = p
+			newData.curCharTypeNum = charExplorer
+		case '8':
+			newData.sailor = p
+			newData.curCharTypeNum = charSailor
+			//case '9':
+			//	newData.merchant = p
+			//	newData.curCharTypeNum = charMerchant
+		}
+	}
 }
 
 func solveLevel() []string {
@@ -638,10 +675,10 @@ func solveLevel() []string {
 	__thief := thiefPosInit
 	__wizard := wizardPosInit
 	__cleric := noPos
-	__bard := noPos
+	__bard := bardPosInit
 	__druid := noPos
 	__explorer := noPos
-	__sailor := noPos
+	__sailor := sailorPosInit
 	__sailors := sailorInitArr[:0]
 	__merchants := merchantInitArr[:0]
 
@@ -1080,7 +1117,7 @@ func solveLevel() []string {
 		if !targetIsClearAllMonsters {
 			// 标准版：所有人都到达终点
 			if isBigMap {
-				p := d.getCurCharTypePos()
+				p := d.getCurCharPos()
 				pass = slices.Equal([]point{p}, finals)
 			} else {
 				slices.SortFunc(allChars, cmpPoint)
@@ -1259,6 +1296,7 @@ func solveLevel() []string {
 				}
 				np := point{x, y, z}
 				newData.warrior = np
+				newData.bigMapForceSwapChar(newData.warrior)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charThief:
@@ -1277,6 +1315,7 @@ func solveLevel() []string {
 					newData.changePos(back, p0, math.MaxUint8)
 				}
 				newData.thief = np
+				newData.bigMapForceSwapChar(newData.thief)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charWizard:
@@ -1331,6 +1370,7 @@ func solveLevel() []string {
 				}
 				newData := d
 				newData.wizard = newP
+				newData.bigMapForceSwapChar(newData.wizard)
 				add(d, newData, dir4String[dIdx]) // move
 			}
 		case charCleric:
@@ -1357,11 +1397,15 @@ func solveLevel() []string {
 					}
 				}
 				newData.cleric = newP
+				newData.bigMapForceSwapChar(newData.cleric)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charBard:
 			p0 := d.bard
 			items := []point{}
+			if isBigMap {
+				items = append(items, p0)
+			}
 			for _, p := range allMovableObjs {
 				if chebyshevDis(p, p0) <= 2 {
 					items = append(items, p)
@@ -1408,7 +1452,7 @@ func solveLevel() []string {
 
 				if !slices.Contains(unmovedItems, p0) {
 					if newData.bard != (point{x, y, z}) {
-						panic("移动错误，代码有误")
+						panic("诗人移动错误，代码有误")
 					}
 
 					// 特性：如果诗人脚下是物品，且该物品移动了，那么诗人可以再走一格
@@ -1420,6 +1464,7 @@ func solveLevel() []string {
 						// todo （待确认）如果 z-2 也移动了，那么再再走一格
 					}
 
+					newData.bigMapForceSwapChar(newData.bard)
 					add(d, newData, dir4String[dIdx])
 				}
 			}
@@ -1469,6 +1514,7 @@ func solveLevel() []string {
 				}
 				newData := d
 				newData.druid = newP
+				newData.bigMapForceSwapChar(newData.druid)
 				add(d, newData, dir4String[dIdx]) // move
 			}
 		case charExplorer:
@@ -1520,6 +1566,8 @@ func solveLevel() []string {
 					}
 					// todo 镜子
 				}
+
+				newData.bigMapForceSwapChar(newData.explorer)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charSailor:
@@ -1571,6 +1619,8 @@ func solveLevel() []string {
 					}
 					// todo 镜子
 				}
+
+				newData.bigMapForceSwapChar(newData.sailor)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charMerchant:
@@ -1627,26 +1677,7 @@ func solveLevel() []string {
 		}
 
 		// 换成其他人
-		if isBigMap {
-			p := d.getCurCharTypePos()
-			ch := levelMap[0][p.x][p.y]
-			if ch != charNumToName[d.curCharTypeNum] {
-				if i := strings.IndexByte("ATWCDB789", ch); i >= 0 {
-					newData := d
-					// 复原所有角色位置
-					newData.warrior = __warrior
-					newData.thief = __thief
-					newData.wizard = __wizard
-					newData.cleric = __cleric
-					newData.druid = __druid
-					newData.bard = __bard
-					newData.explorer = __explorer
-					newData.sailor = __sailor
-					newData.curCharTypeNum = int8(i + 1)
-					add(d, newData, "IGNORE")
-				}
-			}
-		} else {
+		if !isBigMap {
 			for _, char := range validChars {
 				if char != d.curCharTypeNum {
 					newData := d

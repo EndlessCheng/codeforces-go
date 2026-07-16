@@ -10,10 +10,11 @@ var rawDir = [...]struct {
 	dirZH string
 	dirEN string
 }{
-	{point{0, -1, 0}, "左", "a"},
-	{point{0, 1, 0}, "右", "d"},
+	// 一般来说上下看得清楚，地图更倾向于先上下移动？
 	{point{-1, 0, 0}, "上", "w"},
 	{point{1, 0, 0}, "下", "s"},
+	{point{0, -1, 0}, "左", "a"},
+	{point{0, 1, 0}, "右", "d"},
 }
 
 func getDir(en byte) uint8 {
