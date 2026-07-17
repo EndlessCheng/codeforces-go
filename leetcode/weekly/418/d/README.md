@@ -1,44 +1,48 @@
 ## 每个 GCD 的出现次数
 
-直接把每个 GCD 出现多少次计算出来，这样就方便回答询问了。
+直接把每个 GCD 分别出现多少次算出来，就方便回答询问了。
 
 以 $2$ 为例，如何计算 GCD 恰好等于 $2$ 的数对个数？
 
 统计 $\textit{nums}$ 中的 $2$ 的倍数的个数，假设有 $5$ 个。从这 $5$ 个数中选 $2$ 个数，可以得到 $\dbinom 5 2 =\dfrac{5(5-1)}{2}=10$ 个数对。
 
-但这 $10$ 个数对，每个数对的 GCD 并不一定都是 $2$，比如 $8$ 和 $12$ 的 GCD 是 $4$。
+但这 $10$ 个数对的 GCD 并不都恰好等于 $2$，比如数对 $(8,12)$ 的 GCD 为 $4$。
 
 只能说，这 $10$ 个数对的 GCD 都是 $2$ 的倍数。
 
-我们可以从 $10$ 中减去 GCD 等于 $4,6,8,\dots$ 的数对个数，就得到 GCD **恰好**等于 $2$ 的数对个数了。
+我们可以从 $10$ 中减去 GCD 等于 $4,6,8,\ldots$ 的数对个数，就得到 GCD **恰好**等于 $2$ 的数对个数了。
 
 一般地，定义 $\textit{cntGcd}[i]$ 为 GCD 等于 $i$ 的数对个数。
 
-枚举 $i$ 的倍数，统计 $\textit{nums}$ 中有多少个数等于 $i,2i,3i,\dots$ 把个数记作 $c$。
+枚举 $i$ 的倍数，统计 $\textit{nums}$ 中有多少个数等于 $i,2i,3i,\ldots$ 把个数记作 $c$。
 
 这 $c$ 个数选 $2$ 个数，组成 $\dfrac{c(c-1)}{2}$ 个数对。
 
-但是，这些数对的 GCD 只是 $i$ 的倍数，并不一定恰好等于 $i$。
+但是，这些数对的 GCD 只是 $i$ 的倍数，并不都恰好等于 $i$。
 
-减去其中 GCD 等于 $2i,3i,\dots$ 的数对个数，得到如下递推式
+减去其中 GCD 等于 $2i,3i,\ldots$ 的数对个数，得到如下**递推式**
 
 $$
 \textit{cntGcd}[i] = \dfrac{c(c-1)}{2} - \textit{cntGcd}[2i] - \textit{cntGcd}[3i] - \cdots
 $$
 
-为了完成这一计算，需要**倒序枚举** $i$。
+> 注：由于计算 $\textit{cntGcd}[i]$ 需要知道 $\textit{cntGcd}[2i]$ 的值，所以代码实现时，要**倒序枚举** $i$。
 
 ## 回答询问
 
-比如 $\textit{gcdPairs}=[1,1,2,2,3,3,3]$，对应的 $\textit{gcdCnt}=[0,2,2,3]$，计算其前缀和，得 $s=[0,2,4,7]$。
+比如 $\textit{gcdPairs}=[1,1,2,2,3,3,3]$，对应的 $\textit{cntGcd}=[0,2,2,3]$。
+
+计算 $\textit{cntGcd}$ 的前缀和数组 $s=[0,2,4,7]$。
 
 - $q=0,1$，答案都是 $s$ 中的大于 $q$ 的第一个数的下标，即 $1$。
 - $q=2,3$，答案都是 $s$ 中的大于 $q$ 的第一个数的下标，即 $2$。
 - $q=4,5,6$，答案都是 $s$ 中的大于 $q$ 的第一个数的下标，即 $3$。
 
-所以在 $s$ 中 [二分查找](https://www.bilibili.com/video/BV1AP41137w7/) 大于 $q$ 的第一个数的下标即可。
+一般地，$\textit{gcdPairs}$ 中等于 $g$ 的数，有 $\textit{cntGcd}[g]$ 个，这些数在 $\textit{gcdPairs}$ 中的下标为闭区间 $[s[g-1], s[g]-1]$。换句话说，对于 $\textit{gcdPairs}$ 的下标 $q$，我们有 $s[g-1]\le q < s[g]$。于是，在 $s$ 中 [二分查找](https://www.bilibili.com/video/BV1AP41137w7/) 严格大于 $q$ 的第一个数的下标，即为 $g$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV15y1iYUE2h/) 第四题，欢迎点赞关注~
+> 注：由于 $\textit{cntGcd}[i]\ge 0$，所以 $s$ 是有序数组，可以在 $s$ 上二分查找。
+
+[本题视频讲解](https://www.bilibili.com/video/BV15y1iYUE2h/?t=17m58s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -189,20 +193,20 @@ func gcdValues(nums []int, queries []int64) []int {
 
 ## 分类题单
 
-[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+[如何科学刷题？](https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
-2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
-4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
-9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
-12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/discuss/post/3578981/ti-dan-hua-dong-chuang-kou-ding-chang-bu-rzz7/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/discuss/post/3579164/ti-dan-er-fen-suan-fa-er-fen-da-an-zui-x-3rqn/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/discuss/post/3579480/ti-dan-dan-diao-zhan-ju-xing-xi-lie-zi-d-u4hk/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/discuss/post/3580195/fen-xiang-gun-ti-dan-wang-ge-tu-dfsbfszo-l3pa/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/discuss/post/3580371/fen-xiang-gun-ti-dan-wei-yun-suan-ji-chu-nth4/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/discuss/post/3581143/fen-xiang-gun-ti-dan-tu-lun-suan-fa-dfsb-qyux/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/discuss/post/3581838/fen-xiang-gun-ti-dan-dong-tai-gui-hua-ru-007o/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/discuss/post/3583665/fen-xiang-gun-ti-dan-chang-yong-shu-ju-j-bvmv/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/discuss/post/3584388/fen-xiang-gun-ti-dan-shu-xue-suan-fa-shu-gcai/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/discuss/post/3091107/fen-xiang-gun-ti-dan-tan-xin-ji-ben-tan-k58yb/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/discuss/post/3142882/fen-xiang-gun-ti-dan-lian-biao-er-cha-sh-6srp/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/discuss/post/3144832/fen-xiang-gun-ti-dan-zi-fu-chuan-kmpzhan-ugt4/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
