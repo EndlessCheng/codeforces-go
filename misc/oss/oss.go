@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/bits"
 	"slices"
+	"strings"
 )
 
 /*
@@ -608,39 +609,64 @@ func (d *data) getCurCharPos() (pos point) {
 	return
 }
 
-func (newData *data) bigMapForceSwapChar(p point) {
+// 进入的时候切回 '8'，离开的时候才切换角色
+func (newData *data) bigMapForceSwapChar(oldP, newP point) {
 	if !isBigMap {
 		return
 	}
-	ch := levelMap[0][p.x][p.y]
-	if ch != '.' && ch != charNumToName[newData.curCharTypeNum] {
-		switch ch {
+
+	isOldOutside := strings.ContainsRune("ATWCDB789", rune(levelMap[0][oldP.x][oldP.y]))
+	isNewOutside := strings.ContainsRune("ATWCDB789", rune(levelMap[0][newP.x][newP.y]))
+
+	if !isOldOutside && isNewOutside {
+		// 从场景内部移到场景外部
+		// 重置所有人的位置
+		newData.warrior = noPos
+		newData.thief = noPos
+		newData.wizard = noPos
+		newData.cleric = noPos
+		newData.druid = noPos
+		newData.bard = noPos
+		newData.explorer = noPos
+		newData.sailor = newP
+		newData.curCharTypeNum = charSailor
+	} else if isOldOutside && !isNewOutside {
+		// 从场景外部移到场景内部
+		switch levelMap[0][oldP.x][oldP.y] {
 		case 'A':
-			newData.warrior = p
+			newData.sailor = noPos
+			newData.warrior = newP
 			newData.curCharTypeNum = charWarrior
 		case 'T':
-			newData.thief = p
+			newData.sailor = noPos
+			newData.thief = newP
 			newData.curCharTypeNum = charThief
 		case 'W':
-			newData.wizard = p
+			newData.sailor = noPos
+			newData.wizard = newP
 			newData.curCharTypeNum = charWizard
 		case 'C':
-			newData.cleric = p
+			newData.sailor = noPos
+			newData.cleric = newP
 			newData.curCharTypeNum = charCleric
 		case 'D':
-			newData.druid = p
+			newData.sailor = noPos
+			newData.druid = newP
 			newData.curCharTypeNum = charDruid
 		case 'B':
-			newData.bard = p
+			newData.sailor = noPos
+			newData.bard = newP
 			newData.curCharTypeNum = charBard
 		case '7':
-			newData.explorer = p
+			newData.sailor = noPos
+			newData.explorer = newP
 			newData.curCharTypeNum = charExplorer
 		case '8':
-			newData.sailor = p
+			newData.sailor = newP
 			newData.curCharTypeNum = charSailor
 			//case '9':
-			//	newData.merchant = p
+			//  newData.sailor = noPos
+			//	newData.merchant = newP
 			//	newData.curCharTypeNum = charMerchant
 		}
 	}
@@ -671,6 +697,10 @@ func solveLevel() []string {
 	beamInitArr := beamArrType{}
 
 	__curCharTypeNum := initCharTypeNum
+	if isBigMap {
+		__curCharTypeNum = charSailor
+	}
+
 	__warrior := warriorPosInit
 	__thief := thiefPosInit
 	__wizard := wizardPosInit
@@ -696,53 +726,95 @@ func solveLevel() []string {
 				p := point{int8(x), int8(y), int8(z)}
 				switch ch {
 				case 'A':
-					if __curCharTypeNum < 0 {
-						__curCharTypeNum = charWarrior
-					}
-					if __warrior == noPos {
-						__warrior = p
+					if isBigMap {
+						if __sailor == noPos {
+							__sailor = p
+						}
+					} else {
+						if __curCharTypeNum < 0 {
+							__curCharTypeNum = charWarrior
+						}
+						if __warrior == noPos {
+							__warrior = p
+						}
 					}
 				case 'T':
-					if __curCharTypeNum < 0 {
-						__curCharTypeNum = charThief
-					}
-					if __thief == noPos {
-						__thief = p
+					if isBigMap {
+						if __sailor == noPos {
+							__sailor = p
+						}
+					} else {
+						if __curCharTypeNum < 0 {
+							__curCharTypeNum = charThief
+						}
+						if __thief == noPos {
+							__thief = p
+						}
 					}
 				case 'W':
-					if __curCharTypeNum < 0 {
-						__curCharTypeNum = charWizard
-					}
-					if __wizard == noPos {
-						__wizard = p
+					if isBigMap {
+						if __sailor == noPos {
+							__sailor = p
+						}
+					} else {
+						if __curCharTypeNum < 0 {
+							__curCharTypeNum = charWizard
+						}
+						if __wizard == noPos {
+							__wizard = p
+						}
 					}
 				case 'C':
-					if __curCharTypeNum < 0 {
-						__curCharTypeNum = charCleric
-					}
-					if __cleric == noPos {
-						__cleric = p
+					if isBigMap {
+						if __sailor == noPos {
+							__sailor = p
+						}
+					} else {
+						if __curCharTypeNum < 0 {
+							__curCharTypeNum = charCleric
+						}
+						if __cleric == noPos {
+							__cleric = p
+						}
 					}
 				case 'B':
-					if __curCharTypeNum < 0 {
-						__curCharTypeNum = charBard
-					}
-					if __bard == noPos {
-						__bard = p
+					if isBigMap {
+						if __sailor == noPos {
+							__sailor = p
+						}
+					} else {
+						if __curCharTypeNum < 0 {
+							__curCharTypeNum = charBard
+						}
+						if __bard == noPos {
+							__bard = p
+						}
 					}
 				case 'D':
-					if __curCharTypeNum < 0 {
-						__curCharTypeNum = charDruid
-					}
-					if __druid == noPos {
-						__druid = p
+					if isBigMap {
+						if __sailor == noPos {
+							__sailor = p
+						}
+					} else {
+						if __curCharTypeNum < 0 {
+							__curCharTypeNum = charDruid
+						}
+						if __druid == noPos {
+							__druid = p
+						}
 					}
 				case '7':
-					if __curCharTypeNum < 0 {
-						__curCharTypeNum = charExplorer
-					}
-					if __explorer == noPos {
-						__explorer = p
+					if isBigMap {
+						if __sailor == noPos {
+							__sailor = p
+						}
+					} else {
+						if __curCharTypeNum < 0 {
+							__curCharTypeNum = charExplorer
+						}
+						if __explorer == noPos {
+							__explorer = p
+						}
 					}
 				case '8':
 					if __curCharTypeNum < 0 {
@@ -1296,7 +1368,7 @@ func solveLevel() []string {
 				}
 				np := point{x, y, z}
 				newData.warrior = np
-				newData.bigMapForceSwapChar(newData.warrior)
+				newData.bigMapForceSwapChar(p0, newData.warrior)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charThief:
@@ -1315,7 +1387,7 @@ func solveLevel() []string {
 					newData.changePos(back, p0, math.MaxUint8)
 				}
 				newData.thief = np
-				newData.bigMapForceSwapChar(newData.thief)
+				newData.bigMapForceSwapChar(p0, newData.thief)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charWizard:
@@ -1370,7 +1442,7 @@ func solveLevel() []string {
 				}
 				newData := d
 				newData.wizard = newP
-				newData.bigMapForceSwapChar(newData.wizard)
+				newData.bigMapForceSwapChar(p0, newData.wizard)
 				add(d, newData, dir4String[dIdx]) // move
 			}
 		case charCleric:
@@ -1397,7 +1469,7 @@ func solveLevel() []string {
 					}
 				}
 				newData.cleric = newP
-				newData.bigMapForceSwapChar(newData.cleric)
+				newData.bigMapForceSwapChar(p0, newData.cleric)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charBard:
@@ -1436,6 +1508,12 @@ func solveLevel() []string {
 						unmovedItems = append(unmovedItems, oldP)
 						continue
 					}
+					// 大地图物品不能出界 
+					// todo 目前只实现了诗人的逻辑
+					if isBigMap && oldP != p0 && strings.ContainsRune("ATWCDB789", rune(levelMap[0][newP.x][newP.y])) {
+						unmovedItems = append(unmovedItems, oldP)
+						continue
+					}
 					// 尝试移动
 					if chebyshevDis(newP, p0) > 2 { // item 是力场最前面的点
 						if slices.Contains(allMovableObjs, newP) { // 不能与力场外的对象碰撞
@@ -1464,7 +1542,7 @@ func solveLevel() []string {
 						// todo （待确认）如果 z-2 也移动了，那么再再走一格
 					}
 
-					newData.bigMapForceSwapChar(newData.bard)
+					newData.bigMapForceSwapChar(p0, newData.bard)
 					add(d, newData, dir4String[dIdx])
 				}
 			}
@@ -1514,7 +1592,7 @@ func solveLevel() []string {
 				}
 				newData := d
 				newData.druid = newP
-				newData.bigMapForceSwapChar(newData.druid)
+				newData.bigMapForceSwapChar(p0, newData.druid)
 				add(d, newData, dir4String[dIdx]) // move
 			}
 		case charExplorer:
@@ -1567,7 +1645,7 @@ func solveLevel() []string {
 					// todo 镜子
 				}
 
-				newData.bigMapForceSwapChar(newData.explorer)
+				newData.bigMapForceSwapChar(p0, newData.explorer)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charSailor:
@@ -1620,7 +1698,7 @@ func solveLevel() []string {
 					// todo 镜子
 				}
 
-				newData.bigMapForceSwapChar(newData.sailor)
+				newData.bigMapForceSwapChar(p0, newData.sailor)
 				add(d, newData, dir4String[dIdx])
 			}
 		case charMerchant:
@@ -1712,7 +1790,7 @@ const (
 	charBard
 	charDruid
 	charExplorer
-	charSailor
+	charSailor   // 同大地图角色
 	charMerchant // Trader
 )
 
