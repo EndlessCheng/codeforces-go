@@ -4,7 +4,7 @@
 
 - 选择子序列中一左一右的两个字符 $x$ 和 $y$，如果 $x > y$，则交换 $x$ 和 $y$。
 
-由于 $[x,y]$ 也是子序列，所以原问题的操作，等价于：
+由于 $[x,y]$ 也是子序列，所以实际上，我们只需考虑如下操作：
 
 - 选择 $s[i]=\texttt{1}$ 和 $s[j]=\texttt{0}$（$i<j$），交换 $s[i]$ 和 $s[j]$。
 
@@ -14,9 +14,9 @@
 
 然后，设 $s$ 中的 $\texttt{0}$ 的下标列表为 $P$，$t$ 中的 $\texttt{0}$ 的下标列表为 $Q$。由于 $s$ 中的 $\texttt{0}$ 只能向左移动，所以每个 $P[j]$ 都要 $\ge Q[j]$，才能保证我们能把 $s$ 变成 $t$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1xpK663Eqh/?t=48m20s)，欢迎点赞关注~
 
-## 写法一（优化前）
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -243,9 +243,9 @@ next:
 }
 ```
 
-## 写法二（优化）
+## 写法二
 
-把处理 $\texttt{?}$ 的逻辑合并到双指针中，这样无需修改字符串。
+把写法一处理 $\texttt{?}$ 的逻辑合并到双指针中，这样无需修改字符串。
 
 ```py [sol-Python3]
 class Solution:
@@ -438,6 +438,182 @@ next:
 
 			i++
 			j++
+		}
+
+		ans[idx] = true
+	}
+
+	return ans
+}
+```
+
+## 写法三
+
+由于 $s$ 中的 $\texttt{0}$ 只能向左移动，所以在前缀 $s[:i]$ 和前缀 $t[:i]$ 中，$s[:i]$ 中的 $\texttt{0}$ 不能比 $t[:i]$ 中的 $\texttt{0}$ 多。或者说，$s[:i]$ 中的 $\texttt{1}$ 不能比 $t[:i]$ 中的 $\texttt{1}$ 少。
+
+```py [sol-Python3]
+class Solution:
+    def transformStr(self, s: str, strs: list[str]) -> list[bool]:
+        total0 = s.count('0')
+
+        def check(t: str) -> bool:
+            cnt0 = t.count('0')
+            cnt_q = t.count('?')
+            # t 中的 '0' 的个数在闭区间 [cnt0, cnt0+cnt_q] 中，total0 必须在这个范围内
+            if not cnt0 <= total0 <= cnt0 + cnt_q:
+                return False
+
+            # 判断能否把 s 变成 t
+            cnt_s1 = cnt_t1 = 0
+            for x, y in zip(s, t):
+                if y == '?':
+                    if cnt0 < total0:
+                        y = '0'
+                        cnt0 += 1
+                    else:
+                        y = '1'
+                cnt_s1 += int(x)
+                cnt_t1 += int(y)
+                if cnt_s1 < cnt_t1:
+                    return False
+
+            return True
+
+        return list(map(check, strs))
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean[] transformStr(String S, String[] strs) {
+        char[] s = S.toCharArray();
+        int total0 = 0;
+        for (char ch : s) {
+            total0 += '1' - ch; // 统计 '0' 的个数
+        }
+
+        boolean[] ans = new boolean[strs.length];
+        next:
+        for (int idx = 0; idx < strs.length; idx++) {
+            char[] t = strs[idx].toCharArray();
+            int cnt0 = 0;
+            int cntQ = 0;
+            for (char ch : t) {
+                if (ch == '0') {
+                    cnt0++;
+                } else if (ch == '?') {
+                    cntQ++;
+                }
+            }
+
+            // str 中的 '0' 的个数在闭区间 [cnt0, cnt0+cntQ] 中，total0 必须在这个范围内
+            if (total0 < cnt0 || total0 > cnt0 + cntQ) {
+                continue;
+            }
+
+            // 判断能否把 s 变成 t
+            int cntS1 = 0;
+            int cntT1 = 0;
+            for (int i = 0; i < s.length; i++) {
+                char y = t[i];
+                if (y == '?') {
+                    if (cnt0 < total0) {
+                        y = '0';
+                        cnt0++;
+                    } else {
+                        y = '1';
+                    }
+                }
+                cntS1 += s[i] - '0';
+                cntT1 += y - '0';
+                if (cntS1 < cntT1) {
+                    continue next;
+                }
+            }
+
+            ans[idx] = true;
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<bool> transformStr(string s, vector<string>& strs) {
+        int total0 = ranges::count(s, '0');
+        vector<bool> ans(strs.size());
+
+        for (int idx = 0; idx < strs.size(); idx++) {
+            auto& t = strs[idx];
+            int cnt0 = ranges::count(t, '0');
+            int cnt_q = ranges::count(t, '?');
+            // str 中的 '0' 的个数在闭区间 [cnt0, cnt0+cnt_q] 中，total0 必须在这个范围内
+            if (total0 < cnt0 || total0 > cnt0 + cnt_q) {
+                continue;
+            }
+
+            // 判断能否把 s 变成 t
+            bool ok = true;
+            int cnt_s1 = 0, cnt_t1 = 0;
+            for (int i = 0; i < s.size(); i++) {
+                char y = t[i];
+                if (y == '?') {
+                    if (cnt0 < total0) {
+                        y = '0';
+                        cnt0++;
+                    } else {
+                        y = '1';
+                    }
+                }
+                cnt_s1 += s[i] - '0';
+                cnt_t1 += y - '0';
+                if (cnt_s1 < cnt_t1) {
+                    ok = false;
+                    break;
+                }
+            }
+
+            ans[idx] = ok;
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func transformStr(s string, strs []string) []bool {
+	total0 := strings.Count(s, "0")
+	ans := make([]bool, len(strs))
+
+next:
+	for idx, t := range strs {
+		cnt0 := strings.Count(t, "0")
+		cntQ := strings.Count(t, "?")
+		// str 中的 '0' 的个数在闭区间 [cnt0, cnt0+cntQ] 中，total0 必须在这个范围内
+		if total0 < cnt0 || total0 > cnt0+cntQ {
+			continue
+		}
+
+		// 判断能否把 s 变成 t
+		cntS1, cntT1 := 0, 0
+		for i, x := range s {
+			y := t[i]
+			if y == '?' {
+				if cnt0 < total0 {
+					y = '0'
+					cnt0++
+				} else {
+					y = '1'
+				}
+			}
+			cntS1 += int(x - '0')
+			cntT1 += int(y - '0')
+			if cntS1 < cntT1 {
+				continue next
+			}
 		}
 
 		ans[idx] = true

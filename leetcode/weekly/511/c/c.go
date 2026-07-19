@@ -56,7 +56,7 @@ next:
 	return ans
 }
 
-func transformStr(s string, strs []string) []bool {
+func transformStr2(s string, strs []string) []bool {
 	total0 := strings.Count(s, "0")
 	ans := make([]bool, len(strs))
 
@@ -93,6 +93,44 @@ next:
 
 			i++
 			j++
+		}
+
+		ans[idx] = true
+	}
+
+	return ans
+}
+
+func transformStr(s string, strs []string) []bool {
+	total0 := strings.Count(s, "0")
+	ans := make([]bool, len(strs))
+
+next:
+	for idx, t := range strs {
+		cnt0 := strings.Count(t, "0")
+		cntQ := strings.Count(t, "?")
+		// str 中的 '0' 的个数在闭区间 [cnt0, cnt0+cntQ] 中，total0 必须在这个范围内
+		if total0 < cnt0 || total0 > cnt0+cntQ {
+			continue
+		}
+
+		// 判断能否把 s 变成 t
+		cntS1, cntT1 := 0, 0
+		for i, x := range s {
+			y := t[i]
+			if y == '?' {
+				if cnt0 < total0 {
+					y = '0'
+					cnt0++
+				} else {
+					y = '1'
+				}
+			}
+			cntS1 += int(x - '0')
+			cntT1 += int(y - '0')
+			if cntS1 < cntT1 {
+				continue next
+			}
 		}
 
 		ans[idx] = true
