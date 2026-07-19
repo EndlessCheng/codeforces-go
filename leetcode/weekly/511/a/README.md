@@ -4,13 +4,13 @@
 
 所以 $\textit{start}$ 和 $\textit{target}$ 的格子颜色必须相同。
 
-![lc511a.png](https://pic.leetcode.cn/1784430285-BoJCle-lc511a.png){:width=300px}
+![lc511a.png](https://pic.leetcode.cn/1784430285-BoJCle-lc511a.png){:width=250px}
 
-马走两步可以移动到上下左右的同色格子。马走偶数步，可以走到任意同色格子。所以只要 $\textit{start}$ 和 $\textit{target}$ 的格子颜色相同，就可以从 $\textit{start}$ 走到 $\textit{target}$。
+马走两步，可以走到曼哈顿距离为 $2$ 的同色格子（马周围一圈的任意同色格子）。马走偶数步，可以走到棋盘的任意同色格子。所以只要 $\textit{start}$ 和 $\textit{target}$ 的格子颜色相同，就可以从 $\textit{start}$ 走到 $\textit{target}$。
 
-如何计算格子的颜色？对于格子 $(x,y)$，$x+y$ 相同的格子，在同一条斜线上，颜色相同。由于 $x+y$ 每增加 $1$，格子颜色切换，所以可以用 $(x+y)\bmod 2$ 区分格子的颜色。
+如何计算格子的颜色？对于格子 $(x,y)$，$x+y$ 相同的格子，都在同一条斜线上，颜色相同。由于 $x+y$ 每增加 $1$，格子颜色切换，所以可以用 $(x+y)\bmod 2$ 区分格子的颜色。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1xpK663Eqh/?t=43m57s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

@@ -6,9 +6,9 @@ package main
 func smallestRepresentation(s []byte) []byte {
 	n := len(s)
 	s = append(s, s...)
-	// 注：如果要返回一个和原串不同的字符串，初始化 i=1, j=2
-	i := 0
-	for j := 1; j < n; {
+	i := 0 // 始终指向当前最小子串的首字母下标
+	j := 1 // 指向需要和 i 比较的子串的首字母下标
+	for j < n {
 		// 暴力比较：是 i 开头的字典序小，还是 j 开头的字典序小？
 		// 相同就继续往后比，至多循环 n 次（如果循环 n 次，说明所有字母都相同，不用再比了）
 		k := 0
@@ -69,4 +69,8 @@ func minimumGroups(words []string) (ans int) {
 	}
 
 	return len(set)
+}
+
+func main() {
+	smallestRepresentation([]byte("bbbcbbba"))
 }

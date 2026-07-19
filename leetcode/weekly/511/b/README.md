@@ -2,8 +2,6 @@
 
 如果当前节点值等于当前子树的最大节点值，那么答案加一。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def countDominantNodes(self, root: TreeNode | None) -> int:
