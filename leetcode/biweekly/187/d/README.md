@@ -11,16 +11,19 @@
 
 - 不替换，前提是 $\textit{source}[i] = \textit{target}[i]$。问题变成把 $\textit{source}$ 的子串 $[0,i-1]$ 变成 $\textit{target}$ 的子串 $[0,i-1]$ 的最小总成本，即 $\textit{dfs}(i-1)$。
 - 替换，枚举替换规则。设 $\textit{pattern}$ 的长度为 $m$，如果 $\textit{pattern}$ 匹配 $\textit{source}$ 的子串 $[i-m+1,i]$，且 $\textit{replacement}$ 等于 $\textit{target}$ 的子串 $[i-m+1,i]$，那么问题变成把 $\textit{source}$ 的 $[0,i-m]$ 变成 $\textit{target}$ 的 $[0,i-m]$ 的最小总成本，即 $\textit{dfs}(i-m)$，再加上替换的成本，更新 $\textit{dfs}(i)$ 的最小值。
+- 如果 $\textit{source}[i] \ne \textit{target}[i]$ 且无任何规则可以匹配，则 $\textit{dfs}(i) = \infty$。
 
 **递归边界**：$\textit{dfs}(-1)=0$。此时剩余子串是空串，无需替换，成本为 $0$。
 
 **递归入口**：$\textit{dfs}(n-1)$，这是原问题，也是答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1mJK66VEbN/?t=12m30s)，欢迎点赞关注~
 
 ## 写法一：记忆化搜索
 
 关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
+
+**注**：题目没有保证 $\textit{source}$ 和 $\textit{target}$ 长度相等，我估计是出题人漏写了（试了一下，没有长度不等的数据）。
 
 ```py [sol-Python3]
 class Solution:
