@@ -14,26 +14,23 @@ func cf2231C(in io.Reader, out io.Writer) {
 		sum := map[int]int{}
 		for i := range n {
 			Fscan(in, &v)
-			x := v
-			step := 0
-			for {
+			if v == 1 {
+				cnt[2]++
+				sum[2]++
+			}
+			for step := 0; ; step++ {
 				if i == 0 || cnt[v] > 0 {
 					cnt[v]++
 					sum[v] += step
 				}
-				step++
+				if v == 1 {
+					break
+				}
 				if v&1 > 0 {
 					v++
 				} else {
 					v >>= 1
 				}
-				if v == 1 {
-					break
-				}
-			}
-			if x > 1 {
-				cnt[1]++
-				sum[1] += step
 			}
 		}
 
