@@ -277,6 +277,8 @@ func longestArithmetic(nums []int) (ans int) {
 
 [例题讲解](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solutions/2528771/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
 
+推荐先完成 [413. 等差数列划分](https://leetcode.cn/problems/arithmetic-slices/)。
+
 对于本题，$\textit{nums}$ 包含若干段等差子数组。修改等差子数组的中间元素是无意义的（值没变），所以修改操作只会发生在等差子数组的端点旁边。用分组循环找到等差子数组的端点。
 
 ```py [sol-Python3]
@@ -461,7 +463,7 @@ func longestArithmetic(nums []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个数至多被遍历两次。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个数至多遍历两次。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 附：状态机 DP 做法
@@ -469,78 +471,39 @@ func longestArithmetic(nums []int) (ans int) {
 ```py
 class Solution:
     def longestArithmetic(self, nums: List[int]) -> int:
-        # 返回以 i 结尾的最长等差子数组的长度，其中 nums[i] 不改
-        # left 表示剩余操作次数
+        # 返回以 i 结尾的最长等差子数组的长度
+        # j=0 表示 [0,i] 中没有发生替换
+        # j=1 表示 [0,i] 中发生了替换，且替换位置 <= i-2
+        # j=2 表示 nums[i] 被替换
+        # j=3 表示 nums[i-1] 被替换
         @cache
-        def dfs(i: int, left: int) -> int:
+        def dfs(i: int, j: int) -> int:
             if i <= 1:
-                return i + 1  # 等差子数组 [0, i]，长为 i+1
+                return i + 1  # 等差子数组 [0,i]，长为 i+1
 
-            # 不改
             res = 2  # 等差子数组 [i-1, i]，长为 2
-            if nums[i - 2] + nums[i] == nums[i - 1] * 2:  # 三个数等差
-                res = dfs(i - 1, left) + 1  # 以 i-1 结尾的最长等差子数组 + [i, i]
-
-            if left:
-                res = max(res, 3)  # 改 nums[i-2]，得到等差子数组 [i-2, i]，长为 3
-                if i >= 3:
-                    # 改 nums[i-1]
-                    if (nums[i - 2] - nums[i - 3]) * 2 == nums[i] - nums[i - 2]:
-                        res = max(res, dfs(i - 2, 0) + 2)  # 以 i-2 结尾的最长等差子数组 + [i-1, i]
-
-                    # 改 nums[i-2]
-                    d = nums[i] - nums[i - 1]
-                    if nums[i - 1] - nums[i - 3] == d * 2:
-                        res = max(res, 4)  # 等差子数组 [i-3, i]，长为 4
-                        if i >= 4 and nums[i - 3] - nums[i - 4] == d:
-                            res = max(res, dfs(i - 3, 0) + 3)  # 以 i-3 结尾的最长等差子数组 + [i-2, i]
-
+            if j == 0:  # 没有发生替换
+                if nums[i - 2] + nums[i] == nums[i - 1] * 2:  # 三个数等差
+                    res = dfs(i - 1, 0) + 1  # 以 i-1 结尾的最长等差子数组 + nums[i]
+            elif j == 1:  # 替换位置 <= i-2
+                res = 3  # 替换 nums[i-2]
+                d = nums[i] - nums[i - 1]
+                if i >= 3 and nums[i - 1] - nums[i - 3] == d * 2:
+                    res = dfs(i - 1, 3) + 1  # 替换 nums[i-2]
+                if nums[i - 1] - nums[i - 2] == d:
+                    res = max(res, dfs(i - 1, 1) + 1)  # 替换位置 <= i-3
+            elif j == 2:  # 替换 nums[i]
+                res = dfs(i - 1, 0) + 1  # 以 i-1 结尾的最长等差子数组 + 替换后的 nums[i]
+            else:  # 替换 nums[i-1]
+                if (nums[i] - nums[i - 2]) % 2 == 0:
+                    res = 3
+                    if i >= 3 and nums[i - 2] - nums[i - 3] == (nums[i] - nums[i - 2]) // 2:
+                        res = dfs(i - 2, 0) + 2  # 以 i-2 结尾的最长等差子数组 + 替换后的 nums[i-1] + nums[i]
             return res
 
-        n = len(nums)
-        ans1 = max(dfs(i, 1) for i in range(n))  # 不改 nums[i]
-        ans2 = max(dfs(i - 1, 0) for i in range(1, n)) + 1  # 改 nums[i]
-        return max(ans1, ans2)
-```
-
-1:1 翻译成递推：
-
-```py
-# 手写 max 更快
-fmax = lambda a, b: b if b > a else a
-
-class Solution:
-    def longestArithmetic(self, nums: List[int]) -> int:
-        n = len(nums)
-        f = [[0, 0] for _ in range(n)]
-        f[0][0] = f[0][1] = 1
-        f[1][0] = f[1][1] = 2
-        for i in range(2, n):
-            for left in range(2):
-                # 不改
-                res = 2  # 等差子数组 [i-1, i]，长为 2
-                if nums[i - 2] + nums[i] == nums[i - 1] * 2:  # 三个数等差
-                    res = f[i - 1][left] + 1  # 以 i-1 结尾的最长等差子数组 + [i, i]
-
-                if left:
-                    res = fmax(res, 3)  # 改 nums[i-2]，得到等差子数组 [i-2, i]，长为 3
-                    if i >= 3:
-                        # 改 nums[i-1]
-                        if (nums[i - 2] - nums[i - 3]) * 2 == nums[i] - nums[i - 2]:
-                            res = fmax(res, f[i - 2][0] + 2)  # 以 i-2 结尾的最长等差子数组 + [i-1, i]
-
-                        # 改 nums[i-2]
-                        d = nums[i] - nums[i - 1]
-                        if nums[i - 1] - nums[i - 3] == d * 2:
-                            res = fmax(res, 4)  # 等差子数组 [i-3, i]，长为 4
-                            if i >= 4 and nums[i - 3] - nums[i - 4] == d:
-                                res = fmax(res, f[i - 3][0] + 3)  # 以 i-3 结尾的最长等差子数组 + [i-2, i]
-
-                f[i][left] = res
-
-        ans1 = max(f[i][1] for i in range(n))  # 不改 nums[i]
-        ans2 = max(f[i][0] for i in range(n - 1)) + 1  # 改 nums[i+1]
-        return max(ans1, ans2)
+        ans = max(dfs(i, j) for i in range(len(nums)) for j in range(4))
+        dfs.cache_clear()
+        return ans
 ```
 
 #### 复杂度分析
@@ -554,21 +517,26 @@ class Solution:
 
 ## 专题训练
 
-见下面动态规划题单的「**专题：前后缀分解**」。
+1. 动态规划题单的「**专题：前后缀分解**」和「**六、状态机 DP**」。
+2. 双指针题单的「**六、分组循环**」。
 
 ## 分类题单
 
-[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+[如何科学刷题？](https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
-2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
-4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
-9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
-12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/discuss/post/3578981/ti-dan-hua-dong-chuang-kou-ding-chang-bu-rzz7/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/discuss/post/3579164/ti-dan-er-fen-suan-fa-er-fen-da-an-zui-x-3rqn/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/discuss/post/3579480/ti-dan-dan-diao-zhan-ju-xing-xi-lie-zi-d-u4hk/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/discuss/post/3580195/fen-xiang-gun-ti-dan-wang-ge-tu-dfsbfszo-l3pa/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/discuss/post/3580371/fen-xiang-gun-ti-dan-wei-yun-suan-ji-chu-nth4/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/discuss/post/3581143/fen-xiang-gun-ti-dan-tu-lun-suan-fa-dfsb-qyux/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/discuss/post/3581838/fen-xiang-gun-ti-dan-dong-tai-gui-hua-ru-007o/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/discuss/post/3583665/fen-xiang-gun-ti-dan-chang-yong-shu-ju-j-bvmv/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/discuss/post/3584388/fen-xiang-gun-ti-dan-shu-xue-suan-fa-shu-gcai/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/discuss/post/3091107/fen-xiang-gun-ti-dan-tan-xin-ji-ben-tan-k58yb/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/discuss/post/3142882/fen-xiang-gun-ti-dan-lian-biao-er-cha-sh-6srp/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/discuss/post/3144832/fen-xiang-gun-ti-dan-zi-fu-chuan-kmpzhan-ugt4/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
