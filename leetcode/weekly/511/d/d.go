@@ -10,12 +10,13 @@ func smallestRepresentation(s []byte) []byte {
 	j := 1 // 指向需要和 i 比较的子串的首字母下标
 	for j < n {
 		// 暴力比较：是 i 开头的字典序小，还是 j 开头的字典序小？
-		// 相同就继续往后比，至多循环 n 次（如果循环 n 次，说明所有字母都相同，不用再比了）
 		k := 0
 		for k < n && s[i+k] == s[j+k] {
 			k++
 		}
 		if k >= n {
+			// s 是个周期字符串，周期为 j-i
+			// j+d 开头的子串等于 i+d 开头的子串，而这些子串我们之前已经排除了，继续遍历不会找到更小的
 			break
 		}
 
@@ -57,20 +58,11 @@ func minimumGroups(words []string) (ans int) {
 		}
 
 		// 分别计算偶数组和奇数组的最小表示
-		minS := make([]byte, len(word))
-		for k, s := range groups {
-			s = smallestRepresentation(s)
-			for j, ch := range s {
-				minS[j*2+k] = ch
-			}
-		}
+		s := smallestRepresentation(groups[0])
+		t := smallestRepresentation(groups[1])
 
-		set[string(minS)] = struct{}{}
+		set[string(append(s, t...))] = struct{}{}
 	}
 
 	return len(set)
-}
-
-func main() {
-	smallestRepresentation([]byte("bbbcbbba"))
 }

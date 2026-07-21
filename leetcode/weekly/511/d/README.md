@@ -9,6 +9,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1xpK663Eqh/)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 # 返回 s 的字典序最小的循环同构串
 # 时间复杂度 O(|s|)，证明见代码末尾的注释
@@ -312,6 +314,282 @@ func minimumGroups(words []string) (ans int) {
 		}
 
 		set[string(minS)] = struct{}{}
+	}
+
+	return len(set)
+}
+```
+
+## 写法二
+
+不需要分奇偶填入对应下标，直接把偶数下标字符串和奇数下标字符串拼起来就行。
+
+```py [sol-Python3]
+# 返回 s 的字典序最小的循环同构串
+# 时间复杂度 O(|s|)，证明见代码末尾的注释
+def smallestRepresentation(s: str) -> str:
+    n = len(s)
+    s += s
+    i = 0  # 始终指向当前最小子串的首字母下标
+    j = 1  # 指向需要和 i 比较的子串的首字母下标
+    while j < n:
+        # 暴力比较：是 i 开头的字典序小，还是 j 开头的字典序小？
+        k = 0
+        while k < n and s[i + k] == s[j + k]:
+            k += 1
+        if k >= n:
+            # s 是个周期字符串，周期为 j-i
+            # j+d 开头的子串等于 i+d 开头的子串，而这些子串我们之前已经排除了，继续遍历不会找到更小的
+            break
+
+        if s[i + k] < s[j + k]:  # 注：如果求字典序最大，改成 >
+            # 比如从 i 开始是 "aaab"，从 j 开始是 "aaac"
+            # 从 i 开始比从 j 开始更小（排除 j）
+            # 此外：
+            # 从 i+1 开始比从 j+1 开始更小，所以从 j+1 开始不可能是答案，排除
+            # 从 i+2 开始比从 j+2 开始更小，所以从 j+2 开始不可能是答案，排除
+            # ……
+            # 从 i+k 开始比从 j+k 开始更小，所以从 j+k 开始不可能是答案，排除
+            # 所以下一个「可能是答案」的开始位置是 j+k+1
+            j += k + 1
+        else:
+            # 从 j 开始比从 i 开始更小，更新 i=j（也意味着我们排除了 i）
+            # 此外：
+            # 从 j+1 开始比从 i+1 开始更小，所以从 i+1 开始不可能是答案，排除
+            # 从 j+2 开始比从 i+2 开始更小，所以从 i+2 开始不可能是答案，排除
+            # ……
+            # 从 j+k 开始比从 i+k 开始更小，所以从 i+k 开始不可能是答案，排除
+            # 所以把 j 跳到 i+k+1，不过这可能比 j+1 小，所以与 j+1 取 max
+            # 综上所述，下一个「可能是答案」的开始位置是 max(j+1, i+k+1)
+            i, j = j, max(j, i + k) + 1
+
+        # 每次要么排除 k+1 个与 i 相关的位置（这样的位置至多 n 个），要么排除 k+1 个与 j 相关的位置（这样的位置至多 n 个）
+        # 所以上面关于 k 的循环，∑k <= 2n，所以二重循环的总循环次数是 O(n) 的
+
+    return s[i: i + n]
+
+
+class Solution:
+    def minimumGroups(self, words: list[str]) -> int:
+        st = {smallestRepresentation(word[::2]) + smallestRepresentation(word[1::2]) for word in words}
+        return len(st)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumGroups(String[] words) {
+        Set<String> st = new HashSet<>();
+
+        for (String word : words) {
+            char[] w = word.toCharArray();
+            int m = w.length;
+
+            // 偶数下标
+            char[] even = new char[(m + 1) / 2];
+            for (int i = 0; i < even.length; i++) {
+                even[i] = w[i * 2];
+            }
+            even = smallestRepresentation(even);
+
+            // 奇数下标
+            char[] odd = new char[m / 2];
+            for (int i = 0; i < odd.length; i++) {
+                odd[i] = w[i * 2 + 1];
+            }
+            odd = smallestRepresentation(odd);
+
+            st.add(new String(even) + new String(odd));
+        }
+
+        return st.size();
+    }
+
+    // 返回 str 的字典序最小的循环同构串
+    // 时间复杂度 O(|str|)，证明见代码末尾的注释
+    private char[] smallestRepresentation(char[] str) {
+        int n = str.length;
+        char[] s = new char[n * 2]; // s = str + str
+        System.arraycopy(str, 0, s, 0, n);
+        System.arraycopy(str, 0, s, n, n);
+
+        int i = 0; // 始终指向当前最小子串的首字母下标
+        int j = 1; // 指向需要和 i 比较的子串的首字母下标
+        while (j < n) {
+            // 暴力比较：是 i 开头的字典序小，还是 j 开头的字典序小？
+            int k = 0;
+            while (k < n && s[i + k] == s[j + k]) {
+                k++;
+            }
+            if (k >= n) {
+                // s 是个周期字符串，周期为 j-i
+                // j+d 开头的子串等于 i+d 开头的子串，而这些子串我们之前已经排除了，继续遍历不会找到更小的
+                break;
+            }
+
+            if (s[i + k] < s[j + k]) { // 注：如果求字典序最大，改成 >
+                // 比如从 i 开始是 "aaab"，从 j 开始是 "aaac"
+                // 从 i 开始比从 j 开始更小（排除 j）
+                // 此外：
+                // 从 i+1 开始比从 j+1 开始更小，所以从 j+1 开始不可能是答案，排除
+                // 从 i+2 开始比从 j+2 开始更小，所以从 j+2 开始不可能是答案，排除
+                // ……
+                // 从 i+k 开始比从 j+k 开始更小，所以从 j+k 开始不可能是答案，排除
+                // 所以下一个「可能是答案」的开始位置是 j+k+1
+                j += k + 1;
+            } else {
+                // 从 j 开始比从 i 开始更小，更新 i=j（也意味着我们排除了 i）
+                // 此外：
+                // 从 j+1 开始比从 i+1 开始更小，所以从 i+1 开始不可能是答案，排除
+                // 从 j+2 开始比从 i+2 开始更小，所以从 i+2 开始不可能是答案，排除
+                // ……
+                // 从 j+k 开始比从 i+k 开始更小，所以从 i+k 开始不可能是答案，排除
+                // 所以把 j 跳到 i+k+1，不过这可能比 j+1 小，所以与 j+1 取 max
+                // 综上所述，下一个「可能是答案」的开始位置是 max(j+1, i+k+1)
+                int tmp = j;
+                j = Math.max(j, i + k) + 1;
+                i = tmp;
+            }
+
+            // 每次要么排除 k+1 个与 i 相关的位置（这样的位置至多 n 个），要么排除 k+1 个与 j 相关的位置（这样的位置至多 n 个）
+            // 所以上面关于 k 的循环，∑k <= 2n，所以二重循环的总循环次数是 O(n) 的
+        }
+        return Arrays.copyOfRange(s, i, i + n);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 返回 s 的字典序最小的循环同构串
+    // 时间复杂度 O(|s|)，证明见代码末尾的注释
+    string smallestRepresentation(string& s) {
+        int n = s.size();
+        s += s;
+        int i = 0; // 始终指向当前最小子串的首字母下标
+        int j = 1; // 指向需要和 i 比较的子串的首字母下标
+        while (j < n) {
+            // 暴力比较：是 i 开头的字典序小，还是 j 开头的字典序小？
+            int k = 0;
+            while (k < n && s[i + k] == s[j + k]) {
+                k++;
+            }
+            if (k >= n) {
+                // s 是个周期字符串，周期为 j-i
+                // j+d 开头的子串等于 i+d 开头的子串，而这些子串我们之前已经排除了，继续遍历不会找到更小的
+                break;
+            }
+
+            if (s[i + k] < s[j + k]) { // 注：如果求字典序最大，改成 >
+                // 比如从 i 开始是 "aaab"，从 j 开始是 "aaac"
+                // 从 i 开始比从 j 开始更小（排除 j）
+                // 此外：
+                // 从 i+1 开始比从 j+1 开始更小，所以从 j+1 开始不可能是答案，排除
+                // 从 i+2 开始比从 j+2 开始更小，所以从 j+2 开始不可能是答案，排除
+                // ……
+                // 从 i+k 开始比从 j+k 开始更小，所以从 j+k 开始不可能是答案，排除
+                // 所以下一个「可能是答案」的开始位置是 j+k+1
+                j += k + 1;
+            } else {
+                // 从 j 开始比从 i 开始更小，更新 i=j（也意味着我们排除了 i）
+                // 此外：
+                // 从 j+1 开始比从 i+1 开始更小，所以从 i+1 开始不可能是答案，排除
+                // 从 j+2 开始比从 i+2 开始更小，所以从 i+2 开始不可能是答案，排除
+                // ……
+                // 从 j+k 开始比从 i+k 开始更小，所以从 i+k 开始不可能是答案，排除
+                // 所以把 j 跳到 i+k+1，不过这可能比 j+1 小，所以与 j+1 取 max
+                // 综上所述，下一个「可能是答案」的开始位置是 max(j+1, i+k+1)
+                int tmp = j;
+                j = max(j, i + k) + 1;
+                i = tmp;
+            }
+
+            // 每次要么排除 k+1 个与 i 相关的位置（这样的位置至多 n 个），要么排除 k+1 个与 j 相关的位置（这样的位置至多 n 个）
+            // 所以上面关于 k 的循环，∑k <= 2n，所以二重循环的总循环次数是 O(n) 的
+        }
+        return s.substr(i, n);
+    }
+
+public:
+    int minimumGroups(vector<string>& words) {
+        unordered_set<string> st;
+
+        for (auto& word : words) {
+            // 按照下标的奇偶性分组
+            string groups[2]{};
+            for (int i = 0; i < word.size(); i++) {
+                groups[i % 2] += word[i];
+            }
+
+            st.insert(smallestRepresentation(groups[0]) + smallestRepresentation(groups[1]));
+        }
+
+        return st.size();
+    }
+};
+```
+
+```go [sol-Go]
+// 返回 s 的字典序最小的循环同构串
+// 时间复杂度 O(|s|)，证明见代码末尾的注释
+func smallestRepresentation(s []byte) []byte {
+	n := len(s)
+	s = append(s, s...)
+	i := 0 // 始终指向当前最小子串的首字母下标
+	j := 1 // 指向需要和 i 比较的子串的首字母下标
+	for j < n {
+		// 暴力比较：是 i 开头的字典序小，还是 j 开头的字典序小？
+		k := 0
+		for k < n && s[i+k] == s[j+k] {
+			k++
+		}
+		if k >= n {
+			// s 是个周期字符串，周期为 j-i
+			// j+d 开头的子串等于 i+d 开头的子串，而这些子串我们之前已经排除了，继续遍历不会找到更小的
+			break
+		}
+
+		if s[i+k] < s[j+k] { // 注：如果求字典序最大，改成 >
+			// 比如从 i 开始是 "aaab"，从 j 开始是 "aaac"
+			// 从 i 开始比从 j 开始更小（排除 j）
+			// 此外：
+			// 从 i+1 开始比从 j+1 开始更小，所以从 j+1 开始不可能是答案，排除
+			// 从 i+2 开始比从 j+2 开始更小，所以从 j+2 开始不可能是答案，排除
+			// ……
+			// 从 i+k 开始比从 j+k 开始更小，所以从 j+k 开始不可能是答案，排除
+			// 所以下一个「可能是答案」的开始位置是 j+k+1
+			j += k + 1
+		} else {
+			// 从 j 开始比从 i 开始更小，更新 i=j（也意味着我们排除了 i）
+			// 此外：
+			// 从 j+1 开始比从 i+1 开始更小，所以从 i+1 开始不可能是答案，排除
+			// 从 j+2 开始比从 i+2 开始更小，所以从 i+2 开始不可能是答案，排除
+			// ……
+			// 从 j+k 开始比从 i+k 开始更小，所以从 i+k 开始不可能是答案，排除
+			// 所以把 j 跳到 i+k+1，不过这可能比 j+1 小，所以与 j+1 取 max
+			// 综上所述，下一个「可能是答案」的开始位置是 max(j+1, i+k+1)
+			i, j = j, max(j, i+k)+1
+		}
+		// 每次要么排除 k+1 个与 i 相关的位置（这样的位置至多 n 个），要么排除 k+1 个与 j 相关的位置（这样的位置至多 n 个）
+		// 所以上面关于 k 的循环，∑k <= 2n，所以二重循环的总循环次数是 O(n) 的
+	}
+	return s[i : i+n]
+}
+
+func minimumGroups(words []string) (ans int) {
+	set := map[string]struct{}{}
+
+	for _, word := range words {
+		// 按照下标的奇偶性分组
+		groups := [2][]byte{}
+		for i, ch := range word {
+			groups[i%2] = append(groups[i%2], byte(ch))
+		}
+
+		// 分别计算偶数组和奇数组的最小表示
+		s := smallestRepresentation(groups[0])
+		t := smallestRepresentation(groups[1])
+
+		set[string(append(s, t...))] = struct{}{}
 	}
 
 	return len(set)
