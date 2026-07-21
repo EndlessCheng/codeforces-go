@@ -20,27 +20,29 @@
 
 代码实现时，可以用哨兵简化代码，无需判断下标是否在边界上。可以把计算两个区间长度之和的逻辑，封装成一个函数。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1JrZzYhEHt/?t=6m9s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1JrZzYhEHt/?t=6m9s)，欢迎点赞关注~
 
 ## 写法一：二分查找
 
 ```py [sol-Python3]
 class SparseTable:
-    def __init__(self, a: List[Tuple[int, int]]):
-        n = len(a) - 1
-        m = n.bit_length()
-        st = [[r1 - l1 + r2 - l2] + [0] * (m - 1) for (l1, r1), (l2, r2) in pairwise(a)]
-        for j in range(1, m):
-            for i in range(n - (1 << j) + 1):
-                st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+    def __init__(self, nums: List[int]):
+        n = len(nums) - 1
+        w = n.bit_length()
+        st = [[0] * n for _ in range(w)]
+        st[0] = [r1 - l1 + r2 - l2 for (l1, r1), (l2, r2) in pairwise(nums)]
+        for i in range(1, w):
+            for j in range(n - (1 << i) + 1):
+                st[i][j] = max(st[i - 1][j], st[i - 1][j + (1 << (i - 1))])
         self.st = st
 
-    # 查询区间最大值，[l,r) 左闭右开
+    # 查询区间最大值，[l, r) 左闭右开
     def query(self, l: int, r: int) -> int:
         if l >= r:
             return 0
         k = (r - l).bit_length() - 1
-        return max(self.st[l][k], self.st[r - (1 << k)][k])
+        return max(self.st[k][l], self.st[k][r - (1 << k)])
+
 
 class Solution:
     def maxActiveSectionsAfterTrade(self, s: str, queries: List[List[int]]) -> List[int]:
@@ -90,14 +92,14 @@ class Solution {
 
         SparseTable(List<Pair> a) {
             int n = a.size() - 1;
-            int sz = 32 - Integer.numberOfLeadingZeros(n);
-            st = new int[n][sz];
-            for (int i = 0; i < n; i++) {
-                st[i][0] = a.get(i).r - a.get(i).l + a.get(i + 1).r - a.get(i + 1).l;
+            int w = 32 - Integer.numberOfLeadingZeros(n);
+            st = new int[w][n];
+            for (int j = 0; j < n; j++) {
+                st[0][j] = a.get(j).r - a.get(j).l + a.get(j + 1).r - a.get(j + 1).l;
             }
-            for (int j = 1; j < sz; j++) {
-                for (int i = 0; i + (1 << j) <= n; i++) {
-                    st[i][j] = Math.max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+            for (int i = 1; i < w; i++) {
+                for (int j = 0; j + (1 << i) <= n; j++) {
+                    st[i][j] = Math.max(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
                 }
             }
         }
@@ -108,7 +110,7 @@ class Solution {
                 return 0;
             }
             int k = 32 - Integer.numberOfLeadingZeros(r - l) - 1;
-            return Math.max(st[l][k], st[r - (1 << k)][k]);
+            return Math.max(st[k][l], st[k][r - (1 << k)]);
         }
     }
 
@@ -175,14 +177,14 @@ class SparseTable {
 public:
     SparseTable(vector<Pair>& a) {
         int n = a.size() - 1;
-        int sz = bit_width(unsigned(n));
-        st.resize(n, vector<int>(sz));
-        for (int i = 0; i < n; i++) {
-            st[i][0] = a[i].r - a[i].l + a[i + 1].r - a[i + 1].l;
+        int w = bit_width(unsigned(n));
+        st.resize(w, vector<int>(n));
+        for (int j = 0; j < n; j++) {
+            st[0][j] = a[j].r - a[j].l + a[j + 1].r - a[j + 1].l;
         }
-        for (int j = 1; j < sz; j++) {
-            for (int i = 0; i + (1 << j) <= n; i++) {
-                st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+        for (int i = 1; i < w; i++) {
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                st[i][j] = max(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
             }
         }
     }
@@ -193,7 +195,7 @@ public:
             return 0;
         }
         int k = bit_width(unsigned(r - l)) - 1;
-        return max(st[l][k], st[r - (1 << k)][k]);
+        return max(st[k][l], st[k][r - (1 << k)]);
     }
 };
 
@@ -249,15 +251,17 @@ type ST [][]int
 
 func newST(a []pair) ST {
 	n := len(a) - 1
-	sz := bits.Len(uint(n))
-	st := make(ST, n)
-	for i, p := range a[:n] {
-		st[i] = make([]int, sz)
-		st[i][0] = p.r - p.l + a[i+1].r - a[i+1].l
+	w := bits.Len(uint(n))
+	st := make(ST, w)
+	for i := range st {
+		st[i] = make([]int, n)
 	}
-	for j := 1; j < sz; j++ {
-		for i := 0; i+1<<j <= n; i++ {
-			st[i][j] = max(st[i][j-1], st[i+1<<(j-1)][j-1])
+	for j, p := range a[:n] {
+		st[0][j] = p.r - p.l + a[j+1].r - a[j+1].l
+	}
+	for i := 1; i < w; i++ {
+		for j := range n - 1<<i + 1 {
+			st[i][j] = max(st[i-1][j], st[i-1][j+1<<(i-1)])
 		}
 	}
 	return st
@@ -269,7 +273,7 @@ func (st ST) query(l, r int) int {
 		return 0
 	}
 	k := bits.Len(uint(r-l)) - 1
-	return max(st[l][k], st[r-1<<k][k])
+	return max(st[k][l], st[k][r-1<<k])
 }
 
 func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
@@ -329,20 +333,23 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 
 ```py [sol-Python3]
 class SparseTable:
-    def __init__(self, a: List[Tuple[int, int]]):
-        n = len(a) - 1
-        m = n.bit_length()
-        st = [[r1 - l1 + r2 - l2] + [0] * (m - 1) for (l1, r1), (l2, r2) in pairwise(a)]
-        for j in range(1, m):
-            for i in range(n - (1 << j) + 1):
-                st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+    def __init__(self, nums: List[int]):
+        n = len(nums) - 1
+        w = n.bit_length()
+        st = [[0] * n for _ in range(w)]
+        st[0] = [r1 - l1 + r2 - l2 for (l1, r1), (l2, r2) in pairwise(nums)]
+        for i in range(1, w):
+            for j in range(n - (1 << i) + 1):
+                st[i][j] = max(st[i - 1][j], st[i - 1][j + (1 << (i - 1))])
         self.st = st
 
+    # 查询区间最大值，[l, r) 左闭右开
     def query(self, l: int, r: int) -> int:
         if l >= r:
             return 0
         k = (r - l).bit_length() - 1
-        return max(self.st[l][k], self.st[r - (1 << k)][k])
+        return max(self.st[k][l], self.st[k][r - (1 << k)])
+
 
 class Solution:
     def maxActiveSectionsAfterTrade(self, s: str, queries: List[List[int]]) -> List[int]:
@@ -398,24 +405,25 @@ class Solution {
 
         SparseTable(List<Pair> a) {
             int n = a.size() - 1;
-            int sz = 32 - Integer.numberOfLeadingZeros(n);
-            st = new int[n][sz];
-            for (int i = 0; i < n; i++) {
-                st[i][0] = a.get(i).r - a.get(i).l + a.get(i + 1).r - a.get(i + 1).l;
+            int w = 32 - Integer.numberOfLeadingZeros(n);
+            st = new int[w][n];
+            for (int j = 0; j < n; j++) {
+                st[0][j] = a.get(j).r - a.get(j).l + a.get(j + 1).r - a.get(j + 1).l;
             }
-            for (int j = 1; j < sz; j++) {
-                for (int i = 0; i + (1 << j) <= n; i++) {
-                    st[i][j] = Math.max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+            for (int i = 1; i < w; i++) {
+                for (int j = 0; j + (1 << i) <= n; j++) {
+                    st[i][j] = Math.max(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
                 }
             }
         }
 
+        // 查询区间最大值，[l,r) 左闭右开
         int query(int l, int r) {
             if (l >= r) {
                 return 0;
             }
             int k = 32 - Integer.numberOfLeadingZeros(r - l) - 1;
-            return Math.max(st[l][k], st[r - (1 << k)][k]);
+            return Math.max(st[k][l], st[k][r - (1 << k)]);
         }
     }
 
@@ -485,24 +493,25 @@ class SparseTable {
 public:
     SparseTable(vector<Pair>& a) {
         int n = a.size() - 1;
-        int sz = bit_width(unsigned(n));
-        st.resize(n, vector<int>(sz));
-        for (int i = 0; i < n; i++) {
-            st[i][0] = a[i].r - a[i].l + a[i + 1].r - a[i + 1].l;
+        int w = bit_width(unsigned(n));
+        st.resize(w, vector<int>(n));
+        for (int j = 0; j < n; j++) {
+            st[0][j] = a[j].r - a[j].l + a[j + 1].r - a[j + 1].l;
         }
-        for (int j = 1; j < sz; j++) {
-            for (int i = 0; i + (1 << j) <= n; i++) {
-                st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+        for (int i = 1; i < w; i++) {
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                st[i][j] = max(st[i - 1][j], st[i - 1][j + (1 << (i - 1))]);
             }
         }
     }
 
+    // 查询区间最大值，[l,r) 左闭右开
     int query(int l, int r) const {
         if (l >= r) {
             return 0;
         }
         int k = bit_width(unsigned(r - l)) - 1;
-        return max(st[l][k], st[r - (1 << k)][k]);
+        return max(st[k][l], st[k][r - (1 << k)]);
     }
 };
 
@@ -564,31 +573,34 @@ public:
 ```
 
 ```go [sol-Go]
-type pair struct{ l, r int }
+type pair struct{ l, r int } // 左闭右开
 type ST [][]int
 
 func newST(a []pair) ST {
 	n := len(a) - 1
-	sz := bits.Len(uint(n))
-	st := make(ST, n)
-	for i, p := range a[:n] {
-		st[i] = make([]int, sz)
-		st[i][0] = p.r - p.l + a[i+1].r - a[i+1].l
+	w := bits.Len(uint(n))
+	st := make(ST, w)
+	for i := range st {
+		st[i] = make([]int, n)
 	}
-	for j := 1; j < sz; j++ {
-		for i := 0; i+1<<j <= n; i++ {
-			st[i][j] = max(st[i][j-1], st[i+1<<(j-1)][j-1])
+	for j, p := range a[:n] {
+		st[0][j] = p.r - p.l + a[j+1].r - a[j+1].l
+	}
+	for i := 1; i < w; i++ {
+		for j := range n - 1<<i + 1 {
+			st[i][j] = max(st[i-1][j], st[i-1][j+1<<(i-1)])
 		}
 	}
 	return st
 }
 
+// 查询区间最大值，[l,r) 左闭右开
 func (st ST) query(l, r int) int {
 	if l >= r {
 		return 0
 	}
 	k := bits.Len(uint(r-l)) - 1
-	return max(st[l][k], st[r-1<<k][k])
+	return max(st[k][l], st[k][r-1<<k])
 }
 
 func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
@@ -655,19 +667,21 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 
 ## 分类题单
 
-[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+[如何科学刷题？](https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
-2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
-4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
-9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
-12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/discuss/post/3578981/ti-dan-hua-dong-chuang-kou-ding-chang-bu-rzz7/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/discuss/post/3579164/ti-dan-er-fen-suan-fa-er-fen-da-an-zui-x-3rqn/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/discuss/post/3579480/ti-dan-dan-diao-zhan-ju-xing-xi-lie-zi-d-u4hk/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/discuss/post/3580195/fen-xiang-gun-ti-dan-wang-ge-tu-dfsbfszo-l3pa/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/discuss/post/3580371/fen-xiang-gun-ti-dan-wei-yun-suan-ji-chu-nth4/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/discuss/post/3581143/fen-xiang-gun-ti-dan-tu-lun-suan-fa-dfsb-qyux/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/discuss/post/3581838/fen-xiang-gun-ti-dan-dong-tai-gui-hua-ru-007o/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/discuss/post/3583665/fen-xiang-gun-ti-dan-chang-yong-shu-ju-j-bvmv/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/discuss/post/3584388/fen-xiang-gun-ti-dan-shu-xue-suan-fa-shu-gcai/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/discuss/post/3091107/fen-xiang-gun-ti-dan-tan-xin-ji-ben-tan-k58yb/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/discuss/post/3142882/fen-xiang-gun-ti-dan-lian-biao-er-cha-sh-6srp/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/discuss/post/3144832/fen-xiang-gun-ti-dan-zi-fu-chuan-kmpzhan-ugt4/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

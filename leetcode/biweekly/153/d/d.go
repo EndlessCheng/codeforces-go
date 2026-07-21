@@ -10,15 +10,17 @@ type ST [][]int
 
 func newST(a []pair) ST {
 	n := len(a) - 1
-	sz := bits.Len(uint(n))
-	st := make(ST, n)
-	for i, p := range a[:n] {
-		st[i] = make([]int, sz)
-		st[i][0] = p.r - p.l + a[i+1].r - a[i+1].l
+	w := bits.Len(uint(n))
+	st := make(ST, w)
+	for i := range st {
+		st[i] = make([]int, n)
 	}
-	for j := 1; j < sz; j++ {
-		for i := 0; i+1<<j <= n; i++ {
-			st[i][j] = max(st[i][j-1], st[i+1<<(j-1)][j-1])
+	for j, p := range a[:n] {
+		st[0][j] = p.r - p.l + a[j+1].r - a[j+1].l
+	}
+	for i := 1; i < w; i++ {
+		for j := range n - 1<<i + 1 {
+			st[i][j] = max(st[i-1][j], st[i-1][j+1<<(i-1)])
 		}
 	}
 	return st
@@ -30,7 +32,7 @@ func (st ST) query(l, r int) int {
 		return 0
 	}
 	k := bits.Len(uint(r-l)) - 1
-	return max(st[l][k], st[r-1<<k][k])
+	return max(st[k][l], st[k][r-1<<k])
 }
 
 func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
