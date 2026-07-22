@@ -58,16 +58,16 @@ class Solution {
 public:
     int uniqueXorTriplets(vector<int>& nums) {
         int n = nums.size();
-        int u = 1 << bit_width((unsigned) ranges::max(nums));
+        int u = 1 << bit_width(1u * ranges::max(nums));
 
-        vector<int> has(u);
+        vector<int8_t> has(u);
         for (int i = 0; i < n; i++) {
             for (int j = i; j < n; j++) {
                 has[nums[i] ^ nums[j]] = true;
             }
         }
 
-        vector<int> has3(u);
+        vector<int8_t> has3(u);
         for (int xy = 0; xy < u; xy++) {
             if (has[xy]) {
                 for (int z : nums) {
@@ -76,7 +76,7 @@ public:
             }
         }
 
-        return reduce(has3.begin(), has3.end());
+        return reduce(has3.begin(), has3.end(), 0);
     }
 };
 ```
