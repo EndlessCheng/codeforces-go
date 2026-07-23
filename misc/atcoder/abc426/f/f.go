@@ -49,7 +49,7 @@ func (t seg) build(in io.Reader, o, l, r int) {
 }
 
 func (t seg) update(o, l, r, ql, qr, k int) (buy int) {
-	if t[o].min == 1e18 {
+	if t[o].cntNZ == 0 {
 		return
 	}
 	if t[o].min > k && ql <= l && r <= qr {
