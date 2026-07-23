@@ -52,6 +52,9 @@ func (t seg) build(in io.Reader, o, l, r int) {
 }
 
 func (t seg) update(o, l, r, ql, qr, k int) (buy int) {
+	if t[o].all0 {
+		return
+	}
 	if t[o].min > k && ql <= l && r <= qr {
 		t.apply(o, k)
 		return (r - l + 1) * k
