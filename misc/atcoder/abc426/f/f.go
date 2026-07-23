@@ -9,10 +9,7 @@ import (
 )
 
 // https://github.com/EndlessCheng
-type data struct {
-	min  int
-	all0 bool
-}
+type data struct{ min, cntNZ int }
 type seg []struct {
 	data
 	dec int
@@ -21,13 +18,12 @@ type seg []struct {
 func (t seg) maintain(o int) {
 	l, r := t[o<<1].data, t[o<<1|1].data
 	t[o].min = min(l.min, r.min)
-	t[o].all0 = l.all0 && r.all0
+	t[o].cntNZ = l.cntNZ + r.cntNZ
 }
 
 func (t seg) apply(o, f int) {
-	cur := &t[o]
-	cur.min -= f
-	cur.dec += f
+	t[o].min -= f
+	t[o].dec += f
 }
 
 func (t seg) spread(o int) {
@@ -43,6 +39,7 @@ func (t seg) spread(o int) {
 func (t seg) build(in io.Reader, o, l, r int) {
 	if l == r {
 		Fscan(in, &t[o].min)
+		t[o].cntNZ = 1
 		return
 	}
 	m := (l + r) >> 1
@@ -52,17 +49,17 @@ func (t seg) build(in io.Reader, o, l, r int) {
 }
 
 func (t seg) update(o, l, r, ql, qr, k int) (buy int) {
-	if t[o].all0 {
+	if t[o].min == 1e18 {
 		return
 	}
 	if t[o].min > k && ql <= l && r <= qr {
 		t.apply(o, k)
-		return (r - l + 1) * k
+		return t[o].cntNZ * k
 	}
 	if l == r {
 		buy = t[o].min
-		t[o].min = 0
-		t[o].all0 = true
+		t[o].min = 1e18
+		t[o].cntNZ = 0
 		return
 	}
 	t.spread(o)
