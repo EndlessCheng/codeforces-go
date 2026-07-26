@@ -19,47 +19,59 @@ $$
 
 所以只有全为奇数的序列，乘积才不是偶数。减去这种序列的方案数，即为答案。
 
-仍然想象有 $n$ 个小球排成一行。
+**问题**：把 $n$ 拆分成 $k$ 个正奇数的方案数。
 
-1. 先拿出 $k$ 个小球。
-2. 把剩余的 $n-k$ 个小球划分成 $k$ 段（可以为空），且每一段的小球个数都是偶数。
-3. 之前拿出了 $k$ 个小球，每段再放入 $1$ 个小球，即可让每一段的小球个数都是正奇数。
+如何把这个问题变成我们熟悉的问题？
 
-其中第二步的方案数是多少？
+设 $n=x_1+x_2+\cdots+x_k$，其中 $x_i$ 是正奇数。
 
-如果 $n-k$ 是奇数，那么无法划分，方案数是 $0$。
+正奇数 $x_i$ 可以表示为 $2y_i-1$，其中 $y_i$ 是正整数。
 
-否则，把小球两两一组，两个小球视作一个大球，问题变成：把 $\dfrac{n-k}{2}$ 个大球划分成 $k$ 段（可以为空）的方案数。
-
-1. 先放入 $k$ 个大球。
-2. 把这 $\dfrac{n-k}{2} + k$ 个大球分成 $k$ 个**非空**段。
-3. 从每一段再拿出 $1$ 个大球，就把 $\dfrac{n-k}{2}$ 个大球划分成 $k$ 段（可以为空）了。
-
-其中第二步用隔板法解决，方案数为组合数
+那么
 
 $$
-\binom {\frac{n-k}{2} + k - 1} {k-1} = \binom {\frac{n+k}{2} - 1} {k-1}
+\begin{aligned}
+n &= x_1+x_2+\cdots+x_k         \\
+  &= (2y_1-1) + (2y_2-1) + \cdots + (2y_k-1)           \\
+  &= 2(y_1+y_2+\cdots+y_k) - k           \\
+\end{aligned}
+$$
+
+移项得
+
+$$
+y_1+y_2+\cdots+y_k = \dfrac{n+k}{2}
+$$
+
+**问题变成**：把 $\dfrac{n+k}{2}$ 拆分成 $k$ 个正整数的方案数。
+
+如果 $n+k$ 是奇数，那么 $\dfrac{n+k}{2}$ 是小数，无法由 $k$ 个正整数相加得到，所以方案数是 $0$。
+
+如果 $n+k$ 是偶数，那么和前文的做法一样，由隔板法可得，方案数为组合数
+
+$$
+\binom {\frac{n+k}{2} - 1} {k-1}
 $$
 
 综上所述，答案为
 
 $$
 \begin{cases}
-\dbinom {n-1} {k-1}, & (n-k)\bmod 2 = 1     \\
-\dbinom {n-1} {k-1} - \dbinom {\frac{n+k}{2} - 1} {k-1}, & (n-k)\bmod 2 = 0     \\
+\dbinom {n-1} {k-1}, & (n+k)\bmod 2 = 1     \\
+\dbinom {n-1} {k-1} - \dbinom {\frac{n+k}{2} - 1} {k-1}, & (n+k)\bmod 2 = 0     \\
 \end{cases}
 $$
 
 代码实现时，可以**预处理阶乘及其逆元**，从而 $\mathcal{O}(1)$ 计算组合数。代码模板见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Ps3j6nE3D/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def countValidSequences(self, n: int, k: int) -> int:
         # 更快的做法见【Python3 预处理】
         ans = comb(n - 1, k - 1)
-        if (n - k) % 2 == 0:
+        if (n + k) % 2 == 0:
             ans -= comb((n + k) // 2 - 1, k - 1)
         return ans % 1_000_000_007
 ```
@@ -86,7 +98,7 @@ def comb(n: int, m: int) -> int:
 class Solution:
     def countValidSequences(self, n: int, k: int) -> int:
         ans = comb(n - 1, k - 1)
-        if (n - k) % 2 == 0:
+        if (n + k) % 2 == 0:
             ans = (ans - comb((n + k) // 2 - 1, k - 1)) % MOD
         return ans
 ```
@@ -135,7 +147,7 @@ class Solution {
 
     public int countValidSequences(int n, int k) {
         long ans = comb(n - 1, k - 1);
-        if ((n - k) % 2 == 0) {
+        if ((n + k) % 2 == 0) {
             ans = (ans - comb((n + k) / 2 - 1, k - 1) + MOD) % MOD; // +MOD 保证答案非负
         }
         return (int) ans;
@@ -183,7 +195,7 @@ class Solution {
 public:
     int countValidSequences(int n, int k) {
         long long ans = comb(n - 1, k - 1);
-        if ((n - k) % 2 == 0) {
+        if ((n + k) % 2 == 0) {
             ans = (ans - comb((n + k) / 2 - 1, k - 1) + MOD) % MOD; // +MOD 保证答案非负
         }
         return ans;
@@ -228,7 +240,7 @@ func comb(n, m int) int {
 
 func countValidSequences(n, k int) int {
 	ans := comb(n-1, k-1)
-	if (n-k)%2 == 0 {
+	if (n+k)%2 == 0 {
 		ans = (ans - comb((n+k)/2-1, k-1) + mod) % mod // +mod 保证答案非负
 	}
 	return ans
@@ -241,6 +253,32 @@ func countValidSequences(n, k int) int {
 
 - 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 附：其他推导方法
+
+计算乘积为奇数的序列个数。
+
+仍然想象有 $n$ 个小球排成一行。
+
+1. 先拿出 $k$ 个小球。
+2. 把剩余的 $n-k$ 个小球划分成 $k$ 段（可以为空），且每一段的小球个数都是偶数。
+3. 之前拿出了 $k$ 个小球，每段再放入 $1$ 个小球，即可让每一段的小球个数都是正奇数。
+
+其中第二步的方案数是多少？
+
+如果 $n-k$ 是奇数，那么无法划分，方案数是 $0$。
+
+否则，把小球两两一组，两个小球视作一个大球，问题变成：把 $\dfrac{n-k}{2}$ 个大球划分成 $k$ 段（可以为空）的方案数。
+
+1. 先放入 $k$ 个大球。
+2. 把这 $\dfrac{n-k}{2} + k$ 个大球分成 $k$ 个**非空**段。
+3. 从每一段再拿出 $1$ 个大球，就把 $\dfrac{n-k}{2}$ 个大球划分成 $k$ 段（可以为空）了。
+
+其中第二步用隔板法解决，方案数为组合数
+
+$$
+\binom {\frac{n-k}{2} + k - 1} {k-1} = \binom {\frac{n+k}{2} - 1} {k-1}
+$$
 
 ## 专题训练
 

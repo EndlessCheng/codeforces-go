@@ -8,7 +8,7 @@
    - 如果 $s\le 9$，那么这一位填 $s$，剩余位填 $0$，跳出循环。
    - 如果 $s > 9$，那么这一位填 $9$，继续循环。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Ps3j6nE3D/?t=30m16s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -120,11 +120,11 @@ class Solution:
         if s > n * 9:
             return -1
 
-        ans = 10 ** (s // 9) - 1
+        ans = 10 ** (s // 9) - 1  # 填 9
         if s % 9:
-            ans = ans * 10 + s % 9
+            ans = ans * 10 + s % 9  # 填 s%9
             n -= 1
-        return ans * 10 ** (n - s // 9)
+        return ans * 10 ** (n - s // 9)  # 填 0
 ```
 
 ```java [sol-Java]
@@ -134,12 +134,12 @@ class Solution {
             return -1;
         }
 
-        int ans = (int) Math.pow(10, s / 9) - 1;
+        int ans = (int) Math.pow(10, s / 9) - 1; // 填 9
         if (s % 9 > 0) {
-            ans = ans * 10 + s % 9;
+            ans = ans * 10 + s % 9; // 填 s%9
             n--;
         }
-        return ans * (int) Math.pow(10, n - s / 9);
+        return ans * (int) Math.pow(10, n - s / 9); // 填 0
     }
 }
 ```
@@ -152,12 +152,12 @@ public:
             return -1;
         }
 
-        int ans = (int) pow(10, s / 9) - 1;
+        int ans = (int) pow(10, s / 9) - 1; // 填 9
         if (s % 9) {
-            ans = ans * 10 + s % 9;
+            ans = ans * 10 + s % 9; // 填 s%9
             n--;
         }
-        return ans * (int) pow(10, n - s / 9);
+        return ans * (int) pow(10, n - s / 9); // 填 0
     }
 };
 ```
@@ -168,18 +168,18 @@ func largestInteger(n, s int) int {
 		return -1
 	}
 
-	ans := int(math.Pow10(s/9)) - 1
+	ans := int(math.Pow10(s/9)) - 1 // 填 9
 	if s%9 > 0 {
-		ans = ans*10 + s%9
+		ans = ans*10 + s%9 // 填 s%9
 		n--
 	}
-	return ans * int(math.Pow10(n-s/9))
+	return ans * int(math.Pow10(n-s/9)) // 填 0
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(1)$ 或 $\mathcal{O}(\log s)$，取决于实现。
+- 时间复杂度：$\mathcal{O}(1)$ 或 $\mathcal{O}(\log n)$，取决于实现。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
