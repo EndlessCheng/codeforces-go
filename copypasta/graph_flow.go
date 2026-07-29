@@ -6,15 +6,42 @@ import (
 	"sort"
 )
 
-/* 网络流·总结·题单 ################################################################################
-
-最大流等于最小割的证明
-https://seineo.github.io/%E5%9B%BE%E8%AE%BA%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%B5%81%E6%9C%80%E5%B0%8F%E5%89%B2%E8%AF%A6%E8%A7%A3.html
+/* 网络流 Flow Network
+https://en.wikipedia.org/wiki/Flow_network
 
 Worst-Case Graphs for Maximum Flow Algorithms
 https://codeforces.com/blog/entry/145343
+https://github.com/leonard-weininger/worst-case-max-flow/
 
-最大权闭合子图 “收益-依赖-代价”
+# 目录
+
+最大流题目分类：
+1. 收益-依赖-代价 -> 闭合子图/集合划分/最小割 Closed Subgraph / Graph Partitioning
+2. 分配/匹配/填数 -> 二分图匹配/最大流 Bipartite Matching
+3. 不相交/切断/阻碍 -> 拆点/最小割
+
+费用流题目分类：
+1. 带权二分图匹配 (Weighted Assignment)
+2. K 路径覆盖与网格取数 (K-Path Cover & Grid Collection)
+3. 凸函数/非线性代价的线性化 (Convex Cost Function Linearization)
+4. 具有时间/状态属性的动态规划替代 (DP with Global Constraints)
+
+如何区分最大流与费用流：
+看目标函数：
+- 只问「最多能匹配多少」-> 最大流
+- 问「在匹配最多的前提下，最少花多少钱」-> 费用流
+- 问「在总预算 C 以内，最多能匹配多少」-> 带预算的最大流（通常二分答案+费用流，或贪心费用流）
+看贪心是否可行：
+- 很多费用流问题看起来像贪心（比如每次选最便宜的）
+- 如果当前的贪心选择会后悔（即阻碍了未来更大的收益），且无法通过简单的反悔堆解决，那么费用流就是系统化的反悔贪心
+
+# 正文
+
+网络流 24 题 https://loj.ac/p?tagIds=30 https://www.luogu.com.cn/problem/list?tag=332
+线性规划与网络流 24 题 解题报告 https://byvoid.com/zhs/blog/lpf24-solution/
+
+最大权闭合子图 “收益-依赖-代价” Maximum Weight Closure of a Graph
+https://en.wikipedia.org/wiki/Closure_problem
   左部为我们需要决策选或不选（或者其他）的点，选择点 i 的收益为 earn[i]
   右部为点 i 的依赖，即选择点 i，也同时必须选点 g[i][j]
   选择右部的点 j 的代价为 cost[j]（或者说收益为 -cost[j]）
@@ -25,20 +52,45 @@ https://codeforces.com/blog/entry/145343
 利润 = sum(earn) - sum(没有选的 earn) - sum(选的点对应的 cost)
      = sum(earn) - 割掉没有选的 earn 以及左部选的点对应的右部点的 cost      割完后刚好可以把图分成两部分
 最大权闭合子图 = sum(earn) - 最小割
+对于左部，不割表示选，割表示不选，要反过来思考
+没有思路？想一想【正难则反】：通过提前计算收益，把不选收益变成代价；通过提前计算代价（提前亏钱），把不选代价（不计入亏钱）变成收益
+Solving Problems with Min Cut Max Flow Duality https://codeforces.com/blog/entry/136761 https://www.bilibili.com/video/BV1jt4y1t7pd/
+https://codeforces.com/problemset/problem/311/E 2300 建图设计
+https://codeforces.com/problemset/problem/1082/G 2400
+- https://www.luogu.com.cn/problem/P4174 NOI06 最大获利
 https://codeforces.com/problemset/problem/2026/E 2500
-https://atcoder.jp/contests/abc326/tasks/abc326_g 2470=CF2579
+https://codeforces.com/problemset/problem/1666/K 3200
+https://atcoder.jp/contests/abc326/tasks/abc326_g 2470=CF2579 经典建图设计
+https://atcoder.jp/contests/arc085/tasks/arc085_c
+https://atcoder.jp/contests/abc225/tasks/abc225_g
+https://atcoder.jp/contests/abc259/tasks/abc259_g
+https://atcoder.jp/contests/abc193/tasks/abc193_f
+https://atcoder.jp/contests/arc142/tasks/arc142_e
+https://www.luogu.com.cn/problem/P2762 https://loj.ac/p/6001 【网络流 24 题】太空飞行计划
+https://qoj.ac/contest/1774/problem/9224
 
-Solving Problems with Min Cut Max Flow Duality https://codeforces.com/blog/entry/136761
-最小割问题秒杀三板斧 https://www.bilibili.com/video/BV1jt4y1t7pd/
+集合划分 Graph Partitioning
+二元选择：每个元素有两个状态可选（例如：选/不选，属于A集合/属于B集合，黑色/白色）
+代价/收益：选择某种状态会有基础收益；如果两个关联元素选择了“冲突”的状态（比如一个选A一个选B），会产生额外的“惩罚”或“代价”
+目标：通常是求“最小的总代价”或“最大的总净收益”
+
+二分图最大匹配 Maximum Bipartite Matching
+找到看待问题的两种视角
+超级源点连左部，右部连超级汇点，所有边的容量均为 1，最大流即为最大匹配
+模板题 https://www.luogu.com.cn/problem/P3386 代码 https://www.luogu.com.cn/record/123020820
+https://codeforces.com/problemset/problem/489/B 1200
+https://codeforces.com/problemset/problem/78/E 2300
+https://codeforces.com/problemset/problem/2026/E 2500 最大权闭合子图 / Hall 定理
+https://codeforces.com/problemset/problem/628/F 2500 建图设计
+
+带权二分图匹配
+https://codeforces.com/problemset/problem/1437/C 1800
 
 todo
  https://www.cnblogs.com/victorique/p/8560656.html
  https://blog.bill.moe/network-flow-models/
  NOI 一轮复习 I：二分图网络流 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-i-er-fen-tu-wang-lao-liu
  2016 国家集训队论文《网络流的一些建模方法》姜志豪 https://github.com/enkerewpo/OI-Public-Library/blob/master/IOI%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AE%B6%E5%80%99%E9%80%89%E9%98%9F%E8%AE%BA%E6%96%87/%E5%9B%BD%E5%AE%B6%E9%9B%86%E8%AE%AD%E9%98%9F2016%E8%AE%BA%E6%96%87%E9%9B%86.pdf
-
-todo 网络流 24 题 https://loj.ac/p?tagIds=30 https://www.luogu.com.cn/problem/list?tag=332
- 线性规划与网络流 24 题 解题报告 https://byvoid.com/zhs/blog/lpf24-solution/
 
 todo 题单 https://www.zybuluo.com/xzyxzy/note/992041
  网络流从入门到入土 #1 https://www.luogu.com.cn/training/12097#problems
@@ -52,21 +104,12 @@ Max-Flow in almost linear time https://codeforces.com/blog/entry/100510
 CF Tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=flows
 */
 
-/* 最大流·建模·转换 ################################################################################
-
+/* 最大流·建模·转换
 Max-Flow，简称 MF
+https://en.wikipedia.org/wiki/Maximum_flow
 
 可视化 https://visualgo.net/zh/maxflow
 选择左下的图示 - CS4234 MF Demo 或者 CP4 8.15*，然后选择左下的 Dinic - 前进
-
-https://en.wikipedia.org/wiki/Maximum_flow
-
-二分图最大匹配
-超级源点连左部，右部连超级汇点，所有边的容量均为 1，最大流即为最大匹配
-模板题 https://www.luogu.com.cn/problem/P3386
-代码 https://www.luogu.com.cn/record/123020820
-https://codeforces.com/problemset/problem/489/B 1200
-https://codeforces.com/problemset/problem/2026/E 2500 最大权闭合子图 / Hall 定理
 
 最大流·建模·转换
 https://www.luogu.com.cn/problem/P2891 http://poj.org/problem?id=3281
@@ -135,9 +178,9 @@ http://poj.org/problem?id=3204 https://www.acwing.com/problem/content/2238/
 具体实现见下面代码中的 EXTRA
 */
 
-/* 最小割·建模·转换 ################################################################################
-
+/* 最小割·建模·转换
 https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem
+最大流等于最小割的证明 https://seineo.github.io/%E5%9B%BE%E8%AE%BA%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%B5%81%E6%9C%80%E5%B0%8F%E5%89%B2%E8%AF%A6%E8%A7%A3.html
 最小割模型汇总 https://blog.csdn.net/qq_35649707/article/details/77482691
 下面的 topic 参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 见 https://github.com/EndlessCheng/cp-pdf）
 
@@ -163,17 +206,6 @@ LCP38/21春·战队赛F https://leetcode.cn/problems/7rLGCR/
 todo https://atcoder.jp/contests/arc085/tasks/arc085_c
 
 todo 最小割必经边？
-
-最大权闭合图 Maximum Weight Closure of a Graph
-https://en.wikipedia.org/wiki/Closure_problem
-源点向所有正权点连边，容量为相应点权
-所有负权点向汇点连边，容量为相应点权的相反数
-原图边的容量为 inf（从而保证不会在最小割中）
-最后用正权点总和减去源点到汇点的最小割即为答案
-以「最大获利」这题（边权和减点权和最大子图）来解释，割掉源点到正权点的边，意味着放弃对应用户的收益；割掉负权点到汇点的边，意味着建立对应基站
-NOI06 最大获利 https://www.luogu.com.cn/problem/P4174
-- https://codeforces.com/problemset/problem/1082/G 2400
-【网络流 24 题】太空飞行计划 https://loj.ac/p/6001 https://www.luogu.com.cn/problem/P2762
 
 最大密度子图 Maximum Density Subgraph
 https://en.wikipedia.org/wiki/Dense_subgraph
@@ -204,8 +236,7 @@ todo https://atcoder.jp/contests/abc285/tasks/abc285_g
 AHOI09 https://www.luogu.com.cn/problem/P4126
 */
 
-/* 费用流·建模·转换 ################################################################################
-
+/* 费用流·建模·转换
 https://en.wikipedia.org/wiki/Minimum-cost_flow_problem MCFP
 https://en.wikipedia.org/wiki/Assignment_problem
 https://en.wikipedia.org/wiki/Network_simplex_algorithm
@@ -255,7 +286,7 @@ todo https://codeforces.com/contest/1455/problem/E
  https://codeforces.com/blog/entry/85186?#comment-728533
 */
 
-/* 网络流建模技巧/转换技巧 ################################################################################
+/* 网络流建模技巧/转换技巧
 todo 整合到其它 blocks
 todo 重新看一下挑战
 
@@ -312,7 +343,9 @@ https://yhx-12243.github.io/OI-transit/records/lydsy1143%3Blg4298.html
 //
 // 模板题 https://www.luogu.com.cn/problem/P3376
 //       https://www.luogu.com.cn/problem/P2740
-// 骨牌/瓷砖铺设 + 输出具体方案 https://atcoder.jp/contests/practice2/tasks/practice2_d
+// https://codeforces.com/problemset/problem/498/C 2100 最大流 建模
+// https://codeforces.com/problemset/problem/546/E 2100 模板题 输出具体方案
+// https://atcoder.jp/contests/practice2/tasks/practice2_d 骨牌/瓷砖铺设 输出具体方案
 func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 	type neighbor struct{ to, rid, cap, eid int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
@@ -341,7 +374,10 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 			for j, w := range b {
 				// 和题目有关，满足该约束即可匹配 a[i] 和 b[j]
 				if v+w < 100 {
-					addEdge(i, j+len(a), math.MaxInt) // 两部之间的边不能割
+					// 一般 cap=math.MaxInt 表示无限制/不允许割（下面我们对 st end 做了限制，所以一般 cap=math.MaxInt）
+					// cap=1 表示一对一
+					// 如果题目约束 a[i] 只能匹配 x 个 b[j]，那么 cap=x
+					addEdge(i, j+len(a), math.MaxInt)
 				}
 			}
 			// cap=1 表示每个 a[i] 只能选一次（匹配一次）
@@ -357,22 +393,22 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 		// 算完最大流后，如果要输出具体方案，可以遍历左部 -> 右部的边，cap == 0 的边就是在最大匹配中的边
 	}
 
-	d := make([]int, len(g))
+	dis := make([]int, len(g))
 	bfs := func() bool {
-		clear(d) // d[i] = 0 表示没有访问过
-		d[st] = 1
+		clear(dis) // dis[i] = 0 表示没有访问过
+		dis[st] = 1
 		q := []int{st}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
 			for _, e := range g[v] {
-				if w := e.to; e.cap > 0 && d[w] == 0 {
-					d[w] = d[v] + 1
+				if w := e.to; e.cap > 0 && dis[w] == 0 {
+					dis[w] = dis[v] + 1
 					q = append(q, w)
 				}
 			}
 		}
-		return d[end] > 0
+		return dis[end] > 0
 	}
 	// 当前弧，在其之前的边已经没有用了，避免多次检查没有用的边
 	iter := make([]int, len(g))
@@ -385,7 +421,7 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 		for ; iter[v] < len(g[v]); iter[v]++ {
 			e := &g[v][iter[v]]
 			w := e.to
-			if e.cap > 0 && d[w] > d[v] {
+			if e.cap > 0 && dis[w] > dis[v] {
 				f := dfs(w, min(totalFlow-curFlow, e.cap))
 				if f == 0 {
 					continue
@@ -417,6 +453,7 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 	}
 
 	// EXTRA: 求流的分配方案（即反向边上的 cap）
+	// https://codeforces.com/problemset/problem/546/E 2100
 	// https://loj.ac/p/115 https://www.acwing.com/problem/content/2190/
 	ans := make([]int, len(edges))
 	for _, es := range g { // v
@@ -719,7 +756,12 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // 如果要限制总共至多选 lim 个元素，可以在超级源点前面再加一个节点 S0，连到超级源点，容量为 lim，费用为 0（相当于超级源点的流出量至多为 lim）
 //     如果满流，则表示恰好选了 lim 个元素
 //
-// 完全二分图 + 一对一 https://projecteuler.net/problem=345
+// https://codeforces.com/problemset/problem/1426/E 1800 完全二分图 + 多对多
+// https://codeforces.com/problemset/problem/1437/C 1800 完全二分图 + 一对一
+// https://codeforces.com/problemset/problem/1525/D 1800 完全二分图 + 一对一
+// https://codeforces.com/problemset/problem/802/N 2400 时间约束：从第 i 天连向第 i+1 天，容量 inf（延后无限制），费用 0（等待不花钱）
+// https://codeforces.com/problemset/problem/802/O 2900 模拟费用流/反悔贪心
+// https://projecteuler.net/problem=345 完全二分图 + 一对一
 // 完全二分图 + 一对一 LC3376 https://leetcode.cn/problems/minimum-time-to-break-locks-i/
 // 完全二分图 + 一对多 LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
 // 完全二分图 + 至多选 k=3 个数 LC3257 https://leetcode.cn/problems/maximum-value-sum-by-placing-three-rooks-ii/
@@ -735,27 +777,32 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 	n := len(a)
 	m := len(a[0])
-	S := n + m
-	T := S + 1
+	st := n + m
+	end := st + 1
 
 	// rid 为反向边在邻接表中的下标
-	type neighbor struct{ to, rid, cap, cost int } // 如果输入的是 edges，可以额外记录边的下标
-	g := make([][]neighbor, T+1)
+	type nb struct{ to, rid, cap, cost int } // 如果输入的是 edges，可以额外记录边的下标
+	g := make([][]nb, end+1)
 	addEdge := func(from, to, cap, cost int) {
-		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
-		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
+		g[from] = append(g[from], nb{to, len(g[to]), cap, cost})
+		g[to] = append(g[to], nb{from, len(g[from]) - 1, 0, -cost})
 	}
 	for i, row := range a {
 		for j, v := range row {
-			addEdge(i, n+j, 1, v) // 如果求最大，改成 -v
+			// 如果是多对多，改 cap（一般为 math.MaxInt）
+			// 如果求最大，cost 改成 -v
+			addEdge(i, n+j, 1, v) 
 		}
-		addEdge(S, i, 1, 0) // 如果是一对多，改 cap
-		// 特别地，如果这一行的所有 v 都相同，可以把 S->i 的 cost 改成 v，i->n+j 的 cost 改成 0
+		// 如果是一对多，改 cap=这个点可以选择的最大次数/可用次数
+		addEdge(st, i, 1, 0) 
+		// 注：特别地，如果这一行的所有 v 都相同，可以把 st->i 的 cost 改成 v，i->n+j 的 cost 改成 0
 	}
 	for j := range a[0] {
-		addEdge(n+j, T, 1, 0) // 如果是多对一，改 cap
+		// 如果是多对一，改 cap=这个点能被匹配的最大次数/可用次数
+		addEdge(n+j, end, 1, 0) 
 	}
-	//addEdge(T+1, S, k, 0) // 如果要限制至多选 k 个元素（把 g 的大小改成 T+2）
+	// 如果要限制至多选 k 个元素，把超级源点分裂成两个点，加 cap，相当于在点上限制流量
+	//addEdge(st, st2, k, 0) // 上面 addEdge 中的 st 改成 st2
 
 	dis := make([]int, len(g))
 	type vi struct{ v, i int }
@@ -765,9 +812,9 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 		for i := range dis {
 			dis[i] = math.MaxInt
 		}
-		dis[S] = 0
-		inQ[S] = true
-		q := []int{S}
+		dis[st] = 0
+		inQ[st] = true
+		q := []int{st}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
@@ -789,7 +836,7 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 			}
 		}
 		// 循环结束后所有 inQ[v] 都为 false，无需重置
-		return dis[T] < math.MaxInt
+		return dis[end] < math.MaxInt
 	}
 
 	maxFlow := 0 // 可选
@@ -798,12 +845,12 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 		// 沿 st-end 的最短路尽量增广
 		// 特别地，如果建图时所有边的容量都设为 1，那么 minF 必然为 1，下面第一个 for 循环可以省略
 		minF := math.MaxInt
-		for v := T; v != S; {
+		for v := end; v != st; {
 			p := fa[v]
 			minF = min(minF, g[p.v][p.i].cap)
 			v = p.v
 		}
-		for v := T; v != S; {
+		for v := end; v != st; {
 			p := fa[v]
 			e := &g[p.v][p.i]
 			e.cap -= minF
@@ -811,7 +858,7 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 			v = p.v
 		}
 		maxFlow += minF
-		minCost += dis[T] * minF
+		minCost += dis[end] * minF
 	}
 
 	// 输出具体方案
@@ -903,7 +950,8 @@ func (*graph) minCostFlowDijkstra(n, st, end, flowLimit int, edges [][]int) int 
 	return minCost
 }
 
-// todo 基于 Capacity Scaling 的弱多项式复杂度最小费用流算法 https://ouuan.github.io/post/%E5%9F%BA%E4%BA%8E-capacity-scaling-%E7%9A%84%E5%BC%B1%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%A4%8D%E6%9D%82%E5%BA%A6%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%B5%81%E7%AE%97%E6%B3%95/
+// todo 基于 Capacity Scaling 的弱多项式复杂度最小费用流算法 
+// https://ouuan.github.io/post/%E5%9F%BA%E4%BA%8E-capacity-scaling-%E7%9A%84%E5%BC%B1%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%A4%8D%E6%9D%82%E5%BA%A6%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%B5%81%E7%AE%97%E6%B3%95/
 
 // ZKW 费用流
 // https://artofproblemsolving.com/community/c1368h1020435
