@@ -22,7 +22,7 @@
 
 ```py [sol-Python3]
 class Solution:
-    def smallestBalancedIndex(self, nums: List[int]) -> int:
+    def smallestBalancedIndex(self, nums: list[int]) -> int:
         pre = list(accumulate(nums, initial=0))  # pre[i] 表示 [0,i-1] 之和
         mul = 1  # [i+1,n-1] 之积
         for i in range(len(nums) - 1, 0, -1):
@@ -123,7 +123,7 @@ func smallestBalancedIndex(nums []int) int {
 
 ```py [sol-Python3]
 class Solution:
-    def smallestBalancedIndex(self, nums: List[int]) -> int:
+    def smallestBalancedIndex(self, nums: list[int]) -> int:
         pre = sum(nums)
         mul = 1
         for i in range(len(nums) - 1, 0, -1):
@@ -212,21 +212,32 @@ func smallestBalancedIndex(nums []int) int {
 
 ## 方法二：相向双指针
 
-由于 $n\le 10^5$ 以及 $\textit{nums}[i]\le 10^9$，所以前缀和不会超过 $10^{14}$。一旦发现后缀积超过 $10^{14}$，那么后续不可能出现前缀和等于后缀积的情况，可以直接返回 $-1$。
+左指针从 $0$ 开始，右指针从 $n-1$ 开始。
+
+比较前缀和与后缀积的大小，谁小就移动哪边的指针（排除了一个错误答案）。
+
+注意前缀和等于后缀积的情况。由于 $\textit{nums}$ 包含 $1$：
+
+- 如果把前缀和加上 $1$，移动左指针，万一剩下的数都是 $1$，这会导致前缀和始终大于后缀积，最后返回的是 $-1$，计算错误。
+- 右指针是可以移动的（排除了一个错误答案）。反证法：假设右指针是答案，由于 $\textit{nums}$ 中的数都是正数，前缀和加上中间剩余的数会大于后缀积，矛盾。
+
+所以前缀和等于后缀积的情况，要移动右指针。
+
+**优化**：由于 $n\le 10^5$ 以及 $\textit{nums}[i]\le 10^9$，所以前缀和不会超过 $10^{14}$。因此，一旦发现后缀积超过 $10^{14}$，那么后续不可能出现前缀和等于后缀积的情况，可以直接返回 $-1$。
 
 ```py [sol-Python3]
 class Solution:
-    def smallestBalancedIndex(self, nums: List[int]) -> int:
-        pre, mul = 0, 1
+    def smallestBalancedIndex(self, nums: list[int]) -> int:
+        pre, suf = 0, 1
         l, r = 0, len(nums) - 1
-        while l < r and mul <= 10 ** 14:
-            if pre < mul:
+        while l < r and suf <= 10 ** 14:
+            if pre < suf:
                 pre += nums[l]
                 l += 1
             else:
-                mul *= nums[r]
+                suf *= nums[r]
                 r -= 1
-        return l if pre == mul else -1
+        return l if pre == suf else -1
 ```
 
 ```java [sol-Java]
@@ -310,19 +321,21 @@ func smallestBalancedIndex(nums []int) int {
 
 ## 分类题单
 
-[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+[如何科学刷题？](https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
-2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
-4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
-9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
-12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/discuss/post/3578981/ti-dan-hua-dong-chuang-kou-ding-chang-bu-rzz7/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/discuss/post/3579164/ti-dan-er-fen-suan-fa-er-fen-da-an-zui-x-3rqn/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/discuss/post/3579480/ti-dan-dan-diao-zhan-ju-xing-xi-lie-zi-d-u4hk/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/discuss/post/3580195/fen-xiang-gun-ti-dan-wang-ge-tu-dfsbfszo-l3pa/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/discuss/post/3580371/fen-xiang-gun-ti-dan-wei-yun-suan-ji-chu-nth4/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/discuss/post/3581143/fen-xiang-gun-ti-dan-tu-lun-suan-fa-dfsb-qyux/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/discuss/post/3581838/fen-xiang-gun-ti-dan-dong-tai-gui-hua-ru-007o/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/discuss/post/3583665/fen-xiang-gun-ti-dan-chang-yong-shu-ju-j-bvmv/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/discuss/post/3584388/fen-xiang-gun-ti-dan-shu-xue-suan-fa-shu-gcai/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/discuss/post/3091107/fen-xiang-gun-ti-dan-tan-xin-ji-ben-tan-k58yb/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/discuss/post/3142882/fen-xiang-gun-ti-dan-lian-biao-er-cha-sh-6srp/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/discuss/post/3144832/fen-xiang-gun-ti-dan-zi-fu-chuan-kmpzhan-ugt4/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
