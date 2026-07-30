@@ -1,14 +1,15 @@
-## 方法一：字符串
+## 方法一：从左到右贪心
 
-分类讨论：
+由于最多填 $n$ 个 $9$，所以如果 $s>9n$，则无解，返回 $-1$。
 
-- 最多填 $n$ 个 $9$，所以如果 $s>9n$，则无解，返回 $-1$。
-- 如果 $s=0$，那么答案为 $0$。
-- 否则，整数的十进制长度可以是 $n$。从高到低填：
-   - 如果 $s\le 9$，那么这一位填 $s$，剩余位填 $0$，跳出循环。
-   - 如果 $s > 9$，那么这一位填 $9$，继续循环。
+否则可以从高到低（从左到右）填：
+
+- 如果 $s > 9$，那么这一位填 $9$，把 $s$ 减少 $9$。
+- 否则这一位填 $s$，把 $s$ 减少 $s$，变成 $0$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1Ps3j6nE3D/?t=30m16s)，欢迎点赞关注~
+
+### 写法一：用字符串
 
 ```py [sol-Python3]
 class Solution:
@@ -97,6 +98,75 @@ func largestInteger(n, s int) int {
 		s -= 9
 	}
 	ans, _ := strconv.Atoi(string(res))
+	return ans
+}
+```
+
+### 写法二：不用字符串
+
+```py [sol-Python3]
+class Solution:
+    def largestInteger(self, n: int, s: int) -> int:
+        if s > n * 9:
+            return -1
+
+        ans = 0
+        for _ in range(n):
+            d = min(s, 9)
+            ans = ans * 10 + d
+            s -= d
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int largestInteger(int n, int s) {
+        if (s > n * 9) {
+            return -1;
+        }
+
+        int ans = 0;
+        while (n-- > 0) {
+            int d = Math.min(s, 9);
+            ans = ans * 10 + d;
+            s -= d;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int largestInteger(int n, int s) {
+        if (s > n * 9) {
+            return -1;
+        }
+
+        int ans = 0;
+        while (n--) {
+            int d = min(s, 9);
+            ans = ans * 10 + d;
+            s -= d;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func largestInteger(n, s int) int {
+	if s > n*9 {
+		return -1
+	}
+
+	ans := 0
+	for range n {
+		d := min(s, 9)
+		ans = ans*10 + d
+		s -= d
+	}
 	return ans
 }
 ```
