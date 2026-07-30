@@ -1,4 +1,4 @@
-由于 $\textit{word}$ 中的所有字母互不相同，所以只需均匀分配这 $8$ 个按键。
+由于 $\textit{word}$ 中的所有字母互不相同，所以只需均匀分配字母到这 $8$ 个按键中。
 
 设字符串长度为 $n$，$k=\left\lfloor\dfrac{n}{8}\right\rfloor$。
 
