@@ -34,22 +34,25 @@ func cf2236G(in io.Reader, _w io.Writer) {
 		sum := make([]int, n+1)
 		lastNZ := make([]int, n+1)
 		st := []int{}
-		var dfs func(int, int, int, int, int)
-		dfs = func(v, fa, or, topD, nz int) {
+		var dfs func(int, int, int, int, int, int)
+		dfs = func(v, fa, or, idx, topD, nz int) {
 			pa[v][0] = fa
 			for i := range mx - 1 {
 				pa[v][i+1] = pa[pa[v][i]][i]
 			}
 
-			dep[v] = len(st)
-			st = append(st, v)
-			for or&a[v] > 0 {
-				or &^= a[st[topD]]
-				topD++
+			if a[v] > 0 {
+				st = append(st, v)
+				for or&a[v] > 0 {
+					or &^= a[st[idx]]
+					topD = dep[st[idx]] + 1
+					idx++
+				}
+				or |= a[v]
 			}
-			or |= a[v]
 			topDep[v] = topD
-			sum[v] = sum[fa] + len(st) - topD
+			dep[v] = dep[fa] + 1
+			sum[v] = sum[fa] + dep[v] - topD + 1
 
 			lastNZ[v] = nz
 			if a[v] > 0 {
@@ -58,12 +61,14 @@ func cf2236G(in io.Reader, _w io.Writer) {
 
 			for _, w := range g[v] {
 				if w != fa {
-					dfs(w, v, or, topD, nz)
+					dfs(w, v, or, idx, topD, nz)
 				}
 			}
-			st = st[:len(st)-1]
+			if a[v] > 0 {
+				st = st[:len(st)-1]
+			}
 		}
-		dfs(1, 0, 0, 0, 0)
+		dfs(1, 0, 0, 0, 0, 0)
 
 		uptoDep := func(v, d int) int {
 			for k := uint32(dep[v] - d); k > 0; k &= k - 1 {

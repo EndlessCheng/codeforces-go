@@ -3,6 +3,8 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -47,5 +49,30 @@ func Test_cf2236G(t *testing.T) {
 4`,
 		},
 	}
+	testutil.AssertEqualStringCase(t, testCases, 0, cf2236G)
+}
+
+func Test_cf2236G_hack(t *testing.T) {
+	testCases := [][2]string{{}}
+	s := &strings.Builder{}
+	s.WriteString("1\n")
+	s.WriteString("100000 0\n")
+	n := int(1e5)
+	a := make([]int, n)
+	a[0] = 1
+	for i := n/2-1; i < n; i++ {
+		a[i] = 1
+	}
+	for _, v := range a {
+		s.WriteString(strconv.Itoa(v)+" ")
+	}
+	s.WriteString("\n")
+	for i := 1; i < n/2; i++ {
+		s.WriteString(strconv.Itoa(i) + " " + strconv.Itoa(i+1) + "\n")
+	}
+	for i := n/2+1; i <=n; i++ {
+		s.WriteString(strconv.Itoa(n/2) + " " + strconv.Itoa(i) + "\n")
+	}
+	testCases[0][0] = s.String()
 	testutil.AssertEqualStringCase(t, testCases, 0, cf2236G)
 }
