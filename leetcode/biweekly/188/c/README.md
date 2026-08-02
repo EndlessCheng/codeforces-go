@@ -199,6 +199,8 @@ $$
 
 代码实现时，$f$ 可以简化成一个变量。
 
+### 写法一
+
 ```py [sol-Python3]
 class Solution:
     def minInitialStrength(self, monsters: list[int], boosts: list[list[int]]) -> int:
@@ -304,10 +306,127 @@ func minInitialStrength(monsters []int, boosts [][]int) int64 {
 }
 ```
 
+### 写法二
+
+根据递推式，如果 $f_i > 0$，那么后续的 $f_j\ (j<i)$ 均大于 $0$。
+
+所以可以先倒序找到第一个 $\textit{monsters}[i] > \textit{bonus}[i]$ 的 $i$，累加 $\textit{monsters}[i] - \textit{bonus}[i]$ 以及 $[0,i-1]$ 中的 $\textit{monsters}[j]$ 之和，即为答案。
+
+```py [sol-Python3]
+class Solution:
+    def minInitialStrength(self, monsters: list[int], boosts: list[list[int]]) -> int:
+        n = len(monsters)
+        bonus = [0] * (n + 1)
+        for l, r, v in boosts:
+            bonus[l] += v
+            bonus[r + 1] -= v
+
+        # 差分数组的前缀和即原数组
+        for i in range(1, n):
+            bonus[i] += bonus[i - 1]
+
+        for i in range(n - 1, -1, -1):
+            if monsters[i] > bonus[i]:
+                return sum(monsters[:i + 1]) - bonus[i]
+        return 0
+```
+
+```java [sol-Java]
+class Solution {
+    public long minInitialStrength(int[] monsters, int[][] boosts) {
+        int n = monsters.length;
+        long[] bonus = new long[n + 1];
+        for (int[] b : boosts) {
+            bonus[b[0]] += b[2];
+            bonus[b[1] + 1] -= b[2];
+        }
+
+        // 差分数组的前缀和即原数组
+        for (int i = 1; i < n; i++) {
+            bonus[i] += bonus[i - 1];
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (monsters[i] > bonus[i]) {
+                long ans = -bonus[i];
+                for (int j = i; j >= 0; j--) {
+                    ans += monsters[j];
+                }
+                return ans;
+            }
+        }
+        return 0;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minInitialStrength(vector<int>& monsters, vector<vector<int>>& boosts) {
+        int n = monsters.size();
+        vector<long long> bonus(n + 1);
+        for (auto& b : boosts) {
+            bonus[b[0]] += b[2];
+            bonus[b[1] + 1] -= b[2];
+        }
+
+        // 差分数组的前缀和即原数组
+        for (int i = 1; i < n; i++) {
+            bonus[i] += bonus[i - 1];
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (monsters[i] > bonus[i]) {
+                return reduce(monsters.begin(), monsters.begin() + i + 1, 0LL) - bonus[i];
+            }
+        }
+        return 0;
+    }
+};
+```
+
+```go [sol-Go]
+func minInitialStrength(monsters []int, boosts [][]int) int64 {
+	n := len(monsters)
+	bonus := make([]int, n+1)
+	for _, b := range boosts {
+		bonus[b[0]] += b[2]
+		bonus[b[1]+1] -= b[2]
+	}
+
+	// 差分数组的前缀和即原数组
+	for i := 1; i < n; i++ {
+		bonus[i] += bonus[i-1]
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		if monsters[i] > bonus[i] {
+			ans := -bonus[i]
+			for _, x := range monsters[:i+1] {
+				ans += x
+			}
+			return int64(ans)
+		}
+	}
+	return 0
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $\textit{monsters}$ 的长度，$m$ 是 $\textit{boosts}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 思考题
+
+根据最后一个写法，思考如下问题：
+
+1. 额外输入一个数组 $\textit{queries}$，其中 $\textit{queries}[i] = [\ell_i,r_i]$。对于每个询问，计算击败 $\textit{monsters}$ 的连续子数组 $[\ell_i,r_i]$ 中的所有怪物，所需的最小初始强度。你能做到单个询问 $\mathcal{O}(1)$ 时间复杂度吗？
+2. 如果还有修改单个 $\textit{monsters}[i]$ 的操作呢？
+3. 如果还有修改 $\textit{monsters}$ 的子数组的操作（区间加/减）呢？
+
+欢迎在评论区分享你的思路/代码。
 
 ## 专题训练
 

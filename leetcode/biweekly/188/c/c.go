@@ -33,7 +33,7 @@ func minInitialStrength1(monsters []int, boosts [][]int) int64 {
 	return int64(ans)
 }
 
-func minInitialStrength(monsters []int, boosts [][]int) int64 {
+func minInitialStrength2(monsters []int, boosts [][]int) int64 {
 	n := len(monsters)
 	bonus := make([]int, n+1)
 	for _, b := range boosts {
@@ -55,4 +55,29 @@ func minInitialStrength(monsters []int, boosts [][]int) int64 {
 		}
 	}
 	return int64(f)
+}
+
+func minInitialStrength(monsters []int, boosts [][]int) int64 {
+	n := len(monsters)
+	bonus := make([]int, n+1)
+	for _, b := range boosts {
+		bonus[b[0]] += b[2]
+		bonus[b[1]+1] -= b[2]
+	}
+
+	// 差分数组的前缀和即原数组
+	for i := 1; i < n; i++ {
+		bonus[i] += bonus[i-1]
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		if monsters[i] > bonus[i] {
+			ans := -bonus[i]
+			for _, x := range monsters[:i+1] {
+				ans += x
+			}
+			return int64(ans)
+		}
+	}
+	return 0
 }
