@@ -8,6 +8,8 @@ $$
 ay-bx\ge 0
 $$
 
+当 $y=0$ 时，$x>0$（题目要求子数组非空），$ay-bx = -bx < 0$，上式不成立。所以题目的两个条件可以合并成上式。
+
 把 $\textit{nums}$ 中的奇数视作 $a$，偶数视作 $-b$，得到数组 $\textit{arr}$。问题等价于：
 
 - 计算 $\textit{arr}$ 中有多少个元素和 $\ge 0$ 的非空连续子数组。
@@ -22,9 +24,9 @@ $\textit{arr}$ 的子数组 $[L,R-1]$ 的元素和等于 $s[R] - s[L]$。问题�
 
 类似逆序对，这可以用**值域树状数组**或**归并排序**计算。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1gn3R6qEbX/?t=8m53s)，包含两种方法，欢迎点赞关注~
 
-## 写法一：值域树状数组
+## 方法一：值域树状数组
 
 ```py [sol-Python3]
 class FenwickTree:
@@ -223,7 +225,7 @@ func countRatioSubarrays(nums []int, a, b int) int64 {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 写法二：归并排序
+## 方法二：归并排序
 
 ```py [sol-Python3]
 class Solution:
