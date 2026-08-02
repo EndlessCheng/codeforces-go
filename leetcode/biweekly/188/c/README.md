@@ -16,7 +16,7 @@
 
 根据题目描述，从左到右遍历 $\textit{monsters}$，模拟即可。
 
-如果可以击败所有怪物，说明答案 $\ge m$，否则答案 $> m$。
+如果可以击败所有怪物，说明答案 $\le m$，否则答案 $> m$。
 
 ### 细节
 
@@ -27,7 +27,7 @@
 
 > 对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Y73R6zEwG/?t=9m14s)，包含两种方法，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -175,8 +175,8 @@ func minInitialStrength(monsters []int, boosts [][]int) int64 {
 
 除了满足 $f_i\ge 0$ 以外，还必须满足两个条件：
 
-1. 击败当前怪物，即 $f_i + \textit{bonus}[i]\ge \textit{monsters}[i]$，移项得 $f_i \ge \textit{monsters}[i] - \textit{bonus}[i]$。
-2. 击败后续怪物，即 $\max(f_i - \textit{monsters}[i], 0)\ge f_{i+1}$。
+1. 要能击败当前怪物，即 $f_i + \textit{bonus}[i]\ge \textit{monsters}[i]$，移项得 $f_i \ge \textit{monsters}[i] - \textit{bonus}[i]$。
+2. 要能击败后续怪物，即 $\max(f_i - \textit{monsters}[i], 0)\ge f_{i+1}$。
 
 分类讨论：
 

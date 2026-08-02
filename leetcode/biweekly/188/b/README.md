@@ -3,14 +3,14 @@
 1. 原始木板的高度。
 2. 两块原始木板合成后的高度。
 
-如果枚举高度 $h$，再统计最多有多少块木板可以组成 $h$（例如用双指针），时间复杂度是 $\mathcal{O}(n^3)$ 的，太慢了。
+如果枚举高度 $h$，再统计最多有多少块木板可以组成 $h$（例如用相向双指针），时间复杂度是 $\mathcal{O}(n^3)$ 的，太慢了。
 
 反过来，枚举所有木板对 $(\textit{planks}[i], \textit{planks}[j])$，用哈希表记录高度 $h = \textit{planks}[i] + \textit{planks}[j]$ 新增了多少块木板，就可以在枚举高度 $h$ 的时候，$\mathcal{O}(1)$ 知道最多有多少块木板可以组成 $h$。
 
 为此，需要用两个哈希表：
 
 1. 用哈希表 $\textit{cnt}$ 统计 $\textit{planks}$ 每个元素（高度）的出现次数。
-2. 用哈希表 $\textit{cntPair}$ 统计合成木板的高度的出现次数。枚举 $\textit{cnt}$ 中的木板对 $(x,y)$，其中 $x<y$，这两种木板最多可以组成 $\min(\textit{cnt}[x], \textit{cnt}[y])$ 块高度为 $x+y$ 的合成木板。特别地，高度为 $x$ 的木板可以内部组合，最多可以组成 $\left\lfloor\dfrac{\textit{cnt}[x]}{2}\right\rfloor$ 块高度为 $2x$ 的合成木板。
+2. 用哈希表 $\textit{cntPair}$ 统计合成木板的高度的出现次数。枚举 $\textit{cnt}$ 中的木板对 $(x,y)$，其中 $x<y$，这两种木板最多可以组成 $\min(\textit{cnt}[x], \textit{cnt}[y])$ 块高度为 $x+y$ 的合成木板。此外，高度为 $x$ 的木板可以内部两两组合，最多可以组成 $\left\lfloor\dfrac{\textit{cnt}[x]}{2}\right\rfloor$ 块高度为 $2x$ 的合成木板。
 
 最后，遍历 $\textit{cnt}$ 和 $\textit{cntPair}$ 中的高度 $h$，那么最多有
 
@@ -20,7 +20,7 @@ $$
 
 块高为 $h$ 的木板。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Y73R6zEwG/?t=1m10s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -32,13 +32,13 @@ class Solution:
         ans = 0
         cnt_pair = defaultdict(int)
         for x, c in cnt.items():
-            cnt_pair[x] += c  # 方便后面统计
+            cnt_pair[x] += c  # 方便最后算 max
             cnt_pair[x * 2] += c // 2  # 高为 x 的木板内部配对
             for y, c2 in cnt.items():
                 if y > x:  # 避免 x+y 和 y+x 重复统计
                     cnt_pair[x + y] += min(c, c2)
 
-        # 枚举最终木板高度
+        # 枚举栅栏高度
         return max(cnt_pair.values())
 ```
 
@@ -56,7 +56,7 @@ class Solution {
         for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
             int x = e.getKey();
             int c = e.getValue();
-            cntPair.merge(x, c, Integer::sum); // 方便后面统计
+            cntPair.merge(x, c, Integer::sum); // 方便最后算 max
             cntPair.merge(x * 2, c / 2, Integer::sum); // 高为 x 的木板内部配对
             for (Map.Entry<Integer, Integer> e2 : cnt.entrySet()) {
                 int y = e2.getKey();
@@ -67,7 +67,7 @@ class Solution {
             }
         }
 
-        // 枚举最终木板高度
+        // 枚举栅栏高度
         return Collections.max(cntPair.values());
     }
 }
@@ -86,7 +86,7 @@ public:
         // 枚举所有高度对 (x,y)
         unordered_map<int, int> cnt_pair;
         for (auto& [x, c] : cnt) {
-            cnt_pair[x] += c; // 方便后面统计
+            cnt_pair[x] += c; // 方便最后算 max
             cnt_pair[x * 2] += c / 2; // 高为 x 的木板内部配对
             for (auto& [y, c2] : cnt) {
                 if (y > x) { // 避免 x+y 和 y+x 重复统计
@@ -95,7 +95,7 @@ public:
             }
         }
 
-        // 枚举最终木板高度
+        // 枚举栅栏高度
         int ans = 0;
         for (auto& [_, c] : cnt_pair) {
             ans = max(ans, c);
@@ -116,7 +116,7 @@ func maximumWidth(planks []int) (ans int) {
 	// 枚举所有高度对 (x,y)
 	cntPair := map[int]int{}
 	for x, c := range cnt {
-		cntPair[x] += c // 方便后面统计
+		cntPair[x] += c // 方便最后算 max
 		cntPair[x*2] += c / 2 // 高为 x 的木板内部配对
 		for y, c2 := range cnt {
 			if y > x { // 避免 x+y 和 y+x 重复统计
@@ -125,11 +125,10 @@ func maximumWidth(planks []int) (ans int) {
 		}
 	}
 
-	// 枚举最终木板高度
+	// 枚举栅栏高度
 	for _, c := range cntPair {
 		ans = max(ans, c)
 	}
-
 	return
 }
 ```

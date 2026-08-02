@@ -5,9 +5,9 @@
 
 所以交替字符串中的 $\texttt{0}$ 和 $\texttt{1}$ 的个数的绝对差 $\le 1$。
 
-遍历 $s$ 的同时，统计遍历过的字符的个数。
+遍历 $s$ 的同时，统计遍历过的字符的个数，即可 $\mathcal{O}(1)$ 判断 $s$ 的前缀是否为交替字符串。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Y73R6zEwG/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
