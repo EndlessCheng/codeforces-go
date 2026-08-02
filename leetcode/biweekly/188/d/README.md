@@ -230,7 +230,7 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nU^2F\log U)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \textit{fuel}[0]+\textit{fuel}[1]$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上第二个递归函数是四维的。
+- 时间复杂度：$\mathcal{O}(nU^2F\log U)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \min(\textit{fuel})$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上第二个递归函数是四维的。
 - 空间复杂度：$\mathcal{O}(nU^2F)$。
 
 ## 状态优化
@@ -368,7 +368,7 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nUF\log U)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \textit{fuel}[0]+\textit{fuel}[1]$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上第二个递归函数是三维的。
+- 时间复杂度：$\mathcal{O}(nUF\log U)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \max(\textit{fuel})$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上第二个递归函数是三维的。
 - 空间复杂度：$\mathcal{O}(nUF)$。
 
 ## 专题训练
