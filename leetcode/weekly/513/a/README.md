@@ -1,7 +1,5 @@
 枚举所有数对，计算强度，取最大值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ## 优化前
 
 ```py [sol-Python3]
@@ -28,9 +26,9 @@ class Solution {
         return ans;
     }
 
-    private long gcd(long a, long b) {
+    private int gcd(int a, int b) {
         while (a != 0) {
-            long tmp = a;
+            int tmp = a;
             a = b % a;
             b = tmp;
         }
@@ -77,19 +75,22 @@ func gcd(a, b int) int {
 
 ## 最优性优化
 
-从大到小枚举数对，如果 $\textit{nums}[i]\cdot \textit{nums}[j]\le \textit{ans}$，则继续枚举不可能让答案变大，跳出循环。
+设所有 $\textit{nums}[i]$ 的 GCD 为 $\textit{allGcd}$。
+
+从大到小枚举数对，如果 $\dfrac{\textit{nums}[i]\cdot \textit{nums}[j]}{\textit{allGcd}^2}\le \textit{ans}$，则继续枚举不可能让答案变大，跳出循环。
 
 ```py [sol-Python3]
 class Solution:
     def maxPairStrength(self, nums: list[int]) -> int:
         nums.sort(reverse=True)
+        all_gcd2 = gcd(*nums) ** 2
 
         ans = 0
         for i, x in enumerate(nums):
             for j in range(i):
                 y = nums[j]
                 mul = x * y
-                if mul <= ans:  # 最优性优化
+                if mul // all_gcd2 <= ans:  # 最优性优化
                     break
                 g = gcd(x, y)
                 ans = max(ans, mul // (g * g))
@@ -100,12 +101,19 @@ class Solution:
 class Solution {
     public long maxPairStrength(int[] nums) {
         Arrays.sort(nums);
+        int n = nums.length;
+
+        int allGcd = 0;
+        for (int x : nums) {
+            allGcd = gcd(allGcd, x);
+        }
+        long allGcd2 = (long) allGcd * allGcd;
 
         long ans = 0;
-        for (int i = nums.length - 1; i >= 0; i--) {
-            for (int j = nums.length - 1; j > i; j--) {
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = n - 1; j > i; j--) {
                 long mul = (long) nums[i] * nums[j];
-                if (mul <= ans) { // 最优性优化
+                if (mul / allGcd2 <= ans) { // 最优性优化
                     break;
                 }
                 long g = gcd(nums[i], nums[j]);
@@ -115,9 +123,9 @@ class Solution {
         return ans;
     }
 
-    private long gcd(long a, long b) {
+    private int gcd(int a, int b) {
         while (a != 0) {
-            long tmp = a;
+            int tmp = a;
             a = b % a;
             b = tmp;
         }
@@ -132,11 +140,17 @@ public:
     long long maxPairStrength(vector<int>& nums) {
         ranges::sort(nums, greater());
 
+        int all_gcd = 0;
+        for (int x : nums) {
+            all_gcd = gcd(all_gcd, x);
+        }
+        long long all_gcd2 = 1LL * all_gcd * all_gcd;
+
         long long ans = 0;
         for (int i = 0; i < nums.size(); i++) {
             for (int j = 0; j < i; j++) {
                 long long mul = 1LL * nums[i] * nums[j];
-                if (mul <= ans) { // 最优性优化
+                if (mul / all_gcd2 <= ans) { // 最优性优化
                     break;
                 }
                 long long g = gcd(nums[i], nums[j]);
@@ -152,11 +166,17 @@ public:
 func maxPairStrength(nums []int) int64 {
 	slices.SortFunc(nums, func(a, b int) int { return b - a })
 
+	allGcd := 0
+	for _, x := range nums {
+		allGcd = gcd(allGcd, x)
+	}
+	allGcd2 := allGcd * allGcd
+
 	ans := 0
 	for i, x := range nums {
 		for _, y := range nums[:i] {
 			mul := x * y
-			if mul <= ans { // 最优性优化
+			if mul/allGcd2 <= ans {
 				break
 			}
 			g := gcd(x, y)

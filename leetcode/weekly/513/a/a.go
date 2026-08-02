@@ -6,11 +6,17 @@ import "slices"
 func maxPairStrength(nums []int) int64 {
 	slices.SortFunc(nums, func(a, b int) int { return b - a })
 
+	allGcd := 0
+	for _, x := range nums {
+		allGcd = gcd(allGcd, x)
+	}
+	allGcd2 := allGcd * allGcd
+
 	ans := 0
 	for i, x := range nums {
 		for _, y := range nums[:i] {
 			mul := x * y
-			if mul <= ans {
+			if mul/allGcd2 <= ans {
 				break
 			}
 			g := gcd(x, y)
