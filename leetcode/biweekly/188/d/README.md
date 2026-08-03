@@ -1,34 +1,4 @@
-## 前言
 
-目前题目是错的，出题人没有考虑**空等**的策略，即车辆在可以加油时，先等待一会再加油。有时候空等一下，下一辆车需要等的时间更短。如果下一辆车是瓶颈的话，这个策略可以比出题人算出的答案更小。
-
-反例：
-
-```
-demand = [10,1,10]
-fuel = [20,1]
-```
-
-唯一分配策略：
-
-- 车 0 去加油机 0。
-- 车 1 去加油机 1。
-- 车 2 去加油机 0。
-
-出题人给出的答案为 $10$，**这是错的**。
-
-错误思路是：
-
-- 车 1 不等，直接加油，那么车 2 需要等 $10$ 秒。
-
-正确思路是：
-
-- 车 1 空等到时刻 $5$ 开始加油。
-- 车 2 只需等 $5$ 秒。
-
-正确答案为 $5$。
-
-下面介绍正确做法。**如果后面题目改了，题解会继续更新**。
 
 ## 核心思路
 
@@ -86,21 +56,19 @@ fuel = [20,1]
 设 $d = \textit{demand}[i]$，分类讨论：
 
 - 车 $i$ 选择加油机 0。
-    - 车 $i$ 至少要等 $\textit{wait}_0$ 秒才能开始加油，所以要满足 $\textit{wait}_0\le m$（以及 $d \le \textit{fuel}_0$）。
-    - 贪心地，车 $i$ 把等待时间拉满，那么加油机 1 在 $\max(\textit{wait}_1 - m,0)$ 秒后空闲，这样如果车 $i+1$ 选择在加油机 1 加油，等待的时间相比不拉满是更少的（或者不变）。
-    - 从状态 $(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 移动到状态 $(i,d,\max(\textit{wait}_1 - m,0),\textit{fuel}_0-d,\textit{fuel}_1)$。
+    - 车 $i$ 要等 $\textit{wait}_0$ 秒才能开始加油，所以要满足 $\textit{wait}_0\le m$（以及 $d \le \textit{fuel}_0$）。
+    - 因为时间流逝了 $\textit{wait}_0$ 秒，加油机 1 变成在 $\max(\textit{wait}_1 - \textit{wait}_0,0)$ 秒后空闲。
+    - 从状态 $(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 移动到状态 $(i,d,\max(\textit{wait}_1 - \textit{wait}_0,0),\textit{fuel}_0-d,\textit{fuel}_1)$。
 - 车 $i$ 选择加油机 0。
-    - 车 $i$ 至少要等 $\textit{wait}_1$ 秒才能开始加油，所以要满足 $\textit{wait}_1\le m$（以及 $\textit{demand}[i]\le \textit{fuel}_1$）。
-    - 贪心地，车 $i$ 把等待时间拉满，那么加油机 0 在 $\max(\textit{wait}_0 - m,0)$ 秒后空闲，这样如果车 $i+1$ 选择在加油机 0 加油，等待的时间相比不拉满是更少的（或者不变）。
-    - 从状态 $(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 移动到状态 $(i,\max(\textit{wait}_0 - m,0),d,\textit{fuel}_0,\textit{fuel}_1-d)$。
+    - 车 $i$ 要等 $\textit{wait}_1$ 秒才能开始加油，所以要满足 $\textit{wait}_1\le m$（以及 $\textit{demand}[i]\le \textit{fuel}_1$）。
+    - 因为时间流逝了 $\textit{wait}_1$ 秒，加油机 0 变成在 $\max(\textit{wait}_0 - \textit{wait}_1,0)$ 秒后空闲。
+    - 从状态 $(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 移动到状态 $(i,\max(\textit{wait}_0 - \textit{wait}_1,0),d,\textit{fuel}_0,\textit{fuel}_1-d)$。
 
 如果能走到 $i=\textit{maxCars}$ 的状态，返回 $\texttt{true}$。
 
 初始状态 $(0,0,0,\textit{fuel}[0],\textit{fuel}[1])$。
 
-[本题视频讲解](https://www.bilibili.com/video/BV1Y73R6zEwG/?t=18m13s)，欢迎点赞关注~
-
-⚠**注意**：目前出题人的代码是错的，下面的代码无法通过题目！等出题人把题目修好了，再来提交。
+[本题视频讲解](https://www.bilibili.com/video/BV1Y73R6zEwG/?t=18m13s)，基于原始题面讲解，思路是一样的。
 
 ```py [sol-Python3]
 class Solution:
@@ -133,14 +101,14 @@ class Solution:
 
                 d = demand[i]
 
-                # 选择加油机 0，空等 max_waiting_time 秒才开始加油，从而减少加油机 1 的等待时间
+                # 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
                 if wait0 <= max_waiting_time and d <= fuel0 and \
-                        dfs(i + 1, d, max(wait1 - max_waiting_time, 0), fuel0 - d, fuel1):
+                        dfs(i + 1, d, max(wait1 - wait0, 0), fuel0 - d, fuel1):
                     return True
 
-                # 选择加油机 1，空等 max_waiting_time 秒才开始加油，从而减少加油机 0 的等待时间
+                # 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
                 if wait1 <= max_waiting_time and d <= fuel1 and \
-                        dfs(i + 1, max(wait0 - max_waiting_time, 0), d, fuel0, fuel1 - d):
+                        dfs(i + 1, max(wait0 - wait1, 0), d, fuel0, fuel1 - d):
                     return True
 
                 return False
@@ -207,15 +175,15 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 
 			d := demand[i]
 
-			// 选择加油机 0，空等 maxWaitingTime 秒才开始加油，从而减少加油机 1 的等待时间
+			// 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
 			if wait0 <= maxWaitingTime && d <= fuel0 &&
-				dfs(i+1, d, max(wait1-maxWaitingTime, 0), fuel0-d, fuel1) {
+				dfs(i+1, d, max(wait1-wait0, 0), fuel0-d, fuel1) {
 				return true
 			}
 
-			// 选择加油机 1，空等 maxWaitingTime 秒才开始加油，从而减少加油机 0 的等待时间
+			// 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
 			if wait1 <= maxWaitingTime && d <= fuel1 &&
-				dfs(i+1, max(wait0-maxWaitingTime, 0), d, fuel0, fuel1-d) {
+				dfs(i+1, max(wait0-wait1, 0), d, fuel0, fuel1-d) {
 				return true
 			}
 
@@ -271,12 +239,12 @@ class Solution:
 
                 # 跟在车 i-1 后面加油
                 if wait0 <= max_waiting_time and d <= fuel0 and \
-                        dfs(i + 1, max(wait1 - max_waiting_time, 0), fuel0 - d, fuel1):
+                        dfs(i + 1, max(wait1 - wait0, 0), fuel0 - d, fuel1):
                     return True
 
                 # 不跟在车 i-1 后面加油
                 if wait1 <= max_waiting_time and d <= fuel1 and \
-                        dfs(i + 1, max(wait0 - max_waiting_time, 0), fuel1 - d, fuel0):  # 注意这里交换了 fuel0 和 fuel1
+                        dfs(i + 1, max(wait0 - wait1, 0), fuel1 - d, fuel0):  # 注意这里交换了 fuel0 和 fuel1
                     return True
 
                 return False
@@ -347,13 +315,13 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 
 			// 跟在车 i-1 后面加油
 			if wait0 <= maxWaitingTime && d <= fuel0 &&
-				dfs(i+1, max(wait1-maxWaitingTime, 0), fuel0-d, fuel1) {
+				dfs(i+1, max(wait1-wait0, 0), fuel0-d, fuel1) {
 				return true
 			}
 
 			// 不跟在车 i-1 后面加油
 			if wait1 <= maxWaitingTime && d <= fuel1 &&
-				dfs(i+1, max(wait0-maxWaitingTime, 0), fuel1-d, fuel0) { // 注意这里交换了 fuel0 和 fuel1
+				dfs(i+1, max(wait0-wait1, 0), fuel1-d, fuel0) { // 注意这里交换了 fuel0 和 fuel1
 				return true
 			}
 

@@ -61,15 +61,15 @@ func minMaxWaitingTime1(demand []int, fuel []int) int {
 
 			d := demand[i]
 
-			// 选择加油机 0，空等 maxWaitingTime 秒才开始加油，从而减少加油机 1 的等待时间
+			// 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
 			if wait0 <= maxWaitingTime && d <= fuel0 &&
-				dfs(i+1, d, max(wait1-maxWaitingTime, 0), fuel0-d, fuel1) {
+				dfs(i+1, d, max(wait1-wait0, 0), fuel0-d, fuel1) {
 				return true
 			}
 
-			// 选择加油机 1，空等 maxWaitingTime 秒才开始加油，从而减少加油机 0 的等待时间
+			// 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
 			if wait1 <= maxWaitingTime && d <= fuel1 &&
-				dfs(i+1, max(wait0-maxWaitingTime, 0), d, fuel0, fuel1-d) {
+				dfs(i+1, max(wait0-wait1, 0), d, fuel0, fuel1-d) {
 				return true
 			}
 
@@ -140,13 +140,13 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 
 			// 跟在车 i-1 后面加油
 			if wait0 <= maxWaitingTime && d <= fuel0 &&
-				dfs(i+1, max(wait1-maxWaitingTime, 0), fuel0-d, fuel1) {
+				dfs(i+1, max(wait1-wait0, 0), fuel0-d, fuel1) {
 				return true
 			}
 
 			// 不跟在车 i-1 后面加油
 			if wait1 <= maxWaitingTime && d <= fuel1 &&
-				dfs(i+1, max(wait0-maxWaitingTime, 0), fuel1-d, fuel0) { // 注意这里交换了 fuel0 和 fuel1
+				dfs(i+1, max(wait0-wait1, 0), fuel1-d, fuel0) { // 注意这里交换了 fuel0 和 fuel1
 				return true
 			}
 
