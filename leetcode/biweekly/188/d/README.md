@@ -6,7 +6,7 @@
 - 去加油机 0 加油还要等多久，去加油机 1 加油还要等多久。
 - 两个加油机的剩余燃料量。
 
-写一个记忆化搜索，定义 $\textit{dfs}(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 表示从车 $i$ 开始服务，两个加油机的等待时间和的剩余燃料量为 $\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1$ 的前提下，最多能服务的车辆数，以及所有被服务车辆中最大等待时间的最小可能值。
+写一个记忆化搜索，定义 $\textit{dfs}(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 表示从车 $i$ 开始服务，两个加油机的等待时间以及剩余燃料量为 $\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1$ 的前提下，最多能服务的车辆数，以及所有被服务车辆中最大等待时间的最小可能值。
 
 设 $d = \textit{demand}[i]$，枚举选哪个：
 
