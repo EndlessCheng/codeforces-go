@@ -1,12 +1,218 @@
+## 方法一：多维 DP
 
+在递归过程中，我们需要知道：
 
-## 核心思路
+- 当前在处理哪辆车。
+- 去加油机 0 加油还要等多久，去加油机 1 加油还要等多久。
+- 两个加油机的剩余燃料量。
+
+写一个记忆化搜索，定义 $\textit{dfs}(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 表示从车 $i$ 开始服务，两个加油机的等待时间和的剩余燃料量为 $\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1$ 的前提下，最多能服务的车辆数，以及所有被服务车辆中最大等待时间的最小可能值。
+
+设 $d = \textit{demand}[i]$，枚举选哪个：
+
+- 车 $i$ 选择加油机 0，前提是 $d \le \textit{fuel}_0$。
+  - 车 $i$ 要等 $\textit{wait}_0$ 秒才能开始加油。
+  - 因为时间流逝了 $\textit{wait}_0$ 秒，加油机 1 变成在 $\max(\textit{wait}_1 - \textit{wait}_0,0)$ 秒后空闲。
+  - 递归到 $\textit{dfs}(i,d,\max(\textit{wait}_1 - \textit{wait}_0,0),\textit{fuel}_0-d,\textit{fuel}_1)$。
+- 车 $i$ 选择加油机 1，前提是 $d \le \textit{fuel}_1$。
+  - 车 $i$ 要等 $\textit{wait}_1$ 秒才能开始加油。
+  - 因为时间流逝了 $\textit{wait}_1$ 秒，加油机 0 变成在 $\max(\textit{wait}_0 - \textit{wait}_1,0)$ 秒后空闲。
+  - 递归到 $\textit{dfs}(i,\max(\textit{wait}_0 - \textit{wait}_1,0),d,\textit{fuel}_0,\textit{fuel}_1-d)$。
+
+递归边界：$i=n$ 时返回 $(0,0)$。没有可服务的车。
+
+递归入口：$\textit{dfs}(0,0,0,\textit{fuel}[0],\textit{fuel}[1])$。
+
+如果最多能服务的车辆数为 $0$，返回 $-1$。
+
+```py [sol-Python3]
+class Solution:
+    def minMaxWaitingTime(self, demand: list[int], fuel: list[int]) -> int:
+        # 加油机 0 在 wait0 秒后空闲，剩余燃料量 fuel0
+        # 加油机 1 在 wait1 秒后空闲，剩余燃料量 fuel1
+        @cache
+        def dfs(i: int, wait0: int, wait1: int, fuel0: int, fuel1: int) -> tuple[int, int]:
+            if i == len(demand):
+                return 0, 0
+
+            res = (0, 0)  # (-最大服务车辆数, 最大等待时间的最小值)
+            d = demand[i]
+
+            # 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
+            if d <= fuel0:
+                num, wait = dfs(i + 1, d, max(wait1 - wait0, 0), fuel0 - d, fuel1)
+                res = (num - 1, max(wait, wait0))
+
+            # 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
+            if d <= fuel1:
+                num, wait = dfs(i + 1, max(wait0 - wait1, 0), d, fuel0, fuel1 - d)
+                res = min(res, (num - 1, max(wait, wait1)))
+
+            return res
+
+        max_num, best_wait = dfs(0, 0, 0, fuel[0], fuel[1])
+        return best_wait if max_num else -1
+```
+
+```go [sol-Go]
+func minMaxWaitingTime(demand []int, fuel []int) int {
+	type pair struct{ maxNum, bestWaitTime int }
+	type args struct{ i, wait0, wait1, fuel0, fuel1 int }
+	memo := map[args]pair{}
+
+	// 加油机 0 在 wait0 秒后空闲，剩余燃料量 fuel0
+	// 加油机 1 在 wait1 秒后空闲，剩余燃料量 fuel1
+	var dfs func(int, int, int, int, int) pair
+	dfs = func(i, wait0, wait1, fuel0, fuel1 int) pair {
+		if i == len(demand) {
+			return pair{}
+		}
+
+		key := args{i, wait0, wait1, fuel0, fuel1}
+		if p, ok := memo[key]; ok {
+			return p
+		}
+
+		maxNum, bestWaitTime := 0, 0
+		d := demand[i]
+
+		// 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
+		if d <= fuel0 {
+			p := dfs(i+1, d, max(wait1-wait0, 0), fuel0-d, fuel1)
+			maxNum = p.maxNum + 1
+			bestWaitTime = max(p.bestWaitTime, wait0)
+		}
+
+		// 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
+		if d <= fuel1 {
+			p := dfs(i+1, max(wait0-wait1, 0), d, fuel0, fuel1-d)
+			num := p.maxNum + 1
+			time := max(p.bestWaitTime, wait1)
+			if num > maxNum || num == maxNum && time < bestWaitTime {
+				maxNum, bestWaitTime = num, time
+			}
+		}
+
+		res := pair{maxNum, bestWaitTime}
+		memo[key] = res
+		return res
+	}
+
+	ans := dfs(0, 0, 0, fuel[0], fuel[1])
+	if ans.maxNum == 0 {
+		return -1
+	}
+	return ans.bestWaitTime
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nU^2F)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \min(\textit{fuel})$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上 DP 是四维的。
+- 空间复杂度：$\mathcal{O}(nU^2F)$。
+
+### 状态优化
+
+由于其中一个 $\textit{wait}_{i}$ 始终是 $d$，所以只需要保留另一个 $\textit{wait}_i$。
+
+这个优化技巧类似 [1320. 二指输入的的最小距离](https://leetcode.cn/problems/minimum-distance-to-type-a-word-using-two-fingers/)，推荐先把那题做了，并阅读 [我的题解](https://leetcode.cn/problems/minimum-distance-to-type-a-word-using-two-fingers/solutions/3946229/jiao-ni-yi-bu-bu-si-kao-dpji-yi-hua-sou-d9vls/)。
+
+```py [sol-Python3]
+class Solution:
+    def minMaxWaitingTime(self, demand: list[int], fuel: list[int]) -> int:
+        @cache
+        def dfs(i: int, wait1: int, fuel0: int, fuel1: int) -> tuple[int, int]:
+            if i == len(demand):
+                return 0, 0
+
+            res = (0, 0)  # (-最大服务车辆数, 最大等待时间的最小值)
+            wait0 = demand[i - 1] if i else 0
+            d = demand[i]
+
+            # 跟在车 i-1 后面加油
+            if d <= fuel0:
+                num, wait = dfs(i + 1, max(wait1 - wait0, 0), fuel0 - d, fuel1)
+                res = (num - 1, max(wait, wait0))
+
+            # 不跟在车 i-1 后面加油
+            if d <= fuel1:
+                num, wait = dfs(i + 1, max(wait0 - wait1, 0), fuel1 - d, fuel0)  # 注意这里交换了 fuel0 和 fuel1
+                res = min(res, (num - 1, max(wait, wait1)))
+
+            return res
+
+        max_num, best_wait = dfs(0, 0, fuel[0], fuel[1])
+        return best_wait if max_num else -1
+```
+
+```go [sol-Go]
+func minMaxWaitingTime(demand []int, fuel []int) int {
+	type pair struct{ maxNum, bestWaitTime int }
+	type args struct{ i, wait1, fuel0, fuel1 int }
+	memo := map[args]pair{}
+
+	var dfs func(int, int, int, int) pair
+	dfs = func(i, wait1, fuel0, fuel1 int) pair {
+		if i == len(demand) {
+			return pair{}
+		}
+
+		key := args{i, wait1, fuel0, fuel1}
+		if p, ok := memo[key]; ok {
+			return p
+		}
+
+		maxNum, bestWaitTime := 0, 0
+		wait0 := 0
+		if i > 0 {
+			wait0 = demand[i-1]
+		}
+		d := demand[i]
+
+		// 跟在车 i-1 后面加油
+		if d <= fuel0 {
+			p := dfs(i+1, max(wait1-wait0, 0), fuel0-d, fuel1)
+			maxNum = p.maxNum + 1
+			bestWaitTime = max(p.bestWaitTime, wait0)
+		}
+
+		// 不跟在车 i-1 后面加油
+		if d <= fuel1 {
+			p := dfs(i+1, max(wait0-wait1, 0), fuel1-d, fuel0) // 注意这里交换了 fuel0 和 fuel1
+			num := p.maxNum + 1
+			time := max(p.bestWaitTime, wait1)
+			if num > maxNum || num == maxNum && time < bestWaitTime {
+				maxNum, bestWaitTime = num, time
+			}
+		}
+
+		res := pair{maxNum, bestWaitTime}
+		memo[key] = res
+		return res
+	}
+
+	ans := dfs(0, 0, fuel[0], fuel[1])
+	if ans.maxNum == 0 {
+		return -1
+	}
+	return ans.bestWaitTime
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nUF)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \max(\textit{fuel})$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上 DP 是三维的。
+- 空间复杂度：$\mathcal{O}(nUF)$。
+
+## 方法二：二分答案 + DFS
+
+### 核心思路
 
 1. 求出最多能服务的车辆数 $\textit{maxCars}$。
 2. 二分最大等待时间 $m$。
 3. 判断在最大等待时间为 $m$ 的情况下，能否服务 $\textit{maxCars}$ 辆车。
 
-## 最多能服务的车辆数
+### 最多能服务的车辆数
 
 写一个记忆化搜索，定义 $\textit{dfs}(i,\textit{fuel}_0,\textit{fuel}_1)$ 表示从车 $i$ 开始服务，两个加油机的剩余燃料量分别为 $\textit{fuel}_0$ 和 $\textit{fuel}_1$ 的前提下，最多能服务的车辆数。
 
@@ -23,7 +229,7 @@
 
 如果 $\textit{maxCars} = 0$，返回 $-1$。
 
-## 二分答案
+### 二分答案
 
 设车辆等待时间的上限为 $m$。
 
@@ -46,7 +252,7 @@
 
 > 对于开区间写法，简单来说 `check(mid) == true` 时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
 
-## 能否在 m 的约束下服务 maxCars 辆车
+### 能否在 m 的约束下服务 maxCars 辆车
 
 在前一个 $\textit{dfs}$ 的基础上，额外增加两个参数：
 
@@ -59,8 +265,8 @@
     - 车 $i$ 要等 $\textit{wait}_0$ 秒才能开始加油，所以要满足 $\textit{wait}_0\le m$（以及 $d \le \textit{fuel}_0$）。
     - 因为时间流逝了 $\textit{wait}_0$ 秒，加油机 1 变成在 $\max(\textit{wait}_1 - \textit{wait}_0,0)$ 秒后空闲。
     - 从状态 $(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 移动到状态 $(i,d,\max(\textit{wait}_1 - \textit{wait}_0,0),\textit{fuel}_0-d,\textit{fuel}_1)$。
-- 车 $i$ 选择加油机 0。
-    - 车 $i$ 要等 $\textit{wait}_1$ 秒才能开始加油，所以要满足 $\textit{wait}_1\le m$（以及 $\textit{demand}[i]\le \textit{fuel}_1$）。
+- 车 $i$ 选择加油机 1。
+    - 车 $i$ 要等 $\textit{wait}_1$ 秒才能开始加油，所以要满足 $\textit{wait}_1\le m$（以及 $d\le \textit{fuel}_1$）。
     - 因为时间流逝了 $\textit{wait}_1$ 秒，加油机 0 变成在 $\max(\textit{wait}_0 - \textit{wait}_1,0)$ 秒后空闲。
     - 从状态 $(i,\textit{wait}_0,\textit{wait}_1,\textit{fuel}_0,\textit{fuel}_1)$ 移动到状态 $(i,\max(\textit{wait}_0 - \textit{wait}_1,0),d,\textit{fuel}_0,\textit{fuel}_1-d)$。
 
@@ -128,7 +334,7 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 	var calcMaxCars func(int, int, int) int
 	calcMaxCars = func(i, fuel0, fuel1 int) (res int) {
 		if i == len(demand) {
-			return
+			return 0
 		}
 
 		args := fuelArgs{i, fuel0, fuel1}
@@ -145,7 +351,7 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 		}
 
 		memo[args] = res
-		return res
+		return
 	}
 
 	maxCars := calcMaxCars(0, fuel[0], fuel[1])
@@ -198,10 +404,12 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 
 #### 复杂度分析
 
+虽然时间复杂度比方法一更高，但由于第二个递归函数可以提前退出，所以实际运行时间比方法一少。
+
 - 时间复杂度：$\mathcal{O}(nU^2F\log U)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \min(\textit{fuel})$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上第二个递归函数是四维的。
 - 空间复杂度：$\mathcal{O}(nU^2F)$。
 
-## 状态优化
+### 状态优化
 
 由于其中一个 $\textit{wait}_{i}$ 始终是 $d$，所以只需要保留另一个 $\textit{wait}_i$。
 
@@ -264,7 +472,7 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 	var calcMaxCars func(int, int, int) int
 	calcMaxCars = func(i, fuel0, fuel1 int) (res int) {
 		if i == len(demand) {
-			return
+			return 0
 		}
 
 		args := fuelArgs{i, fuel0, fuel1}
@@ -281,7 +489,7 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 		}
 
 		memo[args] = res
-		return res
+		return
 	}
 
 	maxCars := calcMaxCars(0, fuel[0], fuel[1])
@@ -335,6 +543,8 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 ```
 
 #### 复杂度分析
+
+虽然时间复杂度比方法一更高，但由于第二个递归函数可以提前退出，所以实际运行时间比方法一少。
 
 - 时间复杂度：$\mathcal{O}(nUF\log U)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \max(\textit{fuel})$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上第二个递归函数是三维的。
 - 空间复杂度：$\mathcal{O}(nUF)$。
