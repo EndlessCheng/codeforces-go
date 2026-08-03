@@ -54,6 +54,108 @@ class Solution:
         return best_wait if max_num else -1
 ```
 
+```java [sol-Java]
+class Solution {
+    public int minMaxWaitingTime(int[] demand, int[] fuel) {
+        Map<Integer, int[]> memo = new HashMap<>();
+        int[] ans = dfs(0, 0, 0, fuel[0], fuel[1], demand, memo);
+        return ans[0] == 0 ? -1 : ans[1];
+    }
+
+    // 加油机 0 在 wait0 秒后空闲，剩余燃料量 fuel0
+    // 加油机 1 在 wait1 秒后空闲，剩余燃料量 fuel1
+    private int[] dfs(int i, int wait0, int wait1, int fuel0, int fuel1, int[] demand, Map<Integer, int[]> memo) {
+        if (i == demand.length) {
+            return new int[]{0, 0};
+        }
+
+        int key = i << 24 | wait0 << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+        int[] v = memo.get(key);
+        if (v != null) {
+            return v;
+        }
+
+        int maxNum = 0;
+        int bestWaitTime = 0;
+        int d = demand[i];
+
+        // 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
+        if (d <= fuel0) {
+            int[] res = dfs(i + 1, d, Math.max(wait1 - wait0, 0), fuel0 - d, fuel1, demand, memo);
+            maxNum = res[0] + 1;
+            bestWaitTime = Math.max(res[1], wait0);
+        }
+
+        // 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
+        if (d <= fuel1) {
+            int[] res = dfs(i + 1, Math.max(wait0 - wait1, 0), d, fuel0, fuel1 - d, demand, memo);
+            int num = res[0] + 1;
+            int time = Math.max(res[1], wait1);
+            if (num > maxNum || num == maxNum && time < bestWaitTime) {
+                maxNum = num;
+                bestWaitTime = time;
+            }
+        }
+
+        int[] res = new int[]{maxNum, bestWaitTime};
+        memo.put(key, res);
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minMaxWaitingTime(vector<int>& demand, vector<int>& fuel) {
+        unordered_map<int, pair<int, int>> memo;
+
+        // 加油机 0 在 wait0 秒后空闲，剩余燃料量 fuel0
+        // 加油机 1 在 wait1 秒后空闲，剩余燃料量 fuel1
+        auto dfs = [&](this auto&& dfs, int i, int wait0, int wait1, int fuel0, int fuel1) -> pair<int, int> {
+            if (i == demand.size()) {
+                return {};
+            }
+
+            int key = i << 24 | wait0 << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+            if (memo.contains(key)) {
+                return memo[key];
+            }
+
+            int max_num = 0;
+            int best_wait_time = 0;
+            int d = demand[i];
+
+            // 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
+            if (d <= fuel0) {
+                auto [num, time] = dfs(i + 1, d, max(wait1 - wait0, 0), fuel0 - d, fuel1);
+                max_num = num + 1;
+                best_wait_time = max(time, wait0);
+            }
+
+            // 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
+            if (d <= fuel1) {
+                auto [num, time] = dfs(i + 1, max(wait0 - wait1, 0), d, fuel0, fuel1 - d);
+                num++;
+                time = max(time, wait1);
+                if (num > max_num || num == max_num && time < best_wait_time) {
+                    max_num = num;
+                    best_wait_time = time;
+                }
+            }
+
+            return memo[key] = {max_num, best_wait_time};
+        };
+
+        auto [max_num, best_wait_time] = dfs(0, 0, 0, fuel[0], fuel[1]);
+        if (max_num == 0) {
+            return -1;
+        }
+        return best_wait_time;
+    }
+};
+```
+
 ```go [sol-Go]
 func minMaxWaitingTime(demand []int, fuel []int) int {
 	type pair struct{ maxNum, bestWaitTime int }
@@ -145,6 +247,106 @@ class Solution:
         return best_wait if max_num else -1
 ```
 
+```java [sol-Java]
+class Solution {
+    public int minMaxWaitingTime(int[] demand, int[] fuel) {
+        Map<Integer, int[]> memo = new HashMap<>();
+        int[] ans = dfs(0, 0, fuel[0], fuel[1], demand, memo);
+        return ans[0] == 0 ? -1 : ans[1];
+    }
+
+    private int[] dfs(int i, int wait1, int fuel0, int fuel1, int[] demand, Map<Integer, int[]> memo) {
+        if (i == demand.length) {
+            return new int[]{0, 0};
+        }
+
+        int key = i << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+        int[] v = memo.get(key);
+        if (v != null) {
+            return v;
+        }
+
+        int maxNum = 0;
+        int bestWaitTime = 0;
+        int wait0 = i > 0 ? demand[i - 1] : 0;
+        int d = demand[i];
+
+        // 跟在车 i-1 后面加油
+        if (d <= fuel0) {
+            int[] res = dfs(i + 1, Math.max(wait1 - wait0, 0), fuel0 - d, fuel1, demand, memo);
+            maxNum = res[0] + 1;
+            bestWaitTime = Math.max(res[1], wait0);
+        }
+
+        // 不跟在车 i-1 后面加油
+        if (d <= fuel1) {
+            int[] res = dfs(i + 1, Math.max(wait0 - wait1, 0), fuel1 - d, fuel0, demand, memo); // 注意这里交换了 fuel0 和 fuel1
+            int num = res[0] + 1;
+            int time = Math.max(res[1], wait1);
+            if (num > maxNum || num == maxNum && time < bestWaitTime) {
+                maxNum = num;
+                bestWaitTime = time;
+            }
+        }
+
+        int[] res = new int[]{maxNum, bestWaitTime};
+        memo.put(key, res);
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minMaxWaitingTime(vector<int>& demand, vector<int>& fuel) {
+        unordered_map<int, pair<int, int>> memo;
+
+        auto dfs = [&](this auto&& dfs, int i, int wait1, int fuel0, int fuel1) -> pair<int, int> {
+            if (i == demand.size()) {
+                return {};
+            }
+
+            int key = i << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+            if (memo.contains(key)) {
+                return memo[key];
+            }
+
+            int max_num = 0;
+            int best_wait_time = 0;
+            int wait0 = i ? demand[i - 1] : 0;
+            int d = demand[i];
+
+            // 跟在车 i-1 后面加油
+            if (d <= fuel0) {
+                auto [num, time] = dfs(i + 1, max(wait1 - wait0, 0), fuel0 - d, fuel1);
+                max_num = num + 1;
+                best_wait_time = max(time, wait0);
+            }
+
+            // 不跟在车 i-1 后面加油
+            if (d <= fuel1) {
+                auto [num, time] = dfs(i + 1, max(wait0 - wait1, 0), fuel1 - d, fuel0); // 注意这里交换了 fuel0 和 fuel1
+                num++;
+                time = max(time, wait1);
+                if (num > max_num || num == max_num && time < best_wait_time) {
+                    max_num = num;
+                    best_wait_time = time;
+                }
+            }
+
+            return memo[key] = {max_num, best_wait_time};
+        };
+
+        auto [max_num, best_wait_time] = dfs(0, 0, fuel[0], fuel[1]);
+        if (max_num == 0) {
+            return -1;
+        }
+        return best_wait_time;
+    }
+};
+```
+
 ```go [sol-Go]
 func minMaxWaitingTime(demand []int, fuel []int) int {
 	type pair struct{ maxNum, bestWaitTime int }
@@ -204,7 +406,7 @@ func minMaxWaitingTime(demand []int, fuel []int) int {
 - 时间复杂度：$\mathcal{O}(nUF)$，其中 $n$ 是 $\textit{demand}$ 的长度，$U=\max(\textit{demand})$，$F = \max(\textit{fuel})$。由于车 $[0,i-1]$ 消耗的燃料量是固定的，知道 $i$ 和 $\textit{fuel}_0$ 可以直接算出 $\textit{fuel}_1$，所以实际上 DP 是三维的。
 - 空间复杂度：$\mathcal{O}(nUF)$。
 
-## 方法二：二分答案 + DFS
+## 方法二：二分答案 + DFS 搜索
 
 ### 核心思路
 
@@ -323,6 +525,168 @@ class Solution:
 
         # 2. 二分最大等待时间
         return bisect_left(range(max(demand)), True, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minMaxWaitingTime(int[] demand, int[] fuel) {
+        // 1. 求出最多能服务的车辆数 maxCars
+        HashMap<Integer, Integer> memo = new HashMap<>();
+        int maxCars = calcMaxCars(0, fuel[0], fuel[1], demand, memo);
+        if (maxCars == 0) {
+            return -1;
+        }
+
+        // 2. 二分最大等待时间
+        int left = -1;
+        int right = Arrays.stream(demand).max().getAsInt();
+        while (left + 1 < right) {
+            int maxWaitingTime = left + (right - left) / 2;
+            // 3. 判断在最大等待时间 <= maxWaitingTime 的约束下，能否服务 maxCars 辆车
+            HashSet<Integer> vis = new HashSet<>();
+            if (dfs(0, 0, 0, fuel[0], fuel[1], demand, vis, maxCars, maxWaitingTime)) {
+                right = maxWaitingTime;
+            } else {
+                left = maxWaitingTime;
+            }
+        }
+        return right;
+    }
+
+    private int calcMaxCars(int i, int fuel0, int fuel1, int[] demand, HashMap<Integer, Integer> memo) {
+        if (i == demand.length) {
+            return 0;
+        }
+
+        int key = i << 12 | fuel0 << 6 | fuel1;
+        Integer v = memo.get(key);
+        if (v != null) {
+            return v;
+        }
+
+        int res = 0;
+        int d = demand[i];
+        if (d <= fuel0) {
+            res = calcMaxCars(i + 1, fuel0 - d, fuel1, demand, memo) + 1;
+        }
+        if (d <= fuel1) {
+            res = Math.max(res, calcMaxCars(i + 1, fuel0, fuel1 - d, demand, memo) + 1);
+        }
+
+        memo.put(key, res);
+        return res;
+    }
+
+    // 加油机 0 在 wait0 秒后空闲，剩余燃料量 fuel0
+    // 加油机 1 在 wait1 秒后空闲，剩余燃料量 fuel1
+    private boolean dfs(int i, int wait0, int wait1, int fuel0, int fuel1, int[] demand, HashSet<Integer> vis, int maxCars, int maxWaitingTime) {
+        if (i == maxCars) {
+            return true;
+        }
+
+        int key = i << 24 | wait0 << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+        if (!vis.add(key)) {
+            return false;
+        }
+
+        int d = demand[i];
+
+        // 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
+        if (wait0 <= maxWaitingTime && d <= fuel0 &&
+            dfs(i + 1, d, Math.max(wait1 - wait0, 0), fuel0 - d, fuel1, demand, vis, maxCars, maxWaitingTime)) {
+            return true;
+        }
+
+        // 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
+        if (wait1 <= maxWaitingTime && d <= fuel1 &&
+            dfs(i + 1, Math.max(wait0 - wait1, 0), d, fuel0, fuel1 - d, demand, vis, maxCars, maxWaitingTime)) {
+            return true;
+        }
+
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minMaxWaitingTime(vector<int>& demand, vector<int>& fuel) {
+        // 1. 求出最多能服务的车辆数 max_cars
+        unordered_map<int, int> memo;
+
+        auto calc_max_cars = [&](this auto&& calc_max_cars, int i, int fuel0, int fuel1) -> int {
+            if (i == demand.size()) {
+                return 0;
+            }
+
+            int key = i << 12 | fuel0 << 6 | fuel1;
+            if (memo.contains(key)) {
+                return memo[key];
+            }
+
+            int res = 0;
+            int d = demand[i];
+            if (d <= fuel0) {
+                res = calc_max_cars(i + 1, fuel0 - d, fuel1) + 1;
+            }
+            if (d <= fuel1) {
+                res = max(res, calc_max_cars(i + 1, fuel0, fuel1 - d) + 1);
+            }
+
+            memo[key] = res;
+            return res;
+        };
+
+        int max_cars = calc_max_cars(0, fuel[0], fuel[1]);
+        if (max_cars == 0) {
+            return -1;
+        }
+
+        // 2. 二分最大等待时间
+        int left = -1;
+        int right = ranges::max(demand);
+        while (left + 1 < right) {
+            int max_waiting_time = left + (right - left) / 2;
+
+            // 3. 判断在最大等待时间 <= max_waiting_time 的约束下，能否服务 max_cars 辆车
+            unordered_set<int> vis;
+
+            // 加油机 0 在 wait0 秒后空闲，剩余燃料量 fuel0
+            // 加油机 1 在 wait1 秒后空闲，剩余燃料量 fuel1
+            auto dfs = [&](this auto&& dfs, int i, int wait0, int wait1, int fuel0, int fuel1) -> bool {
+                if (i == max_cars) {
+                    return true;
+                }
+
+                int key = i << 24 | wait0 << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+                if (!vis.insert(key).second) {
+                    return false;
+                }
+
+                int d = demand[i];
+
+                // 选择加油机 0，等 wait0 秒开始加油，加油机 1 的等待时间减少 wait0 秒
+                if (wait0 <= max_waiting_time && d <= fuel0 &&
+                    dfs(i + 1, d, max(wait1 - wait0, 0), fuel0 - d, fuel1)) {
+                    return true;
+                }
+
+                // 选择加油机 1，等 wait1 秒开始加油，加油机 0 的等待时间减少 wait1 秒
+                if (wait1 <= max_waiting_time && d <= fuel1 &&
+                    dfs(i + 1, max(wait0 - wait1, 0), d, fuel0, fuel1 - d)) {
+                    return true;
+                }
+
+                return false;
+            };
+
+            (dfs(0, 0, 0, fuel[0], fuel[1]) ? right : left) = max_waiting_time;
+        }
+
+        return right;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -461,6 +825,167 @@ class Solution:
 
         # 2. 二分最大等待时间
         return bisect_left(range(max(demand)), True, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minMaxWaitingTime(int[] demand, int[] fuel) {
+        // 1. 求出最多能服务的车辆数 maxCars
+        HashMap<Integer, Integer> memo = new HashMap<>();
+        int maxCars = calcMaxCars(0, fuel[0], fuel[1], demand, memo);
+        if (maxCars == 0) {
+            return -1;
+        }
+
+        // 2. 二分最大等待时间
+        int left = -1;
+        int right = Arrays.stream(demand).max().getAsInt();
+        while (left + 1 < right) {
+            int maxWaitingTime = left + (right - left) / 2;
+            // 3. 判断在最大等待时间 <= maxWaitingTime 的约束下，能否服务 maxCars 辆车
+            HashSet<Integer> vis = new HashSet<>();
+            if (dfs(0, 0, fuel[0], fuel[1], demand, vis, maxCars, maxWaitingTime)) {
+                right = maxWaitingTime;
+            } else {
+                left = maxWaitingTime;
+            }
+        }
+        return right;
+    }
+
+    private int calcMaxCars(int i, int fuel0, int fuel1, int[] demand, HashMap<Integer, Integer> memo) {
+        if (i == demand.length) {
+            return 0;
+        }
+
+        int key = i << 12 | fuel0 << 6 | fuel1;
+        Integer v = memo.get(key);
+        if (v != null) {
+            return v;
+        }
+
+        int res = 0;
+        int d = demand[i];
+        if (d <= fuel0) {
+            res = calcMaxCars(i + 1, fuel0 - d, fuel1, demand, memo) + 1;
+        }
+        if (d <= fuel1) {
+            res = Math.max(res, calcMaxCars(i + 1, fuel0, fuel1 - d, demand, memo) + 1);
+        }
+
+        memo.put(key, res);
+        return res;
+    }
+
+    private boolean dfs(int i, int wait1, int fuel0, int fuel1, int[] demand, HashSet<Integer> vis, int maxCars, int maxWaitingTime) {
+        if (i == maxCars) {
+            return true;
+        }
+
+        int key = i << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+        if (!vis.add(key)) {
+            return false;
+        }
+
+        int wait0 = i > 0 ? demand[i - 1] : 0;
+        int d = demand[i];
+
+        // 跟在车 i-1 后面加油
+        if (wait0 <= maxWaitingTime && d <= fuel0 &&
+            dfs(i + 1, Math.max(wait1 - wait0, 0), fuel0 - d, fuel1, demand, vis, maxCars, maxWaitingTime)) {
+            return true;
+        }
+
+        // 不跟在车 i-1 后面加油
+        // 注意这里 dfs 交换了 fuel0 和 fuel1
+        if (wait1 <= maxWaitingTime && d <= fuel1 &&
+            dfs(i + 1, Math.max(wait0 - wait1, 0), fuel1 - d, fuel0, demand, vis, maxCars, maxWaitingTime)) {
+            return true;
+        }
+
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minMaxWaitingTime(vector<int>& demand, vector<int>& fuel) {
+        // 1. 求出最多能服务的车辆数 max_cars
+        unordered_map<int, int> memo;
+
+        auto calc_max_cars = [&](this auto&& calc_max_cars, int i, int fuel0, int fuel1) -> int {
+            if (i == demand.size()) {
+                return 0;
+            }
+
+            int key = i << 12 | fuel0 << 6 | fuel1;
+            if (memo.contains(key)) {
+                return memo[key];
+            }
+
+            int res = 0;
+            int d = demand[i];
+            if (d <= fuel0) {
+                res = calc_max_cars(i + 1, fuel0 - d, fuel1) + 1;
+            }
+            if (d <= fuel1) {
+                res = max(res, calc_max_cars(i + 1, fuel0, fuel1 - d) + 1);
+            }
+
+            memo[key] = res;
+            return res;
+        };
+
+        int max_cars = calc_max_cars(0, fuel[0], fuel[1]);
+        if (max_cars == 0) {
+            return -1;
+        }
+
+        // 2. 二分最大等待时间
+        int left = -1;
+        int right = ranges::max(demand);
+        while (left + 1 < right) {
+            int max_waiting_time = left + (right - left) / 2;
+
+            // 3. 判断在最大等待时间 <= max_waiting_time 的约束下，能否服务 max_cars 辆车
+            unordered_set<int> vis;
+
+            auto dfs = [&](this auto&& dfs, int i, int wait1, int fuel0, int fuel1) -> bool {
+                if (i == max_cars) {
+                    return true;
+                }
+
+                int key = i << 18 | wait1 << 12 | fuel0 << 6 | fuel1;
+                if (!vis.insert(key).second) {
+                    return false;
+                }
+
+                int wait0 = i ? demand[i - 1] : 0;
+                int d = demand[i];
+
+                // 跟在车 i-1 后面加油
+                if (wait0 <= max_waiting_time && d <= fuel0 &&
+                    dfs(i + 1, max(wait1 - wait0, 0), fuel0 - d, fuel1)) {
+                    return true;
+                }
+
+                // 不跟在车 i-1 后面加油
+                if (wait1 <= max_waiting_time && d <= fuel1 &&
+                    dfs(i + 1, max(wait0 - wait1, 0), fuel1 - d, fuel0)) { // 注意这里交换了 fuel0 和 fuel1
+                    return true;
+                }
+
+                return false;
+            };
+
+            (dfs(0, 0, fuel[0], fuel[1]) ? right : left) = max_waiting_time;
+        }
+
+        return right;
+    }
+};
 ```
 
 ```go [sol-Go]
