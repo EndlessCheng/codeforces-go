@@ -5,23 +5,25 @@ import "bytes"
 // https://space.bilibili.com/206214
 func removeDuplicates(s string, k int) string {
 	type pair struct {
-		b byte
-		c int
+		ch  byte
+		cnt int
 	}
-	st := []pair{{}}
-	for i := range s {
-		b := s[i]
-		if st[len(st)-1].b == b && st[len(st)-1].c == k-1 {
-			st = st[:len(st)-1]
-		} else if st[len(st)-1].b == b {
-			st[len(st)-1].c++
-		} else {
-			st = append(st, pair{b, 1})
+	st := []pair{{}} // 加个哨兵，无需判断栈是否为空
+
+	for _, ch := range s {
+		m := len(st)
+		if st[m-1].ch != byte(ch) { // ch 与栈顶字母不同
+			st = append(st, pair{byte(ch), 1}) // 创建一个新的 pair，计数器从 1 开始
+		} else if st[m-1].cnt == k-1 { // 连续 k 个相同字母
+			st = st[:m-1] // 消除
+		} else { // 相同但无法消除
+			st[m-1].cnt++ // 只需把计数器增加 1
 		}
 	}
+
 	ans := []byte{}
 	for _, p := range st {
-		ans = append(ans, bytes.Repeat([]byte{p.b}, p.c)...)
+		ans = append(ans, bytes.Repeat([]byte{p.ch}, p.cnt)...)
 	}
 	return string(ans)
 }
