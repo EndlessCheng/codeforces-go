@@ -2,45 +2,24 @@ package main
 
 import "strings"
 
-func minRemoveToMakeValid(ss string) string {
-	s := []byte(ss)
-	//n := len(ss)
-	//cnt := 0
-	//diff := strings.Count(ss, "(") - strings.Count(ss, ")")
-	//if diff >= 0 {
-	pos := []int{}
-	for i, c := range s {
-		if c == '(' {
-			//cnt++
-			pos = append(pos, i)
-		} else if c == ')' {
-			//cnt--
-			if len(pos) <= 0 {
-				s[i] = ' '
+func minRemoveToMakeValid(s string) string {
+	t := []byte(s)
+	st := []int{}
+
+	for i, ch := range t {
+		if ch == '(' {
+			st = append(st, i) // 记录左括号的下标
+		} else if ch == ')' {
+			if len(st) > 0 {
+				st = st[:len(st)-1] // 左右括号匹配
 			} else {
-				pos = pos[:len(pos)-1]
+				t[i] = '-' // 右括号没有与之匹配的左括号，标记为移除
 			}
-			//if cnt < 0 {
-			//	s[i] = ' '
-			//}
 		}
 	}
-	for _, p := range pos {
-		s[p] = ' '
+	for _, i := range st {
+		t[i] = '-' // 栈中剩下的左括号没有与之匹配的右括号，标记为移除
 	}
-	//} else {
-	//	for i := n - 1; i >= 0; i-- {
-	//		c := s[i]
-	//		if c == ')' {
-	//			cnt++
-	//		} else {
-	//			cnt--
-	//			if cnt < 0 {
-	//				s[i] = ' '
-	//			}
-	//		}
-	//	}
-	//}
-	//Println(string(s))
-	return strings.Replace(string(s), " ", "", -1)
+
+	return strings.Replace(string(t), "-", "", -1)
 }
