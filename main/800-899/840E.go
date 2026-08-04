@@ -10,65 +10,70 @@ import (
 func cf840E(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
+	const B = 256
 	var n, q int
 	Fscan(in, &n, &q)
-	a := make([]int, n)
-	for i := range a {
+	a := make([]int, n+1)
+	for i := 1; i <= n; i++ {
 		Fscan(in, &a[i])
 	}
 
-	g := make([][]int, n)
+	g := make([][]int, n+1)
 	for range n - 1 {
-		var v, u int
-		Fscan(in, &v, &u)
-		v--
-		u--
-		g[v] = append(g[v], u)
-		g[u] = append(g[u], v)
-	}
-
-	type pair struct{ x, y int }
-	qs := make([][]pair, n)
-	for i := range q {
 		var u, v int
 		Fscan(in, &u, &v)
-		u--
-		v--
-		qs[v] = append(qs[v], pair{u, i})
+		g[u] = append(g[u], v)
+		g[v] = append(g[v], u)
 	}
 
-	ans := make([]int, q)
-	dep := make([]int, n)
-	st := make([]int, n)
-	top := n
+	f := make([][B]int, n+1)
+	fa := make([]int, n+1)
+	dep := make([]int, n+1)
+	jump := make([]int, n+1)
 
-	var dfs func(int, int, int)
-	dfs = func(v, fa, d int) {
-		dep[v] = d
-		top--
-		st[top] = a[v]
-
-		for _, qu := range qs[v] {
-			res := 0
-			for i := range dep[v] - dep[qu.x] + 1 {
-				res = max(res, i^st[top+i])
-			}
-			ans[qu.y] = res
-		}
-
+	var dfs func(int)
+	dfs = func(v int) {
+		dep[v] = dep[fa[v]] + 1
 		for _, w := range g[v] {
-			if w != fa {
-				dfs(w, v, d+1)
+			if w != fa[v] {
+				fa[w] = v
+				dfs(w)
 			}
 		}
+		if dep[v] < B {
+			return
+		}
 
-		top++
+		u := v
+		for i := range B {
+			x := (i^a[u])>>8 ^ 255
+			f[v][x] = max(f[v][x], 255<<8|(i^a[u]))
+			u = fa[u]
+		}
+		jump[v] = u
+		for i := range 8 {
+			for j := range B {
+				f[v][j] = max(f[v][j], f[v][j^1<<i]-B<<i)
+			}
+		}
 	}
 
-	dfs(0, -1, 0)
+	dfs(1)
 
-	for _, v := range ans {
-		Fprintln(out, v)
+	for range q {
+		var u, v int
+		Fscan(in, &u, &v)
+		d := dep[v] - dep[u] + 1
+		ans := 0
+		for i := range d / B {
+			ans = max(ans, f[v][i])
+			v = jump[v]
+		}
+		for i := d / B * B; i < d; i++ {
+			ans = max(ans, i^a[v])
+			v = fa[v]
+		}
+		Fprintln(out, ans)
 	}
 }
 
