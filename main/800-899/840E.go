@@ -12,54 +12,63 @@ func cf840E(in io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var n, q int
 	Fscan(in, &n, &q)
-	a := make([]int, n+1)
-	for i := 1; i <= n; i++ {
+	a := make([]int, n)
+	for i := range a {
 		Fscan(in, &a[i])
 	}
-	g := make([][]int, n+1)
-	for i := 1; i < n; i++ {
-		var v, w int
-		Fscan(in, &v, &w)
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
+
+	g := make([][]int, n)
+	for range n - 1 {
+		var v, u int
+		Fscan(in, &v, &u)
+		v--
+		u--
+		g[v] = append(g[v], u)
+		g[u] = append(g[u], v)
 	}
 
-	us := make([]int, q+1)
-	vs := make([]int, q+1)
-	qid := make([][]int, n+1)
-	for i := 1; i <= q; i++ {
-		Fscan(in, &us[i], &vs[i])
-		qid[vs[i]] = append(qid[vs[i]], i)
+	type pair struct{ x, y int }
+	qs := make([][]pair, n)
+	for i := range q {
+		var u, v int
+		Fscan(in, &u, &v)
+		u--
+		v--
+		qs[v] = append(qs[v], pair{u, i})
 	}
 
-	dep := make([]int, n+1)
-	val := make([]int, n+1)
-	ans := make([]int, q+1)
+	ans := make([]int, q)
+	dep := make([]int, n)
+	st := make([]int, n)
+	top := n
 
-	var dfs func(int, int)
-	dfs = func(v, fa int) {
-		val[dep[v]] = a[v]
-		for _, i := range qid[v] {
+	var dfs func(int, int, int)
+	dfs = func(v, fa, d int) {
+		dep[v] = d
+		top--
+		st[top] = a[v]
+
+		for _, qu := range qs[v] {
 			res := 0
-			for j := dep[us[i]]; j <= dep[v]; j++ {
-				x := val[j] ^ (dep[v] - j)
-				if x > res {
-					res = x
-				}
+			for i := range dep[v] - dep[qu.x] + 1 {
+				res = max(res, i^st[top+i])
 			}
-			ans[i] = res
+			ans[qu.y] = res
 		}
+
 		for _, w := range g[v] {
 			if w != fa {
-				dep[w] = dep[v] + 1
-				dfs(w, v)
+				dfs(w, v, d+1)
 			}
 		}
-	}
-	dfs(1, 0)
 
-	for i := 1; i <= q; i++ {
-		Fprintln(out, ans[i])
+		top++
+	}
+
+	dfs(0, -1, 0)
+
+	for _, v := range ans {
+		Fprintln(out, v)
 	}
 }
 
