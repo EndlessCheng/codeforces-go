@@ -12,6 +12,8 @@
 1. 用哈希表 $\textit{cnt}$ 统计 $\textit{planks}$ 每个元素（高度）的出现次数。
 2. 用哈希表 $\textit{cntPair}$ 统计合成木板的高度的出现次数。枚举 $\textit{cnt}$ 中的木板对 $(x,y)$，其中 $x<y$，这两种木板最多可以组成 $\min(\textit{cnt}[x], \textit{cnt}[y])$ 块高度为 $x+y$ 的合成木板。此外，高度为 $x$ 的木板可以内部两两组合，最多可以组成 $\left\lfloor\dfrac{\textit{cnt}[x]}{2}\right\rfloor$ 块高度为 $2x$ 的合成木板。
 
+> **注**：对于一个固定的 $h$，木板 $x$ 只能与唯一的互补值 $h-x$ 配对，所以不同的木板对之间不会重复使用同一种木板。
+
 最后，遍历 $\textit{cnt}$ 和 $\textit{cntPair}$ 中的高度 $h$，那么最多有
 
 $$
