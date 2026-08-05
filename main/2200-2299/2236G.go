@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math/bits"
-	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -150,4 +149,4 @@ func cf2236G(in io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { cf2236G(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf2236G(bufio.NewReader(os.Stdin), os.Stdout) }
