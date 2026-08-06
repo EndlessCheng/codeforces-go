@@ -14,6 +14,10 @@ https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues?q=is%3Aissue%20aut
 hack 乘法溢出
 限定质因子最大值 https://leetcode.cn/problems/frog-position-after-t-seconds/solutions/2281408/dfs-ji-yi-ci-you-qu-de-hack-by-endlessch-jtsr/
 
+hack 一些数之积 溢出等于 另一些数之和
+prod([2,2,2,2,2,2,3,3,5,167,167,409,761,859,859]) = 2^64 + 6464 https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues/35823
+(2^29+1) * 2^29 * 2^6 = 2^64 + 1e9 * 34 + 359738368 https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues/35829
+
 用所有的偶数 hack，O(U^logU)
 https://leetcode.cn/problems/maximum-total-reward-using-operations-i/solutions/2805422/0-1-bei-bao-by-endlesscheng-702p/comments/2435993
 

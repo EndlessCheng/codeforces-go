@@ -112,6 +112,7 @@ https://atcoder.jp/contests/abc267/tasks/abc267_h
 
 ---
 
+【推荐】生成函数题单 https://atcoder.jp/contests/fps-24
 入门题 https://atcoder.jp/contests/abc248/tasks/abc248_c
 - 容斥做法 https://atcoder.jp/contests/abc248/editorial/3818
 https://atcoder.jp/contests/abc276/tasks/abc276_g https://atcoder.jp/contests/abc276/editorial/5185

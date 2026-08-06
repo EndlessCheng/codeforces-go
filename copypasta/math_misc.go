@@ -4,6 +4,9 @@ package copypasta
 - [343. 整数拆分](https://leetcode.cn/problems/integer-break/)
 - [651. 四个键的键盘](https://leetcode.cn/problems/4-keys-keyboard/)（会员题）
 
+数学归纳法
+https://www.luogu.com.cn/problem/P1228
+
 置换的平方根（见第二个回答的例子）
 https://math.stackexchange.com/questions/266569/how-to-find-the-square-root-of-a-permutation
 

@@ -547,11 +547,11 @@ func _(n int) {
 // https://codeforces.com/problemset/problem/1147/D 2400 种类并查集
 // https://codeforces.com/problemset/problem/1290/C 2400 种类并查集 + 维护集合大小 
 // https://codeforces.com/problemset/problem/1713/E 2400 转化
+// https://codeforces.com/problemset/problem/1788/F 2500
+// https://atcoder.jp/contests/abc396/tasks/abc396_e XOR
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode.cn/problems/evaluate-division/
 //      LC2307 https://leetcode.cn/problems/check-for-contradictions-in-equations/ 也可以 DFS
-// https://codeforces.com/problemset/problem/1788/F 2500
-// https://atcoder.jp/contests/abc396/tasks/abc396_e XOR
 func _(n int) {
 	// 注：kinds 为 2 时可以用异或来代替加减法
 	const kinds = 3
@@ -578,13 +578,14 @@ func _(n int) {
 		find(y)
 		return ((dis[x]-dis[y])%kinds + kinds) % kinds
 	}
-	merge := func(from, to int, d int) bool { // 返回是否与已知条件矛盾
-		if fFrom, fTo := find(from), find(to); fFrom != fTo {
-			dis[fFrom] = d + dis[to] - dis[from]
-			fa[fFrom] = fTo
-			return true
+	merge := func(from, to, d int) bool { // 返回是否与已知条件矛盾
+		fFrom, fTo := find(from), find(to)
+		if fFrom == fTo {
+			return delta(from, to) == d
 		}
-		return delta(from, to) == d
+		dis[fFrom] = d + dis[to] - dis[from]
+		fa[fFrom] = fTo
+		return true
 	}
 
 	// 统计每个集合中各个类型的个数

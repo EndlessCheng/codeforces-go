@@ -40,6 +40,7 @@ https://www.luogu.com.cn/problem/P5930
 https://www.luogu.com.cn/problem/P2859
 https://www.luogu.com.cn/problem/P4952 枚举中位数
 LC857 https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/
+https://atcoder.jp/contests/adt_all_20260515_2/tasks/abc446_f 1878 ~CF
 https://codeforces.com/problemset/problem/912/D 2100 贡献
 https://codeforces.com/problemset/problem/713/C 2300 使序列严格递增的最小操作次数 (+1/-1)
 - https://codeforces.com/blog/entry/47094?#comment-315068
@@ -211,6 +212,7 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 // LC3092 https://leetcode.cn/problems/most-frequent-ids/
 // https://codeforces.com/problemset/problem/1883/D 1500
 // https://codeforces.com/problemset/problem/796/C 1900
+// https://codeforces.com/problemset/problem/899/E 2000
 // https://codeforces.com/problemset/problem/2009/G2 2200
 // https://codeforces.com/problemset/problem/1732/D2 2400 简化版懒删除堆
 func newLazyHeap() *lazyHeap {

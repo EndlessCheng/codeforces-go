@@ -58,6 +58,7 @@ func Asr(a, b, eps float64, f mathF) float64 {
 // https://codeforces.com/problemset/problem/1155/E 2200 交互 找零点
 // https://codeforces.com/problemset/problem/622/F 2600 等幂和
 // https://codeforces.com/problemset/problem/995/F 2700
+// LC3916 https://leetcode.cn/problems/number-of-zigzag-arrays-iii/
 // https://projecteuler.net/problem=101
 func lagrangePolynomialInterpolation(xs, ys []int, k int) (fk int) {
 	for i, xi := range xs {

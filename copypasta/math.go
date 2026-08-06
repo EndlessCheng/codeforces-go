@@ -19,7 +19,11 @@ a > b 等价于 a ≥ b+1
 ax ≤ b  =>  x ≤ ⌊b/a⌋       ax < b  =>  x < ⌈b/a⌉
 ax > b  =>  x > ⌊b/a⌋       ax ≥ b  =>  x ≥ ⌈b/a⌉
 
-推论
+⌊a/x⌋ = b  =>  b ≤ a/x < b+1  =>  a/(b+1) < x ≤ a/b，取整就是闭区间 [floor(a/(b+1)) + 1, floor(a/b)]
+⌈a/x⌉ = b  =>  b-1 < a/x ≤ b  =>  a/b ≤ x < a/(b-1)，取整就是闭区间 [ceil(a/b), ceil(a/(b-1)) - 1]
+注意特判 b = 1 的情况
+
+位运算相关
 x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i     相当于 x<<i ≤ s-1
 x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i     相当于 x<<i > s-1
 
@@ -30,8 +34,6 @@ https://codeforces.com/problemset/problem/2040/B 1000
 ⌊log2(x)⌋ = bits.Len(x) - 1
 ⌈log2(x)⌉ = bits.Len(x-1)
 
-⌊a/x⌋ = k  =>  k ≤ a/x < k+1  =>  a/(k+1) < x ≤ a/k
-
 a < b<<k  =>  a>>k < b
 https://codeforces.com/problemset/problem/2035/D 1800
 
@@ -39,6 +41,9 @@ p<<x ≤ q  => TODO 分类讨论
 https://codeforces.com/problemset/problem/1883/E 1600
 - https://www.luogu.com.cn/problem/P12642
 - https://www.luogu.com.cn/problem/P12836
+
+不断平方变成递增
+https://codeforces.com/problemset/problem/1995/C 1800
 
 ⌊a/x⌋≤b  =>  TODO
 https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/
@@ -449,6 +454,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1766/D 1600
 	https://codeforces.com/problemset/problem/1295/D 1800
 	https://codeforces.com/problemset/problem/2008/G 1800
+	https://atcoder.jp/contests/abc254/tasks/abc254_f 2045 ~CF
 	https://www.luogu.com.cn/problem/P10031
 
 	从 (1,1) 到 (n,m)，每步可以把 x += y 或者把 y += x
@@ -482,6 +488,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/contest/1770/problem/C
 
 	LCM
+	https://codeforces.com/problemset/problem/2124/C 1300
 	https://codeforces.com/problemset/problem/678/C 1600
 	https://codeforces.com/gym/105139/problem/L 分类讨论
 
@@ -576,10 +583,10 @@ func _(abs func(int) int) {
 	// LCM 性质统计相关
 	// https://oeis.org/A048691 #{(a,b) | lcm(a,b)=n}，等价于 #{(x,y) | x|n, y|n, gcd(x,y)=1}
 	//     = d(n^2)
-	//     = (2*e1+1)(2*e2+1)...(2*ek+1), 其中 ei 是 n 的质因子分解中第 i 个质数的幂次
+	//     = (2*e1+1)(2*e2+1)...(2*ek+1), 其中 ei 是 n 的质因数分解中第 i 个质数的幂次
 	// https://oeis.org/A018892 #{(a,b) | a<=b, lcm(a,b)=n}，等价于 #{(x,y) | x|n, y|n, x<=y, gcd(x,y)=1}
 	//     = (d(n^2)+1)/2
-	//     = ((2*e1+1)(2*e2+1)...(2*ek+1) + 1) / 2, 其中 ei 是 n 的质因子分解中第 i 个质数的幂次
+	//     = ((2*e1+1)(2*e2+1)...(2*ek+1) + 1) / 2, 其中 ei 是 n 的质因数分解中第 i 个质数的幂次
 	//     Number of ways to write 1/n as a sum of exactly 2 unit fractions
 	//     Number of divisors of n^2 less than or equal to n
 	//     训练指南 2.10 习题，UVa10892 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1833
@@ -599,7 +606,9 @@ func _(abs func(int) int) {
 	// - https://discuss.codechef.com/t/KGCD-editorial/
 	// https://codeforces.com/problemset/problem/803/F 2000 子序列 EDU20
 	// https://codeforces.com/problemset/problem/990/G 2400 树上路径 EDU45
+	// https://codeforces.com/problemset/problem/2176/F 2400
 	// https://codeforces.com/problemset/problem/1043/F 2500 统计 a 中所有大小为 k 的子序列的 GCD 的出现次数
+	// https://codeforces.com/problemset/problem/585/E 2900
 	countGCD := func(a []int) []int {
 		mx := slices.Max(a)
 		cntX := make([]int, mx+1)
@@ -794,9 +803,12 @@ func _(abs func(int) int) {
 
 	/* 质数 质因数分解 */
 
-	// n/2^k https://oeis.org/A000265
-	// A000265 的前缀和 https://oeis.org/A135013
+	// https://oeis.org/A000265 n/2^k 
+	// https://oeis.org/A135013 A000265 的前缀和 
 	// a(n) = Sum_{k>=1} (round(n/2^k))^2
+	// https://oeis.org/A053669 SPND(n) Smallest prime not dividing n 
+	// https://oeis.org/A249270 2.92... Decimal expansion of lim_{n->oo} (1/n)*Sum_{k=1..n} smallest prime not dividing k
+	// - 计算方法：贡献法
 
 	// 质数表 https://oeis.org/A000040
 	// primes[i]%10 https://oeis.org/A007652
@@ -939,7 +951,7 @@ func _(abs func(int) int) {
 	2, 6, 30, 210, 2310, 30030, 510510, 9699690, 223092870, /9/
 	6469693230, 200560490130, 7420738134810, 304250263527210, 13082761331670030, 614889782588491410
 
-	质数间隙 prime gap https://en.wikipedia.org/wiki/Prime_gap https://oeis.org/A001223
+	质数间隙（间隔）prime gap https://en.wikipedia.org/wiki/Prime_gap https://oeis.org/A001223
 	Positions of records https://oeis.org/A002386 https://oeis.org/A005669
 	Values of records https://oeis.org/A005250
 	Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
@@ -1331,6 +1343,7 @@ func _(abs func(int) int) {
 		}
 		return
 	}
+	primeFactorization := primeDivisors
 
 	// 质因数分解（加速：跳过偶数）prime factorization
 	// 在 1e15 下比上面快大概 150ms
@@ -1492,7 +1505,10 @@ func _(abs func(int) int) {
 		亏数/缺数/不足数 https://oeis.org/A005100 Deficient numbers (σ(n) < 2n)
 			https://en.wikipedia.org/wiki/Deficient_number
 			https://ac.nowcoder.com/acm/contest/10322/A O(nlogn) 可以先预处理因子
-	n 的因子倒数和 https://www.quora.com/What-is-the-formula-for-the-sum-of-the-reciprocal-of-the-positive-integral-divisors-of-a-number
+
+	n 的因子倒数和
+	https://chatgpt.com/c/69c8b6dc-d79c-8322-b19f-85d90e326448
+	https://www.quora.com/What-is-the-formula-for-the-sum-of-the-reciprocal-of-the-positive-integral-divisors-of-a-number
 
 	n 的因子之积 μ(n) = n^(d(n)/2) https://oeis.org/A007955
 	注意这里的 /2 算出来的是小数
@@ -1510,6 +1526,10 @@ func _(abs func(int) int) {
 
 	d(d(...d(n))) 迭代至 2 所需要的迭代次数
 	0,0,1,0,2,0,2,1,2,0,3,0,2,2,1,0,3,0,3,2,2,0,3,1,2,2,3
+
+	因子相关问题
+	https://codeforces.com/problemset/problem/1916/B 1000
+	https://codeforces.com/problemset/problem/1992/F 1900
 
 	高合成数/反质数 Highly Composite Numbers https://oeis.org/A002182
 	https://oi-wiki.org/math/prime/#_7
@@ -1855,6 +1875,7 @@ func _(abs func(int) int) {
 	// - [2709. 最大公约数遍历](https://leetcode.cn/problems/greatest-common-divisor-traversal/) 2172
 	// - [1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/) 2429
 	// - [1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/) 2500
+	// https://codeforces.com/problemset/problem/2200/E 1500
 	// https://codeforces.com/problemset/problem/1766/D 1600
 	// https://codeforces.com/problemset/problem/385/C 1700
 	// https://codeforces.com/problemset/problem/594/D 2500
@@ -1908,7 +1929,7 @@ func _(abs func(int) int) {
 			}
 		}
 
-		// x 的质因子分解中，每个质数的幂次 e 改成 ceil(e/2) = (e+1)/2
+		// x 的质因数分解中，每个质数的幂次 e 改成 ceil(e/2) = (e+1)/2
 		// https://oeis.org/A019554 Smallest number whose square is divisible by n
 		// LC2949 https://leetcode.cn/problems/count-beautiful-substrings-ii/ 2445
 		// https://codeforces.com/problemset/problem/1778/F 2600
@@ -1927,7 +1948,7 @@ func _(abs func(int) int) {
 			return res
 		}
 
-		// x 的质因子分解中，每个质数的幂次 e 改成 floor(e/2)
+		// x 的质因数分解中，每个质数的幂次 e 改成 floor(e/2)
 		// https://oeis.org/A000188 square root of largest square dividing n
 		// https://oeis.org/A120486 Partial sums of A000188  a(n) = Sum_{k=1..n} phi(k)*floor(n/k^2)
 		floorSqrt := func(x int) int {
@@ -1965,8 +1986,8 @@ func _(abs func(int) int) {
 
 		// 求 x 的所有因子
 		// https://codeforces.com/problemset/problem/1614/D2
-		// 简单的质因子分解 https://codeforces.com/problemset/problem/762/A
-		//     在因子个数比较多时，效率比试除法高
+		// https://codeforces.com/problemset/problem/762/A 简单的质因数分解
+		// - 在因子个数比较多时，效率比试除法高
 		_ds := [1024]int{1} // 复用，避免反复扩容和 GC
 		divisors := func(x int) []int {
 			ds := _ds[:1]
@@ -2147,7 +2168,7 @@ func _(abs func(int) int) {
 		// EXTRA: https://oeis.org/A008475 质因数分解中，各个 p^e 项之和
 
 		// EXTRA: https://oeis.org/A001414 Integer log of n: sum of primes dividing n (with repetition)
-		// 质因子分解，因子之和
+		// 质因数分解，因子之和
 		// https://oeis.org/A029908 不动点
 		sopfr := func(x int) (s int) {
 			for x > 1 {
@@ -3708,7 +3729,7 @@ func _(abs func(int) int) {
 		mu := [mx]int8{1: 1}
 		for i := 1; i < mx; i++ {
 			for j := i * 2; j < mx; j += i {
-				mu[j] -= mu[i] // i 是 j 的因子
+				mu[j] -= mu[i] // i 是 j 的真因子
 			}
 		}
 
@@ -4175,6 +4196,7 @@ func _(abs func(int) int) {
 		floorSum,
 
 		isPrime, isPrimeFaster, sieve, allPi, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2,
+		primeFactorization,
 		powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 
 		maxDivisorNum, maxDivisorNumWithLimit, minNumOfTargetDivisors, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor,

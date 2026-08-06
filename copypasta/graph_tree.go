@@ -38,11 +38,16 @@ https://www.luogu.com.cn/problem/P2420
 https://atcoder.jp/contests/abc163/tasks/abc163_f 2470=CF2579 树上路径计数
 
 黑白染色
+https://codeforces.com/problemset/problem/2154/D 1900 奇偶层染色
 https://codeforces.com/problemset/problem/1375/G 2800
 
 BFS
 https://atcoder.jp/contests/abc070/tasks/abc070_d
 https://codeforces.com/problemset/problem/2018/C 1700
+
+树上拓扑
+对于无向树，BFS 序的逆序就是拓扑序
+https://codeforces.com/problemset/problem/2154/D 1900
 
 利用递归栈快速标记祖先节点 https://codeforces.com/problemset/problem/1774/E
 树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
@@ -51,6 +56,7 @@ https://codeforces.com/problemset/problem/2018/C 1700
 
 树上贪心
 https://codeforces.com/problemset/problem/1029/E 2100
+https://codeforces.com/problemset/problem/1615/E 2400
 https://atcoder.jp/contests/agc004/tasks/agc004_d
 
 树上路径异或
@@ -304,6 +310,7 @@ func (*tree) depthSize(root int, g [][]int, v int) {
 // https://codeforces.com/problemset/problem/1110/F 2600
 // https://codeforces.com/problemset/problem/1416/D 2600
 // https://codeforces.com/problemset/problem/163/E 2800 AC 自动机 
+// https://codeforces.com/problemset/problem/1827/D 2800 重心性质
 // https://codeforces.com/problemset/problem/176/E 3100
 // https://ac.nowcoder.com/acm/contest/6383/B
 // https://ac.nowcoder.com/acm/contest/9247/B 给定一棵 n 个点的完全 k 叉树的先序遍历，还原这棵树 
@@ -512,6 +519,7 @@ func (*tree) minPathCover(g [][]int) int {
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 //
 // LC1245 https://leetcode.cn/problems/tree-diameter/
+// https://codeforces.com/problemset/problem/1805/D 1800
 // https://codeforces.com/problemset/problem/1404/B 1900
 // https://codeforces.com/problemset/problem/337/D 2000
 // https://codeforces.com/problemset/problem/455/C 2100 两棵树连边，连边之后直径最小
@@ -554,6 +562,7 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	// 注：这种写法加上上面，总共用了四次 DFS，可以仅需两次，见 https://codeforces.com/contest/592/submission/119472149
 	// 下标最小的直径端点 https://codeforces.com/problemset/problem/592/D
 	// 树上非严格次长距离 https://ac.nowcoder.com/acm/contest/9557/C（另一种做法见下面的 secondDiameter）
+	// https://leetcode.cn/problems/find-diameter-endpoints-of-a-tree/
 	isEnd := make([]bool, len(g))
 	var findAllEnds func(int, int, int)
 	findAllEnds = func(v, fa, d int) {
@@ -684,18 +693,20 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 
 // 树的重心
 // 性质：
-//    以重心为根时，最大子树结点数最少，且所有子树的大小都 < 节点数/2，或者说最大子树结点数 < 节点数/2
-//        反之，若存在一棵子树其大小 ≥ 节点数/2，则重心在该子树中
-//    一棵树最多有两个重心，且相邻
-//    拥有奇数个节点的树只有一个重心
-//    树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
-//    - 推论：把两棵树通过一条边相连，选择各自的重心相连，可以让所有点对的距离和最小 https://codeforces.com/problemset/problem/294/E 2300
-//    - 这一结论也适用于带边权树
-//    把两棵树通过一条边相连得到一棵新的树，新重心在旧重心的路径上
-//    在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上（换句话说，重心个数可能一个变两个，两个变一个，或者说至多移动半条边）
-//    树的重心一定在根节点的重链上 https://www.luogu.com.cn/problem/P5666
-//    树的重心一定在它重儿子的重心到根节点的路径上 https://www.luogu.com.cn/problem/P5666
-// 常用作点分治中的一个划分步骤
+// 以重心为根时，最大子树结点数最少，且所有子树的大小都 <= 节点数/2，或者说最大子树结点数 <= 节点数/2
+//     反之，若存在一棵子树其大小 > 节点数/2，则重心在该子树中
+// 一棵树最多有两个重心，且相邻
+// 拥有奇数个节点的树只有一个重心
+// 树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
+// - 推论：把两棵树通过一条边相连，选择各自的重心相连，可以让所有点对的距离和最小 https://codeforces.com/problemset/problem/294/E 2300
+// - 这一结论也适用于带边权树
+// 把两棵树通过一条边相连得到一棵新的树，新重心在旧重心的路径上
+// 在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上（换句话说，重心个数可能一个变两个，两个变一个，或者说至多移动半条边）
+// - 相关题目 https://codeforces.com/problemset/problem/1827/D 2800
+// 树的重心一定在根节点的重链上 https://www.luogu.com.cn/problem/P5666
+// 树的重心一定在它重儿子的重心到根节点的路径上 https://www.luogu.com.cn/problem/P5666
+//
+// 树的重心是点分治中的一个划分步骤
 //
 // https://oi-wiki.org/graph/tree-centroid/
 // https://en.wikipedia.org/wiki/Tree_(graph_theory)#Properties
@@ -707,10 +718,12 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // 树重心的性质及动态维护 https://www.cnblogs.com/qlky/p/5781081.html
 //
-// https://codeforces.com/problemset/problem/1406/C 1700 求两个重心 
-// https://codeforces.com/problemset/problem/685/B 1900 求每棵子树的重心 
+// https://codeforces.com/problemset/problem/1406/C 1700 求两个重心
+// https://codeforces.com/problemset/problem/685/B 1900 求每棵子树的重心
 // https://codeforces.com/problemset/problem/294/E 2300
-// https://codeforces.com/problemset/problem/708/C 2300 Edge replacement 后哪些点可以是重心 
+// https://codeforces.com/problemset/problem/708/C 2300 Edge replacement 后哪些点可以是重心
+// https://codeforces.com/problemset/problem/1842/F 2500 结论
+// https://codeforces.com/problemset/problem/1827/D 2800
 // todo https://atcoder.jp/contests/abc362/tasks/abc362_f 重心性质
 func (*tree) findCentroid(root int, g [][]int) (centroid int) {
 	minOfMaxSubSize := math.MaxInt
@@ -1131,6 +1144,10 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // https://oi-wiki.org/graph/lca/#_5
 // 另见 mo.go 中的【树上莫队】
 //
+// O(n) 
+// https://codeforces.com/blog/entry/74847
+// https://codeforces.com/blog/entry/100826
+//
 // 倍增 LC1483 https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/
 // 模板题 https://www.luogu.com.cn/problem/P3379
 // https://codeforces.com/problemset/problem/33/D 2000
@@ -1140,16 +1157,19 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // https://codeforces.com/problemset/problem/519/E 2100 到两点距离相同的点的数量
 // https://codeforces.com/problemset/problem/1535/E 2200
 // https://codeforces.com/problemset/problem/379/F 2400
+// https://codeforces.com/problemset/problem/593/D 2400 单边修改，输出 floor(val / 路径边权乘积)    只需模拟 LCA
 // https://codeforces.com/problemset/problem/916/E 2400
 // https://codeforces.com/problemset/problem/1902/F 2400 线性基
 // - https://www.luogu.com.cn/problem/P3292 [SCOI2016] 幸运数字
 // https://codeforces.com/problemset/problem/372/D 2600
 // - 先把这题做了 https://www.luogu.com.cn/problem/P3320
+// https://codeforces.com/problemset/problem/2236/G 2600 树上滑动窗口
 // https://codeforces.com/problemset/problem/842/E 2800 动态加点求直径端点个数
 // https://codeforces.com/problemset/problem/986/E 2800
 // https://codeforces.com/problemset/problem/176/E 3100
 // - 简化版 https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths-ii/
 // - 静态查询 https://atcoder.jp/contests/typical90/tasks/typical90_ai
+// https://www.luogu.com.cn/problem/P13016 用到了求 LCA 的思想
 // https://ac.nowcoder.com/acm/contest/6913/C 路径点权乘积 
 // https://oj.niumacode.com/problem/P1499 包含两个点 x y 的最长路径
 // k=3 个点的子树边权和 https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths-ii/
@@ -1389,6 +1409,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		}
 
 		// 求 LCA(v,w) 的同时，顺带求出 v-w 上的边权最值
+		// 分别计算 v-LCA 和 w-LCA 的写法，见 LC3973 https://leetcode.cn/problems/distinct-gate-paths-to-lca/
 		getLCA := func(v, w int) (lca int, maxWt data) {
 			//pathLen := dep[v] + dep[w]
 			if dep[v] > dep[w] {
@@ -1649,6 +1670,7 @@ func (*tree) differenceInTree(n, root int, g, queries [][]int) []int {
 // https://codeforces.com/problemset/problem/1320/E 3000 换根 DP
 // https://www.luogu.com.cn/problem/P4103 [HE14] 大工程（点对距离和，最短路径，最长路径/直径）
 // - https://atcoder.jp/contests/abc359/tasks/abc359_g 点对距离和
+// - https://codeforces.com/gym/103960/problem/L 进阶：对每条边分别计算
 // https://www.luogu.com.cn/problem/P3233 [HN14] 世界树
 // https://www.luogu.com.cn/problem/P2495 [SD11] 消耗战
 // https://www.luogu.com.cn/problem/P5891
@@ -1729,7 +1751,7 @@ func (*tree) virtualTree(g [][]int) {
 		sumWt, gMinL, gMaxL := 0, inf, 0
 		var dfs func(int) (int, int, int)
 		dfs = func(v int) (size, minL, maxL int) {
-			// 如果 inNodes[v] != qid，那么 v 只是关键节点之间路径上的「拐点」
+			// 如果 isNode[v] != qid，那么 v 只是关键节点之间路径上的「拐点」
 			// 在处理虚树 DP 时，可能需要额外考虑 v 不在 nodes 中的情况
 			imp := isNode[v] == qid
 			if imp {
@@ -1762,7 +1784,7 @@ func (*tree) virtualTree(g [][]int) {
 
 		rt := root
 		if isNode[rt] != qid && len(vt[rt]) == 1 {
-			// 注意 root 只是一个哨兵，得从真正的根节点开始
+			// 注意 root 只是一个哨兵，不一定在虚树上，得从真正的根节点开始
 			rt = vt[rt][0]
 		}
 		dfs(rt)
@@ -1793,6 +1815,7 @@ func (*tree) virtualTree(g [][]int) {
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 // O(log n) 查询 https://codeforces.com/blog/entry/127896
+// Random heavy light decomposition https://codeforces.com/blog/entry/151250
 //
 // 注：若没有修改操作，更简单的做法见 lcaBinaryLifting（路径查询）以及 dfnOrder（子树查询）
 // 注：如果只有路径修改+查询，可以用欧拉序列 + 树状数组/线段树，见《挑战》p.332
@@ -1916,13 +1939,16 @@ func (*tree) heavyLightDecomposition(root int, g [][]int, vals []int) { // vals 
 // https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
 // https://www.cnblogs.com/cj-chd/p/10076199.html
 // https://www.cnblogs.com/zhoushuyu/p/9468669.html
-// 应用：树上 k 级祖先 https://www.luogu.com.cn/problem/P5903 https://codeforces.com/problemset/problem/208/E
+//
+// https://codeforces.com/problemset/problem/161/D 1800 距离等于 k 的点对数
+// https://codeforces.com/problemset/problem/208/E 2100 树上 k 级祖先
+// - https://www.luogu.com.cn/problem/P5903 
 // 长链剖分优化树形 DP：
 //    若树形 DP 的转移只和节点深度有关，我们完全可以把一棵子树拍扁成一条垂直的链
 //    那么在合并子树时，长儿子将会占据主导优势，即其余子树均往长儿子上合并，这会使每个节点至多被合并一次，从而得到 O(n) 的优秀复杂度
 //    具体实现时还有一些技巧，见后面的有关 DP 优化的 EXTRA
-// 子树深度众数 https://codeforces.com/problemset/problem/1009/F
-// 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
+// https://codeforces.com/problemset/problem/1009/F 2300 子树深度众数
+// https://codeforces.com/problemset/problem/1615/E 2400 至多 k 条不相交链
 func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 	// 深度，子树最大深度，重儿子，父节点，所处长链顶点（深度最小）
 	type node struct{ depth, maxDepth, hson, fa, top int }
@@ -1933,7 +1959,8 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 		maxDep, hson := dep, -1
 		for _, w := range g[v] {
 			if w != fa {
-				if mxD := build(w, v, dep+1); mxD > maxDep {
+				mxD := build(w, v, dep+1)
+				if mxD > maxDep {
 					maxDep, hson = mxD, w
 				}
 			}

@@ -3,10 +3,13 @@ package copypasta
 import "math"
 
 // 树套树：树状数组套动态开点权值线段树
+// 动态二维数点
 // https://oi-wiki.org/ds/seg-in-bit/
+//
 // 三维偏序 https://www.luogu.com.cn/problem/P3810 https://www.luogu.com.cn/record/136178821
 // https://www.luogu.com.cn/problem/P3380 https://www.luogu.com.cn/record/136286395
 // https://www.luogu.com.cn/problem/P2617 Dynamic Rankings
+// https://codeforces.com/problemset/problem/1093/E 2400 也可以分块
 // 树状数组在这里就是纯纯工具人，只用来拆分区间
 type fenwickWithSeg []*stNode // 见 segment_tree.go
 

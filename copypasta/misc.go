@@ -427,21 +427,24 @@ func mergeCount(a []int) int {
 	if n <= 1 {
 		return 0
 	}
+
 	left := slices.Clone(a[:n/2])
 	right := slices.Clone(a[n/2:])
-	cnt := mergeCount(left) + mergeCount(right)
+	cnt := mergeCount(left) + mergeCount(right) // left 和 right 各自的逆序对个数
+
 	l, r := 0, 0
 	for i := range a {
-		// 归并排序的同时计算逆序对
+		// 计算一个在 left 中，另一个在 right 中的逆序对个数
 		if l < len(left) && (r == len(right) || left[l] <= right[r]) {
 			a[i] = left[l]
 			l++
 		} else {
-			cnt += n/2 - l
+			cnt += n/2 - l // left[l:] 中的数都 > right[r]
 			a[i] = right[r]
 			r++
 		}
 	}
+
 	return cnt
 }
 

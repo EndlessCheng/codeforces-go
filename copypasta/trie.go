@@ -28,6 +28,7 @@ https://codeforces.com/problemset/problem/113/B 2000 满足一些条件的本质
 https://codeforces.com/problemset/problem/514/C 2000
 https://codeforces.com/problemset/problem/965/E 2200 与贪心堆结合
 https://codeforces.com/problemset/problem/557/E 2300
+https://codeforces.com/problemset/problem/601/D 2400 trie 合并
 https://codeforces.com/problemset/problem/778/C 2500
 https://codeforces.com/problemset/problem/1312/G 2600 注：输入就是一个 trie
 https://codeforces.com/problemset/problem/1511/F 2700 矩阵快速幂优化 DP

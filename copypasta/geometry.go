@@ -159,9 +159,14 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 //
 // 举例说明（上舍入错误）
 // x                  floor(sqrt(x)) 注意这里算的是错误的结果，需要用 if 调整，见下面代码
-// 999999999999999999 1000000000
+// 999999999999999999 1000000000     原因：在 float64 下 1e18 - 1 == 1e18
 // 999996000003999999 999998000
 // 880200476099999999 938190000
+//
+// 最小的是 x = (1<<26+1)**2 - 1 = 4503599761588224，floor(sqrt(x)) = 1<<26 + 1，比数学值多 1
+// 分析过程用到了泰勒展开 https://gemini.google.com/gem/33ef9ff28433/9dec9d76c693b4f6
+//
+// 用 ulp 可以证明，没有下舍入错误 https://gemini.google.com/gem/33ef9ff28433/9dec9d76c693b4f6
 //
 // 附：https://www.binaryconvert.com/convert_double.html
 // 0b1(Mantissa) * 2 ** (0b(Exponent) - 1075)
@@ -509,15 +514,16 @@ func (a vec) inRect(l line) bool {
 }
 
 // 直线 a b 交点 - 参数式
-// 若求线段交点，可以在求出后判断其是否均在两条线段上：由于交点已在基线上，只需要判断交点是否在以线段为对角线的矩形内即可
+// 若求线段交点，可以在求出后判断其是否均在两条【线段】上：由于交点已在基线上，只需要判断交点是否在以线段为对角线的矩形内即可
 // NOTE: 若输入均为有理数，则输出也为有理数，对精度要求较高时可使用分数类
+// https://codeforces.com/problemset/problem/498/A 1700 直线与线段 也可以判断线段端点是否在直线两侧
 func (a lineF) intersection(b lineF) vecF {
 	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
 	d := va.det(vb)
 	if math.Abs(d) < eps { // 两直线平行（特判）
 		return vecF{math.NaN(), math.NaN()}
 	}
-	t := vb.det(u) / d
+	t := vb.det(u) / d // 如果 a 是线段，b 是直线，那么当 t 在 [0,1] 中，则线段与直线相交
 	return a.point(t)
 }
 
@@ -1041,26 +1047,30 @@ func _(abs func(int) int) {
 	// todo poj 2187 1113 1912 3608 2079 3246 3689
 	convexHull := func(ps []vec) (q []vec) {
 		slices.SortFunc(ps, func(a, b vec) int { return cmp.Or(a.x-b.x, a.y-b.y) })
-		//sort.Slice(ps, func(i, j int) bool { return ps[i].less(ps[j]) })
-		// 下凸包（从左到右）
+
+		// 计算下凸包（从左到右）
 		for _, p := range ps {
+			// 新来的 p，能否让旧的点变成在凸包内的点？ ->  需要判断向量左右关系  ->  det
 			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
 			}
 			q = append(q, p)
 		}
-		// 上凸包（从右到左）
-		downSize := len(q)
+
+		// 计算上凸包（从右到左）
 		// 注意下凸包的最后一个点，已经是上凸包的（右边）第一个点了，所以从 n-2 开始遍历
+		lowerSize := len(q)
 		for i := len(ps) - 2; i >= 0; i-- {
 			p := ps[i]
-			for len(q) > downSize && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
+			for len(q) > lowerSize && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
 			}
 			q = append(q, p)
 		}
+
 		// 此时首尾是同一个点 ps[0]，需要去掉
 		q = q[:len(q)-1]
+
 		return
 	}
 
@@ -1167,6 +1177,8 @@ func _(abs func(int) int) {
 	// https://en.wikipedia.org/wiki/Rotating_calipers
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FarthestPair.java.html
 	// 模板题 https://www.luogu.com.cn/problem/P1452
+	// 同向双指针求最大三角形面积 https://leetcode.cn/problems/largest-triangle-area/solutions/3793198/liang-chong-fang-fa-mei-ju-tu-bao-xuan-z-1780/
+	// - O(n) Kai Jin, Maximal Area Triangles in a Convex Polygon https://arxiv.org/pdf/1707.04071v5
 	rotatingCalipers := func(ps []vec) (p1, p2 vec) {
 		ch := convexHull(ps)
 		n := len(ch)

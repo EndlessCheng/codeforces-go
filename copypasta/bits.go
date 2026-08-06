@@ -42,6 +42,7 @@ https://codeforces.com/problemset/problem/2053/C 1500 做到 O(1) 时间
 
 与或（AND/OR）的性质
 & 和 | 在区间求和上具有单调性（本页面搜索 logTrickCnt）
+https://codeforces.com/problemset/problem/1957/B 1100
 https://codeforces.com/problemset/problem/1991/B 1100
 https://codeforces.com/problemset/problem/1420/B 1200 XOR
 https://codeforces.com/problemset/problem/1775/B 1300
@@ -54,6 +55,7 @@ https://codeforces.com/problemset/problem/1299/A 1500
 https://codeforces.com/problemset/problem/2146/D1 1500
 https://codeforces.com/problemset/problem/1775/C 1600 连续数字 AND 等于目标值
 https://codeforces.com/problemset/problem/2036/E 1600
+https://codeforces.com/problemset/problem/2085/C 1600 构造 k，使得 (x+k) AND (y+k) = 0
 https://codeforces.com/problemset/problem/1994/E 2000
 https://codeforces.com/problemset/problem/2146/D2 2000
 https://codeforces.com/problemset/problem/1935/E 2400 从高到低
@@ -64,7 +66,7 @@ https://cses.fi/problemset/task/3405 滑动窗口 OR
 
 异或（XOR）的性质
 另见 strings.go 中的 trie.maxXor
-popcount(x XOR y) % 2 = (popcount(x) + popcount(y)) % 2
+popcount(x XOR y) % 2 = (popcount(x) + popcount(y)) % 2    CF1615D 用到了这个结论
 a - b <= a XOR b <= a + b
 https://atcoder.jp/contests/arc135/tasks/arc135_c 1512
 https://codeforces.com/problemset/problem/1682/B 1100 交换 排序
@@ -85,6 +87,7 @@ https://codeforces.com/problemset/problem/703/D 2100
 - 区间元素异或和 = 区间中出现次数为【奇数】的元素异或和
 - 在此基础上 XOR 区间去重后的元素异或和 = 区间中出现次数为【偶数】的元素异或和
 https://codeforces.com/problemset/problem/1934/D1 2100
+https://codeforces.com/problemset/problem/1615/D 2200
 https://codeforces.com/problemset/problem/835/E 2400 交互
 https://codeforces.com/problemset/problem/1710/C 2500 三角形三边
 https://codeforces.com/problemset/problem/1779/F 2500 操作至多 2n 次：把一棵子树的所有点权都置为 S，其中 S 是子树点权异或和
@@ -92,7 +95,7 @@ https://www.luogu.com.cn/problem/P2420
 
 XOR with AND
 https://codeforces.com/problemset/problem/1420/B 1200
-https://codeforces.com/problemset/problem/1592/E 2400
+https://codeforces.com/problemset/problem/1592/E 2400 子数组 AND > 子数组 XOR 的最长子数组
 
 XOR with OR
 https://codeforces.com/problemset/problem/1946/D 1900
@@ -200,6 +203,7 @@ min(a,b) = (a + b - abs(a-b)) / 2
 LC2835 https://leetcode.cn/problems/minimum-operations-to-form-subsequence-with-target-sum/
 - 相似题目 https://codeforces.com/problemset/problem/1918/C
 https://codeforces.com/problemset/problem/309/C 1900
+https://codeforces.com/problemset/problem/2165/C 2000
 
 位运算与字符串
 https://leetcode.cn/problems/count-the-number-of-special-characters-i/
@@ -305,10 +309,10 @@ https://oeis.org/A092391 n+OnesCount(n)
 	https://oeis.org/A010061 二进制自我数/哥伦比亚数（A092391 的补集）
 https://oeis.org/A011371 n-OnesCount(n) Also highest power of 2 dividing n!
 							a(n) = floor(n/2) + a(floor(n/2))
-                         这同时是前 n 个数的质因子分解的 2 的幂次之和
+                         这同时是前 n 个数的质因数分解的 2 的幂次之和
 https://oeis.org/A027868 Number of trailing zeros in n!; highest power of 5 dividing n!
                             a(n) = (n-A053824(n))/4, 其中 A053824(n) = Sum of digits of (n written in base 5)
-推广至任意数：n! 的质因子分解中，p 的幂次为 (n-digsum_p(n))/(p-1)，其中 digsum_p(n) 表示 n 的 p 进制的数位和
+推广至任意数：n! 的质因数分解中，p 的幂次为 (n-digsum_p(n))/(p-1)，其中 digsum_p(n) 表示 n 的 p 进制的数位和
 https://oeis.org/A245788 n*OnesCount(n)
 https://oeis.org/A049445 OnesCount(n)|n
 	-  n/OnesCount(n)
@@ -465,10 +469,11 @@ func _(x int, abs func(int) int) {
 	}
 
 	// [0, n] 的异或和
-	// 支持 n=-1 的情况，此时返回 0
-	// 公式推导 https://leetcode.cn/problems/xor-operation-in-an-array/solution/o1-gong-shi-tui-dao-pythonjavaccgojsrust-le23/
+	// 支持 n = -1 的情况，此时返回 0
+	// 公式推导过程 https://leetcode.cn/problems/xor-operation-in-an-array/solution/o1-gong-shi-tui-dao-pythonjavaccgojsrust-le23/
 	// LC1486 https://leetcode.cn/problems/xor-operation-in-an-array/
-	// https://codeforces.com/problemset/problem/15/C
+	// https://codeforces.com/problemset/problem/2225/D 1500
+	// https://codeforces.com/problemset/problem/15/C 2000
 	// https://atcoder.jp/contests/abc121/tasks/abc121_d 1164
 	preXor := func(n int) int {
 		switch n % 4 {

@@ -20,6 +20,7 @@ https://leetcode.cn/circle/discuss/01LUak/
 https://codeforces.com/problemset/problem/2027/C 1500
 https://codeforces.com/problemset/problem/765/D 1700
 https://codeforces.com/problemset/problem/1635/E 2200
+https://codeforces.com/problemset/problem/1936/C 2400 宝可梦对战
 
 题单 https://www.luogu.com.cn/training/81272#problems
 Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P
@@ -162,6 +163,7 @@ https://atcoder.jp/contests/abc126/tasks/abc126_e
 https://atcoder.jp/contests/agc012/tasks/agc012_b 思维扩展
 https://codeforces.com/problemset/problem/744/A 1500
 https://codeforces.com/problemset/problem/659/E 1600
+https://atcoder.jp/contests/abc446/tasks/abc446_e 1625 ~CF
 https://codeforces.com/problemset/problem/1176/E 1700
 https://codeforces.com/contest/1927/problem/F 1900 找包含指定边的环
 https://codeforces.com/contest/1547/problem/G 2100 对每个点 i，判断 1 到 i 有多少条路径（0/1/>=2/∞）
@@ -420,10 +422,12 @@ https://codeforces.com/problemset/problem/601/A 1600 脑筋急转弯
 https://codeforces.com/problemset/problem/1721/D 1800 带撤销的 BFS
 https://codeforces.com/problemset/problem/1851/F 1800 带撤销的 BFS
 https://codeforces.com/problemset/problem/1272/E 1900 建模
+https://atcoder.jp/contests/abc443/tasks/abc443_f 2199 ~CF
 https://codeforces.com/problemset/problem/1790/G 2300 锻炼分类讨论能力
 https://codeforces.com/problemset/problem/1860/E 2400 中转点 Fast Travel Text Editor
 https://codeforces.com/problemset/problem/1874/B 2400
 https://codeforces.com/problemset/problem/605/D 2500 线段树二分优化 BFS
+https://codeforces.com/problemset/problem/1407/E 2500 节点涂色 堵路 最大化最短路长度
 https://codeforces.com/problemset/problem/79/D 2800
 https://atcoder.jp/contests/abc160/tasks/abc160_d
 https://atcoder.jp/contests/abc394/tasks/abc394_e
@@ -1519,6 +1523,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // https://codeforces.com/problemset/problem/1725/M 1800 分层图最短路
 // https://codeforces.com/problemset/problem/1915/G 1800 双关键字
 // https://codeforces.com/problemset/problem/1842/D 1900 转换
+// https://codeforces.com/problemset/problem/1846/G 1900 吃药 状压
 // https://codeforces.com/problemset/problem/449/B 2000 【理解本质】通过最短路找到可以删除的边
 // https://codeforces.com/problemset/problem/545/E 2000 MST
 // - https://atcoder.jp/contests/arc090/tasks/arc090_c
@@ -1875,6 +1880,7 @@ func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 // - https://www.luogu.com.cn/problem/SP116
 // - http://poj.org/problem?id=1201
 // - todo 打印方案 https://atcoder.jp/contests/abc216/tasks/abc216_g
+// https://codeforces.com/problemset/problem/241/E 2600
 func (*graph) spfaShortestPath(n, st int, edges [][]int) (dis []int) { // 有负环时返回 nil
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
@@ -3561,9 +3567,13 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, 
 // https://codeforces.com/problemset/problem/1283/F 2200 与堆结合
 // https://codeforces.com/problemset/problem/825/E 2300 与堆结合
 // https://codeforces.com/problemset/problem/467/D 2400 缩点后的反图拓扑序 DP
+// https://codeforces.com/problemset/problem/1369/E 2400 安排吃菜顺序
 // https://codeforces.com/problemset/problem/1463/E 2400 缩点后的拓扑序
 // https://codeforces.com/problemset/problem/346/D 2600 结合 0-1 BFS
+// https://codeforces.com/problemset/problem/1344/C 2600 ∀ 与 ∃
 // https://codeforces.com/problemset/problem/1062/F 2900 关键点 次关键点
+// https://www.luogu.com.cn/problem/P10723 无向图
+//
 // 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
 func (*graph) topoSort(n int, edges [][]int) []int {
 	g := make([][]int, n)
@@ -3957,6 +3967,7 @@ func (G *graph) twoSAT(n int) []bool {
 // https://codeforces.com/problemset/problem/1530/D 1600 把基环树拆分成若干条链，然后把这些链合并成一个大环 
 // https://codeforces.com/problemset/problem/1873/H 1700 复杂分类讨论
 // https://codeforces.com/problemset/problem/1027/D 1700
+// https://codeforces.com/problemset/problem/1142/B 2000 可以做到线性
 // https://codeforces.com/problemset/problem/1770/D 2000
 // https://codeforces.com/problemset/problem/1335/F 2200
 // https://codeforces.com/problemset/problem/1907/G 2200
@@ -4048,6 +4059,8 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 		//	deg[v]++
 		//	deg[w]++
 		//}
+
+		// 注：可能需要特判 n=1 的情况（如果有），此时没有度为 1 的节点，情况特殊
 
 		branchQueue := []int{}
 		for i, d := range deg {
@@ -4365,11 +4378,6 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 	return pseudoClique
 }
 
-// 团 clique
-// 图 G 中的团和图 G 的补图中的独立集是一一对应的
-// 图 G 中的独立集和图 G 的补图中的团是一一对应的（等价说法）
-// https://en.wikipedia.org/wiki/Clique_(graph_theory)
-//
 // 求最大权独立集 maximal weight independent set (MWIS)    节点的独立集     注意独立集不能有自环
 // https://en.wikipedia.org/wiki/Clique_problem
 // 另见 Bron–Kerbosch 算法 https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
@@ -4404,6 +4412,11 @@ func (*graph) maximalWeightIndependentSet(g []int, a []int) int {
 	return ans
 }
 
+// 团 clique
+// 图 G 中的团和图 G 的补图中的独立集是一一对应的
+// 图 G 中的独立集和图 G 的补图中的团是一一对应的（等价说法）
+// https://en.wikipedia.org/wiki/Clique_(graph_theory)
+//
 // 一种求最大团的做法，适用于点数不超过 50 的图
 // 传入的 g 为状压后的邻接矩阵（对于最大独立集来说，g 是补图）
 // 定义 f(s) 为 s 的所有子集中最大团的大小
@@ -4415,6 +4428,8 @@ func (*graph) maximalWeightIndependentSet(g []int, a []int) int {
 // 需要注意的是，前 k 次递归的结果是否记忆化并不重要，因为这部分只有 O(2^k) 个状态
 // 总的来说，记忆化将计算量由原来的「二叉树规模」变成了「meet in the middle 规模」
 // 注：求最大独立集等价于求补图的最大团 maximal cliques (MC)
+//
+// https://codeforces.com/problemset/problem/839/E 2700 基本不等式
 func (*graph) maximalCliques(g []int, a []int) int {
 	memo := map[int]int{0: 0}
 	var dfs func(int) int
@@ -4465,6 +4480,7 @@ func (*graph) maximalCliques(g []int, a []int) int {
 // https://cdn.luogu.com.cn/upload/image_hosting/4ty1215p.png
 // http://acm.hdu.edu.cn/showproblem.php?pid=6184
 // 模板题 https://leetcode.cn/problems/paths-in-maze-that-lead-to-same-room/
+// https://codeforces.com/problemset/problem/1210/D 2400 满足点权 a > b > c 的长为 3 的路径个数
 func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 	deg := make([]int, n)
 	for _, e := range edges {

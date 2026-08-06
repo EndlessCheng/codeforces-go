@@ -49,6 +49,7 @@ https://codeforces.com/problemset/problem/300/C 1800
 https://codeforces.com/problemset/problem/869/C 1800
 https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
 https://codeforces.com/problemset/problem/213/B 1900
+https://atcoder.jp/contests/abc433/tasks/abc433_f 1934 ~CF
 https://codeforces.com/problemset/problem/1359/E 2000
 https://codeforces.com/problemset/problem/1931/G 2000 放球问题 构造
 https://codeforces.com/problemset/problem/2171/G 2000
