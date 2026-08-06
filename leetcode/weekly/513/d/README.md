@@ -28,6 +28,8 @@ $\textit{arr}$ 的子数组 $[L,R-1]$ 的元素和等于 $s[R] - s[L]$。问题�
 
 ## 方法一：值域树状数组
 
+> 注：也可以用有序集合做，见 Python3 的第二份代码。
+
 ```py [sol-Python3]
 class FenwickTree:
     def __init__(self, n: int):
@@ -69,6 +71,18 @@ class Solution:
             x = bisect_left(sorted_s, x) + 1  # 离散化（从 1 开始）
             ans += t.pre(x)  # 计算在 s 左边有多少个 <= s 的数
             t.add(x)
+        return ans
+```
+
+```py [sol-Python3 SortedList]
+class Solution:
+    def countRatioSubarrays(self, nums: list[int], a: int, b: int) -> int:
+        sl = SortedList([0])
+        ans = s = 0
+        for x in nums:
+            s += a if x % 2 else -b  # 奇数视作 a，偶数视作 -b
+            ans += sl.bisect_left(s + 1)  # 计算在 s 左边有多少个 <= s 的数
+            sl.add(s)
         return ans
 ```
 
