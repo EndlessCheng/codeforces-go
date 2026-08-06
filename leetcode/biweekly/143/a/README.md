@@ -1,13 +1,13 @@
-至多循环 $10$ 次，一定会遇到个位数为 $0$ 的数字，数位乘积是 $0$，一定是 $t$ 的倍数。
+从 $n$ 开始，至多循环 $10$ 次，一定会遇到个位数为 $0$ 的数，其数位乘积为 $0$，一定是 $t$ 的倍数。
 
-所以暴力枚举即可。
+所以暴力枚举 $n,n+1,n+2,\ldots,n+9$ 即可。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1cgmBYqEhu/)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1cgmBYqEhu/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def smallestNumber(self, n: int, t: int) -> int:
-        for x in count(n):
+        for x in count(n):  # 从 n 开始枚举
             prod = reduce(mul, map(int, str(x)))
             if prod % t == 0:
                 return x
@@ -16,7 +16,7 @@ class Solution:
 ```py [sol-Python3 不用字符串]
 class Solution:
     def smallestNumber(self, n: int, t: int) -> int:
-        for i in count(n):
+        for i in count(n):  # 从 n 开始枚举
             prod = 1
             x = i
             while x:
