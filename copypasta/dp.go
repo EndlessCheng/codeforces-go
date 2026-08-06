@@ -162,6 +162,8 @@ https://codeforces.com/contest/2043/problem/C
    - https://atcoder.jp/contests/abc320/tasks/abc320_f 2042
 - [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/) 1957
    - 回文串 https://codeforces.com/problemset/problem/570/E 2300
+https://codeforces.com/problemset/problem/2193/F 1600 三方向移动
+https://codeforces.com/problemset/problem/2194/E 2000 修改一个格子后的最大路径和的最小值
 https://atcoder.jp/contests/abc175/tasks/abc175_e 每行至多选三个
 https://atcoder.jp/contests/abc147/tasks/abc147_e 1713
 
@@ -734,6 +736,7 @@ func _(abs func(int) int) {
 	// LC1092 最短公共超序列 (SCS) https://leetcode.cn/problems/shortest-common-supersequence/ 1977
 	// LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/ 2351 若其中一个序列无重复元素，可以转换成 LIS
 	// - https://www.luogu.com.cn/problem/P1439 
+	// https://codeforces.com/problemset/problem/2242/D 1600
 	// https://codeforces.com/problemset/problem/163/A 1700 其中一个改为子串 
 	// https://codeforces.com/problemset/problem/1446/B 1800
 	// https://codeforces.com/problemset/problem/463/D 1900 多个排列的 LCS 
@@ -2313,7 +2316,8 @@ func _(abs func(int) int) {
 	- LC1955 https://leetcode.cn/problems/count-number-of-special-subsequences/
 	https://codeforces.com/problemset/problem/446/A 1600
 	https://codeforces.com/problemset/problem/2061/C 1600 也可以线性 DP
-	https://codeforces.com/problemset/problem/2193/F 1600
+	https://codeforces.com/problemset/problem/2193/F 1600 三方向移动
+	- https://leetcode.cn/contest/2026_pudong_ai/problems/ZqPfxj/
 	https://codeforces.com/problemset/problem/1826/D 1700 式子变形
 	https://codeforces.com/problemset/problem/2052/F 1700 地板镶嵌
 	https://codeforces.com/problemset/problem/2029/C 1700
@@ -4119,6 +4123,7 @@ func _(abs func(int) int) {
 
 	// 决策单调性优化 DP
 	// todo 决策单调性优化总结 https://www.luogu.com.cn/blog/command-block/dp-di-jue-ce-dan-diao-xing-you-hua-zong-jie
+	// https://leetcode.cn/problems/stone-game-v/
 	// https://codeforces.com/problemset/problem/229/D 2100
 	// https://codeforces.com/problemset/problem/1101/F 2400 看似二分，但实际上只是对状态定义有帮助（最大间距的最小值）
 	// https://codeforces.com/problemset/problem/868/F 2500 分治+莫队均摊 todo
@@ -4751,6 +4756,7 @@ func _(abs func(int) int) {
 				}
 				// 站在 v 的角度，不往 w 走，能走多远？
 				// 要么往上走（fromUp），要么往除了 w 的其余子树走（mx），二者取最大值
+				// 如果是求 min 的题目，需要讨论是只有一个儿子，还是有多个儿子
 				mx := sub.maxD
 				if w == sub.w {
 					mx = sub.maxD2

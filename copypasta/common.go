@@ -50,6 +50,7 @@ https://codeforces.com/problemset/problem/1856/C 1600
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
 https://codeforces.com/problemset/problem/1270/B 1200 式子变形 或者 脑筋急转弯
 https://codeforces.com/problemset/problem/1420/B 1200
+https://atcoder.jp/contests/abc433/tasks/abc433_d 1280 ~CF
 https://codeforces.com/problemset/problem/318/B 1300 子串
 https://codeforces.com/problemset/problem/1931/D 1300 pair
 https://codeforces.com/problemset/problem/1926/D 1300
@@ -189,6 +190,7 @@ https://www.luogu.com.cn/problem/P9474 值域滑窗
 https://codeforces.com/problemset/problem/1982/C 1200
 
 不定长滑动窗口：求子数组个数
+https://atcoder.jp/contests/abc430/tasks/abc430_c 1278 ~CF
 https://codeforces.com/problemset/problem/550/B 1400 变形：改成子数组
 https://codeforces.com/problemset/problem/2149/E 1500 恰好型
 https://codeforces.com/problemset/problem/1994/C 1600 结合 DP
@@ -320,6 +322,7 @@ LC2193. 得到回文串的最少操作次数 https://leetcode.cn/problems/minimu
 https://codeforces.com/problemset/problem/1550/B 1000
 https://codeforces.com/problemset/problem/1920/B 1100
 https://codeforces.com/problemset/problem/1993/B 1100
+https://codeforces.com/problemset/problem/2241/D 1100 从左到右贪心
 https://codeforces.com/problemset/problem/2047/B O(n) 做法约 1200
 https://codeforces.com/problemset/problem/2117/C 1200
 https://codeforces.com/problemset/problem/2126/D 1200 区间贪心
@@ -696,6 +699,7 @@ https://atcoder.jp/contests/arc088/tasks/arc088_b 1646=CF1956
 https://atcoder.jp/contests/arc145/tasks/arc145_a
 https://atcoder.jp/contests/agc015/tasks/agc015_d bit OR
 https://atcoder.jp/contests/abc178/tasks/abc178_f
+https://www.luogu.com.cn/problem/P12911
 构造反例 https://leetcode.cn/problems/parallel-courses-iii/solution/tuo-bu-pai-xu-dong-tai-gui-hua-by-endles-dph6/2310439
 构造 TLE 数据 https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/solutions/2805413/bitset-you-hua-0-1-bei-bao-by-endlessche-m1xn/comments/2320111
 题单 https://www.luogu.com.cn/training/14#problems
@@ -775,6 +779,7 @@ https://codeforces.com/problemset/problem/1095/E  1900
 https://codeforces.com/problemset/problem/1714/F  1900 锻炼代码实现技巧的好题
 https://codeforces.com/problemset/problem/1747/D  1900 结论 不变量
 https://codeforces.com/problemset/problem/1914/F  1900
+https://codeforces.com/problemset/problem/2233/D  1900 有简单做法，见我的代码 https://codeforces.com/problemset/submission/2233/385743570
 https://codeforces.com/problemset/problem/1088/D  2000
 https://codeforces.com/problemset/problem/1763/C  2000
 https://codeforces.com/problemset/problem/1951/E  2000 把 s 划分成若干段，使得每一段都不是回文串
@@ -1420,6 +1425,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/1923/C 1400 构造
 	// https://codeforces.com/problemset/problem/1141/C 1500
 	// https://codeforces.com/problemset/problem/2009/F 1700
+	// https://atcoder.jp/contests/abc450/tasks/abc450_e 1734 ~CF
 	// https://codeforces.com/problemset/problem/901/C 2300
 	// https://www.luogu.com.cn/problem/P12246 撤销-更新-恢复
 	prefixSum := func(arr []int) {
@@ -2088,8 +2094,10 @@ func _() {
 	}
 
 	// 二阶差分
-	// 比如金字塔式更新 +1 +2 +3 +4 +3 +2 +1
+	// 等差数列更新 +1 +2 +3 +4
+	// 金字塔式更新 +1 +2 +3 +4 +3 +2 +1
 	// https://codeforces.com/problemset/problem/1661/D 1900 简化
+	// https://atcoder.jp/contests/abc407/tasks/abc407_f 2027 ~CF 标准问题
 	// https://codeforces.com/problemset/problem/1710/B 2100
 	// https://www.luogu.com.cn/problem/U318099?contestId=123900
 	// todo LC2735 https://leetcode.cn/problems/collecting-chocolates/
@@ -2106,6 +2114,10 @@ func _() {
 		// a[r] += base+step*(r-l)
 		// 一般题目中的 step 会取 1 或者 -1
 		update := func(l, r, base, step int) {
+			if l > r {
+				return
+			}
+
 			diff[l] += base
 			diff[r+1] -= base + step*(r-l) // 修正
 
@@ -2193,11 +2205,9 @@ func _() {
 
 	// 二维差分
 	// 【图解】从一维差分到二维差分 https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/
-	// 模板题 LC2536 https://leetcode.cn/problems/increment-submatrices-by-one/ 1583
-	// LC2132 https://leetcode.cn/problems/stamping-the-grid/ 2364（也可以不用差分）
+	// https://atcoder.jp/contests/abc434/tasks/abc434_d 1398 ~CF
+	// https://codeforces.com/problemset/problem/1985/H2 2200
 	// https://www.luogu.com.cn/problem/P3397
-	// LCP74 离散化 https://leetcode.cn/problems/xepqZ5/
-	// https://codeforces.com/problemset/problem/1985/H2
 	diff2D := func(n, m int) {
 		diff := make([][]int, n+2)
 		for i := range diff {
