@@ -1,48 +1,119 @@
 package main
 
+import "math"
+
 // github.com/EndlessCheng/codeforces-go
-func stoneGameV(a []int) (ans int) {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-	n := len(a)
-	sum := make([]int, n+1)
-	for i, v := range a {
+func stoneGameV1(stoneValue []int) int {
+	n := len(stoneValue)
+	sum := make([]int, n+1) // stoneValue 的前缀和
+	for i, v := range stoneValue {
 		sum[i+1] = sum[i] + v
 	}
-	dp := make([][]int, n)
-	for i := range dp {
-		dp[i] = make([]int, n+1)
-		for j := range dp[i] {
-			dp[i][j] = -1
-		}
+
+	memo := make([][]int, n)
+	for i := range memo {
+		memo[i] = make([]int, n+1)
 	}
-	var f func(int, int) int
-	f = func(l, r int) (res int) {
-		if r-l == 1 {
-			return
+
+	// 返回 Alice 在子数组 [i,j) 中获得的最大分数
+	var dfs func(int, int) int
+	dfs = func(i, j int) (res int) {
+		if j-i == 1 { // 只剩下一块石子，游戏结束
+			return 0
 		}
-		dv := &dp[l][r]
-		if *dv != -1 {
-			return *dv
+
+		p := &memo[i][j]
+		if *p > 0 { // 之前计算过
+			return *p
 		}
-		defer func() { *dv = res }()
-		for i := l + 1; i < r; i++ {
-			sl, sr := sum[i]-sum[l], sum[r]-sum[i]
-			var s int
-			if sl == sr {
-				s = sl + max(f(l, i), f(i, r))
-			} else if sl < sr {
-				s = sl + f(l, i)
-			} else {
-				s = sr + f(i, r)
+
+		// 把子数组 [i,j) 分成 [i,k) 和 [k,j)
+		for k := i + 1; k < j; k++ {
+			sumL, sumR := sum[k]-sum[i], sum[j]-sum[k]
+			var score int
+			if sumL < sumR { // Bob 丢弃 [k,j)，剩下 [i,k)
+				score = dfs(i, k) + sumL
+			} else if sumL > sumR { // Bob 丢弃 [i,k)，剩下 [k,j)
+				score = dfs(k, j) + sumR
+			} else { // sumL = sumR，由 Alice 决定丢弃哪边
+				score = max(dfs(i, k), dfs(k, j)) + sumL
 			}
-			res = max(res, s)
+			res = max(res, score)
 		}
+
+		*p = res // 记忆化
 		return
 	}
-	return f(0, n)
+
+	return dfs(0, n)
+}
+
+func stoneGameV2(stoneValue []int) int {
+	n := len(stoneValue)
+	sum := make([]int, n+1) // stoneValue 的前缀和
+	for i, v := range stoneValue {
+		sum[i+1] = sum[i] + v
+	}
+
+	f := make([][]int, n)
+	for i := range f {
+		f[i] = make([]int, n+1)
+	}
+
+	for i := n - 2; i >= 0; i-- {
+		for j := i + 2; j <= n; j++ {
+			// 把子数组 [i,j) 分成 [i,k) 和 [k,j)
+			for k := i + 1; k < j; k++ {
+				sumL, sumR := sum[k]-sum[i], sum[j]-sum[k]
+				var score int
+				if sumL < sumR { // Bob 丢弃 [k,j)，剩下 [i,k)
+					score = f[i][k] + sumL
+				} else if sumL > sumR { // Bob 丢弃 [i,k)，剩下 [k,j)
+					score = f[k][j] + sumR
+				} else { // sumL = sumR，由 Alice 决定丢弃哪边
+					score = max(f[i][k], f[k][j]) + sumL
+				}
+				f[i][j] = max(f[i][j], score)
+			}
+		}
+	}
+
+	return f[0][n]
+}
+
+func stoneGameV(stoneValue []int) int {
+	n := len(stoneValue)
+	sum := make([]int, n+1) // stoneValue 的前缀和
+	for i, v := range stoneValue {
+		sum[i+1] = sum[i] + v
+	}
+
+	f := make([][]int, n+1)
+	sufMax := make([][]int, n+1)
+	for i := range f {
+		f[i] = make([]int, n+1)
+		sufMax[i] = make([]int, n+1)
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		sufMax[i+1][i+1] = math.MinInt
+		sufMax[i][i+1] = -sum[i] // f[i][i+1] - sum[i] = 0 - sum[i] = -sum[i]
+		preMax := 0
+		k := i + 1
+		for j := i + 2; j <= n; j++ {
+			for sum[k]-sum[i] <= sum[j]-sum[k] {
+				preMax = max(preMax, f[i][k]+sum[k])
+				k++
+			}
+			// 循环结束后 sum[k] - sum[i] > sum[j] - sum[k]
+			q := k
+			if sum[k-1]-sum[i] == sum[j]-sum[k-1] {
+				q--
+			}
+			f[i][j] = max(preMax-sum[i], sufMax[q][j]+sum[j])
+			sufMax[i][j] = max(sufMax[i+1][j], f[i][j]-sum[i])
+		}
+	}
+
+	return f[0][n]
 }

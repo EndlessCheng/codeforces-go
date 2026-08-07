@@ -6,8 +6,7 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {
-	t.Log("Current test is [d]")
+func Test_d(t *testing.T) {
 	examples := [][]string{
 		{
 			`[6,2,3,4,5,5]`, 
@@ -26,9 +25,12 @@ func Test(t *testing.T) {
 			`[5,5]`,
 			`5`,
 		},
+		{
+			`[6,1]`,
+			`1`,
+		},
 	}
-	targetCaseNum := 0
-	if err := testutil.RunLeetCodeFuncWithExamples(t, stoneGameV, examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, stoneGameV, examples, 0); err != nil {
 		t.Fatal(err)
 	}
 }
