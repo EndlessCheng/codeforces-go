@@ -88,10 +88,9 @@ func stoneGameV(stoneValue []int) int {
 		sum[i+1] = sum[i] + v
 	}
 
-	f := make([][]int, n+1)
+	f := make([]int, n+1)
 	sufMax := make([][]int, n+1)
-	for i := range f {
-		f[i] = make([]int, n+1)
+	for i := range sufMax {
 		sufMax[i] = make([]int, n+1)
 	}
 
@@ -102,7 +101,7 @@ func stoneGameV(stoneValue []int) int {
 		k := i + 1
 		for j := i + 2; j <= n; j++ {
 			for sum[k]-sum[i] <= sum[j]-sum[k] {
-				preMax = max(preMax, f[i][k]+sum[k])
+				preMax = max(preMax, f[k]+sum[k])
 				k++
 			}
 			// 循环结束后 sum[k] - sum[i] > sum[j] - sum[k]
@@ -110,10 +109,10 @@ func stoneGameV(stoneValue []int) int {
 			if sum[k-1]-sum[i] == sum[j]-sum[k-1] {
 				q--
 			}
-			f[i][j] = max(preMax-sum[i], sufMax[q][j]+sum[j])
-			sufMax[i][j] = max(sufMax[i+1][j], f[i][j]-sum[i])
+			f[j] = max(preMax-sum[i], sufMax[q][j]+sum[j])
+			sufMax[i][j] = max(sufMax[i+1][j], f[j]-sum[i])
 		}
 	}
 
-	return f[0][n]
+	return f[n]
 }
