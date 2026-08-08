@@ -40,14 +40,14 @@
 为了兼顾这种情况，我们可以往 $s$ 的前面添加
 
 $$
-\max(\textit{cnt}-n+1,1)
+k = \max(\textit{cnt}-n+1,1)
 $$
 
 个前导 $0$。其中 $\textit{cnt}$ 是 $t$ 的质因子个数。
 
 注意至少要添加 $1$ 个前导零，因为可能有 $s=999$ 这种情况，即使 $t=2$，答案（$1112$）长度也比 $s$ 要长。
 
-注意添加前导零会影响可以填入的数字，当 $\textit{isLimit}=\texttt{true}$ 且 $i < \textit{cnt}$ 时，我们可以填入 $0$。这和数位 DP 的「跳过不填数字」是一样的。
+注意添加前导零会影响可以填入的数字，当 $\textit{isLimit}=\texttt{true}$ 且 $i < k$ 时，我们可以填入 $0$。这和数位 DP 的「跳过不填数字」是一样的。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1cgmBYqEhu/?t=28m31s)，欢迎点赞关注~
 
