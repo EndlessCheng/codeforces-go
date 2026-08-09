@@ -3,12 +3,12 @@ package main
 import "math/bits"
 
 // https://space.bilibili.com/206214
-// 详细注释见 https://leetcode.cn/circle/discuss/mOr1u6/
 type data struct {
 	cnt, pre, suf, len int
 	hasPeak            bool
 }
 
+// 详细注释见 https://leetcode.cn/circle/discuss/mOr1u6/
 type seg []data
 
 func newSegmentTree(a []int) seg {
@@ -19,6 +19,7 @@ func newSegmentTree(a []int) seg {
 }
 
 func (seg) mergeData(a, b data) data {
+	cnt := a.cnt + b.cnt + a.len*b.len - a.suf*b.pre
 	pre := a.pre
 	if !a.hasPeak {
 		pre += b.pre
@@ -27,7 +28,7 @@ func (seg) mergeData(a, b data) data {
 	if !b.hasPeak {
 		suf += a.suf
 	}
-	return data{a.cnt + b.cnt + a.len*b.len - a.suf*b.pre, pre, suf, a.len + b.len, a.hasPeak || b.hasPeak}
+	return data{cnt, pre, suf, a.len + b.len, a.hasPeak || b.hasPeak}
 }
 
 func (t seg) maintain(node int) {
@@ -46,16 +47,16 @@ func (t seg) build(a []int, node, l, r int) {
 	t.maintain(node)
 }
 
-func (t seg) update(node, l, r, i int, hasPeak bool) {
+func (t seg) update(node, l, r, i int) {
 	if l == r { // 叶子（到达目标）
-		t[node].hasPeak = hasPeak
+		t[node].hasPeak = !t[node].hasPeak
 		return
 	}
 	m := (l + r) >> 1
 	if i <= m { // i 在左子树
-		t.update(node*2, l, m, i, hasPeak)
+		t.update(node*2, l, m, i)
 	} else { // i 在右子树
-		t.update(node*2+1, m+1, r, i, hasPeak)
+		t.update(node*2+1, m+1, r, i)
 	}
 	t.maintain(node)
 }
@@ -83,13 +84,34 @@ func countOfPeaks(nums []int, queries [][]int) (ans []int64) {
 			ans = append(ans, int64(t.query(1, 0, n-1, q[1], q[2]).cnt))
 			continue
 		}
-		i := q[1]
-		nums[i] = q[2]
-		for j := max(i-1, 1); j <= min(i+1, n-2); j++ {
-			// 注：这里可以优化一下，如果更新前后 hasPeak 不变，则不调用 t.update
-			hasPeak := nums[j-1] < nums[j] && nums[j] > nums[j+1]
-			t.update(1, 0, n-1, j, hasPeak)
+
+		i, v := q[1], q[2]
+
+		if i > 1 {
+			oldHas := nums[i-2] < nums[i-1] && nums[i-1] > nums[i]
+			newHas := nums[i-2] < nums[i-1] && nums[i-1] > v
+			if newHas != oldHas {
+				t.update(1, 0, n-1, i-1)
+			}
 		}
+
+		if 0 < i && i < n-1 {
+			oldHas := nums[i-1] < nums[i] && nums[i] > nums[i+1]
+			newHas := nums[i-1] < v && v > nums[i+1]
+			if newHas != oldHas {
+				t.update(1, 0, n-1, i)
+			}
+		}
+
+		if i < n-2 {
+			oldHas := nums[i] < nums[i+1] && nums[i+1] > nums[i+2]
+			newHas := v < nums[i+1] && nums[i+1] > nums[i+2]
+			if newHas != oldHas {
+				t.update(1, 0, n-1, i+1)
+			}
+		}
+
+		nums[i] = v
 	}
 	return
 }
