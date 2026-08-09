@@ -32,9 +32,9 @@ $$
 A.\textit{cnt} + B.\textit{cnt} + A.\textit{len} \cdot B.\textit{len} - A.\textit{suf}\cdot B.\textit{pre}
 $$
 
-对于更新操作，会影响 $i-1,i,i+1$ 三个位置，执行三次线段树的单点更新操作。
+对于更新操作，由于更新 $\textit{nums}[i]$ 会影响 $i-1,i,i+1$ 三个位置是否为峰顶，我们执行三次线段树的单点更新操作。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ryuy6WEDs/?t=22m22s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -106,7 +106,7 @@ class Solution:
                 ans.append(t.query(i, v))
                 continue
             nums[i] = v
-            for j in range(max(i - 1, 1), min(i + 1, n - 2) + 1):
+            for j in range(max(i - 1, 1), min(i + 2, n - 1)):
                 # 注：这里可以优化一下，如果更新前后 has_peak 不变，则不调用 t.update
                 has_peak = nums[j - 1] < nums[j] > nums[j + 1]
                 t.update(j, has_peak)

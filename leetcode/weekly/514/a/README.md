@@ -4,9 +4,22 @@
 
 代码实现时，可以把价格乘以 $100$，这样折扣后的价格是整数。最后返回时再除以 $100$。这样只有一次浮点运算。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ryuy6WEDs/)，欢迎点赞关注~
 
 ```py [sol-Python3]
+class Solution:
+    def minPrice(self, prices: list[int], discounts: list[int]) -> float:
+        prices.sort(reverse=True)
+        discounts.sort(reverse=True)
+
+        s = 0
+        for i, p in enumerate(prices):
+            d = discounts[i] if i < len(discounts) else 0
+            s += p * (100 - d)
+        return s / 100
+```
+
+```py [sol-Python3 写法二]
 class Solution:
     def minPrice(self, prices: list[int], discounts: list[int]) -> float:
         prices.sort(reverse=True)
@@ -69,10 +82,12 @@ func minPrice(prices, discounts []int) float64 {
 - 时间复杂度：$\mathcal{O}(n\log n + m\log m)$，其中 $n$ 是 $\textit{prices}$ 的长度，$m$ 是 $\textit{discounts}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
-## 优化点
+## 进一步优化
 
-1. 只需要对 $\textit{prices}$ 的前 $\min(n,m)$ 大排序，可以先跑一遍快速选择算法再排序。
-2. $\textit{discounts}$ 的范围只有 $[1,100]$，可以用**计数排序**。
+由于瓶颈在排序上，考虑如何优化排序。
+
+1. $\textit{prices}$ 只需要对前 $\min(n,m)$ 大排序。可以先跑一遍快速选择算法，再排序。
+2. $\textit{discounts}$ 的元素范围只有 $[1,100]$，可以改用**计数排序**。
 
 ## 专题训练
 

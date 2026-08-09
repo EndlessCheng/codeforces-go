@@ -1,6 +1,6 @@
 两个不重叠的正方形，要么一左一右，要么一上一下。
 
-比如一上一下的情况，枚举水平分割线切开了 $i$ 行和 $i+1$ 行，问题变成：
+比如一上一下的情况，假设两个正方形之间有条水平分割线，位于 $i$ 行和 $i+1$ 行之间，那么问题变成两个互相独立的子问题：
 
 - 计算 $\textit{mat}$ 的 $[0,i]$ 行中的 [221. 最大正方形](https://leetcode.cn/problems/maximal-square/)。
 - 计算 $\textit{mat}$ 的 $[i+1,m-1]$ 行中的 [221. 最大正方形](https://leetcode.cn/problems/maximal-square/)。
@@ -13,7 +13,7 @@
 
 对于 221 题，可以用动态规划，或者单调栈，或者二分答案+二维前缀和等。下面用的动态规划写法（空间优化），来自 [我的题解](https://leetcode.cn/problems/maximal-square/solutions/3704858/he-85-ti-yi-yang-de-zuo-fa-pythonjavaccg-az54/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1ryuy6WEDs/?t=9m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

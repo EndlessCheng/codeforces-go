@@ -1,8 +1,8 @@
-先 DFS 算出树的高度 $h$，做法同 [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)。
+## 写法一
 
-再写一个自顶向下的 DFS，从 $h$ 开始，每往下走一步就把 $h$ 减一，就是题目中的 $h-d+1$ 了。
+先 DFS 算出树的高度 $h$，做法同 [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)。晕递归的同学，请先看视频讲解[【基础算法精讲 09】](https://www.bilibili.com/video/BV1UD4y1Y769/)，欢迎点赞~
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+然后，写一个自顶向下的 DFS，从 $h$ 开始，每往下走一步就把 $h$ 减一，就是题目中的 $h-d+1$ 了。
 
 ```py [sol-Python3]
 class Solution:
@@ -12,23 +12,19 @@ class Solution:
         for i in range(1, n):
             g[parent[i]].append(i)
 
-        def get_h(x: int, fa: int) -> int:
+        def get_h(x: int) -> int:
             h = 0
             for y in g[x]:
-                if y != fa:
-                    h = max(h, get_h(y, x))
+                h = max(h, get_h(y))
             return h + 1
-        h = get_h(0, -1)
+        h = get_h(0)
 
-        def dfs(x: int, fa: int, weight: int):
-            nonlocal ans
-            ans += nums[x] * weight
+        def dfs(x: int, weight: int) -> int:
+            ans = nums[x] * weight
             for y in g[x]:
-                if y != fa:
-                    dfs(y, x, weight - 1)
-        ans = 0
-        dfs(0, -1, h)
-        return ans
+                ans += dfs(y, weight - 1)
+            return ans
+        return dfs(0, h)
 ```
 
 ```java [sol-Java]
@@ -41,26 +37,22 @@ class Solution {
             g[parent[i]].add(i);
         }
 
-        int h = getH(0, -1, g);
-        return dfs(0, -1, h, g, nums);
+        int h = getH(0, g);
+        return dfs(0, h, g, nums);
     }
 
-    private int getH(int x, int fa, List<Integer>[] g) {
+    private int getH(int x, List<Integer>[] g) {
         int h = 0;
         for (int y : g[x]) {
-            if (y != fa) {
-                h = Math.max(h, getH(y, x, g));
-            }
+            h = Math.max(h, getH(y, g));
         }
         return h + 1;
     }
 
-    private long dfs(int x, int fa, int weight, List<Integer>[] g, int[] nums) {
+    private long dfs(int x, int weight, List<Integer>[] g, int[] nums) {
         long ans = (long) nums[x] * weight;
         for (int y : g[x]) {
-            if (y != fa) {
-                ans += dfs(y, x, weight - 1, g, nums);
-            }
+            ans += dfs(y, weight - 1, g, nums);
         }
         return ans;
     }
@@ -77,27 +69,23 @@ public:
             g[parent[i]].push_back(i);
         }
 
-        auto get_h = [&](this auto&& get_h, int x, int fa) -> int {
+        auto get_h = [&](this auto&& get_h, int x) -> int {
             int h = 0;
             for (int y : g[x]) {
-                if (y != fa) {
-                    h = max(h, get_h(y, x));
-                }
+                h = max(h, get_h(y));
             }
             return h + 1;
         };
-        int h = get_h(0, -1);
+        int h = get_h(0);
 
         long long ans = 0;
-        auto dfs = [&](this auto&& dfs, int x, int fa, int weight) -> void {
+        auto dfs = [&](this auto&& dfs, int x, int weight) -> void {
             ans += 1LL * nums[x] * weight;
             for (int y : g[x]) {
-                if (y != fa) {
-                    dfs(y, x, weight - 1);
-                }
+                dfs(y, weight - 1);
             }
         };
-        dfs(0, -1, h);
+        dfs(0, h);
         return ans;
     }
 };
@@ -112,27 +100,134 @@ func weightedSum(parent []int, nums []int) (ans int64) {
 		g[p] = append(g[p], i)
 	}
 
-	var getH func(int, int) int
-	getH = func(x, fa int) (h int) {
+	var getH func(int) int
+	getH = func(x int) (h int) {
 		for _, y := range g[x] {
-			if y != fa {
-				h = max(h, getH(y, x))
-			}
+			h = max(h, getH(y))
 		}
 		return h + 1
 	}
-	h := getH(0, -1)
+	h := getH(0)
 
-	var dfs func(int, int, int)
-	dfs = func(x, fa, weight int) {
+	var dfs func(int, int)
+	dfs = func(x, weight int) {
 		ans += int64(nums[x]) * int64(weight)
 		for _, y := range g[x] {
-			if y != fa {
-				dfs(y, x, weight-1)
-			}
+			dfs(y, weight-1)
 		}
 	}
-	dfs(0, -1, h)
+	dfs(0, h)
+	return
+}
+```
+
+## 写法二
+
+在第一次 DFS 中，可以顺带求出每个节点的深度，保存到数组 $\textit{depth}$ 中。这样第二次 DFS 可以用简单的循环代替。
+
+```py [sol-Python3]
+class Solution:
+    def weightedSum(self, parent: list[int], nums: list[int]) -> int:
+        n = len(parent)
+        g = [[] for _ in range(n)]
+        for i in range(1, n):
+            g[parent[i]].append(i)
+
+        depth = [0] * n
+        def dfs(x: int) -> None:
+            for y in g[x]:
+                depth[y] = depth[x] + 1
+                dfs(y)
+        dfs(0)
+
+        h = max(depth) + 1
+        return sum(x * (h - d) for x, d in zip(nums, depth))
+```
+
+```java [sol-Java]
+class Solution {
+    public long weightedSum(int[] parent, int[] nums) {
+        int n = parent.length;
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, _ -> new ArrayList<>());
+        for (int i = 1; i < n; i++) {
+            g[parent[i]].add(i);
+        }
+
+        int[] depth = new int[n];
+        int h = dfs(0, g, depth);
+
+        long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += (long) nums[i] * (h - depth[i]);
+        }
+        return ans;
+    }
+
+    private int dfs(int x, List<Integer>[] g, int[] depth) {
+        int h = 0;
+        for (int y : g[x]) {
+            depth[y] = depth[x] + 1;
+            h = Math.max(h, dfs(y, g, depth));
+        }
+        return h + 1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long weightedSum(vector<int>& parent, vector<int>& nums) {
+        int n = parent.size();
+        vector<vector<int>> g(n);
+        for (int i = 1; i < n; i++) {
+            g[parent[i]].push_back(i);
+        }
+        vector<int> depth(n);
+
+        auto dfs = [&](this auto&& dfs, int x) -> int {
+            int h = 0;
+            for (int y : g[x]) {
+                depth[y] = depth[x] + 1;
+                h = max(h, dfs(y));
+            }
+            return h + 1;
+        };
+        int h = dfs(0);
+
+        long long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += 1LL * nums[i] * (h - depth[i]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func weightedSum(parent []int, nums []int) (ans int64) {
+	n := len(parent)
+	g := make([][]int, n)
+	for i := 1; i < n; i++ {
+		p := parent[i]
+		g[p] = append(g[p], i)
+	}
+
+	depth := make([]int, n)
+	var dfs func(int) int
+	dfs = func(x int) (h int) {
+		for _, y := range g[x] {
+			depth[y] = depth[x] + 1
+			h = max(h, dfs(y))
+		}
+		return h + 1
+	}
+	h := dfs(0)
+
+	for i, x := range nums {
+		ans += int64(x) * int64(h-depth[i])
+	}
 	return
 }
 ```
