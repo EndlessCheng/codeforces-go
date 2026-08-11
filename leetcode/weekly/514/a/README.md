@@ -12,6 +12,7 @@ class Solution:
         prices.sort(reverse=True)
         discounts.sort(reverse=True)
 
+        # 更快的写法见另一份代码【Python3 写法二】
         s = 0
         for i, p in enumerate(prices):
             d = discounts[i] if i < len(discounts) else 0
@@ -24,7 +25,9 @@ class Solution:
     def minPrice(self, prices: list[int], discounts: list[int]) -> float:
         prices.sort(reverse=True)
         discounts.sort(reverse=True)
-        return sum(p * (100 - d) for p, d in zip_longest(prices, discounts, fillvalue=0)) / 100
+
+        discount = sum(p * d for p, d in zip(prices, discounts))
+        return (sum(prices) * 100 - discount) / 100
 ```
 
 ```java [sol-Java]
