@@ -17,7 +17,7 @@ class Solution:
         for i, p in enumerate(prices):
             d = discounts[i] if i < len(discounts) else 0
             s += p * (100 - d)
-        return s / 100
+        return s / 100  # 只做一次浮点运算
 ```
 
 ```py [sol-Python3 写法二]
@@ -27,7 +27,7 @@ class Solution:
         discounts.sort(reverse=True)
 
         discount = sum(p * d for p, d in zip(prices, discounts))
-        return (sum(prices) * 100 - discount) / 100
+        return (sum(prices) * 100 - discount) / 100  # 只做一次浮点运算
 ```
 
 ```java [sol-Java]
@@ -41,7 +41,7 @@ class Solution {
             int d = i < discounts.length ? discounts[discounts.length - 1 - i] : 0;
             ans += prices[prices.length - 1 - i] * (100 - d);
         }
-        return ans / 100.;
+        return ans / 100.; // 只做一次浮点运算
     }
 }
 ```
@@ -58,7 +58,7 @@ public:
             int d = i < discounts.size() ? discounts[i] : 0;
             ans += prices[i] * (100 - d);
         }
-        return ans / 100.;
+        return ans / 100.; // 只做一次浮点运算
     }
 };
 ```
@@ -76,7 +76,7 @@ func minPrice(prices, discounts []int) float64 {
 		}
 		ans += p * (100 - d)
 	}
-	return float64(ans) / 100
+	return float64(ans) / 100 // 只做一次浮点运算
 }
 ```
 
