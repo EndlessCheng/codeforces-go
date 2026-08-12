@@ -1,11 +1,13 @@
+推荐先完成更简单的 [2213. 由单个字符重复的最长子字符串](https://leetcode.cn/problems/longest-substring-of-one-repeating-character/)，[我的题解](https://leetcode.cn/problems/longest-substring-of-one-repeating-character/solutions/1352584/by-endlesscheng-qpbw/)。
+
 **技巧**：如果一个问题可以用**分治**解决，那么这个问题的带修改版本可以用**线段树**解决。
 
 如何用分治计算一个数组的峰值子数组的个数？
 
 把数组分成左右两部分 $A$ 和 $B$：
 
-1. 计算 $A$ 中的峰值子数组的个数。这可以递归解决。
-2. 计算 $B$ 中的峰值子数组的个数。这可以递归解决。
+1. 计算 $A$ 的峰值子数组的个数。这可以递归解决。
+2. 计算 $B$ 的峰值子数组的个数。这可以递归解决。
 3. 计算左端点在 $A$ 中，右端点在 $B$ 中的峰值子数组的个数。我们需要知道 $A$ 中的最后一个峰顶的位置，以及 $B$ 中第一个峰顶的位置。或者计算从峰顶到数组端点的长度。用所有子数组的个数，减去不含峰值的子数组的个数，即为峰值子数组的个数。
 
 这样思考后，发现本题可以用分治解决，那么带修改版本就可以用线段树解决了。
@@ -233,7 +235,7 @@ class SegmentTree {
     int n;
     vector<Data> tree;
 
-    Data merge_data(Data a, Data b) const {
+    Data merge_data(const Data& a, const Data& b) const {
         long long cnt = a.cnt + b.cnt + 1LL * a.len * b.len - 1LL * a.suf * b.pre;
         int pre = a.has_peak ? a.pre : a.len + b.pre;
         int suf = b.has_peak ? b.suf : b.len + a.suf;
@@ -658,7 +660,7 @@ class SegmentTree {
     int n;
     vector<Data> tree;
 
-    Data merge_data(Data a, Data b) const {
+    Data merge_data(const Data& a, const Data& b) const {
         long long cnt = a.cnt + b.cnt + 1LL * a.len * b.len - 1LL * a.suf * b.pre;
         int pre = a.has_peak ? a.pre : a.len + b.pre;
         int suf = b.has_peak ? b.suf : b.len + a.suf;
