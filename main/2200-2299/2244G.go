@@ -36,8 +36,8 @@ func cf2244G(in io.Reader, out io.Writer) {
 			Fscan(in, &v)
 			res := t.pre(i-v-1) + v
 			ans = max(ans, res)
-			if s := i + v + 1; s <= n {
-				todo[s] = append(todo[s], pair{i, res})
+			if j := i + v + 1; j <= n {
+				todo[j] = append(todo[j], pair{i, res})
 			}
 		}
 		Fprintln(out, ans)
