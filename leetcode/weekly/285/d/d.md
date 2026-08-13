@@ -318,10 +318,13 @@ func longestRepeating(s string, queryCharacters string, queryIndices []int) []in
 - 时间复杂度：$\mathcal{O}(n + q\log n)$，其中 $n$ 是 $s$ 的长度，$q$ 是 $\textit{queryCharacters}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
 
-## 相似题目
+## 相似题目（从分治出发思考）
 
-- [3525. 求出数组的 X 值 II](https://leetcode.cn/problems/find-x-value-of-array-ii/)
+- [3777. 使子字符串变交替的最少删除次数](https://leetcode.cn/problems/minimum-deletions-to-make-alternating-substring/)
 - [4017. 数组中的峰值 II](https://leetcode.cn/problems/peaks-in-array-ii/)
+- [3525. 求出数组的 X 值 II](https://leetcode.cn/problems/find-x-value-of-array-ii/)
+- [3165. 不包含相邻元素的子序列的最大和](https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/) 
+- [3410. 删除所有值为某个元素后的最大子数组和](https://leetcode.cn/problems/maximize-subarray-sum-after-removing-all-occurrences-of-one-element/)
 
 ## 专题训练
 
