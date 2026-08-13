@@ -1,115 +1,159 @@
-本题可以用线段树做，时空复杂度均与字符集的大小（本题为 $26$）无关，且这种写法可以支持查询 $s$ 的任意子串的最长重复子串的长度（本题查询的是整个 $s$）。
+**技巧**：如果一个问题可以用**分治**解决，那么这个问题的带修改版本可以用**线段树**解决。
 
-类似求动态最大子段和（[洛谷 P4513 小白逛公园](https://www.luogu.com.cn/problem/P4513)），线段树的每个节点维护对应区间的：
+如何用分治计算一个字符串的最长连续相同子串的长度？
 
-- 前缀最长连续字符个数 $\textit{pre}$；
-- 后缀最长连续字符个数 $\textit{suf}$；
-- 该区间最长连续字符个数 $\textit{max}$。
+把字符串分成左右两部分 $A$ 和 $B$：
 
-合并两个子区间时，如果前一个区间（记作 $a$）的末尾字符等于后一个区间（记作 $b$）的第一个字符，则可以合并这两个区间：
+1. 计算 $A$ 的最长连续相同子串的长度。这可以递归解决。
+2. 计算 $B$ 的最长连续相同子串的长度。这可以递归解决。
+3. 计算左端点在 $A$ 中，右端点在 $B$ 中的最长连续相同子串的长度。这相当于求出 $A$ 的最长连续相同**后缀**的长度，以及 $B$ 的最长连续相同**前缀**的长度。如果 $A$ 的最后一个字符等于 $B$ 的第一个字符，就可以把 $A$ 的最长连续相同后缀与 $B$ 的最长连续相同前缀拼起来。
 
-- 如果 $a$ 的 $\textit{suf}$ 等于 $a$ 的长度，那么就可以更新合并后的区间的 $\textit{pre}$ 值；
-- 如果 $b$ 的 $\textit{pre}$ 等于 $b$ 的长度，那么就可以更新合并后的区间的 $\textit{suf}$ 值；
-- 如果上面两个不成立，那么 $\textit{a.suf} + \textit{b.pre}$ 可以考虑成为合并后的区间的 $\textit{max}$。
+这样思考后，发现本题可以用分治解决，那么带修改版本就可以用线段树解决了。
 
-具体见代码实现，大部分为线段树模板，主要逻辑是 `maintain` 的写法。
+对于线段树的区间 $[L,R]$，维护如下信息：
+
+- $\textit{mx}$：该区间的最长连续相同子串的长度。这等于上面分治过程的三种情况的最大值。
+- $\textit{pre}$：该区间最长连续相同前缀的长度。计算方法见下。
+- $\textit{suf}$：该区间最长连续相同后缀的长度。计算方法见下。
+
+我们合并区间 $A$ 和 $B$，设合并后的大区间为 $C$。
+
+- 如果 $A.\textit{pre}$ 等于 $A$ 的长度，且 $A$ 的最后一个字符等于 $B$ 的第一个字符，那么 $C.\textit{pre} = A.\textit{pre} + B.\textit{pre}$。否则，$C.\textit{pre} = A.\textit{pre}$。
+- 如果 $B.\textit{suf}$ 等于 $B$ 的长度，且 $A$ 的最后一个字符等于 $B$ 的第一个字符，那么 $C.\textit{suf} = A.\textit{suf} + B.\textit{suf}$。否则，$C.\textit{suf} = B.\textit{suf}$。
 
 ```py [sol-Python3]
+# 详细注释见 https://leetcode.cn/circle/discuss/mOr1u6/
+class SegmentTree:
+    def __init__(self, s: list[str]):
+        self._n = n = len(s)
+        self._s = s
+        self._tree = [None] * (2 << (n - 1).bit_length())
+        self._build(s, 1, 0, n - 1)
+
+    def _maintain(self, node: int, l: int, m: int, r: int) -> None:
+        a_mx, a_pre, a_suf = self._tree[node * 2]
+        b_mx, b_pre, b_suf = self._tree[node * 2 + 1]
+        same = self._s[m] == self._s[m + 1]  # 左区间的最后一个字符 == 右区间的第一个字符
+        self._tree[node] = (
+            max(a_mx, b_mx, a_suf + b_pre) if same else max(a_mx, b_mx),
+            a_pre + b_pre if same and a_pre == m - l + 1 else a_pre,
+            a_suf + b_suf if same and b_suf == r - m else b_suf,
+        )
+
+    def _build(self, s: List[str], node: int, l: int, r: int) -> None:
+        if l == r:  # 叶子
+            self._tree[node] = (1, 1, 1)  # 初始化叶节点的值
+            return
+        m = (l + r) // 2
+        self._build(s, node * 2, l, m)  # 初始化左子树
+        self._build(s, node * 2 + 1, m + 1, r)  # 初始化右子树
+        self._maintain(node, l, m, r)
+
+    def _update(self, node: int, l: int, r: int, i: int, val: str) -> None:
+        if l == r:  # 叶子（到达目标）
+            self._s[i] = val
+            return
+        m = (l + r) // 2
+        if i <= m:  # i 在左子树
+            self._update(node * 2, l, m, i, val)
+        else:  # i 在右子树
+            self._update(node * 2 + 1, m + 1, r, i, val)
+        self._maintain(node, l, m, r)
+
+    def update(self, i: int, val: str) -> None:
+        self._update(1, 0, self._n - 1, i, val)
+
+    def query_all(self) -> int:
+        return self._tree[1][0]
+
+
 class Solution:
     def longestRepeating(self, s: str, queryCharacters: str, queryIndices: List[int]) -> List[int]:
-        s = list(s)
-        n = len(s)
-        pre = [0] * (4 * n)
-        suf = [0] * (4 * n)
-        mx = [0] * (4 * n)
-
-        def maintain(o: int, l: int, r: int) -> None:
-            pre[o] = pre[o * 2]
-            suf[o] = suf[o * 2 + 1]
-            mx[o] = max(mx[o * 2], mx[o * 2 + 1])
-            m = (l + r) // 2
-            if s[m - 1] == s[m]:  # 中间字符相同，可以合并
-                if suf[o * 2] == m - l + 1:
-                    pre[o] += pre[o * 2 + 1]
-                if pre[o * 2 + 1] == r - m:
-                    suf[o] += suf[o * 2]
-                mx[o] = max(mx[o], suf[o * 2] + pre[o * 2 + 1])
-
-        def build(o: int, l: int, r: int) -> None:
-            if l == r:
-                pre[o] = suf[o] = mx[o] = 1
-                return
-            m = (l + r) // 2
-            build(o * 2, l, m)
-            build(o * 2 + 1, m + 1, r)
-            maintain(o, l, r)
-
-        def update(o: int, l: int, r: int, i: int) -> None:
-            if l == r: return
-            m = (l + r) // 2
-            if i <= m:
-                update(o * 2, l, m, i)
-            else:
-                update(o * 2 + 1, m + 1, r, i)
-            maintain(o, l, r)
-
-        build(1, 1, n)
+        t = SegmentTree(list(s))
         ans = []
-        for c, i in zip(queryCharacters, queryIndices):
-            s[i] = c
-            update(1, 1, n, i + 1)
-            ans.append(mx[1])
+        for i, ch in zip(queryIndices, queryCharacters):
+            t.update(i, ch)
+            ans.append(t.query_all())
         return ans
 ```
 
 ```java [sol-Java]
-class Solution {
-    char[] s;
-    int[] pre, suf, max;
-
-    void maintain(int o, int l, int r) {
-        pre[o] = pre[o << 1];
-        suf[o] = suf[o << 1 | 1];
-        max[o] = Math.max(max[o << 1], max[o << 1 | 1]);
-        var m = (l + r) >> 1;
-        if (s[m - 1] == s[m]) { // 中间字符相同，可以合并
-            if (suf[o << 1] == m - l + 1) pre[o] += pre[o << 1 | 1];
-            if (pre[o << 1 | 1] == r - m) suf[o] += suf[o << 1];
-            max[o] = Math.max(max[o], suf[o << 1] + pre[o << 1 | 1]);
-        }
+// 详细注释见 https://leetcode.cn/circle/discuss/mOr1u6/
+class SegmentTree {
+    private record Data(int mx, int pre, int suf) {
     }
 
-    void build(int o, int l, int r) {
-        if (l == r) {
-            pre[o] = suf[o] = max[o] = 1;
+    private final int n;
+    private final char[] s;
+    private final Data[] tree;
+
+    public SegmentTree(char[] s) {
+        n = s.length;
+        this.s = s;
+        tree = new Data[2 << (32 - Integer.numberOfLeadingZeros(n - 1))];
+        build(1, 0, n - 1);
+    }
+
+    public void update(int i, char val) {
+        update(1, 0, n - 1, i, val);
+    }
+
+    public int queryAll() {
+        return tree[1].mx;
+    }
+
+    private void maintain(int node, int l, int m, int r) {
+        Data left = tree[node * 2];
+        Data right = tree[node * 2 + 1];
+        int mx = Math.max(left.mx, right.mx);
+        int pre = left.pre;
+        int suf = right.suf;
+        if (s[m] == s[m + 1]) { // 左区间的最后一个字符 == 右区间的第一个字符
+            mx = Math.max(mx, left.suf + right.pre);
+            if (left.pre == m - l + 1) {
+                pre += right.pre;
+            }
+            if (right.suf == r - m) {
+                suf += left.suf;
+            }
+        }
+        tree[node] = new Data(mx, pre, suf);
+    }
+
+    private void build(int node, int l, int r) {
+        if (l == r) { // 叶子
+            tree[node] = new Data(1, 1, 1); // 初始化叶节点的值
             return;
         }
-        var m = (l + r) / 2;
-        build(o << 1, l, m);
-        build(o << 1 | 1, m + 1, r);
-        maintain(o, l, r);
+        int m = (l + r) >>> 1;
+        build(node * 2, l, m); // 初始化左子树
+        build(node * 2 + 1, m + 1, r); // 初始化右子树
+        maintain(node, l, m, r);
     }
 
-    void update(int o, int l, int r, int i) {
-        if (l == r) return;
-        var m = (l + r) / 2;
-        if (i <= m) update(o << 1, l, m, i);
-        else update(o << 1 | 1, m + 1, r, i);
-        maintain(o, l, r);
+    private void update(int node, int l, int r, int i, char val) {
+        if (l == r) { // 叶子（到达目标）
+            s[i] = val;
+            return;
+        }
+        int m = (l + r) >>> 1;
+        if (i <= m) { // i 在左子树
+            update(node * 2, l, m, i, val);
+        } else { // i 在右子树
+            update(node * 2 + 1, m + 1, r, i, val);
+        }
+        maintain(node, l, m, r);
     }
+}
 
+class Solution {
     public int[] longestRepeating(String s, String queryCharacters, int[] queryIndices) {
-        this.s = s.toCharArray();
-        int n = this.s.length, m = queryIndices.length;
-        pre = new int[n << 2];
-        suf = new int[n << 2];
-        max = new int[n << 2];
-        build(1, 1, n);
-        var ans = new int[m];
-        for (var i = 0; i < m; ++i) {
-            this.s[queryIndices[i]] = queryCharacters.charAt(i);
-            update(1, 1, n, queryIndices[i] + 1);
-            ans[i] = max[1];
+        SegmentTree t = new SegmentTree(s.toCharArray());
+        int q = queryIndices.length;
+        int[] ans = new int[q];
+        for (int i = 0; i < q; i++) {
+            t.update(queryIndices[i], queryCharacters.charAt(i));
+            ans[i] = t.queryAll();
         }
         return ans;
     }
@@ -117,54 +161,82 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-class Solution {
-    string s;
-    vector<int> pre, suf, max;
+struct Data {
+    int mx, pre, suf;
+};
 
-    void maintain(int o, int l, int r) {
-        pre[o] = pre[o << 1];
-        suf[o] = suf[o << 1 | 1];
-        max[o] = std::max(max[o << 1], max[o << 1 | 1]);
-        int m = (l + r) >> 1;
-        if (s[m - 1] == s[m]) { // 中间字符相同，可以合并
-            if (suf[o << 1] == m - l + 1) pre[o] += pre[o << 1 | 1];
-            if (pre[o << 1 | 1] == r - m) suf[o] += suf[o << 1];
-            max[o] = std::max(max[o], suf[o << 1] + pre[o << 1 | 1]);
+// 详细注释见 https://leetcode.cn/circle/discuss/mOr1u6/
+class SegmentTree {
+    int n;
+    string s;
+    vector<Data> tree;
+
+    void maintain(int node, int l, int m, int r) {
+        Data& left = tree[node * 2];
+        Data& right = tree[node * 2 + 1];
+        int mx = max(left.mx, right.mx);
+        int pre = left.pre;
+        int suf = right.suf;
+        if (s[m] == s[m + 1]) { // 左区间的最后一个字符 == 右区间的第一个字符
+            mx = max(mx, left.suf + right.pre);
+            if (left.pre == m - l + 1) {
+                pre += right.pre;
+            }
+            if (right.suf == r - m) {
+                suf += left.suf;
+            }
         }
+        tree[node] = {mx, pre, suf};
     }
 
-    void build(int o, int l, int r) {
-        if (l == r) {
-            pre[o] = suf[o] = max[o] = 1;
+    void build(int node, int l, int r) {
+        if (l == r) { // 叶子
+            tree[node] = {1, 1, 1}; // 初始化叶节点的值
             return;
         }
-        int m = (l + r) / 2;
-        build(o << 1, l, m);
-        build(o << 1 | 1, m + 1, r);
-        maintain(o, l, r);
+        int m = (l + r) >> 1;
+        build(node * 2, l, m); // 初始化左子树
+        build(node * 2 + 1, m + 1, r); // 初始化右子树
+        maintain(node, l, m, r);
     }
 
-    void update(int o, int l, int r, int i) {
-        if (l == r) return;
-        int m = (l + r) / 2;
-        if (i <= m) update(o << 1, l, m, i);
-        else update(o << 1 | 1, m + 1, r, i);
-        maintain(o, l, r);
+    void update(int node, int l, int r, int i, char val) {
+        if (l == r) { // 叶子（到达目标）
+            s[i] = val;
+            return;
+        }
+        int m = (l + r) >> 1;
+        if (i <= m) { // i 在左子树
+            update(node * 2, l, m, i, val);
+        } else { // i 在右子树
+            update(node * 2 + 1, m + 1, r, i, val);
+        }
+        maintain(node, l, m, r);
     }
 
 public:
-    vector<int> longestRepeating(string &s, string &queryCharacters, vector<int> &queryIndices) {
-        this->s = s;
-        int n = s.length(), m = queryIndices.size();
-        pre.resize(n << 2);
-        suf.resize(n << 2);
-        max.resize(n << 2);
-        build(1, 1, n);
-        vector<int> ans(m);
-        for (int i = 0; i < m; ++i) {
-            this->s[queryIndices[i]] = queryCharacters[i];
-            update(1, 1, n, queryIndices[i] + 1);
-            ans[i] = max[1];
+    SegmentTree(const string& s) : n(s.size()), s(s), tree(2 << bit_width(s.size() - 1)) {
+        build(1, 0, n - 1);
+    }
+
+    void update(int i, char val) {
+        update(1, 0, n - 1, i, val);
+    }
+
+    int query_all() const {
+        return tree[1].mx;
+    }
+};
+
+class Solution {
+public:
+    vector<int> longestRepeating(string s, string queryCharacters, vector<int>& queryIndices) {
+        SegmentTree t(s);
+        int q = queryIndices.size();
+        vector<int> ans(q);
+        for (int i = 0; i < q; i++) {
+            t.update(queryIndices[i], queryCharacters[i]);
+            ans[i] = t.query_all();
         }
         return ans;
     }
@@ -172,63 +244,70 @@ public:
 ```
 
 ```go [sol-Go]
-var s []byte
+type data struct{ mx, pre, suf int }
 
-type seg []struct{ l, r, pre, suf, max int }
-
-func (t seg) maintain(o int) {
-	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].pre = lo.pre
-	t[o].suf = ro.suf
-	t[o].max = max(lo.max, ro.max)
-	if s[lo.r-1] == s[lo.r] { // 中间字符相同，可以合并
-		if lo.suf == lo.r-lo.l+1 {
-			t[o].pre += ro.pre
-		}
-		if ro.pre == ro.r-ro.l+1 {
-			t[o].suf += lo.suf
-		}
-		t[o].max = max(t[o].max, lo.suf+ro.pre)
-	}
+// 详细注释见 https://leetcode.cn/circle/discuss/mOr1u6/
+type seg struct {
+	s []byte
+	d []data
 }
 
-func (t seg) build(o, l, r int) {
-	t[o].l, t[o].r = l, r
-	if l == r {
-		t[o].pre = 1
-		t[o].suf = 1
-		t[o].max = 1
+func newSegmentTree(s []byte) *seg {
+	n := len(s)
+	t := &seg{s, make([]data, 2<<bits.Len(uint(n-1)))}
+	t.build(1, 0, n-1)
+	return t
+}
+
+func (t *seg) maintain(node, l, m, r int) {
+	a, b := t.d[node*2], t.d[node*2+1]
+	mx := max(a.mx, b.mx)
+	pre := a.pre
+	suf := b.suf
+	if t.s[m] == t.s[m+1] { // 左区间的最后一个字符 == 右区间的第一个字符
+		mx = max(mx, a.suf+b.pre)
+		if pre == m-l+1 {
+			pre += b.pre
+		}
+		if suf == r-m {
+			suf += a.suf
+		}
+	}
+	t.d[node] = data{mx, pre, suf}
+}
+
+func (t *seg) build(node, l, r int) {
+	if l == r { // 叶子
+		t.d[node] = data{1, 1, 1} // 初始化叶节点的值
 		return
 	}
 	m := (l + r) >> 1
-	t.build(o<<1, l, m)
-	t.build(o<<1|1, m+1, r)
-	t.maintain(o)
+	t.build(node*2, l, m)     // 初始化左子树
+	t.build(node*2+1, m+1, r) // 初始化右子树
+	t.maintain(node, l, m, r)
 }
 
-func (t seg) update(o, i int) {
-	if t[o].l == t[o].r {
+func (t *seg) update(node, l, r, i int, ch byte) {
+	if l == r { // 叶子（到达目标）
+		t.s[i] = ch
 		return
 	}
-	m := (t[o].l + t[o].r) >> 1
-	if i <= m {
-		t.update(o<<1, i)
-	} else {
-		t.update(o<<1|1, i)
+	m := (l + r) >> 1
+	if i <= m { // i 在左子树
+		t.update(node*2, l, m, i, ch)
+	} else { // i 在右子树
+		t.update(node*2+1, m+1, r, i, ch)
 	}
-	t.maintain(o)
+	t.maintain(node, l, m, r)
 }
 
-func longestRepeating(S, queryCharacters string, queryIndices []int) []int {
-	s = []byte(S)
+func longestRepeating(s string, queryCharacters string, queryIndices []int) []int {
 	n := len(s)
-	t := make(seg, n*4)
-	t.build(1, 1, n)
+	t := newSegmentTree([]byte(s))
 	ans := make([]int, len(queryIndices))
-	for i, index := range queryIndices {
-		s[index] = queryCharacters[i]
-		t.update(1, index+1)
-		ans[i] = t[1].max
+	for k, i := range queryIndices {
+		t.update(1, 0, n-1, i, queryCharacters[k])
+		ans[k] = t.d[1].mx
 	}
 	return ans
 }
@@ -236,8 +315,17 @@ func longestRepeating(S, queryCharacters string, queryIndices []int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n+k\log n)$，其中 $n$ 是 $s$ 的长度，$k$ 是 $\textit{queryCharacters}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n + q\log n)$，其中 $n$ 是 $s$ 的长度，$q$ 是 $\textit{queryCharacters}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
+
+## 相似题目
+
+- [3525. 求出数组的 X 值 II](https://leetcode.cn/problems/find-x-value-of-array-ii/)
+- [4017. 数组中的峰值 II](https://leetcode.cn/problems/peaks-in-array-ii/)
+
+## 专题训练
+
+见下面数据结构题单的「**§8.3 线段树**」。
 
 ## 分类题单
 

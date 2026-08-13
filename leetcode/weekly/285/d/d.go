@@ -1,99 +1,72 @@
 package main
 
+import "math/bits"
+
 // github.com/EndlessCheng/codeforces-go
-type data struct {
-	pre, suf, max, size int
-	lch, rch            byte
+type data struct{ mx, pre, suf int }
+
+// 详细注释见 https://leetcode.cn/circle/discuss/mOr1u6/
+type seg struct {
+	s []byte
+	d []data
 }
 
-type seg []struct {
-	l, r int
-	data
+func newSegmentTree(s []byte) *seg {
+	n := len(s)
+	t := &seg{s, make([]data, 2<<bits.Len(uint(n-1)))}
+	t.build(1, 0, n-1)
+	return t
 }
 
-func (t seg) set(o int, ch byte) {
-	t[o].lch = ch
-	t[o].rch = ch
-}
-
-func (t seg) merge(a, b data) data {
-	d := data{a.pre, b.suf, max(a.max, b.max), a.size + b.size, a.lch, b.rch}
-	if a.rch == b.lch { // 两个区间中间字符相同，可以合并
-		if a.suf == a.size {
-			d.pre += b.pre
+func (t *seg) maintain(node, l, m, r int) {
+	a, b := t.d[node*2], t.d[node*2+1]
+	mx := max(a.mx, b.mx)
+	pre := a.pre
+	suf := b.suf
+	if t.s[m] == t.s[m+1] { // 左区间的最后一个字符 = 右区间的第一个字符
+		mx = max(mx, a.suf+b.pre)
+		if pre == m-l+1 {
+			pre += b.pre
 		}
-		if b.pre == b.size {
-			d.suf += a.suf
+		if suf == r-m {
+			suf += a.suf
 		}
-		if a.suf != a.size && b.pre != b.size {
-			d.max = max(d.max, a.suf+b.pre)
-		}
-		d.max = max(d.max, max(d.pre, d.suf))
 	}
-	return d
+	t.d[node] = data{mx, pre, suf}
 }
 
-func (t seg) maintain(o int) {
-	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].data = t.merge(lo.data, ro.data)
-}
-
-func (t seg) build(s string, o, l, r int) {
-	t[o].l, t[o].r = l, r
-	if l == r {
-		t[o].pre = 1
-		t[o].suf = 1
-		t[o].max = 1
-		t[o].size = 1
-		t.set(o, s[l-1])
+func (t *seg) build(node, l, r int) {
+	if l == r { // 叶子
+		t.d[node] = data{1, 1, 1} // 初始化叶节点的值
 		return
 	}
 	m := (l + r) >> 1
-	t.build(s, o<<1, l, m)
-	t.build(s, o<<1|1, m+1, r)
-	t.maintain(o)
+	t.build(node*2, l, m)     // 初始化左子树
+	t.build(node*2+1, m+1, r) // 初始化右子树
+	t.maintain(node, l, m, r)
 }
 
-func (t seg) update(o, i int, ch byte) {
-	if t[o].l == t[o].r {
-		t.set(o, ch)
+func (t *seg) update(node, l, r, i int, ch byte) {
+	if l == r { // 叶子（到达目标）
+		t.s[i] = ch
 		return
 	}
-	m := (t[o].l + t[o].r) >> 1
-	if i <= m {
-		t.update(o<<1, i, ch)
-	} else {
-		t.update(o<<1|1, i, ch)
+	m := (l + r) >> 1
+	if i <= m { // i 在左子树
+		t.update(node*2, l, m, i, ch)
+	} else { // i 在右子树
+		t.update(node*2+1, m+1, r, i, ch)
 	}
-	t.maintain(o)
+	t.maintain(node, l, m, r)
 }
 
-func (t seg) query(o, l, r int) data {
-	if l <= t[o].l && t[o].r <= r {
-		return t[o].data
-	}
-	m := (t[o].l + t[o].r) >> 1
-	if r <= m {
-		return t.query(o<<1, l, r)
-	}
-	if m < l {
-		return t.query(o<<1|1, l, r)
-	}
-	lv := t.query(o<<1, l, r)
-	rv := t.query(o<<1|1, l, r)
-	return t.merge(lv, rv)
-}
-
-func longestRepeating(s, queryCharacters string, queryIndices []int) []int {
+func longestRepeating(s string, queryCharacters string, queryIndices []int) []int {
 	n := len(s)
-	t := make(seg, n*4)
-	t.build(s, 1, 1, n)
+	t := newSegmentTree([]byte(s))
 	ans := make([]int, len(queryIndices))
-	for i, index := range queryIndices {
-		t.update(1, index+1, queryCharacters[i])
-		ans[i] = t[1].max
+	for k, i := range queryIndices {
+		t.update(1, 0, n-1, i, queryCharacters[k])
+		ans[k] = t.d[1].mx
 	}
 	return ans
 }
-
-func max(a, b int) int { if b > a { return b }; return a}
