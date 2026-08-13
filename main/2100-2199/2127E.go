@@ -41,6 +41,10 @@ func cf2127E(in io.Reader, _w io.Writer) {
 					continue
 				}
 				sub := dfs(w, v)
+				if len(has) == 0 {
+					has = sub
+					continue
+				}
 				if len(sub) > len(has) {
 					has, sub = sub, has
 				}
@@ -49,7 +53,7 @@ func cf2127E(in io.Reader, _w io.Writer) {
 						has[c] = true
 					} else if common == 0 {
 						common = c
-					} else {
+					} else if c != common {
 						common = -1
 					}
 				}
