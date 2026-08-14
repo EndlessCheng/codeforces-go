@@ -8,15 +8,13 @@ import (
 // https://github.com/EndlessCheng
 func cf2252B(in io.Reader, out io.Writer) {
 	var T, n int
-	var s []byte
+	var s string
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &s)
 		cnt := [2]int{}
-		st := 0
-		for i, b := range s {
-			if i == n-1 || b != s[i+1] {
-				cnt[b-'0'] += i - st
-				st = i + 1
+		for i := 1; i < n; i++ {
+			if s[i-1] == s[i] {
+				cnt[s[i]-'0']++
 			}
 		}
 
