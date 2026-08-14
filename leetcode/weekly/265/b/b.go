@@ -7,23 +7,25 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func nodesBetweenCriticalPoints(head *ListNode) []int {
+	first, pre := 0, math.MinInt/2
+	minDis := math.MaxInt
 	a, b, c := head, head.Next, head.Next.Next
-	first, last, minDis := 0, 0, math.MaxInt32
-	for i, prev := 1, 0; c != nil; i++ { // 遍历链表，寻找临界点
+
+	for i := 1; c != nil; i++ {
 		if a.Val < b.Val && b.Val > c.Val || a.Val > b.Val && b.Val < c.Val {
 			if first == 0 {
 				first = i
 			}
-			last = i
-			if prev > 0 && i-prev < minDis {
-				minDis = i - prev
-			}
-			prev = i
+			minDis = min(minDis, i-pre)
+			pre = i
 		}
-		a, b, c = b, c, c.Next
+		a = b
+		b = c
+		c = c.Next
 	}
-	if first == last {
+
+	if first >= pre { // 临界点少于两个
 		return []int{-1, -1}
 	}
-	return []int{minDis, last - first}
+	return []int{minDis, pre - first}
 }
