@@ -1,0 +1,1 @@
+本题和 [3853. 合并靠近字符](https://leetcode.cn/problems/merge-close-characters/) 是一样的，请看 [我的题解](https://leetcode.cn/problems/merge-close-characters/solutions/3910674/on-jian-ji-xie-fa-pythonjavacgo-by-endle-bq9c/)。
