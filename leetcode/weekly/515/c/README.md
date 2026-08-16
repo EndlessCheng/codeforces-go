@@ -15,31 +15,28 @@ $$
 
 如何计算 $\textit{pre}$ 和 $\textit{suf}$？做法同 [3983. 一次替换后的子序列](https://leetcode.cn/problems/subsequence-after-one-replacement/)，见 [我的题解](https://leetcode.cn/problems/subsequence-after-one-replacement/solutions/3991828/san-zhi-zhen-pythonjavacgo-by-endlessche-2qdj/) 方法一的写法二。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1gRbD6zECR/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def maximumGap(self, s: str, t: str) -> int:
         n = len(s)
         suf = [0] * n  # s[i:] 是 t[suf[i]:] 的子序列
-        j = len(t)
+        j = len(t) - 1
         for i in range(n - 1, 0, -1):
-            # 上一轮循环 s[i+1] 匹配了 t[j]，j 减一后继续寻找下一个匹配
-            j -= 1
             while t[j] != s[i]:  # 题目保证 s 是 t 的子序列，下标不会越界
                 j -= 1
             suf[i] = j
+            j -= 1
 
-        ans = 0
-        pre = -1
+        ans = pre = 0
         for i in range(n - 1):
-            # 上一轮循环 s[i-1] 匹配了 t[pre]，pre 加一后继续寻找下一个匹配
-            pre += 1
             while t[pre] != s[i]:
                 pre += 1
             # 此时 s[:i+1] 是 t[:pre+1] 的子序列
             # 此时 s[i+1:] 是 t[suf[i+1]:] 的子序列
             ans = max(ans, suf[i + 1] - pre)
+            pre += 1
         return ans
 ```
 
@@ -50,28 +47,26 @@ class Solution {
         char[] t = station.toCharArray();
 
         int n = s.length;
-        int[] suf = new int[n]; // s[i:] 是 t[suf[i]:] 的子序列
-        int j = t.length;
+        int[] suf = new int[n]; // s[i,|s|-1] 是 t[suf[i],|t|-1] 的子序列
+        int j = t.length - 1;
         for (int i = n - 1; i > 0; i--) {
-            // 上一轮循环 s[i+1] 匹配了 t[j]，j 减一后继续寻找下一个匹配
-            j--;
             while (t[j] != s[i]) { // 题目保证 s 是 t 的子序列，下标不会越界
                 j--;
             }
             suf[i] = j;
+            j--;
         }
 
-        int pre = -1;
         int ans = 0;
+        int pre = 0;
         for (int i = 0; i < n - 1; i++) {
-            // 上一轮循环 s[i-1] 匹配了 t[pre]，pre 加一后继续寻找下一个匹配
-            pre++;
             while (t[pre] != s[i]) {
                 pre++;
             }
-            // 此时 s[:i+1] 是 t[:pre+1] 的子序列
-            // 此时 s[i+1:] 是 t[suf[i+1]:] 的子序列
+            // 此时 s[0,i] 是 t[0,pre] 的子序列
+            // 此时 s[i+1,|s|-1] 是 t[suf[i+1],|t|-1] 的子序列
             ans = Math.max(ans, suf[i + 1] - pre);
+            pre++;
         }
         return ans;
     }
@@ -83,28 +78,26 @@ class Solution {
 public:
     int maximumGap(string s, string t) {
         int n = s.size();
-        vector<int> suf(n); // s[i:] 是 t[suf[i]:] 的子序列
-        int j = t.size();
+        vector<int> suf(n); // s[i,|s|-1] 是 t[suf[i],|t|-1] 的子序列
+        int j = t.size() - 1;
         for (int i = n - 1; i > 0; i--) {
-            // 上一轮循环 s[i+1] 匹配了 t[j]，j 减一后继续寻找下一个匹配
-            j--;
             while (t[j] != s[i]) { // 题目保证 s 是 t 的子序列，下标不会越界
                 j--;
             }
             suf[i] = j;
+            j--;
         }
 
         int ans = 0;
-        int pre = -1;
+        int pre = 0;
         for (int i = 0; i < n - 1; i++) {
-            // 上一轮循环 s[i-1] 匹配了 t[pre]，pre 加一后继续寻找下一个匹配
-            pre++;
             while (t[pre] != s[i]) {
                 pre++;
             }
-            // 此时 s[:i+1] 是 t[:pre+1] 的子序列
-            // 此时 s[i+1:] 是 t[suf[i+1]:] 的子序列
+            // 此时 s[0,i] 是 t[0,pre] 的子序列
+            // 此时 s[i+1,|s|-1] 是 t[suf[i+1],|t|-1] 的子序列
             ans = max(ans, suf[i + 1] - pre);
+            pre++;
         }
         return ans;
     }
@@ -115,26 +108,24 @@ public:
 func maximumGap(s, t string) (ans int) {
 	n := len(s)
 	suf := make([]int, n) // s[i:] 是 t[suf[i]:] 的子序列
-	j := len(t)
+	j := len(t) - 1
 	for i := n - 1; i > 0; i-- {
-		// 上一轮循环 s[i+1] 匹配了 t[j]，j 减一后继续寻找下一个匹配
-		j--
 		for t[j] != s[i] { // 题目保证 s 是 t 的子序列，下标不会越界
 			j--
 		}
 		suf[i] = j
+		j--
 	}
 
-	pre := -1
+	pre := 0
 	for i, ch := range s[:n-1] {
-		// 上一轮循环 s[i-1] 匹配了 t[pre]，pre 加一后继续寻找下一个匹配
-		pre++
 		for t[pre] != byte(ch) {
 			pre++
 		}
 		// 此时 s[:i+1] 是 t[:pre+1] 的子序列
 		// 此时 s[i+1:] 是 t[suf[i+1]:] 的子序列
 		ans = max(ans, suf[i+1]-pre)
+		pre++
 	}
 	return
 }

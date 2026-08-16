@@ -1,7 +1,4 @@
-如果你从未做过状态压缩 DP（状压 DP），学习指南：
-
-- [教你一步步思考状压 DP：从记忆化搜索到递推](https://leetcode.cn/problems/beautiful-arrangement/solution/jiao-ni-yi-bu-bu-si-kao-zhuang-ya-dpcong-c6kd/)
-- [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)
+如果你从未做过状态压缩 DP（状压 DP），推荐先阅读 [教你一步步思考状压 DP：从记忆化搜索到递推](https://leetcode.cn/problems/beautiful-arrangement/solution/jiao-ni-yi-bu-bu-si-kao-zhuang-ya-dpcong-c6kd/)。
 
 本题是**相邻相关排列型状压 DP**。标准套路是定义 $\textit{dfs}(\textit{mask},i)$ 表示处理完请求集合 $\textit{mask}$，且电梯停在 $\textit{floor}_i$（最后处理的是请求 $i$），所需的最短时间。
 
@@ -21,11 +18,11 @@ $$
 
 **递归边界**：$\textit{dfs}(\{i\}, i) = \max(|\textit{floor}_i - \textit{start}|, \textit{arrival}_i)$。此时只有一个请求，即我们处理的第一个请求。需要从 $\textit{start}$ 移动到 $\textit{floor}_i$。
 
-**递归入口**：$\min\limits_{i=0}^{m-1}\textit{dfs}(U,i)$，其中 $m$ 是 $\textit{requests}$ 的长度，全集 $U=\{0,1,2,\cdots,m-1\}$。
+**递归入口**：$\min\limits_{i=0}^{m-1}\textit{dfs}(U,i)$，其中 $m$ 是 $\textit{requests}$ 的长度，全集 $U=\{0,1,2,\ldots,m-1\}$。
 
 代码实现时，需要把集合语言翻译成位运算语言，见 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1gRbD6zECR/?t=10m29s)，欢迎点赞关注~
 
 ## 写法一：记忆化搜索
 
@@ -44,7 +41,7 @@ class Solution:
             return max(res, t)  # 处理完请求 i 的时间不能早于 t
 
         m = len(requests)
-        return min(dfs((1 << m) - 1, i) for i in range(m))
+        return min(dfs((1 << m) - 1, i) for i in range(m))  # 枚举最后处理的请求
 ```
 
 ```java [sol-Java]
@@ -57,7 +54,7 @@ class Solution {
         }
 
         long ans = Long.MAX_VALUE;
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; i++) { // 枚举最后处理的请求
             ans = Math.min(ans, dfs((1 << m) - 1, i, start, requests, memo));
         }
         return ans;
@@ -69,6 +66,7 @@ class Solution {
         int[] req = requests[i];
         int t = req[0];
         int x = req[1];
+
         if (mask == 0) {
             // i 是第一个被处理的请求
             return Math.max(Math.abs(x - start), t);
@@ -106,6 +104,7 @@ public:
             mask ^= 1 << i; // 这里去掉了 i
             auto& req = requests[i];
             int t = req[0], x = req[1];
+
             if (mask == 0) {
                 // i 是第一个被处理的请求
                 return max(abs(x - start), t);
@@ -128,7 +127,7 @@ public:
         };
 
         long long ans = LLONG_MAX;
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m; i++) { // 枚举最后处理的请求
             ans = min(ans, dfs((1 << m) - 1, i));
         }
         return ans;
@@ -153,6 +152,7 @@ func elevatorRequests(n int, start int, requests [][]int) int64 {
 		mask ^= 1 << i // 这里去掉了 i
 		req := requests[i]
 		t, x := req[0], req[1]
+
 		if mask == 0 {
 			// i 是第一个被处理的请求
 			return max(abs(x-start), t)
@@ -178,7 +178,7 @@ func elevatorRequests(n int, start int, requests [][]int) int64 {
 	}
 
 	ans := math.MaxInt
-	for i := range m {
+	for i := range m { // 枚举最后处理的请求
 		ans = min(ans, dfs(1<<m-1, i))
 	}
 	return int64(ans)
@@ -340,9 +340,12 @@ func abs(x int) int {
 - 时间复杂度：$\mathcal{O}(m^22^m)$，其中 $m$ 是 $\textit{requests}$ 的长度。
 - 空间复杂度：$\mathcal{O}(m2^m)$。
 
+**注**：本题也可以转化成最短路模型，用 Dijkstra 算法解决。
+
 ## 专题训练
 
-见下面动态规划题单的「**§9.2 排列型状压 DP ② 相邻相关**」和「**§9.3 旅行商问题（TSP）**」。
+1. 动态规划题单的「**§9.2 排列型状压 DP ② 相邻相关**」和「**§9.3 旅行商问题（TSP）**」。
+2. 图论题单的「**§3.1 单源最短路：Dijkstra 算法**」。
 
 ## 分类题单
 
