@@ -30,7 +30,7 @@ $$
 
 最后，答案在 $x$ 的从高到低第 $k\bmod \textit{length}$（从 $0$ 开始）个数字中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Q9bD6gEi1/?t=2m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

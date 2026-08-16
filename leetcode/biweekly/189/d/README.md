@@ -41,7 +41,7 @@
 
 > Python 用户可以无视上面这段，直接用 `@cache` 装饰器。
 
-关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
+[本题视频讲解](https://www.bilibili.com/video/BV1Q9bD6gEi1/?t=10m9s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -131,7 +131,7 @@ public:
         // 已处理完 requests 的子数组 [i, j]
         // is_right=false 表示电梯在 requests[i]
         // is_right=true  表示电梯在 requests[j]
-        auto dfs = [&](this auto&& dfs, int i, int j, int is_right) -> long long {
+        auto dfs = [&](this auto&& dfs, int i, int j, bool is_right) -> long long {
             if (i == 0 || j == m - 1) { // 出界
                 return LLONG_MAX / 2;
             }

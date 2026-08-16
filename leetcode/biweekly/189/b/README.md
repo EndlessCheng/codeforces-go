@@ -13,7 +13,7 @@ $s$ 左旋 $\textit{rot}$ 次后的字符串，是 $s+s$ 的一个子串，左�
 
 > **注**：把 $x$ 和 $y$ 都操作一定不优：把 $x$ 和 $y$ 都少操作一次，两个字母最终仍然相同。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1Q9bD6gEi1/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
