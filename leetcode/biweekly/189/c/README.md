@@ -44,7 +44,7 @@ class Solution:
             cnt *= 10
             length += 1
 
-        # k 在正整数 x 中
+        # 答案在正整数 x 中
         x = cnt // 9 + k // length
         if x // 10 % 2:
             # 改成递减顺序，例如 10 变成 19，11 变成 18 ……
@@ -69,7 +69,7 @@ class Solution {
             length++;
         }
 
-        // k 在正整数 x 中
+        // 答案在正整数 x 中
         long x = cnt / 9 + k / length;
         if (x / 10 % 2 > 0) {
             // 改成递减顺序，例如 10 变成 19，11 变成 18 ……
@@ -100,7 +100,7 @@ public:
             length++;
         }
 
-        // k 在正整数 x 中
+        // 答案在正整数 x 中
         long long x = cnt / 9 + k / length;
         if (x / 10 % 2) {
             // 改成递减顺序，例如 10 变成 19，11 变成 18 ……
@@ -128,7 +128,7 @@ func kthDigit(K int64) int {
 		length++
 	}
 
-	// k 在正整数 x 中
+	// 答案在正整数 x 中
 	x := cnt/9 + k/length
 	if x/10%2 > 0 {
 		// 改成递减顺序，例如 10 变成 19，11 变成 18 ……
