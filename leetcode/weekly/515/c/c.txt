@@ -1,0 +1,14 @@
+"aa"
+"aaaa"
+3
+
+"xyz"
+"xyzz"
+2
+
+"cbc"
+"cbcdbc"
+4
+
+
+
