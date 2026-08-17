@@ -142,6 +142,53 @@ func polyConvFFT(a, b []int) []int {
 	return conv
 }
 
+// 计算 a 的自卷积，n = len(a)
+// 返回一个长为 2n-1 的数组 conv，其中 conv[k] = sum_{i+j=k} a[i] * a[j]
+// 以 n = 3 为例
+// conv[0] = a[0]*a[0]
+// conv[1] = a[0]*a[1] + a[1]*a[0]
+// conv[2] = a[0]*a[2] + a[1]*a[1] + a[2]*a[0]
+// conv[3] = a[1]*a[2] + a[2]*a[1]
+// conv[4] = a[2]*a[2]
+func selfPolyConvFFT(a []int) []int {
+	n := len(a)
+	limit := 1 << bits.Len(uint(n*2-1))
+	A := make([]complex128, limit)
+	for i, v := range a {
+		A[i] = complex(float64(v), 0)
+	}
+
+	t := newFFT(limit)
+	t.dft(A)
+	for i, x := range A {
+		A[i] *= x
+	}
+	t.idft(A)
+
+	conv := make([]int, n*2-1)
+	for i := range conv {
+		conv[i] = int(math.Round(real(A[i])))
+	}
+	return conv
+}
+
+// 计算 a 的循环自卷积，n = len(a)
+// 返回一个长为 n 的数组 c，其中 c[k] = sum_{i=0}^{n-1} a[i] * a[(k-i+n)%n] = sum_{(i+j)%n=k} a[i] * a[j]
+// 由式子 sum_{(i+j)%n=k} a[i] * a[j] 可知，i+j 等于 k 或者 n+k，所以有 c[k] = conv[k] + conv[n+k]，唯一的例外是 k=n-1 时只有 c[k] = conv[k]
+// 以 n = 3 为例
+// c[0] = a[0]*a[0] + a[1]*a[2] + a[2]*a[1]
+// c[1] = a[0]*a[1] + a[1]*a[0] + a[2]*a[2]
+// c[2] = a[0]*a[2] + a[1]*a[1] + a[2]*a[0]
+// LC4021 https://leetcode.cn/problems/minimum-operations-to-make-a-rotated-palindrome-i 得到旋转回文字符串的最少操作次数
+func selfCyclicConvFFT(a []int) []int {
+	n := len(a)
+	conv := selfPolyConvFFT(a)
+	for k := range n - 1 {
+		conv[k] += conv[n+k]
+	}
+	return conv[:n]
+}
+
 // 滑动窗口点积，常用来做字符串匹配
 // 对 a 的每个长为 len(b) 的连续子数组 subarray，计算 subarray 与 b 的点积 c[i]
 // 也就是求 c[i] = ∑a[i+j]*b[j], j=0~m-1
