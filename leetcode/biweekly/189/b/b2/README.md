@@ -1,0 +1,1 @@
+本题和 [4021. 得到旋转回文字符串的最少操作次数 I](https://leetcode.cn/problems/minimum-operations-to-make-a-rotated-palindrome-i/) 是一样的，请看 [我的题解](https://leetcode.cn/problems/minimum-operations-to-make-a-rotated-palindrome-i/solutions/4012771/bao-li-mei-ju-pythonjavacgo-by-endlessch-lcr3/) 的方法二。

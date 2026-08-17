@@ -1,3 +1,5 @@
+## 方法一：暴力枚举
+
 枚举 $s$ 左旋了 $\textit{rot} = 0,1,2,\ldots,n-1$ 次。
 
 $s$ 左旋 $\textit{rot}$ 次后的字符串，是 $s+s$ 的一个子串，左端点下标为 $\textit{rot}$，右端点下标为 $\textit{rot}+n-1$。
@@ -94,6 +96,295 @@ func abs(x int) int {
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：循环自卷积
+
+定义 $D(x,y)$ 为使字母 $x$ 和 $y$ 相等的最少操作次数。
+
+设左旋了 $R$ 次。在方法一中，我们计算了递增操作的总次数
+
+$$
+\begin{aligned}
+S_R &= \sum_{i=0}^{\lfloor n/2 \rfloor - 1} D(s[(R+i)\bmod n],s[(R+n-1-i)\bmod n])         \\
+    &= \dfrac{1}{2} \sum_{i=0}^{n-1} D(s[(R+i)\bmod n],s[(R+n-1-i)\bmod n])           \\
+\end{aligned}
+$$
+
+如何更快地计算上式？
+
+考虑两个下标之和模 $n$ 的余数
+
+$$
+(R+i) + (R+n-1-i) \equiv 2R-1 \pmod n
+$$
+
+当 $R$ 固定时，$2R-1$ 是一个**定值**。
+
+回想一下卷积的式子，如果我们能把 $S_R$ 表示成某种**循环卷积**，就能更快地计算答案。
+
+> **注**：给定长为 $n$ 的数组 $a$，那么 $a$ 的循环自卷积为
+> 
+> $$
+> \textit{c}[r] = \sum_{\substack{0\le i,j< n\\ i+j\equiv r\pmod n}} a[i]\cdot a[j]
+> $$
+> 
+> 如果 $a$ 中只有 $0$ 和 $1$，那么计算循环自卷积可以快速回答例如「$a$ 左旋若干次后，有多少个镜像位置不同」的问题。
+
+把字母视作一个在 $[0,25]$ 中的整数。本质上说，$D(x,y)$ 是在长为 $26$ 的环上，点 $x$ 和点 $y$ 的最短距离。
+
+例如字母 $\texttt{b}$ 和 $\texttt{e}$，对应整数 $1$ 和 $4$，最短距离为 $3$。
+
+想象把这个环均匀切开，得到两个半圆弧（半圆弧的端点在整点上）。在什么情况下，$x=1$ 和 $y=4$ 属于不同的半圆弧？
+
+- 如果其中一个半圆孤是 $[2,14]$，那么 $x$ 和 $y$ 就分开了。
+- 如果其中一个半圆孤是 $[3,15]$，那么 $x$ 和 $y$ 就分开了。
+- 如果其中一个半圆孤是 $[4,16]$，那么 $x$ 和 $y$ 就分开了。
+- 其余情况下，$x$ 和 $y$ 属于同一个半圆弧。
+
+所以本质有 $3$ 种切法，可以把 $x=1$ 和 $y=4$ 分开，这恰好是 $x=1$ 和 $y=4$ 的最短距离。
+
+一般地，定义特征函数
+
+$$
+I_k(x) =
+\begin{cases} 
+1, & x\in [k,k+12]     \\
+0, & x\notin [k,k+12]     \\
+\end{cases}
+$$
+
+整数 $x$ 和 $y$ 最短距离，等于有多少个不同的 $k$ 使得 $I_k(x)\ne I_k(y)$，即
+
+$$
+D(x,y) = \sum_{k=0}^{12} [I_k(x)\ne I_k(y)]
+$$
+
+> 注：记号 $[p\ne q]$ 表示当 $p\ne q$ 时结果为 $1$，否则为 $0$。相当于把 $\texttt{bool}$ 值转成 $\texttt{int}$ 值。对于本题来说，当 $p=0,q=1$ 或者 $p=1,q=0$ 时，记号 $[p\ne q]$ 才是 $1$。
+
+设数组 $a_k = [I_k(s[0]), I_k(s[1]), \ldots, I_k(s[n-1])]$。
+
+代入前文的和式，交换求和顺序，得
+
+$$
+\begin{aligned}
+S_R &= \dfrac{1}{2} \sum_{i=0}^{n-1} \sum_{k=0}^{12} [a_k[(R+i)\bmod n]\ne a_k[(R+n-1-i)\bmod n)]]         \\
+    &= \dfrac{1}{2} \sum_{k=0}^{12} \sum_{i=0}^{n-1} [a_k[(R+i)\bmod n]\ne a_k[(R+n-1-i)\bmod n)]]         \\
+\end{aligned}
+$$
+
+举个例子，当 $R=0$ 时，内层的和式为
+
+$$
+[a_k[0]\ne a_k[n-1]] + [a_k[1]\ne a_k[n-2]] + \cdots + [a_k[n-1]\ne a_k[0]]
+$$
+
+设 $a_k$ 的循环自卷积为 $c_k$，其中
+
+$$
+\textit{c}_k[r] = \sum_{\substack{0\le i,j< n\\ i+j\equiv r\pmod n}} a_k[i]\cdot a_k[j]
+$$
+
+令 $r = (2R-1)\bmod n = -1 \bmod n = n-1$，我们有
+
+$$
+\textit{c}_k[n-1] = a_k[0]\cdot a_k[n-1] + a_k[1]\cdot a_k[n-2] + \cdots + a_k[n-1]\cdot a[0]
+$$
+
+根据定义，如果 $a_k[i] = a_k[j] = 1$，那么 $a_k[i]\cdot a_k[j] = 1$，否则 $a_k[i]\cdot a_k[j] = 0$。 
+
+设 $a_k$ 中有 $\textit{cnt}_k$ 个 $1$。
+
+$a_k[i]\ne a_k[n-1-i]$，有两种情况：
+
+- $a_k[i] = 1$ 且 $a_k[n-1-i]=0$。用 $a_k[i] = 1$ 的个数（$\textit{cnt}_k$）减去 $a_k[i] = 1$ 且 $a_k[n-1-i]=1$ 的个数（$\textit{c}_k[n-1]$），就是 $a_k[i] = 1$ 且 $a_k[n-1-i]=0$ 的个数，即 $\textit{cnt}_k - \textit{c}_k[n-1]$。
+- $a_k[i] = 0$ 且 $a_k[n-1-i]=1$。根据对称性，个数同样为 $\textit{cnt}_k - \textit{c}_k[n-1]$。
+
+所以有
+
+$$
+\begin{aligned}
+    & [a_k[0]\ne a_k[n-1]] + [a_k[1]\ne a_k[n-2]] + \cdots + [a_k[n-1]\ne a_k[0]]      \\
+={} & 2(\textit{cnt}_k - \textit{c}_k[n-1])        \\
+\end{aligned}
+$$
+
+一般地，令 $r = (2R-1)\bmod n$，那么有
+
+$$
+\begin{aligned}
+S_R &= \dfrac{1}{2} \sum_{k=0}^{12} 2(\textit{cnt}_k - \textit{c}_k[r])         \\
+    &= \sum_{k=0}^{12} \textit{cnt}_k - \sum_{k=0}^{12}\textit{c}_k[r]           \\
+\end{aligned}
+$$
+
+其中和式 $\sum\limits_{k=0}^{12} \textit{cnt}_k$ 即 $a_0,a_1,\ldots,a_{12}$ 中的 $1$ 的总个数，可以用一个变量 $\textit{total}$ 表示。
+
+设 $\textit{convSum}[r] = \sum\limits_{k=0}^{12}\textit{c}_k[r]$，那么有
+
+$$
+S_R = \textit{total} - \textit{convSum}[(2R-1)\bmod n]
+$$
+
+枚举 $R=0,1,2,\ldots,n-1$，答案为
+
+$$
+\begin{aligned}
+    & \min_{R=0}^{n-1} R + S_R      \\
+={} & \textit{total} + \min_{R=0}^{n-1} R - \textit{convSum}[(2R-1)\bmod n]        \\
+\end{aligned}
+$$
+
+```py [sol-Python3]
+import numpy as np
+
+# 返回 a 的循环自卷积
+def self_cyclic_conv(a: list[int]) -> np.ndarray:
+    return np.rint(np.fft.ifft(np.fft.fft(a) ** 2).real)
+
+class Solution:
+    def minOperations(self, s: str) -> int:
+        s = [ord(c) - ord('a') for c in s]
+        n = len(s)
+        conv_sum = np.zeros(n, dtype=np.float64)
+        a = [0] * n
+        total = 0
+
+        for k in range(13):
+            for i, ch in enumerate(s):
+                if k <= ch < k + 13:
+                    a[i] = 1
+                    total += 1
+                else:
+                    a[i] = 0
+            c = self_cyclic_conv(a)
+            conv_sum += c  # 对每个 i 执行 conv_sum[i] += c[i]
+
+        return total + min(rot - int(conv_sum[(rot * 2 - 1) % n]) for rot in range(n))
+```
+
+```go [sol-Go]
+type fft struct {
+	n        int
+	omega    []complex128
+	omegaInv []complex128
+}
+
+func newFFT(n int) *fft {
+	omega := make([]complex128, n)
+	omegaInv := make([]complex128, n)
+	for i := range omega {
+		sin, cos := math.Sincos(2 * math.Pi * float64(i) / float64(n))
+		omega[i] = complex(cos, sin)
+		omegaInv[i] = complex(cos, -sin)
+	}
+	return &fft{n, omega, omegaInv}
+}
+
+func (t *fft) transform(a, omega []complex128) {
+	n := t.n
+	for i, j := 0, 0; i < n; i++ {
+		if i > j { // 保证同一对元素只交换一次
+			a[i], a[j] = a[j], a[i]
+		}
+		for l := n / 2; ; l /= 2 {
+			j ^= l
+			if j >= l {
+				break
+			}
+		}
+	}
+	for l := 2; l <= n; l *= 2 {
+		m := l / 2
+		for st := 0; st < n; st += l {
+			b := a[st:]
+			for i := range m {
+				v := omega[n/l*i] * b[m+i]
+				b[m+i] = b[i] - v
+				b[i] += v
+			}
+		}
+	}
+}
+
+func (t *fft) dft(a []complex128) {
+	t.transform(a, t.omega)
+}
+
+func (t *fft) idft(a []complex128) {
+	t.transform(a, t.omegaInv)
+	cn := complex(float64(t.n), 0)
+	for i := range a {
+		a[i] /= cn
+	}
+}
+
+// 计算 a 的自卷积
+func selfPolyConvFFT(a []int) []int {
+	n := len(a)
+	limit := 1 << bits.Len(uint(n*2-1))
+	A := make([]complex128, limit)
+	for i, v := range a {
+		A[i] = complex(float64(v), 0)
+	}
+
+	t := newFFT(limit)
+	t.dft(A)
+	for i, x := range A {
+		A[i] *= x
+	}
+	t.idft(A)
+
+	conv := make([]int, n*2-1)
+	for i := range conv {
+		conv[i] = int(math.Round(real(A[i])))
+	}
+	return conv
+}
+
+// 计算 a 的循环自卷积
+func selfCyclicConvFFT(a []int) []int {
+	n := len(a)
+	conv := selfPolyConvFFT(a)
+	for k := range n - 1 {
+		conv[k] += conv[n+k]
+	}
+	return conv[:n]
+}
+
+func minOperations(s string) int {
+	n := len(s)
+	convSum := make([]int, n)
+	a := make([]int, n)
+	total := 0
+	for k := range 13 {
+		for i := range n {
+			x := int(s[i] - 'a')
+			if k <= x && x < k+13 {
+				a[i] = 1
+				total++
+			} else {
+				a[i] = 0
+			}
+		}
+		c := selfCyclicConvFFT(a)
+		for i, v := range c {
+			convSum[i] += v
+		}
+	}
+
+	ans := math.MaxInt
+	for rot := range n {
+		c := (rot*2 - 1 + n) % n
+		ans = min(ans, rot-convSum[c])
+	}
+	return ans + total
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(|\Sigma|n\log n)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 
