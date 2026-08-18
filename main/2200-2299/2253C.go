@@ -1,81 +1,45 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://github.com/EndlessCheng
 func cf2253C(in io.Reader, out io.Writer) {
-	var T, n, m, x, y int
+	var T, n, m, x, y, v int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m, &x, &y)
-		sz := n + m + 1
-		a := make([]int, sz)
-		for i := sz - x; i < sz; i++ {
-			Fscan(in, &a[i])
+		tp := make([]byte, n+m+1)
+		for range x {
+			Fscan(in, &v)
+			tp[v] = 1
 		}
-		b := make([]int, sz)
-		for i := sz - y; i < sz; i++ {
-			Fscan(in, &b[i])
+		for range y {
+			Fscan(in, &v)
+			tp[v] |= 2
 		}
 
-		f := func(n, m int) (res int) {
-			has := map[int]bool{}
-			same := 0
-			i, j := 1, 1
-			for i <= n || j <= m {
-				v, w := 0, 0
-				if i <= n {
-					v = a[sz-i]
+		var ans, row, col, common int
+		for v := n + m; v > 0 && row+col+common < n+m-1; v-- {
+			t := tp[v]
+			if t == 1 {
+				if row < n {
+					ans += v
+					row++
 				}
-				if j <= m {
-					w = b[sz-j]
+			} else if t == 2 {
+				if col < m {
+					ans += v
+					col++
 				}
-				if v == 0 && w == 0 {
-					break
-				}
-				has[max(v, w)] = true
-				if v > w {
-					res += v
-					i++
-				} else if v < w {
-					res += w
-					j++
-				} else {
-					res += v
-					same++
-					i++
-					j++
-				}
+			} else if t == 3 {
+				ans += v
+				common++
 			}
-			for range same {
-				for has[a[sz-i]] {
-					i++
-				}
-				v := a[sz-i]
-				for has[b[sz-j]] {
-					j++
-				}
-				w := b[sz-j]
-				if v == 0 && w == 0 {
-					break
-				}
-				has[max(v, w)] = true
-				if v > w {
-					res += v
-					i++
-				} else {
-					res += w
-					j++
-				}
-			}
-			return
 		}
-		Fprintln(out, max(f(n, m-1), f(n-1, m)))
+		Fprintln(out, ans)
 	}
 }
 
-func main() { cf2253C(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf2253C(bufio.NewReader(os.Stdin), os.Stdout) }
