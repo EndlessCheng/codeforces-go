@@ -18,7 +18,7 @@ $$
 \min_{i=0}^{|s|-2}\textit{suf}[i+1] - \textit{pre}[i]
 $$
 
-如何计算 $\textit{pre}$ 和 $\textit{suf}$？做法同 [3983. 一次替换后的子序列](https://leetcode.cn/problems/subsequence-after-one-replacement/)，见 [我的题解](https://leetcode.cn/problems/subsequence-after-one-replacement/solutions/3991828/san-zhi-zhen-pythonjavacgo-by-endlessche-2qdj/) 方法一的写法二。
+如何计算 $\textit{pre}$ 和 $\textit{suf}$？见 [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)，[我的题解](https://leetcode.cn/problems/is-subsequence/solution/jian-ji-xie-fa-pythonjavaccgojsrust-by-e-mz22/)。  
 
 [本题视频讲解](https://www.bilibili.com/video/BV1gRbD6zECR/)，欢迎点赞关注~
 
@@ -140,6 +140,10 @@ func maximumGap(s, t string) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 相似题目
+
+[3983. 一次替换后的子序列](https://leetcode.cn/problems/subsequence-after-one-replacement/)
 
 ## 专题训练
 
