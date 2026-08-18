@@ -41,6 +41,7 @@ https://codeforces.com/problemset/problem/1288/C 1600
 https://codeforces.com/problemset/problem/1475/E 1600
 https://codeforces.com/problemset/problem/1999/F 1600
 https://codeforces.com/problemset/problem/2040/C 1600
+https://codeforces.com/problemset/problem/2255/B 1600
 https://atcoder.jp/contests/abc133/tasks/abc133_e 1505~CF1700 变形题：改成距离 <= 3
 https://atcoder.jp/contests/abc156/tasks/abc156_e 1514~CF1700
 https://atcoder.jp/contests/abc129/tasks/abc129_e 1547~CF1700
