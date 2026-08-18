@@ -1,0 +1,1 @@
+本题和 [4027. 电梯请求 III](https://leetcode.cn/problems/elevator-requests-iii/) 是一样的，请看 [我的题解](https://leetcode.cn/problems/elevator-requests-iii/solutions/4012846/zhuang-ya-dplei-si-tsp-wen-ti-pythonjava-lxwv/) 的方法二。
