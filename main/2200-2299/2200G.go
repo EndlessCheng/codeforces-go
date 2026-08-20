@@ -25,37 +25,39 @@ func cf2200G(in io.Reader, out io.Writer) {
 		return res
 	}
 
-	var T, n, v0 int
+	var T, n, x int
 	var s string
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n, &v0)
+		Fscan(in, &n, &x)
 		sum := 0
 		f := []int{1}
 		for range n {
 			Fscan(in, &s)
-			v, _ := strconv.Atoi(s[1:])
+			y, _ := strconv.Atoi(s[1:])
 			switch s[0] {
 			case '+':
-				sum += v
+				sum += y
 				continue
 			case '-':
-				sum -= v
+				sum -= y
 				continue
 			case '/':
-				v = pow(v, M-2)
+				y = pow(y, M-2)
 			}
-			v0 = v0 * v % M
+			x = x * y % M
 			f = append(f, 0)
 			for i := len(f) - 1; i > 0; i-- {
-				f[i] = (f[i] + f[i-1]*v) % M
+				f[i] = (f[i] + f[i-1]*y) % M
 			}
 		}
 
-		ans := 0
-		for i, v := range f {
-			ans = (ans + v*fac[i]%M*fac[len(f)-1-i]) % M
+		m := len(f) - 1
+		eMul := 0
+		for i, fi := range f {
+			eMul = (eMul + fi*fac[i]%M*fac[m-i]) % M
 		}
-		Fprintln(out, (ans*(sum%M+M)%M*pow(fac[len(f)], M-2)+v0)%M)
+		eMul = eMul * pow(fac[m+1], M-2) % M
+		Fprintln(out, ((sum%M+M)*eMul+x)%M)
 	}
 }
 
