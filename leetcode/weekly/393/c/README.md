@@ -412,6 +412,7 @@ func lcm(a, b int) int {
 class Solution:
     def findKthSmallest(self, coins: List[int], k: int) -> int:
         a = []
+        coins.sort()  # 排序后，能整除 x 的数都在 a 中
         for x in coins:
             if all(x % y for y in a):
                 a.append(x)
@@ -429,14 +430,14 @@ class Solution:
                 cnt += m // subset_lcm[i] if i.bit_count() % 2 else -(m // subset_lcm[i])
             return cnt >= k
 
-        return bisect_left(range(min(a) * k), True, k, key=check)
+        return bisect_left(range(a[0] * k), True, k, key=check)
 ```
 
 ```java [sol-Java]
 class Solution {
     public long findKthSmallest(int[] coins, int k) {
+        Arrays.sort(coins); // 排序后，能整除 x 的数都在 coins 的前 n 个数中
         int n = 0;
-        int mn = Integer.MAX_VALUE;
         next:
         for (int x : coins) {
             for (int j = 0; j < n; j++) {
@@ -445,7 +446,6 @@ class Solution {
                 }
             }
             coins[n++] = x;
-            mn = Math.min(mn, x);
         }
 
         long[] subsetLcm = new long[1 << n];
@@ -464,7 +464,7 @@ class Solution {
         }
 
         long left = k - 1;
-        long right = (long) mn * k;
+        long right = (long) coins[0] * k;
         while (left + 1 < right) {
             long mid = left + (right - left) / 2;
             if (check(mid, subsetLcm, k)) {
@@ -503,8 +503,8 @@ class Solution {
 class Solution {
 public:
     long long findKthSmallest(vector<int>& coins, int k) {
+        ranges::sort(coins); // 排序后，能整除 x 的数都在 coins 的前 n 个数中
         int n = 0;
-        int mn = INT_MAX;
         for (int x : coins) {
             bool ok = true;
             for (int j = 0; j < n; j++) {
@@ -515,7 +515,6 @@ public:
             }
             if (ok) {
                 coins[n++] = x;
-                mn = min(mn, x);
             }
         }
 
@@ -537,7 +536,7 @@ public:
             return cnt >= k;
         };
 
-        long long left = k - 1, right = 1LL * mn * k;
+        long long left = k - 1, right = 1LL * coins[0] * k;
         while (left + 1 < right) {
             long long mid = left + (right - left) / 2;
             (check(mid) ? right : left) = mid;
@@ -549,6 +548,7 @@ public:
 
 ```go [sol-Go]
 func findKthSmallest(coins []int, k int) int64 {
+	slices.Sort(coins) // 排序后，能整除 x 的数都在 a 中
 	a := coins[:0]
 next:
 	for _, x := range coins {
@@ -570,11 +570,11 @@ next:
 	}
 	for i := range subsetLcm {
 		if bits.OnesCount(uint(i))%2 == 0 {
-			subsetLcm[i] *= -1 // 避免在二分中反复计算 bits.OnesCount
+			subsetLcm[i] *= -1
 		}
 	}
 
-	ans := sort.Search(slices.Min(a)*k, func(m int) bool {
+	ans := sort.Search(a[0]*k, func(m int) bool {
 		cnt := 0
 		for _, l := range subsetLcm[1:] {
 			cnt += m / l
