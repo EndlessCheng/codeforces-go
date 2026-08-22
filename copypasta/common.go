@@ -274,23 +274,26 @@ LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-
 https://codeforces.com/problemset/problem/1743/C 1100
 https://codeforces.com/problemset/problem/2094/D 1100
 https://codeforces.com/problemset/problem/2111/C 1100
+https://codeforces.com/problemset/problem/2252/B 1100
 https://codeforces.com/problemset/problem/1272/C 1200
 https://codeforces.com/problemset/problem/1343/C 1200
+https://codeforces.com/problemset/problem/2244/D 1200
 https://codeforces.com/problemset/problem/1821/C 1300 枚举答案
 https://codeforces.com/problemset/problem/1873/F 1300
 https://codeforces.com/problemset/problem/2146/C 1300
-https://codeforces.com/problemset/problem/363/C 1400 分组循环 + 分组循环
+https://codeforces.com/problemset/problem/2254/D 1300
+https://codeforces.com/problemset/problem/363/C  1400 分组循环 + 分组循环
 https://codeforces.com/problemset/problem/1380/C 1400
 https://codeforces.com/problemset/problem/1628/A 1400 注：这题被力扣抄去当周赛题了 https://leetcode.cn/problems/lexicographically-maximum-mex-array/
-https://codeforces.com/problemset/problem/620/C 1500
-https://codeforces.com/problemset/problem/858/C 1500
+https://codeforces.com/problemset/problem/620/C  1500
+https://codeforces.com/problemset/problem/858/C  1500
 https://codeforces.com/problemset/problem/1753/A2 1500
 https://codeforces.com/problemset/problem/2093/E 1500
-https://codeforces.com/problemset/problem/525/C 1600
+https://codeforces.com/problemset/problem/525/C  1600
 https://codeforces.com/problemset/problem/1748/C 1600
 https://codeforces.com/problemset/problem/1849/D 1700
 https://codeforces.com/problemset/problem/2031/D 1700
-https://codeforces.com/problemset/problem/416/D 2400 推荐
+https://codeforces.com/problemset/problem/416/D  2400 推荐
 
 哨兵
 - [1465. 切割后面积最大的蛋糕](https://leetcode.cn/problems/maximum-area-of-a-piece-of-cake-after-horizontal-and-vertical-cuts/) 1445
@@ -711,6 +714,7 @@ https://codeforces.com/problemset/problem/2092/C 1200
 https://codeforces.com/problemset/problem/1881/D 1300
 https://codeforces.com/problemset/problem/1889/A 1300
 https://codeforces.com/problemset/problem/2171/C2 1400
+https://codeforces.com/problemset/problem/2254/F 1900
 https://codeforces.com/problemset/problem/1365/F 2100 仍然对称
 https://codeforces.com/problemset/problem/1775/E 2100 有点差分的味道，想想前缀和
 https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
@@ -729,6 +733,7 @@ https://codeforces.com/problemset/problem/1931/C  1000
 https://codeforces.com/problemset/problem/2039/B  1000
 https://codeforces.com/problemset/problem/2043/B  1100
 https://codeforces.com/problemset/problem/2162/C  1100
+https://codeforces.com/problemset/problem/2247/C  1100
 https://codeforces.com/problemset/problem/262/B   1200
 https://codeforces.com/problemset/problem/1364/A  1200
 https://codeforces.com/problemset/problem/1860/B  1200
@@ -786,6 +791,7 @@ https://codeforces.com/problemset/problem/1951/E  2000 把 s 划分成若干段�
 https://codeforces.com/problemset/problem/1978/E  2000
 https://codeforces.com/problemset/problem/2051/F  2000
 https://codeforces.com/problemset/problem/1811/F  2100
+https://codeforces.com/problemset/problem/2127/E  2100
 https://codeforces.com/problemset/problem/1798/E  2300
 https://codeforces.com/problemset/problem/209/C   2400
 https://codeforces.com/problemset/problem/416/D   2400 推荐
