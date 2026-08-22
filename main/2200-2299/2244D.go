@@ -7,12 +7,6 @@ import (
 
 // https://github.com/EndlessCheng
 func cf2244D(in io.Reader, out io.Writer) {
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
-	}
 	var T, n, m, v int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m)
@@ -27,21 +21,14 @@ func cf2244D(in io.Reader, out io.Writer) {
 		}
 
 		ans, s := 0, 0
-		first := true
-		for i := n - 1; i >= 0; i-- {
+		for i, v := range a {
+			s += v
 			if b[i] {
-				if first {
-					ans += s
-					first = false
-				} else {
-					ans += abs(s)
-				}
+				ans += max(s, -s)
 				s = 0
 			}
-			s += a[i]
 		}
-		ans += abs(s)
-		Fprintln(out, ans)
+		Fprintln(out, ans+s)
 	}
 }
 
