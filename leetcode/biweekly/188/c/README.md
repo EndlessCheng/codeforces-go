@@ -169,7 +169,11 @@ func minInitialStrength(monsters []int, boosts [][]int) int64 {
 - 时间复杂度：$\mathcal{O}(m+n\log S)$，其中 $n$ 是 $\textit{monsters}$ 的长度，$m$ 是 $\textit{boosts}$ 的长度，$S = \sum_{i}\textit{monsters}[i]$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 方法二：倒推
+## 方法二：逆向思维
+
+正向思考的困难是，由于不知道后面的怪物信息，无法确定初始强度取多少合适。
+
+那么倒着想呢？击败最后一个怪物，需要多少强度？在此基础上，击败倒数第二个怪物，需要多少强度？
 
 定义 $f_i$ 为只考虑击败 $[i,n-1]$ 中的怪物，所需的最小强度。
 
