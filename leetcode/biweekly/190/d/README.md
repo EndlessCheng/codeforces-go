@@ -271,7 +271,7 @@ func gcd(a, b int) int {
 
 由于 $\textit{pre}$ 是递减的，设 $\textit{pre}$ 中的第一个 $G$ 的下标是 $p$，那么 $\textit{pre}$ 的后缀 $[p,|a|-1]$ 都是 $G$。
 
-由于 $\textit{suf}$ 是递增的，设 $\textit{pre}$ 中的最后一个 $G$ 的下标是 $q$，那么 $\textit{suf}$ 的前缀 $[0,q]$ 都是 $G$。
+由于 $\textit{suf}$ 是递增的，设 $\textit{suf}$ 中的最后一个 $G$ 的下标是 $q$，那么 $\textit{suf}$ 的前缀 $[0,q]$ 都是 $G$。
 
 有效分割 $(i,i+1)$ 要满足 $\textit{pre}[i] = \textit{suf}[i+1] = G$，所以有 $i\ge p$ 且 $i+1\le q$，这样的 $i$ 一共有
 
