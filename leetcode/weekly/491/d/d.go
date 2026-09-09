@@ -1,23 +1,24 @@
 package main
 
 // https://space.bilibili.com/206214
-func countSubarrays1(nums []int, k, m int) int64 {
+func countSubarrays(nums []int, k, m int) int64 {
+	// 子数组至少有 distinctLimit 个不同的整数，其中至少有 k 个不同的好整数
 	calc := func(distinctLimit int) (ans int64) {
-		cnt := map[int]int{}
-		geM := 0 // 窗口中的出现次数 >= m 的元素个数
+		cnt := map[int]int{} // 用来统计不同元素个数
+		goodNumbers := 0 // 窗口中的好整数（出现至少 m 次的整数）的个数
 		left := 0
 		for _, x := range nums {
 			// 1. 入
 			cnt[x]++
 			if cnt[x] == m {
-				geM++
+				goodNumbers++
 			}
 
 			// 2. 出
-			for len(cnt) >= distinctLimit && geM >= k {
+			for len(cnt) >= distinctLimit && goodNumbers >= k {
 				out := nums[left]
 				if cnt[out] == m {
-					geM--
+					goodNumbers--
 				}
 				cnt[out]--
 				if cnt[out] == 0 {
@@ -31,10 +32,11 @@ func countSubarrays1(nums []int, k, m int) int64 {
 		}
 		return
 	}
+
 	return calc(k) - calc(k+1)
 }
 
-func countSubarrays(nums []int, k, m int) (ans int64) {
+func countSubarrays2(nums []int, k, m int) (ans int64) {
 	cnt := map[int]int{}
 	geM := 0     // 窗口中的出现次数 >= m 的元素个数
 	minLeft := 0 // 窗口左端点的最小值
