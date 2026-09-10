@@ -450,9 +450,8 @@ class Solution {
             return -1;
         }
 
-        List<Integer> q = new ArrayList<>(); // 注：用数组模拟队列更快
+        List<Integer> q = List.of(start);
         boolean[] vis = new boolean[1 << m];
-        q.add(start);
         vis[start] = true;
 
         for (int step = 0; !q.isEmpty(); step++) {
