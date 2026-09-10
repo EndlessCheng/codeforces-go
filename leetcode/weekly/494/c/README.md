@@ -391,7 +391,7 @@ func minRemovals(nums []int, target int) int {
 
 设当前剩余元素的异或和为 $s$。移除一个 $\textit{nums}[i]$ 后，$s$ 变成了 $s\oplus \textit{nums}[i]$。
 
-把异或和当作节点编号，从 $s$ 往 $s\oplus \textit{nums}[i]$ 连一条有向边，我们可以得到一张有向图。
+把异或和当作节点编号，从 $s$ 到 $s\oplus \textit{nums}[i]$ 连一条有向边，我们可以得到一张有向图。
 
 设 $\textit{nums}$ 的异或和为 $\textit{start}$。本题相当于：
 
