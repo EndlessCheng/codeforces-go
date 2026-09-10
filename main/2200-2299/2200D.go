@@ -28,7 +28,7 @@ func cf2200D(in io.Reader, _w io.Writer) {
 		for i < len(a) && a[i] < b[0] {
 			i++
 		}
-		a = append(append(slices.Clone(a[:i]), b...), a[i:]...)
+		a = slices.Insert(a, i, b...)
 
 		for _, v := range a {
 			Fprint(out, v, " ")
