@@ -1,3 +1,5 @@
+## 方法一：0-1 背包
+
 移除次数尽量小，等价于保留的元素个数尽量多。
 
 问题相当于：
@@ -24,7 +26,7 @@ $$
 
 代码实现时，「$m$ 小于 $\textit{target}$ 的二进制长度」等价于 $2^m\le \textit{target}$，这样无需计算 $\textit{target}$ 的二进制长度。
 
-## 答疑
+### 答疑
 
 **问**：为什么数组第二维的大小不能是 $\textit{target}+1$？
 
@@ -32,7 +34,7 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1vfAuzyEp8/?t=12m)，欢迎点赞关注~
 
-## 优化前
+### 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -93,7 +95,7 @@ class Solution {
 class Solution {
 public:
     int minRemovals(vector<int>& nums, int target) {
-        int m = bit_width((uint32_t) ranges::max(nums));
+        int m = bit_width(1u * ranges::max(nums));
         if ((1 << m) <= target) {
             return -1;
         }
@@ -152,7 +154,7 @@ func minRemovals(nums []int, target int) int {
 - 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(nU)$。
 
-## 空间优化（查表法）
+### 空间优化（查表法）
 
 ```py [sol-Python3]
 class Solution:
@@ -214,7 +216,7 @@ class Solution {
 class Solution {
 public:
     int minRemovals(vector<int>& nums, int target) {
-        int m = bit_width((uint32_t) ranges::max(nums));
+        int m = bit_width(1u * ranges::max(nums));
         if ((1 << m) <= target) {
             return -1;
         }
@@ -266,7 +268,7 @@ func minRemovals(nums []int, target int) int {
 }
 ```
 
-## 空间优化（刷表法）
+### 空间优化（刷表法）
 
 如果修改问题，把 XOR 改成没有逆运算的 AND 或者 OR，用**刷表法**更合适。也就是用当前状态更新其他状态。
 
@@ -328,7 +330,7 @@ class Solution {
 class Solution {
 public:
     int minRemovals(vector<int>& nums, int target) {
-        int m = bit_width((uint32_t) ranges::max(nums));
+        int m = bit_width(1u * ranges::max(nums));
         if ((1 << m) <= target) {
             return -1;
         }
@@ -385,6 +387,169 @@ func minRemovals(nums []int, target int) int {
 - 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(U)$。
 
+## 方法二：BFS
+
+设当前剩余元素的异或和为 $s$。移除一个 $\textit{nums}[i]$ 后，$s$ 变成了 $s\oplus \textit{nums}[i]$。
+
+把异或和当作节点编号，从 $s$ 往 $s\oplus \textit{nums}[i]$ 连一条有向边，我们可以得到一张有向图。
+
+设 $\textit{nums}$ 的异或和为 $\textit{start}$。本题相当于：
+
+- 计算从起点 $\textit{start}$ 到终点 $\textit{target}$ 的**最短路长度**。
+
+这可以用 **BFS** 解决。
+
+下面代码用双数组实现 BFS，原理请看[【基础算法精讲 13】](https://www.bilibili.com/video/BV1hG4y1277i/)。
+
+### 答疑
+
+**问**：为什么代码遍历了整个 $\textit{nums}$ 数组，万一 $\textit{nums}[i]$ 不在剩余元素中呢？
+
+**答**：同一个数删掉又加回来，相当于走回头路，这样的路径一定不是最短路径，不影响正确答案。
+
+```py [sol-Python3]
+class Solution:
+    def minRemovals(self, nums: List[int], target: int) -> int:
+        m = max(nums).bit_length()
+        if (1 << m) <= target:
+            return -1
+
+        start = reduce(xor, nums)
+        q = [start]
+        vis = [False] * (1 << m)
+        vis[start] = True
+        step = 0
+
+        while q:
+            nxt = []
+            for s in q:
+                if s == target:
+                    return step
+                for x in nums:
+                    if not vis[s ^ x]:  # 之前没有访问过
+                        vis[s ^ x] = True
+                        nxt.append(s ^ x)  # 避免重复访问
+            q = nxt
+            step += 1
+
+        return -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int minRemovals(int[] nums, int target) {
+        int mx = 0;
+        int start = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+            start ^= x;
+        }
+
+        int m = 32 - Integer.numberOfLeadingZeros(mx);
+        if ((1 << m) <= target) {
+            return -1;
+        }
+
+        List<Integer> q = new ArrayList<>(); // 注：用数组模拟队列更快
+        boolean[] vis = new boolean[1 << m];
+        q.add(start);
+        vis[start] = true;
+
+        for (int step = 0; !q.isEmpty(); step++) {
+            List<Integer> nxt = new ArrayList<>();
+            for (int s : q) {
+                if (s == target) {
+                    return step;
+                }
+                for (int x : nums) {
+                    if (!vis[s ^ x]) { // 之前没有访问过
+                        vis[s ^ x] = true; // 避免重复访问
+                        nxt.add(s ^ x);
+                    }
+                }
+            }
+            q = nxt;
+        }
+
+        return -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minRemovals(vector<int>& nums, int target) {
+        int m = bit_width(1u * ranges::max(nums));
+        if ((1 << m) <= target) {
+            return -1;
+        }
+
+        int start = reduce(nums.begin(), nums.end(), 0, bit_xor());
+        vector<int> q = {start};
+        vector<int8_t> vis(1 << m);
+        vis[start] = true;
+
+        for (int step = 0; !q.empty(); step++) {
+            auto tmp = move(q);
+            for (int s : tmp) {
+                if (s == target) {
+                    return step;
+                }
+                for (int x : nums) {
+                    if (!vis[s ^ x]) { // 之前没有访问过
+                        vis[s ^ x] = true; // 避免重复访问
+                        q.push_back(s ^ x);
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+};
+```
+
+```go [sol-Go]
+func minRemovals(nums []int, target int) int {
+	m := bits.Len(uint(slices.Max(nums)))
+	if 1<<m <= target {
+		return -1
+	}
+
+	start := 0
+	for _, x := range nums {
+		start ^= x
+	}
+	q := []int{start}
+	vis := make([]bool, 1<<m)
+	vis[start] = true
+
+	for step := 0; len(q) > 0; step++ {
+		nxt := []int{}
+		for _, s := range q {
+			if s == target {
+				return step
+			}
+			for _, x := range nums {
+				if !vis[s^x] { // 之前没有访问过
+					vis[s^x] = true // 避免重复访问
+					nxt = append(nxt, s^x)
+				}
+			}
+		}
+		q = nxt
+	}
+
+	return -1
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(U)$。
+
 ## 注
 
 本题还有和值域无关的 $\mathcal{O}(2^{n/2})$ 折半搜索做法，见 [494. 目标和](https://leetcode.cn/problems/target-sum/)，[我的题解](https://leetcode.cn/problems/target-sum/solutions/2119041/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-s1cx/)。
@@ -392,21 +557,26 @@ func minRemovals(nums []int, target int) int {
 ## 专题训练
 
 1. 动态规划题单的「**§3.1 0-1 背包**」。
-2. 回溯题单的「**§4.8 折半搜索**」。
+2. 图论题单的「**§1.3 图论建模 + BFS 最短路**」。
+3. 回溯题单的「**§4.8 折半搜索**」。
 
 ## 分类题单
 
-[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+[如何科学刷题？](https://leetcode.cn/discuss/post/3141566/ru-he-ke-xue-shua-ti-by-endlesscheng-q3yd/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
-2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
-4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
-9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
-12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/discuss/post/3578981/ti-dan-hua-dong-chuang-kou-ding-chang-bu-rzz7/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/discuss/post/3579164/ti-dan-er-fen-suan-fa-er-fen-da-an-zui-x-3rqn/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/discuss/post/3579480/ti-dan-dan-diao-zhan-ju-xing-xi-lie-zi-d-u4hk/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/discuss/post/3580195/fen-xiang-gun-ti-dan-wang-ge-tu-dfsbfszo-l3pa/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/discuss/post/3580371/fen-xiang-gun-ti-dan-wei-yun-suan-ji-chu-nth4/)
+6. [图论算法（DFS/BFS/拓扑排序/基环树/最短路/最小生成树/网络流）](https://leetcode.cn/discuss/post/3581143/fen-xiang-gun-ti-dan-tu-lun-suan-fa-dfsb-qyux/)
+7. [动态规划（入门/背包/划分/状态机/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/discuss/post/3581838/fen-xiang-gun-ti-dan-dong-tai-gui-hua-ru-007o/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/discuss/post/3583665/fen-xiang-gun-ti-dan-chang-yong-shu-ju-j-bvmv/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/discuss/post/3584388/fen-xiang-gun-ti-dan-shu-xue-suan-fa-shu-gcai/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/discuss/post/3091107/fen-xiang-gun-ti-dan-tan-xin-ji-ben-tan-k58yb/)
+11. [链表、树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/discuss/post/3142882/fen-xiang-gun-ti-dan-lian-biao-er-cha-sh-6srp/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/discuss/post/3144832/fen-xiang-gun-ti-dan-zi-fu-chuan-kmpzhan-ugt4/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

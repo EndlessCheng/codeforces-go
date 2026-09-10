@@ -35,7 +35,7 @@ func minRemovals1(nums []int, target int) int {
 	return len(nums) - f[n][target]
 }
 
-func minRemovals(nums []int, target int) int {
+func minRemovals2(nums []int, target int) int {
 	m := bits.Len(uint(slices.Max(nums)))
 	if 1<<m <= target {
 		return -1
@@ -59,4 +59,37 @@ func minRemovals(nums []int, target int) int {
 		return -1
 	}
 	return len(nums) - f[target]
+}
+
+func minRemovals(nums []int, target int) int {
+	m := bits.Len(uint(slices.Max(nums)))
+	if 1<<m <= target {
+		return -1
+	}
+
+	start := 0
+	for _, x := range nums {
+		start ^= x
+	}
+	q := []int{start}
+	vis := make([]bool, 1<<m)
+	vis[start] = true
+
+	for step := 0; len(q) > 0; step++ {
+		nxt := []int{}
+		for _, s := range q {
+			if s == target {
+				return step
+			}
+			for _, x := range nums {
+				if !vis[s^x] { // 之前没有访问过
+					vis[s^x] = true // 避免重复访问
+					nxt = append(nxt, s^x)
+				}
+			}
+		}
+		q = nxt
+	}
+
+	return -1
 }
