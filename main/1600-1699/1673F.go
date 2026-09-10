@@ -1,27 +1,32 @@
 package main
 
 import (
+	"bufio"
 	. "fmt"
 	"math/bits"
+	"os"
 )
 
 // https://github.com/EndlessCheng
 func cf1673F() {
+	out := bufio.NewWriter(os.Stdout)
 	var n, m int
 	Scan(&n, &m)
 	for range n {
 		for j := 1; j < n; j++ {
 			t := bits.TrailingZeros(uint(j))
-			Print(1<<(t*2+1), " ")
+			Fprint(out, 1<<(t*2+1), " ")
 		}
-		Println()
+		Fprintln(out)
+		out.Flush()
 	}
 	for i := 1; i < n; i++ {
 		for range n {
 			t := bits.TrailingZeros(uint(i))
-			Print(1<<(t*2), " ")
+			Fprint(out, 1<<(t*2), " ")
 		}
-		Println()
+		Fprintln(out)
+		out.Flush()
 	}
 	var x, y int
 	for range m {
@@ -35,7 +40,8 @@ func cf1673F() {
 				y ^= (1 << (j + 1)) - 1
 			}
 		}
-		Println(x+1, y+1)
+		Fprintln(out, x+1, y+1)
+		out.Flush()
 	}
 }
 
