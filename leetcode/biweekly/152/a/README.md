@@ -124,14 +124,14 @@ func totalNumbers(digits []int) int {
 
 消耗一个 $d$ 后，在**剩余数字**中：
 
-- 设有 $\textit{nonZeros}$ 种非零数字，那么百位有 $\textit{nonZeros}$ 种填法。
 - 设有 $\textit{kinds}$ 种数字，那么十位有 $\textit{kinds}$ 种填法。
-- 设有 $\textit{singles}$ 种恰好出现一次的非零数字，那么百位十位都填这种数字的方案是不合法的，要减去，这有 $\textit{singles}$ 个。
+- 设有 $\textit{nonZeros}$ 种非零数字，那么百位有 $\textit{nonZeros}$ 种填法。
+- 设有 $\textit{singles}$ 种恰好出现一次的非零数字，那么十位百位都填这种数字的方案是不合法的，要减去。
 
 所以百位和十位有
 
 $$
-\textit{nonZeros}\cdot \textit{kinds} - \textit{singles}
+\textit{kinds}\cdot \textit{nonZeros} - \textit{singles}
 $$
 
 种填法。
@@ -146,18 +146,18 @@ class Solution:
         singles = sum(c == 1 for c in cnt.values()) - (cnt.get(0, 0) == 1)
         ans = 0
 
-        # 枚举个位数填 d
+        # 枚举个位填偶数 d
         for d, c in cnt.items():
             if d % 2 > 0:
                 continue
 
-            # 百位数填非零数字
-            nz = non_zeros - (d > 0 and c == 1)
-
-            # 十位数填任意数字
+            # 十位填任意数字
             k = kinds - (c == 1)
 
-            # 恰好出现一次的数字，不能同时填入百位数和十位数
+            # 百位填任意非零数字
+            nz = non_zeros - (d > 0 and c == 1)
+
+            # 恰好出现一次的非零数字，不能同时填入十位和百位
             s = singles
             if d > 0:
                 if c == 1:
@@ -165,7 +165,7 @@ class Solution:
                 elif c == 2:
                     s += 1
 
-            ans += nz * k - s
+            ans += k * nz - s
 
         return ans
 ```
@@ -194,27 +194,28 @@ class Solution {
             }
         }
 
-        // 枚举个位数填 d
         int ans = 0;
+
+        // 枚举个位填偶数 d
         for (int d = 0; d < 10; d += 2) {
             int c = cnt[d];
             if (c == 0) {
                 continue;
             }
 
-            // 百位数填非零数字
-            int nz = nonZeros;
-            if (d > 0 && c == 1) {
-                nz--;
-            }
-
-            // 十位数填任意数字
+            // 十位填任意数字
             int k = kinds;
             if (c == 1) {
                 k--;
             }
 
-            // 恰好出现一次的数字，不能同时填入百位数和十位数
+            // 百位填任意非零数字
+            int nz = nonZeros;
+            if (d > 0 && c == 1) {
+                nz--;
+            }
+
+            // 恰好出现一次的非零数字，不能同时填入十位和百位
             int s = singles;
             if (d > 0) {
                 if (c == 1) {
@@ -224,7 +225,7 @@ class Solution {
                 }
             }
 
-            ans += nz * k - s;
+            ans += k * nz - s;
         }
 
         return ans;
@@ -253,21 +254,22 @@ public:
             }
         }
 
-        // 枚举个位数填 d
         int ans = 0;
+
+        // 枚举个位填偶数 d
         for (int d = 0; d < 10; d += 2) {
             int c = cnt[d];
             if (c == 0) {
                 continue;
             }
 
-            // 百位数填非零数字
-            int nz = non_zeros - (d > 0 && c == 1);
-
-            // 十位数填任意数字
+            // 十位填任意数字
             int k = kinds - (c == 1);
 
-            // 恰好出现一次的数字，不能同时填入百位数和十位数
+            // 百位填任意非零数字
+            int nz = non_zeros - (d > 0 && c == 1);
+
+            // 恰好出现一次的非零数字，不能同时填入十位和百位
             int s = singles;
             if (d > 0) {
                 if (c == 1) {
@@ -277,7 +279,7 @@ public:
                 }
             }
 
-            ans += nz * k - s;
+            ans += k * nz - s;
         }
 
         return ans;
@@ -306,26 +308,26 @@ func totalNumbers(digits []int) (ans int) {
 		}
 	}
 
-	// 枚举个位数填 d
+	// 枚举个位填偶数 d
 	for d := 0; d < 10; d += 2 {
 		c := cnt[d]
 		if c == 0 {
 			continue
 		}
 
-		// 百位数填非零数字
-		nz := nonZeros
-		if d > 0 && c == 1 {
-			nz--
-		}
-
-		// 十位数填任意数字
+		// 十位填任意数字
 		k := kinds
 		if c == 1 {
 			k--
 		}
 
-		// 恰好出现一次的数字，不能同时填入百位数和十位数
+		// 百位填任意非零数字
+		nz := nonZeros
+		if d > 0 && c == 1 {
+			nz--
+		}
+
+		// 恰好出现一次的非零数字，不能同时填入十位和百位
 		s := singles
 		if d > 0 {
 			if c == 1 {
@@ -335,7 +337,7 @@ func totalNumbers(digits []int) (ans int) {
 			}
 		}
 
-		ans += nz*k - s
+		ans += k*nz - s
 	}
 
 	return

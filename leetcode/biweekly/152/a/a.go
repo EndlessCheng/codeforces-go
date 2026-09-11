@@ -42,26 +42,26 @@ func totalNumbers(digits []int) (ans int) {
 		}
 	}
 
-	// 枚举个位数填 d
+	// 枚举个位填偶数 d
 	for d := 0; d < 10; d += 2 {
 		c := cnt[d]
 		if c == 0 {
 			continue
 		}
 
-		// 百位数填非零数字
-		nz := nonZeros
-		if d > 0 && c == 1 {
-			nz--
-		}
-
-		// 十位数填任意数字
+		// 十位填任意数字
 		k := kinds
 		if c == 1 {
 			k--
 		}
 
-		// 恰好出现一次的数字，不能同时填入百位数和十位数
+		// 百位填非零数字
+		nz := nonZeros
+		if d > 0 && c == 1 {
+			nz--
+		}
+
+		// 恰好出现一次的非零数字，不能同时填入十位和百位
 		s := singles
 		if d > 0 {
 			if c == 1 {
@@ -71,7 +71,7 @@ func totalNumbers(digits []int) (ans int) {
 			}
 		}
 
-		ans += nz*k - s
+		ans += k*nz - s
 	}
 
 	return
