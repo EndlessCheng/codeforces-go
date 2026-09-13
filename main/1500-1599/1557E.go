@@ -4,38 +4,39 @@ import . "fmt"
 
 // https://github.com/EndlessCheng
 func cf1557E() {
-	var T int
+	var T, p int
 	var s string
-	q := func(x, y int) {
+	q := func(x, y int) string {
 		Println(x, y)
+		p = y
 		Scan(&s)
+		return s
 	}
-o:
+	var solve func(int) bool
+	solve = func(i int) bool {
+		j := 1
+		if p == 1 {
+			j = 2
+		}
+		for ; j <= 8; j++ {
+			s = q(i, j)
+			if s == "Done" {
+				return true
+			} else if s[0] == 'D' {
+				return false
+			} else if s[0] == 'U' {
+				return solve(i)
+			}
+		}
+		return false
+	}
+
 	for Scan(&T); T > 0; T-- {
-		x, y := 1, 1
-		q(x, y)
-		for s != "Done" {
-			i := 0
-			if y == 1 {
-				i = 1
+		p = 1
+		for i := 1; i <= 8; i++ {
+			if q(i, p) == "Done" || solve(i) {
+				break
 			}
-			for ; i <= 8; i++ {
-				q(x, y)
-				if s == "Done" {
-					continue o
-				}
-				if s[0] == 'D' {
-					break
-				}
-				if s[0] == 'U' {
-					if y == 1 {
-						i = 1
-					}
-				}
-				y = i
-			}
-			x++
-			q(x, y)
 		}
 	}
 }
