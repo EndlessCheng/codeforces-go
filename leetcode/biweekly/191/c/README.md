@@ -1,3 +1,5 @@
+## 方法一：完全背包
+
 本题和 [279. 完全平方数](https://leetcode.cn/problems/perfect-squares/) 几乎一样，推荐先把那题做了，并阅读 [我的题解](https://leetcode.cn/problems/perfect-squares/solutions/2830762/dong-tai-gui-hua-cong-ji-yi-hua-sou-suo-3kz1g/)。
 
 本题与 279 的区别：
@@ -114,9 +116,176 @@ func minDays(n int) int {
 - 预处理的时间复杂度：$\mathcal{O}(N\sqrt{N})$，其中 $N = 10^5$。
 - 预处理的空间复杂度：$\mathcal{O}(N)$。
 
+## 方法二：最短路
+
+> 求最小的完全背包可以转化成计算有向图的最短路长度。
+
+把元素和 $s$ 看成节点，对于每个三角形数 $t = \dfrac{x(x+1)}{2}$，添加一条从 $s$ 到 $s+t$ 的有向边，边权为 $x+1$。
+
+答案为 $0$ 到 $n$ 的最短路长度。
+
+这可以用 **Dijkstra 算法**解决。[Dijkstra 算法介绍](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)。
+
+```py [sol-Python3]
+MX = 100_001
+dis = [inf] * MX
+dis[0] = -1
+h = [(-1, 0)]
+while h:
+    d, s = heappop(h)
+    if d > dis[s]:
+        continue
+    t, i = 1, 1
+    while s + t < MX:
+        w = s + t
+        new_d = d + i + 1
+        if new_d < dis[w]:
+            dis[w] = new_d
+            heappush(h, (new_d, w))
+        i += 1
+        t += i
+
+
+class Solution:
+    def minDays(self, n: int) -> int:
+        return dis[n]
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MX = 100_001;
+    private static final int[] dis = new int[MX];
+    private static boolean initialized = false;
+
+    // 这样写比 static block 快
+    public Solution() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        Arrays.fill(dis, Integer.MAX_VALUE);
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        dis[0] = -1;
+        pq.offer(new int[]{-1, 0});
+        while (!pq.isEmpty()) {
+            int[] top = pq.poll();
+            int d = top[0];
+            int s = top[1];
+            if (d > dis[s]) {
+                continue;
+            }
+            int t = 1;
+            int i = 1;
+            while (s + t < MX) {
+                int w = s + t;
+                int newD = d + i + 1;
+                if (newD < dis[w]) {
+                    dis[w] = newD;
+                    pq.offer(new int[]{newD, w});
+                }
+                i++;
+                t += i;
+            }
+        }
+    }
+
+    public int minDays(int n) {
+        return dis[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+constexpr int MX = 100'001;
+int dis[MX];
+
+auto init = [] {
+    ranges::fill(dis, INT_MAX);
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    dis[0] = -1;
+    pq.emplace(-1, 0);
+    while (!pq.empty()) {
+        auto [d, s] = pq.top();
+        pq.pop();
+        if (d > dis[s]) {
+            continue;
+        }
+        int t = 1, i = 1;
+        while (s + t < MX) {
+            int w = s + t;
+            int new_d = d + i + 1;
+            if (new_d < dis[w]) {
+                dis[w] = new_d;
+                pq.emplace(new_d, w);
+            }
+            i++;
+            t += i;
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    int minDays(int n) {
+        return dis[n];
+    }
+};
+```
+
+```go [sol-Go]
+const mx = 100_001
+var dis [mx]int
+
+func init() {
+	for i := range dis {
+		dis[i] = math.MaxInt
+	}
+	dis[0] = -1
+	h := &hp{{-1, 0}}
+	for h.Len() > 0 {
+		top := heap.Pop(h).(pair)
+		d, s := top.dis, top.v
+		if d > dis[s] {
+			continue
+		}
+		t, i := 1, 1
+		for s+t < mx {
+			w := s + t
+			newD := d + i + 1
+			if newD < dis[w] {
+				dis[w] = newD
+				heap.Push(h, pair{newD, w})
+			}
+			i++
+			t += i
+		}
+	}
+}
+
+func minDays(n int) int {
+	return dis[n]
+}
+
+type pair struct{ dis, v int }
+type hp []pair
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return h[i].dis < h[j].dis }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
+func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+```
+
+#### 复杂度分析
+
+- 预处理的时间复杂度：$\mathcal{O}(N\sqrt{N}\log N)$，其中 $N = 10^5$。
+- 预处理的空间复杂度：$\mathcal{O}(N\sqrt{N})$。
+
 ## 专题训练
 
-见下面动态规划题单的「**§3.2 完全背包**」。
+1. 动态规划题单的「**§3.2 完全背包**」。
+2. 图论题单的「**§3.1 单源最短路：Dijkstra 算法**」。
 
 ## 分类题单
 
