@@ -4,8 +4,7 @@ import "sort"
 
 // https://space.bilibili.com/206214
 const mx = 2_000_000_002
-
-var palindromes = [2][]int{{0}, {-1}}
+var palindromes = [2][]int{{0}, {0}} // 哨兵
 
 // 预处理 [1, mx] 中的回文数
 func init() {
@@ -14,7 +13,7 @@ func init() {
 		for i := base; i < base*10; i++ {
 			x := i
 			for t := i / 10; t > 0; t /= 10 {
-				x = x*10 + t%10
+				x = x*10 + t%10 // 去掉 i 的最低位，反转，拼在 i 的右边
 			}
 			if x > mx {
 				return
@@ -27,7 +26,7 @@ func init() {
 		for i := base; i < base*10; i++ {
 			x := i
 			for t := i; t > 0; t /= 10 {
-				x = x*10 + t%10
+				x = x*10 + t%10 // 反转 i，拼在 i 的右边
 			}
 			if x > mx {
 				return
