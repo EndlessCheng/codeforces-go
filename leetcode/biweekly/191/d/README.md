@@ -22,8 +22,6 @@ $$
 
 本题需要二分找到最后一个 $\le s[j] - \textit{goal}+k-1$ 的数的位置，这可以转化成二分第一个 $\ge s[j] - \textit{goal}+k$ 的数的位置 $p$，那么 $p-1$ 就是最后一个 $\le s[j] - \textit{goal}+k-1$ 的数的位置。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 # 模板来源 https://leetcode.cn/discuss/post/3583665/
 class FenwickTree:
@@ -291,7 +289,7 @@ func distantSubarrays(nums []int, goal, k int) int64 {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 附：有序集合
+## 有序集合做法
 
 ```py
 class Solution:
@@ -310,9 +308,13 @@ class Solution:
         return ans
 ```
 
+## 其他做法
+
+类似统计**逆序对**的个数，也可以在归并排序 $s$ 的同时，用三指针统计满足 $\textit{goal}-k+1 \le s[j] - s[i] \le \textit{goal}+k-1$ 的 $(i,j)$ 个数。
+
 ## 专题训练
 
-见下面数据结构题单的「**§1.2 前缀和与哈希表**」和「**§8.1 树状数组**」。
+见下面数据结构题单的「**§1.2 前缀和与哈希表**」「**§8.1 树状数组**」和「**§8.2 逆序对**」。
 
 ## 分类题单
 
