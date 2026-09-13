@@ -5,7 +5,7 @@
 Q1 https://leetcode.cn/problems/cyclically-shift-rows-and-columns/solutions/4027861/mo-ni-pythonjavacgo-by-endlesscheng-kd65/
 Q2 https://leetcode.cn/problems/minimum-operations-to-make-every-element-palindromic/solutions/4027856/yu-chu-li-hui-wen-shu-er-fen-cha-zhao-py-45qi/
 Q3 https://leetcode.cn/problems/count-shadow-pairs-i/solutions/4027853/mei-ju-you-wei-hu-zuo-dan-diao-zhan-pyth-hmvp/
-Q4 
+Q4 https://leetcode.cn/problems/count-shadow-pairs-ii/solutions/4027908/zhi-yu-fen-zhi-dan-diao-zhan-shu-zhuang-c4sct/
 
 [本题视频讲解](https://www.bilibili.com/video//?t=2m3s)，欢迎点赞关注~
 
