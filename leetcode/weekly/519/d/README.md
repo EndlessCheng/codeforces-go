@@ -1,7 +1,7 @@
 本题有三个要求：
 
 1. $0\le i < j < n$。这可以用**枚举右维护左**，枚举 $j$，维护左边的 $i$。具体怎么维护下面细讲。
-2. $\textit{nums}[i] < \textit{nums}[j]$。这可以用**值域分治**，例如元素范围 $[1,100]$，我们以 $50$ 为界，把问题分成：
+2. $\textit{nums}[i] < \textit{nums}[j]$。这可以用**值域分治**。例如元素范围 $[1,100]$，我们以 $50$ 为界，把问题分成：
     - $1 \le \textit{nums}[i] < \textit{nums}[j]\le 50$ 的影子对个数，这是个规模更小的子问题，可以递归（分治）解决。
     - $51 \le \textit{nums}[i] < \textit{nums}[j]\le 100$ 的影子对个数，这是个规模更小的子问题，可以递归（分治）解决。
     - $1\le \textit{nums}[i] \le 50 < \textit{nums}[j]\le 100$ 的影子对个数。下面细讲。
@@ -15,10 +15,10 @@
 
 分类讨论：
 
-- 如果 $\textit{nums}[k]$ 在下部。用一个栈 $\textit{lowSt}$ 维护**下部**遍历过的元素，如果当前元素 $x$ 比栈顶大，那么栈顶永远不能作为 $\textit{nums}[i]$（因为 $\textit{nums}[i] < x < \textit{nums}[j]$），弹出栈顶。弹出这些元素后，栈从栈底到栈顶是递减的（可以相等），没有干扰我们的 $\textit{nums}[k]$，栈中每个数都适合作为 $\textit{nums}[i]$。
-- 如果 $\textit{nums}[k]$ 在上部。设上部中的 $\textit{nums}[p]$ 是 $\textit{nums}[j]$ 左侧最近的小于 $\textit{nums}[j]$ 的数（这是单调栈的标准应用）。那么 $i$ 必须 $\ge p$（否则 $k=p$ 不符合题目的第三个要求）。于是，只有 $\textit{lowSt}$ 中的下标 $\ge p$ 的 $\textit{nums}[i]$，才能与 $\textit{nums}[j]$ 组成影子对。在 $\textit{lowSt}$ 中二分 $p$，即可求出满足要求的下标的个数。
+- 如果 $\textit{nums}[k]$ 在下部。用一个栈 $\textit{lowSt}$ 维护**下部**遍历过的元素，如果当前元素 $x$ 比栈顶大，那么栈顶永远不能作为 $\textit{nums}[i]$（因为 $\textit{nums}[i] < x < \textit{nums}[j]$），弹出栈顶。弹出这些元素后，$\textit{lowSt}$ 从栈底到栈顶是递减的（可以相等），没有干扰我们的 $\textit{nums}[k]$，栈中每个数都适合作为 $\textit{nums}[i]$。
+- 如果 $\textit{nums}[k]$ 在上部。设上部中的 $\textit{nums}[p]$ 是 $\textit{nums}[j]$ 左侧最近的小于 $\textit{nums}[j]$ 的数（这是单调栈的标准应用）。令 $k=p$，那么 $i<p$ 的 $\textit{nums}[i]$ 不满足题目的第三个要求。于是，只有 $\textit{lowSt}$ 中的下标 $\ge p$ 的 $\textit{nums}[i]$，才能与 $\textit{nums}[j]$ 组成影子对。$\textit{lowSt}$ 保存下标，我们在 $\textit{lowSt}$ 中二分 $p$，即可求出满足要求的下标 $i$ 的个数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1k7Yv6WE3i/?t=21m30s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -225,8 +225,12 @@ func shadowPairs(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log^2 n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n\log^2 n)$，其中 $n$ 是 $\textit{nums}$ 的长度。分治有 $\mathcal{O}(\log n)$ 层，每层有 $n$ 个数，所以我们一共做了 $\mathcal{O}(n\log n)$ 次二分查找，总的时间复杂度为 $\mathcal{O}(n\log^2 n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 相关内容
+
+力扣又引入新的知识点了，难道后面要出 **CDQ 分治**了？
 
 ## 分类题单
 

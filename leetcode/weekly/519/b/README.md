@@ -2,28 +2,29 @@
 
 问题相当于：
 
-- 找到与 $\textit{nums}[i]$ 同奇偶的最近的回文数。
+- 找到与 $\textit{nums}[i]$ 同奇偶的**最近**的回文数。
 
 我们可以预处理范围内的所有回文数（按奇偶分成两组），然后在回文数中 [二分查找](https://www.bilibili.com/video/BV1AP41137w7/) $\ge \textit{nums}[i]$ 的最小的数，以及 $< \textit{nums}[i]$ 的最大的数。
 
-为简化二分逻辑，可以把预处理的范围上界置为 $2\times 10^9+2$，这是大于 $10^9$ 的最小的回文偶数。
+为了简化边界情况的判断逻辑，可以把预处理的范围上界置为 $2\times 10^9+2$，这是大于 $10^9$ 的最小的回文偶数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1k7Yv6WE3i/)，欢迎点赞关注~
 
 ```py [sol-Python3]
+# 模板来自数学题单 https://leetcode.cn/discuss/post/3584388/
 def gen_palindrome() -> Iterator[int]:
     base = 1
     while True:
         # 生成奇数长度回文数，例如 base = 10，生成的范围是 101 ~ 999
         for i in range(base, base * 10):
             s = str(i)
-            x = int(s + s[::-1][1:])
+            x = int(s + s[::-1][1:])  # 去掉 i 的最低位，反转，拼在 i 的右边
             yield x
 
         # 生成偶数长度回文数，例如 base = 10，生成的范围是 1001 ~ 9999
         for i in range(base, base * 10):
             s = str(i)
-            x = int(s + s[::-1])
+            x = int(s + s[::-1])  # 反转 i，拼在 i 的右边
             yield x
 
         base *= 10
@@ -49,6 +50,7 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
+    // 模板来自数学题单 https://leetcode.cn/discuss/post/3584388/
     private static final int MX = 2_000_000_002;
     private static final List<Integer>[] palindromes = new ArrayList[2];
     private static boolean initialized = false;
@@ -70,7 +72,7 @@ class Solution {
             for (int i = base; i < base * 10; i++) {
                 int x = i;
                 for (int t = i / 10; t > 0; t /= 10) {
-                    x = x * 10 + t % 10;
+                    x = x * 10 + t % 10; // 去掉 i 的最低位，反转，拼在 i 的右边
                 }
                 if (x > MX) {
                     return;
@@ -82,7 +84,7 @@ class Solution {
             for (int i = base; i < base * 10; i++) {
                 int x = i;
                 for (int t = i; t > 0; t /= 10) {
-                    x = x * 10 + t % 10;
+                    x = x * 10 + t % 10; // 反转 i，拼在 i 的右边
                 }
                 if (x > MX) {
                     return;
@@ -123,8 +125,9 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
+// 模板来自数学题单 https://leetcode.cn/discuss/post/3584388/
 const int MX = 2'000'000'002;
-vector<int> palindromes[2] = {{0}, {0}};
+vector<int> palindromes[2] = {{0}, {0}}; // 哨兵
 
 // 预处理 [1, MX] 中的回文数
 auto init = []() {
@@ -133,7 +136,7 @@ auto init = []() {
         for (int i = base; i < base * 10; i++) {
             int x = i;
             for (int t = i / 10; t > 0; t /= 10) {
-                x = x * 10 + t % 10;
+                x = x * 10 + t % 10; // 去掉 i 的最低位，反转，拼在 i 的右边
             }
             if (x > MX) {
                 return 0;
@@ -145,7 +148,7 @@ auto init = []() {
         for (int i = base; i < base * 10; i++) {
             int x = i;
             for (int t = i; t > 0; t /= 10) {
-                x = x * 10 + t % 10;
+                x = x * 10 + t % 10; // 反转 i，拼在 i 的右边
             }
             if (x > MX) {
                 return 0;
@@ -169,6 +172,7 @@ public:
 ```
 
 ```go [sol-Go]
+// 模板来自数学题单 https://leetcode.cn/discuss/post/3584388/
 const mx = 2_000_000_002
 var palindromes = [2][]int{{0}, {0}} // 哨兵
 
@@ -179,7 +183,7 @@ func init() {
 		for i := base; i < base*10; i++ {
 			x := i
 			for t := i / 10; t > 0; t /= 10 {
-				x = x*10 + t%10
+				x = x*10 + t%10 // 去掉 i 的最低位，反转，拼在 i 的右边
 			}
 			if x > mx {
 				return
@@ -192,7 +196,7 @@ func init() {
 		for i := base; i < base*10; i++ {
 			x := i
 			for t := i; t > 0; t /= 10 {
-				x = x*10 + t%10
+				x = x*10 + t%10 // 反转 i，拼在 i 的右边
 			}
 			if x > mx {
 				return
@@ -216,7 +220,7 @@ func minOperations(nums []int) (ans int64) {
 
 不计入预处理的时间和空间。
 
-- 时间复杂度：$\mathcal{O}(\log U)$，其中 $U = \sqrt{10^9}$。
+- 时间复杂度：$\mathcal{O}(\log \sqrt{U}) = \mathcal{O}(\log U)$，其中 $U = 10^9$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 值域范围更大的做法
