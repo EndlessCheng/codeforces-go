@@ -1,3 +1,5 @@
+## 方法一：预处理回文数 + 二分查找
+
 操作不改变 $\textit{nums}[i]$ 的奇偶性。
 
 问题相当于：
@@ -220,12 +222,303 @@ func minOperations(nums []int) (ans int64) {
 
 不计入预处理的时间和空间。
 
-- 时间复杂度：$\mathcal{O}(\log \sqrt{U}) = \mathcal{O}(\log U)$，其中 $U = 10^9$。
+- 时间复杂度：$\mathcal{O}(n\log \sqrt{U}) = \mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U = 10^9$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 值域范围更大的做法
+## 方法二：至多考虑 5 个数
 
-做法类似 [564. 寻找最近的回文数](https://leetcode.cn/problems/find-the-closest-palindrome/)，[我的题解](https://leetcode.cn/problems/find-the-closest-palindrome/solutions/3855597/zhi-xu-kao-lu-5-ge-shu-zi-pythonjavacgo-3td25/)。
+如果 $n\le 10^{18}$，预处理消耗的空间就太大了。我们需要直接找到最近的回文数。
+
+做法类似 [564. 寻找最近的回文数](https://leetcode.cn/problems/find-the-closest-palindrome/)，下面接着 [我的题解](https://leetcode.cn/problems/find-the-closest-palindrome/solutions/3855597/zhi-xu-kao-lu-5-ge-shu-zi-pythonjavacgo-3td25/) 继续讲。
+
+本题需要保证回文数的最高位与 $\textit{nums}[i]$ 的奇偶性相同。
+
+设 $\textit{nums}[i]$ 的十进制长度为 $m$。如果 $\textit{nums}[i]$ 是偶数，额外考虑的回文数改为：
+
+- 十进制长为 $m-1$ 的最大偶回文数 $9\cdot 10^{m-2}-2\ (m\ge 3)$。特别地，如果 $m=2$，则十进制长为 $m-1$ 的最大偶回文数为 $8$。
+- 十进制长为 $m+1$ 的最小偶回文数 $2\cdot 10^m+2$。
+
+> 注：代码实现时，无需考虑 $\textit{left}-1$ 生成的回文数的十进制长度小于 $m$ 的情况，按照我们的规则，这种回文数的十进制长度是 $m-2$，远远小于我们需要考虑的数。同理，无需考虑 $\textit{left}+1$ 生成的回文数的十进制长度大于 $m$ 的情况。
+
+```py [sol-Python3]
+class Solution:
+    def nearestPalindromicDiff(self, num: int) -> int:
+        if num <= 9:
+            return 0  # num 已经是回文数
+
+        min_d = inf
+
+        def update(pal: int) -> None:
+            nonlocal min_d
+            min_d = min(min_d, abs(pal - num))
+
+        s = str(num)
+        m = len(s)
+
+        if num % 2:
+            update(10 ** (m - 1) - 1)  # 十进制长为 m-1 的最大奇回文数 999..999
+            update(10 ** m + 1)  # 十进制长为 m+1 的最小奇回文数 100..001
+        else:
+            if m == 2:
+                update(8)
+            else:
+                update(10 ** (m - 2) * 9 - 2)  # 十进制长为 m-1 的最大偶回文数 899..998
+            update(10 ** m * 2 + 2)  # 十进制长为 m+1 的最小偶回文数 200..002
+
+        high_digit = int(s[0])
+        if high_digit % 2 == num % 2:
+            left = int(s[:(m + 1) // 2])
+            # 枚举十进制长为 m 的邻近回文数
+            for l in range(left - 1, left + 2):
+                # l 最高位的奇偶性必须与 num 的相同
+                sl = str(l)
+                if int(sl[0]) % 2 == num % 2:
+                    update(int(sl + sl[::-1][m % 2:]))
+        else:
+            # 最高位为 high_digit - 1
+            # 例如 num = 354..676，生成回文数 299..992
+            if high_digit > 1:
+                update((10 ** (m - 1) + 1) * high_digit - 11)
+
+            # 最高位为 high_digit + 1
+            # 例如 num = 354..676，生成回文数 400..004
+            if high_digit < 9:
+                update((10 ** (m - 1) + 1) * (high_digit + 1))
+
+        return min_d
+
+    def minOperations(self, nums: list[int]) -> int:
+        return sum(self.nearestPalindromicDiff(x) for x in nums) // 2
+```
+
+```java [sol-Java]
+class Solution {
+    public long minOperations(int[] nums) {
+        long ans = 0;
+        for (int x : nums) {
+            ans += nearestPalindromicDiff(x);
+        }
+        return ans / 2;
+    }
+
+    // 返回离 num 最近的与 num 同奇偶的正回文数与 num 的绝对差
+    public long nearestPalindromicDiff(int num) {
+        if (num <= 9) {
+            return 0; // num 已经是回文数
+        }
+
+        minD = Long.MAX_VALUE;
+
+        String s = String.valueOf(num);
+        int m = s.length(); // num 的十进制长度
+
+        if (num % 2 > 0) {
+            update((long) Math.pow(10, m - 1) - 1, num); // 十进制长为 m-1 的最大奇回文数 999..999
+            update((long) Math.pow(10, m) + 1, num); // 十进制长为 m+1 的最小奇回文数 100..001
+        } else {
+            if (m == 2) {
+                update(8, num);
+            } else {
+                update((long) Math.pow(10, m - 2) * 9 - 2, num); // 十进制长为 m-1 的最大偶回文数 899..998
+            }
+            update((long) Math.pow(10, m) * 2 + 2, num); // 十进制长为 m+1 的最小偶回文数 200..002
+        }
+
+        int highDigit = s.charAt(0) - '0';
+        if (highDigit % 2 == num % 2) {
+            int left = Integer.parseInt(s.substring(0, (m + 1) / 2));
+            // 枚举十进制长为 m 的邻近回文数
+            for (int l = left - 1; l <= left + 1; l++) {
+                // l 最高位奇偶性必须与 num 相同
+                if (String.valueOf(l).charAt(0) % 2 != num % 2) {
+                    continue;
+                }
+
+                long pal = l;
+                for (int x = m % 2 > 0 ? l / 10 : l; x > 0; x /= 10) {
+                    pal = pal * 10 + x % 10;
+                }
+                update(pal, num);
+            }
+        } else {
+            // 最高位为 highDigit - 1
+            // 例如 num = 354..676，生成回文数 299..992
+            if (highDigit > 1) {
+                update(((long) Math.pow(10, m - 1) + 1) * highDigit - 11, num);
+            }
+
+            // 最高位为 highDigit + 1
+            // 例如 num = 354..676，生成回文数 400..004
+            if (highDigit < 9) {
+                update(((long) Math.pow(10, m - 1) + 1) * (highDigit + 1), num);
+            }
+        }
+
+        return minD;
+    }
+
+    private long minD;
+
+    private void update(long pal, int num) {
+        minD = Math.min(minD, Math.abs(pal - num));
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    long long nearestPalindromicDiff(int num) {
+        if (num <= 9) {
+            return 0; // num 已经是回文数
+        }
+
+        long long min_d = LLONG_MAX;
+        auto update = [&](long long pal) -> void {
+            min_d = min(min_d, abs(pal - num));
+        };
+
+        string s = to_string(num);
+        int m = s.size();
+
+        if (num % 2) {
+            update((long long) pow(10, m - 1) - 1); // 十进制长为 m-1 的最大奇回文数 999..999
+            update((long long) pow(10, m) + 1); // 十进制长为 m+1 的最小奇回文数 100..001
+        } else {
+            if (m == 2) {
+                update(8);
+            } else {
+                update((long long) pow(10, m - 2) * 9 - 2); // 十进制长为 m-1 的最大偶回文数 899..998
+            }
+            update((long long) pow(10, m) * 2 + 2); // 十进制长为 m+1 的最小偶回文数 200..002
+        }
+
+        int high_digit = s[0] - '0';
+        if (high_digit % 2 == num % 2) {
+            int left = stoi(s.substr(0, (m + 1) / 2));
+            // 枚举十进制长为 m 的邻近回文数
+            for (int l = left - 1; l <= left + 1; l++) {
+                // l 最高位的奇偶性必须与 num 的相同
+                if (to_string(l)[0] % 2 != num % 2) {
+                    continue;
+                }
+
+                long long pal = l;
+                for (int x = m % 2 ? l / 10 : l; x > 0; x /= 10) {
+                    pal = pal * 10 + x % 10;
+                }
+                update(pal);
+            }
+        } else {
+            // 最高位为 high_digit - 1
+            // 例如 num = 354..676，生成回文数 299..992
+            if (high_digit > 1) {
+                update(((long long) pow(10, m - 1) + 1) * high_digit - 11);
+            }
+
+            // 最高位为 high_digit + 1
+            // 例如 num = 354..676，生成回文数 400..004
+            if (high_digit < 9) {
+                update(((long long) pow(10, m - 1) + 1) * (high_digit + 1));
+            }
+        }
+
+        return min_d;
+    }
+
+public:
+    long long minOperations(vector<int>& nums) {
+        long long ans = 0;
+        for (int x : nums) {
+            ans += nearestPalindromicDiff(x);
+        }
+        return ans / 2;
+    }
+};
+```
+
+```go [sol-Go]
+// 返回离 num 最近的与 num 同奇偶的正回文数与 num 的绝对差
+func nearestPalindromicDiff(num int) int {
+	if num <= 9 {
+		return 0 // num 已经是回文数
+	}
+
+	minD := math.MaxInt
+	update := func(pal int) {
+		minD = min(minD, abs(pal-num))
+	}
+
+	s := strconv.Itoa(num)
+	m := len(s) // num 的十进制长度
+
+	if num%2 > 0 {
+		update(int(math.Pow10(m-1)) - 1) // 十进制长为 m-1 的最大奇回文数 999..999
+		update(int(math.Pow10(m)) + 1)   // 十进制长为 m+1 的最小奇回文数 100..001
+	} else {
+		if m == 2 {
+			update(8)
+		} else {
+			update(int(math.Pow10(m-2))*9 - 2) // 十进制长为 m-1 的最大偶回文数 899..998
+		}
+		update(int(math.Pow10(m))*2 + 2) // 十进制长为 m+1 的最小偶回文数 200..002
+	}
+
+	highDigit := int(s[0] - '0')
+	if highDigit%2 == num%2 {
+		left, _ := strconv.Atoi(s[:(m+1)/2])
+		// 枚举十进制长为 m 的邻近回文数
+		for l := left - 1; l <= left+1; l++ {
+			// l 最高位的奇偶性必须与 num 的相同
+			if int(strconv.Itoa(l)[0]%2) != num%2 {
+				continue
+			}
+
+			pal := l
+			x := l
+			if m%2 > 0 {
+				x /= 10
+			}
+			for ; x > 0; x /= 10 {
+				pal = pal*10 + x%10
+			}
+			update(pal)
+		}
+	} else {
+		// 最高位为 highDigit - 1
+		// 例如 num = 354..676，生成回文数 299..992
+		if highDigit > 1 {
+			update((int(math.Pow10(m-1))+1)*highDigit - 11)
+		}
+
+		// 最高位为 highDigit + 1
+		// 例如 num = 354..676，生成回文数 400..004
+		if highDigit < 9 {
+			update((int(math.Pow10(m-1)) + 1) * (highDigit + 1))
+		}
+	}
+
+	return minD
+}
+
+func minOperations(nums []int) (ans int64) {
+	for _, x := range nums {
+		ans += int64(nearestPalindromicDiff(x))
+	}
+	return ans / 2
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(\log U)$ 或 $\mathcal{O}(1)$，取决于是否用到字符串。
 
 ## 专题训练
 
