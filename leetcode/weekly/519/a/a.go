@@ -2,6 +2,19 @@ package main
 
 // https://space.bilibili.com/206214
 func cyclicShift(n int, grid [][]int, rowShift, colShift []int) [][]int {
+	ans := make([][]int, n)
+	for i := range ans {
+		ans[i] = make([]int, n)
+		for j := range ans[i] {
+			row := (i + colShift[j]) % n
+			col := (j + rowShift[row]) % n
+			ans[i][j] = grid[row][col]
+		}
+	}
+	return ans
+}
+
+func cyclicShift2(n int, grid [][]int, rowShift, colShift []int) [][]int {
 	for i, row := range grid {
 		shift := rowShift[i]
 		grid[i] = append(row[shift:], row[:shift]...)

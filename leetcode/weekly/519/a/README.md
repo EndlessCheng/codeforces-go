@@ -1,3 +1,5 @@
+## 写法一：按题意模拟
+
 ```py [sol-Python3]
 class Solution:
     def cyclicShift(self, n: int, grid: list[list[int]], rowShift: list[int], colShift: list[int]) -> list[list[int]]:
@@ -110,7 +112,82 @@ func cyclicShift(n int, grid [][]int, rowShift, colShift []int) [][]int {
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-**注**：利用 [189. 轮转数组](https://leetcode.cn/problems/rotate-array/) 的技巧，可以做到 $\mathcal{O}(1)$ 空间复杂度。详见 [我的题解](https://leetcode.cn/problems/rotate-array/solutions/2784427/tu-jie-yuan-di-zuo-fa-yi-tu-miao-dong-py-ryfv/)。
+## 写法二：直接计算
+
+答案 $\textit{ans}[i][j]$ 来自哪个格子？
+
+来自哪一行？列移位后，$\textit{row} = (i+\textit{colShift}[j])\bmod n$ 行移到了 $i$ 行。
+
+来自哪一列？行移位后，$\textit{row}$ 行的 $\textit{col} = (j + \textit{rowShift}[\textit{row}])\bmod n$ 列移到了 $j$ 列。
+
+所以 $\textit{ans}[i][j] = \textit{grid}[\textit{row}][\textit{col}]$。
+
+```py [sol-Python3]
+class Solution:
+    def cyclicShift(self, n: int, grid: list[list[int]], rowShift: list[int], colShift: list[int]) -> list[list[int]]:
+        ans = [[0] * n for _ in range(n)]
+        for i in range(n):
+            for j in range(n):
+                row = (i + colShift[j]) % n
+                col = (j + rowShift[row]) % n
+                ans[i][j] = grid[row][col]
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[][] cyclicShift(int n, int[][] grid, int[] rowShift, int[] colShift) {
+        int[][] ans = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int row = (i + colShift[j]) % n;
+                int col = (j + rowShift[row]) % n;
+                ans[i][j] = grid[row][col];
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<vector<int>> cyclicShift(int n, vector<vector<int>>& grid, vector<int>& row_shift, vector<int>& col_shift) {
+        vector ans(n, vector<int>(n));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int row = (i + col_shift[j]) % n;
+                int col = (j + row_shift[row]) % n;
+                ans[i][j] = grid[row][col];
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func cyclicShift(n int, grid [][]int, rowShift, colShift []int) [][]int {
+	ans := make([][]int, n)
+	for i := range ans {
+		ans[i] = make([]int, n)
+		for j := range ans[i] {
+			row := (i + colShift[j]) % n
+			col := (j + rowShift[row]) % n
+			ans[i][j] = grid[row][col]
+		}
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
+
+**注**：利用 [189. 轮转数组](https://leetcode.cn/problems/rotate-array/) 的技巧，可以做到完美的**原地修改**。详见 [我的题解](https://leetcode.cn/problems/rotate-array/solutions/2784427/tu-jie-yuan-di-zuo-fa-yi-tu-miao-dong-py-ryfv/)。
 
 ## 分类题单
 
