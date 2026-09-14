@@ -18,7 +18,7 @@
 - 如果 $\textit{nums}[k]$ 在下部。用一个栈 $\textit{lowSt}$ 维护**下部**遍历过的元素，如果当前元素 $x$ 比栈顶大，那么栈顶永远不能作为 $\textit{nums}[i]$（因为 $\textit{nums}[i] < x < \textit{nums}[j]$），弹出栈顶。弹出这些元素后，$\textit{lowSt}$ 从栈底到栈顶是递减的（可以相等），没有干扰我们的 $\textit{nums}[k]$，栈中每个数都适合作为 $\textit{nums}[i]$。
 - 如果 $\textit{nums}[k]$ 在上部。设上部中的 $\textit{nums}[p]$ 是 $\textit{nums}[j]$ 左侧最近的小于 $\textit{nums}[j]$ 的数（这是单调栈的标准应用）。令 $k=p$，那么 $i<p$ 的 $\textit{nums}[i]$ 不满足题目的第三个要求。于是，只有 $\textit{lowSt}$ 中的下标 $\ge p$ 的 $\textit{nums}[i]$，才能与 $\textit{nums}[j]$ 组成影子对。$\textit{lowSt}$ 保存下标，我们在 $\textit{lowSt}$ 中二分 $p$，即可求出满足要求的下标 $i$ 的个数。
 
-[本题视频讲解](https://www.bilibili.com/video/BV1k7Yv6WE3i/?t=21m30s)，欢迎点赞关注~
+具体例子请看 [本题视频讲解](https://www.bilibili.com/video/BV1k7Yv6WE3i/?t=21m30s) 中画的图。欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
