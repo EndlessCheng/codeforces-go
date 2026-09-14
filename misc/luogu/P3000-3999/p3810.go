@@ -9,15 +9,15 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type fenwick []int
+type fenwick810 []int
 
-func (t fenwick) update(i, val int) {
+func (t fenwick810) update(i, val int) {
 	for ; i < len(t); i += i & -i {
 		t[i] += val
 	}
 }
 
-func (t fenwick) pre(i int) (res int) {
+func (t fenwick810) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res += t[i]
 	}
@@ -46,7 +46,7 @@ func p3810(in io.Reader, _w io.Writer) {
 		}
 	}
 
-	t := make(fenwick, k+1)
+	t := make(fenwick810, k+1)
 	var solve func(int, int)
 	solve = func(l, r int) {
 		if l+1 == r {
