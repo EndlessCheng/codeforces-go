@@ -53,6 +53,7 @@
     - 可持久化线段树（主席树）
       - 在线二维数点
   - [树套树 seg_in_bit.go](/copypasta/seg_in_bit.go)
+  - [CDQ 分治 cdq.go](/copypasta/cdq.go)
   - [0-1 线段树 segment_tree01.go](/copypasta/segment_tree01.go)
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
