@@ -7,8 +7,7 @@ import (
 
 // https://space.bilibili.com/206214
 func solve(a []int, low, high int) (res int) {
-	n := len(a)
-	if n <= 1 || low == high {
+	if low == high || len(a) <= 1 {
 		return
 	}
 

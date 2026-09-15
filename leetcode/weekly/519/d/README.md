@@ -16,7 +16,7 @@
 分类讨论：
 
 - 如果 $\textit{nums}[k]$ 在下部。用一个栈 $\textit{lowSt}$ 维护**下部**遍历过的元素，如果当前元素 $x$ 比栈顶大，那么栈顶永远不能作为 $\textit{nums}[i]$（因为 $\textit{nums}[i] < x < \textit{nums}[j]$），弹出栈顶。弹出这些元素后，$\textit{lowSt}$ 从栈底到栈顶是递减的（可以相等），没有干扰我们的 $\textit{nums}[k]$，栈中每个数都适合作为 $\textit{nums}[i]$。
-- 如果 $\textit{nums}[k]$ 在上部。设上部中的 $\textit{nums}[p]$ 是 $\textit{nums}[j]$ 左侧最近的小于 $\textit{nums}[j]$ 的数（这是单调栈的标准应用）。令 $k=p$，那么 $i<p$ 的 $\textit{nums}[i]$ 不满足题目的第三个要求。于是，只有 $\textit{lowSt}$ 中的下标 $\ge p$ 的 $\textit{nums}[i]$，才能与 $\textit{nums}[j]$ 组成影子对。$\textit{lowSt}$ 保存下标，我们在 $\textit{lowSt}$ 中二分 $p$，即可求出满足要求的下标 $i$ 的个数。
+- 如果 $\textit{nums}[k]$ 在上部。设上部中的 $\textit{nums}[p]$ 是 $\textit{nums}[j]$ 左侧最近的小于 $\textit{nums}[j]$ 的数（这是 [单调栈](https://www.bilibili.com/video/BV1VN411J7S7/) 的标准应用）。令 $k=p$，那么 $i<p$ 的 $\textit{nums}[i]$ 不满足题目的第三个要求。于是，只有 $\textit{lowSt}$ 中的下标 $\ge p$ 的 $\textit{nums}[i]$，才能与 $\textit{nums}[j]$ 组成影子对。$\textit{lowSt}$ 保存下标，我们在 $\textit{lowSt}$ 中二分 $p$，即可求出满足要求的下标 $i$ 的个数。
 
 具体例子请看 [本题视频讲解](https://www.bilibili.com/video/BV1k7Yv6WE3i/?t=21m30s) 中画的图。欢迎点赞关注~
 
@@ -24,8 +24,7 @@
 class Solution:
     def shadowPairs(self, nums: list[int]) -> int:
         def solve(a: list[int], low: int, high: int) -> None:
-            n = len(a)
-            if n <= 1 or low == high:
+            if low == high or len(a) <= 1:
                 return
 
             nonlocal ans
@@ -55,12 +54,52 @@ class Solution:
             solve(b, low, mid)
             solve(c, mid + 1, high)
 
+        # 不离散化也可以，见【Python3 写法二】
         sorted_nums = sorted(set(nums))
         for i, x in enumerate(nums):
             nums[i] = bisect_left(sorted_nums, x)
 
         ans = 0
         solve(nums, 0, len(sorted_nums) - 1)
+        return ans
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def shadowPairs(self, nums: list[int]) -> int:
+        def solve(a: list[int], low: int, high: int) -> None:
+            if low == high or len(a) <= 1:
+                return
+
+            nonlocal ans
+            mid = (low + high) // 2
+            low_st = []
+            high_st = []
+            b = []
+            c = []
+
+            for i, x in enumerate(a):
+                if x <= mid:  # x 在下部，作为 nums[i]
+                    while low_st and a[low_st[-1]] < x:
+                        low_st.pop()  # 因为 x 的出现，栈顶不能作为 nums[i]
+                    low_st.append(i)
+                    b.append(x)
+                else:  # x 在上部，作为 nums[j]
+                    # 找到 x 左侧第一个小于 x 的最近元素，作为 nums[k]
+                    while high_st and a[high_st[-1]] >= x:
+                        high_st.pop()
+                    ans += len(low_st)
+                    if high_st:
+                        # low_st 中 < high_st[-1] 的下标不能作为 nums[i]
+                        ans -= bisect_left(low_st, high_st[-1])
+                    high_st.append(i)
+                    c.append(x)
+
+            solve(b, low, mid)
+            solve(c, mid + 1, high)
+
+        ans = 0
+        solve(nums, min(nums), max(nums))
         return ans
 ```
 
@@ -108,10 +147,9 @@ class Solution {
                 res += lowSt.size();
                 if (!highSt.isEmpty()) {
                     // lowSt 中 < highSt.getLast() 的下标不能作为 nums[i]
+                    // lowSt 没有重复元素，可以用库函数二分
                     int p = Collections.binarySearch(lowSt, highSt.getLast());
-                    if (p < 0) {
-                        p = ~p; // 见 Collections.binarySearch 源码
-                    }
+                    if (p < 0) p = ~p; // 见 Collections.binarySearch 源码
                     res -= p;
                 }
                 highSt.add(i);
@@ -178,8 +216,7 @@ public:
 
 ```go [sol-Go]
 func solve(a []int, low, high int) (res int) {
-	n := len(a)
-	if n <= 1 || low == high {
+	if low == high || len(a) <= 1 {
 		return
 	}
 
