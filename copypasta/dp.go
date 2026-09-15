@@ -27,14 +27,15 @@ LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
 - https://atcoder.jp/contests/dp/tasks/dp_b
 - 有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
 LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
-- 矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C 1400
-- 值域打家劫舍 LC740 https://leetcode.cn/problems/delete-and-earn/
-- 值域打家劫舍 https://codeforces.com/problemset/problem/2161/D 2100
-- 分组+值域打家劫舍 https://atcoder.jp/contests/abc403/tasks/abc403_d
-- 类似思路的题目 https://leetcode.cn/problems/the-number-of-beautiful-subsets/
-- 恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
-- 环形 LC213 https://leetcode.cn/problems/house-robber-ii/
-- 环形 https://atcoder.jp/contests/abc251/tasks/abc251_e
+- LC740 https://leetcode.cn/problems/delete-and-earn/ 值域打家劫舍
+- https://codeforces.com/problemset/problem/1195/C 1400 矩阵打家劫舍
+- https://codeforces.com/problemset/problem/2244/G 1900 |i-j| > max(a[i],a[j])
+- https://codeforces.com/problemset/problem/2161/D 2100 值域打家劫舍
+- https://atcoder.jp/contests/abc403/tasks/abc403_d 分组+值域打家劫舍
+- https://leetcode.cn/problems/the-number-of-beautiful-subsets/ 类似思路的题目
+- https://atcoder.jp/contests/abc162/tasks/abc162_f 恰好选 floor(n/2) 个
+- LC213 https://leetcode.cn/problems/house-robber-ii/ 环形
+- https://atcoder.jp/contests/abc251/tasks/abc251_e 环形
 LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/ 1780
 - 变形：改成环形数组要怎么做
 - 相似题目 https://codeforces.com/problemset/problem/1624/E 2000
@@ -47,6 +48,7 @@ https://codeforces.com/problemset/problem/1994/C 1600 结合滑窗
 https://codeforces.com/problemset/problem/2061/C 1600 也可以状态机 DP
 https://codeforces.com/problemset/problem/30/C 1800
 https://codeforces.com/problemset/problem/2114/F 2000
+https://codeforces.com/problemset/problem/659/G 2300 子数组 DP
 https://codeforces.com/problemset/problem/1627/E 2200 刷表法 双指针
 https://codeforces.com/problemset/problem/283/D 2400 x 可以被表示为 y 个连续整数的和
 https://codeforces.com/problemset/problem/526/E 2400 滑动窗口
@@ -2426,6 +2428,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1778/D 2100
 	https://codeforces.com/problemset/problem/908/D 2200
 	https://codeforces.com/problemset/problem/1097/D 2200
+	https://codeforces.com/problemset/problem/2200/G 2200
 	https://codeforces.com/problemset/problem/1623/D 2300
 	https://codeforces.com/problemset/problem/1824/B2 2300
 	https://codeforces.com/problemset/problem/24/D 2400 高斯消元 托马斯算法
@@ -2482,6 +2485,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/698/C 2400 概率
 	https://codeforces.com/problemset/problem/744/C 2400 状态设计
 	https://codeforces.com/problemset/problem/543/C 2500 状态转移
+	https://codeforces.com/problemset/problem/845/F 2500 轮廓线 状态设计
 	https://codeforces.com/problemset/problem/1209/E2 2500 循环移位
 	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压
 	https://codeforces.com/problemset/problem/662/C 2600 状态设计 也可以 FWT
@@ -2502,6 +2506,7 @@ func _(abs func(int) int) {
 	https://ac.nowcoder.com/acm/problem/collection/810
 
 	轮廓线 DP
+	https://codeforces.com/problemset/problem/903/F 2200
 	https://codeforces.com/problemset/problem/845/F 2500 状态设计 一个格子一个格子地算
 	LCP76 魔法棋盘 https://leetcode.cn/problems/1ybDKD/
 	NOI01 炮兵阵地 https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
@@ -4137,18 +4142,6 @@ func _(abs func(int) int) {
 	// 扔蛋问题 LC887 https://leetcode.cn/problems/super-egg-drop/
 	// https://codeforces.com/problemset/problem/321/E 2600
 	// todo 看看划分型 DP 题单有没有可以优化的题目
-
-	// CDQ 分治优化 DP
-	// todo https://oi-wiki.org/misc/cdq-divide/
-	//  推荐 https://blog.nowcoder.net/n/f44d4aada5a24f619442dd6ddffa7320
-	//  推荐 https://zhuanlan.zhihu.com/p/332996578
-	//  https://www.bilibili.com/video/BV1mC4y1s7ic
-	//  [学习笔记]CDQ分治和整体二分 https://www.luogu.com.cn/blog/Owencodeisking/post-xue-xi-bi-ji-cdq-fen-zhi-hu-zheng-ti-er-fen
-	//  https://www.luogu.com.cn/blog/ljc20020730/cdq-fen-zhi-xue-xi-bi-ji
-	//  动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
-	//  CDQ 优化 DP https://www.luogu.com.cn/problem/P2487
-	//  https://codeforces.com/problemset/problem/848/C
-	//  数据结构 https://codeforces.com/problemset/problem/1045/G https://codeforces.com/problemset/problem/762/E
 
 	/* 树形 DP
 	思考方向：
