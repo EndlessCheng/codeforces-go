@@ -685,9 +685,6 @@ func sortCollections() {
 	// WQS 二分
 	// 见 dp.go
 
-	// CDQ 分治
-	// 见 dp.go
-
 	// 整体二分 Parallel Binary Search
 	// https://oi-wiki.org/misc/parallel-binsearch/
 	// https://codeforces.com/blog/entry/45578
