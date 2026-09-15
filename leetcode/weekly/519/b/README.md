@@ -100,6 +100,7 @@ class Solution {
         long ans = 0;
         for (int x : nums) {
             List<Integer> p = palindromes[x % 2];
+            // 也可以用库函数二分，见【Java 写法二】
             int i = lowerBound(p, x);
             ans += Math.min(p.get(i) - x, x - p.get(i - 1));
         }
@@ -122,6 +123,65 @@ class Solution {
             }
         }
         return right;
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    // 模板来自数学题单 https://leetcode.cn/discuss/post/3584388/
+    private static final int MX = 2_000_000_002;
+    private static final List<Integer>[] palindromes = new ArrayList[2];
+    private static boolean initialized = false;
+
+    // 这样写比 static block 快
+    public Solution() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        Arrays.setAll(palindromes, _ -> new ArrayList<>());
+        palindromes[0].add(0);
+        palindromes[1].add(0); // 哨兵
+
+        // 预处理 [1, MX] 中的回文数
+        for (int base = 1; ; base *= 10) {
+            // 生成奇数长度回文数，例如 base = 10，生成的范围是 101 ~ 999
+            for (int i = base; i < base * 10; i++) {
+                int x = i;
+                for (int t = i / 10; t > 0; t /= 10) {
+                    x = x * 10 + t % 10; // 去掉 i 的最低位，反转，拼在 i 的右边
+                }
+                if (x > MX) {
+                    return;
+                }
+                palindromes[x % 2].add(x);
+            }
+
+            // 生成偶数长度回文数，例如 base = 10，生成的范围是 1001 ~ 9999
+            for (int i = base; i < base * 10; i++) {
+                int x = i;
+                for (int t = i; t > 0; t /= 10) {
+                    x = x * 10 + t % 10; // 反转 i，拼在 i 的右边
+                }
+                if (x > MX) {
+                    return;
+                }
+                palindromes[x % 2].add(x);
+            }
+        }
+    }
+
+    public long minOperations(int[] nums) {
+        long ans = 0;
+        for (int x : nums) {
+            List<Integer> p = palindromes[x % 2];
+            int i = Collections.binarySearch(p, x); // p 没有重复元素，可以用库函数二分
+            if (i < 0) i = ~i; // 见 Collections.binarySearch 源码
+            ans += Math.min(p.get(i) - x, x - p.get(i - 1));
+        }
+        return ans / 2;
     }
 }
 ```
