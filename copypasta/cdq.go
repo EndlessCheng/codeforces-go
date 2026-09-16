@@ -14,15 +14,15 @@ https://zhuanlan.zhihu.com/p/332996578
 https://www.luogu.com.cn/problem/P3810 模板题 三维偏序
 https://www.luogu.com.cn/problem/P3157 动态逆序对 https://www.luogu.com.cn/problem/UVA11990
 https://www.luogu.com.cn/problem/P4390 带修二维数点
-https://www.luogu.com.cn/problem/P4169
+https://www.luogu.com.cn/problem/P4169 拆开绝对值，四种情况分别计算
+https://www.luogu.com.cn/problem/P4093 CDQ 优化 DP
+https://www.luogu.com.cn/problem/P2487 CDQ 优化 DP
 https://codeforces.com/problemset/problem/762/E  2200 做到复杂度与 k 无关
 https://codeforces.com/problemset/problem/1045/G 2200 同 CF762E
 https://codeforces.com/problemset/problem/1093/E 2400
 https://codeforces.com/problemset/problem/848/C  2600 转化成带修二维数点
 https://codeforces.com/problemset/problem/1175/G 3000 斜率优化
-https://www.luogu.com.cn/problem/P2487 CDQ 优化 DP
 https://acm.hdu.edu.cn/showproblem.php?pid=5126 四维偏序
-
 
 值域分治
 LC4055 https://leetcode.cn/problems/count-shadow-pairs-ii/
