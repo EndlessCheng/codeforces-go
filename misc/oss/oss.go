@@ -2362,17 +2362,18 @@ func solveLevel() []string {
 						}
 					} else {
 						swapped |= 1 << itemIdx
-						if i := pdIndex(newData.dragons[:], oldP); i >= 0 {
-							// 如果是 oldP 是喷火龙，则朝向会变
+						if i := pdIndex(newData.dragons[:], oldP); i >= 0 { // 喷火龙
 							// todo 多次反射
 							newDir := mirror.reflectDragon(newData.dragons[i].dir)
 							newData.dragons[i] = pointWithDir{newP, newDir}
-						} else if i := pdIndex(newData.skippingCrystals[:], oldP); i >= 0 {
-							// 如果是 oldP 是喷火龙，则朝向会变
+						} else if i := pdIndex(newData.skippingCrystals[:], oldP); i >= 0 { // 水漂石
 							// todo 多次反射
-							newDir := mirror.reflectDragon(newData.skippingCrystals[i].dir)
+							newDir := newData.skippingCrystals[i].dir
+							if newDir != dirStop {
+								newDir = mirror.reflectDragon(newDir)
+							}
 							newData.skippingCrystals[i] = pointWithDir{newP, newDir}
-						} else if i := pdIndex(newData.mirrorRefs[:], oldP); i >= 0 {
+						} else if i := pdIndex(newData.mirrorRefs[:], oldP); i >= 0 { // 可被反射的镜子
 							// 如果是 oldP 是可被反射的镜子，则与 mir 垂直的镜子会前后翻转
 							newDir := mirror.reflectMirrorRef(newData.mirrorRefs[i].dir)
 							newData.mirrorRefs[i] = pointWithDir{newP, newDir}
