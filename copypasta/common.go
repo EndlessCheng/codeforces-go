@@ -48,6 +48,7 @@ https://codeforces.com/problemset/problem/1856/C 1600
     - https://leetcode.cn/problems/sum-of-digit-differences-of-all-pairs/
     - 反向构造 https://codeforces.com/problemset/problem/1927/B 900
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
+https://codeforces.com/problemset/problem/2259/C 1000
 https://codeforces.com/problemset/problem/1270/B 1200 式子变形 或者 脑筋急转弯
 https://codeforces.com/problemset/problem/1420/B 1200
 https://atcoder.jp/contests/abc433/tasks/abc433_d 1280 ~CF
@@ -116,17 +117,16 @@ https://codeforces.com/problemset/problem/1296/C
 
 前后缀分解
 部分题目也可以用状态机 DP 解决
-- [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
-  - 带修接雨水 https://codeforces.com/gym/104821/problem/M
-  - https://www.zhihu.com/question/627281278/answer/3280684055
-  - 全排列接雨水 https://atcoder.jp/contests/tenka1-2015-final/tasks/tenka1_2015_final_e
-- [926. 将字符串翻转到单调递增](https://leetcode.cn/problems/flip-string-to-monotone-increasing/)
-  - https://codeforces.com/problemset/problem/180/C 1400
-  - https://codeforces.com/problemset/problem/846/A 1500
-https://atcoder.jp/contests/abc346/tasks/abc346_d
+LC42. 接雨水 https://leetcode.cn/problems/trapping-rain-water/ 视频讲解 https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s
+- 带修接雨水 https://codeforces.com/gym/104821/problem/M
+- https://www.zhihu.com/question/627281278/answer/3280684055
+- 全排列接雨水 https://atcoder.jp/contests/tenka1-2015-final/tasks/tenka1_2015_final_e
+LC926. 将字符串翻转到单调递增 https://leetcode.cn/problems/flip-string-to-monotone-increasing/
+- https://codeforces.com/problemset/problem/180/C 1400
+- https://codeforces.com/problemset/problem/846/A 1500
 https://codeforces.com/problemset/problem/1921/D 1100
 https://codeforces.com/problemset/problem/1006/C 1200 也可以相向双指针
-https://codeforces.com/problemset/problem/234/C 1300
+https://codeforces.com/problemset/problem/234/C  1300
 https://codeforces.com/problemset/problem/1178/B 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/2026/B 1300 做到 O(n)
@@ -144,27 +144,29 @@ https://codeforces.com/problemset/problem/2028/C 1600
 https://codeforces.com/problemset/problem/2031/D 1700
 https://codeforces.com/problemset/problem/1957/D 1900
 https://codeforces.com/problemset/problem/1969/D 1900
+https://codeforces.com/problemset/problem/2228/D 1900
 https://codeforces.com/problemset/problem/2101/C 2200 式子变形可知，只需知道前缀所选数的下标，和后缀所选数的下标
 https://codeforces.com/problemset/problem/1837/F 2400
 https://codeforces.com/problemset/problem/2005/D 2400 GCD logTrick
-https://codeforces.com/problemset/problem/314/D 2500
-https://codeforces.com/problemset/problem/835/F 2500
-https://codeforces.com/problemset/problem/946/G 2500
+https://codeforces.com/problemset/problem/314/D  2500
+https://codeforces.com/problemset/problem/835/F  2500
+https://codeforces.com/problemset/problem/946/G  2500
 https://codeforces.com/problemset/problem/1701/E 2500 DP / 也可以用状态机 DP，那样无需前后缀分解
-https://codeforces.com/problemset/problem/622/F 2600
+https://codeforces.com/problemset/problem/622/F  2600
+https://atcoder.jp/contests/abc346/tasks/abc346_d
 昆明 2024：至多修改一个子数组 [L,R] ：把元素都加上 k，最大化整个数组的 GCD
 - 预处理前后缀 GCD，由于前缀 GCD 只有 O(logU) 个不同的值，可以只枚举 O(logU) 个 L 和 O(n) 个 R，
 - 枚举 R 的同时计算修改后的子数组 GCD，然后和前后缀 GCD 求 GCD
 
 定长滑动窗口
-https://codeforces.com/problemset/problem/716/B 1300
+https://codeforces.com/problemset/problem/716/B  1300
 https://codeforces.com/problemset/problem/1955/D 1400
 https://codeforces.com/problemset/problem/2014/D 1400 有些另类，也可以用差分做
-https://codeforces.com/problemset/problem/608/B 1500
+https://codeforces.com/problemset/problem/608/B  1500
 https://codeforces.com/problemset/problem/1687/A 1600
-https://codeforces.com/problemset/problem/69/E 1800
-https://codeforces.com/problemset/problem/371/E 2000
-https://codeforces.com/problemset/problem/679/C 2400
+https://codeforces.com/problemset/problem/69/E   1800
+https://codeforces.com/problemset/problem/371/E  2000
+https://codeforces.com/problemset/problem/679/C  2400
 https://cses.fi/problemset/task/3405 滑动窗口 OR
 https://cses.fi/problemset/task/1077 滑动窗口 mex
 
@@ -179,8 +181,8 @@ https://codeforces.com/problemset/problem/1234/F 2200 翻转至多一个任意�
 
 不定长滑动窗口：求最短/最小
 https://codeforces.com/problemset/problem/1354/B 1200
-https://codeforces.com/problemset/problem/224/B 1500 和最小
-https://codeforces.com/problemset/problem/701/C 1500
+https://codeforces.com/problemset/problem/224/B  1500 和最小
+https://codeforces.com/problemset/problem/701/C  1500
 https://codeforces.com/problemset/problem/1777/C 1700
 https://codeforces.com/problemset/problem/2093/G 1900
 https://www.luogu.com.cn/problem/P10719 二维转一维
@@ -191,9 +193,10 @@ https://codeforces.com/problemset/problem/1982/C 1200
 
 不定长滑动窗口：求子数组个数
 https://atcoder.jp/contests/abc430/tasks/abc430_c 1278 ~CF
-https://codeforces.com/problemset/problem/550/B 1400 变形：改成子数组
+https://codeforces.com/problemset/problem/550/B  1400 变形：改成子数组
 https://codeforces.com/problemset/problem/2149/E 1500 恰好型
 https://codeforces.com/problemset/problem/1994/C 1600 结合 DP
+https://codeforces.com/problemset/problem/1418/G 2500
 https://atcoder.jp/contests/abc130/tasks/abc130_d 和至少为 k 的子数组个数
 其它题目见【前缀和】
 
@@ -293,6 +296,7 @@ https://codeforces.com/problemset/problem/525/C  1600
 https://codeforces.com/problemset/problem/1748/C 1600
 https://codeforces.com/problemset/problem/1849/D 1700
 https://codeforces.com/problemset/problem/2031/D 1700
+https://codeforces.com/problemset/problem/2252/D 1700
 https://codeforces.com/problemset/problem/416/D  2400 推荐
 
 哨兵
@@ -507,6 +511,7 @@ https://codeforces.com/problemset/problem/2128/D 1600
 https://codeforces.com/problemset/problem/1608/C 1700
 https://codeforces.com/problemset/problem/1930/C 1700
 https://codeforces.com/problemset/problem/2124/D 1700
+https://codeforces.com/problemset/problem/2252/D 1700
 https://codeforces.com/problemset/problem/911/D  1800 逆序对
 https://codeforces.com/problemset/problem/1442/A 1800
 https://codeforces.com/problemset/problem/558/C  1900
@@ -711,10 +716,12 @@ https://www.luogu.com.cn/problem/P12911
 在思考算法题/数学题时，「找不变量」是一个无处不在的主题，见 3b1b 视频（下面的链接）
 https://www.bilibili.com/video/BV164411k7e3/ The unexpectedly hard windmill question (2011 IMO, Q2)
 https://codeforces.com/problemset/problem/2092/C 1200
+https://codeforces.com/problemset/problem/2218/E 1200
 https://codeforces.com/problemset/problem/1881/D 1300
 https://codeforces.com/problemset/problem/1889/A 1300
 https://codeforces.com/problemset/problem/2171/C2 1400
 https://codeforces.com/problemset/problem/2254/F 1900
+https://codeforces.com/problemset/problem/2227/G 2000
 https://codeforces.com/problemset/problem/1365/F 2100 仍然对称
 https://codeforces.com/problemset/problem/1775/E 2100 有点差分的味道，想想前缀和
 https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
@@ -738,6 +745,7 @@ https://codeforces.com/problemset/problem/262/B   1200
 https://codeforces.com/problemset/problem/1364/A  1200
 https://codeforces.com/problemset/problem/1860/B  1200
 https://codeforces.com/problemset/problem/2053/B  1200
+https://codeforces.com/problemset/problem/2259/D  1200
 https://codeforces.com/problemset/problem/870/C   1300
 https://codeforces.com/problemset/problem/1698/C  1300
 https://codeforces.com/problemset/problem/2065/C2 1300
@@ -792,6 +800,7 @@ https://codeforces.com/problemset/problem/1978/E  2000
 https://codeforces.com/problemset/problem/2051/F  2000
 https://codeforces.com/problemset/problem/1811/F  2100
 https://codeforces.com/problemset/problem/2127/E  2100
+https://codeforces.com/problemset/problem/659/G   2300
 https://codeforces.com/problemset/problem/1798/E  2300
 https://codeforces.com/problemset/problem/209/C   2400
 https://codeforces.com/problemset/problem/416/D   2400 推荐
@@ -993,7 +1002,8 @@ https://codeforces.com/problemset/problem/1932/C 1400
 https://atcoder.jp/contests/abc375/tasks/abc375_f
 https://atcoder.jp/contests/abc379/tasks/abc379_f
 
-逆向思维 / 正难则反（不可行方案通常比可行方案好求）
+逆向思维 / 正难则反
+https://codeforces.com/problemset/problem/2208/C 1300
 https://codeforces.com/problemset/problem/1792/C 1500
 - 相似题目 https://codeforces.com/problemset/problem/1367/F1 2100
 https://codeforces.com/problemset/problem/1882/B
