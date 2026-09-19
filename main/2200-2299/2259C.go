@@ -25,7 +25,7 @@ func cf2259C(in io.Reader, _w io.Writer) {
 				if j == 0 {
 					j = firstN1
 				}
-				if i-j >= q-p {
+				if j > 0 && i-j >= q-p {
 					p, q = j, i
 				}
 			}
