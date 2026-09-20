@@ -3,7 +3,7 @@
 分类讨论：
 
 - 如果我们操作的是一个长为**偶数**的子数组。假设子数组为 $[a,b,c,d]$，操作后的顺序为 $[b,c,d,a]$。每个元素在交替和中的正负号都取反了（正号变负号，负号变正号）。
-- 如果我们操作的是一个长为**奇数**的子数组。假设子数组为 $[a,b,c]$，操作后的顺序为 $[b,c,a]$。$a$ 的符号没变，其余每个元素在交替和中的正负号都取反了。所以该操作等价于去掉子数组的第一个数，操作的仍然是一个长为偶数的子数组。
+- 如果我们操作的是一个长为**奇数**的子数组。假设子数组为 $[a,b,c]$，操作后的顺序为 $[b,c,a]$。$a$ 的符号没变，其余元素在交替和中的正负号都取反了。所以该操作等价于去掉子数组的第一个数，我们操作的仍然是一个长为偶数的子数组。
 
 所以操作相当于：
 
@@ -14,15 +14,26 @@
 问题转化成：
 
 - 计算数组 $b$ 中的长为偶数的 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)。
+- 这也是 [3381. 长度可被 K 整除的子数组的最大元素和](https://leetcode.cn/problems/maximum-subarray-sum-with-length-divisible-by-k/) $k=2$ 的情况。
 
-我们可以把 $b$ 中的元素两两一对，就变成没有偶数长度限制的问题了。
+我们可以把 $b$ 中的元素两两一对，就变成没有偶数长度限制的 53 题了。
 
 有两种情况：
 
 - 按照下标 $(0,1), (2,3), (4,5), \ldots$ 两两一对，计算 53 题。此时 $b[i-1] + b[i] = 2(\textit{nums}[i] - \textit{nums}[i-1])$。
 - 按照下标 $(1,2), (3,4), (5,6), \ldots$ 两两一对，计算 53 题。此时 $b[i-1] + b[i] = 2(\textit{nums}[i-1] - \textit{nums}[i])$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+定义 $f[i+1]$ 表示以 $b[i]$ 结尾的偶数长度最大子数组和。如果 $f[i-1] > 0$，那么我们可以与以 $b[i-2]$ 结尾的偶数长度最大子数组和拼起来，即
+
+$$
+f[i+1] = \max(f[i-1], 0) + b[i-1] + b[i]。
+$$
+
+初始值 $f[0] = f[1] = 0$。
+
+最大增量为 $\max(f)$。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1MEeB65EjZ/?t=10m23s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -37,7 +48,7 @@ class Solution:
         n = len(nums)
         f = [0] * (n + 1)
         for i in range(1, n):
-            d = nums[i] - nums[i - 1]
+            d = nums[i] - nums[i - 1]  # * 2 提到了最后一行
             f[i + 1] = max(f[i - 1], 0) + (d if i % 2 else -d)
 
         return alter_sum + max(f) * 2
@@ -56,7 +67,7 @@ class Solution {
         long[] f = new long[n + 1];
         long mx = 0;
         for (int i = 1; i < n; i++) {
-            int d = nums[i] - nums[i - 1];
+            int d = nums[i] - nums[i - 1]; // * 2 提到了最后一行
             f[i + 1] = Math.max(f[i - 1], 0) + (i % 2 > 0 ? d : -d);
             mx = Math.max(mx, f[i + 1]);
         }
@@ -79,7 +90,7 @@ public:
         int n = nums.size();
         vector<long long> f(n + 1);
         for (int i = 1; i < n; i++) {
-            int d = nums[i] - nums[i - 1];
+            int d = nums[i] - nums[i - 1]; // * 2 提到了最后一行
             f[i + 1] = max(f[i - 1], 0LL) + (i % 2 ? d : -d);
         }
 
@@ -100,7 +111,7 @@ func maxValue(nums []int) int64 {
 	f := make([]int, n+1)
 	for i := 1; i < n; i++ {
 		d := (nums[i] - nums[i-1]) * (i%2*2 - 1)
-		f[i+1] = max(f[i-1], 0) + d
+		f[i+1] = max(f[i-1], 0) + d // * 2 提到了最后一行
 	}
 
 	return int64(alterSum + slices.Max(f)*2)
