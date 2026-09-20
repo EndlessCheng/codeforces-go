@@ -3,28 +3,8 @@ package main
 import "math"
 
 // https://space.bilibili.com/206214
-const mod = 1_000_000_007
-
-// 115. 不同的子序列
-func numDistinct(s, t string) int {
-	n, m := len(s), len(t)
-	if n < m {
-		return 0
-	}
-
-	f := make([]int, m+1)
-	f[0] = 1
-	for i, x := range s {
-		for j := min(i, m-1); j >= max(m-n+i, 0); j-- {
-			if byte(x) == t[j] {
-				f[j+1] = (f[j+1] + f[j]) % mod
-			}
-		}
-	}
-	return f[m]
-}
-
 func interleaveCharacters(word1, word2, target string) int {
+	const mod = 1_000_000_007
 	n, m1, m2 := len(target), len(word1), len(word2)
 	f := make([][][]int, n+1)
 	for i := range f {
@@ -55,13 +35,13 @@ func interleaveCharacters(word1, word2, target string) int {
 		}
 	}
 
-	ans := f[n][m1+1][m2+1] - numDistinct(word1, target) - numDistinct(word2, target)
+	ans := f[n][m1+1][m2+1] - f[n][m1+1][1] - f[n][1][m2+1]
 	return (ans%mod + mod) % mod // 保证 ans 非负
 }
 
 func interleaveCharacters1(word1, word2, target string) int {
+	const mod = 1_000_000_007
 	n, m1, m2 := len(target), len(word1), len(word2)
-
 	memo := make([][][]int, n)
 	for i := range memo {
 		memo[i] = make([][]int, m1+1)
@@ -72,9 +52,10 @@ func interleaveCharacters1(word1, word2, target string) int {
 			}
 		}
 	}
+
 	var dfs func(int, int, int) int
 	dfs = func(i, j, k int) int {
-		if j < -1 || k < -1 || j+k+2 < i+1 {
+		if j < -1 || k < -1 || j+k+1 < i {
 			return 0
 		}
 		if i < 0 {
@@ -103,6 +84,6 @@ func interleaveCharacters1(word1, word2, target string) int {
 		return res
 	}
 
-	ans := dfs(n-1, m1-1, m2-1) - numDistinct(word1, target) - numDistinct(word2, target)
+	ans := dfs(n-1, m1-1, m2-1) - dfs(n-1, m1-1, -1) - dfs(n-1, -1, m2-1)
 	return (ans%mod + mod) % mod // 保证 ans 非负
 }
