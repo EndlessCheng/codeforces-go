@@ -172,11 +172,18 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int[] largestPower(int[] nums) {
-        int[] ans = new int[15];
-        List<List<Integer>> groups = new ArrayList<>();
-        groups.add(Arrays.stream(nums).boxed().toList());
+        List<Integer> a = new ArrayList<>(nums.length);
+        int mx = 0;
+        for (int x : nums) {
+            a.add(x);
+            mx = Math.max(mx, x);
+        }
 
-        for (int i = 14; i >= 0; i--) {
+        int[] ans = new int[15];
+        List<List<Integer>> groups = List.of(a);
+        int maxWidth = 32 - Integer.numberOfLeadingZeros(mx);
+
+        for (int i = maxWidth - 1; i >= 0; i--) {
             List<List<Integer>> nxt = new ArrayList<>();
             int cnt = 0;
 
