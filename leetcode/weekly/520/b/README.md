@@ -1,8 +1,108 @@
-首先，区间的顺序不影响答案，我们可以先把区间排序。
+## 方法一：排序 + 二分查找
 
-为什么？例如 $\textit{intervals} = [A,B,C]$，有三对区间 $(A,B),(A,C),(B,C)$。假如重排成 $[B,C,A]$，那么仍然有三对区间 $(B,C),(B,A),(C,A)$。如果区间 $A$ 和 $B$ 相交，那么区间 $B$ 和 $A$ 也相交。
+首先，区间在 $\textit{intervals}$ 中的顺序不影响答案，我们可以先把区间排序。
 
-一种做法是，把区间按照左端点升序排序。设当前区间为 $[\textit{start}_j,\textit{end}_j]$。由于我们按照左端点排序了，能与当前区间相交的下标小于 $j$ 的区间，当且仅当其右端点 $\ge \textit{start}_j$。于是问题变成：
+> 为什么可以排序？例如 $\textit{intervals} = [A,B,C]$，有三对区间 $(A,B),(A,C),(B,C)$。假如重排成 $[B,C,A]$，那么仍然有三对区间 $(B,C),(B,A),(C,A)$。如果区间 $A$ 和 $B$ 相交，那么区间 $B$ 和 $A$ 也相交。排序不改变相交关系。
+
+按照什么顺序排序呢？以左端点为主，还是以右端点为主？
+
+首先转化一下问题，改成求**不相交**的区间对，这样更好求。因为无论按照左端点还是右端点排序，对于一对不相交的区间 $(i,j)$，满足 $i<j$ 的区间 $i$ 都在区间 $j$ 的左侧，且区间 $i$ 的左右端点都小于 $\textit{start}_j$。
+
+不相交的区间 $(i,j)$ 满足 $\textit{end}_i < \textit{start}_j$。如果按照**右端点**升序排序，我们就可以用 [二分查找](https://www.bilibili.com/video/BV1AP41137w7/) 快速求出有多少个 $\textit{end}_i < \textit{start}_j$。
+
+最后，用所有区间对的个数 $\dfrac{n(n-1)}{2}$ 减去不相交区间对的个数，即为答案。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1MEeB65EjZ/)，欢迎点赞关注~
+
+```py [sol-Python3]
+class Solution:
+    def countIntersectingIntervals(self, intervals: list[list[int]]) -> int:
+        n = len(intervals)
+        intervals.sort(key=lambda p: p[1])  # 按照右端点升序排序
+
+        ans = n * (n - 1) // 2
+        for start, _ in intervals:
+            # 设 j 是最小的满足 intervals[j][1] >= start 的下标
+            # 那么 [0, j-1] 中的区间右端点都 < start，这有 j 个
+            ans -= bisect_left(intervals, start, key=lambda p: p[1])
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countIntersectingIntervals(int[][] intervals) {
+        int n = intervals.length;
+        Arrays.sort(intervals, (a, b) -> a[1] - b[1]); // 按照右端点升序排序
+
+        long ans = (long) n * (n - 1) / 2;
+        for (int[] p : intervals) {
+            int start = p[0];
+            // 设 j 是最小的满足 intervals[j][1] >= start 的下标
+            // 那么 [0, j-1] 中的区间右端点都 < start，这有 j 个
+            ans -= lowerBound(intervals, start);
+        }
+        return ans;
+    }
+
+    private int lowerBound(int[][] intervals, int target) {
+        int left = -1;
+        int right = intervals.length;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (intervals[mid][1] >= target) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countIntersectingIntervals(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        ranges::sort(intervals, {}, [](auto& p) { return p[1]; });  // 按照右端点升序排序
+
+        long long ans = 1LL * n * (n - 1) / 2;
+        for (auto& p : intervals) {
+            int start = p[0];
+            // 设 j 是最小的满足 intervals[j][1] >= start 的下标
+            // 那么 [0, j-1] 中的区间右端点都 < start，这有 j 个
+            ans -= ranges::lower_bound(intervals, start, {}, [](auto& q) { return q[1]; }) - intervals.begin();
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countIntersectingIntervals(intervals [][]int) int64 {
+	n := len(intervals)
+	slices.SortFunc(intervals, func(a, b []int) int { return a[1] - b[1] }) // 按照右端点升序排序
+
+	ans := n * (n - 1) / 2
+	for _, p := range intervals {
+		start := p[0]
+		// 设 j 是最小的满足 intervals[j][1] >= start 的下标
+		// 那么 [0, j-1] 中的区间右端点都 < start，这有 j 个
+		ans -= sort.Search(n, func(j int) bool { return intervals[j][1] >= start })
+	}
+	return int64(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{intervals}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：排序 + 双指针
+
+另一种做法是，把区间按照左端点升序排序。设当前区间为 $[\textit{start}_j,\textit{end}_j]$。由于我们按照左端点排序了，能与当前区间相交的下标小于 $j$ 的区间，当且仅当其右端点 $\ge \textit{start}_j$。于是问题变成：
 
 - 有多少对 $(i,j)$ 满足 $i<j$ 且 $\textit{end}_i \ge \textit{start}_j$？
 
@@ -17,8 +117,6 @@
 **这个问题与下标无关**，我们可以把 $\textit{intervals}$ 拆成两个**独立**的数组 $\textit{starts}$ 和 $\textit{ends}$，分别保存所有左端点和所有右端点。然后，把两个数组都升序排序，就可以用**双指针**快速求出有多少对 $(i,j)$ 满足 $\textit{end}_i < \textit{start}_j$。
 
 最后，用所有区间对的个数 $\dfrac{n(n-1)}{2}$ 减去不相交区间对的个数，即为答案。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
 class Solution:

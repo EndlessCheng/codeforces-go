@@ -2,10 +2,25 @@ package main
 
 import (
 	"slices"
+	"sort"
 )
 
 // https://space.bilibili.com/206214
 func countIntersectingIntervals(intervals [][]int) int64 {
+	n := len(intervals)
+	slices.SortFunc(intervals, func(a, b []int) int { return a[1] - b[1] }) // 按照右端点升序排序
+
+	ans := n * (n - 1) / 2
+	for _, p := range intervals {
+		start := p[0]
+		// 设 j 是最小的满足 intervals[j][1] >= start 的下标
+		// 那么 [0, j-1] 中的区间右端点都 < start，这有 j 个
+		ans -= sort.Search(n, func(j int) bool { return intervals[j][1] >= start })
+	}
+	return int64(ans)
+}
+
+func countIntersectingIntervals2(intervals [][]int) int64 {
 	n := len(intervals)
 	starts := make([]int, n)
 	ends := make([]int, n)
