@@ -26,7 +26,9 @@
 
 重复上述过程，直到二进制的最低位。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1MEeB65EjZ/?t=29m20s)，欢迎点赞关注~
+
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -126,8 +128,187 @@ func largestPower(nums []int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(n\log n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。返回值不计入。忽略排序的栈开销。
+
+## 优化排序
+
+```py [sol-Python3]
+class Solution:
+    def largestPower(self, nums: list[int]) -> list[int]:
+        ans = [0] * 15
+        groups = [nums]
+
+        for i in range(max(nums).bit_length() - 1, -1, -1):
+            nxt = []
+            cnt = 0
+
+            for j, a in enumerate(groups):
+                # 手动排 groups[j]
+                ones = []
+                zeros = []
+                for x in a:
+                    if x >> i & 1:
+                        ones.append(x)
+                    else:
+                        zeros.append(x)
+
+                cnt += len(ones)
+                # 1 排前面，0 排后面
+                if ones:
+                    nxt.append(ones)
+                if zeros:
+                    nxt.append(zeros)
+                    # 遇到 0，剩下的 groups[j] 不再排序
+                    nxt += groups[j + 1:]
+                    break
+
+            ans[14 - i] = cnt
+            groups = nxt
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] largestPower(int[] nums) {
+        int[] ans = new int[15];
+        List<List<Integer>> groups = new ArrayList<>();
+        groups.add(Arrays.stream(nums).boxed().toList());
+
+        for (int i = 14; i >= 0; i--) {
+            List<List<Integer>> nxt = new ArrayList<>();
+            int cnt = 0;
+
+            for (int j = 0; j < groups.size(); j++) {
+                // 手动排 groups[j]
+                List<Integer> ones = new ArrayList<>();
+                List<Integer> zeros = new ArrayList<>();
+                for (int x : groups.get(j)) {
+                    if ((x >> i & 1) > 0) {
+                        ones.add(x);
+                    } else {
+                        zeros.add(x);
+                    }
+                }
+
+                cnt += ones.size();
+                // 1 排前面，0 排后面
+                if (!ones.isEmpty()) {
+                    nxt.add(ones);
+                }
+                if (!zeros.isEmpty()) {
+                    nxt.add(zeros);
+                    // 遇到 0，剩下的 groups[j] 不再排序
+                    nxt.addAll(groups.subList(j + 1, groups.size()));
+                    break;
+                }
+            }
+
+            ans[14 - i] = cnt;
+            groups = nxt;
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> largestPower(vector<int>& nums) {
+        vector<int> ans(15);
+        vector<vector<int>> groups = {nums};
+        int max_width = bit_width(1u * ranges::max(nums));
+
+        for (int i = max_width - 1; i >= 0; i--) {
+            vector<vector<int>> nxt;
+            int cnt = 0;
+
+            for (int j = 0; j < groups.size(); j++) {
+                // 手动排 groups[j]
+                vector<int> ones, zeros;
+                for (int x : groups[j]) {
+                    if (x >> i & 1) {
+                        ones.push_back(x);
+                    } else {
+                        zeros.push_back(x);
+                    }
+                }
+
+                cnt += ones.size();
+                // 1 排前面，0 排后面
+                if (!ones.empty()) {
+                    nxt.push_back(ones);
+                }
+                if (!zeros.empty()) {
+                    nxt.push_back(zeros);
+                    // 遇到 0，剩下的 groups[j] 不再排序
+                    nxt.insert(nxt.end(), groups.begin() + j + 1, groups.end());
+                    break;
+                }
+            }
+
+            ans[14 - i] = cnt;
+            groups = move(nxt);
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func largestPower(nums []int) []int {
+	ans := [15]int{}
+	groups := [][]int{nums}
+	maxWidth := bits.Len(uint(slices.Max(nums)))
+
+	for i := maxWidth - 1; i >= 0; i-- {
+		nxt := [][]int{}
+		cnt := 0
+
+		for j, a := range groups {
+			// 手动排 groups[j]
+			var ones, zeros []int
+			for _, x := range a {
+				if x>>i&1 > 0 {
+					ones = append(ones, x)
+				} else {
+					zeros = append(zeros, x)
+				}
+			}
+
+			cnt += len(ones)
+			// 1 排前面，0 排后面
+			if len(ones) > 0 {
+				nxt = append(nxt, ones)
+			}
+			if len(zeros) > 0 {
+				nxt = append(nxt, zeros)
+				// 遇到 0，剩下的 groups[j] 不再排序
+				nxt = append(nxt, groups[j+1:]...)
+				break
+			}
+		}
+
+		ans[14-i] = cnt
+		groups = nxt
+	}
+
+	return ans[:]
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。$\textit{groups}$ 展开后恰好有 $n$ 个元素。
+- 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
+
+## 专题训练
+
+见下面位运算题单的「**八、思维题**」。
 
 ## 分类题单
 
