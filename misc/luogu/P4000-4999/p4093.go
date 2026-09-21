@@ -7,21 +7,21 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type fenwick []int
+type fenwick093 []int
 
-func (t fenwick) reset(i int) {
+func (t fenwick093) reset(i int) {
 	for ; i < len(t); i += i & -i {
 		t[i] = 0
 	}
 }
 
-func (t fenwick) update(i, val int) {
+func (t fenwick093) update(i, val int) {
 	for ; i < len(t); i += i & -i {
 		t[i] = max(t[i], val)
 	}
 }
 
-func (t fenwick) pre(i int) (res int) {
+func (t fenwick093) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res = max(res, t[i])
 	}
@@ -49,7 +49,7 @@ func p4093(in io.Reader, out io.Writer) {
 	// mx[j] <= a[i]
 	// a[j] <= mn[i]
 
-	t := make(fenwick, 1e5+1)
+	t := make(fenwick093, 1e5+1)
 	ans := 1
 	var solve func(int, int)
 	solve = func(l, r int) {
