@@ -133,49 +133,106 @@ https://atcoder.jp/contests/agc002/tasks/agc002_d
 https://www.hackerrank.com/contests/hourrank-23/challenges/selective-additions/problem
 https://www.codechef.com/problems/MCO16504
 */
-func parallelBinarySearch(n int, qs []struct{ l, r, v int }) []int {
-	// 读入询问时可以处理成左闭右开的形式
-	ans := make([]int, n)
-	tar := make([]int, n)
-	for i := range tar {
-		tar[i] = i
+
+// 动态第 k 小
+// ！k 从 1 开始，元素都是非负数（不保证的话就都加个 bias）
+// https://www.luogu.com.cn/problem/P2617
+func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res []int) {
+	n := len(nums)
+	m := len(queries)
+
+	type query struct{ l, r, k int }
+	qs := make([]query, n, n+m*2)
+	idx := make([]int, n, n+m*2)
+	sorted := make([]int, n, n+m)
+	for i, v := range nums {
+		qs[i] = query{i + 1, v, -1}
+		idx[i] = i
+		sorted[i] = v
+	}
+	for _, q := range queries {
+		if q.tp == 'Q' { // 查询
+			// 默认 l 和 r 都从 0 开始（如果从 1 开始，那么下面不需要 +1）
+			l, r, k := q.l, q.r, q.k
+			idx = append(idx, len(qs))
+			qs = append(qs, query{l + 1, r + 1, k})
+		} else { // 修改
+			// 默认 i 从 0 开始（如果从 1 开始，那么下面不需要 +1）
+			i, v := q.l, q.r
+			idx = append(idx, len(qs), len(qs)+1)
+			// -3 删除旧的，-1 添加新的
+			qs = append(qs, query{i + 1, nums[i], -3}, query{i + 1, v, -1})
+			nums[i] = v
+			sorted = append(sorted, v)
+		}
 	}
 
+	slices.Sort(sorted)
+	sorted = slices.Compact(sorted)
+	t := make(fenwick, n+1)
+
 	var solve func([]int, int, int)
-	solve = func(a []int, ql, qr int) {
-		if len(a) == 0 {
-			return
+	solve = func(idx []int, low, high int) {
+		for _, i := range idx {
+			if qs[i].k >= 0 { // 有查询（这里 >= 还是 > 都可以）
+				goto next
+			}
 		}
-		if ql+1 == qr {
-			for _, c := range a {
-				ans[c] = ql // qr
+		return
+
+	next:
+		if low == high {
+			for _, i := range idx {
+				if qs[i].k >= 0 { // 查询（这里 >= 还是 > 都可以）
+					qs[i].k = sorted[low] // 答案记在 k 中（需要保证元素都是非负数）
+				}
 			}
 			return
 		}
-		qm := (ql + qr) / 2
-		for _, q := range qs[ql:qm] {
-			_ = q
-			// apply(q)
 
-		}
+		mid := (low + high) >> 1
+		x := sorted[mid]
 
-		// 根据此刻查询的结果将 tar 分成左右两部分
 		var b, c []int
-		for _, who := range a {
-			_ = who
-
+		for _, p := range idx {
+			q := &qs[p]
+			if q.k < 0 { // 修改
+				i, v := q.l, q.r
+				if v <= x {
+					b = append(b, p)
+					t.update(i, q.k+2)
+				} else {
+					c = append(c, p)
+				}
+			} else { // 查询
+				cnt := t.query(q.l, q.r)
+				if cnt >= q.k {
+					b = append(b, p)
+				} else {
+					q.k -= cnt
+					c = append(c, p)
+				}
+			}
 		}
 
-		for _, q := range qs[ql:qm] {
-			_ = q
-			// rollback(q)
-
+		// 撤销修改（重置）
+		for _, i := range idx {
+			q := qs[i]
+			if q.k < 0 && q.r <= x {
+				t.update(q.l, -q.k-2)
+			}
 		}
 
-		solve(b, ql, qm)
-		solve(c, qm, qr)
+		solve(b, low, mid)
+		solve(c, mid+1, high)
 	}
 
-	solve(tar, 0, len(qs)+1) // 这样可以将无法满足要求的 ans[i] 赋值为 len(qs)
-	return ans
+	solve(idx, 0, len(sorted)-1)
+
+	for _, q := range qs[n:] {
+		if q.k >= 0 {
+			res = append(res, q.k)
+		}
+	}
+	return
 }
