@@ -54,6 +54,9 @@
       - 在线二维数点
   - [树套树 seg_in_bit.go](/copypasta/seg_in_bit.go)
   - [CDQ 分治 cdq.go](/copypasta/cdq.go)
+    - 动态逆序对
+  - [整体二分](/copypasta/cdq.go)
+    - 动态区间第 k 小
   - [0-1 线段树 segment_tree01.go](/copypasta/segment_tree01.go)
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
@@ -306,7 +309,6 @@
   - [二分 三分 sort.go](/copypasta/sort.go)
     - 二分答案
     - 0-1 分数规划
-    - 整体二分
   - [搜索 search.go](/copypasta/search.go)
     - 枚举排列
     - 枚举组合
