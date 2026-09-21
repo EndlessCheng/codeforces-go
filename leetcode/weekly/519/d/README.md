@@ -260,6 +260,237 @@ func shadowPairs(nums []int) int {
 }
 ```
 
+## 空间优化
+
+把递归过程视作在一棵二叉树上的遍历。往左儿子递归时，计算机要把右儿子用到的数组 $c$ 保存到递归栈中。递归一共 $\mathcal{O}(\log n)$ 层，每层消耗 $\mathcal{O}(n)$ 空间，所以上面代码的空间复杂度是 $\mathcal{O}(n\log n)$。
+
+考虑优化这个空间开销。在递归函数外面创建两个长为 $n$ 的辅助数组，用于保存每次递归的 $b$ 和 $c$。往下递归前，把 $b$ 和 $c$ 复制回 $\textit{nums}$ 中。至于 $\textit{lowSt}$ 和 $\textit{highSt}$，由于作用域只到递归之前，所以会在递归前销毁，不会留在递归栈中（但严格来说这取决于编程语言）。
+
+此外，我们可以从排序去重后的 $\textit{nums}$ 中获取值域分割线的值，无需离散化。
+
+```py [sol-Python3]
+# 这个优化对其他语言挺明显的，Python3 运行时间没什么变化
+class Solution:
+    def shadowPairs(self, nums: list[int]) -> int:
+        sorted_nums = sorted(set(nums))
+        n = len(nums)
+        mem_b = [0] * n
+        mem_c = [0] * n
+        ans = 0
+
+        def solve(begin: int, end: int, low: int, high: int) -> None:
+            if low == high or end - begin <= 1:
+                return
+
+            nonlocal ans
+            mid = (low + high) // 2
+            mid_num = sorted_nums[mid]
+            low_st = []
+            high_st = []
+            bi = ci = 0
+
+            for i in range(begin, end):
+                x = nums[i]
+                if x <= mid_num:  # x 在下部，作为 nums[i]
+                    while low_st and nums[low_st[-1]] < x:
+                        low_st.pop()  # 因为 x 的出现，栈顶不能作为 nums[i]
+                    low_st.append(i)
+                    mem_b[bi] = x
+                    bi += 1
+                else:  # x 在上部，作为 nums[j]
+                    # 找到 x 左侧第一个小于 x 的最近元素，作为 nums[k]
+                    while high_st and nums[high_st[-1]] >= x:
+                        high_st.pop()
+                    ans += len(low_st)
+                    if high_st:
+                        # low_st 中 < high_st[-1] 的下标不能作为 nums[i]
+                        ans -= bisect_left(low_st, high_st[-1])
+                    high_st.append(i)
+                    mem_c[ci] = x
+                    ci += 1
+
+            nums[begin: begin + bi] = mem_b[:bi]
+            nums[begin + bi: end] = mem_c[:ci]
+            solve(begin, begin + bi, low, mid)
+            solve(begin + bi, end, mid + 1, high)
+
+        solve(0, n, 0, len(sorted_nums) - 1)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int shadowPairs(int[] nums) {
+        int[] sortedNums = nums.clone();
+        Arrays.sort(sortedNums);
+
+        int n = nums.length;
+        int[] memB = new int[n];
+        int[] memC = new int[n];
+
+        return solve(0, n, 0, n - 1, nums, sortedNums, memB, memC);
+    }
+
+    private int solve(int begin, int end, int low, int high, int[] nums, int[] sortedNums, int[] memB, int[] memC) {
+        if (end - begin <= 1 || sortedNums[low] == sortedNums[high]) {
+            return 0;
+        }
+
+        List<Integer> lowSt = new ArrayList<>();
+        List<Integer> highSt = new ArrayList<>();
+        int bi = 0;
+        int ci = 0;
+        int mid = (low + high) / 2;
+        int midNum = sortedNums[mid];
+        int res = 0;
+
+        for (int i = begin; i < end; i++) {
+            int x = nums[i];
+            if (x <= midNum) { // x 在下部，作为 nums[i]
+                while (!lowSt.isEmpty() && nums[lowSt.getLast()] < x) {
+                    lowSt.removeLast(); // 因为 x 的出现，栈顶不能作为 nums[i]
+                }
+                lowSt.add(i);
+                memB[bi++] = x;
+            } else { // x 在上部，作为 nums[j]
+                // 找到 x 左侧第一个小于 x 的最近元素，作为 nums[k]
+                while (!highSt.isEmpty() && nums[highSt.getLast()] >= x) {
+                    highSt.removeLast();
+                }
+                res += lowSt.size();
+                if (!highSt.isEmpty()) {
+                    // lowSt 中 < highSt.getLast() 的下标不能作为 nums[i]
+                    // lowSt 没有重复元素，可以用库函数二分
+                    int p = Collections.binarySearch(lowSt, highSt.getLast());
+                    if (p < 0) p = ~p; // 见 Collections.binarySearch 源码
+                    res -= p;
+                }
+                highSt.add(i);
+                memC[ci++] = x;
+            }
+        }
+
+        System.arraycopy(memB, 0, nums, begin, bi);
+        System.arraycopy(memC, 0, nums, begin + bi, ci);
+        res += solve(begin, begin + bi, low, mid, nums, sortedNums, memB, memC);
+        res += solve(begin + bi, end, mid + 1, high, nums, sortedNums, memB, memC);
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int shadowPairs(vector<int>& nums) {
+        auto sorted_nums = nums;
+        ranges::sort(sorted_nums);
+        sorted_nums.erase(ranges::unique(sorted_nums).begin(), sorted_nums.end());
+
+        int n = nums.size(), ans = 0;
+        vector<int> mem_b(n), mem_c(n);
+
+        auto solve = [&](this auto&& solve, auto begin, auto end, int low, int high) {
+            if (low == high || end - begin <= 1) {
+                return;
+            }
+
+            vector<int> low_st, high_st;
+            int bi = 0, ci = 0;
+            int mid = (low + high) / 2;
+            int mid_num = sorted_nums[mid];
+
+            for (auto it = begin; it != end; it++) {
+                int x = *it;
+                if (x <= mid_num) { // x 在下部，作为 nums[i]
+                    while (!low_st.empty() && begin[low_st.back()] < x) {
+                        low_st.pop_back(); // 因为 x 的出现，栈顶不能作为 nums[i]
+                    }
+                    low_st.push_back(it - begin);
+                    mem_b[bi++] = x;
+                } else { // x 在上部，作为 nums[j]
+                    // 找到 x 左侧第一个小于 x 的最近元素，作为 nums[k]
+                    while (!high_st.empty() && begin[high_st.back()] >= x) {
+                        high_st.pop_back();
+                    }
+                    ans += low_st.size();
+                    if (!high_st.empty()) {
+                        // low_st 中 < high_st.back() 的下标不能作为 nums[i]
+                        ans -= ranges::lower_bound(low_st, high_st.back()) - low_st.begin();
+                    }
+                    high_st.push_back(it - begin);
+                    mem_c[ci++] = x;
+                }
+            }
+
+            copy(mem_b.begin(), mem_b.begin() + bi, begin);
+            copy(mem_c.begin(), mem_c.begin() + ci, begin + bi);
+            solve(begin, begin + bi, low, mid);
+            solve(begin + bi, end, mid + 1, high);
+        };
+
+        solve(nums.begin(), nums.end(), 0, sorted_nums.size() - 1);
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func shadowPairs(nums []int) (ans int) {
+	sorted := slices.Clone(nums)
+	slices.Sort(sorted)
+	sorted = slices.Compact(sorted)
+
+	n := len(nums)
+	memB := make([]int, 0, n)
+	memC := make([]int, 0, n)
+
+	var solve func([]int, int, int)
+	solve = func(a []int, low, high int) {
+		if low == high || len(a) <= 1 {
+			return
+		}
+
+		var lowSt, highSt []int
+		b := memB[:0]
+		c := memC[:0]
+		mid := (low + high) / 2
+		midNum := sorted[mid]
+
+		for i, x := range a {
+			if x <= midNum { // x 在下部，作为 nums[i]
+				for len(lowSt) > 0 && a[lowSt[len(lowSt)-1]] < x {
+					lowSt = lowSt[:len(lowSt)-1] // 因为 x 的出现，栈顶不能作为 nums[i]
+				}
+				lowSt = append(lowSt, i)
+				b = append(b, x)
+			} else { // x 在上部，作为 nums[j]
+				// 找到 x 左侧第一个小于 x 的最近元素，作为 nums[k]
+				for len(highSt) > 0 && a[highSt[len(highSt)-1]] >= x {
+					highSt = highSt[:len(highSt)-1]
+				}
+				ans += len(lowSt)
+				if len(highSt) > 0 {
+					// lowSt 中 < highSt[len(highSt)-1] 的下标不能作为 nums[i]
+					ans -= sort.SearchInts(lowSt, highSt[len(highSt)-1])
+				}
+				highSt = append(highSt, i)
+				c = append(c, x)
+			}
+		}
+
+		nb := len(b)
+		copy(a, b)
+		copy(a[nb:], c)
+		solve(a[:nb], low, mid)
+		solve(a[nb:], mid+1, high)
+	}
+
+	solve(nums, 0, len(sorted)-1)
+	return
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log^2 n)$，其中 $n$ 是 $\textit{nums}$ 的长度。分治有 $\mathcal{O}(\log n)$ 层，每层有 $n$ 个数，所以我们一共做了 $\mathcal{O}(n\log n)$ 次二分查找，总的时间复杂度为 $\mathcal{O}(n\log^2 n)$。
@@ -267,7 +498,7 @@ func shadowPairs(nums []int) int {
 
 ## 相关内容
 
-力扣又引入新的知识点了，难道后面要出 **CDQ 分治**了？
+力扣又引入新的知识点了，难道后面要出 **CDQ 分治**或者**整体二分**了？
 
 ## 分类题单
 
