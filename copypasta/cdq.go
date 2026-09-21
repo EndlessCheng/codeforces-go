@@ -15,7 +15,8 @@ https://www.luogu.com.cn/problem/P3810 模板题 三维偏序
 https://www.luogu.com.cn/problem/P3157 动态逆序对 https://www.luogu.com.cn/problem/UVA11990
 https://www.luogu.com.cn/problem/P4390 带修二维数点
 https://www.luogu.com.cn/problem/P4169 拆开绝对值，四种情况分别计算
-https://www.luogu.com.cn/problem/P4093 CDQ 优化 DP
+https://www.luogu.com.cn/problem/P3364 CDQ 优化 DP
+- https://www.luogu.com.cn/problem/P4093 同 P3364
 https://www.luogu.com.cn/problem/P2487 CDQ 优化 DP
 https://codeforces.com/problemset/problem/762/E  2200 做到复杂度与 k 无关
 https://codeforces.com/problemset/problem/1045/G 2200 同 CF762E
@@ -107,12 +108,27 @@ func dynamicInversion(nums, del []int) (res []int) {
 	return
 }
 
-/* 整体二分 Parallel Binary Search
+/*
+整体二分 / 分组二分 Parallel Binary Search
+
+设答案候选项集合为 S，询问集合为 Q
+把 S 按大小（或者其他属性）分成两组 S1 和 S2
+相应的，把答案在 S1 中的询问分到 Q1 中，答案在 S2 中的询问分到 Q2 中
+分别递归处理 (S1, Q1) 和 (S2, Q2)
+
 https://oi-wiki.org/misc/parallel-binsearch/
+https://www.luogu.com.cn/article/zbcjb35t
+https://www.luogu.com.cn/article/wff0kib6
 https://codeforces.com/blog/entry/45578
 todo 整体二分解决静态区间第 k 小的优化 https://www.luogu.com/article/gbzqyzwn
-模板题 https://www.luogu.com.cn/problem/P3527
-https://www.luogu.com.cn/problem/P2617
+
+题单 https://www.luogu.com.cn/training/5035
+https://www.luogu.com.cn/problem/P3834 静态
+- https://www.luogu.com.cn/problem/P1527 二维版本
+https://www.luogu.com.cn/problem/P2617 动态
+https://www.luogu.com.cn/problem/P3527
+https://www.luogu.com.cn/problem/P3332
+https://www.luogu.com.cn/problem/P3250
 https://atcoder.jp/contests/agc002/tasks/agc002_d
 https://www.hackerrank.com/contests/hourrank-23/challenges/selective-additions/problem
 https://www.codechef.com/problems/MCO16504
@@ -124,13 +140,14 @@ func parallelBinarySearch(n int, qs []struct{ l, r, v int }) []int {
 	for i := range tar {
 		tar[i] = i
 	}
-	var f func([]int, int, int)
-	f = func(tar []int, ql, qr int) {
-		if len(tar) == 0 {
+
+	var solve func([]int, int, int)
+	solve = func(a []int, ql, qr int) {
+		if len(a) == 0 {
 			return
 		}
 		if ql+1 == qr {
-			for _, c := range tar {
+			for _, c := range a {
 				ans[c] = ql // qr
 			}
 			return
@@ -143,8 +160,8 @@ func parallelBinarySearch(n int, qs []struct{ l, r, v int }) []int {
 		}
 
 		// 根据此刻查询的结果将 tar 分成左右两部分
-		var left, right []int
-		for _, who := range tar {
+		var b, c []int
+		for _, who := range a {
 			_ = who
 
 		}
@@ -154,9 +171,11 @@ func parallelBinarySearch(n int, qs []struct{ l, r, v int }) []int {
 			// rollback(q)
 
 		}
-		f(left, ql, qm)
-		f(right, qm, qr)
+
+		solve(b, ql, qm)
+		solve(c, qm, qr)
 	}
-	f(tar, 0, len(qs)+1) // 这样可以将无法满足要求的 ans[i] 赋值为 len(qs)
+
+	solve(tar, 0, len(qs)+1) // 这样可以将无法满足要求的 ans[i] 赋值为 len(qs)
 	return ans
 }
