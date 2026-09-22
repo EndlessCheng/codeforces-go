@@ -116,19 +116,25 @@ func dynamicInversion(nums, del []int) (res []int) {
 相应的，把答案在 S1 中的询问分到 Q1 中，答案在 S2 中的询问分到 Q2 中
 分别递归处理 (S1, Q1) 和 (S2, Q2)
 
+对比：CDQ 求名次，整体二分求第 k 小
+
 https://oi-wiki.org/misc/parallel-binsearch/
 https://www.luogu.com.cn/article/zbcjb35t
 https://www.luogu.com.cn/article/wff0kib6
 https://codeforces.com/blog/entry/45578
-todo 整体二分解决静态区间第 k 小的优化 https://www.luogu.com/article/gbzqyzwn
+针对静态序列的优化 https://oi-wiki.org/misc/parallel-binsearch/#%E9%92%88%E5%AF%B9%E9%9D%99%E6%80%81%E5%BA%8F%E5%88%97%E7%9A%84%E4%BC%98%E5%8C%96
+- https://www.luogu.com/article/gbzqyzwn
 
 题单 https://www.luogu.com.cn/training/5035
 https://www.luogu.com.cn/problem/P3834 静态
 - https://www.luogu.com.cn/problem/P1527 二维版本
+https://www.luogu.com.cn/problem/P3527 静态
 https://www.luogu.com.cn/problem/P2617 动态
-https://www.luogu.com.cn/problem/P3527
+https://www.luogu.com.cn/problem/P7560
 https://www.luogu.com.cn/problem/P3332
-https://www.luogu.com.cn/problem/P3250
+https://www.luogu.com.cn/problem/P3250 树
+https://codeforces.com/problemset/problem/868/F 2500 整体二分优化 DP
+https://codeforces.com/problemset/problem/603/E 3000
 https://atcoder.jp/contests/agc002/tasks/agc002_d
 https://www.hackerrank.com/contests/hourrank-23/challenges/selective-additions/problem
 https://www.codechef.com/problems/MCO16504
