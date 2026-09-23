@@ -112,7 +112,7 @@ func dynamicInversion(nums, del []int) (res []int) {
 }
 
 /*
-整体二分 / 分组二分 Parallel Binary Search
+整体二分 / 分组二分 (PBS, Parallel Binary Search)
 
 设答案候选项集合为 S，询问集合为 Q
 把 S 按大小（或者其他属性）分成两组 S1 和 S2
@@ -137,8 +137,13 @@ https://www.luogu.com.cn/problem/P2617 动态
 https://www.luogu.com.cn/problem/P7560
 https://www.luogu.com.cn/problem/P3250 树
 https://codeforces.com/problemset/problem/868/F 2500 整体二分优化 DP
+https://codeforces.com/problemset/problem/1386/C 2800
 https://codeforces.com/problemset/problem/603/E 3000
+https://codeforces.com/problemset/problem/1920/F2 3000
+https://codeforces.com/problemset/problem/1989/F 3000
+https://atcoder.jp/contests/abc233/tasks/abc233_h 曼哈顿距离第 k 小
 https://atcoder.jp/contests/agc002/tasks/agc002_d
+https://atcoder.jp/contests/abc394/tasks/abc394_g
 https://www.hackerrank.com/contests/hourrank-23/challenges/selective-additions/problem
 https://www.codechef.com/problems/MCO16504
 */
