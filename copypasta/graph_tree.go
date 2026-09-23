@@ -253,7 +253,7 @@ func (*tree) upDis(root int, g [][]struct{ to, wt int }) []int {
 // 节点深度：
 // - 深度与祖先：v 是 w 的祖先，当且仅当 dep[v]+dist(v,w)=dep[w]
 // - 与 DFS 序结合，可以表达子树在某个深度上的一段信息（见 tree.inOutTimestamp）
-// - 直径 中心（见 tree.diameter）
+// - 直径与中心（见 tree.diameter）
 // 子树大小：
 // - 与 DFS 序结合，把子树转化成区间（见 tree.dfnOrder）
 // - 重心 点分治（见 tree.findCentroid 等）
@@ -1602,7 +1602,7 @@ func (*tree) lcaTarjan(root int, edges, queries [][]int) []int {
 	return lca
 }
 
-// LCA 应用：树上差分
+// LCA 应用：树上差分 路径更新
 // 入门（单点更新）LC2445 https://leetcode.cn/problems/number-of-nodes-with-value-one/
 // 操作为更新 v-w 路径上的点权或边权（初始为 0）
 // 点权时 diff[lca] -= val 且 diff[father[lca]] -= val
@@ -1617,7 +1617,9 @@ func (*tree) lcaTarjan(root int, edges, queries [][]int) []int {
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
 // https://www.luogu.com.cn/problem/P2680 好题
 // https://codeforces.com/problemset/problem/1707/C
-func (*tree) differenceInTree(n, root int, g, queries [][]int) []int {
+
+// 静态版本
+func (*tree) differenceInTreeWithoutModify(n, root int, g, queries [][]int) []int {
 	var pa [][]int
 	var getLCA func(int, int) int
 
@@ -1655,6 +1657,39 @@ func (*tree) differenceInTree(n, root int, g, queries [][]int) []int {
 	sumDiff(root, -1)
 
 	return ans
+}
+
+// 动态版本
+// 欧拉序 + 树状数组，见《挑战》p.332
+// https://www.luogu.com.cn/problem/P3250 整体二分
+func (*tree) differenceInTreeWithModify(n, root int, g, queries [][]int) (ans []int) {
+	var tin, tout []int // ！从 1 开始，闭区间
+	var pa [][]int
+	var getLCA func(int, int) int
+
+	t := newFenwickTree(n + 1)
+
+	for _, q := range queries {
+		op, v, w, val := q[0], q[0], q[1], q[2]
+		if op == 1 {
+			// 路径更新（点权）
+			// 把路径 v-w 上的点权都增加 val
+			t.update(tin[v], val)
+			t.update(tin[w], val)
+			lca := getLCA(v, w)
+			t.update(tin[lca], -val)
+			if f := pa[lca][0]; f > 0 {
+				t.update(tin[f], -val)
+			}
+		} else {
+			// 单点查询
+			// 查询节点 v 的点权（一开始的点权是 0）
+			res := t.query(tin[v], tout[v])
+			ans = append(ans, res)
+		}
+	}
+
+	return
 }
 
 // LCA+DFN：虚树 Virtual Tree / Auxiliary Tree
@@ -2097,6 +2132,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // https://codeforces.com/problemset/problem/161/D 1800 距离等于 k 的点对数
 // - 变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
 // https://codeforces.com/problemset/problem/208/E 2100
+// https://codeforces.com/problemset/problem/2127/E 2100 成本最低的着色方案
 // https://codeforces.com/problemset/problem/570/D 2200
 // https://codeforces.com/problemset/problem/600/E 2300
 // https://codeforces.com/problemset/problem/1009/F 2300
