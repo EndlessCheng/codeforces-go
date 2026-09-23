@@ -8,22 +8,22 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type fenwick []int
+type fenwick617 []int
 
-func (t fenwick) update(i, val int) {
+func (t fenwick617) update(i, val int) {
 	for ; i < len(t); i += i & -i {
 		t[i] += val
 	}
 }
 
-func (t fenwick) pre(i int) (res int) {
+func (t fenwick617) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res += t[i]
 	}
 	return res
 }
 
-func (t fenwick) query(l, r int) int {
+func (t fenwick617) query(l, r int) int {
 	return t.pre(r) - t.pre(l-1)
 }
 
@@ -61,10 +61,7 @@ func p2617(in io.Reader, _w io.Writer) {
 
 	slices.Sort(sorted)
 	sorted = slices.Compact(sorted)
-	t := make(fenwick, n+1)
-
-	memB := make([]int, 0, len(idx))
-	memC := make([]int, 0, len(idx))
+	t := make(fenwick617, n+1)
 
 	var solve func([]int, int, int)
 	solve = func(idx []int, low, high int) {
@@ -76,10 +73,10 @@ func p2617(in io.Reader, _w io.Writer) {
 		return
 
 	next:
-		if low == high {
+		if low+1 == high { // 开区间为空
 			for _, i := range idx {
 				if qs[i].k > 0 {
-					qs[i].k = sorted[low]
+					qs[i].k = sorted[high]
 				}
 			}
 			return
@@ -88,8 +85,7 @@ func p2617(in io.Reader, _w io.Writer) {
 		mid := (low + high) >> 1
 		x := sorted[mid]
 
-		b := memB[:0]
-		c := memC[:0]
+		var b, c []int
 		for _, p := range idx {
 			q := &qs[p]
 			if q.k < 0 {
@@ -117,14 +113,12 @@ func p2617(in io.Reader, _w io.Writer) {
 			}
 		}
 
-		nb := len(b)
-		copy(idx, b)
-		copy(idx[nb:], c)
-		solve(idx[:nb], low, mid)
-		solve(idx[nb:], mid+1, high)
+		solve(b, low, mid)
+		solve(c, mid, high)
 	}
 
-	solve(idx, 0, len(sorted)-1)
+	// 开区间二分
+	solve(idx, -1, len(sorted)-1)
 	for _, q := range qs[n:] {
 		if q.k >= 0 {
 			Fprintln(out, q.k)
