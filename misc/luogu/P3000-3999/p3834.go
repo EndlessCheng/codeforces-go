@@ -42,8 +42,8 @@ func p3834(in io.Reader, _w io.Writer) {
 	qs := make([]query, m)
 	qIdx := make([]int, m)
 	for i := range qs {
-		qIdx[i] = i
 		Fscan(in, &qs[i].l, &qs[i].r, &qs[i].k)
+		qIdx[i] = i
 	}
 
 	sorted := slices.Clone(a)
@@ -53,9 +53,14 @@ func p3834(in io.Reader, _w io.Writer) {
 
 	var solve func([]int, []int, int, int)
 	solve = func(idx, qIdx []int, low, high int) {
-		if low == high || len(idx) <= 1 || len(qIdx) == 0 {
+		if len(qIdx) == 0 {
+			return
+		}
+
+		// 开区间为空
+		if low+1 == high {
 			for _, i := range qIdx {
-				qs[i].k = a[idx[0]]
+				qs[i].k = sorted[high]
 			}
 			return
 		}
@@ -92,10 +97,11 @@ func p3834(in io.Reader, _w io.Writer) {
 		}
 
 		solve(b, d, low, mid)
-		solve(c, e, mid+1, high)
+		solve(c, e, mid, high)
 	}
 
-	solve(idx, qIdx, 0, len(sorted)-1)
+	// 开区间二分
+	solve(idx, qIdx, -1, len(sorted)-1)
 	for _, q := range qs {
 		Fprintln(out, q.k)
 	}
