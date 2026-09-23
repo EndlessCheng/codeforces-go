@@ -207,26 +207,26 @@ func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res 
 		}
 
 		mid := (low + high) >> 1
-		x := sorted[mid]
+		midVal := sorted[mid]
 		var b, c []int
 
-		for _, p := range idx {
-			q := &qs[p]
+		for _, qid := range idx {
+			q := &qs[qid]
 			if q.k < 0 { // 修改
 				i, v := q.l, q.r
-				if v <= x {
-					b = append(b, p)
+				if v <= midVal {
+					b = append(b, qid)
 					t.update(i, q.k+2)
 				} else {
-					c = append(c, p)
+					c = append(c, qid)
 				}
 			} else { // 查询
 				cnt := t.query(q.l, q.r)
 				if cnt >= q.k {
-					b = append(b, p)
+					b = append(b, qid)
 				} else {
 					q.k -= cnt
-					c = append(c, p)
+					c = append(c, qid)
 				}
 			}
 		}
@@ -234,7 +234,7 @@ func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res 
 		// 撤销修改（重置）
 		for _, i := range idx {
 			q := qs[i]
-			if q.k < 0 && q.r <= x {
+			if q.k < 0 && q.r <= midVal {
 				t.update(q.l, -q.k-2)
 			}
 		}
