@@ -24,15 +24,15 @@ ax > b  =>  x > ⌊b/a⌋       ax ≥ b  =>  x ≥ ⌈b/a⌉
 注意特判 b = 1 的情况
 
 位运算相关
+⌊log2(x)⌋ = bits.Len(floor(x)) - 1
+⌈log2(x)⌉ = bits.Len(ceil(x)-1)
+
 x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i     相当于 x<<i ≤ s-1
 x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i     相当于 x<<i > s-1
 
 1<<x ≤ v  =>  x ≤ bits.Len(uint(v))-1     1<<x < v  =>  x ≤ bits.Len(uint(v-1))-1
 1<<x > v  =>  x ≥ bits.Len(uint(v))       1<<x ≥ v  =>  x ≥ bits.Len(uint(v-1))
 https://codeforces.com/problemset/problem/2040/B 1000
-
-⌊log2(x)⌋ = bits.Len(x) - 1
-⌈log2(x)⌉ = bits.Len(x-1)
 
 a < b<<k  =>  a>>k < b
 https://codeforces.com/problemset/problem/2035/D 1800
@@ -502,8 +502,9 @@ func _(abs func(int) int) {
 	https://codeforces.com/contest/1526/problem/B
 	- [2979. 最贵的无法购买的商品](https://leetcode.cn/problems/most-expensive-item-that-can-not-be-bought/)（会员题）
 
-	裴蜀定理 Bézout's identity
+	贝祖定理 裴蜀定理 Bézout's identity
 	https://en.wikipedia.org/wiki/B%C3%A9zout%27s_identity
+	https://codeforces.com/problemset/problem/2244/C 1100 证明结论用到了贝祖定理
 	https://codeforces.com/problemset/problem/1982/D 1700
 	LC1250 https://leetcode.cn/problems/check-if-it-is-a-good-array/
 	https://www.codechef.com/problems/SJ1
