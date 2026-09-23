@@ -56,11 +56,13 @@ func dynamicInversion(nums, del []int) (res []int) {
 	}
 
 	f = make(fenwick, m+2)
+
 	var solve func(int, int)
 	solve = func(l, r int) {
 		if l+1 == r {
 			return
 		}
+
 		mid := (l + r) >> 1
 		solve(l, mid)
 		solve(mid, r)
@@ -94,6 +96,7 @@ func dynamicInversion(nums, del []int) (res []int) {
 
 		slices.SortFunc(a[l:r], func(a, b pair) int { return b.i - a.i })
 	}
+
 	solve(1, n+1)
 
 	// 这里的排序也可以改用数组记录 https://www.luogu.com.cn/record/297905725
@@ -130,8 +133,8 @@ https://www.luogu.com.cn/problem/P3834 静态
 - https://www.luogu.com.cn/problem/P1527 二维版本
 https://www.luogu.com.cn/problem/P3527 静态
 https://www.luogu.com.cn/problem/P2617 动态
+- https://www.luogu.com.cn/problem/P3332 差分树状数组
 https://www.luogu.com.cn/problem/P7560
-https://www.luogu.com.cn/problem/P3332
 https://www.luogu.com.cn/problem/P3250 树
 https://codeforces.com/problemset/problem/868/F 2500 整体二分优化 DP
 https://codeforces.com/problemset/problem/603/E 3000
@@ -141,6 +144,8 @@ https://www.codechef.com/problems/MCO16504
 */
 
 // 动态第 k 小
+// 第 k 小等价于：求最小的 x，满足 <= x 的数至少有 k 个
+// 第 k 大等价于：求最大的 x，满足 >= x 的数至少有 k 个
 // ！k 从 1 开始，元素都是非负数（不保证的话就都加个 bias）
 // https://www.luogu.com.cn/problem/P2617
 func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res []int) {
@@ -187,10 +192,10 @@ func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res 
 		return
 
 	next:
-		if low == high {
+		if low+1 == high { // 开区间为空
 			for _, i := range idx {
 				if qs[i].k >= 0 { // 查询（这里 >= 还是 > 都可以）
-					qs[i].k = sorted[low] // 答案记在 k 中（需要保证元素都是非负数）
+					qs[i].k = sorted[high] // 答案记在 k 中（需要保证元素都是非负数）
 				}
 			}
 			return
@@ -198,8 +203,8 @@ func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res 
 
 		mid := (low + high) >> 1
 		x := sorted[mid]
-
 		var b, c []int
+
 		for _, p := range idx {
 			q := &qs[p]
 			if q.k < 0 { // 修改
@@ -230,12 +235,13 @@ func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res 
 		}
 
 		solve(b, low, mid)
-		solve(c, mid+1, high)
+		solve(c, mid, high)
 	}
 
-	solve(idx, 0, len(sorted)-1)
+	// 开区间二分
+	solve(idx, -1, len(sorted)-1)
 
-	for _, q := range qs[n:] {
+	for _, q := range qs { // qs[n:]
 		if q.k >= 0 {
 			res = append(res, q.k)
 		}
