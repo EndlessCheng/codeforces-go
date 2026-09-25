@@ -2,24 +2,26 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 func evaluate(s string, knowledge [][]string) string {
-	mp := make(map[string]string, len(knowledge))
-	for _, p := range knowledge {
-		mp[p[0]] = p[1]
+	mp := make(map[string]string, len(knowledge)) // 预分配空间
+	for _, k := range knowledge {
+		mp[k[0]] = k[1]
 	}
+
 	ans := []byte{}
-	l := -1
-	for i := range s {
-		if b := s[i]; b == '(' {
-			l = i
-		} else if b == ')' {
-			res := mp[s[l+1:i]]
-			if res == "" {
-				res = "?"
+	left := -1
+	for i, ch := range s {
+		if ch == '(' {
+			left = i // 记录未配对左括号的位置
+		} else if ch == ')' {
+			// 替换左右括号之间的子串
+			t, ok := mp[s[left+1:i]]
+			if !ok {
+				t = "?"
 			}
-			ans = append(ans, res...)
-			l = -1
-		} else if l < 0 {
-			ans = append(ans, b)
+			ans = append(ans, t...)
+			left = -1
+		} else if left < 0 { // ch 不在括号中
+			ans = append(ans, byte(ch))
 		}
 	}
 	return string(ans)
