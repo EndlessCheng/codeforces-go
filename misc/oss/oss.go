@@ -6,6 +6,7 @@ import (
 	"math/bits"
 	"slices"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -52,8 +53,8 @@ type data struct {
 	thief    thiefArrType    // T 拉一个对象
 	wizard   wizardArrType   // W 交换对象
 	cleric   priestArrType   // C 自己以及上下左右无敌
-	druid    druidArrType    // D 把对象变成石头
 	bard     bardArrType     // B 同时移动切比雪夫距离 <= 2 的对象
+	druid    druidArrType    // D 把对象变成石头
 	explorer explorerArrType // 7 普通角色，无法推对象
 	sailor   sailorArrType   // 8 普通角色，推一个对象
 	merchant merchantArrType // 9 普通角色，推一个对象
@@ -162,7 +163,8 @@ func initMap() {
 	var doorMask, switchMask, finalNum int
 	var warriorNum, thiefNum, wizardNum, priestNum, druidNum, bardNum, explorerNum, sailorNum, merchantNum int
 	var stoneNum, crystalNum, skippingStoneNum, skippingCrystalNum, grassesNum, lilyNum, beamNum, mirrorNum, mirrorRefNum, mirrorAuxNum int
-	var goblinNum, dragonNum int
+	goblinNum := len(goblinPosInit)
+	dragonNum := 0
 
 	finalNum += len(finals)
 	for i, ps := range doors {
@@ -253,9 +255,11 @@ func initMap() {
 					switchMask |= 1 << (ch - 'x')
 				case 'X', 'Y', 'Z', '[':
 					doorMask |= 1 << (ch - 'X')
+				case 'N':
+					// ignore
 				case '~', '^', 'v', '<', '>': // 水
 					hasWater = true
-				case '#', '.', 'e':
+				case '#', '.', 'e', '|', '_', 'L':
 					// ignore
 				default:
 					fmt.Printf("【警告】没有处理字符 %c\n", ch)
@@ -1312,6 +1316,7 @@ func (newData *data) bigMapForceSwapChar(oldP, newP point) {
 }
 
 func solveLevel() []string {
+	t0 := time.Now()
 	initMap()
 
 	warriorInitArr := warriorArrType{}
@@ -1374,6 +1379,24 @@ func solveLevel() []string {
 	beamInitArr := beamArrType{}
 
 	__curCharTypeNum := initCharTypeNum
+	if warriorPosInit != noPos {
+		__curCharTypeNum = charWarrior
+	}
+	if thiefPosInit != noPos {
+		__curCharTypeNum = charThief
+	}
+	if wizardPosInit != noPos {
+		__curCharTypeNum = charWizard
+	}
+	if priestPosInit != noPos {
+		__curCharTypeNum = charCleric
+	}
+	if bardPosInit != noPos {
+		__curCharTypeNum = charBard
+	}
+	if sailorPosInit != noPos {
+		__curCharTypeNum = charSailor
+	}
 	if isBigMap {
 		__curCharTypeNum = charSailor
 	}
@@ -1423,6 +1446,9 @@ func solveLevel() []string {
 		__lilies = append(__lilies, pointWithDir{p, dirStop})
 	}
 	__goblins := goblinInitArr[:0]
+	for _, pd := range goblinPosInit {
+		__goblins = append(__goblins, pd)
+	}
 	__dragons := dragonInitArr[:0]
 	__beams := beamInitArr[:0]
 
@@ -1657,7 +1683,10 @@ func solveLevel() []string {
 	}
 	from := map[data]pair{} // 同时充当 vis 的功能
 	queue := []data{}
-	defer func() { fmt.Printf("// 搜索了 %d 个状态\n", len(from)) }()
+	defer func() {
+		delta := time.Since(t0)
+		fmt.Printf("// 搜索了 %d 个状态 (%.2fs)\n", len(from), delta.Seconds())
+	}()
 
 	add := func(last, d data, info string) {
 		if !allowSkippingStoneGone && (pdContains(d.skippingStones[:], noPos) || pdContains(d.skippingCrystals[:], noPos)) {
@@ -1675,6 +1704,13 @@ func solveLevel() []string {
 				for i, p := range skippingStones {
 					// 不动
 					if p.dir == dirStop {
+						if d.isFallIntoWater(p.point) {
+							if !allowFallIntoWater {
+								return
+							}
+							animeTypeMask |= 1 << animeFallIntoWater
+							skippingStones[i].z = -1
+						}
 						continue
 					}
 
@@ -1743,6 +1779,7 @@ func solveLevel() []string {
 					skippingStones[i].point = nxtP
 				}
 			} else {
+				// 已经跑完了水漂动画
 				for i, p := range skippingStones {
 					// todo 其实不需要判断？在 changePos 中已经处理好了
 					if d.isFallIntoWater(p.point) {
@@ -1754,6 +1791,7 @@ func solveLevel() []string {
 					}
 				}
 			}
+
 			if len(skippingStones) > 1 {
 				slices.SortFunc(skippingStones, cmpPointWithDir)
 			}
@@ -2191,7 +2229,12 @@ func solveLevel() []string {
 		allMovableObjs, allChars, allNonChars := d.getAllMovableObjPos(isBigMap, false)
 
 		var pass bool
-		if !targetIsClearAllMonsters {
+		if targetIsTransAllGrass {
+			//pass = d.grass[3] == noPos
+		} else if targetIsClearAllMonsters {
+			// 简化版：怪物门开启（怪物都被杀）
+			pass = d.monsterDoorOpened
+		} else {
 			// 标准版：所有人都到达终点
 			if isBigMap {
 				p := d.getCurCharPos()
@@ -2202,9 +2245,6 @@ func solveLevel() []string {
 				}
 				pass = slices.Equal(allChars, finals)
 			}
-		} else {
-			// 简化版：怪物门开启（怪物都被杀）
-			pass = d.monsterDoorOpened
 		}
 		if pass {
 			// 生成操作序列
@@ -2270,6 +2310,54 @@ func solveLevel() []string {
 			slices.Reverse(path)
 			return path
 		}
+
+		// 原地不动
+		if isSkippingAndLilySlow {
+			add(d, d, ".")
+		}
+
+		doWand := func() {
+			if hasMoveWand {
+				// 位移杖
+				p0 := d.getCurCharPos()
+				// todo 还得知道当前角色面朝的方向   也可以自己手调
+
+			nextWandDir:
+				for _, dir := range directions4 {
+					newP := p0.add(dir)
+					if !slices.Contains(allMovableObjs, newP) {
+						continue
+					}
+
+					// 该方向有多少个连续的对象
+					objs := []point{newP}
+					cur := newP.add(dir)
+					for {
+						if !inBound(cur) {
+							continue nextWandDir
+						}
+						if !d.isValidPos(cur) { // 墙、草、怪物门、活塞门
+							// ok
+						} else if slices.Contains(allMovableObjs, cur) {
+							objs = append(objs, cur)
+						} else {
+							objs = append(objs, cur)
+							break
+						}
+						cur = cur.add(dir)
+					}
+
+					newData := d
+					for i := len(objs) - 2; i >= 0; i-- {
+						newData.changePos(objs[i], objs[i+1], math.MaxUint8, allMovableObjs)
+					}
+					add(d, newData, "x")
+				}
+			} else if hasTurnWand {
+				// 转向杖（只能用于光束）
+			}
+		}
+		doWand()
 
 		// todo 如果角色的头上有物品，物品会跟着移动（注意镜子的方向会变）    堆叠上限是多少？？
 		// todo 即使人没有移动，切换方向也会改变头上物品（镜子、激光等）的方向
@@ -2370,7 +2458,11 @@ func solveLevel() []string {
 							// todo 多次反射
 							newDir := newData.skippingCrystals[i].dir
 							if newDir != dirStop {
-								newDir = mirror.reflectDragon(newDir)
+								if d.isFallIntoWater(newP) { // 还在水上
+									newDir = mirror.reflectDragon(newDir)
+								} else { // 传到地上/物品上，立刻停下
+									newDir = dirStop
+								}
 							}
 							newData.skippingCrystals[i] = pointWithDir{newP, newDir}
 						} else if i := pdIndex(newData.mirrorRefs[:], oldP); i >= 0 { // 可被反射的镜子
@@ -3042,11 +3134,6 @@ func solveLevel() []string {
 		}
 
 	afterSwitch:
-		// 原地不动
-		if isSkippingAndLilySlow {
-			add(d, d, ".")
-		}
-
 		// 换成其他人
 		if !isBigMap {
 			for _, char := range validChars {
@@ -3085,8 +3172,8 @@ const (
 	charThief
 	charWizard
 	charCleric
-	charDruid
 	charBard
+	charDruid
 	charExplorer
 	charSailor   // 同大地图角色
 	charMerchant // Trader
