@@ -1,4 +1,8 @@
-子数组和问题，考虑**前缀和**。
+如果没有长度约束，那么本题就是 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/)，[我的题解](https://leetcode.cn/problems/maximum-subarray/solutions/2533977/qian-zhui-he-zuo-fa-ben-zhi-shi-mai-mai-abu71/)。
+
+这引出了本题的两种做法：前缀和、动态规划。
+
+## 方法一：前缀和
 
 计算 $\textit{nums}$ 的前缀和数组 $s$。关于 $s$ 数组的定义，请看 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
 
@@ -27,7 +31,7 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV1YeqHYSEhK/?t=7m56s)，欢迎点赞关注~
 
-## 优化前
+### 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -114,7 +118,7 @@ func maxSubarraySum(nums []int, k int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 优化
+### 优化
 
 一边计算前缀和，一边维护 $\textit{minS}$。
 
@@ -196,9 +200,119 @@ func maxSubarraySum(nums []int, k int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(k)$。
 
+## 方法二：动态规划
+
+把连续的 $k$ 个数绑在一起，合成一个数，就变成没有长度约束的 [53. 最大子数组和](https://leetcode.cn/problems/maximum-subarray/) 了。
+
+定义 $f[i+1]$ 表示以 $i$ 为右端点的、长度是 $k$ 的倍数的非空子数组的最大和。
+
+设 $S$ 为子数组 $[i-k+1, i]$ 的元素和。分类讨论：
+
+- 如果以 $i-k$ 为右端点的、长度是 $k$ 的倍数的非空子数组的最大和大于 $0$，那么可以与当前子数组 $[i-k+1, i]$ 拼接，得到一个更大的和。即 $f[i+1] = f[i-k+1] + S$。
+- 否则，不拼接，$f[i+1] = S$。
+
+所以状态转移方程为
+
+$$
+f[i+1] = \max(f[i-k+1], 0) + S\ \ \ (i+1\ge k)
+$$
+
+初始值：$f[i] = -\infty\ (i < k)$。
+
+答案：$\max(f)$。
+
+```py [sol-Python3]
+class Solution:
+    def maxSubarraySum(self, nums: list[int], k: int) -> int:
+        f = [-inf] * (len(nums) + 1)
+        s = 0  # 滑动窗口维护长为 k 的子数组的元素和
+        for i, x in enumerate(nums):
+            s += x
+            left = i - k + 1
+            if left < 0:
+                continue
+            f[i + 1] = max(f[left], 0) + s
+            s -= nums[left]
+        return max(f)
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxSubarraySum(int[] nums, int k) {
+        int n = nums.length;
+        long[] f = new long[n + 1];
+        Arrays.fill(f, Long.MIN_VALUE);
+
+        long ans = Long.MIN_VALUE;
+        long sum = 0; // 滑动窗口维护长为 k 的子数组的元素和
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            int left = i - k + 1;
+            if (left < 0) {
+                continue;
+            }
+            f[i + 1] = Math.max(f[left], 0L) + sum;
+            ans = Math.max(ans, f[i + 1]);
+            sum -= nums[left];
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxSubarraySum(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<long long> f(n + 1, LLONG_MIN);
+
+        long long sum = 0; // 滑动窗口维护长为 k 的子数组的元素和
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            int left = i - k + 1;
+            if (left < 0) {
+                continue;
+            }
+            f[i + 1] = max(f[left], 0LL) + sum;
+            sum -= nums[left];
+        }
+        return ranges::max(f);
+    }
+};
+```
+
+```go [sol-Go]
+func maxSubarraySum(nums []int, k int) int64 {
+	n := len(nums)
+	f := make([]int, n+1)
+	for i := range f {
+		f[i] = math.MinInt
+	}
+
+	sum := 0 // 滑动窗口维护长为 k 的子数组的元素和
+	for i, x := range nums {
+		sum += x
+		left := i - k + 1
+		if left < 0 {
+			continue
+		}
+		f[i+1] = max(f[left], 0) + sum
+		sum -= nums[left]
+	}
+	return int64(slices.Max(f))
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
 ## 专题训练
 
-见下面数据结构题单的「**§1.2 前缀和与哈希表**」。
+1. 数据结构题单的「**§1.2 前缀和与哈希表**」。
+2. 动态规划题单的「**§1.3 最大子数组和**」。
 
 ## 分类题单
 

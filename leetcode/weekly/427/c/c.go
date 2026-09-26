@@ -1,9 +1,12 @@
 package main
 
-import "math"
+import (
+	"math"
+	"slices"
+)
 
 // https://space.bilibili.com/206214
-func maxSubarraySum(nums []int, k int) int64 {
+func maxSubarraySum1(nums []int, k int) int64 {
 	minS := make([]int, k)
 	for i := range k - 1 {
 		minS[i] = math.MaxInt / 2 // 防止下面减法溢出
@@ -38,4 +41,24 @@ func maxSubarraySum2(nums []int, k int) int64 {
 		minS[i] = min(minS[i], s)
 	}
 	return int64(ans)
+}
+
+func maxSubarraySum(nums []int, k int) int64 {
+	n := len(nums)
+	f := make([]int, n+1)
+	for i := range f {
+		f[i] = math.MinInt
+	}
+
+	sum := 0 // 滑动窗口维护长为 k 的子数组的元素和
+	for i, x := range nums {
+		sum += x
+		left := i - k + 1
+		if left < 0 {
+			continue
+		}
+		f[i+1] = max(f[left], 0) + sum
+		sum -= nums[left]
+	}
+	return int64(slices.Max(f))
 }
