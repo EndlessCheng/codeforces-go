@@ -18,7 +18,7 @@ $$
 \textit{base} + \max_{x < y} \textit{cnt}(x,y)
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV12gah6UE9b/?t=5m32s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -59,7 +59,7 @@ class Solution {
                     y = tmp;
                 }
                 // 统计相邻且不相等的数对个数
-                long key = (long) x << 32 | y;
+                long key = (long) x << 32 | y; // 两个 int 合并为一个 long
                 cnt.merge(key, 1, Integer::sum); // cnt[key]++
             }
         }
@@ -87,6 +87,7 @@ public:
                     swap(x, y);
                 }
                 // 统计相邻且不相等的数对个数
+                // 两个 int 合并为一个 long long
                 cnt[1LL * x << 32 | y]++;
             }
         }

@@ -2,11 +2,11 @@
 
 下面接着 [我的题解](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/solutions/1913089/dong-tai-gui-hua-er-fen-cha-zhao-you-hua-zkcg/) 继续讲。
 
-类似 1235 题，定义 $f[i]$ 表示最后一场会议是 $\textit{meetings}[i]$ 时，能得到的最大收益。注意本题定义成 $\textit{meetings}[i]$ 一定要选，从而方便转移。
+类似 1235 题，定义 $f[i]$ 表示最后一场会议是 $\textit{meetings}[i]$ 时，能得到的最大收益。
 
-如果 $\textit{meetings}[i]$ 左边没有会议，那么 $f[i] = \textit{revenue}_i$。
+**注**：本题需要知道倒数第二场会议的位置，从而计算空闲时间的收益。所以本题是**相邻相关 DP**，故定义成 $\textit{meetings}[i]$ **一定要选**，从而方便转移。顺带一提，相邻相关 DP 的代表是 [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/)。
 
-否则，枚举倒数第二场会议为 $\textit{meetings}[j]$，如果满足 $\textit{end}_j \le \textit{start}_i$，那么问题变成最后一场会议是 $\textit{meetings}[j]$ 时，能得到的最大收益 $f[j]$。加上 $j$ 和 $i$ 之间的空闲时间 $\textit{start}_i - \textit{end}_j$，以及会议 $i$ 的收益 $\textit{revenue}_i$，得到状态转移方程
+枚举倒数第二场会议为 $\textit{meetings}[j]$，满足 $\textit{end}_j \le \textit{start}_i$。问题变成最后一场会议是 $\textit{meetings}[j]$ 时，能得到的最大收益，即 $f[j]$。加上 $j$ 和 $i$ 之间的空闲时间 $\textit{start}_i - \textit{end}_j$，以及会议 $i$ 的收益 $\textit{revenue}_i$，得到状态转移方程
 
 $$
 f[i] = \max_{\textit{end}_j \le \textit{start}_i} f[j] + \textit{start}_i - \textit{end}_j + \textit{revenue}_i
@@ -18,7 +18,7 @@ $$
 f[i] = \textit{start}_i + \textit{revenue}_i + \max_{\textit{end}_j \le \textit{start}_i} f[j]  - \textit{end}_j
 $$
 
-如果把会议按照右端点排序，那么上式要计算的是 $f[j]  - \textit{end}_j$ 的**前缀最大值**。
+如果把会议按照右端点从小到大排序，那么上式要计算的是 $f[j]  - \textit{end}_j$ 的**前缀最大值**。
 
 于是定义 
 
@@ -34,9 +34,11 @@ $$
 
 $k$ 可以在 $\textit{meetings}$ 数组上 [二分查找](https://www.bilibili.com/video/BV1AP41137w7/) 求出。
 
-答案为 $\max(f)$。
+初始值：如果 $\textit{meetings}[i]$ 左边没有会议，那么 $f[i] = \textit{revenue}_i$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+答案：$\max(f)$。
+
+[本题视频讲解](https://www.bilibili.com/video/BV12gah6UE9b/?t=26m2s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

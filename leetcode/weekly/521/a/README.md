@@ -2,11 +2,11 @@
 
 统计每个元素的出现次数 $\textit{cnt}$。
 
-每轮循环，把 $\textit{cnt}$ 中出现次数大于 $0$ 的数，从小到大加入答案，然后把出现次数都减少一。
+每轮循环，把 $\textit{cnt}$ 中出现次数大于 $0$ 的数，从小到大加入答案，然后把这些数的出现次数都减少一。
 
 重复上述过程，直到答案的长度等于 $n$（$\textit{nums}$ 的长度）。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV12gah6UE9b/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

@@ -12,11 +12,11 @@
 为此，定义：
 
 - $\textit{cntS}[v]$ 表示窗口中的两数之和为 $v$ 的元素对的个数。
-- $\textit{cntD}[v]$ 表示窗口中的两数之差（绝对差）为 $v$ 的元素对的个数。
+- $\textit{cntD}[v]$ 表示窗口中的两数之差为 $v$ 的元素对的个数。由于本题没有负数，这里算差只需用大的减去小的，即**绝对差**。
 
 在元素进入和离开窗口时，维护 $\textit{cntS}$ 和 $\textit{cntD}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV12gah6UE9b/?t=11m35s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -163,7 +163,6 @@ func maxSubarray(nums []int) (ans int) {
 
 		// 用子数组 [left, i] 的长度更新答案的最大值
 		ans = max(ans, i-left+1)
-
 	}
 
 	return
