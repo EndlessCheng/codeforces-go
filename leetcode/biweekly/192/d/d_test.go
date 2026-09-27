@@ -19,18 +19,16 @@ func TestCompareInf(_t *testing.T) {
 	return
 	testutil.DebugTLE = 0
 	rg := testutil2.NewRandGenerator()
-	inputGenerator := func() (a []int) {
+	inputGenerator := func() (a []int, k int) {
 		//return
 		rg.Clear()
-		n := rg.Int(1, 3)
-		a = rg.IntSlice(n, 1, 3)
+		n := rg.Int(1, 9)
+		a = rg.IntSlice(n, -9, 9)
+		k = rg.Int(1, 9)
 		return
 	}
-	
 	testutil.CompareInf(_t, inputGenerator, longestSubarrayBF, longestSubarray)
 }
-
-// 类似 974. 和可被 K 整除的子数组
 func longestSubarrayDivByK(nums []int, k int) (res int) {
 	firstPos := make([]int, k)
 	for i := range firstPos {
@@ -50,7 +48,6 @@ func longestSubarrayDivByK(nums []int, k int) (res int) {
 	}
 	return
 }
-
 func longestSubarrayBF(nums []int, k int) int {
 	ans := longestSubarrayDivByK(nums, k) // 不改
 	for i := range nums {

@@ -14,7 +14,7 @@
 
 如果两个数组的总和相等，那么最后剩下的数也相等。所以前述条件也是充分的。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1v9a86hEkp/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

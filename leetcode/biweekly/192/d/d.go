@@ -1,9 +1,11 @@
 package main
 
-import "sort"
+import (
+	"sort"
+)
 
 // https://space.bilibili.com/206214
-func longestSubarray0(nums []int, k int) (ans int) {
+func longestSubarray1(nums []int, k int) (ans int) {
 	numPos := make([][]int, k) // 2*nums[i] % k 出现的所有位置
 	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
 	for i := range firstPos {
@@ -16,8 +18,8 @@ func longestSubarray0(nums []int, k int) (ans int) {
 
 	for i, x := range nums {
 		x = x%k + k // 保证 x 非负
-		y := x * 2 % k
-		numPos[y] = append(numPos[y], i)
+		x2 := x * 2 % k
+		numPos[x2] = append(numPos[x2], i)
 
 		sum = (sum + x) % k
 		r := i + 1
@@ -51,7 +53,7 @@ func longestSubarray0(nums []int, k int) (ans int) {
 	return
 }
 
-func longestSubarray1(nums []int, k int) (ans int) {
+func longestSubarray2x(nums []int, k int) (ans int) {
 	// 记录前缀和 % k 最后一次出现的下标
 	lastPos := make([]int, k)
 	for i := range lastPos {
@@ -74,16 +76,19 @@ func longestSubarray1(nums []int, k int) (ans int) {
 	}
 
 	visNum := make([]bool, k)
-	firstPos[0] = 0
 	sum = 0
 	for i, x := range nums {
-		sum = (sum + x) % k
 		// 发现新的前缀和 % k
 		if firstPos[sum] < 0 {
 			firstPos[sum] = i + 1
 			clear(visNum)
-		} else {
-			ans = max(ans, i+1-firstPos[sum])
+		}
+
+		sum = (sum + x) % k
+
+		l := firstPos[sum]
+		if l >= 0 {
+			ans = max(ans, i+1-l) // 不取反的情况
 		}
 
 		y := x * 2 % k
@@ -94,7 +99,7 @@ func longestSubarray1(nums []int, k int) (ans int) {
 		visNum[y] = true
 
 		for sumL, l := range firstPos {
-			if l < 0 || l == i+1 {
+			if l < 0 {
 				continue
 			}
 			r := lastPos[(sumL+y)%k]
@@ -107,7 +112,7 @@ func longestSubarray1(nums []int, k int) (ans int) {
 	return
 }
 
-func longestSubarray(nums []int, k int) (ans int) {
+func longestSubarray3x(nums []int, k int) (ans int) {
 	// 记录前缀和 % k 最后一次出现的下标
 	lastPos := make([]int, k)
 	for i := range lastPos {
@@ -143,6 +148,7 @@ func longestSubarray(nums []int, k int) (ans int) {
 		}
 
 		sum = (sum + x) % k
+
 		l := firstPos[sum]
 		if l >= 0 {
 			ans = max(ans, i+1-l) // 不取反的情况
@@ -160,6 +166,56 @@ func longestSubarray(nums []int, k int) (ans int) {
 			if r > i {
 				ans = max(ans, r-p.l)
 			}
+		}
+	}
+
+	return
+}
+
+// 基于 longestSubarray1
+func longestSubarray(nums []int, k int) (ans int) {
+	type pair struct{ l, sum int }
+	firsts := []pair{{}}
+	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
+	for i := range firstPos {
+		firstPos[i] = -1
+	}
+	lastPos := make([]int, k) // 前缀和 % k 最后一次出现的位置
+	firstPos[0] = 0
+	lastPos[0] = 0
+	sum := 0 // 前缀和
+
+	for i, x := range nums {
+		x = x%k + k // 保证 x 非负
+		nums[i] = x
+
+		sum = (sum + x) % k
+		r := i + 1
+		l := firstPos[sum]
+		if l < 0 {
+			firstPos[sum] = r
+			firsts = append(firsts, pair{r, sum})
+		} else {
+			// 不取反时的最大长度
+			ans = max(ans, r-l)
+		}
+		lastPos[sum] = r
+	}
+
+	// ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
+	ptr := make([]int, k)
+
+	// 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+	for i, x := range nums {
+		x2 := x * 2 % k
+		p := &ptr[x2]
+		for *p < len(firsts) && firsts[*p].l <= i {
+			r := lastPos[(firsts[*p].sum+x2)%k]
+			if i < r {
+				ans = max(ans, r-firsts[*p].l)
+			}
+			// 后面遇到相同的 x2，可以从 ptr[x2] 开始继续枚举，从而避免重复枚举
+			*p++
 		}
 	}
 

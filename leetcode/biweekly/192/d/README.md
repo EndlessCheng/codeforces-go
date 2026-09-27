@@ -18,7 +18,7 @@ $$
 
 - 对于下标三元组 $(\ell,i,r)$，计算 $r - \ell$ 的最大值，满足 $0\le \ell\le i < r\le n$ 且 $s[r] - s[\ell] - 2\cdot \textit{nums}[i]$ 是 $k$ 的倍数。其中 $n$ 是 $\textit{nums}$ 的长度。
 
-## 枚举前缀和
+## 方法一：枚举前缀和
 
 如果直接枚举所有 $(\ell, r)$，这有 $\mathcal{O}(n^2)$ 个，太慢了。
 
@@ -39,11 +39,11 @@ $$
 s[r] - s[\ell] \equiv 2\cdot \textit{nums}[i] \pmod k
 $$
 
-我们可以把 $2\cdot \textit{nums}[i]\bmod k$ 的所有出现位置保存到一个列表中，然后在这个列表中 [二分查找](https://www.bilibili.com/video/BV1AP41137w7/) 第一个 $\ge \ell$ 的下标 $i$，如果发现 $i < r$，那么存在满足要求的 $i$，用子数组长度 $r - \ell$ 更新答案的最大值。
+我们可以把 $2\cdot \textit{nums}[i]\bmod k$ 的所有出现位置保存到数组中，然后在这个数组中 [二分查找](https://www.bilibili.com/video/BV1AP41137w7/) 第一个 $\ge \ell$ 的下标 $i$，如果发现 $i < r$，那么存在满足要求的 $i$，用子数组长度 $r - \ell$ 更新答案的最大值。**相似题目**：[2080. 区间内查询数字的频率](https://leetcode.cn/problems/range-frequency-queries/)。
 
 **最优性优化**：在二分之前，如果发现 $r-\ell \le \textit{ans}$，那么 $\textit{ans}$ 不会变大，无需二分。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1v9a86hEkp/?t=14m2s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -131,6 +131,7 @@ class Solution {
                 }
             }
         }
+
         return ans;
     }
 }
@@ -182,6 +183,7 @@ public:
                 }
             }
         }
+
         return ans;
     }
 };
@@ -201,8 +203,8 @@ func longestSubarray(nums []int, k int) (ans int) {
 
 	for i, x := range nums {
 		x = x%k + k // 保证 x 非负
-		y := x * 2 % k
-		numPos[y] = append(numPos[y], i)
+		x2 := x * 2 % k
+		numPos[x2] = append(numPos[x2], i)
 
 		sum = (sum + x) % k
 		r := i + 1
@@ -233,6 +235,7 @@ func longestSubarray(nums []int, k int) (ans int) {
 			}
 		}
 	}
+
 	return
 }
 ```
@@ -242,71 +245,220 @@ func longestSubarray(nums []int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n + k^2\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n + k)$。
 
-## 附
+## 方法二：枚举取反元素
 
-本题还可以枚举取反的元素，做到 $\mathcal{O}(n + \min(n,k)^2)$ 的时间复杂度，可以通过本题和上一题。
+方法一相当于枚举 $\ell$ 和 $r$，找 $i$。
 
-思路及多语言代码稍后补充。
+我们还可以枚举 $i$ 和 $\ell$，找 $r$。
+
+具体地，枚举 $i=0,1,2,\ldots,n-1$，枚举 $s[\ell]\bmod k$，其中 $\ell\le i$。对于多个相同的 $s[\ell]\bmod k$，选择 $\ell$ 最小的。如果存在 $r$ 满足 $r > i$ 且 $s[r] - s[\ell] - 2\cdot \textit{nums}[i]$ 是 $k$ 的倍数，那么在多个相同的 $s[r]\bmod k$ 中取最大的 $r$，然后用 $r-\ell$ 更新答案的最大值。
+
+如果直接枚举 $i$ 和 $s[\ell]\bmod k$，时间复杂度是 $\mathcal{O}(nk)$，太慢了。
+
+问题在于，对于相同的 $x = (2\cdot \textit{nums}[i])\bmod k$，我们重复枚举了相同的 $s[\ell]\bmod k$。实际上，只需枚举位于上一个 $x$ 和当前 $x$ 之间的 $\ell$。这可以用**双指针**实现，用 $\textit{ptr}[x]$ 记录每个 $x$ 遍历到了哪个 $\ell$。
+
+```py [sol-Python3]
+class Solution:
+    def longestSubarray(self, nums: list[int], k: int) -> int:
+        firsts = [(0, 0)]
+        first_pos = [-1] * k  # 前缀和 % k 首次出现的位置
+        last_pos = [-1] * k  # 前缀和 % k 最后一次出现的位置
+        first_pos[0] = last_pos[0] = 0
+        s = 0  # 前缀和
+        ans = 0
+
+        for i, x in enumerate(nums):
+            s = (s + x) % k
+            r = i + 1
+            l = first_pos[s]
+            if l < 0:
+                first_pos[s] = r
+                firsts.append((r, s))
+            else:
+                # 不取反时的最大长度
+                ans = max(ans, r - l)
+            last_pos[s] = r
+
+        # ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
+        ptr = [0] * k
+
+        # 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+        for i, x in enumerate(nums):
+            x2 = x * 2 % k
+            p = ptr[x2]
+            while p < len(firsts) and firsts[p][0] <= i:
+                r = last_pos[(firsts[p][1] + x2) % k]
+                if i < r:
+                    ans = max(ans, r - firsts[p][0])
+                # 后面遇到相同的 x2，可以从 ptr[x2] 开始继续枚举，从而避免重复枚举
+                p += 1
+            ptr[x2] = p
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestSubarray(int[] nums, int k) {
+        List<int[]> firsts = new ArrayList<>();
+        firsts.add(new int[]{0, 0});
+        int[] firstPos = new int[k]; // 前缀和 % k 首次出现的位置
+        int[] lastPos = new int[k]; // 前缀和 % k 最后一次出现的位置
+        Arrays.fill(firstPos, -1);
+        firstPos[0] = lastPos[0] = 0;
+        int sum = 0; // 前缀和
+        int ans = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i] % k + k; // 保证 x 非负
+            nums[i] = x;
+
+            sum = (sum + x) % k;
+            int r = i + 1;
+            int l = firstPos[sum];
+            if (l < 0) {
+                firstPos[sum] = r;
+                firsts.add(new int[]{r, sum});
+            } else {
+                // 不取反时的最大长度
+                ans = Math.max(ans, r - l);
+            }
+            lastPos[sum] = r;
+        }
+
+        // ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
+        int[] ptr = new int[k];
+
+        // 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+        for (int i = 0; i < nums.length; i++) {
+            int x2 = nums[i] * 2 % k;
+            int p = ptr[x2];
+            while (p < firsts.size() && firsts.get(p)[0] <= i) {
+                int[] pair = firsts.get(p);
+                int r = lastPos[(pair[1] + x2) % k];
+                if (i < r) {
+                    ans = Math.max(ans, r - pair[0]);
+                }
+                // 后面遇到相同的 y，可以从 ptr[y] 开始继续枚举，从而避免重复枚举
+                p++;
+            }
+            ptr[x2] = p;
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums, int k) {
+        vector<pair<int, int>> firsts = {{0, 0}};
+        vector<int> first_pos(k, -1); // 前缀和 % k 首次出现的位置
+        vector<int> last_pos(k); // 前缀和 % k 最后一次出现的位置
+        first_pos[0] = last_pos[0] = 0;
+        int sum = 0; // 前缀和
+        int ans = 0;
+
+        for (int i = 0; i < nums.size(); i++) {
+            int& x = nums[i];
+            x = x % k + k; // 保证 x 非负
+
+            sum = (sum + x) % k;
+            int r = i + 1;
+            int l = first_pos[sum];
+            if (l < 0) {
+                first_pos[sum] = r;
+                firsts.emplace_back(r, sum);
+            } else {
+                // 不取反时的最大长度
+                ans = max(ans, r - l);
+            }
+            last_pos[sum] = r;
+        }
+
+        // ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
+        vector<int> ptr(k);
+
+        // 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+        for (int i = 0; i < nums.size(); i++) {
+            int x2 = nums[i] * 2 % k;
+            int& p = ptr[x2];
+            while (p < firsts.size() && firsts[p].first <= i) {
+                int r = last_pos[(firsts[p].second + x2) % k];
+                if (i < r) {
+                    ans = max(ans, r - firsts[p].first);
+                }
+                // 后面遇到相同的 y，可以从 ptr[y] 开始继续枚举，从而避免重复枚举
+                p++;
+            }
+        }
+
+        return ans;
+    }
+};
+```
 
 ```go [sol-Go]
 func longestSubarray(nums []int, k int) (ans int) {
-	// 记录前缀和 % k 最后一次出现的下标
-	lastPos := make([]int, k)
-	for i := range lastPos {
-		lastPos[i] = -1
-	}
-
-	lastPos[0] = 0
-	sum := 0
-	for i, x := range nums {
-		x = x%k + k
-		nums[i] = x // 保证 nums[i] 非负
-		sum = (sum + x) % k
-		lastPos[sum] = i + 1
-	}
-
-	// 记录前缀和 % k 首次出现的下标
-	firstPos := make([]int, k)
+	type pair struct{ l, sum int }
+	firsts := []pair{{}}
+	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
 	for i := range firstPos {
 		firstPos[i] = -1
 	}
-	type pair struct{ sum, l int }
-	first := []pair{{}}
+	lastPos := make([]int, k) // 前缀和 % k 最后一次出现的位置
+	firstPos[0] = 0
+	lastPos[0] = 0
+	sum := 0 // 前缀和
 
-	visTime := make([]int, k)
-	t := 0
-	sum = 0
 	for i, x := range nums {
-		// 发现新的前缀和 % k
-		if firstPos[sum] < 0 {
-			firstPos[sum] = i
-			first = append(first, pair{sum, i})
-			t++
-		}
+		x = x%k + k // 保证 x 非负
+		nums[i] = x
 
 		sum = (sum + x) % k
-		if l := firstPos[sum]; l >= 0 {
-			ans = max(ans, i+1-l) // 不取反的情况
+		r := i + 1
+		l := firstPos[sum]
+		if l < 0 {
+			firstPos[sum] = r
+			firsts = append(firsts, pair{r, sum})
+		} else {
+			// 不取反时的最大长度
+			ans = max(ans, r-l)
 		}
+		lastPos[sum] = r
+	}
 
-		y := x * 2 % k
-		if visTime[y] == t {
-			// 没有发现新的前缀和 % k，不考虑重复的 2x % k 
-			continue
-		}
-		visTime[y] = t
+	// ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
+	ptr := make([]int, k)
 
-		for _, p := range first {
-			r := lastPos[(p.sum+y)%k]
-			if r > i {
-				ans = max(ans, r-p.l)
+	// 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+	for i, x := range nums {
+		x2 := x * 2 % k
+		p := &ptr[x2]
+		for *p < len(firsts) && firsts[*p].l <= i {
+			r := lastPos[(firsts[*p].sum+x2)%k]
+			if i < r {
+				ans = max(ans, r-firsts[*p].l)
 			}
+			// 后面遇到相同的 x2，可以从 ptr[x2] 开始继续枚举，从而避免重复枚举
+			*p++
 		}
 	}
 
 	return
 }
 ```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + k + \min(n,k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。有 $\mathcal{O}(\min(n,k))$ 个不同的 $(2\cdot \textit{nums}[i])\bmod k$，每个 $(2\cdot \textit{nums}[i])\bmod k$ 我们枚举了 $\mathcal{O}(\min(n,k))$ 个不同的 $s[\ell]\bmod k$，所以二重循环的循环次数为 $\mathcal{O}(n + \min(n,k)^2)$。此外，创建大小为 $k$ 的数组需要 $\mathcal{O}(k)$ 的时间。
+- 空间复杂度：$\mathcal{O}(k)$。
+
+方法二也能通过前一题 [4063. 至多一次取反能被 K 整除的最长子数组 I](https://leetcode.cn/problems/longest-subarray-divisible-by-k-with-at-most-one-negation-i/)，那题 $n$ 小 $k$ 大。
+
+**注**：本题是一个带位置约束的 3Sum 问题，目前不存在 $\mathcal{O}(\min(n,k)^{2-\epsilon})$ 的算法。
 
 ## 专题训练
 

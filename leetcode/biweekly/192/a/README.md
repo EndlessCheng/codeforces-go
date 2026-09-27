@@ -8,8 +8,6 @@
     - 起点终点连线的斜率为 $1$。
 - 否则要走两步，返回 $2$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def minQueenMoves(self, source: list[int], target: list[int]) -> int:
