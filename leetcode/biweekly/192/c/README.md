@@ -34,7 +34,22 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    public int longestSubarrayDivByK(int[] nums, int k) {
+    public int longestSubarray(int[] nums, int k) {
+        // 不取反
+        int ans = longestSubarrayDivByK(nums, k);
+
+        // 枚举取反元素
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] *= -1; // 取反
+            ans = Math.max(ans, longestSubarrayDivByK(nums, k));
+            nums[i] *= -1; // 复原
+        }
+
+        return ans;
+    }
+
+    // 做法类似 974. 和可被 K 整除的子数组
+    private int longestSubarrayDivByK(int[] nums, int k) {
         Map<Integer, Integer> firstPos = new HashMap<>();
         firstPos.put(0, -1); // 前缀和 % k 首次出现的下标
         int sum = 0; // 前缀和
@@ -50,20 +65,6 @@ class Solution {
         }
         return res;
     }
-
-    public int longestSubarray(int[] nums, int k) {
-        // 不取反
-        int ans = longestSubarrayDivByK(nums, k);
-
-        // 枚举取反元素
-        for (int i = 0; i < nums.length; i++) {
-            nums[i] *= -1; // 取反
-            ans = Math.max(ans, longestSubarrayDivByK(nums, k));
-            nums[i] *= -1; // 复原
-        }
-
-        return ans;
-    }
 }
 ```
 
@@ -71,7 +72,7 @@ class Solution {
 class Solution {
     vector<int> first_pos; // 哈希表超时了，改用 vector
 
-    // 类似 974. 和可被 K 整除的子数组
+    // 做法类似 974. 和可被 K 整除的子数组
     int longestSubarrayDivByK(vector<int>& nums, int k) {
         ranges::fill(first_pos, -2);
         first_pos[0] = -1;
