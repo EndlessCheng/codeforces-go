@@ -18,7 +18,7 @@ $$
 
 - 对于下标三元组 $(\ell,i,r)$，计算 $r - \ell$ 的最大值，满足 $0\le \ell\le i < r\le n$ 且 $s[r] - s[\ell] - 2\cdot \textit{nums}[i]$ 是 $k$ 的倍数。其中 $n$ 是 $\textit{nums}$ 的长度。
 
-## 方法一：枚举前缀和
+## 枚举前缀和
 
 如果直接枚举所有 $(\ell, r)$，这有 $\mathcal{O}(n^2)$ 个，太慢了。
 
@@ -44,6 +44,8 @@ $$
 **最优性优化**：在二分之前，如果发现 $r-\ell \le \textit{ans}$，那么 $\textit{ans}$ 不会变大，无需二分。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1v9a86hEkp/?t=14m2s)，欢迎点赞关注~
+
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -245,9 +247,304 @@ func longestSubarray(nums []int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n + k^2\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n + k)$。
 
-## 方法二：枚举取反元素
+## 优化：无需二分
 
-方法一相当于枚举 $\ell$ 和 $r$，找 $i$。
+改为外层循环枚举 $s[r]\bmod k$，内层循环枚举 $s[\ell]\bmod k$。
+
+在遍历 $\textit{nums}$ 的同时，维护 $(2\cdot \textit{nums}[i])\bmod k$ 最近一次出现的位置。如果 $i+1$ 是 $s[r]\bmod k$ 最后一次出现的位置，那么就在此时枚举 $s[\ell]\bmod k$。由于我们维护了 $(2\cdot \textit{nums}[i])\bmod k$ 最近一次出现的位置 $j$，所以只要 $j\ge \ell$，那么就用 $r-\ell$ 更新答案的最大值。这样就把二分优化掉了。
+
+把不同的 $s[\ell]\bmod k$ 按照 $\ell$ 升序保存到一个数组中，这样就不用遍历不存在的 $s[\ell]\bmod k$ 了。另一方面，如果 $r-\ell\le \textit{ans}$，可以提前跳出内层循环。
+
+> 这个做法也能通过前一题 [4063. 至多一次取反能被 K 整除的最长子数组 I](https://leetcode.cn/problems/longest-subarray-divisible-by-k-with-at-most-one-negation-i/)，那题 $n$ 小 $k$ 大。
+
+```py [sol-Python3]
+class Solution:
+    def longestSubarray(self, nums: list[int], k: int) -> int:
+        first_sum = [0]
+        first_pos = [-1] * k  # 前缀和 % k 首次出现的位置
+        last_pos = [-1] * k  # 前缀和 % k 最后一次出现的位置
+        first_pos[0] = last_pos[0] = 0
+        s = 0  # 前缀和
+        ans = 0
+
+        for i, x in enumerate(nums):
+            s = (s + x) % k
+            r = i + 1
+            l = first_pos[s]
+            if l < 0:
+                first_pos[s] = r
+                first_sum.append(s)
+            else:
+                # 不取反时的最大长度
+                ans = max(ans, r - l)
+            last_pos[s] = r
+
+        last_x2 = [-1] * k
+        sr = 0
+
+        # 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
+        for i, x in enumerate(nums):
+            last_x2[x * 2 % k] = i
+            sr = (sr + x) % k
+            r = i + 1
+            if last_pos[sr] != r:  # 只考虑 s[r]%k 最后一次出现的位置
+                continue
+            for sl in first_sum:
+                l = first_pos[sl]
+                if r - l <= ans:  # 最优性优化：ans 无法增大
+                    break
+                j = last_x2[(sr - sl) % k]
+                if j >= l:
+                    ans = r - l
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestSubarray(int[] nums, int k) {
+        List<Integer> firstSum = new ArrayList<>(); // 改成数组更快，见【Java 写法二】
+        firstSum.add(0);
+        int[] firstPos = new int[k]; // 前缀和 % k 首次出现的位置
+        int[] lastPos = new int[k]; // 前缀和 % k 最后一次出现的位置
+        Arrays.fill(firstPos, -1);
+        firstPos[0] = lastPos[0] = 0;
+        int sum = 0; // 前缀和
+        int ans = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i] % k + k; // 保证 x 非负
+            nums[i] = x;
+
+            sum = (sum + x) % k;
+            int r = i + 1;
+            int l = firstPos[sum];
+            if (l < 0) {
+                firstPos[sum] = r;
+                firstSum.add(sum);
+            } else {
+                // 不取反时的最大长度
+                ans = Math.max(ans, r - l);
+            }
+            lastPos[sum] = r;
+        }
+
+        int[] lastX2 = new int[k];
+        Arrays.fill(lastX2, -1);
+        int sr = 0;
+
+        // 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+            lastX2[x * 2 % k] = i;
+            sr = (sr + x) % k;
+            int r = i + 1;
+            if (lastPos[sr] != r) { // 只考虑 s[r]%k 最后一次出现的位置
+                continue;
+            }
+            for (int sl : firstSum) {
+                int l = firstPos[sl];
+                if (r - l <= ans) { // 最优性优化：ans 无法增大
+                    break;
+                }
+                int j = lastX2[(sr - sl + k) % k]; // +k 保证结果非负
+                if (j >= l) {
+                    ans = r - l;
+                }
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    public int longestSubarray(int[] nums, int k) {
+        int[] firstSum = new int[k];
+        int firstSumSize = 1;
+        int[] firstPos = new int[k]; // 前缀和 % k 首次出现的位置
+        int[] lastPos = new int[k]; // 前缀和 % k 最后一次出现的位置
+        Arrays.fill(firstPos, -1);
+        firstPos[0] = lastPos[0] = 0;
+        int sum = 0; // 前缀和
+        int ans = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i] % k + k; // 保证 x 非负
+            nums[i] = x;
+
+            sum = (sum + x) % k;
+            int r = i + 1;
+            int l = firstPos[sum];
+            if (l < 0) {
+                firstPos[sum] = r;
+                firstSum[firstSumSize++] = sum;
+            } else {
+                // 不取反时的最大长度
+                ans = Math.max(ans, r - l);
+            }
+            lastPos[sum] = r;
+        }
+
+        int[] lastX2 = new int[k];
+        Arrays.fill(lastX2, -1);
+        int sr = 0;
+
+        // 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+            lastX2[x * 2 % k] = i;
+            sr = (sr + x) % k;
+            int r = i + 1;
+            if (lastPos[sr] != r) { // 只考虑 s[r]%k 最后一次出现的位置
+                continue;
+            }
+            for (int idx = 0; idx < firstSumSize; idx++) {
+                int sl = firstSum[idx];
+                int l = firstPos[sl];
+                if (r - l <= ans) { // 最优性优化：ans 无法增大
+                    break;
+                }
+                int j = lastX2[(sr - sl + k) % k]; // +k 保证结果非负
+                if (j >= l) {
+                    ans = r - l;
+                }
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums, int k) {
+        vector<int> first_sum = {0};
+        vector<int> first_pos(k, -1); // 前缀和 % k 首次出现的位置
+        vector<int> last_pos(k); // 前缀和 % k 最后一次出现的位置
+        first_pos[0] = last_pos[0] = 0;
+        int sum = 0; // 前缀和
+        int ans = 0;
+
+        for (int i = 0; i < nums.size(); i++) {
+            int& x = nums[i];
+            x = x % k + k; // 保证 x 非负
+
+            sum = (sum + x) % k;
+            int r = i + 1;
+            int l = first_pos[sum];
+            if (l < 0) {
+                first_pos[sum] = r;
+                first_sum.push_back(sum);
+            } else {
+                // 不取反时的最大长度
+                ans = max(ans, r - l);
+            }
+            last_pos[sum] = r;
+        }
+
+        vector<int> last_x2(k, -1);
+        int sr = 0;
+
+        // 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
+        for (int i = 0; i < nums.size(); i++) {
+            int x = nums[i];
+            last_x2[x * 2 % k] = i;
+            sr = (sr + x) % k;
+            int r = i + 1;
+            if (last_pos[sr] != r) { // 只考虑 s[r]%k 最后一次出现的位置
+                continue;
+            }
+            for (int sl : first_sum) {
+                int l = first_pos[sl];
+                if (r - l <= ans) { // 最优性优化：ans 无法增大
+                    break;
+                }
+                int j = last_x2[(sr - sl + k) % k]; // +k 保证结果非负
+                if (j >= l) {
+                    ans = r - l;
+                }
+            }
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func longestSubarray(nums []int, k int) (ans int) {
+	firstSum := []int{0}
+	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
+	for i := range firstPos {
+		firstPos[i] = -1
+	}
+	lastPos := make([]int, k) // 前缀和 % k 最后一次出现的位置
+	firstPos[0] = 0
+	lastPos[0] = 0
+	sum := 0 // 前缀和
+
+	for i, x := range nums {
+		x = x%k + k // 保证 x 非负
+		nums[i] = x
+
+		sum = (sum + x) % k
+		r := i + 1
+		l := firstPos[sum]
+		if l < 0 {
+			firstPos[sum] = r
+			firstSum = append(firstSum, sum)
+		} else {
+			// 不取反时的最大长度
+			ans = max(ans, r-l)
+		}
+		lastPos[sum] = r
+	}
+
+	lastX2 := make([]int, k)
+	for i := range lastX2 {
+		lastX2[i] = -1
+	}
+	sr := 0
+
+	// 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
+	for i, x := range nums {
+		lastX2[x*2%k] = i
+		sr = (sr + x) % k
+		r := i + 1
+		if lastPos[sr] != r { // 只考虑 s[r]%k 最后一次出现的位置
+			continue
+		}
+		for _, sl := range firstSum {
+			l := firstPos[sl]
+			if r-l <= ans { // 最优性优化：ans 无法增大
+				break
+			}
+			j := lastX2[(sr-sl+k)%k] // +k 保证结果非负
+			if j >= l {
+				ans = r - l
+			}
+		}
+	}
+
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + k + \min(n,k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。有 $\mathcal{O}(\min(n,k))$ 个不同的 $s[r]\bmod k$，每个 $s[r]\bmod k$ 我们枚举了 $\mathcal{O}(\min(n,k))$ 个不同的 $s[\ell]\bmod k$，所以二重循环的循环次数为 $\mathcal{O}(n + \min(n,k)^2)$。此外，创建大小为 $k$ 的数组需要 $\mathcal{O}(k)$ 的时间。
+- 空间复杂度：$\mathcal{O}(k)$。
+
+## 附：枚举取反元素的写法
+
+> 注意：该写法没法用最优性优化，运行效率比上面的慢。
+
+之前的写法是枚举 $\ell$ 和 $r$，找 $i$。
 
 我们还可以枚举 $i$ 和 $\ell$，找 $r$。
 
@@ -455,8 +752,6 @@ func longestSubarray(nums []int, k int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n + k + \min(n,k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。有 $\mathcal{O}(\min(n,k))$ 个不同的 $(2\cdot \textit{nums}[i])\bmod k$，每个 $(2\cdot \textit{nums}[i])\bmod k$ 我们枚举了 $\mathcal{O}(\min(n,k))$ 个不同的 $s[\ell]\bmod k$，所以二重循环的循环次数为 $\mathcal{O}(n + \min(n,k)^2)$。此外，创建大小为 $k$ 的数组需要 $\mathcal{O}(k)$ 的时间。
 - 空间复杂度：$\mathcal{O}(k)$。
-
-方法二也能通过前一题 [4063. 至多一次取反能被 K 整除的最长子数组 I](https://leetcode.cn/problems/longest-subarray-divisible-by-k-with-at-most-one-negation-i/)，那题 $n$ 小 $k$ 大。
 
 **注**：本题是一个带位置约束的 3Sum 问题，目前不存在 $\mathcal{O}(\min(n,k)^{2-\epsilon})$ 的算法。
 

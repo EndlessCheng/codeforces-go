@@ -53,58 +53,56 @@ func longestSubarray1(nums []int, k int) (ans int) {
 	return
 }
 
-func longestSubarray2x(nums []int, k int) (ans int) {
-	// 记录前缀和 % k 最后一次出现的下标
-	lastPos := make([]int, k)
-	for i := range lastPos {
-		lastPos[i] = -1
-	}
-
-	lastPos[0] = 0
-	sum := 0
-	for i, x := range nums {
-		x = x%k + k // 保证 nums[i] 非负
-		nums[i] = x
-		sum = (sum + x) % k
-		lastPos[sum] = i + 1
-	}
-
-	// 记录前缀和 % k 首次出现的下标
-	firstPos := make([]int, k) // todo vis 优化
+func longestSubarray(nums []int, k int) (ans int) {
+	firstSum := []int{0}
+	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
 	for i := range firstPos {
 		firstPos[i] = -1
 	}
+	lastPos := make([]int, k) // 前缀和 % k 最后一次出现的位置
+	firstPos[0] = 0
+	lastPos[0] = 0
+	sum := 0 // 前缀和
 
-	visNum := make([]bool, k)
-	sum = 0
 	for i, x := range nums {
-		// 发现新的前缀和 % k
-		if firstPos[sum] < 0 {
-			firstPos[sum] = i + 1
-			clear(visNum)
-		}
+		x = x%k + k // 保证 x 非负
+		nums[i] = x
 
 		sum = (sum + x) % k
-
+		r := i + 1
 		l := firstPos[sum]
-		if l >= 0 {
-			ans = max(ans, i+1-l) // 不取反的情况
+		if l < 0 {
+			firstPos[sum] = r
+			firstSum = append(firstSum, sum)
+		} else {
+			// 不取反时的最大长度
+			ans = max(ans, r-l)
 		}
+		lastPos[sum] = r
+	}
 
-		y := x * 2 % k
-		if visNum[y] {
-			// 没有发现新的前缀和 % k，不考虑重复的 2x % k 
+	lastX2 := make([]int, k)
+	for i := range lastX2 {
+		lastX2[i] = -1
+	}
+	sr := 0
+
+	// 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
+	for i, x := range nums {
+		lastX2[x*2%k] = i
+		sr = (sr + x) % k
+		r := i + 1
+		if lastPos[sr] != r { // 只考虑 s[r]%k 最后一次出现的位置
 			continue
 		}
-		visNum[y] = true
-
-		for sumL, l := range firstPos {
-			if l < 0 {
-				continue
+		for _, sl := range firstSum {
+			l := firstPos[sl]
+			if r-l <= ans { // 最优性优化：ans 无法增大
+				break
 			}
-			r := lastPos[(sumL+y)%k]
-			if r > i {
-				ans = max(ans, r-l)
+			j := lastX2[(sr-sl+k)%k] // +k 保证结果非负
+			if j >= l {
+				ans = r - l
 			}
 		}
 	}
@@ -113,67 +111,6 @@ func longestSubarray2x(nums []int, k int) (ans int) {
 }
 
 func longestSubarray3x(nums []int, k int) (ans int) {
-	// 记录前缀和 % k 最后一次出现的下标
-	lastPos := make([]int, k)
-	for i := range lastPos {
-		lastPos[i] = -1
-	}
-
-	lastPos[0] = 0
-	sum := 0
-	for i, x := range nums {
-		x = x%k + k
-		nums[i] = x // 保证 nums[i] 非负
-		sum = (sum + x) % k
-		lastPos[sum] = i + 1
-	}
-
-	// 记录前缀和 % k 首次出现的下标
-	firstPos := make([]int, k)
-	for i := range firstPos {
-		firstPos[i] = -1
-	}
-	type pair struct{ sum, l int }
-	first := []pair{{}}
-
-	visTime := make([]int, k)
-	t := 0
-	sum = 0
-	for i, x := range nums {
-		// 发现新的前缀和 % k
-		if firstPos[sum] < 0 {
-			firstPos[sum] = i
-			first = append(first, pair{sum, i})
-			t++
-		}
-
-		sum = (sum + x) % k
-
-		l := firstPos[sum]
-		if l >= 0 {
-			ans = max(ans, i+1-l) // 不取反的情况
-		}
-
-		y := x * 2 % k
-		if visTime[y] == t {
-			// 没有发现新的前缀和 % k，不考虑重复的 2x % k 
-			continue
-		}
-		visTime[y] = t
-
-		for _, p := range first {
-			r := lastPos[(p.sum+y)%k]
-			if r > i {
-				ans = max(ans, r-p.l)
-			}
-		}
-	}
-
-	return
-}
-
-// 基于 longestSubarray1
-func longestSubarray(nums []int, k int) (ans int) {
 	type pair struct{ l, sum int }
 	firsts := []pair{{}}
 	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
