@@ -149,14 +149,14 @@ func longestSubarray(nums []int, k int) int {
 
 ## 更快的做法
 
-原理见下一题的 [我的题解](https://leetcode.cn/problems/longest-subarray-divisible-by-k-with-at-most-one-negation-ii/solution/mei-ju-qian-zhui-he-pythonjavacgo-by-end-nlum/) 的方法二。虽然复杂度没有差别，但实际运行时间快很多。
+原理见下一题 [我的题解](https://leetcode.cn/problems/longest-subarray-divisible-by-k-with-at-most-one-negation-ii/solution/mei-ju-qian-zhui-he-pythonjavacgo-by-end-nlum/) 中的「优化：无需二分」。虽然复杂度没有差别，但实际运行时间快很多。
 
 这里只把代码搬过来。
 
 ```py [sol-Python3]
 class Solution:
     def longestSubarray(self, nums: list[int], k: int) -> int:
-        firsts = [(0, 0)]
+        first_sum = [0]
         first_pos = [-1] * k  # 前缀和 % k 首次出现的位置
         last_pos = [-1] * k  # 前缀和 % k 最后一次出现的位置
         first_pos[0] = last_pos[0] = 0
@@ -169,26 +169,29 @@ class Solution:
             l = first_pos[s]
             if l < 0:
                 first_pos[s] = r
-                firsts.append((r, s))
+                first_sum.append(s)
             else:
                 # 不取反时的最大长度
                 ans = max(ans, r - l)
             last_pos[s] = r
 
-        # ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
-        ptr = [0] * k
+        last_x2 = [-1] * k
+        sr = 0
 
-        # 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+        # 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
         for i, x in enumerate(nums):
-            x2 = x * 2 % k
-            p = ptr[x2]
-            while p < len(firsts) and firsts[p][0] <= i:
-                r = last_pos[(firsts[p][1] + x2) % k]
-                if i < r:
-                    ans = max(ans, r - firsts[p][0])
-                # 后面遇到相同的 x2，可以从 ptr[x2] 开始继续枚举，从而避免重复枚举
-                p += 1
-            ptr[x2] = p
+            last_x2[x * 2 % k] = i
+            sr = (sr + x) % k
+            r = i + 1
+            if last_pos[sr] != r:  # 只考虑 s[r]%k 最后一次出现的位置
+                continue
+            for sl in first_sum:
+                l = first_pos[sl]
+                if r - l <= ans:  # 最优性优化：ans 无法增大
+                    break
+                j = last_x2[(sr - sl) % k]
+                if j >= l:
+                    ans = r - l
 
         return ans
 ```
@@ -196,8 +199,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int longestSubarray(int[] nums, int k) {
-        List<int[]> firsts = new ArrayList<>();
-        firsts.add(new int[]{0, 0});
+        List<Integer> firstSum = new ArrayList<>(); // 改成数组更快，见【Java 写法二】
+        firstSum.add(0);
         int[] firstPos = new int[k]; // 前缀和 % k 首次出现的位置
         int[] lastPos = new int[k]; // 前缀和 % k 最后一次出现的位置
         Arrays.fill(firstPos, -1);
@@ -214,7 +217,7 @@ class Solution {
             int l = firstPos[sum];
             if (l < 0) {
                 firstPos[sum] = r;
-                firsts.add(new int[]{r, sum});
+                firstSum.add(sum);
             } else {
                 // 不取反时的最大长度
                 ans = Math.max(ans, r - l);
@@ -222,23 +225,89 @@ class Solution {
             lastPos[sum] = r;
         }
 
-        // ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
-        int[] ptr = new int[k];
+        int[] lastX2 = new int[k];
+        Arrays.fill(lastX2, -1);
+        int sr = 0;
 
-        // 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+        // 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
         for (int i = 0; i < nums.length; i++) {
-            int x2 = nums[i] * 2 % k;
-            int p = ptr[x2];
-            while (p < firsts.size() && firsts.get(p)[0] <= i) {
-                int[] pair = firsts.get(p);
-                int r = lastPos[(pair[1] + x2) % k];
-                if (i < r) {
-                    ans = Math.max(ans, r - pair[0]);
-                }
-                // 后面遇到相同的 y，可以从 ptr[y] 开始继续枚举，从而避免重复枚举
-                p++;
+            int x = nums[i];
+            lastX2[x * 2 % k] = i;
+            sr = (sr + x) % k;
+            int r = i + 1;
+            if (lastPos[sr] != r) { // 只考虑 s[r]%k 最后一次出现的位置
+                continue;
             }
-            ptr[x2] = p;
+            for (int sl : firstSum) {
+                int l = firstPos[sl];
+                if (r - l <= ans) { // 最优性优化：ans 无法增大
+                    break;
+                }
+                int j = lastX2[(sr - sl + k) % k]; // +k 保证结果非负
+                if (j >= l) {
+                    ans = r - l;
+                }
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    public int longestSubarray(int[] nums, int k) {
+        int[] firstSum = new int[k];
+        int firstSumSize = 1;
+        int[] firstPos = new int[k]; // 前缀和 % k 首次出现的位置
+        int[] lastPos = new int[k]; // 前缀和 % k 最后一次出现的位置
+        Arrays.fill(firstPos, -1);
+        firstPos[0] = lastPos[0] = 0;
+        int sum = 0; // 前缀和
+        int ans = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i] % k + k; // 保证 x 非负
+            nums[i] = x;
+
+            sum = (sum + x) % k;
+            int r = i + 1;
+            int l = firstPos[sum];
+            if (l < 0) {
+                firstPos[sum] = r;
+                firstSum[firstSumSize++] = sum;
+            } else {
+                // 不取反时的最大长度
+                ans = Math.max(ans, r - l);
+            }
+            lastPos[sum] = r;
+        }
+
+        int[] lastX2 = new int[k];
+        Arrays.fill(lastX2, -1);
+        int sr = 0;
+
+        // 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+            lastX2[x * 2 % k] = i;
+            sr = (sr + x) % k;
+            int r = i + 1;
+            if (lastPos[sr] != r) { // 只考虑 s[r]%k 最后一次出现的位置
+                continue;
+            }
+            for (int idx = 0; idx < firstSumSize; idx++) {
+                int sl = firstSum[idx];
+                int l = firstPos[sl];
+                if (r - l <= ans) { // 最优性优化：ans 无法增大
+                    break;
+                }
+                int j = lastX2[(sr - sl + k) % k]; // +k 保证结果非负
+                if (j >= l) {
+                    ans = r - l;
+                }
+            }
         }
 
         return ans;
@@ -250,7 +319,7 @@ class Solution {
 class Solution {
 public:
     int longestSubarray(vector<int>& nums, int k) {
-        vector<pair<int, int>> firsts = {{0, 0}};
+        vector<int> first_sum = {0};
         vector<int> first_pos(k, -1); // 前缀和 % k 首次出现的位置
         vector<int> last_pos(k); // 前缀和 % k 最后一次出现的位置
         first_pos[0] = last_pos[0] = 0;
@@ -266,7 +335,7 @@ public:
             int l = first_pos[sum];
             if (l < 0) {
                 first_pos[sum] = r;
-                firsts.emplace_back(r, sum);
+                first_sum.push_back(sum);
             } else {
                 // 不取反时的最大长度
                 ans = max(ans, r - l);
@@ -274,20 +343,27 @@ public:
             last_pos[sum] = r;
         }
 
-        // ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
-        vector<int> ptr(k);
+        vector<int> last_x2(k, -1);
+        int sr = 0;
 
-        // 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+        // 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
         for (int i = 0; i < nums.size(); i++) {
-            int x2 = nums[i] * 2 % k;
-            int& p = ptr[x2];
-            while (p < firsts.size() && firsts[p].first <= i) {
-                int r = last_pos[(firsts[p].second + x2) % k];
-                if (i < r) {
-                    ans = max(ans, r - firsts[p].first);
+            int x = nums[i];
+            last_x2[x * 2 % k] = i;
+            sr = (sr + x) % k;
+            int r = i + 1;
+            if (last_pos[sr] != r) { // 只考虑 s[r]%k 最后一次出现的位置
+                continue;
+            }
+            for (int sl : first_sum) {
+                int l = first_pos[sl];
+                if (r - l <= ans) { // 最优性优化：ans 无法增大
+                    break;
                 }
-                // 后面遇到相同的 y，可以从 ptr[y] 开始继续枚举，从而避免重复枚举
-                p++;
+                int j = last_x2[(sr - sl + k) % k]; // +k 保证结果非负
+                if (j >= l) {
+                    ans = r - l;
+                }
             }
         }
 
@@ -298,8 +374,7 @@ public:
 
 ```go [sol-Go]
 func longestSubarray(nums []int, k int) (ans int) {
-	type pair struct{ l, sum int }
-	firsts := []pair{{}}
+	firstSum := []int{0}
 	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
 	for i := range firstPos {
 		firstPos[i] = -1
@@ -318,7 +393,7 @@ func longestSubarray(nums []int, k int) (ans int) {
 		l := firstPos[sum]
 		if l < 0 {
 			firstPos[sum] = r
-			firsts = append(firsts, pair{r, sum})
+			firstSum = append(firstSum, sum)
 		} else {
 			// 不取反时的最大长度
 			ans = max(ans, r-l)
@@ -326,20 +401,29 @@ func longestSubarray(nums []int, k int) (ans int) {
 		lastPos[sum] = r
 	}
 
-	// ptr[2*nums[i]%k] 表示 2*nums[i]%k 目前处理到的 firsts 的下标
-	ptr := make([]int, k)
+	lastX2 := make([]int, k)
+	for i := range lastX2 {
+		lastX2[i] = -1
+	}
+	sr := 0
 
-	// 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
+	// 枚举 s[r]%k 和 s[l]%k，判断是否存在满足要求的 i
 	for i, x := range nums {
-		x2 := x * 2 % k
-		p := &ptr[x2]
-		for *p < len(firsts) && firsts[*p].l <= i {
-			r := lastPos[(firsts[*p].sum+x2)%k]
-			if i < r {
-				ans = max(ans, r-firsts[*p].l)
+		lastX2[x*2%k] = i
+		sr = (sr + x) % k
+		r := i + 1
+		if lastPos[sr] != r { // 只考虑 s[r]%k 最后一次出现的位置
+			continue
+		}
+		for _, sl := range firstSum {
+			l := firstPos[sl]
+			if r-l <= ans { // 最优性优化：ans 无法增大
+				break
 			}
-			// 后面遇到相同的 x2，可以从 ptr[x2] 开始继续枚举，从而避免重复枚举
-			*p++
+			j := lastX2[(sr-sl+k)%k] // +k 保证结果非负
+			if j >= l {
+				ans = r - l
+			}
 		}
 	}
 
