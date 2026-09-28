@@ -182,6 +182,8 @@ func abs(x int) int {
 
 定义 $\textit{cnt}[x] = \textit{cntS}[x] + \textit{cntD}[x]$，把两个数组合并。
 
+$\textit{cntS}[x]$ 和 $\textit{cntD}[x]$ 至少一个大于 $0$，等价于 $\textit{cnt}[x] > 0$。
+
 ```py [sol-Python3]
 class Solution:
     def maxSubarray(self, nums: list[int]) -> int:
