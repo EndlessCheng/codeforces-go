@@ -45,6 +45,7 @@ class Solution {
     public int maxEqualAdjacentPairs(int[] nums) {
         int base = 0;
         Map<Long, Integer> cnt = new HashMap<>();
+        int maxCnt = 0;
 
         for (int i = 1; i < nums.length; i++) {
             int x = nums[i - 1];
@@ -59,12 +60,12 @@ class Solution {
                     y = tmp;
                 }
                 // 统计相邻且不相等的数对个数
-                long key = (long) x << 32 | y; // 两个 int 合并为一个 long
-                cnt.merge(key, 1, Integer::sum); // cnt[key]++
+                long key = (long) 2e9 * x + y; // 两个 int 合并为一个 long
+                int c = cnt.merge(key, 1, Integer::sum); // c = ++cnt[key]
+                maxCnt = Math.max(maxCnt, c);
             }
         }
 
-        int maxCnt = cnt.isEmpty() ? 0 : Collections.max(cnt.values());
         return base + maxCnt;
     }
 }
@@ -74,7 +75,7 @@ class Solution {
 class Solution {
 public:
     int maxEqualAdjacentPairs(vector<int>& nums) {
-        int base = 0;
+        int base = 0, max_cnt = 0;
         unordered_map<long long, int> cnt;
 
         for (int i = 1; i < nums.size(); i++) {
@@ -88,13 +89,9 @@ public:
                 }
                 // 统计相邻且不相等的数对个数
                 // 两个 int 合并为一个 long long
-                cnt[1LL * x << 32 | y]++;
+                long long key = 1LL * x << 32 | y;
+                max_cnt = max(max_cnt, ++cnt[key]);
             }
-        }
-
-        int max_cnt = 0;
-        for (auto [_, c] : cnt) {
-            max_cnt = max(max_cnt, c);
         }
 
         return base + max_cnt;
@@ -107,6 +104,7 @@ func maxEqualAdjacentPairs(nums []int) int {
 	base := 0
 	type pair struct{ x, y int }
 	cnt := map[pair]int{}
+	maxCnt := 0
 
 	for i := 1; i < len(nums); i++ {
 		x, y := nums[i-1], nums[i]
@@ -119,12 +117,8 @@ func maxEqualAdjacentPairs(nums []int) int {
 			}
 			// 统计相邻且不相等的数对个数
 			cnt[pair{x, y}]++
+			maxCnt = max(maxCnt, cnt[pair{x, y}])
 		}
-	}
-
-	maxCnt := 0
-	for _, c := range cnt {
-		maxCnt = max(maxCnt, c)
 	}
 
 	return base + maxCnt
