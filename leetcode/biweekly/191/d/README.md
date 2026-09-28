@@ -291,7 +291,7 @@ func distantSubarrays(nums []int, goal, k int) int64 {
 
 ## 有序集合做法
 
-```py
+```py [sol-Python3]
 class Solution:
     def distantSubarrays(self, nums: list[int], goal: int, k: int) -> int:
         n = len(nums)
@@ -306,6 +306,38 @@ class Solution:
             ans -= max(r - l, 0)
             sl.add(v)
         return ans
+```
+
+```cpp [sol-C++]
+#include <ext/pb_ds/assoc_container.hpp>
+
+using namespace __gnu_pbds;
+// 使用 pair<key, index> 支持重复 key
+using ordered_set = tree<pair<long long, int>, null_type, less<>, rb_tree_tag, tree_order_statistics_node_update>;
+
+class Solution {
+public:
+    long long distantSubarrays(vector<int>& nums, int goal, int k) {
+        int n = nums.size();
+        long long ans = 1LL * n * (n + 1) / 2;
+        long long sum = 0;
+        int idx = 0; // 插入时自增，用来保证 st 中的元素互不相同
+        ordered_set st;
+        st.insert({0, ++idx});
+
+        for (int x : nums) {
+            sum += x;
+            // 统计满足 sum-goal-k < x < sum-goal+k 的前缀和的个数
+            // st.order_of_key(key) 计算 st 中的严格小于 key 的元素个数
+            int l = st.order_of_key({sum - goal - k + 1, 0});
+            int r = st.order_of_key({sum - goal + k, 0});
+            ans -= max(r - l, 0);
+            st.insert({sum, ++idx});
+        }
+
+        return ans;
+    }
+};
 ```
 
 ## 其他做法
