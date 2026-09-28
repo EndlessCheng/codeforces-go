@@ -18,6 +18,8 @@
 
 [本题视频讲解](https://www.bilibili.com/video/BV12gah6UE9b/?t=11m35s)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def maxSubarray(self, nums: list[int]) -> int:
@@ -159,6 +161,164 @@ func maxSubarray(nums []int) (ans int) {
 		for _, y := range nums[left:i] {
 			cntS[x+y]++
 			cntD[abs(x-y)]++
+		}
+
+		// 用子数组 [left, i] 的长度更新答案的最大值
+		ans = max(ans, i-left+1)
+	}
+
+	return
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+```
+
+## 写法二
+
+定义 $\textit{cnt}[x] = \textit{cntS}[x] + \textit{cntD}[x]$，把两个数组合并。
+
+```py [sol-Python3]
+class Solution:
+    def maxSubarray(self, nums: list[int]) -> int:
+        mx = max(nums)
+        cnt = [0] * (mx * 2 + 1)
+        ans = left = 0
+
+        # 枚举有效子数组的右端点为 i，那么左端点 left 最小是多少？
+        for i, x in enumerate(nums):
+            # x 进入窗口前，先判断：
+            # 如果窗口中有两数之和等于 x，或者两数之差等于 x，那么必须缩小窗口
+            while cnt[x] > 0:
+                y = nums[left]
+                left += 1
+                for z in nums[left: i]:
+                    cnt[y + z] -= 1
+                    cnt[abs(y - z)] -= 1
+
+            # x 进入窗口
+            for y in nums[left: i]:
+                cnt[x + y] += 1
+                cnt[abs(x - y)] += 1
+
+            # 用子数组 [left, i] 的长度更新答案的最大值
+            ans = max(ans, i - left + 1)
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxSubarray(int[] nums) {
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        int[] cnt = new int[mx * 2 + 1];
+        int left = 0;
+        int ans = 0;
+
+        // 枚举有效子数组的右端点为 i，那么左端点 left 最小是多少？
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+
+            // x 进入窗口前，先判断：
+            // 如果窗口中有两数之和等于 x，或者两数之差等于 x，那么必须缩小窗口
+            while (cnt[x] > 0) {
+                int y = nums[left];
+                left++;
+                for (int j = left; j < i; j++) {
+                    int z = nums[j];
+                    cnt[y + z]--;
+                    cnt[Math.abs(y - z)]--;
+                }
+            }
+
+            // x 进入窗口
+            for (int j = left; j < i; j++) {
+                int y = nums[j];
+                cnt[x + y]++;
+                cnt[Math.abs(x - y)]++;
+            }
+
+            // 用子数组 [left, i] 的长度更新答案的最大值
+            ans = Math.max(ans, i - left + 1);
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxSubarray(vector<int>& nums) {
+        int mx = ranges::max(nums);
+        vector<int> cnt(mx * 2 + 1);
+        int left = 0;
+        int ans = 0;
+
+        // 枚举有效子数组的右端点为 i，那么左端点 left 最小是多少？
+        for (int i = 0; i < nums.size(); i++) {
+            int x = nums[i];
+
+            // x 进入窗口前，先判断：
+            // 如果窗口中有两数之和等于 x，或者两数之差等于 x，那么必须缩小窗口
+            while (cnt[x] > 0) {
+                int y = nums[left];
+                left++;
+                for (int j = left; j < i; j++) {
+                    int z = nums[j];
+                    cnt[y + z]--;
+                    cnt[abs(y - z)]--;
+                }
+            }
+
+            // x 进入窗口
+            for (int j = left; j < i; j++) {
+                int y = nums[j];
+                cnt[x + y]++;
+                cnt[abs(x - y)]++;
+            }
+
+            // 用子数组 [left, i] 的长度更新答案的最大值
+            ans = max(ans, i - left + 1);
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxSubarray(nums []int) (ans int) {
+	mx := slices.Max(nums)
+	cnt := make([]int, mx*2+1)
+	left := 0
+
+	// 枚举有效子数组的右端点为 i，那么左端点 left 最小是多少？
+	for i, x := range nums {
+		// x 进入窗口前，先判断：
+		// 如果窗口中有两数之和等于 x，或者两数之差等于 x，那么必须缩小窗口
+		for cnt[x] > 0 {
+			y := nums[left]
+			left++
+			for _, z := range nums[left:i] {
+				cnt[y+z]--
+				cnt[abs(y-z)]--
+			}
+		}
+
+		// 元素 x 进入窗口
+		for _, y := range nums[left:i] {
+			cnt[x+y]++
+			cnt[abs(x-y)]++
 		}
 
 		// 用子数组 [left, i] 的长度更新答案的最大值
