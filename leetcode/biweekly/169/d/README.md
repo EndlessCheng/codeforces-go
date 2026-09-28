@@ -45,17 +45,16 @@ class Solution {
 public:
     long long countMajoritySubarrays(vector<int>& nums, int target) {
         int idx = 0; // 插入时自增，用来保证 st 中的元素互不相同
-        ordered_set* st = new ordered_set();
-        st->insert({0, ++idx});
+        ordered_set st;
+        st.insert({0, ++idx});
         long long ans = 0;
         int s = 0;
         for (int x : nums) {
             s += x == target ? 1 : -1;
-            // order_of_key(key) 计算 st 中的严格小于 key 的元素个数
-            ans += st->order_of_key({s, 0});
-            st->insert({s, ++idx});
+            // st.order_of_key(key) 计算 st 中的严格小于 key 的元素个数
+            ans += st.order_of_key({s, 0});
+            st.insert({s, ++idx});
         }
-        delete st;
         return ans;
     }
 };
@@ -474,7 +473,7 @@ func countMajoritySubarrays(nums []int, target int) (ans int64) {
 
 改成计算**存在**绝对众数（出现次数严格大于子数组长度的一半）的子数组个数。
 
-欢迎在评论区分享你的思路/代码。
+相似题目：[CF2117H. Incessant Rain](https://codeforces.com/problemset/problem/2117/H)。
 
 ## 专题训练
 
