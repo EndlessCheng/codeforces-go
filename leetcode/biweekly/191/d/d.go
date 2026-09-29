@@ -41,7 +41,7 @@ func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
-func distantSubarrays1(nums []int, goal, k int) int64 {
+func distantSubarrays(nums []int, goal, k int) int64 {
 	n := len(nums)
 	sum := make([]int, n+1)
 	for i, x := range nums {
@@ -62,15 +62,4 @@ func distantSubarrays1(nums []int, goal, k int) int64 {
 		t.update(sort.SearchInts(sorted, s)+1, 1)
 	}
 	return int64(ans)
-}
-
-func distantSubarrays(nums []int, goal, k int) int64 {
-	n := len(nums)
-	sum := make([]int, n+1)
-	for i, x := range nums {
-		sum[i+1] = sum[i] + x
-	}
-
-	
-	
 }
