@@ -21,14 +21,13 @@ func cf2022E2(in io.Reader, _w io.Writer) {
 		}
 		return res
 	}
+	const mul = 1 << 30 % mod
+	inv := pow(mul, mod-2)
 
 	var T, n, m, k, q int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m, &k, &q)
-		mul := (1 << 30) % mod
-		inv := pow(mul, mod-2)
 		ans := pow(mul, n+m-1)
-
 		if k == 0 {
 			Fprintln(out, ans)
 		}
