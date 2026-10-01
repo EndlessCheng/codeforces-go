@@ -217,8 +217,10 @@ func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res 
 			if q.k < 0 { // 修改
 				i, v := q.l, q.r
 				if v <= midVal {
-					// （可选）对于开区间写法，恰好等于 midVal 的数据后面用不到，无需保存
-					b = append(b, qid)
+					if v < midVal {
+						// 优化：对于开区间写法，恰好等于 midVal 的数据后面用不到，无需保存
+						b = append(b, qid)
+					}
 					t.update(i, q.k+2)
 				} else {
 					c = append(c, qid)
