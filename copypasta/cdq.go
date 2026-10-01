@@ -18,6 +18,7 @@ https://www.luogu.com.cn/problem/P4169 拆开绝对值，四种情况分别计�
 https://www.luogu.com.cn/problem/P3364 CDQ 优化 DP
 - https://www.luogu.com.cn/problem/P4093 同 P3364
 https://www.luogu.com.cn/problem/P2487 CDQ 优化 DP
+https://www.luogu.com.cn/problem/P4690
 https://codeforces.com/problemset/problem/762/E  2200 做到复杂度与 k 无关
 https://codeforces.com/problemset/problem/1045/G 2200 同 CF762E
 https://codeforces.com/problemset/problem/1093/E 2400
@@ -132,8 +133,8 @@ https://codeforces.com/blog/entry/45578
 https://www.luogu.com.cn/problem/P3834 静态
 - https://www.luogu.com.cn/problem/P1527 二维版本
 https://www.luogu.com.cn/problem/P3527 静态
-https://www.luogu.com.cn/problem/P2617 动态
-- https://www.luogu.com.cn/problem/P3332 差分树状数组
+https://www.luogu.com.cn/problem/P2617 动态 第 k 小
+- https://www.luogu.com.cn/problem/P3332 第 k 大
 https://www.luogu.com.cn/problem/P7560
 https://www.luogu.com.cn/problem/P3250 树
 https://codeforces.com/problemset/problem/868/F 2500 整体二分优化 DP
@@ -141,6 +142,7 @@ https://codeforces.com/problemset/problem/1386/C 2800
 https://codeforces.com/problemset/problem/603/E 3000
 https://codeforces.com/problemset/problem/1920/F2 3000
 https://codeforces.com/problemset/problem/1989/F 3000
+https://codeforces.com/gym/105161/problem/E 2024 江苏省赛（银牌题） 第 k 大
 https://atcoder.jp/contests/abc233/tasks/abc233_h 曼哈顿距离第 k 小
 https://atcoder.jp/contests/agc002/tasks/agc002_d
 https://atcoder.jp/contests/abc394/tasks/abc394_g
@@ -215,6 +217,7 @@ func parallelBinarySearch(nums []int, queries []struct{ tp, l, r, k int }) (res 
 			if q.k < 0 { // 修改
 				i, v := q.l, q.r
 				if v <= midVal {
+					// （可选）对于开区间写法，恰好等于 midVal 的数据后面用不到，无需保存
 					b = append(b, qid)
 					t.update(i, q.k+2)
 				} else {
