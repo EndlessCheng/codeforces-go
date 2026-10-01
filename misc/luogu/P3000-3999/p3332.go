@@ -85,7 +85,9 @@ func p3332(in io.Reader, _w io.Writer) {
 				if q.k < mid {
 					b = append(b, i)
 				} else {
-					c = append(c, i)
+					if q.k > mid { // 等于 mid 的数据后面用不到，无需保存
+						c = append(c, i)
+					}
 					t.add(-q.l, q.r, 1)
 				}
 			} else {
