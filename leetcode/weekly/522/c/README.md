@@ -2,7 +2,7 @@
 
 在 1186 的基础上，只需增加一个布尔参数 $\textit{rev}$，表示是否要把当前数 $\textit{nums}[i]$ 取反。每选一个数，就把 $\textit{rev}$ 取反。一开始 $\textit{rev} = \texttt{false}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1FiHj6uESs/?t=9m8s)，欢迎点赞关注~
 
 ## 写法一：记忆化搜索
 
@@ -179,10 +179,10 @@ class Solution {
 class Solution {
 public:
     long long maxAlternatingSum(vector<int>& nums) {
-        constexpr long long neg_inf = LLONG_MIN / 2;
+        constexpr long long NEG_INF = LLONG_MIN / 2;
         int n = nums.size();
-        vector<array<array<long long, 2>, 2>> f(n + 1, {{{neg_inf, neg_inf}, {neg_inf, neg_inf}}});
-        long long ans = neg_inf;
+        vector<array<array<long long, 2>, 2>> f(n + 1, {{{NEG_INF, NEG_INF}, {NEG_INF, NEG_INF}}});
+        long long ans = NEG_INF;
 
         for (int i = n - 1; i >= 0; i--) {
             int x = nums[i];
@@ -233,9 +233,9 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long maxAlternatingSum(int[] nums) {
-        long negInf = Long.MIN_VALUE / 2;
-        long f00 = negInf, f01 = negInf, f10 = negInf, f11 = negInf;
-        long ans = negInf;
+        final long NEG_INF = Long.MIN_VALUE / 2;
+        long f00 = NEG_INF, f01 = NEG_INF, f10 = NEG_INF, f11 = NEG_INF;
+        long ans = NEG_INF;
         for (int i = nums.length - 1; i >= 0; i--) {
             int x = nums[i];
             long newF10 = Math.max(f11 + x, f00);
@@ -259,9 +259,9 @@ class Solution {
 class Solution {
 public:
     long long maxAlternatingSum(vector<int>& nums) {
-        constexpr long long neg_inf = LLONG_MIN / 2;
-        long long f00 = neg_inf, f01 = neg_inf, f10 = neg_inf, f11 = neg_inf;
-        long long ans = neg_inf;
+        constexpr long long NEG_INF = LLONG_MIN / 2;
+        long long f00 = NEG_INF, f01 = NEG_INF, f10 = NEG_INF, f11 = NEG_INF;
+        long long ans = NEG_INF;
         for (int i = nums.size() - 1; i >= 0; i--) {
             int x = nums[i];
             tie(f10, f11) = pair(max(f11 + x, f00), max(f10 - x, f01));

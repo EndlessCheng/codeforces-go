@@ -31,7 +31,7 @@ $$
 
 代码实现时，注意取模。为什么可以在**中途取模**？原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1FiHj6uESs/?t=22m45s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MOD = 1_000_000_007

@@ -1,3 +1,5 @@
+## 方法一：前后缀分解
+
 枚举 $k=0,1,2,\ldots,n-1$，总旋转次数是如下三部分之和：
 
 - $s[0]$ 开始拨号，一直拨到 $s[k-1]$ 的最少总旋转次数。记作 $\textit{pre}[k-1]$。
@@ -19,11 +21,11 @@ $$
 \min(d, 10-d)
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1FiHj6uESs/?t=3m31s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 # 指针从数字 x 旋转到数字 y 的最少旋转次数
-def rotate(x: int, y: int) -> int:
+def dis(x: int, y: int) -> int:
     d = abs(x - y)
     return min(d, 10 - d)
 
@@ -33,15 +35,15 @@ class Solution:
 
         suf = 0
         for x, y in pairwise(s):
-            suf += rotate(x, y)
+            suf += dis(x, y)
 
-        ans = rotate(ord('0'), s[-1]) + suf  # k=0 的情况
+        ans = dis(ord('0'), s[-1]) + suf  # k=0 的情况
 
-        pre = rotate(ord('0'), s[0])
+        pre = dis(ord('0'), s[0])
         for x, y in pairwise(s):
-            op = rotate(x, y)
+            op = dis(x, y)
             suf -= op  # 撤销
-            ans = min(ans, pre + rotate(x, s[-1]) + suf)
+            ans = min(ans, pre + dis(x, s[-1]) + suf)
             pre += op
         return ans
 ```
@@ -53,23 +55,23 @@ class Solution {
 
         int suf = 0;
         for (int i = 1; i < n; i++) {
-            suf += rotate(s[i], s[i - 1]);
+            suf += dis(s[i - 1], s[i]);
         }
 
-        int ans = rotate('0', s[n - 1]) + suf; // k=0 的情况
+        int ans = dis('0', s[n - 1]) + suf; // k=0 的情况
 
-        int pre = rotate('0', s[0]);
+        int pre = dis('0', s[0]);
         for (int k = 1; k < n; k++) {
-            int op = rotate(s[k], s[k - 1]);
+            int op = dis(s[k - 1], s[k]);
             suf -= op; // 撤销
-            ans = Math.min(ans, pre + rotate(s[k - 1], s[n - 1]) + suf);
+            ans = Math.min(ans, pre + dis(s[k - 1], s[n - 1]) + suf);
             pre += op;
         }
         return ans;
     }
 
     // 指针从数字 x 旋转到数字 y 的最少旋转次数
-    private int rotate(char x, char y) {
+    private int dis(char x, char y) {
         int d = Math.abs(x - y);
         return Math.min(d, 10 - d);
     }
@@ -79,7 +81,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     // 指针从数字 x 旋转到数字 y 的最少旋转次数
-    int rotate(char x, char y) {
+    int dis(char x, char y) {
         int d = abs(x - y);
         return min(d, 10 - d);
     }
@@ -88,16 +90,16 @@ public:
     int minRotations(int n, string s) {
         int suf = 0;
         for (int i = 1; i < n; i++) {
-            suf += rotate(s[i], s[i - 1]);
+            suf += dis(s[i - 1], s[i]);
         }
 
-        int ans = rotate('0', s[n - 1]) + suf; // k=0 的情况
+        int ans = dis('0', s[n - 1]) + suf; // k=0 的情况
 
-        int pre = rotate('0', s[0]);
+        int pre = dis('0', s[0]);
         for (int k = 1; k < n; k++) {
-            int op = rotate(s[k], s[k - 1]);
+            int op = dis(s[k - 1], s[k]);
             suf -= op; // 撤销
-            ans = min(ans, pre + rotate(s[k - 1], s[n - 1]) + suf);
+            ans = min(ans, pre + dis(s[k - 1], s[n - 1]) + suf);
             pre += op;
         }
         return ans;
@@ -107,7 +109,7 @@ public:
 
 ```go [sol-Go]
 // 指针从数字 x 旋转到数字 y 的最少旋转次数
-func rotate(x, y byte) int {
+func dis(x, y byte) int {
 	d := abs(int(x) - int(y))
 	return min(d, 10-d)
 }
@@ -115,19 +117,126 @@ func rotate(x, y byte) int {
 func minRotations(n int, s string) int {
 	suf := 0
 	for i := 1; i < n; i++ {
-		suf += rotate(s[i], s[i-1])
+		suf += dis(s[i-1], s[i])
 	}
 
-	ans := rotate('0', s[n-1]) + suf // k=0 的情况
+	ans := dis('0', s[n-1]) + suf // k=0 的情况
 
-	pre := rotate('0', s[0])
+	pre := dis('0', s[0])
 	for k := 1; k < n; k++ {
-		op := rotate(s[k], s[k-1])
+		op := dis(s[k-1], s[k])
 		suf -= op // 撤销
-		ans = min(ans, pre+rotate(s[k-1], s[n-1])+suf)
+		ans = min(ans, pre+dis(s[k-1], s[n-1])+suf)
 		pre += op
 	}
 	return ans
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：计算增量
+
+设 $\textit{base}$ 为不操作时的最少总旋转次数。
+
+反转后缀 $[k,n-1]$ 后，只有 $s[k-1]$ 到 $s[k]$ 发生了变化：
+
+- 减去从 $s[k-1]$ 到 $s[k]$ 的旋转次数。
+- 加上从 $s[k-1]$ 到 $s[n-1]$ 的旋转次数。
+
+计算这个增量的最小值，加上 $\textit{base}$，即为答案。
+
+```py [sol-Python3]
+# 指针从数字 x 旋转到数字 y 的最少旋转次数
+def dis(x: int, y: int) -> int:
+    d = abs(x - y)
+    return min(d, 10 - d)
+
+class Solution:
+    def minRotations(self, n: int, s: str) -> int:
+        s = "0" + s
+        base = mn = 0
+        end = ord(s[-1])
+        for x, y in pairwise(map(ord, s)):
+            op = dis(x, y)
+            base += op
+            mn = min(mn, dis(x, end) - op)
+        return base + mn
+```
+
+```java [sol-Java]
+class Solution {
+    public int minRotations(int n, String S) {
+        char[] s = S.toCharArray();
+        int op0 = dis('0', s[0]);
+        int base = op0;
+        int mn = Math.min(dis('0', s[n - 1]) - op0, 0); // k=0 时的增量（但不能超过 0）
+        for (int k = 1; k < n; k++) {
+            int op = dis(s[k - 1], s[k]);
+            base += op;
+            mn = Math.min(mn, dis(s[k - 1], s[n - 1]) - op);
+        }
+        return base + mn;
+    }
+
+    // 指针从数字 x 旋转到数字 y 的最少旋转次数
+    private int dis(char x, char y) {
+        int d = Math.abs(x - y);
+        return Math.min(d, 10 - d);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 指针从数字 x 旋转到数字 y 的最少旋转次数
+    int dis(char x, char y) {
+        int d = abs(x - y);
+        return min(d, 10 - d);
+    }
+
+public:
+    int minRotations(int n, string s) {
+        int op0 = dis('0', s[0]);
+        int base = op0;
+        int mn = min(dis('0', s[n - 1]) - op0, 0); // k=0 时的增量（但不能超过 0）
+        for (int k = 1; k < n; k++) {
+            int op = dis(s[k - 1], s[k]);
+            base += op;
+            mn = min(mn, dis(s[k - 1], s[n - 1]) - op);
+        }
+        return base + mn;
+    }
+};
+```
+
+```go [sol-Go]
+// 指针从数字 x 旋转到数字 y 的最少旋转次数
+func dis(x, y byte) int {
+	d := abs(int(x) - int(y))
+	return min(d, 10-d)
+}
+
+func minRotations(n int, s string) int {
+	op0 := dis('0', s[0])
+	base := op0
+	mn := min(dis('0', s[n-1])-op0, 0) // k=0 时的增量（但不能超过 0）
+	for k := 1; k < n; k++ {
+		op := dis(s[k-1], s[k])
+		base += op
+		mn = min(mn, dis(s[k-1], s[n-1])-op)
+	}
+	return base + mn
 }
 
 func abs(x int) int {
