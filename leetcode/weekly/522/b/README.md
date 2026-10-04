@@ -174,17 +174,38 @@ class Solution:
         return base + mn
 ```
 
+```py [sol-Python3 写法二]
+# 指针从数字 x 旋转到数字 y 的最少旋转次数
+def dis(x: int, y: int) -> int:
+    d = abs(x - y)
+    return min(d, 10 - d)
+
+class Solution:
+    def minRotations(self, n: int, s: str) -> int:
+        base = mn = 0
+        end = ord(s[-1])
+        pre = ord('0')
+        for ch in s:
+            cur = ord(ch)
+            op = dis(pre, cur)
+            base += op
+            mn = min(mn, dis(pre, end) - op)
+            pre = cur
+        return base + mn
+```
+
 ```java [sol-Java]
 class Solution {
-    public int minRotations(int n, String S) {
-        char[] s = S.toCharArray();
-        int op0 = dis('0', s[0]);
-        int base = op0;
-        int mn = Math.min(dis('0', s[n - 1]) - op0, 0); // k=0 时的增量（但不能超过 0）
-        for (int k = 1; k < n; k++) {
-            int op = dis(s[k - 1], s[k]);
+    public int minRotations(int n, String s) {
+        int base = 0;
+        int mn = 0;
+        char pre = '0';
+        char end = s.charAt(n - 1);
+        for (char cur : s.toCharArray()) {
+            int op = dis(pre, cur);
             base += op;
-            mn = Math.min(mn, dis(s[k - 1], s[n - 1]) - op);
+            mn = Math.min(mn, dis(pre, end) - op);
+            pre = cur;
         }
         return base + mn;
     }
@@ -207,13 +228,13 @@ class Solution {
 
 public:
     int minRotations(int n, string s) {
-        int op0 = dis('0', s[0]);
-        int base = op0;
-        int mn = min(dis('0', s[n - 1]) - op0, 0); // k=0 时的增量（但不能超过 0）
-        for (int k = 1; k < n; k++) {
-            int op = dis(s[k - 1], s[k]);
+        int base = 0, mn = 0;
+        char pre = '0';
+        for (char cur : s) {
+            int op = dis(pre, cur);
             base += op;
-            mn = min(mn, dis(s[k - 1], s[n - 1]) - op);
+            mn = min(mn, dis(pre, s[n - 1]) - op);
+            pre = cur;
         }
         return base + mn;
     }
@@ -228,13 +249,13 @@ func dis(x, y byte) int {
 }
 
 func minRotations(n int, s string) int {
-	op0 := dis('0', s[0])
-	base := op0
-	mn := min(dis('0', s[n-1])-op0, 0) // k=0 时的增量（但不能超过 0）
-	for k := 1; k < n; k++ {
-		op := dis(s[k-1], s[k])
+	base, mn := 0, 0
+	pre := byte('0')
+	for _, cur := range s {
+		op := dis(pre, byte(cur))
 		base += op
-		mn = min(mn, dis(s[k-1], s[n-1])-op)
+		mn = min(mn, dis(pre, s[n-1])-op)
+		pre = byte(cur)
 	}
 	return base + mn
 }
