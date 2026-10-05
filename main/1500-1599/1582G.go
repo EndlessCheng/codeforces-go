@@ -3,6 +3,7 @@ package main
 import (
 	. "fmt"
 	"io"
+	"slices"
 )
 
 // https://github.com/EndlessCheng
@@ -10,67 +11,74 @@ func cf1582G(in io.Reader, out io.Writer) {
 	var n int
 	var s string
 	Fscan(in, &n)
-	a := make([]int, n+1)
-	mx := 0
-	for i := 1; i <= n; i++ {
+	a := make([]int, n)
+	for i := range a {
 		Fscan(in, &a[i])
-		mx = max(mx, a[i])
 	}
+	mx := slices.Max(a)
 	Fscan(in, &s)
-	s = " " + s
-
-	lpf := make([]int, mx+1)
-	primes := make([]int, mx+1)
-	pn := 0
-
+	b := make([]int, n)
+	e := make([]int, n)
+	pd := make([][]int, mx+1)
+	v := make([][]int, mx+1)
 	for i := 2; i <= mx; i++ {
-		if lpf[i] == 0 {
-			pn++
-			primes[pn] = i
-			lpf[i] = i
+		if len(pd[i]) == 0 {
+			for j := 1; j*i <= mx; j++ {
+				k := i * j
+				for k%i == 0 {
+					pd[i*j] = append(pd[i*j], i)
+					k /= i
+				}
+			}
 		}
-		for j := 1; j <= pn && i*primes[j] <= mx; j++ {
-			lpf[i*primes[j]] = primes[j]
-			if i%primes[j] == 0 {
+	}
+
+	for i := range n {
+		if s[i] == '*' {
+			b[i] = 1
+		}
+		if a[i] == 1 {
+			b[i] = 1
+		}
+	}
+
+	ans := 0
+	for i := n - 1; i >= 0; i-- {
+		if b[i] == 0 {
+			e[i] = i
+			for _, x := range pd[a[i]] {
+				v[x] = append(v[x], i)
+			}
+			continue
+		}
+
+		for _, x := range pd[a[i]] {
+			if len(v[x]) > 0 {
+				t := v[x][len(v[x])-1]
+				v[x] = v[x][:len(v[x])-1]
+				a[t] /= x
+			}
+		}
+
+		s1 := i + 1
+		for s1 < n {
+			if e[s1] == n {
+				s1 = n
+				break
+			}
+			if a[e[s1]] == 1 {
+				s1 = e[s1] + 1
+			} else {
 				break
 			}
 		}
-	}
 
-	pr := make([]int, n+1)
-	st := make([]int, n+1)
-	w := make([]int, n+1)
-	ve := make([][]int, mx+1)
-
-	ans := 0
-	for i := 1; i <= n; i++ {
-		pr[i] = i
-		for j := a[i]; j > 1; j /= lpf[j] {
-			p := lpf[j]
-			if s[i] == '*' {
-				ve[p] = append(ve[p], i)
-			} else if len(ve[p]) == 0 {
-				pr[i] = 0
-			} else {
-				pr[i] = min(pr[i], ve[p][len(ve[p])-1])
-				ve[p] = ve[p][:len(ve[p])-1]
-			}
+		if s1 == n {
+			e[i] = n
+		} else {
+			e[i] = e[s1]
 		}
-	}
-
-	t := 0
-	for i := n; i >= 1; i-- {
-		v := 1
-		for t > 0 && pr[i] <= pr[st[t]] {
-			v += w[t]
-			t--
-		}
-		t++
-		st[t] = i
-		w[t] = v
-		if pr[i] == i {
-			ans += v
-		}
+		ans += e[i] - i
 	}
 	Fprint(out, ans)
 }
