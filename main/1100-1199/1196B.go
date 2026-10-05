@@ -24,10 +24,10 @@ func cf1196B(in io.Reader, _w io.Writer) {
 			Fprintln(out, "NO")
 		} else {
 			Fprintln(out, "YES")
-			for _, i := range odds[:k] {
+			for _, i := range odds[:k-1] {
 				Fprint(out, i+1, " ")
 			}
-			Fprintln(out)
+			Fprintln(out, n)
 		}
 	}
 }
