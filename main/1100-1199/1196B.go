@@ -20,7 +20,7 @@ func cf1196B(in io.Reader, _w io.Writer) {
 				odds = append(odds, i)
 			}
 		}
-		if len(odds)&1 != k&1 {
+		if len(odds) < k || len(odds)&1 != k&1 {
 			Fprintln(out, "NO")
 		} else {
 			Fprintln(out, "YES")
