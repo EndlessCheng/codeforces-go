@@ -6,14 +6,15 @@ const mod = 1_000_000_007
 func waysToBuildRooms(prevRoom []int) int {
 	n := len(prevRoom)
 	g := make([][]int, n)
-	fac := 1
+	fac := 1 // 分子
 	for i := 1; i < n; i++ {
 		p := prevRoom[i]
 		g[p] = append(g[p], i)
 		fac = fac * (i + 1) % mod
 	}
 
-	mul := 1
+	mul := 1 // 分母
+
 	var dfs func(int) int
 	dfs = func(x int) int {
 		size := 1
@@ -23,8 +24,8 @@ func waysToBuildRooms(prevRoom []int) int {
 		mul = mul * size % mod
 		return size
 	}
-	dfs(0)
 
+	dfs(0)
 	return fac * pow(mul, mod-2) % mod
 }
 
