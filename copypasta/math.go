@@ -27,6 +27,9 @@ ax > b  =>  x > ⌊b/a⌋       ax ≥ b  =>  x ≥ ⌈b/a⌉
 ⌊log2(x)⌋ = bits.Len(floor(x)) - 1
 ⌈log2(x)⌉ = bits.Len(ceil(x)-1)
 
+推论
+把 x 减半成 >= low 的最小整数 x >> (bits.Len(uint(x/low)) - 1)
+
 x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i     相当于 x<<i ≤ s-1
 x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i     相当于 x<<i > s-1
 
@@ -2430,6 +2433,7 @@ func _(abs func(int) int) {
 	// a^b ≡ a^(b mod φ(m) + φ(m)) (mod m), gcd(a,m)!=1 且 b>φ(m)
 	//
 	// https://www.luogu.com.cn/problem/P5091 模板题
+	// https://www.luogu.com.cn/problem/P10414
 	// https://codeforces.com/problemset/problem/615/D 2000 例题
 	// https://codeforces.com/problemset/problem/17/D 2400
 	// https://codeforces.com/problemset/problem/906/D 2700
@@ -2857,7 +2861,7 @@ func _(abs func(int) int) {
 		t := int(math.Sqrt(float64(p))) + 1
 		mp := map[int]int{}
 		for j, x := 0, b; j < t; j++ {
-			mp[b] = j
+			mp[x] = j
 			x = x * a % p
 		}
 		a = powM(a, t, p)
