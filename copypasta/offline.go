@@ -13,5 +13,6 @@ https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/
 [SDOI2009] HH 的项链 https://www.luogu.com.cn/problem/P1972
 https://codeforces.com/problemset/problem/1906/F 2200
 https://codeforces.com/problemset/problem/1028/H 2900 思路类似 HH 的项链，但更加复杂
+https://www.luogu.com.cn/problem/P5677
 
 */
