@@ -37,20 +37,20 @@ class Solution:
             size = 1
             for y in g[x]:
                 size += dfs(y)
-            nonlocal mul
-            mul = mul * size % MOD
+            nonlocal prod
+            prod = prod * size % MOD
             return size
 
-        mul = 1  # 分母
+        prod = 1  # 分母
         dfs(0)
-        return fac * pow(mul, -1, MOD) % MOD
+        return fac * pow(prod, -1, MOD) % MOD
 ```
 
 ```java [sol-Java]
 class Solution {
     private static final int MOD = 1_000_000_007;
 
-    private long mul = 1; // 分母
+    private long prod = 1; // 分母
 
     public int waysToBuildRooms(int[] prevRoom) {
         int n = prevRoom.length;
@@ -62,7 +62,7 @@ class Solution {
             g[prevRoom[i]].add(i);
         }
         dfs(0, g);
-        return (int) (fac * pow(mul, MOD - 2) % MOD);
+        return (int) (fac * pow(prod, MOD - 2) % MOD);
     }
 
     private int dfs(int x, List<Integer>[] g) {
@@ -70,7 +70,7 @@ class Solution {
         for (int y : g[x]) {
             size += dfs(y, g);
         }
-        mul = mul * size % MOD;
+        prod = prod * size % MOD;
         return size;
     }
 
@@ -112,19 +112,19 @@ public:
             g[prevRoom[i]].push_back(i);
         }
 
-        long long mul = 1; // 分母
+        long long prod = 1; // 分母
 
         auto dfs = [&](this auto&& dfs, int x) -> int {
             int size = 1;
             for (int y : g[x]) {
                 size += dfs(y);
             }
-            mul = mul * size % MOD;
+            prod = prod * size % MOD;
             return size;
         };
 
         dfs(0);
-        return fac * qpow(mul, MOD - 2) % MOD;
+        return fac * qpow(prod, MOD - 2) % MOD;
     }
 };
 ```
@@ -142,7 +142,7 @@ func waysToBuildRooms(prevRoom []int) int {
 		fac = fac * (i + 1) % mod
 	}
 
-	mul := 1 // 分母
+	prod := 1 // 分母
 
 	var dfs func(int) int
 	dfs = func(x int) int {
@@ -150,12 +150,12 @@ func waysToBuildRooms(prevRoom []int) int {
 		for _, y := range g[x] {
 			size += dfs(y)
 		}
-		mul = mul * size % mod
+		prod = prod * size % mod
 		return size
 	}
 
 	dfs(0)
-	return fac * pow(mul, mod-2) % mod
+	return fac * pow(prod, mod-2) % mod
 }
 
 func pow(x, n int) int {
