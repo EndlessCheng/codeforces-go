@@ -1430,6 +1430,7 @@ func _(abs func(int) int) {
 		f := make([]int, maxW+1)
 		for i, w := range weights {
 			v := values[i]
+			// 注：如果用前 i 个物品的重量之和优化，求的是恰好装满，f 不是升序，可以在循环结束后求一遍前缀最大值
 			for j := maxW; j >= w; j-- {
 				f[j] = max(f[j], f[j-w]+v)
 			}
