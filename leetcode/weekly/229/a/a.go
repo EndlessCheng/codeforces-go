@@ -1,17 +1,16 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func mergeAlternately(x, y string) (ans string) {
-	s := make([]byte, 0, len(x)+len(y))
-	for x != "" || y != "" {
-		if x != "" {
-			s = append(s, x[0])
-			x = x[1:]
+func mergeAlternately(word1, word2 string) string {
+	n, m := len(word1), len(word2)
+	ans := make([]byte, 0, n+m) // 预分配空间
+	for i := range max(n, m) {
+		if i < n {
+			ans = append(ans, word1[i])
 		}
-		if y != "" {
-			s = append(s, y[0])
-			y = y[1:]
+		if i < m {
+			ans = append(ans, word2[i])
 		}
 	}
-	return string(s)
+	return string(ans)
 }
