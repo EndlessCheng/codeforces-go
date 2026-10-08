@@ -241,6 +241,7 @@ LC1388 https://leetcode.cn/problems/pizza-with-3n-slices/
 LC903 DI 序列的有效排列 https://leetcode.cn/problems/valid-permutations-for-di-sequence/
 LC2638 https://leetcode.cn/problems/count-the-number-of-k-free-subsets/
 https://www.luogu.com.cn/problem/P9688?contestId=133572
+https://www.luogu.com.cn/problem/P3188
 《挑战》pp.62-64 多重部分和问题
 
 如何消除后效性（通过巧妙地设计状态/发现性质）
@@ -1415,6 +1416,7 @@ func _(abs func(int) int) {
 	// https://atcoder.jp/contests/agc020/tasks/agc020_c 所有非空子集和的中位数
 	// https://atcoder.jp/contests/dp/tasks/dp_x 邻项交换法
 	// https://www.luogu.com.cn/problem/P1064 NOIP06·提高 金明的预算方案（也可以用树上背包做）
+	// https://www.luogu.com.cn/problem/P3188 超大容量，但物品体积按照二进制尾零个数分组
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode.cn/problems/partition-equal-subset-sum/
 	//        必须定义成恰好装满（紫书例题 9-5，UVa 12563）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=441&page=show_problem&problem=4008
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C 1900
@@ -1428,7 +1430,6 @@ func _(abs func(int) int) {
 		f := make([]int, maxW+1)
 		for i, w := range weights {
 			v := values[i]
-			// 这里 j 的初始值可以优化成前 i 个物品的重量之和（但不能超过 maxW）
 			for j := maxW; j >= w; j-- {
 				f[j] = max(f[j], f[j-w]+v)
 			}
@@ -1447,6 +1448,7 @@ func _(abs func(int) int) {
 		f[0] = 0
 		for i, w := range weights {
 			v := values[i]
+			// 这里 j 的初始值可以优化成前 i 个物品的重量之和（但不能超过 maxW）
 			for j := maxW; j >= w; j-- {
 				f[j] = max(f[j], f[j-w]+v)
 			}
