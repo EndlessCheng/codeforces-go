@@ -18,7 +18,7 @@ var rawDir = [...]struct {
 	{point{-1, 0, 0}, "上", "w"},
 	{point{1, 0, 0}, "下", "s"},
 
-	{point{0, 0, -1}, "落", "n"}, // down
+	{point{0, 0, -1}, "落", "n"}, // down  门的默认方向
 	{point{0, 0, 1}, "升", "u"},  // up
 }
 
@@ -44,7 +44,13 @@ func makeMirrorDir(s string) uint8 {
 // 1 -> '\'
 var mirrorReflectDragonMapping [2][4]uint8
 
-func init() {
+func init() { // mirrorReflectDragonMapping
+	for _, s := range rawDir[:4] {
+		if s.p.z != 0 {
+			panic("前四个方向必须是左右上下的排列")
+		}
+	}
+
 	// '/' 左上互换，右下互换
 	for i, s := range rawDir[:4] {
 		p := s.p
