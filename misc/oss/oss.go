@@ -157,6 +157,13 @@ func initMap() { // 初始化变量、检查地图是否与 const 匹配
 		lilyPosInit[i] = changeNegPoint(p)
 	}
 
+	for i, p := range goblinPosInit {
+		goblinPosInit[i].point = changeNegPoint(p.point)
+	}
+	for i, p := range dragonPosInit {
+		dragonPosInit[i].point = changeNegPoint(p.point)
+	}
+
 	if warriorPosInit != noPos {
 		warriorPosInit = changeNegPoint(warriorPosInit)
 	}
@@ -184,7 +191,11 @@ func initMap() { // 初始化变量、检查地图是否与 const 匹配
 
 	finalNum += len(finals)
 	socketNum += len(sockets)
+	stoneNum += len(stonePosInit)
+	lilyNum += len(lilyPosInit)
 	goblinNum += len(goblinPosInit)
+	dragonNum += len(dragonPosInit)
+
 	for i, ps := range doors {
 		if len(ps) > 0 {
 			doorMask |= 1 << i
@@ -219,9 +230,6 @@ func initMap() { // 初始化变量、检查地图是否与 const 匹配
 	if sailorPosInit != noPos {
 		sailorNum++
 	}
-
-	stoneNum += len(stonePosInit)
-	lilyNum += len(lilyPosInit)
 
 	checkGrid := func(grid []string) {
 		for _, row := range grid {
@@ -1515,11 +1523,14 @@ func solveLevel() []string {
 		__goblins = append(__goblins, pd)
 	}
 	__dragons := dragonInitArr[:0]
+	for _, pd := range dragonPosInit {
+		__dragons = append(__dragons, pd)
+	}
 	__gems := gemInitArr[:0]
 	__beams := beamInitArr[:0]
 
-	handledDoorCnt := 0
-	
+	__handledDoorCnt := 0
+
 	parseGrid := func(z int, grid []string) {
 		for x, row := range grid {
 			for y, ch := range row {
@@ -1659,8 +1670,8 @@ func solveLevel() []string {
 				case 'X', 'Y', 'Z', '[':
 					dir := getDir('n') // 默认方向向下，除非手动设置 doorDirString
 					if doorDirString != "" {
-						dir = getDir(doorDirString[handledDoorCnt])
-						handledDoorCnt++
+						dir = getDir(doorDirString[__handledDoorCnt])
+						__handledDoorCnt++
 					}
 					doors[ch-'X'] = append(doors[ch-'X'], pointWithDir{p, dir})
 				case 'N':
@@ -1682,6 +1693,10 @@ func solveLevel() []string {
 	}
 	for z, grid := range levelMap {
 		parseGrid(z, grid)
+	}
+
+	if __handledDoorCnt != len(doorDirString) {
+		panic(fmt.Sprintf("有 %d 个门的方向没有设置", len(doorDirString)-__handledDoorCnt))
 	}
 
 	// 有时候会手动添加 finals 的初始值，总体不一定是有序的
@@ -1782,11 +1797,14 @@ func solveLevel() []string {
 		}
 
 		// 剪枝
-		//if d.goblins[0].x != mapSizeN-3 || d.goblins[0].y < 3 {
+		//if d.dragons[0].x != mapSizeN-3 && d.dragons[0].y != 5 {
 		//	return
 		//}
 
-		//debugInfo := fmt.Sprintf("%v", d.crystals)
+		/* 常见错误
+		没有预处理负数下标 -> 见 initMap
+		*/
+		//debugInfo := fmt.Sprintf("%v", d.goblins)
 		//if !vis[debugInfo] {
 		//	vis[debugInfo] = true
 		//	fmt.Println(debugInfo)
@@ -2019,11 +2037,10 @@ func solveLevel() []string {
 				cur = cur.add(dir)
 			}
 
-			// 如果末端没有空地，则摧毁最后一个物品
+			// 如果末端没有空地，则摧毁第一个物品，其余不变
 			if !d.isValidPos(cur) || hasFence(cur, dir.rev()) {
-				cnt--
-				cur = cur.sub(dir)
-				d.changePos(cur, noPos, math.MaxUint8, allMovableObjs)
+				d.changePos(p0, noPos, math.MaxUint8, allMovableObjs)
+				continue
 			}
 
 			// 倒着回来
