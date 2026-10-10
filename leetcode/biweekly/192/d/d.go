@@ -53,7 +53,7 @@ func longestSubarray1(nums []int, k int) (ans int) {
 	return
 }
 
-func longestSubarray(nums []int, k int) (ans int) {
+func longestSubarray2(nums []int, k int) (ans int) {
 	firstSum := []int{0}
 	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
 	for i := range firstPos {
@@ -110,7 +110,8 @@ func longestSubarray(nums []int, k int) (ans int) {
 	return
 }
 
-func longestSubarray3x(nums []int, k int) (ans int) {
+func longestSubarray(nums []int, k int) (ans int) {
+	n := len(nums)
 	type pair struct{ l, sum int }
 	firsts := []pair{{}}
 	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
@@ -146,7 +147,8 @@ func longestSubarray3x(nums []int, k int) (ans int) {
 	for i, x := range nums {
 		x2 := x * 2 % k
 		p := &ptr[x2]
-		for *p < len(firsts) && firsts[*p].l <= i {
+		// 最优性优化：如果 ans >= n - firsts[p].first，那么 ans 不会变大，提前跳出循环
+		for *p < len(firsts) && firsts[*p].l <= i && n-firsts[*p].l > ans {
 			r := lastPos[(firsts[*p].sum+x2)%k]
 			if i < r {
 				ans = max(ans, r-firsts[*p].l)

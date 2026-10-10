@@ -18,7 +18,7 @@ $$
 
 - 对于下标三元组 $(\ell,i,r)$，计算 $r - \ell$ 的最大值，满足 $0\le \ell\le i < r\le n$ 且 $s[r] - s[\ell] - 2\cdot \textit{nums}[i]$ 是 $k$ 的倍数。其中 $n$ 是 $\textit{nums}$ 的长度。
 
-## 枚举前缀和
+## 方法一：枚举前缀和
 
 如果直接枚举所有 $(\ell, r)$，这有 $\mathcal{O}(n^2)$ 个，太慢了。
 
@@ -45,7 +45,7 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1v9a86hEkp/?t=14m2s)，欢迎点赞关注~
 
-## 优化前
+### 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -247,7 +247,7 @@ func longestSubarray(nums []int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n + k^2\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n + k)$。
 
-## 优化：无需二分
+### 优化：无需二分
 
 改为外层循环枚举 $s[r]\bmod k$，内层循环枚举 $s[\ell]\bmod k$。
 
@@ -540,11 +540,9 @@ func longestSubarray(nums []int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n + k + \min(n,k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。有 $\mathcal{O}(\min(n,k))$ 个不同的 $s[r]\bmod k$，每个 $s[r]\bmod k$ 我们枚举了 $\mathcal{O}(\min(n,k))$ 个不同的 $s[\ell]\bmod k$，所以二重循环的循环次数为 $\mathcal{O}(n + \min(n,k)^2)$。此外，创建大小为 $k$ 的数组需要 $\mathcal{O}(k)$ 的时间。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-## 附：枚举取反元素的写法
+## 方法二：枚举取反元素
 
-> 注意：该写法没法用最优性优化，运行效率比上面的慢。
-
-之前的写法是枚举 $\ell$ 和 $r$，找 $i$。
+方法一是枚举 $\ell$ 和 $r$，找 $i$。
 
 我们还可以枚举 $i$ 和 $\ell$，找 $r$。
 
@@ -557,6 +555,7 @@ func longestSubarray(nums []int, k int) (ans int) {
 ```py [sol-Python3]
 class Solution:
     def longestSubarray(self, nums: list[int], k: int) -> int:
+        n = len(nums)
         firsts = [(0, 0)]
         first_pos = [-1] * k  # 前缀和 % k 首次出现的位置
         last_pos = [-1] * k  # 前缀和 % k 最后一次出现的位置
@@ -583,7 +582,8 @@ class Solution:
         for i, x in enumerate(nums):
             x2 = x * 2 % k
             p = ptr[x2]
-            while p < len(firsts) and firsts[p][0] <= i:
+            # 最优性优化：如果 ans >= n - firsts[p][0]，那么 ans 不会变大，提前跳出循环
+            while p < len(firsts) and firsts[p][0] <= i and n - firsts[p][0] > ans:
                 r = last_pos[(firsts[p][1] + x2) % k]
                 if i < r:
                     ans = max(ans, r - firsts[p][0])
@@ -597,6 +597,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int longestSubarray(int[] nums, int k) {
+        int n = nums.length;
         List<int[]> firsts = new ArrayList<>();
         firsts.add(new int[]{0, 0});
         int[] firstPos = new int[k]; // 前缀和 % k 首次出现的位置
@@ -606,7 +607,7 @@ class Solution {
         int sum = 0; // 前缀和
         int ans = 0;
 
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < n; i++) {
             int x = nums[i] % k + k; // 保证 x 非负
             nums[i] = x;
 
@@ -627,10 +628,11 @@ class Solution {
         int[] ptr = new int[k];
 
         // 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < n; i++) {
             int x2 = nums[i] * 2 % k;
             int p = ptr[x2];
-            while (p < firsts.size() && firsts.get(p)[0] <= i) {
+            // 最优性优化：如果 ans >= n - firsts.get(p)[0]，那么 ans 不会变大，提前跳出循环
+            while (p < firsts.size() && firsts.get(p)[0] <= i && n - firsts.get(p)[0] > ans) {
                 int[] pair = firsts.get(p);
                 int r = lastPos[(pair[1] + x2) % k];
                 if (i < r) {
@@ -651,6 +653,7 @@ class Solution {
 class Solution {
 public:
     int longestSubarray(vector<int>& nums, int k) {
+        int n = nums.size();
         vector<pair<int, int>> firsts = {{0, 0}};
         vector<int> first_pos(k, -1); // 前缀和 % k 首次出现的位置
         vector<int> last_pos(k); // 前缀和 % k 最后一次出现的位置
@@ -658,7 +661,7 @@ public:
         int sum = 0; // 前缀和
         int ans = 0;
 
-        for (int i = 0; i < nums.size(); i++) {
+        for (int i = 0; i < n; i++) {
             int& x = nums[i];
             x = x % k + k; // 保证 x 非负
 
@@ -679,10 +682,11 @@ public:
         vector<int> ptr(k);
 
         // 枚举 2*nums[i]%k 和 s[l]%k，判断是否存在满足要求的 r
-        for (int i = 0; i < nums.size(); i++) {
+        for (int i = 0; i < n; i++) {
             int x2 = nums[i] * 2 % k;
             int& p = ptr[x2];
-            while (p < firsts.size() && firsts[p].first <= i) {
+            // 最优性优化：如果 ans >= n - firsts[p].first，那么 ans 不会变大，提前跳出循环
+            while (p < firsts.size() && firsts[p].first <= i && n - firsts[p].first > ans) {
                 int r = last_pos[(firsts[p].second + x2) % k];
                 if (i < r) {
                     ans = max(ans, r - firsts[p].first);
@@ -699,6 +703,7 @@ public:
 
 ```go [sol-Go]
 func longestSubarray(nums []int, k int) (ans int) {
+	n := len(nums)
 	type pair struct{ l, sum int }
 	firsts := []pair{{}}
 	firstPos := make([]int, k) // 前缀和 % k 首次出现的位置
@@ -734,7 +739,8 @@ func longestSubarray(nums []int, k int) (ans int) {
 	for i, x := range nums {
 		x2 := x * 2 % k
 		p := &ptr[x2]
-		for *p < len(firsts) && firsts[*p].l <= i {
+		// 最优性优化：如果 ans >= n - firsts[p].first，那么 ans 不会变大，提前跳出循环
+		for *p < len(firsts) && firsts[*p].l <= i && n-firsts[*p].l > ans {
 			r := lastPos[(firsts[*p].sum+x2)%k]
 			if i < r {
 				ans = max(ans, r-firsts[*p].l)
@@ -753,7 +759,7 @@ func longestSubarray(nums []int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n + k + \min(n,k)^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。有 $\mathcal{O}(\min(n,k))$ 个不同的 $(2\cdot \textit{nums}[i])\bmod k$，每个 $(2\cdot \textit{nums}[i])\bmod k$ 我们枚举了 $\mathcal{O}(\min(n,k))$ 个不同的 $s[\ell]\bmod k$，所以二重循环的循环次数为 $\mathcal{O}(n + \min(n,k)^2)$。此外，创建大小为 $k$ 的数组需要 $\mathcal{O}(k)$ 的时间。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-**注**：本题是一个带位置约束的 3Sum 问题，目前不存在 $\mathcal{O}(\min(n,k)^{2-\epsilon})$ 的算法。
+**注**：本题是一个带位置约束的 3Sum 问题，截至本文发布前，还没有 $\mathcal{O}(\min(n,k)^{2-\epsilon})$ 的确定性算法。
 
 ## 专题训练
 
