@@ -14,7 +14,7 @@ $$
 
 下面预处理斐波那契数的算法，见 [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/)，[我的题解](https://leetcode.cn/problems/fibonacci-number/solutions/3811875/san-chong-xie-fa-shu-zu-di-tui-kong-jian-3lwj/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wnpj6VEtP/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 1_000_000_000

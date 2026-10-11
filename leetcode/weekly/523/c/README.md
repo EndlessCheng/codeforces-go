@@ -6,7 +6,7 @@
 
 代码实现时，可以用一个二进制数记录一行中的哪些座位被预订。原理见 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/discuss/post/3571304/cong-ji-he-lun-dao-wei-yun-suan-chang-ji-enve/)。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wnpj6VEtP/?t=5m14s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class BusBooking:

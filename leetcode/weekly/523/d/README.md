@@ -31,7 +31,7 @@ $$
 - 如果 $f[i+1][j-\textit{primes}[i]]+1 \le f[i+1][j]$，那么选 $\textit{primes}[i]$。然后更新 $(i,j)$ 为 $(i+1, j -\textit{primes}[i])$。
 - 如果 $f[i+1][j-\textit{primes}[i]]+1 > f[i+1][j]$，那么不选 $\textit{primes}[i]$。然后更新 $(i,j)$ 为 $(i+1, j)$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wnpj6VEtP/?t=8m27s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 1001
