@@ -1,0 +1,10 @@
+["BusBooking", "toggle", "toggle", "getTotalTime", "getMinTime", "toggle", "toggle", "getTotalTime", "getMinTime"]
+[[20], ["B3"], ["A3"], [], [], ["C3"], ["D3"], [], []]
+[null, null, null, 4, 2, null, null, 8, 4]
+
+["BusBooking", "toggle", "toggle", "getTotalTime", "toggle", "toggle", "toggle", "getTotalTime", "getMinTime"]
+[[10], ["C7"], ["D7"], [], ["D7"], ["C7"], ["D7"], [], []]
+[null, null, null, 4, null, null, null, 1, 1]
+
+
+
