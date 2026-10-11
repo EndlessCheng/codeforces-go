@@ -1,6 +1,6 @@
 本题是**恰好型 0-1 背包**。请先完成模板题 [2915. 和为目标值的最长子序列的长度](https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target/)，[我的题解](https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target/solutions/2502839/mo-ban-qia-hao-zhuang-man-xing-0-1-bei-b-0nca/)。
 
-在 0-1 背包的基础上，我们要输出具体方案（选了那些数），还要求字典序尽量小。
+本题在 0-1 背包的基础上，要输出具体方案（选了那些数），还要求字典序尽量小。
 
 字典序尽量小，那么第一个数越小越好。例如 $s = 18 = 5+13 = 7+11$，对于质数 $5,7,11,13$，在考虑「选或不选」时，要**优先选靠前的质数**。
 
@@ -24,9 +24,9 @@ $$
 
 初始值：$f[m][0] = 0$，其余 $f[m][j] = \infty$。
 
-找到最大的 $j_0$，满足 $f[m][j_0] < \infty$。
+找到最大的 $j_0$，满足 $f[0][j_0] < \infty$。
 
-从状态 $(i,j) = (0,j_0)$ 开始：
+从状态 $(i,j) = (0,j_0)$ 开始，还原状态转移的路径，也就是转移方程计算 $\min$ 的时候，是选，还是不选。
 
 - 如果 $f[i+1][j-\textit{primes}[i]]+1 \le f[i+1][j]$，那么选 $\textit{primes}[i]$。然后更新 $(i,j)$ 为 $(i+1, j -\textit{primes}[i])$。
 - 如果 $f[i+1][j-\textit{primes}[i]]+1 > f[i+1][j]$，那么不选 $\textit{primes}[i]$。然后更新 $(i,j)$ 为 $(i+1, j)$。
