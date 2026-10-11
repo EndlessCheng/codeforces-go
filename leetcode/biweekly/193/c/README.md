@@ -22,7 +22,7 @@ $$
 
 我们可以在遍历 $\textit{nums}$ 的过程中，维护连续同余段的长度 $\textit{cnt}$。如果上式成立，用 $\textit{cnt}$ 更新答案的最大值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1rHpj6kE8u/?t=3m15s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

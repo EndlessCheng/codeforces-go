@@ -40,7 +40,7 @@ $$
 
 $A$ 的逆序对个数的最小值为 $f[U]$，加到答案中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1rHpj6kE8u/?t=8m9s)，欢迎点赞关注~
 
 ## 优化前
 
@@ -90,8 +90,7 @@ class Solution:
             inv = [[calc_inversions(p, q) for q in a] for p in a]
 
             m = len(a)
-            u = 1 << m
-            f = [inf] * u
+            f = [inf] * (1 << m)
             f[0] = 0
             for s, fs in enumerate(f):  # 之前选的下标集合是 s
                 # 在 s 的右边添加 j
@@ -464,7 +463,7 @@ func minInversions(words []string, target []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nL|\Sigma|^2 2^{|\Sigma|} + nL|\Sigma| + nL\log n)$，其中 $n$ 是 $\textit{words}$ 的长度，$L\le 20$ 是单个字符串的最大长度，$|\Sigma|=10$ 是字符集合的大小。字典树有 $\mathcal{O}(nL)$ 个节点，每个节点计算一次 $\mathcal{O}(|\Sigma|^2 2^{|\Sigma|})$ 的状压 DP。计算逆序对的总循环次数为 $\mathcal{O}(nL|\Sigma|)$，理由见下文。排序的时间复杂度之和为 $\mathcal{O}(nL\log n)$，理由见下文。
+- 时间复杂度：$\mathcal{O}(nL|\Sigma|^2 2^{|\Sigma|} + nL\log n)$，其中 $n$ 是 $\textit{words}$ 的长度，$L\le 20$ 是单个字符串的最大长度，$|\Sigma|=10$ 是字符集合的大小。字典树有 $\mathcal{O}(nL)$ 个节点，每个节点计算一次 $\mathcal{O}(|\Sigma|^2 2^{|\Sigma|})$ 的状压 DP。计算逆序对的总循环次数为 $\mathcal{O}(nL|\Sigma|)$，理由见下文。排序的时间复杂度之和为 $\mathcal{O}(nL\log n)$，理由见下文。
 - 空间复杂度：$\mathcal{O}(nL|\Sigma| + 2^{|\Sigma|})$。字典树需要 $\mathcal{O}(nL|\Sigma|)$ 的空间，状压 DP 需要 $\mathcal{O}(|\Sigma|^2 + 2^{|\Sigma|}) = \mathcal{O}(2^{|\Sigma|})$ 的空间。
 
 对于每个 $\textit{words}[i]$，从字典树的根到 $\textit{words}[i]$ 的最后一个字母对应的节点，有 $k = |\textit{words}[i]|+1$ 个节点。$\textit{words}[i]$ 会给这 $k$ 个节点都贡献一个 $\textit{pos}$ 值。因此，所有节点的 $\textit{pos}$ 值的个数之和不超过 $n(L+1) = \mathcal{O}(nL)$。
@@ -571,7 +570,8 @@ class Solution:
                 # 在 s 的右边添加 j
                 for j in range(m):
                     if s >> j & 1 == 0:
-                        f[s | 1 << j] = min(f[s | 1 << j], fs + sum_inv[j][s])
+                        t = s | 1 << j
+                        f[t] = min(f[t], fs + sum_inv[j][s])
             ans += f[-1]
 
             res = []
@@ -946,7 +946,7 @@ func minInversions(words []string, target []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nL|\Sigma| 2^{|\Sigma|} + nL|\Sigma| + nL\log n)$，其中 $n$ 是 $\textit{words}$ 的长度，$L\le 20$ 是单个字符串的最大长度，$|\Sigma|=10$ 是字符集合的大小。详细分析过程见优化前的复杂度分析。
+- 时间复杂度：$\mathcal{O}(nL|\Sigma| 2^{|\Sigma|} + nL\log n)$，其中 $n$ 是 $\textit{words}$ 的长度，$L\le 20$ 是单个字符串的最大长度，$|\Sigma|=10$ 是字符集合的大小。详细分析过程见优化前的复杂度分析。
 - 空间复杂度：$\mathcal{O}(nL|\Sigma| + |\Sigma|2^{|\Sigma|})$。详细分析过程见优化前的复杂度分析。
 
 ## 专题训练

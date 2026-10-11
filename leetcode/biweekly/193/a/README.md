@@ -6,7 +6,7 @@
 
 > **注**：由于 $x(\textit{target}-x)$ 的最大值在 $\dfrac{\textit{target}}{2}$ 处取到，我们也可以比较谁离 $\dfrac{\textit{target}}{2}$ 更近。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1rHpj6kE8u/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
