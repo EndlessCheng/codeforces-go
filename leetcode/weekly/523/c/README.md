@@ -1,42 +1,35 @@
-维护每个座位是否被预订，
-
-维护每个座位预订时，所消耗的秒数。释放座位时，减去记录的秒数。
+维护每个座位预订时，所消耗的秒数。释放座位时，减去记录的秒数，然后把记录的秒数置为 $0$。这样我们可以通过记录的秒数是否为 $0$ 判断座位是否被预订。
 
 对于 $\texttt{getMinTime}$，这其实是个脑筋急转弯：**由于总是可以先预定靠窗的，再预定中间的，所以返回当前已预定座位数即可**。
-
-代码实现时，可以用一个二进制数记录一行中的哪些座位被预订。原理见 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/discuss/post/3571304/cong-ji-he-lun-dao-wei-yun-suan-chang-ji-enve/)。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1wnpj6VEtP/?t=5m14s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class BusBooking:
     def __init__(self, n: int):
-        self.states = [0] * (n + 1)
         self.times = [[0] * 4 for _ in range(n + 1)]
         self.total_time = 0
         self.booked_num = 0
 
     def toggle(self, seat: str) -> None:
         row = int(seat[1:])
+        row_times = self.times[row]
         col = ord(seat[0]) - ord('A')
-        mask = self.states[row]
 
-        if mask >> col & 1 == 0:
+        if row_times[col] == 0:
             # 预订
-            if col == 0 and mask >> 1 & 1 or col == 3 and mask >> 2 & 1:
+            if col == 0 and row_times[1] > 0 or col == 3 and row_times[2] > 0:
                 time = 3  # 靠窗，且相邻座位已被预订
             else:
                 time = 1
             self.total_time += time
-            self.times[row][col] = time  # 记录预订该座位所需的秒数，将来释放时用
+            row_times[col] = time  # 记录预订该座位所需的秒数，将来释放时用
             self.booked_num += 1
         else:
             # 释放
-            self.total_time -= self.times[row][col]
-            self.times[row][col] = 0
+            self.total_time -= row_times[col]
+            row_times[col] = 0
             self.booked_num -= 1
-
-        self.states[row] ^= 1 << col
 
     def getTotalTime(self) -> int:
         return self.total_time
@@ -47,35 +40,31 @@ class BusBooking:
 
 ```java [sol-Java]
 class BusBooking {
-    private final int[] states;
     private final int[][] times;
     private int totalTime;
     private int bookedNum;
 
     public BusBooking(int n) {
-        states = new int[n + 1];
         times = new int[n + 1][4];
     }
 
     public void toggle(String seat) {
         int row = Integer.parseInt(seat.substring(1));
+        int[] rowTimes = times[row];
         int col = seat.charAt(0) - 'A';
-        int mask = states[row];
 
-        if ((mask >> col & 1) == 0) {
+        if (rowTimes[col] == 0) {
             // 预订
-            int time = col == 0 && (mask >> 1 & 1) > 0 || col == 3 && (mask >> 2 & 1) > 0 ? 3 : 1;
+            int time = col == 0 && rowTimes[1] > 0 || col == 3 && rowTimes[2] > 0 ? 3 : 1;
             totalTime += time;
-            times[row][col] = time; // 记录预订该座位所需的秒数，将来释放时用
+            rowTimes[col] = time; // 记录预订该座位所需的秒数，将来释放时用
             bookedNum++;
         } else {
             // 释放
-            totalTime -= times[row][col];
-            times[row][col] = 0;
+            totalTime -= rowTimes[col];
+            rowTimes[col] = 0;
             bookedNum--;
         }
-
-        states[row] ^= 1 << col;
     }
 
     public int getTotalTime() {
@@ -90,33 +79,30 @@ class BusBooking {
 
 ```cpp [sol-C++]
 class BusBooking {
-    vector<int> states;
     vector<array<int, 4>> times;
     int total_time = 0;
     int booked_num = 0;
 
 public:
-    BusBooking(int n) : states(n + 1), times(n + 1) {}
+    BusBooking(int n) : times(n + 1) {}
 
     void toggle(string seat) {
         int row = stoi(seat.substr(1));
+        auto& row_times = times[row];
         char col = seat[0] - 'A';
-        int mask = states[row];
 
-        if ((mask >> col & 1) == 0) {
+        if (row_times[col] == 0) {
             // 预订
-            int time = col == 0 && (mask >> 1 & 1) || col == 3 && (mask >> 2 & 1) ? 3 : 1;
+            int time = col == 0 && row_times[1] || col == 3 && row_times[2] ? 3 : 1;
             total_time += time;
-            times[row][col] = time; // 记录预订该座位所需的秒数，将来释放时用
+            row_times[col] = time; // 记录预订该座位所需的秒数，将来释放时用
             booked_num++;
         } else {
             // 释放
-            total_time -= times[row][col];
-            times[row][col] = 0;
+            total_time -= row_times[col];
+            row_times[col] = 0;
             booked_num--;
         }
-
-        states[row] ^= 1 << col;
     }
 
     int getTotalTime() {
@@ -131,28 +117,23 @@ public:
 
 ```go [sol-Go]
 type BusBooking struct {
-	states    []int
 	times     [][4]int
 	totalTime int
 	bookedNum int
 }
 
 func Constructor(n int) BusBooking {
-	return BusBooking{
-		states: make([]int, n+1),
-		times:  make([][4]int, n+1),
-	}
+	return BusBooking{times: make([][4]int, n+1)}
 }
 
 func (b *BusBooking) Toggle(seat string) {
 	row, _ := strconv.Atoi(seat[1:])
-	mask := b.states[row]
 	col := seat[0] - 'A'
 
-	if mask>>col&1 == 0 {
+	if b.times[row][col] == 0 {
 		// 预订
 		time := 1
-		if col == 0 && mask>>1&1 > 0 || col == 3 && mask>>2&1 > 0 {
+		if col == 0 && b.times[row][1] > 0 || col == 3 && b.times[row][2] > 0 {
 			time = 3 // 靠窗，且相邻座位已被预订
 		}
 		b.totalTime += time
@@ -164,8 +145,6 @@ func (b *BusBooking) Toggle(seat string) {
 		b.times[row][col] = 0
 		b.bookedNum--
 	}
-
-	b.states[row] ^= 1 << col
 }
 
 func (b *BusBooking) GetTotalTime() int {

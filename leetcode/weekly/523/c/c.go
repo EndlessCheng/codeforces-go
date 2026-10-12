@@ -4,28 +4,23 @@ import "strconv"
 
 // https://space.bilibili.com/206214
 type BusBooking struct {
-	states    []int
 	times     [][4]int
 	totalTime int
 	bookedNum int
 }
 
 func Constructor(n int) BusBooking {
-	return BusBooking{
-		states: make([]int, n+1),
-		times:  make([][4]int, n+1),
-	}
+	return BusBooking{times: make([][4]int, n+1)}
 }
 
 func (b *BusBooking) Toggle(seat string) {
 	row, _ := strconv.Atoi(seat[1:])
-	mask := b.states[row]
 	col := seat[0] - 'A'
 
-	if mask>>col&1 == 0 {
+	if b.times[row][col] == 0 {
 		// 预订
 		time := 1
-		if col == 0 && mask>>1&1 > 0 || col == 3 && mask>>2&1 > 0 {
+		if col == 0 && b.times[row][1] > 0 || col == 3 && b.times[row][2] > 0 {
 			time = 3 // 靠窗，且相邻座位已被预订
 		}
 		b.totalTime += time
@@ -37,8 +32,6 @@ func (b *BusBooking) Toggle(seat string) {
 		b.times[row][col] = 0
 		b.bookedNum--
 	}
-
-	b.states[row] ^= 1 << col
 }
 
 func (b *BusBooking) GetTotalTime() int {
