@@ -1,53 +1,37 @@
-## 前置题目
+从左到右依次处理（覆盖）每个目标区间 $[\textit{tarL},\textit{tarR}]$。
 
-1. [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)，[我的题解](https://leetcode.cn/problems/merge-intervals/solutions/2798138/jian-dan-zuo-fa-yi-ji-wei-shi-yao-yao-zh-f2b3/comments/2439822/)。
-2. [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)，[我的题解](https://leetcode.cn/problems/jump-game-ii/solutions/2926993/tu-jie-yi-zhang-tu-miao-dong-tiao-yue-yo-h2d4/)。
+做法类似 [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)，[我的题解](https://leetcode.cn/problems/jump-game-ii/solutions/2926993/tu-jie-yi-zhang-tu-miao-dong-tiao-yue-yo-h2d4/)。
 
-## 思路
-
-先把 $\textit{targetIntervals}$ 中的区间合并，得到一些不相交的大区间。然后依次处理（覆盖）每个目标区间 $[\textit{tarL},\textit{tarR}]$。
-
-做法类似 45 题。举个例子，假设我们要覆盖区间 $[5,9]$：
+举个例子，假设我们要覆盖区间 $[5,9]$：
 
 1. 首先，遍历所有左端点 $\le 5$ 的可用区间，求出这些区间的右端点的最大值 $\textit{nextEnd}$。
-2. 如果 $\textit{nextEnd} < 5$，那么没法覆盖 $5$。或者，如果 $\textit{nextEnd} = 5$，那么没法覆盖 $(5,6)$ 中的点。返回 $-1$。
-3. 现在，剩下需要覆盖的点变成 $(\textit{nextEnd},9]$。重复上述过程，直到 $\textit{nextEnd}\ge 9$ 为止。
+2. 如果 $\textit{nextEnd} < 5$，那么没法覆盖 $5$，返回 $-1$。
+3. 现在，剩下需要覆盖的点变成 $(\textit{nextEnd},9]$。重复上述过程，直到 $\textit{nextEnd}\ge 9$ 为止。此外，如果第一步没有发现新的可用区间，即 $\textit{nextEnd}$ 不变，那么无法继续向后覆盖，此时也应返回 $-1$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1N2nu6xEPW/?t=18m9s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
-    # 56. 合并区间
-    def merge(self, intervals: list[list[int]]) -> list[list[int]]:
-        intervals.sort(key=lambda p: p[0])  # 按照左端点从小到大排序
-
-        ans = []
-        for p in intervals:
-            if ans and p[0] <= ans[-1][1]:  # 左端点在合并区间内，可以合并
-                ans[-1][1] = max(ans[-1][1], p[1])  # 更新合并区间的右端点
-            else:  # 不相交，无法合并
-                ans.append(p)  # 新的合并区间
-        return ans
-
     def minSelection(self, availableIntervals: list[list[int]], targetIntervals: list[list[int]]) -> int:
         availableIntervals.sort(key=lambda p: p[0])  # 按照左端点从小到大排序
+        targetIntervals.sort(key=lambda p: p[0])  # 按照左端点从小到大排序
 
         cur_end = 0  # 已建造的桥的右端点
-        next_end = 0  # 下一座桥的右端点的最大值
-        ans = j = 0
+        ans = i = 0
 
-        for tar_l, tar_r in self.merge(targetIntervals):
+        for tar_l, tar_r in targetIntervals:
             while cur_end < tar_r:
                 # 当前最靠左的未覆盖位置
                 uncover = max(tar_l, cur_end)
 
                 # 寻找下一座桥的最远点
-                while j < len(availableIntervals) and availableIntervals[j][0] <= uncover:
-                    next_end = max(next_end, availableIntervals[j][1])
-                    j += 1
+                next_end = cur_end
+                while i < len(availableIntervals) and availableIntervals[i][0] <= uncover:
+                    next_end = max(next_end, availableIntervals[i][1])
+                    i += 1
 
                 # 无法覆盖 uncover，或者无法继续向右延伸
-                if next_end < uncover or next_end == uncover < tar_r:
+                if next_end < uncover or next_end == cur_end:
                     return -1
 
                 cur_end = next_end  # 建桥后，最远可以到达 next_end
@@ -60,25 +44,26 @@ class Solution:
 class Solution {
     public int minSelection(int[][] availableIntervals, int[][] targetIntervals) {
         Arrays.sort(availableIntervals, (p, q) -> p[0] - q[0]); // 按照左端点从小到大排序
+        Arrays.sort(targetIntervals, (p, q) -> p[0] - q[0]); // 按照左端点从小到大排序
 
         int curEnd = 0; // 已建造的桥的右端点
-        int nextEnd = 0; // 下一座桥的右端点的最大值
-        int j = 0;
+        int i = 0;
         int ans = 0;
-        for (int[] target : merge(targetIntervals)) {
+        for (int[] target : targetIntervals) {
             int tarL = target[0], tarR = target[1];
             while (curEnd < tarR) {
                 // 当前最靠左的未覆盖位置
                 int uncover = Math.max(tarL, curEnd);
 
                 // 寻找下一座桥的最远点
-                while (j < availableIntervals.length && availableIntervals[j][0] <= uncover) {
-                    nextEnd = Math.max(nextEnd, availableIntervals[j][1]);
-                    j++;
+                int nextEnd = curEnd;
+                while (i < availableIntervals.length && availableIntervals[i][0] <= uncover) {
+                    nextEnd = Math.max(nextEnd, availableIntervals[i][1]);
+                    i++;
                 }
 
                 // 无法覆盖 uncover，或者无法继续向右延伸
-                if (nextEnd < uncover || nextEnd == uncover && uncover < tarR) {
+                if (nextEnd < uncover || nextEnd == curEnd) {
                     return -1;
                 }
 
@@ -88,64 +73,34 @@ class Solution {
         }
         return ans;
     }
-
-    // 56. 合并区间
-    private List<int[]> merge(int[][] intervals) {
-        Arrays.sort(intervals, (p, q) -> p[0] - q[0]); // 按照左端点从小到大排序
-
-        List<int[]> ans = new ArrayList<>();
-        for (int[] p : intervals) {
-            int m = ans.size();
-            if (m > 0 && p[0] <= ans.get(m - 1)[1]) { // 左端点在合并区间内，可以合并
-                ans.get(m - 1)[1] = Math.max(ans.get(m - 1)[1], p[1]); // 更新合并区间的右端点
-            } else { // 不相交，无法合并
-                ans.add(p); // 新的合并区间
-            }
-        }
-        return ans;
-    }
 }
 ```
 
 ```cpp [sol-C++]
 class Solution {
-    // 56. 合并区间
-    vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        ranges::sort(intervals, {}, [](auto& a) { return a[0]; }); // 按照左端点从小到大排序
-
-        vector<vector<int>> ans;
-        for (auto& p : intervals) {
-            if (!ans.empty() && p[0] <= ans.back()[1]) { // 左端点在合并区间内，可以合并
-                ans.back()[1] = max(ans.back()[1], p[1]); // 更新合并区间的右端点
-            } else { // 不相交，无法合并
-                ans.emplace_back(p); // 新的合并区间
-            }
-        }
-        return ans;
-    }
-
 public:
     int minSelection(vector<vector<int>>& availableIntervals, vector<vector<int>>& targetIntervals) {
         ranges::sort(availableIntervals, {}, [](auto& a) { return a[0]; }); // 按照左端点从小到大排序
+        ranges::sort(targetIntervals, {}, [](auto& a) { return a[0]; }); // 按照左端点从小到大排序
 
         int cur_end = 0; // 已建造的桥的右端点
-        int next_end = 0; // 下一座桥的右端点的最大值
-        int j = 0;
+        int i = 0;
         int ans = 0;
-        for (auto& target : merge(targetIntervals)) {
+        for (auto& target : targetIntervals) {
             int tar_l = target[0], tar_r = target[1];
             while (cur_end < tar_r) {
                 // 当前最靠左的未覆盖位置
                 int uncover = max(tar_l, cur_end);
 
                 // 寻找下一座桥的最远点
-                while (j < availableIntervals.size() && availableIntervals[j][0] <= uncover) {
-                    next_end = max(next_end, availableIntervals[j][1]);
-                    j++;
+                int next_end = cur_end;
+                while (i < availableIntervals.size() && availableIntervals[i][0] <= uncover) {
+                    next_end = max(next_end, availableIntervals[i][1]);
+                    i++;
                 }
 
                 // 无法覆盖 uncover，或者无法继续向右延伸
-                if (next_end < uncover || next_end == uncover && uncover < tar_r) {
+                if (next_end < uncover || next_end == cur_end) {
                     return -1;
                 }
 
@@ -159,234 +114,34 @@ public:
 ```
 
 ```go [sol-Go]
-// 56. 合并区间
-func merge(intervals [][]int) (ans [][]int) {
-	slices.SortFunc(intervals, func(p, q []int) int { return p[0] - q[0] }) // 按照左端点从小到大排序
-
-	for _, p := range intervals {
-		m := len(ans)
-		if m > 0 && p[0] <= ans[m-1][1] { // 左端点在合并区间内，可以合并
-			ans[m-1][1] = max(ans[m-1][1], p[1]) // 更新合并区间的右端点
-		} else { // 不相交，无法合并
-			ans = append(ans, p) // 新的合并区间
-		}
-	}
-	return
-}
-
 func minSelection(availableIntervals, targetIntervals [][]int) (ans int) {
-	slices.SortFunc(availableIntervals, func(a, b []int) int { return a[0] - b[0] }) // 按照左端点从小到大排序
+	// 按照左端点从小到大排序
+	slices.SortFunc(availableIntervals, func(a, b []int) int { return a[0] - b[0] })
+	slices.SortFunc(targetIntervals, func(a, b []int) int { return a[0] - b[0] })
 
-	curEnd := 0  // 已建造的桥的右端点
-	nextEnd := 0 // 下一座桥的右端点的最大值
-	j := 0
-	for _, target := range merge(targetIntervals) {
+	curEnd := 0 // 已建造的桥的右端点
+	i := 0
+	for _, target := range targetIntervals {
 		tarL, tarR := target[0], target[1]
 		for curEnd < tarR {
 			// 当前最靠左的未覆盖位置
 			uncover := max(tarL, curEnd)
 
 			// 寻找下一座桥的最远点
-			for j < len(availableIntervals) && availableIntervals[j][0] <= uncover {
-				nextEnd = max(nextEnd, availableIntervals[j][1])
-				j++
+			nextEnd := curEnd
+			for i < len(availableIntervals) && availableIntervals[i][0] <= uncover {
+				nextEnd = max(nextEnd, availableIntervals[i][1])
+				i++
 			}
 
 			// 无法覆盖 uncover，或者无法继续向右延伸
-			if nextEnd < uncover || nextEnd == uncover && uncover < tarR {
+			if nextEnd < uncover || nextEnd == curEnd {
 				return -1
 			}
 
 			curEnd = nextEnd // 建桥后，最远可以到达 nextEnd
 			ans++
 		}
-	}
-	return
-}
-```
-
-#### 复杂度分析
-
-- 时间复杂度：$\mathcal{O}(n\log n + m\log m)$，其中 $n$ 是 $\textit{availableIntervals}$ 的长度，$m$ 是 $\textit{targetIntervals}$ 的长度。瓶颈在排序上。虽然写了个三重循环，但最内层的 `i++` 的次数至多 $n$ 次，所以三重循环的时间复杂度为 $\mathcal{O}(n+m)$。
-- 空间复杂度：$\mathcal{O}(m)$。忽略排序的栈开销。
-
-## 空间优化
-
-在合并目标区间的过程中，处理（覆盖）每个合并后的目标区间，可以做到 $\mathcal{O}(1)$ 空间。
-
-```py [sol-Python3]
-class Solution:
-    def minSelection(self, availableIntervals: list[list[int]], targetIntervals: list[list[int]]) -> int:
-        availableIntervals.sort(key=lambda p: p[0])
-        targetIntervals.sort(key=lambda p: p[0])
-
-        tar_l, tar_r = inf, -inf
-        cur_end = 0  # 已建造的桥的右端点
-        next_end = 0  # 下一座桥的右端点的最大值
-        ans = j = 0
-
-        for i, (l, r) in enumerate(targetIntervals):
-            tar_l = min(tar_l, l)
-            tar_r = max(tar_r, r)
-            # 下一个区间与 [tar_l, tar_r] 相交，继续合并
-            if i < len(targetIntervals) - 1 and targetIntervals[i + 1][0] <= tar_r:  
-                continue
-
-            while cur_end < tar_r:
-                # 当前最靠左的未覆盖位置
-                uncover = max(tar_l, cur_end)
-
-                # 寻找下一座桥的最远点
-                while j < len(availableIntervals) and availableIntervals[j][0] <= uncover:
-                    next_end = max(next_end, availableIntervals[j][1])
-                    j += 1
-
-                # 无法覆盖 uncover，或者无法继续向右延伸
-                if next_end < uncover or next_end == uncover < tar_r:
-                    return -1
-
-                cur_end = next_end  # 建桥后，最远可以到达 next_end
-                ans += 1
-
-            tar_l = inf
-
-        return ans
-```
-
-```java [sol-Java]
-class Solution {
-    public int minSelection(int[][] availableIntervals, int[][] targetIntervals) {
-        Arrays.sort(availableIntervals, (p, q) -> p[0] - q[0]);
-        Arrays.sort(targetIntervals, (p, q) -> p[0] - q[0]);
-
-        int tarL = Integer.MAX_VALUE;
-        int tarR = Integer.MIN_VALUE;
-        int curEnd = 0; // 已建造的桥的右端点
-        int nextEnd = 0; // 下一座桥的右端点的最大值
-        int j = 0;
-        int ans = 0;
-
-        for (int i = 0; i < targetIntervals.length; i++) {
-            int[] p = targetIntervals[i];
-            tarL = Math.min(tarL, p[0]);
-            tarR = Math.max(tarR, p[1]);
-            // 下一个区间与 [tarL, tarR] 相交，继续合并
-            if (i < targetIntervals.length - 1 && targetIntervals[i + 1][0] <= tarR) {
-                continue;
-            }
-
-            while (curEnd < tarR) {
-                // 当前最靠左的未覆盖位置
-                int uncover = Math.max(tarL, curEnd);
-
-                // 寻找下一座桥的最远点
-                while (j < availableIntervals.length && availableIntervals[j][0] <= uncover) {
-                    nextEnd = Math.max(nextEnd, availableIntervals[j][1]);
-                    j++;
-                }
-
-                // 无法覆盖 uncover，或者无法继续向右延伸
-                if (nextEnd < uncover || nextEnd == uncover && uncover < tarR) {
-                    return -1;
-                }
-
-                curEnd = nextEnd; // 建桥后，最远可以到达 nextEnd
-                ans++;
-            }
-            
-            tarL = Integer.MAX_VALUE;
-        }
-
-        return ans;
-    }
-}
-```
-
-```cpp [sol-C++]
-class Solution {
-public:
-    int minSelection(vector<vector<int>>& availableIntervals, vector<vector<int>>& targetIntervals) {
-        ranges::sort(availableIntervals, {}, [](auto& a) { return a[0]; });
-        ranges::sort(targetIntervals, {}, [](auto& a) { return a[0]; });
-
-        int tar_l = INT_MAX, tar_r = INT_MIN;
-        int cur_end = 0; // 已建造的桥的右端点
-        int next_end = 0; // 下一座桥的右端点的最大值
-        int j = 0;
-        int ans = 0;
-
-        for (int i = 0; i < targetIntervals.size(); i++) {
-            tar_l = min(tar_l, targetIntervals[i][0]);
-            tar_r = max(tar_r, targetIntervals[i][1]);
-            // 下一个区间与 [tar_l, right] 相交，继续合并
-            if (i + 1 < targetIntervals.size() && targetIntervals[i + 1][0] <= tar_r) {
-                continue;
-            }
-
-            while (cur_end < tar_r) {
-                // 当前最靠左的未覆盖位置
-                int uncover = max(tar_l, cur_end);
-
-                // 寻找下一座桥的最远点
-                while (j < availableIntervals.size() && availableIntervals[j][0] <= uncover) {
-                    next_end = max(next_end, availableIntervals[j][1]);
-                    j++;
-                }
-
-                // 无法覆盖 uncover，或者无法继续向右延伸
-                if (next_end < uncover || next_end == uncover && uncover < tar_r) {
-                    return -1;
-                }
-
-                cur_end = next_end; // 建桥后，最远可以到达 next_end
-                ans++;
-            }
-
-            tar_l = INT_MAX;
-        }
-
-        return ans;
-    }
-};
-```
-
-```go [sol-Go]
-func minSelection(availableIntervals, targetIntervals [][]int) (ans int) {
-	slices.SortFunc(availableIntervals, func(a, b []int) int { return a[0] - b[0] })
-	slices.SortFunc(targetIntervals, func(a, b []int) int { return a[0] - b[0] })
-
-	tarL, tarR := math.MaxInt, math.MinInt
-	curEnd := 0  // 已建造的桥的右端点
-	nextEnd := 0 // 下一座桥的右端点的最大值
-	j := 0
-	for i, p := range targetIntervals {
-		tarL = min(tarL, p[0])
-		tarR = max(tarR, p[1])
-		// 下一个区间与 [tarL, tarR] 相交，继续合并
-		if i < len(targetIntervals)-1 && targetIntervals[i+1][0] <= tarR {
-			continue
-		}
-
-		for curEnd < tarR {
-			// 当前最靠左的未覆盖位置
-			uncover := max(tarL, curEnd)
-
-			// 寻找下一座桥的最远点
-			for j < len(availableIntervals) && availableIntervals[j][0] <= uncover {
-				nextEnd = max(nextEnd, availableIntervals[j][1])
-				j++
-			}
-
-			// 无法覆盖 uncover，或者无法继续向右延伸
-			if nextEnd < uncover || nextEnd == uncover && uncover < tarR {
-				return -1
-			}
-
-			curEnd = nextEnd // 建桥后，最远可以到达 nextEnd
-			ans++
-		}
-
-		tarL = math.MaxInt
 	}
 	return
 }
