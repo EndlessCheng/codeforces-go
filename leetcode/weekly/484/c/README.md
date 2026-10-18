@@ -143,13 +143,13 @@ public:
     long long countPairs(vector<string>& words) {
         unordered_map<string, int> cnt_words;
         for (auto& s : words) {
-            cnt_words[s]++;
+            cnt_words[move(s)]++;
         }
 
         unordered_map<string, int> cnt;
         long long ans = 0;
         for (auto& [s, c] : cnt_words) {
-            string t = move(s);
+            string t = s;
             char base = t[0];
             for (char& ch : t) {
                 ch = (ch - base + 26) % 26; // 保证结果在 [0, 25] 中
