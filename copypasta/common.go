@@ -93,6 +93,7 @@ https://atcoder.jp/contests/abc146/tasks/abc146_e 1762
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_h 三个字母映射到一些大整数上，从而区分开
 https://www.luogu.com.cn/problem/P1627
+https://www.luogu.com.cn/problem/P3514
 LC974 和可被 K 整除的子数组 https://leetcode.cn/problems/subarray-sums-divisible-by-k/
 - 变形：乘积可以被 k 整除
 - a[i] = gcd(a[i], k) 之后窗口乘积是 k 的倍数就行，不会乘爆
@@ -124,6 +125,7 @@ LC42. 接雨水 https://leetcode.cn/problems/trapping-rain-water/ 视频讲解 h
 LC926. 将字符串翻转到单调递增 https://leetcode.cn/problems/flip-string-to-monotone-increasing/
 - https://codeforces.com/problemset/problem/180/C 1400
 - https://codeforces.com/problemset/problem/846/A 1500
+https://codeforces.com/problemset/problem/2266/C 1000 做法同 LC1422 https://leetcode.cn/problems/maximum-score-after-splitting-a-string/
 https://codeforces.com/problemset/problem/1921/D 1100
 https://codeforces.com/problemset/problem/1006/C 1200 也可以相向双指针
 https://codeforces.com/problemset/problem/234/C  1300
@@ -198,10 +200,10 @@ https://codeforces.com/problemset/problem/2149/E 1500 恰好型
 https://codeforces.com/problemset/problem/1994/C 1600 结合 DP
 https://codeforces.com/problemset/problem/1418/G 2500
 https://atcoder.jp/contests/abc130/tasks/abc130_d 和至少为 k 的子数组个数
-其它题目见【前缀和】
 
 滑窗的同时维护数据
 https://codeforces.com/problemset/problem/898/D 1600
+https://codeforces.com/problemset/problem/2259/G 1900
 
 多指针
 https://codeforces.com/problemset/problem/602/B 入门题
@@ -333,6 +335,8 @@ https://codeforces.com/problemset/problem/2241/D 1100 从左到右贪心
 https://codeforces.com/problemset/problem/2047/B O(n) 做法约 1200
 https://codeforces.com/problemset/problem/2117/C 1200
 https://codeforces.com/problemset/problem/2126/D 1200 区间贪心
+https://codeforces.com/problemset/problem/2161/C 1200 从大到小贪心
+https://codeforces.com/problemset/problem/2224/B 1200
 https://codeforces.com/problemset/problem/545/D 1300
 https://codeforces.com/problemset/problem/1279/B 1300
 https://codeforces.com/problemset/problem/1443/B 1300
@@ -399,6 +403,7 @@ LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ 区间�
 - https://www.luogu.com.cn/problem/P1986
 - https://www.luogu.com.cn/problem/P10934
 - https://www.luogu.com.cn/problem/SP116
+https://www.luogu.com.cn/problem/P3076
 
 划分型贪心
 https://codeforces.com/problemset/problem/1992/F 1900 划分区间，每个区间无法选一些数，乘积恰好等于 x
@@ -528,6 +533,7 @@ https://codeforces.com/problemset/problem/2110/F 2400
 https://codeforces.com/problemset/problem/2004/F 2600
 LC2498 https://leetcode.cn/problems/frog-jump-ii/
 LC782 https://leetcode.cn/problems/transform-to-chessboard/
+https://www.luogu.com.cn/problem/P5329
 
 思维：脑筋急转弯
 https://codeforces.com/problemset/problem/2049/A 800
@@ -745,6 +751,7 @@ https://codeforces.com/problemset/problem/262/B   1200
 https://codeforces.com/problemset/problem/1364/A  1200
 https://codeforces.com/problemset/problem/1860/B  1200
 https://codeforces.com/problemset/problem/2053/B  1200
+https://codeforces.com/problemset/problem/2224/B  1200
 https://codeforces.com/problemset/problem/2259/D  1200
 https://codeforces.com/problemset/problem/870/C   1300
 https://codeforces.com/problemset/problem/1698/C  1300
@@ -1442,6 +1449,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/1141/C 1500
 	// https://codeforces.com/problemset/problem/2009/F 1700
 	// https://atcoder.jp/contests/abc450/tasks/abc450_e 1734 ~CF
+	// https://codeforces.com/problemset/problem/2259/G 1900
 	// https://codeforces.com/problemset/problem/901/C 2300
 	// https://www.luogu.com.cn/problem/P12246 撤销-更新-恢复
 	prefixSum := func(arr []int) {
