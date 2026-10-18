@@ -2,8 +2,6 @@
 
 可以额外创建一个 $\textit{vis}$ 数组标记访问过的位置，也可以直接把 $\textit{grid}[x][y]$ 改成 $0$ 或者空。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def lastVisitedCell(self, grid: list[list[str]]) -> list[int]:
@@ -11,13 +9,20 @@ class Solution:
         x = y = 0
         while True:
             nx, ny = x, y
-            match grid[x][y]:
-                case 'U': nx -= 1
-                case 'D': nx += 1
-                case 'L': ny -= 1
-                case _: ny += 1
+
+            ch = grid[x][y]
+            if ch == "U":
+                nx -= 1
+            elif ch == "D":
+                nx += 1
+            elif ch == "L":
+                ny -= 1
+            else:
+                ny += 1
+
             if nx < 0 or nx == m or ny < 0 or ny == n or grid[nx][ny] is None:
                 return [x, y]
+
             grid[x][y] = None  # 访问标记
             x, y = nx, ny
 ```

@@ -1,24 +1,21 @@
 先判断无解的情况。根据题意，对于节点 $x$ 来说：
 
-1. $x$ 至多有三个邻居。
+1. $x$ 至多有三个邻居（父节点和左右儿子）。
 2. $x$ 的邻居的颜色，不能与 $x$ 的颜色相同。
-3. $x$ 至多有一个父节点，所以在 $x$ 的邻居中，「上一个颜色」的个数至多一个。R 的上一个颜色是 W，W 的上一个颜色是 B，B 的上一个颜色是 R。
+3. 由于 $x$ 至多有一个父节点，所以在 $x$ 的邻居中，「上一个颜色」的个数至多一个。R 的上一个颜色是 W，W 的上一个颜色是 B，B 的上一个颜色是 R。
 
 如果满足上述要求，那么还要满足什么要求，节点 $x$ 才能作为树的根？
 
 1. $x$ 至多有两个邻居。
-2. $x$ 没有父节点，所以在 $x$ 的邻居中，「上一个颜色」的个数必须是 $0$。
+2. 由于 $x$ 没有父节点，所以在 $x$ 的邻居中，「上一个颜色」的个数必须是零。
 
-如果有两个点都可以作为树的根，会发生什么情况？
+如果有多个点都可以作为树的根，会发生什么情况？
 
-举个例子，看示例 1 的图，如果有两个白点都可以作为根，那么当其中一个白点是根时：
+当其中一个点是根的时候，其余点会有儿子变成其父亲，导致颜色不符合要求。所以**只能有一个合法根节点**。
 
-- 如果另一个白点只有一个邻居（度为 $1$），那么另一个白点变成叶子，其父节点是红点，不符合要求（红点的儿子必须是蓝点）。
-- 如果另一个白点有两个邻居，那么另一个白点有一个父节点和一个儿子，其父节点是红点，不符合要求（红点的儿子必须是蓝点）。
+[本题视频讲解](https://www.bilibili.com/video/BV1N2nu6xEPW/)，欢迎点赞关注~
 
-一般地，如果有多个点可以作为根，那么当其中一个点是根的时候，其余点会有儿子变成其父亲，导致颜色不满足要求。所以**只有一个点能作为根**。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+## 写法一
 
 ```py [sol-Python3]
 mp = {'W': 0, 'R': 1, 'B': 2}
@@ -33,7 +30,7 @@ class Solution:
 
         ans = -1
         for x, to in enumerate(g):
-            # 一个点至多三个邻居
+            # 一个点至多三个邻居（父节点和左右儿子）
             if len(to) > 3:
                 return -1
 
@@ -43,10 +40,11 @@ class Solution:
 
             color_x = mp[colors[x]]
             # 不能有邻居和 x 颜色相同，或者 x 的父节点的颜色个数超过 1
-            if cnt[color_x] > 0 or cnt[(color_x - 1) % 3] > 1:
+            if cnt[color_x] > 0 or cnt[color_x - 1] > 1:
                 return -1
 
-            if len(to) < 3 and cnt[(color_x - 1) % 3] == 0:
+            # x 可以是根
+            if len(to) < 3 and cnt[color_x - 1] == 0:
                 # 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
                 if ans >= 0:
                     return -1
@@ -78,9 +76,9 @@ class Solution {
         }
 
         int ans = -1;
-        for (int x = 0; x < g.length; x++) {
+        for (int x = 0; x < n; x++) {
             List<Integer> to = g[x];
-            // 一个点至多三个邻居
+            // 一个点至多三个邻居（父节点和左右儿子）
             if (to.size() > 3) {
                 return -1;
             }
@@ -96,6 +94,7 @@ class Solution {
                 return -1;
             }
 
+            // x 可以是根
             if (to.size() < 3 && cnt[(colorX + 2) % 3] == 0) {
                 // 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
                 if (ans >= 0) {
@@ -133,9 +132,9 @@ public:
         }
 
         int ans = -1;
-        for (int x = 0; x < g.size(); x++) {
+        for (int x = 0; x < n; x++) {
             auto& to = g[x];
-            // 一个点至多三个邻居
+            // 一个点至多三个邻居（父节点和左右儿子）
             if (to.size() > 3) {
                 return -1;
             }
@@ -151,6 +150,7 @@ public:
                 return -1;
             }
 
+            // x 可以是根
             if (to.size() < 3 && cnt[(color_x + 2) % 3] == 0) {
                 // 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
                 if (ans >= 0) {
@@ -179,7 +179,7 @@ func findColoredRoot(edges [][]int, colors string) int {
 
 	ans := -1
 	for x, to := range g {
-		// 一个点至多三个邻居
+		// 一个点至多三个邻居（父节点和左右儿子）
 		if len(to) > 3 {
 			return -1
 		}
@@ -195,8 +195,159 @@ func findColoredRoot(edges [][]int, colors string) int {
 			return -1
 		}
 
+		// x 可以是根
 		if len(to) < 3 && cnt[(colorX+2)%3] == 0 {
 			// 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
+			if ans >= 0 {
+				return -1
+			}
+			ans = x
+		}
+	}
+
+	return ans
+}
+```
+
+## 写法二
+
+不创建 $g$，改为直接统计每个节点的邻居颜色个数。
+
+由于内存更加紧凑，部分语言可以明显加快速度。
+
+```py [sol-Python3]
+mp = {'W': 0, 'R': 1, 'B': 2}
+
+class Solution:
+    def findColoredRoot(self, edges: list[list[int]], colors: str) -> int:
+        n = len(colors)
+        cnts = [[0] * 3 for _ in range(n)]
+        for x, y in edges:
+            cnts[x][mp[colors[y]]] += 1
+            cnts[y][mp[colors[x]]] += 1
+
+        ans = -1
+        for x, cnt in enumerate(cnts):
+            sz = sum(cnt)
+            color_x = mp[colors[x]]
+            if sz > 3 or cnt[color_x] > 0 or cnt[color_x - 1] > 1:
+                return -1
+
+            if sz < 3 and cnt[color_x - 1] == 0:
+                if ans >= 0:
+                    return -1
+                ans = x
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int[] mp = new int[128];
+
+    static {
+        mp['W'] = 0;
+        mp['R'] = 1;
+        mp['B'] = 2;
+    }
+
+    public int findColoredRoot(int[][] edges, String colors) {
+        char[] s = colors.toCharArray();
+        int n = s.length;
+        int[][] cnts = new int[n][3];
+        for (int[] e : edges) {
+            int x = e[0], y = e[1];
+            cnts[x][mp[s[y]]]++;
+            cnts[y][mp[s[x]]]++;
+        }
+
+        int ans = -1;
+        for (int x = 0; x < n; x++) {
+            int[] cnt = cnts[x];
+            int sz = cnt[0] + cnt[1] + cnt[2];
+            int colorX = mp[s[x]];
+            if (sz > 3 || cnt[colorX] > 0 || cnt[(colorX + 2) % 3] > 1) {
+                return -1;
+            }
+
+            if (sz < 3 && cnt[(colorX + 2) % 3] == 0) {
+                if (ans >= 0) {
+                    return -1;
+                }
+                ans = x;
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    int map_color(char c) {
+        if (c == 'W') {
+            return 0;
+        }
+        if (c == 'R') {
+            return 1;
+        }
+        return 2;
+    }
+
+public:
+    int findColoredRoot(vector<vector<int>>& edges, string colors) {
+        int n = colors.size();
+        vector<array<int, 3>> cnts(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            cnts[x][map_color(colors[y])]++;
+            cnts[y][map_color(colors[x])]++;
+        }
+
+        int ans = -1;
+        for (int x = 0; x < n; x++) {
+            auto& cnt = cnts[x];
+            int sz = cnt[0] + cnt[1] + cnt[2];
+            int color_x = map_color(colors[x]);
+            if (sz > 3 || cnt[color_x] > 0 || cnt[(color_x + 2) % 3] > 1) {
+                return -1;
+            }
+
+            if (sz < 3 && cnt[(color_x + 2) % 3] == 0) {
+                if (ans >= 0) {
+                    return -1;
+                }
+                ans = x;
+            }
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+var mp = [...]int{'W': 0, 'R': 1, 'B': 2}
+
+func findColoredRoot(edges [][]int, colors string) int {
+	n := len(colors)
+	cnts := make([][3]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		cnts[x][mp[colors[y]]]++
+		cnts[y][mp[colors[x]]]++
+	}
+
+	ans := -1
+	for x, cnt := range cnts {
+		sz := cnt[0] + cnt[1] + cnt[2]
+		colorX := mp[colors[x]]
+		if sz > 3 || cnt[colorX] > 0 || cnt[(colorX+2)%3] > 1 {
+			return -1
+		}
+
+		if sz < 3 && cnt[(colorX+2)%3] == 0 {
 			if ans >= 0 {
 				return -1
 			}

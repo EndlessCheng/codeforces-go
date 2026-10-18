@@ -8,8 +8,6 @@ $x\oplus y \ne 0$ 两边同时异或 $y$，得 $x\oplus y\oplus y \ne y$。由�
 
 答案为 $\textit{nums}$ 中的相邻相同元素对的个数。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def minDeletions(self, nums: list[int]) -> int:
