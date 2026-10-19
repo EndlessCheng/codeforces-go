@@ -21,9 +21,6 @@ func findColoredRoot(edges [][]int, colors string) int {
 		}
 
 		if sz < 3 && cnt[(colorX+2)%3] == 0 {
-			if ans >= 0 {
-				return -1
-			}
 			ans = x
 		}
 	}
@@ -58,12 +55,8 @@ func findColoredRoot1(edges [][]int, colors string) int {
 			return -1
 		}
 
-		// x 可以是根
+		// 判断 x 能否是根
 		if len(to) < 3 && cnt[(colorX+2)%3] == 0 {
-			// 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
-			if ans >= 0 {
-				return -1
-			}
 			ans = x
 		}
 	}

@@ -11,7 +11,8 @@
 
 如果有多个点都可以作为树的根，会发生什么情况？
 
-当其中一个点是根的时候，其余点会有儿子变成其父亲，导致颜色不符合要求。所以**只能有一个合法根节点**。
+1. 当其中一个点是根的时候，其余点会有儿子变成其父亲，导致颜色不符合要求。所以**只能有一个合法根节点**。
+2. 实际上，如果有多个根，那么某个节点会有多个父节点，但这已经在无解的情况三中判断了。所以无需讨论有多个根的情况。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1N2nu6xEPW/)，欢迎点赞关注~
 
@@ -43,11 +44,8 @@ class Solution:
             if cnt[color_x] > 0 or cnt[color_x - 1] > 1:
                 return -1
 
-            # x 可以是根
+            # 判断 x 能否是根
             if len(to) < 3 and cnt[color_x - 1] == 0:
-                # 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
-                if ans >= 0:
-                    return -1
                 ans = x
 
         return ans
@@ -94,12 +92,8 @@ class Solution {
                 return -1;
             }
 
-            // x 可以是根
+            // 判断 x 能否是根
             if (to.size() < 3 && cnt[(colorX + 2) % 3] == 0) {
-                // 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
-                if (ans >= 0) {
-                    return -1;
-                }
                 ans = x;
             }
         }
@@ -150,12 +144,8 @@ public:
                 return -1;
             }
 
-            // x 可以是根
+            // 判断 x 能否是根
             if (to.size() < 3 && cnt[(color_x + 2) % 3] == 0) {
-                // 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
-                if (ans >= 0) {
-                    return -1;
-                }
                 ans = x;
             }
         }
@@ -195,12 +185,8 @@ func findColoredRoot(edges [][]int, colors string) int {
 			return -1
 		}
 
-		// x 可以是根
+		// 判断 x 能否是根
 		if len(to) < 3 && cnt[(colorX+2)%3] == 0 {
-			// 不能有多个点能是根，那样当一个点是根的时候，另一个点不满足要求
-			if ans >= 0 {
-				return -1
-			}
 			ans = x
 		}
 	}
@@ -234,8 +220,6 @@ class Solution:
                 return -1
 
             if sz < 3 and cnt[color_x - 1] == 0:
-                if ans >= 0:
-                    return -1
                 ans = x
 
         return ans
@@ -271,9 +255,6 @@ class Solution {
             }
 
             if (sz < 3 && cnt[(colorX + 2) % 3] == 0) {
-                if (ans >= 0) {
-                    return -1;
-                }
                 ans = x;
             }
         }
@@ -315,9 +296,6 @@ public:
             }
 
             if (sz < 3 && cnt[(color_x + 2) % 3] == 0) {
-                if (ans >= 0) {
-                    return -1;
-                }
                 ans = x;
             }
         }
@@ -348,9 +326,6 @@ func findColoredRoot(edges [][]int, colors string) int {
 		}
 
 		if sz < 3 && cnt[(colorX+2)%3] == 0 {
-			if ans >= 0 {
-				return -1
-			}
 			ans = x
 		}
 	}
