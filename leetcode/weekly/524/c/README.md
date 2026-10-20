@@ -1,3 +1,5 @@
+## 方法一：统计邻居颜色
+
 先判断无解的情况。根据题意，对于节点 $x$ 来说：
 
 1. $x$ 至多有三个邻居（父节点和左右儿子）。
@@ -12,11 +14,11 @@
 如果有多个点都可以作为树的根，会发生什么情况？
 
 1. 当其中一个点是根的时候，其余点会有儿子变成其父亲，导致颜色不符合要求。所以**只能有一个合法根节点**。
-2. 实际上，如果有多个根，那么某个节点会有多个父节点，但这已经在无解的情况三中判断了。所以无需讨论有多个根的情况。
+2. 实际上，如果有多个根，那么考察两个根节点子树的交集，必然有一个节点有两个父节点，但这已经在无解的情况三中判断了。所以无需讨论有多个根的情况。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1N2nu6xEPW/)，欢迎点赞关注~
 
-## 写法一
+### 写法一
 
 ```py [sol-Python3]
 mp = {'W': 0, 'R': 1, 'B': 2}
@@ -195,7 +197,7 @@ func findColoredRoot(edges [][]int, colors string) int {
 }
 ```
 
-## 写法二
+### 写法二
 
 不创建 $g$，改为直接统计每个节点的邻居颜色个数。
 
@@ -331,6 +333,383 @@ func findColoredRoot(edges [][]int, colors string) int {
 	}
 
 	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{colors}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：统计入度出度
+
+对于一条边的两个节点：
+
+- 如果两个节点颜色相同，那么直接返回 $-1$。
+- 如果两个节点颜色不同，根据「分层颜色模式」，其中一个点一定是另一个点的父亲：红点是蓝点的父亲，蓝点是白点的父亲，白点是红点的父亲。据此，我们可以直接确定每条边的方向，从而统计每个节点的**入度**（父节点个数）和**出度**（儿子个数）。
+
+对于二叉树，每个节点的入度至多为 $1$，出度至多为 $2$。如果每个节点都满足该要求，那么：
+
+- 由于树只有 $n-1$ 条边，所以入度之和至多为 $n-1$，所以至少有一个点没有入度，即至少有一个合法根节点。
+- 如果有至少两个合法根节点，那么考察两个根节点子树的交集，必然有一个节点有两个父节点，不满足入度至多为 $1$，所以至多有一个合法根节点。
+
+综上所述，只要每个节点的入度至多为 $1$，出度至多为 $2$，那么这棵树恰好有一个合法根节点。
+
+### 优化前
+
+```py [sol-Python3]
+child_color = {'R': 'B', 'B': 'W', 'W': 'R'}
+
+class Solution:
+    def findColoredRoot(self, edges: list[list[int]], colors: str) -> int:
+        n = len(colors)
+        in_deg = [0] * n
+        out_deg = [0] * n
+
+        for x, y in edges:
+            cx, cy = colors[x], colors[y]
+            if cx == cy:
+                return -1
+
+            # 确定谁是谁的父节点
+            if child_color[cx] != cy:
+                x, y = y, x
+
+            # x 是 y 的父节点
+            out_deg[x] += 1
+            in_deg[y] += 1
+            if out_deg[x] > 2 or in_deg[y] > 1:
+                return -1
+
+        for i, deg in enumerate(in_deg):
+            if deg == 0:
+                return i
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int[] childColor = new int[128];
+
+    static {
+        childColor['R'] = 'B';
+        childColor['B'] = 'W';
+        childColor['W'] = 'R';
+    }
+
+    public int findColoredRoot(int[][] edges, String colors) {
+        char[] s = colors.toCharArray();
+        int n = s.length;
+        int[] inDeg = new int[n];
+        int[] outDeg = new int[n];
+
+        for (int[] e : edges) {
+            int x = e[0], y = e[1];
+            char cx = s[x], cy = s[y];
+            if (cx == cy) {
+                return -1;
+            }
+
+            // 确定谁是谁的父节点
+            if (childColor[cx] != cy) {
+                int tmp = x;
+                x = y;
+                y = tmp;
+            }
+
+            // x 是 y 的父节点
+            outDeg[x]++;
+            inDeg[y]++;
+            if (outDeg[x] > 2 || inDeg[y] > 1) {
+                return -1;
+            }
+        }
+
+        for (int i = 0; ; i++) {
+            if (inDeg[i] == 0) {
+                return i;
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    char get_child_color(char ch) {
+        if (ch == 'R') {
+            return 'B';
+        }
+        if (ch == 'B') {
+            return 'W';
+        }
+        return 'R';
+    }
+
+public:
+    int findColoredRoot(vector<vector<int>>& edges, string colors) {
+        int n = colors.size();
+        vector<int> in_deg(n), out_deg(n);
+
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            char cx = colors[x], cy = colors[y];
+            if (cx == cy) {
+                return -1;
+            }
+
+            // 确定谁是谁的父节点
+            if (get_child_color(cx) != cy) {
+                swap(x, y);
+            }
+
+            // x 是 y 的父节点
+            out_deg[x]++;
+            in_deg[y]++;
+            if (out_deg[x] > 2 || in_deg[y] > 1) {
+                return -1;
+            }
+        }
+
+        for (int i = 0; ; i++) {
+            if (in_deg[i] == 0) {
+                return i;
+            }
+        }
+    }
+};
+```
+
+```go [sol-Go]
+var childColor = [...]byte{'R': 'B', 'B': 'W', 'W': 'R'}
+
+func findColoredRoot(edges [][]int, colors string) int {
+	n := len(colors)
+	inDeg := make([]int, n)
+	outDeg := make([]int, n)
+
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		cx, cy := colors[x], colors[y]
+		if cx == cy {
+			return -1
+		}
+
+		// 确定谁是谁的父节点
+		if childColor[cx] != cy {
+			x, y = y, x
+		}
+
+		// x 是 y 的父节点
+		outDeg[x]++
+		inDeg[y]++
+		if outDeg[x] > 2 || inDeg[y] > 1 {
+			return -1
+		}
+	}
+
+	for i := 0; ; i++ {
+		if inDeg[i] == 0 {
+			return i
+		}
+	}
+}
+```
+
+### 优化：一次遍历
+
+把树上每个节点编号异或一遍，再把所有儿子的编号异或一遍。由于同一个值异或两次等于 $0$，所以最终异或和恰好等于根节点的值。
+
+这个技巧来自 [136. 只出现一次的数字](https://leetcode.cn/problems/single-number/)，请看 [我的题解](https://leetcode.cn/problems/single-number/solutions/2481594/li-yong-yi-huo-de-xing-zhi-fu-ti-dan-pyt-oizc/)。
+
+树上每个节点编号的异或和，即 $0$ 到 $n-1$ 的异或和，可以 $\mathcal{O}(1)$ 计算，原理见 [1486 题解](https://leetcode.cn/problems/xor-operation-in-an-array/solutions/2793723/o1-gong-shi-tui-dao-pythonjavaccgojsrust-le23/) 的「$0$ 到 $n$ 的异或和」。
+
+```py [sol-Python3]
+child_color = {'R': 'B', 'B': 'W', 'W': 'R'}
+
+# 返回 0 到 n 的异或和
+def xor_n(n: int) -> int:
+    return (n, 1, n + 1, 0)[n % 4]
+
+class Solution:
+    def findColoredRoot(self, edges: list[list[int]], colors: str) -> int:
+        n = len(colors)
+        in_deg = [0] * n
+        out_deg = [0] * n
+        root = xor_n(n - 1)
+
+        for x, y in edges:
+            cx, cy = colors[x], colors[y]
+            if cx == cy:
+                return -1
+
+            # 确定谁是谁的父节点
+            if child_color[cx] != cy:
+                x, y = y, x
+
+            # x 是 y 的父节点
+            out_deg[x] += 1
+            in_deg[y] += 1
+            if out_deg[x] > 2 or in_deg[y] > 1:
+                return -1
+
+            root ^= y
+
+        return root
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int[] childColor = new int[128];
+
+    static {
+        childColor['R'] = 'B';
+        childColor['B'] = 'W';
+        childColor['W'] = 'R';
+    }
+
+    public int findColoredRoot(int[][] edges, String colors) {
+        char[] s = colors.toCharArray();
+        int n = s.length;
+        int[] inDeg = new int[n];
+        int[] outDeg = new int[n];
+        int root = xorN(n - 1);
+
+        for (int[] e : edges) {
+            int x = e[0], y = e[1];
+            char cx = s[x], cy = s[y];
+            if (cx == cy) {
+                return -1;
+            }
+
+            // 确定谁是谁的父节点
+            if (childColor[cx] != cy) {
+                int tmp = x;
+                x = y;
+                y = tmp;
+            }
+
+            // x 是 y 的父节点
+            outDeg[x]++;
+            inDeg[y]++;
+            if (outDeg[x] > 2 || inDeg[y] > 1) {
+                return -1;
+            }
+
+            root ^= y;
+        }
+
+        return root;
+    }
+
+    // 返回 0 到 n 的异或和
+    private int xorN(int n) {
+        return switch (n % 4) {
+            case 0 -> n;
+            case 1 -> 1;
+            case 2 -> n + 1;
+            default -> 0;
+        };
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 返回 0 到 n 的异或和
+    int xor_n(int n) {
+        switch (n % 4) {
+            case 0: return n;
+            case 1: return 1;
+            case 2: return n + 1;
+            default: return 0;
+        }
+    }
+
+    char get_child_color(char ch) {
+        if (ch == 'R') {
+            return 'B';
+        }
+        if (ch == 'B') {
+            return 'W';
+        }
+        return 'R';
+    }
+
+public:
+    int findColoredRoot(vector<vector<int>>& edges, string colors) {
+        int n = colors.size();
+        vector<int> in_deg(n), out_deg(n);
+        int root = xor_n(n - 1);
+
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            char cx = colors[x], cy = colors[y];
+            if (cx == cy) {
+                return -1;
+            }
+
+            // 确定谁是谁的父节点
+            if (get_child_color(cx) != cy) {
+                swap(x, y);
+            }
+
+            // x 是 y 的父节点
+            out_deg[x]++;
+            in_deg[y]++;
+            if (out_deg[x] > 2 || in_deg[y] > 1) {
+                return -1;
+            }
+
+            root ^= y;
+        }
+
+        return root;
+    }
+};
+```
+
+```go [sol-Go]
+// 返回 0 到 n 的异或和
+func xorN(n int) int {
+	switch n % 4 {
+	case 0: return n
+	case 1: return 1
+	case 2: return n + 1
+	default: return 0
+	}
+}
+
+var childColor = [...]byte{'R': 'B', 'B': 'W', 'W': 'R'}
+
+func findColoredRoot(edges [][]int, colors string) int {
+	n := len(colors)
+	inDeg := make([]int, n)
+	outDeg := make([]int, n)
+	root := xorN(n - 1)
+
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		cx, cy := colors[x], colors[y]
+		if cx == cy {
+			return -1
+		}
+
+		// 确定谁是谁的父节点
+		if childColor[cx] != cy {
+			x, y = y, x
+		}
+
+		// x 是 y 的父节点
+		outDeg[x]++
+		inDeg[y]++
+		if outDeg[x] > 2 || inDeg[y] > 1 {
+			return -1
+		}
+
+		root ^= y
+	}
+
+	return root
 }
 ```
 
