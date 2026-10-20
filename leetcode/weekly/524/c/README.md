@@ -388,7 +388,7 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private static final int[] childColor = new int[128];
+    private static final char[] childColor = new char[128];
 
     static {
         childColor['R'] = 'B';
@@ -559,7 +559,7 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    private static final int[] childColor = new int[128];
+    private static final char[] childColor = new char[128];
 
     static {
         childColor['R'] = 'B';
@@ -570,8 +570,8 @@ class Solution {
     public int findColoredRoot(int[][] edges, String colors) {
         char[] s = colors.toCharArray();
         int n = s.length;
-        int[] inDeg = new int[n];
-        int[] outDeg = new int[n];
+        byte[] inDeg = new byte[n]; // 优化空间，减少 cache miss
+        byte[] outDeg = new byte[n];
         int root = xorN(n - 1);
 
         for (int[] e : edges) {
@@ -638,7 +638,7 @@ class Solution {
 public:
     int findColoredRoot(vector<vector<int>>& edges, string colors) {
         int n = colors.size();
-        vector<int> in_deg(n), out_deg(n);
+        vector<int8_t> in_deg(n), out_deg(n); // 优化空间，减少 cache miss
         int root = xor_n(n - 1);
 
         for (auto& e : edges) {
@@ -683,8 +683,8 @@ var childColor = [...]byte{'R': 'B', 'B': 'W', 'W': 'R'}
 
 func findColoredRoot(edges [][]int, colors string) int {
 	n := len(colors)
-	inDeg := make([]int, n)
-	outDeg := make([]int, n)
+	inDeg := make([]int8, n) // 优化空间，减少 cache miss
+	outDeg := make([]int8, n)
 	root := xorN(n - 1)
 
 	for _, e := range edges {

@@ -78,8 +78,8 @@ var childColor = [...]byte{'R': 'B', 'B': 'W', 'W': 'R'}
 
 func findColoredRoot(edges [][]int, colors string) int {
 	n := len(colors)
-	inDeg := make([]int, n)
-	outDeg := make([]int, n)
+	inDeg := make([]int8, n)
+	outDeg := make([]int8, n)
 	root := xorN(n - 1)
 
 	for _, e := range edges {
