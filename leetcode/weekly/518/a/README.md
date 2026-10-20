@@ -18,7 +18,7 @@ class Solution:
             if s[i % n] == s[(i + 1) % n]:
                 same += 1
 
-            # 一个窗口内有 n-1 对字母
+            # 注意：一个窗口内有 n-1 对字母，对应 n-1 次循环，所以窗口大小是 n-1
             left = i - n + 2
             if left < 0:
                 continue
@@ -46,7 +46,7 @@ class Solution {
                 same++;
             }
 
-            // 注意窗口长度为 n-1
+            // 注意：一个窗口内有 n-1 对字母，对应 n-1 次循环，所以窗口大小是 n-1
             int left = i - n + 2;
             if (left < 0) {
                 continue;
@@ -80,7 +80,7 @@ public:
                 same++;
             }
 
-            // 注意窗口长度为 n-1
+            // 注意：一个窗口内有 n-1 对字母，对应 n-1 次循环，所以窗口大小是 n-1
             int left = i - n + 2;
             if (left < 0) {
                 continue;
@@ -111,7 +111,7 @@ func countRotations(s string, k int) (ans int) {
 			same++
 		}
 
-		// 注意窗口长度为 n-1
+		// 注意：一个窗口内有 n-1 对字母，对应 n-1 次循环，所以窗口大小是 n-1
 		left := i - n + 2
 		if left < 0 {
 			continue
