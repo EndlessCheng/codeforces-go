@@ -718,6 +718,8 @@ func findColoredRoot(edges [][]int, colors string) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{colors}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+**注**：用到了这个异或技巧的题目还有 [2196. 根据描述创建二叉树](https://leetcode.cn/problems/create-binary-tree-from-descriptions/)。
+
 ## 专题训练
 
 见下面思维题单的「**§5.8 分类讨论**」。
