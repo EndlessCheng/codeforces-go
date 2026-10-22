@@ -231,7 +231,7 @@ func sortableIntegers(nums []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log \log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。对于 $n$ 的因子 $k$，我们跑了一个 $\mathcal{O}\left(\dfrac{n}{k}\right)$ 的循环，所以总的循环次数为 $\mathcal{O}\left(\sum\limits_{k|n}\dfrac{n}{k}\right)$。由于 $n$ 的因子的倒数和是 $\mathcal{O}(\log \log n)$ 级别的，所以时间复杂度为 $\mathcal{O}(n\log \log n)$。
+- 时间复杂度：$\mathcal{O}(n\log \log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。对于 $n$ 的因子 $k$，我们跑了一个 $\mathcal{O}\left(\dfrac{n}{k}\right)$ 的循环，所以总的循环次数为 $\mathcal{O}\left(\sum\limits_{k|n}\dfrac{n}{k}\right) = \mathcal{O}\left(\sum\limits_{k|n}k\right)$。由于 $n$ 的因子和为 $\mathcal{O}(n\log \log n)$（[Gronwall's Theorem](https://mathworld.wolfram.com/GronwallsTheorem.html)），所以时间复杂度为 $\mathcal{O}(n\log \log n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
