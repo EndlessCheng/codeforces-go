@@ -2,7 +2,10 @@
 
 操作 2 意味着 $\textit{nums}$ 可以视作一个环形数组。操作 1 只反转了数组，没有改变元素的相邻关系，操作之前相邻的元素，操作之后仍然是相邻的。想象你有一串念珠，操作 1 是把念珠翻个面，操作 2 是旋转念珠，都不会拆开念珠。 
 
-所以从最终结果 $[0,1,2,\ldots,n-1]$ 倒推，$\textit{nums}$ 要么是由一个递增排列旋转得到，要么是由一个递减排列旋转得到。
+所以从最终结果 $[0,1,2,\ldots,n-1]$ 倒推，$\textit{nums}$：
+
+- 要么是由一个递增排列旋转得到，例如 $\textit{nums}=[3,4,0,1,2]$。
+- 要么是由一个递减排列旋转得到，例如 $\textit{nums}=[2,1,0,4,3]$。
 
 ## nums 由一个递增排列旋转得到
 
@@ -31,6 +34,8 @@
 如果两类方法都没有满足的 $i$，返回 $-1$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV16FG76JEQo/?t=20m29s)，欢迎点赞关注~
+
+## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -191,6 +196,149 @@ func minOperations(nums []int) int {
 	}
 	return ans
 }
+```
+
+## 写法二：合二为一
+
+写法一分别讨论了两种情况，写了两个循环。下面把这两个循环合为一个循环。
+
+讨论相邻元素的差值 $\textit{nums}[i] - \textit{nums}[i-1]$：
+
+- 如果 $\textit{nums}$ 是由一个递增排列旋转得到（例如 $\textit{nums}=[3,4,0,1,2]$），那么 $\textit{nums}$ 的相邻元素的差值几乎都是 $1$，除了从 $n-1$ 跳到 $0$ 的那一处是 $-(n-1)$。
+- 如果 $\textit{nums}$ 是由一个递减排列旋转得到（例如 $\textit{nums}=[2,1,0,4,3]$），那么 $\textit{nums}$ 的相邻元素的差值几乎都是 $-1$，除了从 $0$ 跳到 $n-1$ 的那一处是 $n-1$。
+
+于是，先求出相邻元素的主要差值 $d$ 是 $1$ 还是 $-1$，然后找到第一个满足 $\textit{nums}[i] - \textit{nums}[i-1]\ne d$ 的位置（记录此时的 $i$ 为 $p$），根据写法一的公式计算答案。如果发现不止一个 $i$ 满足 $\textit{nums}[i] - \textit{nums}[i-1]\ne d$，则返回 $-1$。
+
+```py [sol-Python3]
+class Solution:
+    def minOperations(self, nums: list[int]) -> int:
+        n = len(nums)
+        if n == 1:
+            return 0
+
+        d = nums[1] - nums[0]
+        if abs(d) != 1:
+            d = nums[2] - nums[1]
+            if abs(d) != 1:  # 不能有多个跳变位置
+                return -1
+
+        p = 0
+        for i in range(1, n):
+            if nums[i] - nums[i - 1] != d:
+                # i 是跳变位置
+                if p > 0:  # 不能有多个跳变位置
+                    return -1
+                p = i
+
+        if d == 1:
+            return min(p, n - p + 2)  # 递增
+        return min(p, n - p) + 1  # 递减
+```
+
+```java [sol-Java]
+class Solution {
+    public int minOperations(int[] nums) {
+        int n = nums.length;
+        if (n == 1) {
+            return 0;
+        }
+
+        int d = nums[1] - nums[0];
+        if (Math.abs(d) != 1) {
+            d = nums[2] - nums[1];
+            if (Math.abs(d) != 1) { // 不能有多个跳变位置
+                return -1;
+            }
+        }
+
+        int p = 0;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] - nums[i - 1] != d) {
+                // i 是跳变位置
+                if (p > 0) { // 不能有多个跳变位置
+                    return -1;
+                }
+                p = i;
+            }
+        }
+
+        if (d == 1) {
+            return Math.min(p, n - p + 2); // 递增
+        }
+        return Math.min(p, n - p) + 1; // 递减
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+        int n = nums.size();
+        if (n == 1) {
+            return 0;
+        }
+
+        int d = nums[1] - nums[0];
+        if (abs(d) != 1) {
+            d = nums[2] - nums[1];
+            if (abs(d) != 1) { // 不能有多个跳变位置
+                return -1;
+            }
+        }
+
+        int p = 0;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] - nums[i - 1] != d) {
+                // i 是跳变位置
+                if (p > 0) { // 不能有多个跳变位置
+                    return -1;
+                }
+                p = i;
+            }
+        }
+
+        if (d == 1) {
+            return min(p, n - p + 2); // 递增
+        }
+        return min(p, n - p) + 1; // 递减
+    }
+};
+```
+
+```go [sol-Go]
+func minOperations(nums []int) int {
+	n := len(nums)
+	if n == 1 {
+		return 0
+	}
+
+	d := nums[1] - nums[0]
+	if abs(d) != 1 {
+		d = nums[2] - nums[1]
+		if abs(d) != 1 { // 不能有多个跳变位置
+			return -1
+		}
+	}
+
+	p := 0
+	for i := 1; i < n; i++ {
+		if nums[i]-nums[i-1] != d {
+			// i 是跳变位置
+			if p > 0 { // 不能有多个跳变位置
+				return -1
+			}
+			p = i
+		}
+	}
+
+	if d == 1 {
+		return min(p, n-p+2) // 递增
+	}
+	return min(p, n-p) + 1 // 递减
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
 #### 复杂度分析
