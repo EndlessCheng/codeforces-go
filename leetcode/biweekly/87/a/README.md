@@ -9,9 +9,9 @@
 - 左端点 $\textit{left}$ 等于两个区间左端点的最大值。
 - 右端点 $\textit{right}$ 等于两个区间右端点的最小值。
 
-区间内的整数个数为 $\textit{right}-\textit{left}+1$。
+交集中的整数个数为 $\textit{right}-\textit{left}+1$。
 
-如果交集区间为空，即 $\textit{right}-\textit{left}+1<0$，那么答案为 $0$。
+如果交集为空，即 $\textit{right}-\textit{left}+1\le 0$，那么答案为 $0$。
 
 ```py [sol-Python3]
 # 每月天数的前缀和（注：最后一个数可以省略）
