@@ -20,7 +20,7 @@
 
 首先确定答案的**上界**。
 
-对于不满足 $\textit{nums}[i] = i$ 的元素，一定要交换，这些元素一定会出现在式子 $\textit{nums}[i]\ \texttt{AND}\ \textit{nums}[j] = k$ 中。根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，$k$ 是 $\textit{nums}[i]$ 和 $\textit{nums}[j]$ 的子集，所以 $k$ 是每个不满足 $\textit{nums}[i] = i$ 的 $\textit{nums}[i]$ 的子集。$k$ 最大是这些集合的**交集**。所以答案至多为所有不满足 $\textit{nums}[i] = i$ 的 $\textit{nums}[i]$ 的 AND，下文就用 $k$ 表示这个上界。
+对于 $\textit{nums}[i] \ne i$ 的元素，一定要交换，这些元素一定会出现在式子 $\textit{nums}[i]\ \texttt{AND}\ \textit{nums}[j] = k$ 中。根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，$k$ 是 $\textit{nums}[i]$ 和 $\textit{nums}[j]$ 的子集，所以 $k$ 是每个 $\textit{nums}[i] \ne i$ 的 $\textit{nums}[i]$ 的子集。$k$ 最大是这些集合的**交集**。所以答案至多为所有 $\textit{nums}[i] \ne i$ 的 $\textit{nums}[i]$ 的 AND，下文就用 $k$ 表示这个上界。
 
 答案能等于上界 $k$ 吗？可以，方法和上面的 $0$ 是一样的：
 
@@ -91,7 +91,7 @@ func sortPermutation(nums []int) int {
 
 ## 思考题
 
-有多少个不同的 $k$，可以让数组排成有序的？（保证数组不是有序的）
+有多少个不同的 $k$，可以使 $\textit{nums}$ 排成有序的？（保证 $\textit{nums}$ 不是有序的）
 
 ## 专题训练
 
