@@ -115,13 +115,8 @@ class Solution {
             firstPos.put(x, i);
 
             // 把 firsts 中的 x 移到最前面
-            int j = firsts.indexOf(x);
-            if (j != 0) { // 优化：j = 0 时无需移动
-                if (j >= 0) {
-                    firsts.remove(j);
-                }
-                firsts.addFirst(x);
-            }
+            firsts.remove(Integer.valueOf(x));
+            firsts.addFirst(x);
 
             int m = firsts.size();
             if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
@@ -182,13 +177,10 @@ public:
 
             // 把 firsts 中的 x 移到最前面
             auto it = ranges::find(firsts, x);
-            int j = it == firsts.end() ? -1 : it - firsts.begin();
-            if (j != 0) { // 优化：j = 0 时无需移动
-                if (j >= 0) {
-                    firsts.erase(firsts.begin() + j);
-                }
-                firsts.insert(firsts.begin(), x);
+            if (it != firsts.end()) {
+                firsts.erase(it);
             }
+            firsts.insert(firsts.begin(), x);
 
             int m = firsts.size();
             if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
@@ -320,13 +312,8 @@ class Solution {
             firstPos[x] = i;
 
             // 把 firsts 中的 x 移到最前面
-            int j = firsts.indexOf(x);
-            if (j != 0) { // 优化：j = 0 时无需移动
-                if (j >= 0) {
-                    firsts.remove(j);
-                }
-                firsts.addFirst(x);
-            }
+            firsts.remove(Integer.valueOf(x));
+            firsts.addFirst(x);
 
             int m = firsts.size();
             if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
@@ -389,13 +376,10 @@ public:
 
             // 把 firsts 中的 x 移到最前面
             auto it = ranges::find(firsts, x);
-            int j = it == firsts.end() ? -1 : it - firsts.begin();
-            if (j != 0) { // 优化：j = 0 时无需移动
-                if (j >= 0) {
-                    firsts.erase(firsts.begin() + j);
-                }
-                firsts.insert(firsts.begin(), x);
+            if (it != firsts.end()) {
+                firsts.erase(it);
             }
+            firsts.insert(firsts.begin(), x);
 
             int m = firsts.size();
             if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
