@@ -1,14 +1,14 @@
-**核心思路**：枚举子数组右端点 $i=0,1,2,\ldots,n-1$，统计有多少个合法的左端点 $\textit{left}$，使得子数组 $[\textit{left},i]$ 是宽界子数组。
+**核心思路**：枚举子数组右端点 $i=0,1,2,\ldots,n-1$，统计有多少个合法的左端点 $\textit{left}$，使得子数组 $[\textit{left},i]$ 是合法子数组。
 
-题目要求子数组只能包含在 $[\textit{minK},\textit{maxK}]$ 中的数。于是，记录最近的满足 $\textit{nums}[j] < \textit{minK}$ 或 $\textit{nums}[j] > \textit{minK}$ 的下标 $j$（记作 $\textit{end}$，初始值为 $-1$），那么如下子数组都是宽界子数组：
+题目要求子数组中的数只能在 $[\textit{minK},\textit{maxK}]$ 中。于是，记录最近的出界元素的下标，即满足 $\textit{nums}[j] < \textit{minK}$ 或 $\textit{nums}[j] > \textit{minK}$ 的下标 $j$（记作 $\textit{end}$，初始值为 $-1$），那么如下子数组都是合法子数组：
 
 $$
 [\textit{end}+1,i],[\textit{end}+2,i],[\textit{end}+3,i],\ldots,[i,i]
 $$
 
-这有 $i-\textit{end}$ 个，即右端点**固定**为 $i$ 的宽界子数组个数，加到答案中。
+这有 $i-\textit{end}$ 个，即右端点**固定**为 $i$ 的合法子数组个数，加到答案中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV15ZH36UELN/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

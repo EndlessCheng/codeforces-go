@@ -1,4 +1,4 @@
-三变量问题，枚举中间的 $j$。
+三变量问题，枚举中间的 $j$ 更方便。
 
 问题变成：
 
@@ -19,13 +19,19 @@
 
 同理，倒着滑窗，可以得到 $\textit{suf}[i][j]$，表示子串左端点为 $i$ 时，有多少个子串恰好有 $j$ 种字母。
 
-那么答案为
+以 $(i,i+1)$ 为分割线，左右子串互相独立，根据乘法原理，分割线为 $(i,i+1)$ 且字母种数恰好为 $j$ 的合法子串对的个数为
+
+$$
+\textit{pre}[i][j] \cdot \textit{suf}[i+1][j]
+$$
+
+枚举分割线以及 $j$，答案为
 
 $$
 \sum_{i=0}^{n-2}\sum_{j=1}^{26} \textit{pre}[i][j] \cdot \textit{suf}[i+1][j]
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV15ZH36UELN/?t=4m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
