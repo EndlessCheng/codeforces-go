@@ -12,12 +12,12 @@ $$
 
 假设现在枚举到了子数组 $[L,R]$，其中 $R-L+1 = \dfrac{k(k+1)}{2}$。定义：
 
-- $p_i$ 为子数组第 $i$ 个不同值在子数组中的第 $i$ 次出现位置。如果不存在这样的位置，说明该子数组的第 $i$ 个不同值的出现次数小于 $i$，不满足要求，跳出枚举 $k$ 的循环（更大的 $k$ 仍然无法满足要求）。
-- $q_i$ 为子数组第 $i$ 个不同值在子数组中的第 $i+1$ 次出现位置。如果不存在这样的位置，令 $q_i=n$。
+- $p_i$ 为子数组第 $i$ 个不同值在 $[L,n)$ 中的第 $i$ 次出现位置。如果不存在这样的位置，不仅说明 $[L,R]$ 的第 $i$ 个不同值的出现次数小于 $i$，还说明其余右端点大于 $R$ 的子数组 $[L,R']$ 也不满足要求（第 $i$ 个不同值的出现次数小于 $i$），所以跳出枚举 $k$ 的循环。
+- $q_i$ 为子数组第 $i$ 个不同值在 $[L,n)$ 中的第 $i+1$ 次出现位置。如果不存在这样的位置，令 $q_i=n$。
 
 **关键点**：如果 $p_i\le R < q_i$，则说明第 $i$ 个不同值在子数组中恰好出现 $i$ 次。
 
-如果每个 $i$ 都满足上式，那么 $R$ 必须满足
+对于 $i=1,2,\ldots,k$，联立这 $k$ 个不等式（求 $k$ 个区间的交集），得
 
 $$
 \max_{i=1}^{k} p_i \le R < \min_{i=1}^{k} q_i
@@ -42,7 +42,7 @@ $$
 
 为了维护子数组中的不同值列表 $\textit{firsts}$，我们可以倒着遍历 $\textit{nums}$，把遍历到的 $\textit{nums}[i]$ 移到 $\textit{firsts}$ 的开头。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1KLHG6TEWJ/)，欢迎点赞关注~
 
 ## 写法一：哈希表
 
@@ -64,11 +64,9 @@ class Solution:
             first_pos[x] = i
 
             # 把 firsts 中的 x 移到最前面
-            j = firsts.index(x) if x in firsts else -1
-            if j != 0:  # 优化：j = 0 时无需移动
-                if j >= 0:
-                    firsts.pop(j)
-                firsts.insert(0, x)
+            if x in firsts:
+                firsts.remove(x)
+            firsts.insert(0, x)
 
             m = len(firsts)
             if m * (m + 1) // 2 > n:  # firsts 不需要这么多元素
@@ -170,8 +168,9 @@ public:
         unordered_map<int, vector<int>> pos;
         vector<int> idx_in_pos(n);
         for (int i = 0; i < n; i++) {
-            idx_in_pos[i] = pos[nums[i]].size();
-            pos[nums[i]].push_back(i);
+            auto& ps = pos[nums[i]];
+            idx_in_pos[i] = ps.size();
+            ps.push_back(i);
         }
 
         vector<int> firsts;
@@ -376,8 +375,9 @@ public:
         vector<vector<int>> pos(max_num + 1);
         vector<int> idx_in_pos(n);
         for (int i = 0; i < n; i++) {
-            idx_in_pos[i] = pos[nums[i]].size();
-            pos[nums[i]].push_back(i);
+            auto& ps = pos[nums[i]];
+            idx_in_pos[i] = ps.size();
+            ps.push_back(i);
         }
 
         vector<int> firsts;
