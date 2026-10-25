@@ -5,7 +5,9 @@ import "slices"
 // https://space.bilibili.com/206214
 func countStaircase(nums []int) (ans int) {
 	n := len(nums)
-	pos := map[int][]int{}
+	maxNum := slices.Max(nums)
+
+	pos := make([][]int, maxNum+1)
 	idxInPos := make([]int, n) // nums[i] 在 pos[nums[i]] 中的下标
 	for i, x := range nums {
 		idxInPos[i] = len(pos[x])
@@ -13,7 +15,7 @@ func countStaircase(nums []int) (ans int) {
 	}
 
 	firsts := []int{}
-	firstPos := map[int]int{}
+	firstPos := make([]int, maxNum+1)
 	for i := n - 1; i >= 0; i-- {
 		x := nums[i]
 		firstPos[x] = i
@@ -39,7 +41,7 @@ func countStaircase(nums []int) (ans int) {
 			// [i,r) 必须包含恰好 cnt+1 个 x
 			ps := pos[x]
 			k := idxInPos[firstPos[x]] + cnt
-			if k >= len(ps) { // [i,r) 中的 x 的个数小于 cnt+1
+			if k >= len(ps) { // [i,n) 中的 x 的个数小于 cnt+1
 				break
 			}
 
