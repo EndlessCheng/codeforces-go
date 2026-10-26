@@ -21,8 +21,8 @@ func maximizeSum(nums []int, k int) (ans int64) {
 
 	slices.Sort(nums)
 	// 选择增量最大的 k 个数
-	for _, x := range nums[len(nums)-k:] {
-		ans += int64(x)
+	for _, d := range nums[len(nums)-k:] {
+		ans += int64(d)
 	}
 	return
 }

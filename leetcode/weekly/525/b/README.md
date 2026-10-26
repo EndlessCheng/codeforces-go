@@ -4,8 +4,6 @@
 
 取增量最大的 $k$ 个数操作，可以得到最优解。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def maximizeSum(self, nums: list[int], k: int) -> int:
@@ -59,8 +57,7 @@ class Solution {
 public:
     long long maximizeSum(vector<int>& nums, int k) {
         long long ans = 0;
-        for (int i = 0; i < nums.size(); i++) {
-            int x = nums[i];
+        for (int& x : nums) {
             ans += x;
 
             // 把 x 从大到小排列，得到 y
@@ -69,7 +66,7 @@ public:
             int y = stoi(s);
 
             // 把修改后的增量保存到 nums[i] 中
-            nums[i] = y - x;
+            x = y - x;
         }
 
         // ranges::sort(nums, greater());
@@ -96,8 +93,8 @@ func maximizeSum(nums []int, k int) (ans int64) {
 
 	slices.Sort(nums)
 	// 选择增量最大的 k 个数
-	for _, x := range nums[len(nums)-k:] {
-		ans += int64(x)
+	for _, d := range nums[len(nums)-k:] {
+		ans += int64(d)
 	}
 	return
 }
