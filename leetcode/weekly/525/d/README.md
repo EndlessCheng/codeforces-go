@@ -33,35 +33,23 @@ $$
 
 ## 细节
 
-为了快速求出 $p_i$ 和 $q_i$，我们可以预处理：
+倒着遍历 $\textit{nums}$，同时维护元素 $x$ 在 $\textit{nums}$ 中的位置组成的列表，即可快速得到 $p_i$ 和 $q_i$。
 
-- $\textit{pos}[x]$：元素 $x$ 在 $\textit{nums}$ 中的所有位置组成的列表。
-- $\textit{idxInPos}[i]$：$\textit{nums}[i]$ 在 $\textit{pos}[\textit{nums}[i]]$ 中的下标。
-
-设子数组的第 $i$ 个不同值为 $x$，其在 $\textit{nums}$ 中的下标为 $j$，那么 $p_i = \textit{pos}[x][\textit{idxInPos}[j] + i - 1]$，$q_i = \textit{pos}[x][\textit{idxInPos}[j] + i]$。
-
-为了维护子数组中的不同值列表 $\textit{firsts}$，我们可以倒着遍历 $\textit{nums}$，把遍历到的 $\textit{nums}[i]$ 移到 $\textit{firsts}$ 的开头。
+为了维护子数组中的不同值列表 $\textit{firsts}$，把遍历到的 $\textit{nums}[i]$ 移到 $\textit{firsts}$ 的开头。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1KLHG6TEWJ/)，欢迎点赞关注~
-
-## 写法一：哈希表
 
 ```py [sol-Python3]
 class Solution:
     def countStaircase(self, nums: list[int]) -> int:
         n = len(nums)
         pos = defaultdict(list)
-        idx_in_pos = [0] * n  # nums[i] 在 pos[nums[i]] 中的下标
-        for i, x in enumerate(nums):
-            idx_in_pos[i] = len(pos[x])
-            pos[x].append(i)
-
         firsts = []
-        first_pos = {}
         ans = 0
+
         for i in range(n - 1, -1, -1):
             x = nums[i]
-            first_pos[x] = i
+            pos[x].append(i)  # pos[x][-k] 即为右侧第 k 个 x 的下标
 
             # 把 firsts 中的 x 移到最前面
             if x in firsts:
@@ -74,21 +62,19 @@ class Solution:
 
             mx, mn = 0, n
             r = i  # 子数组右开端点
-            for cnt, x in enumerate(firsts, 1):
-                r += cnt
-                # [i,r) 必须包含恰好 cnt 个 x
+            for k, x in enumerate(firsts, 1):
+                r += k
+                # [i,r) 必须包含恰好 k 个 x
                 ps = pos[x]
-                k = idx_in_pos[first_pos[x]] + cnt - 1
-                if k >= len(ps):  # [i,n) 中的 x 的个数小于 cnt
+                if k > len(ps):  # [i,n) 中的 x 的个数小于 k
                     break
 
                 # 更新 mx 和 mn 后，必须满足 mx < r <= mn
-                if k < len(ps) - 1:
-                    mn = min(mn, ps[k + 1])
-                if r > mn:  # 继续遍历，r 更大，mn 更小，无法找到合法子数组
+                mx = max(mx, ps[-k])
+                if k < len(ps):
+                    mn = min(mn, ps[-1 - k])
+                if mx >= mn or r > mn:  # 继续遍历，r 更大，mn 更小，无法找到合法子数组
                     break
-
-                mx = max(mx, ps[k])
                 if mx < r:
                     ans += 1
 
@@ -100,19 +86,13 @@ class Solution {
     public int countStaircase(int[] nums) {
         int n = nums.length;
         Map<Integer, List<Integer>> pos = new HashMap<>();
-        int[] idxInPos = new int[n];
-        for (int i = 0; i < n; i++) {
-            List<Integer> ps = pos.computeIfAbsent(nums[i], _ -> new ArrayList<>());
-            idxInPos[i] = ps.size();
-            ps.add(i);
-        }
-
         List<Integer> firsts = new ArrayList<>();
-        Map<Integer, Integer> firstPos = new HashMap<>();
         int ans = 0;
+
         for (int i = n - 1; i >= 0; i--) {
             int x = nums[i];
-            firstPos.put(x, i);
+            pos.computeIfAbsent(x, _ -> new ArrayList<>()).add(i);
+            // pos[x][pos[x].size()-k] 即为右侧第 k 个 x 的下标
 
             // 把 firsts 中的 x 移到最前面
             firsts.remove(Integer.valueOf(x));
@@ -121,35 +101,98 @@ class Solution {
             int m = firsts.size();
             if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
                 firsts.removeLast();
+                m--;
             }
 
             int mx = 0;
             int mn = n;
             int r = i; // 子数组右开端点
-            for (int cnt = 1; cnt <= firsts.size(); cnt++) {
-                x = firsts.get(cnt - 1);
-                r += cnt;
-                // [i,r) 必须包含恰好 cnt 个 x
+            for (int k = 1; k <= m; k++) {
+                x = firsts.get(k - 1);
+                r += k;
+                // [i,r) 必须包含恰好 k 个 x
                 List<Integer> ps = pos.get(x);
-                int k = idxInPos[firstPos.get(x)] + cnt - 1;
-                if (k >= ps.size()) { // [i,n) 中的 x 的个数小于 cnt
+                int sz = ps.size();
+                if (k > sz) { // [i,n) 中的 x 的个数小于 k
                     break;
                 }
 
                 // 更新 mx 和 mn 后，必须满足 mx < r <= mn
-                if (k < ps.size() - 1) {
-                    mn = Math.min(mn, ps.get(k + 1));
+                mx = Math.max(mx, ps.get(sz - k));
+                if (k < sz) {
+                    mn = Math.min(mn, ps.get(sz - k - 1));
                 }
-                if (r > mn) { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
+                if (mx >= mn || r > mn) { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
                     break;
                 }
-
-                mx = Math.max(mx, ps.get(k));
                 if (mx < r) {
                     ans++;
                 }
             }
         }
+
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public int countStaircase(int[] nums) {
+        int n = nums.length;
+        int maxNum = 0;
+        for (int x : nums) {
+            maxNum = Math.max(maxNum, x);
+        }
+
+        List<Integer>[] pos = new ArrayList[maxNum + 1];
+        List<Integer> firsts = new ArrayList<>();
+        int ans = 0;
+
+        for (int i = n - 1; i >= 0; i--) {
+            int x = nums[i];
+            if (pos[x] == null) {
+                pos[x] = new ArrayList<>();
+            }
+            pos[x].add(i); // pos[x][pos[x].size()-k] 即为右侧第 k 个 x 的下标
+
+            // 把 firsts 中的 x 移到最前面
+            firsts.remove(Integer.valueOf(x));
+            firsts.addFirst(x);
+
+            int m = firsts.size();
+            if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
+                firsts.removeLast();
+                m--;
+            }
+
+            int mx = 0;
+            int mn = n;
+            int r = i; // 子数组右开端点
+            for (int k = 1; k <= m; k++) {
+                x = firsts.get(k - 1);
+                r += k;
+                // [i,r) 必须包含恰好 k 个 x
+                List<Integer> ps = pos[x];
+                int sz = ps.size();
+                if (k > sz) { // [i,n) 中的 x 的个数小于 k
+                    break;
+                }
+
+                // 更新 mx 和 mn 后，必须满足 mx < r <= mn
+                mx = Math.max(mx, ps.get(sz - k));
+                if (k < sz) {
+                    mn = Math.min(mn, ps.get(sz - k - 1));
+                }
+                if (mx >= mn || r > mn) { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
+                    break;
+                }
+                if (mx < r) {
+                    ans++;
+                }
+            }
+        }
+
         return ans;
     }
 }
@@ -161,19 +204,12 @@ public:
     int countStaircase(vector<int>& nums) {
         int n = nums.size();
         unordered_map<int, vector<int>> pos;
-        vector<int> idx_in_pos(n);
-        for (int i = 0; i < n; i++) {
-            auto& ps = pos[nums[i]];
-            idx_in_pos[i] = ps.size();
-            ps.push_back(i);
-        }
-
         vector<int> firsts;
-        unordered_map<int, int> first_pos;
         int ans = 0;
+
         for (int i = n - 1; i >= 0; i--) {
             int x = nums[i];
-            first_pos[x] = i;
+            pos[x].push_back(i); // pos[x][pos[x].size()-k] 即为右侧第 k 个 x 的下标
 
             // 把 firsts 中的 x 移到最前面
             auto it = ranges::find(firsts, x);
@@ -189,30 +225,30 @@ public:
 
             int mx = 0, mn = n;
             int r = i; // 子数组右开端点
-            for (int cnt = 1; cnt <= firsts.size(); cnt++) {
-                x = firsts[cnt - 1];
-                r += cnt;
-                // [i,r) 必须包含恰好 cnt 个 x
+            for (int k = 1; k <= firsts.size(); k++) {
+                x = firsts[k - 1];
+                r += k;
+                // [i,r) 必须包含恰好 k 个 x
                 auto& ps = pos[x];
-                int k = idx_in_pos[first_pos[x]] + cnt - 1;
-                if (k >= ps.size()) { // [i,n) 中的 x 的个数小于 cnt
+                int sz = ps.size();
+                if (k > sz) { // [i,n) 中的 x 的个数小于 k
                     break;
                 }
 
                 // 更新 mx 和 mn 后，必须满足 mx < r <= mn
-                if (k + 1 < ps.size()) {
-                    mn = min(mn, ps[k + 1]);
+                mx = max(mx, ps[sz - k]);
+                if (k < sz) {
+                    mn = min(mn, ps[sz - k - 1]);
                 }
-                if (r > mn) { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
+                if (mx >= mn || r > mn) { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
                     break;
                 }
-
-                mx = max(mx, ps[k]);
                 if (mx < r) {
                     ans++;
                 }
             }
         }
+
         return ans;
     }
 };
@@ -221,27 +257,20 @@ public:
 ```go [sol-Go]
 func countStaircase(nums []int) (ans int) {
 	n := len(nums)
-	pos := map[int][]int{}
-	idxInPos := make([]int, n) // nums[i] 在 pos[nums[i]] 中的下标
-	for i, x := range nums {
-		idxInPos[i] = len(pos[x])
-		pos[x] = append(pos[x], i)
-	}
-
+	//pos := map[int][]int{}
+	pos := make([][]int, slices.Max(nums)+1) // slice 比 map 快
 	firsts := []int{}
-	firstPos := map[int]int{}
+
 	for i := n - 1; i >= 0; i-- {
 		x := nums[i]
-		firstPos[x] = i
+		pos[x] = append(pos[x], i) // pos[x][len(pos[x])-k] 即为右侧第 k 个 x 的下标
 
 		// 把 firsts 中的 x 移到最前面
 		j := slices.Index(firsts, x)
-		if j != 0 { // 优化：j = 0 时无需移动
-			if j >= 0 {
-				firsts = append(firsts[:j], firsts[j+1:]...)
-			}
-			firsts = slices.Insert(firsts, 0, x)
+		if j >= 0 {
+			firsts = append(firsts[:j], firsts[j+1:]...)
 		}
+		firsts = slices.Insert(firsts, 0, x)
 
 		m := len(firsts)
 		if m*(m+1)/2 > n { // firsts 不需要这么多元素
@@ -250,30 +279,31 @@ func countStaircase(nums []int) (ans int) {
 
 		mx, mn := 0, n
 		r := i // 子数组右开端点
-		for cnt, x := range firsts {
-			r += cnt + 1
-			// [i,r) 必须包含恰好 cnt+1 个 x
+		for k, x := range firsts {
+			k++
+			r += k
+			// [i,r) 必须包含恰好 k 个 x
 			ps := pos[x]
-			k := idxInPos[firstPos[x]] + cnt
-			if k >= len(ps) { // [i,n) 中的 x 的个数小于 cnt+1
+			sz := len(ps)
+			if k > sz { // [i,n) 中的 x 的个数小于 k
 				break
 			}
 
 			// 更新 mx 和 mn 后，必须满足 mx < r <= mn
-			if k < len(ps)-1 {
-				mn = min(mn, ps[k+1])
+			mx = max(mx, ps[sz-k])
+			if k < len(ps) {
+				mn = min(mn, ps[sz-k-1])
 			}
-			if r > mn { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
+			if mx >= mn || r > mn { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
 				break
 			}
-
-			mx = max(mx, ps[k])
 			if mx < r {
 				ans++
 			}
 		}
 	}
-	return ans
+
+	return
 }
 ```
 
@@ -282,206 +312,7 @@ func countStaircase(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\sqrt n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 写法二：数组
-
-> 试了一下 Python 反而变慢了，所以只写其他语言的代码。
-
-```java [sol-Java]
-class Solution {
-    public int countStaircase(int[] nums) {
-        int n = nums.length;
-        int maxNum = 0;
-        for (int x : nums) {
-            maxNum = Math.max(maxNum, x);
-        }
-
-        List<Integer>[] pos = new ArrayList[maxNum + 1];
-        Arrays.setAll(pos, _ -> new ArrayList<>());
-        int[] idxInPos = new int[n];
-        for (int i = 0; i < n; i++) {
-            List<Integer> ps = pos[nums[i]];
-            idxInPos[i] = ps.size();
-            ps.add(i);
-        }
-
-        List<Integer> firsts = new ArrayList<>();
-        int[] firstPos = new int[maxNum + 1];
-        int ans = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            int x = nums[i];
-            firstPos[x] = i;
-
-            // 把 firsts 中的 x 移到最前面
-            firsts.remove(Integer.valueOf(x));
-            firsts.addFirst(x);
-
-            int m = firsts.size();
-            if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
-                firsts.removeLast();
-            }
-
-            int mx = 0;
-            int mn = n;
-            int r = i; // 子数组右开端点
-            for (int cnt = 1; cnt <= firsts.size(); cnt++) {
-                x = firsts.get(cnt - 1);
-                r += cnt;
-                // [i,r) 必须包含恰好 cnt 个 x
-                List<Integer> ps = pos[x];
-                int k = idxInPos[firstPos[x]] + cnt - 1;
-                if (k >= ps.size()) { // [i,n) 中的 x 的个数小于 cnt
-                    break;
-                }
-
-                // 更新 mx 和 mn 后，必须满足 mx < r <= mn
-                if (k < ps.size() - 1) {
-                    mn = Math.min(mn, ps.get(k + 1));
-                }
-                if (r > mn) { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
-                    break;
-                }
-
-                mx = Math.max(mx, ps.get(k));
-                if (mx < r) {
-                    ans++;
-                }
-            }
-        }
-        return ans;
-    }
-}
-```
-
-```cpp [sol-C++]
-class Solution {
-public:
-    int countStaircase(vector<int>& nums) {
-        int n = nums.size();
-        int max_num = ranges::max(nums);
-
-        vector<vector<int>> pos(max_num + 1);
-        vector<int> idx_in_pos(n);
-        for (int i = 0; i < n; i++) {
-            auto& ps = pos[nums[i]];
-            idx_in_pos[i] = ps.size();
-            ps.push_back(i);
-        }
-
-        vector<int> firsts;
-        vector<int> first_pos(max_num + 1);
-        int ans = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            int x = nums[i];
-            first_pos[x] = i;
-
-            // 把 firsts 中的 x 移到最前面
-            auto it = ranges::find(firsts, x);
-            if (it != firsts.end()) {
-                firsts.erase(it);
-            }
-            firsts.insert(firsts.begin(), x);
-
-            int m = firsts.size();
-            if (m * (m + 1) / 2 > n) { // firsts 不需要这么多元素
-                firsts.pop_back();
-            }
-
-            int mx = 0, mn = n;
-            int r = i; // 子数组右开端点
-            for (int cnt = 1; cnt <= firsts.size(); cnt++) {
-                x = firsts[cnt - 1];
-                r += cnt;
-                // [i,r) 必须包含恰好 cnt 个 x
-                auto& ps = pos[x];
-                int k = idx_in_pos[first_pos[x]] + cnt - 1;
-                if (k >= ps.size()) { // [i,n) 中的 x 的个数小于 cnt
-                    break;
-                }
-
-                // 更新 mx 和 mn 后，必须满足 mx < r <= mn
-                if (k + 1 < ps.size()) {
-                    mn = min(mn, ps[k + 1]);
-                }
-                if (r > mn) { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
-                    break;
-                }
-
-                mx = max(mx, ps[k]);
-                if (mx < r) {
-                    ans++;
-                }
-            }
-        }
-        return ans;
-    }
-};
-```
-
-```go [sol-Go]
-func countStaircase(nums []int) (ans int) {
-	n := len(nums)
-	maxNum := slices.Max(nums)
-
-	pos := make([][]int, maxNum+1)
-	idxInPos := make([]int, n) // nums[i] 在 pos[nums[i]] 中的下标
-	for i, x := range nums {
-		idxInPos[i] = len(pos[x])
-		pos[x] = append(pos[x], i)
-	}
-
-	firsts := []int{}
-	firstPos := make([]int, maxNum+1)
-	for i := n - 1; i >= 0; i-- {
-		x := nums[i]
-		firstPos[x] = i
-
-		// 把 firsts 中的 x 移到最前面
-		j := slices.Index(firsts, x)
-		if j != 0 { // 优化：j = 0 时无需移动
-			if j >= 0 {
-				firsts = append(firsts[:j], firsts[j+1:]...)
-			}
-			firsts = slices.Insert(firsts, 0, x)
-		}
-
-		m := len(firsts)
-		if m*(m+1)/2 > n { // firsts 不需要这么多元素
-			firsts = firsts[:len(firsts)-1]
-		}
-
-		mx, mn := 0, n
-		r := i // 子数组右开端点
-		for cnt, x := range firsts {
-			r += cnt + 1
-			// [i,r) 必须包含恰好 cnt+1 个 x
-			ps := pos[x]
-			k := idxInPos[firstPos[x]] + cnt
-			if k >= len(ps) { // [i,n) 中的 x 的个数小于 cnt+1
-				break
-			}
-
-			// 更新 mx 和 mn 后，必须满足 mx < r <= mn
-			if k < len(ps)-1 {
-				mn = min(mn, ps[k+1])
-			}
-			if r > mn { // 继续遍历，r 更大，mn 更小，无法找到合法子数组
-				break
-			}
-
-			mx = max(mx, ps[k])
-			if mx < r {
-				ans++
-			}
-		}
-	}
-	return ans
-}
-```
-
-#### 复杂度分析
-
-- 时间复杂度：$\mathcal{O}(n\sqrt n + U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
-- 空间复杂度：$\mathcal{O}(n + U)$。
+**注**：本题只需判断子数组是否恰好有 $k$ 个 $x$，无需二分。如果要精确计算子数组中的 $x$ 的个数，需要二分，见 [2080. 区间内查询数字的频率](https://leetcode.cn/problems/range-frequency-queries/)。 
 
 ## 相似题目
 
