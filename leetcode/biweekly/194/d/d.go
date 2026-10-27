@@ -1,6 +1,9 @@
 package main
 
-import "slices"
+import (
+	"slices"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func slidingWindow(s []byte) [][26]int {
@@ -94,7 +97,7 @@ func logTrick(s []byte) [][26]int {
 	return res
 }
 
-func countMagicalPairs(S string) (ans int64) {
+func countMagicalPairs2(S string) (ans int64) {
 	s := []byte(S)
 	pre := logTrick(s)
 	slices.Reverse(s)
@@ -106,5 +109,64 @@ func countMagicalPairs(S string) (ans int64) {
 			ans += int64(pre[i][j]) * int64(suf[i+1][j])
 		}
 	}
+	return
+}
+
+//
+
+func countMagicalPairs(s string) (ans int64) {
+	n := len(s)
+	// nextIdx[i] 表示下一个 s[i] 的位置
+	nextIdx := make([]int, n)
+	last := [26]int{}
+	for i := range last {
+		last[i] = n
+	}
+	for i := n - 1; i >= 0; i-- {
+		ch := s[i] - 'a'
+		nextIdx[i] = last[ch]
+		last[ch] = i
+	}
+
+	// 右侧最近不同字母的位置
+	right := []int{}
+	for ch, p := range last {
+		if p < n {
+			right = append(right, p)
+			last[ch] = -1
+		}
+	}
+	slices.Sort(right)
+	right = append(right, n) // 哨兵
+
+	// 左侧最近不同字母的位置
+	left := []int{-1} // 哨兵
+
+	// 枚举分割线 (i,i+1)
+	for i := range n - 1 {
+		ch := s[i] - 'a'
+		// 更新左侧最近不同字母的位置
+		idx := last[ch]
+		if idx >= 0 {
+			j := sort.SearchInts(left, idx)
+			left = append(left[:j], left[j+1:]...) // 删除旧的
+		}
+		left = append(left, i) // 添加新的
+		last[ch] = i
+
+		// 更新右侧最近不同字母的位置
+		right = right[1:] // 删除旧的
+		idx = nextIdx[i]
+		if idx < n {
+			j := sort.SearchInts(right, idx)
+			right = slices.Insert(right, j, idx) // 添加新的
+		}
+
+		nl := len(left)
+		for k := range min(nl, len(right)) - 1 {
+			ans += int64(left[nl-1-k]-left[nl-2-k]) * int64(right[k+1]-right[k])
+		}
+	}
+
 	return
 }

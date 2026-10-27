@@ -507,6 +507,321 @@ func countMagicalPairs(S string) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(n|\Sigma|)$。
 
+## 方法三：维护左右最近不同字母的位置
+
+举个例子。假设 $s[7]$ 及其左侧最近的字母为 $\texttt{a},\texttt{b},\texttt{c}$，下标分别为 $1,5,7$，那么：
+
+- 右端点为 $7$ 且恰好包含 $1$ 种字母的子串个数为 $7-5=2$。
+- 右端点为 $7$ 且恰好包含 $2$ 种字母的子串个数为 $5-1=4$。
+- 右端点为 $7$ 且恰好包含 $3$ 种字母的子串个数为 $1-(-1)=2$。
+
+假设 $s[8]$ 及其右侧最近的字母为 $\texttt{d},\texttt{e}$，下标分别为 $8,10$，那么：
+
+- 左端点为 $8$ 且恰好包含 $1$ 种字母的子串个数为 $10-8=2$。
+- 左端点为 $8$ 且恰好包含 $2$ 种字母的子串个数为 $n-10$。
+
+一般地，枚举分割线 $(i,i+1)$，同时维护 $i$ 及其左侧最近字母的位置，$i+1$ 及其右侧最近字母的位置，就可以用方法一的公式计算了。
+
+```py [sol-Python3]
+class Solution:
+    def countMagicalPairs(self, s: str) -> int:
+        n = len(s)
+        # next_idx[i] 表示下一个 s[i] 的位置
+        next_idx = [n] * n
+        last = [n] * 26
+        for i in range(n - 1, -1, -1):
+            ch = ord(s[i]) - ord('a')
+            next_idx[i] = last[ch]
+            last[ch] = i
+
+        # 右侧最近不同字母的位置
+        right = sorted(i for i in last if i < n)
+        right.append(n)  # 哨兵
+
+        # 左侧最近不同字母的位置
+        left = [-1]  # 哨兵
+        last = [-1] * 26
+        ans = 0
+
+        # 枚举分割线 (i,i+1)
+        for i in range(n - 1):
+            ch = ord(s[i]) - ord('a')
+            # 更新左侧最近不同字母的位置
+            idx = last[ch]
+            if idx >= 0:
+                left.pop(bisect_left(left, idx))  # 删除旧的
+            left.append(i)  # 添加新的
+            last[ch] = i
+
+            # 更新右侧最近不同字母的位置
+            right.pop(0)  # 删除旧的
+            idx = next_idx[i]
+            if idx < n:
+                insort(right, idx)  # 添加新的
+
+            for k in range(min(len(left), len(right)) - 1):
+                ans += (left[-1 - k] - left[-2 - k]) * (right[k + 1] - right[k])
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countMagicalPairs(String S) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        // nextIdx[i] 表示下一个 s[i] 的位置
+        int[] nextIdx = new int[n];
+        int[] last = new int[26];
+        Arrays.fill(last, n);
+        for (int i = n - 1; i >= 0; i--) {
+            int ch = s[i] - 'a';
+            nextIdx[i] = last[ch];
+            last[ch] = i;
+        }
+
+        // 右侧最近不同字母的位置
+        List<Integer> right = new ArrayList<>(); // 注：换成数组更快，见另一份代码【Java 数组】
+        for (int ch = 0; ch < 26; ch++) {
+            int p = last[ch];
+            if (p < n) {
+                right.add(p);
+                last[ch] = -1;
+            }
+        }
+        Collections.sort(right);
+        right.add(n); // 哨兵
+
+        // 左侧最近不同字母的位置
+        List<Integer> left = new ArrayList<>(); // 注：换成数组更快，见另一份代码【Java 数组】
+        left.add(-1); // 哨兵
+        long ans = 0;
+
+        // 枚举分割线 (i,i+1)
+        for (int i = 0; i < n - 1; i++) {
+            int ch = s[i] - 'a';
+            // 更新左侧最近不同字母的位置
+            int idx = last[ch];
+            if (idx >= 0) {
+                int j = Collections.binarySearch(left, idx);
+                left.remove(j); // 删除旧的
+            }
+            left.add(i); // 添加新的
+            last[ch] = i;
+
+            // 更新右侧最近不同字母的位置
+            right.remove(0); // 删除旧的
+            idx = nextIdx[i];
+            if (idx < n) {
+                int j = ~Collections.binarySearch(right, idx);
+                right.add(j, idx); // 添加新的
+            }
+
+            int nl = left.size();
+            int nr = right.size();
+            for (int k = 1; k < Math.min(nl, nr); k++) {
+                ans += (long) (left.get(nl - k) - left.get(nl - k - 1)) * (right.get(k) - right.get(k - 1));
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long countMagicalPairs(String S) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        // nextIdx[i] 表示下一个 s[i] 的位置
+        int[] nextIdx = new int[n];
+        int[] last = new int[26];
+        Arrays.fill(last, n);
+        for (int i = n - 1; i >= 0; i--) {
+            int ch = s[i] - 'a';
+            nextIdx[i] = last[ch];
+            last[ch] = i;
+        }
+
+        // 右侧最近不同字母的位置
+        int[] right = new int[27];
+        int nr = 0;
+        for (int ch = 0; ch < 26; ch++) {
+            int p = last[ch];
+            if (p < n) {
+                right[nr++] = p;
+                last[ch] = -1;
+            }
+        }
+        Arrays.sort(right, 0, nr);
+        right[nr++] = n; // 哨兵
+
+        // 左侧最近不同字母的位置
+        int[] left = new int[27];
+        int nl = 1;
+        left[0] = -1; // 哨兵
+        long ans = 0;
+
+        // 枚举分割线 (i,i+1)
+        for (int i = 0; i < n - 1; i++) {
+            int ch = s[i] - 'a';
+            // 更新左侧最近不同字母的位置
+            int idx = last[ch];
+            if (idx >= 0) {
+                int j = Arrays.binarySearch(left, 0, nl, idx);
+                nl--;
+                System.arraycopy(left, j + 1, left, j, nl - j); // 删除旧的
+            }
+            left[nl++] = i; // 添加新的
+            last[ch] = i;
+
+            // 更新右侧最近不同字母的位置
+            nr--;
+            System.arraycopy(right, 1, right, 0, nr); // 删除旧的
+            idx = nextIdx[i];
+            if (idx < n) {
+                int j = ~Arrays.binarySearch(right, 0, nr, idx);
+                System.arraycopy(right, j, right, j + 1, nr - j);
+                nr++;
+                right[j] = idx; // 添加新的
+            }
+
+            for (int k = 1; k < Math.min(nl, nr); k++) {
+                ans += (long) (left[nl - k] - left[nl - k - 1]) * (right[k] - right[k - 1]);
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countMagicalPairs(string s) {
+        int n = s.size();
+        // next_idx[i] 表示下一个 s[i] 的位置
+        vector<int> next_idx(n);
+        int last[26];
+        ranges::fill(last, n);
+        for (int i = n - 1; i >= 0; i--) {
+            int ch = s[i] - 'a';
+            next_idx[i] = last[ch];
+            last[ch] = i;
+        }
+
+        // 右侧最近不同字母的位置
+        vector<int> right;
+        for (int& i : last) {
+            if (i < n) {
+                right.push_back(i);
+                i = -1;
+            }
+        }
+        ranges::sort(right);
+        right.push_back(n); // 哨兵
+
+        // 左侧最近不同字母的位置
+        vector<int> left = {-1}; // 哨兵
+        long long ans = 0;
+
+        // 枚举分割线 (i,i+1)
+        for (int i = 0; i < n - 1; i++) {
+            int ch = s[i] - 'a';
+            // 更新左侧最近不同字母的位置
+            int idx = last[ch];
+            if (idx >= 0) {
+                auto it = ranges::lower_bound(left, idx);
+                left.erase(it); // 删除旧的
+            }
+            left.push_back(i); // 添加新的
+            last[ch] = i;
+
+            // 更新右侧最近不同字母的位置
+            right.erase(right.begin()); // 删除旧的
+            idx = next_idx[i];
+            if (idx < n) {
+                auto it = ranges::lower_bound(right, idx);
+                right.insert(it, idx); // 添加新的
+            }
+
+            int nl = left.size(), nr = right.size();
+            for (int k = 1; k < min(nl, nr); k++) {
+                ans += 1LL * (left[nl - k] - left[nl - k - 1]) * (right[k] - right[k - 1]);
+            }
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countMagicalPairs(s string) (ans int64) {
+	n := len(s)
+	// nextIdx[i] 表示下一个 s[i] 的位置
+	nextIdx := make([]int, n)
+	last := [26]int{}
+	for i := range last {
+		last[i] = n
+	}
+	for i := n - 1; i >= 0; i-- {
+		ch := s[i] - 'a'
+		nextIdx[i] = last[ch]
+		last[ch] = i
+	}
+
+	// 右侧最近不同字母的位置
+	right := []int{}
+	for ch, p := range last {
+		if p < n {
+			right = append(right, p)
+			last[ch] = -1
+		}
+	}
+	slices.Sort(right)
+	right = append(right, n) // 哨兵
+
+	// 左侧最近不同字母的位置
+	left := []int{-1} // 哨兵
+
+	// 枚举分割线 (i,i+1)
+	for i := range n - 1 {
+		ch := s[i] - 'a'
+		// 更新左侧最近不同字母的位置
+		idx := last[ch]
+		if idx >= 0 {
+			j := sort.SearchInts(left, idx)
+			left = append(left[:j], left[j+1:]...) // 删除旧的
+		}
+		left = append(left, i) // 添加新的
+		last[ch] = i
+
+		// 更新右侧最近不同字母的位置
+		right = right[1:] // 删除旧的
+		idx = nextIdx[i]
+		if idx < n {
+			j := sort.SearchInts(right, idx)
+			right = slices.Insert(right, j, idx) // 添加新的
+		}
+
+		nl := len(left)
+		for k := range min(nl, len(right)) - 1 {
+			ans += int64(left[nl-1-k]-left[nl-2-k]) * int64(right[k+1]-right[k])
+		}
+	}
+
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(n + |\Sigma|)$。
+
 ## 专题训练
 
 1. 滑动窗口题单的「**§2.3.3 恰好型滑动窗口**」。
