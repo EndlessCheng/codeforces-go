@@ -12,7 +12,6 @@ import (
 
 // https://github.com/EndlessCheng
 type seg []struct {
-	l, r      int
 	size, sum int
 	flip      bool
 }
@@ -34,7 +33,6 @@ func (t seg) spread(o int) {
 }
 
 func (t seg) build(a []int, o, l, r int) {
-	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].size = a[l+1] - a[l]
 		return
@@ -45,35 +43,35 @@ func (t seg) build(a []int, o, l, r int) {
 	t[o].size = t[o<<1].size + t[o<<1|1].size
 }
 
-func (t seg) update(o, l, r int) {
-	if l <= t[o].l && t[o].r <= r {
+func (t seg) update(o, l, r, ql, qr int) {
+	if ql <= l && r <= qr {
 		t.apply(o)
 		return
 	}
 	t.spread(o)
-	m := (t[o].l + t[o].r) >> 1
-	if l <= m {
-		t.update(o<<1, l, r)
+	m := (l + r) >> 1
+	if ql <= m {
+		t.update(o<<1, l, m, ql, qr)
 	}
-	if m < r {
-		t.update(o<<1|1, l, r)
+	if m < qr {
+		t.update(o<<1|1, m+1, r, ql, qr)
 	}
 	t[o].sum = t[o<<1].sum + t[o<<1|1].sum
 }
 
-func (t seg) query(o, l, r int) int {
-	if l <= t[o].l && t[o].r <= r {
+func (t seg) query(o, l, r, ql, qr int) int {
+	if ql <= l && r <= qr {
 		return t[o].sum
 	}
 	t.spread(o)
-	m := (t[o].l + t[o].r) >> 1
-	if r <= m {
-		return t.query(o<<1, l, r)
+	m := (l + r) >> 1
+	if qr <= m {
+		return t.query(o<<1, l, m, ql, qr)
 	}
-	if l > m {
-		return t.query(o<<1|1, l, r)
+	if ql > m {
+		return t.query(o<<1|1, m+1, r, ql, qr)
 	}
-	return t.query(o<<1, l, r) + t.query(o<<1|1, l, r)
+	return t.query(o<<1, l, m, ql, qr) + t.query(o<<1|1, m+1, r, ql, qr)
 }
 
 func run(in io.Reader, _w io.Writer) {
@@ -99,9 +97,9 @@ func run(in io.Reader, _w io.Writer) {
 		l := sort.SearchInts(a, q.l)
 		r := sort.SearchInts(a, q.r+1) - 1
 		if q.op == 1 {
-			t.update(1, l, r)
+			t.update(1, 0, m-2, l, r)
 		} else {
-			Fprintln(out, t.query(1, l, r))
+			Fprintln(out, t.query(1, 0, m-2, l, r))
 		}
 	}
 }
