@@ -1,14 +1,13 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func numPairsDivisibleBy60(time []int) int {
-	c := [60]int{}
-	for _, v := range time {
-		c[v%60]++
+func numPairsDivisibleBy60(time []int) (ans int) {
+	cnt := [60]int{}
+	for _, t := range time {
+		// 先查询 cnt，再更新 cnt，因为题目要求 i<j
+		// 如果先更新，再查询，就把 i=j 的情况也考虑进去了
+		ans += cnt[(60-t%60)%60]
+		cnt[t%60]++
 	}
-	ans := c[0]*(c[0]-1)/2 + c[30]*(c[30]-1)/2
-	for i := 1; i < 30; i++ {
-		ans += c[i] * c[60-i]
-	}
-	return ans
+	return
 }
