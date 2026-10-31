@@ -11,7 +11,7 @@ func cf2275C(in io.Reader, out io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		a := make([]int, n)
-		cnt := [2]map[int]int{{}, {}}
+		cnt := map[int]int{}
 		ans := 0
 		for i := range a {
 			Fscan(in, &a[i])
@@ -19,8 +19,8 @@ func cf2275C(in io.Reader, out io.Writer) {
 				continue
 			}
 			s := a[i-4] + a[i-2] - a[i]
-			ans += cnt[0][s] + cnt[1][s]
-			cnt[i&1][s]++
+			ans += cnt[s]
+			cnt[s]++
 			if i >= 6 && a[i-6]+a[i-4]-a[i-2] == s {
 				ans--
 			}
