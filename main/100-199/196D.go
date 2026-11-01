@@ -8,61 +8,62 @@ import (
 func cf196D(in io.Reader, out io.Writer) {
 	const mod = 1_000_000_007
 	var m int
-	var str string
-	Fscan(in, &m, &str)
-	n := len(str)
-	s := make([]byte, n+1)
-	copy(s[1:], str)
-	i := n
-	for i > 0 && s[i] == 'z' {
-		s[i] = 'a'
-		i--
+	var s []byte
+	Fscan(in, &m, &s)
+	n := len(s)
+
+	w := n - 1
+	for w >= 0 && s[w] == 'z' {
+		s[w] = 'a'
+		w--
 	}
-	if i == 0 {
-		Fprint(out, "Impossible")
+	if w < 0 {
+		Fprintln(out, "Impossible")
 		return
 	}
-	s[i]++
+	s[w]++
 
 	pw := make([]int, n+1)
 	pw[0] = 1
-	for i = 1; i <= n; i++ {
+	for i := 1; i <= n; i++ {
 		pw[i] = pw[i-1] * mod
 	}
 
 	a := make([]int, n+1)
 	b := make([]int, n+1)
-
 	check := func(x, y int) bool {
-		if x < 0 {
-			return true
-		}
-		return (a[y]-a[x]*pw[y-x])*pw[x] != b[y]-b[x]
+		x++
+		return x < y || (a[x]-a[x-y]*pw[y])*pw[x-y] != b[x]-b[x-y]
 	}
 
-	ans := make([]byte, n+1)
+	t := make([]byte, n+1)
+	ok := false
 
-	var dfs func(int, bool) bool
-	dfs = func(x int, w bool) bool {
-		if x > n {
-			Fprintf(out, "%s", ans[1:])
-			return true
+	var dfs func(int, bool)
+	dfs = func(x int, y bool) {
+		if x == n {
+			Fprintf(out, "%s", t[:n])
+			ok = true
+			return
 		}
-		start := byte('a')
-		if w {
-			start = s[x]
+		st := byte('a')
+		if y {
+			st = s[x]
 		}
-		for ans[x] = start; ans[x] <= 'z'; ans[x]++ {
-			a[x] = a[x-1]*mod + int(ans[x])
-			b[x] = b[x-1] + pw[x-1]*int(ans[x])
-			if check(x-m, x) && check(x-m-1, x) && dfs(x+1, w && ans[x] == s[x]) {
-				return true
+		for t[x] = st; t[x] <= 'z'; t[x]++ {
+			a[x+1] = a[x]*mod + int(t[x])
+			b[x+1] = b[x] + int(t[x])*pw[x]
+			if check(x, m) && check(x, m+1) {
+				dfs(x+1, y && t[x] == s[x])
+			}
+			if ok {
+				return
 			}
 		}
-		return false
 	}
 
-	if !dfs(1, true) {
+	dfs(0, true)
+	if !ok {
 		Fprint(out, "Impossible")
 	}
 }
