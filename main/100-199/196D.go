@@ -6,66 +6,57 @@ import (
 )
 
 func cf196D(in io.Reader, out io.Writer) {
-	const mod = 1_000_000_007
+	const mod = 127
 	var m int
-	var s []byte
-	Fscan(in, &m, &s)
-	n := len(s)
-
-	w := n - 1
-	for w >= 0 && s[w] == 'z' {
-		s[w] = 'a'
-		w--
+	var str string
+	Fscan(in, &m, &str)
+	n := len(str)
+	p := make([]uint, n+1)
+	h1 := make([]uint, n+1)
+	h2 := make([]uint, n+1)
+	p[0] = 1
+	for i := 1; i <= n; i++ {
+		p[i] = p[i-1] * mod
 	}
-	if w < 0 {
+	s := []byte(" " + str)
+	ck := func(l, r int) bool {
+		return (h1[r]-h1[l-1]*p[r-l+1])*p[l-1] == h2[r]-h2[l-1]
+	}
+	check := func(i int) bool {
+		h1[i] = h1[i-1]*mod + uint(s[i])
+		h2[i] = h2[i-1] + uint(s[i])*p[i-1]
+		return i >= m && ck(i-m+1, i) || i >= m+1 && ck(i-m, i)
+	}
+
+	i := 1
+	for ; i <= n; i++ {
+		if check(i) {
+			break
+		}
+	}
+
+	ok := false
+	for i = min(n, i); i > 0 && !ok; i-- {
+		for s[i] = s[i] + 1; s[i] <= 'z' && !ok; s[i]++ {
+			if !check(i) {
+				ok = true
+			}
+		}
+	}
+
+	s[i+1]--
+	if !ok {
 		Fprintln(out, "Impossible")
 		return
 	}
-	s[w]++
-
-	pw := make([]int, n+1)
-	pw[0] = 1
-	for i := 1; i <= n; i++ {
-		pw[i] = pw[i-1] * mod
-	}
-
-	a := make([]int, n+1)
-	b := make([]int, n+1)
-	check := func(x, y int) bool {
-		x++
-		return x < y || (a[x]-a[x-y]*pw[y])*pw[x-y] != b[x]-b[x-y]
-	}
-
-	t := make([]byte, n+1)
-	ok := false
-
-	var dfs func(int, bool)
-	dfs = func(x int, y bool) {
-		if x == n {
-			Fprintf(out, "%s", t[:n])
-			ok = true
-			return
-		}
-		st := byte('a')
-		if y {
-			st = s[x]
-		}
-		for t[x] = st; t[x] <= 'z'; t[x]++ {
-			a[x+1] = a[x]*mod + int(t[x])
-			b[x+1] = b[x] + int(t[x])*pw[x]
-			if check(x, m) && check(x, m+1) {
-				dfs(x+1, y && t[x] == s[x])
-			}
-			if ok {
-				return
+	for i += 2; i <= n; i++ {
+		for s[i] = 'a'; s[i] <= 'z'; s[i]++ {
+			if !check(i) {
+				break
 			}
 		}
 	}
-
-	dfs(0, true)
-	if !ok {
-		Fprint(out, "Impossible")
-	}
+	Fprintf(out, "%s\n", s[1:n+1])
 }
 
 //func main() { cf196D(bufio.NewReader(os.Stdin), os.Stdout) }
