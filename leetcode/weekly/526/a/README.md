@@ -4,7 +4,9 @@ $$
 \textit{nums}[i]\cdot 10^L + \textit{nums}[i+1]
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+我们可以不断地把 $\textit{nums}[i+1]$ 除以 $10$（下取整），直到变成 $0$。循环次数即为 $L$。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1kfxW63EpG/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

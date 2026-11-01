@@ -1,19 +1,19 @@
 首先，如果 $\textit{value} = 1$，题目的 $\gcd > 1$ 的要求无法满足，返回 $-1$。下面讨论 $\textit{value}>1$ 的情况。
 
-我们需要让 $\textit{nums}$ 增长的尽量慢，这样一方面能让 $\textit{nums}[0] > 0$，另一方面能让 $\textit{nums}[n-1]$ 尽量小。
+我们需要让 $\textit{nums}$ 增长的尽量慢，这样一方面能让 $\textit{nums}[0] > 0$，从而使每个 $\textit{nums}[i]$ 都大于 $0$；另一方面能让 $\textit{nums}[n-1]$ 尽量小。
 
-## 能否满足 nums[0] > 0？
+## 能否让 nums[0] > 0？
 
 设 $a = \textit{nums}[i],\ b = \textit{nums}[i+1]$。题目要求 $a<b$，即 $b-a>0$。
 
 设 $g = \gcd(a,b)$。根据 $\gcd$ 的定义，有 $a = k_1g,\ b=k_2g$，所以 $b-a = (k_2-k_1)g\ge g$。
 
-所以从 $\textit{nums}[\textit{index}] = \textit{value}$ 开始，每往左走一步，数值减少 $g\ge 2$。
+所以从 $\textit{nums}[\textit{index}] = \textit{value}$ 开始，每往左走一步，数值至少减少 $g\ge 2$。
 
-设 $\textit{value}$ 的最小质因子为 $p$。分类讨论：
+分类讨论：
 
-- 如果 $\textit{value}$ 是偶数，那么可以构造一个往左的 $\textit{value},\textit{value}-2,\textit{value}-4,\ldots$ 的序列。偶数之间的 $\gcd \ge 2$，满足题目要求。
-- 如果 $\textit{value}$ 是奇数，那么 $\textit{nums}[\textit{index}-1]$ 至多为 $\textit{value}-p$。由于 $p$ 是奇数，所以 $\textit{value}-p$ 是偶数，同理，可以从 $\textit{nums}[\textit{index}-1] = \textit{value}-p$ 开始，构造一个往左的 $\textit{value}-p,\textit{value}-p-2,\textit{value}-p-4,\ldots$ 的序列。
+- 如果 $\textit{value}$ 是偶数，那么可以构造一个往左的 $\textit{value},\textit{value}-2,\textit{value}-4,\ldots$ 全为偶数的等差序列。偶数之间的 $\gcd \ge 2$，满足题目要求。
+- 如果 $\textit{value}$ 是奇数，设 $\textit{value}$ 的最小质因子为 $p$，那么 $\textit{nums}[\textit{index}-1]$ 至多为 $\textit{value}-p$。由于 $p$ 是奇数，所以 $\textit{value}-p$ 是偶数，那么同上，从 $\textit{nums}[\textit{index}-1] = \textit{value}-p$ 开始，构造一个往左的 $\textit{value}-p,\textit{value}-p-2,\textit{value}-p-4,\ldots$ 全为偶数的等差序列。
 
 这两种情况可以合并为，构造一个从 $\textit{nums}[\textit{index}] = \textit{value}$ 开始往左的序列：
 
@@ -21,19 +21,17 @@ $$
 \textit{value},\textit{value}-p,\textit{value}-p-2,\textit{value}-p-4,\ldots
 $$
 
-所以有
+其中
 
 $$
-0 < \textit{nums}[0] \le \textit{value} - p - 2(\textit{index}-1)
+\textit{nums}[0] =
+\begin{cases}
+\textit{value}, & \textit{index}=0     \\
+\textit{value} - p - 2(\textit{index}-1), & \textit{index} > 0     \\
+\end{cases}
 $$
 
-即 
-
-$$
-\textit{value} - p > 2(\textit{index}-1)
-$$
-
-如果上式不成立，返回 $-1$。
+如果 $\textit{nums}[0] \le 0$，返回 $-1$。
 
 ## 让 nums[n-1] 尽量小
 
@@ -53,7 +51,7 @@ $$
 \end{cases}
 $$
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1kfxW63EpG/?t=2m13s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
