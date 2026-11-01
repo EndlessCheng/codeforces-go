@@ -56,6 +56,7 @@ func minActivationCost2(edges [][]int, values []int) int {
 	const inf = math.MaxInt / 2
 	ans := inf
 	groups := make([][]int, len(values))
+
 	for _, e := range edges {
 		x, y, c := e[0], e[1], e[2]
 		vx := bits.OnesCount(uint(values[x])) % 2

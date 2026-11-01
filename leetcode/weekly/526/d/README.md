@@ -14,15 +14,15 @@ $$
 |A\ \Delta\ B|\bmod 2 = (|A| + |B| - 2|A\cap B|)\bmod 2 = (|A| + |B|)\bmod 2
 $$
 
-设 $f(x)$ 是 $x$ 的二进制中的 $1$ 的个数。从位运算角度来看，上式为
+设 $p(x)$ 是 $x$ 的二进制中的 $1$ 的个数。从位运算角度来看，上式为
 
 $$
-f(a\oplus b)\bmod 2 = (f(a) + f(b)) \bmod 2
+p(a\oplus b)\bmod 2 = (p(a) + p(b)) \bmod 2
 $$
 
 上式可以推广到多个数的情况。
 
-所以我们只需关心点权的二进制中的 $1$ 的个数的**奇偶性**，每个点权 $\textit{values}[x]$ 都可以简化成 $f(\textit{values}[x])\bmod 2$，这只有 $0$ 或者 $1$，大幅缩小了问题的规模。
+所以我们只需关心点权的二进制中的 $1$ 的个数的**奇偶性**，每个点权 $\textit{values}[x]$ 都可以简化成 $p(\textit{values}[x])\bmod 2$，这只有 $0$ 或者 $1$，大幅缩小了问题的规模。
 
 ## 方法一：树形 DP
 
@@ -399,6 +399,7 @@ func minActivationCost(edges [][]int, values []int) int {
 	const inf = math.MaxInt / 2
 	ans := inf
 	groups := make([][]int, len(values))
+
 	for _, e := range edges {
 		x, y, c := e[0], e[1], e[2]
 		vx := bits.OnesCount(uint(values[x])) % 2
@@ -445,12 +446,10 @@ class Solution:
             vy = values[y].bit_count() % 2
             if vx == vy:
                 ans = min(ans, c)
-            elif vx == 0:  # 此时 vy = 1
-                ans = min(ans, mn[x] + c)
-                mn[x] = min(mn[x], c)
-            else:  # 此时 vy = 0 且 vx = 1
-                ans = min(ans, mn[y] + c)
-                mn[y] = min(mn[y], c)
+            else:
+                center = x if vy else y
+                ans = min(ans, mn[center] + c)
+                mn[center] = min(mn[center], c)
 
         return ans if ans < inf else -1
 ```
@@ -464,16 +463,14 @@ class Solution {
 
         for (int[] e : edges) {
             int x = e[0], y = e[1], c = e[2];
-            int vx = Integer.bitCount(values[x]) % 2;
-            int vy = Integer.bitCount(values[y]) % 2;
+            int vx = Integer.bitCount(values[x]) & 1;
+            int vy = Integer.bitCount(values[y]) & 1;
             if (vx == vy) {
                 ans = Math.min(ans, c);
-            } else if (vx == 0) { // 此时 vy = 1
-                ans = (int) Math.min(ans, (long) mn[x] + c);
-                mn[x] = Math.min(mn[x], c);
-            } else { // 此时 vy = 0 且 vx = 1
-                ans = (int) Math.min(ans, (long) mn[y] + c);
-                mn[y] = Math.min(mn[y], c);
+            } else {
+                int center = vx == 0 ? x : y;
+                ans = (int) Math.min(ans, (long) mn[center] + c);
+                mn[center] = Math.min(mn[center], c);
             }
         }
 
@@ -491,16 +488,14 @@ public:
 
         for (auto& e : edges) {
             int x = e[0], y = e[1], c = e[2];
-            int vx = popcount(1u * values[x]) % 2;
-            int vy = popcount(1u * values[y]) % 2;
+            int vx = popcount(1u * values[x]) & 1;
+            int vy = popcount(1u * values[y]) & 1;
             if (vx == vy) {
                 ans = min(ans, c);
-            } else if (vx == 0) { // 此时 vy = 1
-                ans = min(1LL * ans, 1LL * mn[x] + c);
-                mn[x] = min(mn[x], c);
-            } else { // 此时 vy = 0 且 vx = 1
-                ans = min(1LL * ans, 1LL * mn[y] + c);
-                mn[y] = min(mn[y], c);
+            } else {
+                int center = vy ? x : y;
+                ans = min(1LL * ans, 1LL * mn[center] + c);
+                mn[center] = min(mn[center], c);
             }
         }
 
@@ -520,8 +515,8 @@ func minActivationCost(edges [][]int, values []int) int {
 
 	for _, e := range edges {
 		x, y, c := e[0], e[1], e[2]
-		vx := bits.OnesCount(uint(values[x])) % 2
-		vy := bits.OnesCount(uint(values[y])) % 2
+		vx := bits.OnesCount(uint(values[x])) & 1
+		vy := bits.OnesCount(uint(values[y])) & 1
 		if vx == vy {
 			ans = min(ans, c)
 		} else if vx == 0 { // 此时 vy = 1
