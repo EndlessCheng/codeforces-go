@@ -6,7 +6,7 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func minActivationCost(edges [][]int, values []int) int {
+func minActivationCost1(edges [][]int, values []int) int {
 	type edge struct{ to, c int }
 	g := make([][]edge, len(values))
 	for _, e := range edges {
@@ -45,6 +45,69 @@ func minActivationCost(edges [][]int, values []int) int {
 		return minSum
 	}
 	dfs(0, -1, 0)
+
+	if ans < inf {
+		return ans
+	}
+	return -1
+}
+
+func minActivationCost2(edges [][]int, values []int) int {
+	const inf = math.MaxInt / 2
+	ans := inf
+	groups := make([][]int, len(values))
+	for _, e := range edges {
+		x, y, c := e[0], e[1], e[2]
+		vx := bits.OnesCount(uint(values[x])) % 2
+		vy := bits.OnesCount(uint(values[y])) % 2
+		if vx == vy {
+			ans = min(ans, c)
+		} else if vx == 0 { // 此时 vy = 1
+			// 三节点路径的点权必须是 1,0,1，中间的点权必须是 0
+			groups[x] = append(groups[x], c)
+		} else { // 此时 vy = 0 且 vx = 1
+			groups[y] = append(groups[y], c)
+		}
+	}
+
+	// 枚举三节点路径的中间节点
+	for _, cs := range groups {
+		// 枚举相邻边权，计算两数之和的最小值（枚举右维护左）
+		mn := inf
+		for _, c := range cs {
+			ans = min(ans, mn+c)
+			mn = min(mn, c)
+		}
+	}
+
+	if ans < inf {
+		return ans
+	}
+	return -1
+}
+
+func minActivationCost(edges [][]int, values []int) int {
+	const inf = math.MaxInt / 2
+	ans := inf
+	mn := make([]int, len(values))
+	for i := range mn {
+		mn[i] = inf
+	}
+
+	for _, e := range edges {
+		x, y, c := e[0], e[1], e[2]
+		vx := bits.OnesCount(uint(values[x])) % 2
+		vy := bits.OnesCount(uint(values[y])) % 2
+		if vx == vy {
+			ans = min(ans, c)
+		} else if vx == 0 { // 此时 vy = 1
+			ans = min(ans, mn[x]+c)
+			mn[x] = min(mn[x], c)
+		} else { // 此时 vy = 0 且 vx = 1
+			ans = min(ans, mn[y]+c)
+			mn[y] = min(mn[y], c)
+		}
+	}
 
 	if ans < inf {
 		return ans

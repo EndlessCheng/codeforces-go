@@ -1,4 +1,4 @@
-## 性质
+## 位运算恒等式
 
 根据 [从集合论到位运算](https://leetcode.cn/discuss/post/3571304/cong-ji-he-lun-dao-wei-yun-suan-chang-ji-enve/)，我们可以把二进制数看成集合，那么异或运算即集合的**对称差**，二进制中的 $1$ 的个数即**集合大小**。
 
@@ -22,9 +22,9 @@ $$
 
 上式可以推广到多个数的情况。
 
-所以我们只需关心每个点权的二进制中的 $1$ 的个数的**奇偶性**，每个点权都可以转化成一个 $0\text{-}1$ 值，大幅缩小了问题的规模。
+所以我们只需关心点权的二进制中的 $1$ 的个数的**奇偶性**，每个点权 $\textit{values}[x]$ 都可以简化成 $f(\textit{values}[x])\bmod 2$，这只有 $0$ 或者 $1$，大幅缩小了问题的规模。
 
-## 思路
+## 方法一：树形 DP
 
 这里介绍一个通用做法，把题干中的「最小」改成「最大」也能做。
 
@@ -49,7 +49,7 @@ $$
 - 如果 $\textit{values}[x]$ 的二进制中的 $1$ 的个数是偶数，那么把两棵子树的 $\textit{minSum}[0]$ 相加，或者两棵子树的 $\textit{minSum}[1]$ 相加。
 - 如果 $\textit{values}[x]$ 的二进制中的 $1$ 的个数是奇数，那么把一棵子树的 $\textit{minSum}[0]$ 与另一棵子树的 $\textit{minSum}[1]$ 相加。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1kfxW63EpG/?t=30m7s)，额外讲解了其他位运算恒等式，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -266,6 +266,272 @@ func minActivationCost(edges [][]int, values []int) int {
 		return minSum
 	}
 	dfs(0, -1, 0)
+
+	if ans < inf {
+		return ans
+	}
+	return -1
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{values}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：脑筋急转弯
+
+假设存在长度 $\ge 4$ 最优路径。考察该路径中的连续 $4$ 个节点：
+
+- 如果存在两个相邻节点的点权（已简化成 $0$ 和 $1$）相同，那么这两个节点组成了平衡异或路径。由于本题边权为正，所以这两个节点组成的路径的边权和更小，矛盾。
+- 否则，路径中的点权都是 $0$ 和 $1$ 交替出现的。无论是 $0,1,0,1$ 还是 $1,0,1,0$，都包含点权为 $1,0,1$ 的子路径，这是平衡异或路径，边权和更小，矛盾。
+
+所以用反证法可以证明如下结论：
+
+- **如果存在最优路径，那么其长度至多为** $3$。
+
+所以只需遍历边权以及相邻的边权（求和），计算其中的最小值。
+
+### 优化前
+
+```py [sol-Python3]
+class Solution:
+    def minActivationCost(self, edges: list[list[int]], values: list[int]) -> int:
+        ans = inf
+        groups = [[] for _ in values]
+
+        for x, y, c in edges:
+            vx = values[x].bit_count() % 2
+            vy = values[y].bit_count() % 2
+            if vx == vy:
+                ans = min(ans, c)
+            elif vx == 0:  # 此时 vy = 1
+                # 三节点路径的点权必须是 1,0,1，中间的点权必须是 0
+                groups[x].append(c)
+            else:  # 此时 vy = 0 且 vx = 1
+                groups[y].append(c)
+
+        # 枚举三节点路径的中间节点
+        for cs in groups:
+            # 枚举相邻边权，计算两数之和的最小值（枚举右维护左）
+            mn = inf
+            for c in cs:
+                ans = min(ans, mn + c)
+                mn = min(mn, c)
+
+        return ans if ans < inf else -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int minActivationCost(int[][] edges, int[] values) {
+        int ans = Integer.MAX_VALUE;
+        List<Integer>[] groups = new ArrayList[values.length];
+        Arrays.setAll(groups, _ -> new ArrayList<>());
+
+        for (int[] e : edges) {
+            int x = e[0], y = e[1], c = e[2];
+            int vx = Integer.bitCount(values[x]) % 2;
+            int vy = Integer.bitCount(values[y]) % 2;
+            if (vx == vy) {
+                ans = Math.min(ans, c);
+            } else if (vx == 0) { // 此时 vy = 1
+                // 三节点路径的点权必须是 1,0,1，中间的点权必须是 0
+                groups[x].add(c);
+            } else { // 此时 vy = 0 且 vx = 1
+                groups[y].add(c);
+            }
+        }
+
+        // 枚举三节点路径的中间节点
+        for (List<Integer> cs : groups) {
+            // 枚举相邻边权，计算两数之和的最小值（枚举右维护左）
+            int mn = Integer.MAX_VALUE;
+            for (int c : cs) {
+                ans = (int) Math.min(ans, (long) mn + c);
+                mn = Math.min(mn, c);
+            }
+        }
+
+        return ans < Integer.MAX_VALUE ? ans : -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minActivationCost(vector<vector<int>>& edges, vector<int>& values) {
+        int ans = INT_MAX;
+        vector<vector<int>> groups(values.size());
+
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], c = e[2];
+            int vx = popcount(1u * values[x]) % 2;
+            int vy = popcount(1u * values[y]) % 2;
+            if (vx == vy) {
+                ans = min(ans, c);
+            } else if (vx == 0) { // 此时 vy = 1
+                // 三节点路径的点权必须是 1,0,1，中间的点权必须是 0
+                groups[x].push_back(c);
+            } else { // 此时 vy = 0 且 vx = 1
+                groups[y].push_back(c);
+            }
+        }
+
+        // 枚举三节点路径的中间节点
+        for (auto& cs : groups) {
+            // 枚举相邻边权，计算两数之和的最小值（枚举右维护左）
+            int mn = INT_MAX;
+            for (int c : cs) {
+                ans = min(1LL * ans, 1LL * mn + c);
+                mn = min(mn, c);
+            }
+        }
+
+        return ans < INT_MAX ? ans : -1;
+    }
+};
+```
+
+```go [sol-Go]
+func minActivationCost(edges [][]int, values []int) int {
+	const inf = math.MaxInt / 2
+	ans := inf
+	groups := make([][]int, len(values))
+	for _, e := range edges {
+		x, y, c := e[0], e[1], e[2]
+		vx := bits.OnesCount(uint(values[x])) % 2
+		vy := bits.OnesCount(uint(values[y])) % 2
+		if vx == vy {
+			ans = min(ans, c)
+		} else if vx == 0 { // 此时 vy = 1
+			// 三节点路径的点权必须是 1,0,1，中间的点权必须是 0
+			groups[x] = append(groups[x], c)
+		} else { // 此时 vy = 0 且 vx = 1
+			groups[y] = append(groups[y], c)
+		}
+	}
+
+	// 枚举三节点路径的中间节点
+	for _, cs := range groups {
+		// 枚举相邻边权，计算两数之和的最小值（枚举右维护左）
+		mn := inf
+		for _, c := range cs {
+			ans = min(ans, mn+c)
+			mn = min(mn, c)
+		}
+	}
+
+	if ans < inf {
+		return ans
+	}
+	return -1
+}
+```
+
+### 优化：一次遍历
+
+把上面代码的两个循环合并为一个循环。
+
+```py [sol-Python3]
+class Solution:
+    def minActivationCost(self, edges: list[list[int]], values: list[int]) -> int:
+        ans = inf
+        mn = [inf] * len(values)
+
+        for x, y, c in edges:
+            vx = values[x].bit_count() % 2
+            vy = values[y].bit_count() % 2
+            if vx == vy:
+                ans = min(ans, c)
+            elif vx == 0:  # 此时 vy = 1
+                ans = min(ans, mn[x] + c)
+                mn[x] = min(mn[x], c)
+            else:  # 此时 vy = 0 且 vx = 1
+                ans = min(ans, mn[y] + c)
+                mn[y] = min(mn[y], c)
+
+        return ans if ans < inf else -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int minActivationCost(int[][] edges, int[] values) {
+        int ans = Integer.MAX_VALUE;
+        int[] mn = new int[values.length];
+        Arrays.fill(mn, Integer.MAX_VALUE);
+
+        for (int[] e : edges) {
+            int x = e[0], y = e[1], c = e[2];
+            int vx = Integer.bitCount(values[x]) % 2;
+            int vy = Integer.bitCount(values[y]) % 2;
+            if (vx == vy) {
+                ans = Math.min(ans, c);
+            } else if (vx == 0) { // 此时 vy = 1
+                ans = (int) Math.min(ans, (long) mn[x] + c);
+                mn[x] = Math.min(mn[x], c);
+            } else { // 此时 vy = 0 且 vx = 1
+                ans = (int) Math.min(ans, (long) mn[y] + c);
+                mn[y] = Math.min(mn[y], c);
+            }
+        }
+
+        return ans < Integer.MAX_VALUE ? ans : -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minActivationCost(vector<vector<int>>& edges, vector<int>& values) {
+        int ans = INT_MAX;
+        vector<int> mn(values.size(), INT_MAX);
+
+        for (auto& e : edges) {
+            int x = e[0], y = e[1], c = e[2];
+            int vx = popcount(1u * values[x]) % 2;
+            int vy = popcount(1u * values[y]) % 2;
+            if (vx == vy) {
+                ans = min(ans, c);
+            } else if (vx == 0) { // 此时 vy = 1
+                ans = min(1LL * ans, 1LL * mn[x] + c);
+                mn[x] = min(mn[x], c);
+            } else { // 此时 vy = 0 且 vx = 1
+                ans = min(1LL * ans, 1LL * mn[y] + c);
+                mn[y] = min(mn[y], c);
+            }
+        }
+
+        return ans < INT_MAX ? ans : -1;
+    }
+};
+```
+
+```go [sol-Go]
+func minActivationCost(edges [][]int, values []int) int {
+	const inf = math.MaxInt / 2
+	ans := inf
+	mn := make([]int, len(values))
+	for i := range mn {
+		mn[i] = inf
+	}
+
+	for _, e := range edges {
+		x, y, c := e[0], e[1], e[2]
+		vx := bits.OnesCount(uint(values[x])) % 2
+		vy := bits.OnesCount(uint(values[y])) % 2
+		if vx == vy {
+			ans = min(ans, c)
+		} else if vx == 0 { // 此时 vy = 1
+			ans = min(ans, mn[x]+c)
+			mn[x] = min(mn[x], c)
+		} else { // 此时 vy = 0 且 vx = 1
+			ans = min(ans, mn[y]+c)
+			mn[y] = min(mn[y], c)
+		}
+	}
 
 	if ans < inf {
 		return ans
