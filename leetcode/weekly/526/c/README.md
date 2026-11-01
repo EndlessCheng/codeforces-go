@@ -1,12 +1,22 @@
-从最左边开始遍历，第一段的最小值必须是 $1$，最大值必须等于我们遍历过的数的个数，后面依此类推。例如 $\textit{nums}=[3,2,1,6,4,5]$，第一段为 $[3,2,1]$，第二段为 $[6,4,5]$。
+如果所有数都已解锁，那么最少交换次数为 $\textit{nums}$ 的逆序对的个数，[证明](https://leetcode.cn/problems/minimum-adjacent-swaps-to-partition-array/solutions/3998484/ji-suan-ni-xu-dui-de-ge-shu-pythonjavacg-o1ig/)。
 
-每一段排好序后，$\textit{nums}$ 就是有序数组了，所以每一段可以独立计算。用 [分组循环](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/) 找到每一段。
+本题除了要算逆序对，还需要找到哪些数不需要解锁。如何找到这些数？
 
-对于每一段，交换次数为这一段的逆序对的个数，[证明](https://leetcode.cn/problems/minimum-adjacent-swaps-to-partition-array/solutions/3998484/ji-suan-ni-xu-dui-de-ge-shu-pythonjavacg-o1ig/)。
+如果 $\textit{nums}[i]=i+1$，已经在正确的位置上，是否就说明 $\textit{nums}[i]$ 无需解锁？
 
-长为 $1$ 的段无需排序，其中元素无需解锁。其余元素都需要解锁。
+不一定。最简单的例子是 $\textit{nums}=[3,2,1]$，虽然 $2$ 已经在正确的位置上，但必须解锁 $2$ 才能把 $1$ 交换到最左边。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+但对于 $\textit{nums}=[3,2,1,4,7,5,6]$，其中的 $4$ 无需解锁。
+
+这启发我们寻找可以独立排序的段。上例第一段为 $[3,2,1]$，第二段为 $[4]$，第三段为 $[7,5,6]$。其中第二段只有一个数，无需排序，无需解锁。
+
+怎么判断我们遍历到了段的末尾？如果遍历过的数的最大值 $\textit{mx}$ 等于遍历过的数的个数 $i+1$，那么 $\textit{nums}[i]$ 是这一段的末尾。可以用 [分组循环](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/) 找到每一段。
+
+代码实现时，可以 $\mathcal{O}(n^2)$ 暴力枚举寻找逆序对，也可以用值域树状数组 $\mathcal{O}(n\log n)$ 统计逆序对个数，下面用的值域树状数组。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1kfxW63EpG/?t=17m43s)，欢迎点赞关注~
+
+## 写法一
 
 ```py [sol-Python3]
 # 模板来源 https://leetcode.cn/discuss/post/3583665/
@@ -38,8 +48,6 @@ class FenwickTree:
     # 1 <= l <= r <= n
     # 时间复杂度 O(log n)
     def query(self, l: int, r: int) -> int:
-        if l > r:
-            return 0
         return self.pre(r) - self.pre(l - 1)
 
 class Solution:
@@ -51,19 +59,16 @@ class Solution:
             if nums[i] == i + 1:  # nums[i] 已在正确位置上
                 i += 1
                 continue
-            start = i
-            mn, mx = inf, 0
-            # 这一段的最小值必须是 start+1，且值域大小必须等于段长度
-            while i < n and (mn != start + 1 or mx - mn + 1 != i - start):
+            mx = -1
+            while i < n and mx != i:
                 if locked[i]:
                     if k == 0:  # 无法解锁
                         return -1
                     k -= 1
                     ans += 1
                 x = nums[i]
-                ans += t.query(x, mx)  # x 与其左侧元素的逆序对个数
+                ans += t.query(x, n)  # x 与其左侧元素的逆序对个数
                 t.update(x, 1)
-                mn = min(mn, x)
                 mx = max(mx, x)
                 i += 1
         return ans
@@ -102,9 +107,6 @@ class FenwickTree {
     // 1 <= l <= r <= n
     // 时间复杂度 O(log n)
     public int query(int l, int r) {
-        if (l > r) {
-            return 0;
-        }
         return pre(r) - pre(l - 1);
     }
 }
@@ -119,10 +121,8 @@ class Solution {
                 i++;
                 continue;
             }
-            int start = i;
-            int mn = n + 1, mx = 0;
-            // 这一段的最小值必须是 start+1，且值域大小必须等于段长度
-            for (; i < n && (mn != start + 1 || mx - mn + 1 != i - start); i++) {
+            int mx = -1;
+            for (; i < n && mx != i; i++) {
                 if (locked[i] > 0) {
                     if (k == 0) { // 无法解锁
                         return -1;
@@ -131,9 +131,8 @@ class Solution {
                     ans++;
                 }
                 int x = nums[i];
-                ans += t.query(x, mx); // x 与其左侧元素的逆序对个数
+                ans += t.query(x, n); // x 与其左侧元素的逆序对个数
                 t.update(x, 1);
-                mn = Math.min(mn, x);
                 mx = Math.max(mx, x);
             }
         }
@@ -177,9 +176,6 @@ public:
     // 1 <= l <= r <= n
     // 时间复杂度 O(log n)
     T query(int l, int r) const {
-        if (l > r) {
-            return 0;
-        }
         return pre(r) - pre(l - 1);
     }
 };
@@ -195,10 +191,8 @@ public:
                 i++;
                 continue;
             }
-            int start = i;
-            int mn = n + 1, mx = 0;
-            // 这一段的最小值必须是 start+1，且值域大小必须等于段长度
-            for (; i < n && (mn != start + 1 || mx - mn + 1 != i - start); i++) {
+            int mx = -1;
+            for (; i < n && mx != i; i++) {
                 if (locked[i]) {
                     if (k == 0) { // 无法解锁
                         return -1;
@@ -207,9 +201,8 @@ public:
                     ans++;
                 }
                 int x = nums[i];
-                ans += t.query(x, mx); // x 与其左侧元素的逆序对个数
+                ans += t.query(x, n); // x 与其左侧元素的逆序对个数
                 t.update(x, 1);
-                mn = min(mn, x);
                 mx = max(mx, x);
             }
         }
@@ -226,29 +219,26 @@ type fenwick []int
 // 1 <= i <= n
 // 时间复杂度 O(log n)
 func (f fenwick) update(i int, val int) {
-    for ; i < len(f); i += i & -i {
-        f[i] += val
-    }
+	for ; i < len(f); i += i & -i {
+		f[i] += val
+	}
 }
 
 // 求前缀和 a[1] + ... + a[i]
 // 1 <= i <= n
 // 时间复杂度 O(log n)
 func (f fenwick) pre(i int) (res int) {
-    for ; i > 0; i &= i - 1 {
-        res += f[i]
-    }
-    return
+	for ; i > 0; i &= i - 1 {
+		res += f[i]
+	}
+	return
 }
 
 // 求区间和 a[l] + ... + a[r]
 // 1 <= l <= r <= n
 // 时间复杂度 O(log n)
 func (f fenwick) query(l, r int) int {
-    if l > r {
-        return 0
-    }
-    return f.pre(r) - f.pre(l-1)
+	return f.pre(r) - f.pre(l-1)
 }
 
 func minOperations(nums, locked []int, k int) (ans int) {
@@ -259,10 +249,8 @@ func minOperations(nums, locked []int, k int) (ans int) {
 			i++
 			continue
 		}
-		start := i
-		mn, mx := n+1, 0
-		// 这一段的最小值必须是 start+1，且值域大小必须等于段长度
-		for ; i < n && (mn != start+1 || mx-mn+1 != i-start); i++ {
+		mx := -1
+		for ; i < n && mx != i; i++ {
 			if locked[i] > 0 {
 				if k == 0 { // 无法解锁
 					return -1
@@ -271,9 +259,239 @@ func minOperations(nums, locked []int, k int) (ans int) {
 				ans++
 			}
 			x := nums[i]
-			ans += t.query(x, mx) // x 与其左侧元素的逆序对个数
+			ans += t.query(x, n) // x 与其左侧元素的逆序对个数
 			t.update(x, 1)
-			mn = min(mn, x)
+			mx = max(mx, x)
+		}
+	}
+	return
+}
+```
+
+## 写法二
+
+把树状数组的下标反转，$x$ 变成 $n+1-x$，这样后缀和变为前缀和，无需算两次 $\texttt{pre}$。
+
+```py [sol-Python3]
+# 模板来源 https://leetcode.cn/discuss/post/3583665/
+class FenwickTree:
+    def __init__(self, n: int):
+        self.tree = [0] * (n + 1)  # 使用下标 1 到 n
+
+    # a[i] 增加 val
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def update(self, i: int, val: int) -> None:
+        t = self.tree
+        while i < len(t):
+            t[i] += val
+            i += i & -i
+
+    # 计算前缀和 a[1] + ... + a[i]
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def pre(self, i: int) -> int:
+        t = self.tree
+        res = 0
+        while i > 0:
+            res += t[i]
+            i &= i - 1
+        return res
+
+class Solution:
+    def minOperations(self, nums: list[int], locked: list[int], k: int) -> int:
+        n = len(nums)
+        t = FenwickTree(n)
+        ans = i = 0
+        while i < n:
+            if nums[i] == i + 1:  # nums[i] 已在正确位置上
+                i += 1
+                continue
+            mx = -1
+            while i < n and mx != i:
+                if locked[i]:
+                    if k == 0:  # 无法解锁
+                        return -1
+                    k -= 1
+                    ans += 1
+                x = nums[i]
+                v = n + 1 - x
+                ans += t.pre(v)  # x 与其左侧元素的逆序对个数
+                t.update(v, 1)
+                mx = max(mx, x)
+                i += 1
+        return ans
+```
+
+```java [sol-Java]
+// 模板来源 https://leetcode.cn/discuss/post/3583665/
+class FenwickTree {
+    private final int[] tree;
+
+    public FenwickTree(int n) {
+        tree = new int[n + 1]; // 使用下标 1 到 n
+    }
+
+    // a[i] 增加 val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public void update(int i, int val) {
+        for (; i < tree.length; i += i & -i) {
+            tree[i] += val;
+        }
+    }
+
+    // 求前缀和 a[1] + ... + a[i]
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    public int pre(int i) {
+        int res = 0;
+        for (; i > 0; i &= i - 1) {
+            res += tree[i];
+        }
+        return res;
+    }
+}
+
+class Solution {
+    public int minOperations(int[] nums, int[] locked, int k) {
+        int n = nums.length;
+        FenwickTree t = new FenwickTree(n);
+        int ans = 0;
+        for (int i = 0; i < n; ) {
+            if (nums[i] == i + 1) { // nums[i] 已在正确位置上
+                i++;
+                continue;
+            }
+            int mx = -1;
+            for (; i < n && mx != i; i++) {
+                if (locked[i] > 0) {
+                    if (k == 0) { // 无法解锁
+                        return -1;
+                    }
+                    k--;
+                    ans++;
+                }
+                int x = nums[i];
+                int v = n + 1 - x;
+                ans += t.pre(v); // x 与其左侧元素的逆序对个数
+                t.update(v, 1);
+                mx = Math.max(mx, x);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+// 模板来源 https://leetcode.cn/discuss/post/3583665/
+// 根据题目用 FenwickTree<int> t(n) 或者 FenwickTree<long long> t(n) 初始化
+template<typename T>
+class FenwickTree {
+    vector<T> tree;
+
+public:
+    // 使用下标 1 到 n
+    FenwickTree(int n) : tree(n + 1) {}
+
+    // a[i] 增加 val
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    void update(int i, T val) {
+        for (; i < tree.size(); i += i & -i) {
+            tree[i] += val;
+        }
+    }
+
+    // 求前缀和 a[1] + ... + a[i]
+    // 1 <= i <= n
+    // 时间复杂度 O(log n)
+    T pre(int i) const {
+        T res{};
+        for (; i > 0; i &= i - 1) {
+            res += tree[i];
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minOperations(vector<int>& nums, vector<int>& locked, int k) {
+        int n = nums.size();
+        FenwickTree<int> t(n);
+        int ans = 0;
+        for (int i = 0; i < n;) {
+            if (nums[i] == i + 1) { // nums[i] 已在正确位置上
+                i++;
+                continue;
+            }
+            int mx = -1;
+            for (; i < n && mx != i; i++) {
+                if (locked[i]) {
+                    if (k == 0) { // 无法解锁
+                        return -1;
+                    }
+                    k--;
+                    ans++;
+                }
+                int x = nums[i];
+                int v = n + 1 - x;
+                ans += t.pre(v); // x 与其左侧元素的逆序对个数
+                t.update(v, 1);
+                mx = max(mx, x);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+// 模板来源 https://leetcode.cn/discuss/post/3583665/
+type fenwick []int
+
+// a[i] 增加 val
+// 1 <= i <= n
+// 时间复杂度 O(log n)
+func (f fenwick) update(i int, val int) {
+	for ; i < len(f); i += i & -i {
+		f[i] += val
+	}
+}
+
+// 求前缀和 a[1] + ... + a[i]
+// 1 <= i <= n
+// 时间复杂度 O(log n)
+func (f fenwick) pre(i int) (res int) {
+	for ; i > 0; i &= i - 1 {
+		res += f[i]
+	}
+	return
+}
+
+func minOperations(nums, locked []int, k int) (ans int) {
+	n := len(nums)
+	t := make(fenwick, n+1)
+	for i := 0; i < n; {
+		if nums[i] == i+1 { // nums[i] 已在正确位置上
+			i++
+			continue
+		}
+		mx := -1
+		for ; i < n && mx != i; i++ {
+			if locked[i] > 0 {
+				if k == 0 { // 无法解锁
+					return -1
+				}
+				k--
+				ans++
+			}
+			x := nums[i]
+			v := n + 1 - x
+			ans += t.pre(v) // x 与其左侧元素的逆序对个数
+			t.update(v, 1)
 			mx = max(mx, x)
 		}
 	}
