@@ -32,16 +32,14 @@ func (t seg) maintain(o int) {
 	t[o] = t.merge(t[o*2], t[o*2+1])
 }
 
-func (t seg) build(in io.Reader, o, l, r int) {
+func (t seg) build(a []int, o, l, r int) {
 	if l == r {
-		var x int
-		Fscan(in, &x)
-		t.set(o, x)
+		t.set(o, a[l])
 		return
 	}
 	m := (l + r) >> 1
-	t.build(in, o*2, l, m)
-	t.build(in, o*2+1, m+1, r)
+	t.build(a, o*2, l, m)
+	t.build(a, o*2+1, m+1, r)
 	t.maintain(o)
 }
 
@@ -78,24 +76,26 @@ func run(in io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var n, q, op, l, r int
 	Fscan(in, &n, &q)
+	a := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		Fscan(in, &a[i])
+	}
 	t := make(seg, 2<<bits.Len(uint(n-1)))
-	t.build(in, 1, 1, n)
+	t.build(a, 1, 1, n)
 	for range q {
 		Fscan(in, &op, &l, &r)
 		if op == 1 {
+			a[l] = r
 			t.update(1, 1, n, l, r)
 			continue
 		}
 		ans := 0
-		al := t.query(1, 1, n, l, l)
 		if l == r {
-			for i := range 30 {
-				ans |= int(al[i][1]^1) << i
-			}
+			ans = a[l]
 		} else {
 			mp := t.query(1, 1, n, l+1, r)
 			for i := range 30 {
-				ans |= int(mp[i][al[i][1]^1]) << i
+				ans |= int(mp[i][a[l]>>i&1]) << i
 			}
 		}
 		Fprintln(out, ans)
