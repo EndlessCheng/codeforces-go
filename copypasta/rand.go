@@ -34,9 +34,12 @@ https://codeforces.com/problemset/problem/1996/G 2200
 https://codeforces.com/problemset/problem/869/E  2400 加法哈希
 https://codeforces.com/problemset/problem/1830/C 2400
 https://codeforces.com/problemset/problem/1175/F 2500
-https://codeforces.com/problemset/problem/1418/G 2500
+https://codeforces.com/problemset/problem/1418/G 2500 出现三次
 https://codeforces.com/problemset/problem/1771/F 2500 主席树
 https://codeforces.com/problemset/problem/1746/F 2800 随机赋值
+https://codeforces.com/problemset/problem/1622/F 2900 阶乘的结论
+https://atcoder.jp/contests/abc250/tasks/abc250_e ~1786 CF
+https://atcoder.jp/contests/abc367/tasks/abc367_f ~1876 CF 加法哈希
 
 交互
 https://codeforces.com/problemset/problem/843/B 2000

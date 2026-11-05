@@ -81,6 +81,7 @@ https://codeforces.com/problemset/problem/466/C 1700
 https://codeforces.com/problemset/problem/2117/H 2500
 
 前缀和与哈希表
+https://codeforces.com/problemset/problem/2276/C 1100
 https://codeforces.com/problemset/problem/1915/E 1300 交错前缀和
 https://codeforces.com/problemset/problem/2145/C 1300
 https://codeforces.com/problemset/problem/1996/E 1600 子数组中的和为 k 的子数组的个数之和
@@ -536,7 +537,7 @@ LC782 https://leetcode.cn/problems/transform-to-chessboard/
 https://www.luogu.com.cn/problem/P5329
 
 思维：脑筋急转弯
-https://codeforces.com/problemset/problem/2049/A 800
+https://codeforces.com/problemset/problem/2049/A  800
 https://codeforces.com/problemset/problem/1333/A 1000
 https://codeforces.com/problemset/problem/1632/B 1000 位运算 XOR
 https://codeforces.com/problemset/problem/1637/B 1100
@@ -619,6 +620,7 @@ https://codeforces.com/problemset/problem/2056/C  1200
 https://codeforces.com/problemset/problem/2072/C  1200
 https://codeforces.com/problemset/problem/2118/B  1200
 https://codeforces.com/problemset/problem/2134/B  1200 操作至多 k 次：把 a 的一个子序列的元素都增加 k，最终让 gcd(a) > 1（提示：从特殊到一般）
+https://codeforces.com/problemset/problem/2137/D  1200
 https://codeforces.com/problemset/problem/1717/C  1300
 https://codeforces.com/problemset/problem/1733/C  1300
 https://codeforces.com/problemset/problem/1788/C  1300

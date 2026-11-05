@@ -217,7 +217,7 @@ func polyConvFFTs(coefs [][]int) []int {
 	return polyConvFFT(polyConvFFTs(coefs[:n/2]), polyConvFFTs(coefs[n/2:]))
 }
 
-func (t *fft) fft2(a [][]complex128, f func([]complex128)) {
+func (t *fft) transform2(a [][]complex128, f func([]complex128)) {
 	for _, row := range a {
 		f(row)
 	}
@@ -257,14 +257,14 @@ func polyConvFFT2(mat1, mat2 [][]int) [][]int {
 	}
 
 	f := newFFT(size)
-	f.fft2(a, f.dft)
-	f.fft2(b, f.dft)
+	f.transform2(a, f.dft)
+	f.transform2(b, f.dft)
 	for i, row := range b {
 		for j, x := range row {
 			a[i][j] *= x
 		}
 	}
-	f.fft2(a, f.idft)
+	f.transform2(a, f.idft)
 
 	conv := make([][]int, n2)
 	for i, row := range a[:n2] {

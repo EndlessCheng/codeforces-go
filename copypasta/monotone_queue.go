@@ -45,6 +45,7 @@ https://codeforces.com/problemset/problem/1132/G 2400
 https://codeforces.com/problemset/problem/1304/F2 2400
 https://codeforces.com/problemset/problem/797/F 2600
 https://codeforces.com/problemset/problem/377/E 2800
+https://www.luogu.com.cn/problem/P9588
 https://www.luogu.com.cn/problem/P3572
 - 在有多个相同转移来源 f[j] 的情况下，保证 a[j] 最大的在队首
 - 如此处理后，可以保证队首是最优转移来源，其余转移来源不会算出比队首更小的 f[j] + (a[j] <= a[i])

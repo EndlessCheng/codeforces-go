@@ -312,6 +312,7 @@ func (*tree) depthSize(root int, g [][]int, v int) {
 // https://codeforces.com/problemset/problem/163/E 2800 AC 自动机 
 // https://codeforces.com/problemset/problem/1827/D 2800 重心性质
 // https://codeforces.com/problemset/problem/176/E 3100
+// https://www.luogu.com.cn/problem/P11855
 // https://ac.nowcoder.com/acm/contest/6383/B
 // https://ac.nowcoder.com/acm/contest/9247/B 给定一棵 n 个点的完全 k 叉树的先序遍历，还原这棵树 
 // - 先用 BFS 建树，然后 DFS 跑建好的树

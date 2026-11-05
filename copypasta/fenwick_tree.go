@@ -67,6 +67,8 @@ https://atcoder.jp/contests/abc392/tasks/abc392_f 也可以用 Splay 树
 https://atcoder.jp/contests/abc256/tasks/abc256_f 多重前缀和
 https://atcoder.jp/contests/abc221/tasks/abc221_e
 https://atcoder.jp/contests/abc368/tasks/abc368_g
+https://www.luogu.com.cn/problem/P5677 离线
+https://www.luogu.com.cn/problem/P2448
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 贡献 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
 https://codeforces.com/gym/101649 I 题
@@ -183,7 +185,7 @@ func (f *fenwickK) update(i, num, val int) {
 }
 
 // 返回第 k 小的数（k 从 1 开始）
-// 注：如果是普通树状数组，相当于查找前缀和 >= k 的最小下标（lowerBound），见 https://codeforces.com/problemset/problem/992/E
+// 注：如果是普通树状数组，最后返回 i，即为前缀和 >= k 的最小下标（0-index），见 https://codeforces.com/problemset/problem/992/E
 func (f *fenwickK) kth(k int) int {
 	t := f.t
 	i := 0
@@ -289,7 +291,6 @@ func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2
 
 // [0] 维护 ∑diff[i]
 // [1] 维护 ∑i*diff[i]
-// 为了更好地利用缓存，写成 [][2] 而不是 [2][]
 type fenwickDiff [][2]int
 
 func newFenwickTreeDiff(n int) fenwickDiff {

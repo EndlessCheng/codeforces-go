@@ -731,18 +731,21 @@ func _() {
 		// 可以得到其在 s 中对应的回文子串的区间为 [(i-halfLen[i])/2, (i+halfLen[i])/2-2]
 		halfLen := make([]int, len(t)-2)
 		halfLen[1] = 1
+
 		// boxR 表示当前右边界下标最大的回文子串的右边界下标+1（初始化成任意 <= 0 的数都可以）
-		// boxM 为该最大回文子串的中心位置，二者的关系为 boxR = boxM + halfLen[boxM]
+		// boxM 为该最大回文子串的中心位置
+		// 二者的关系为 boxR = boxM + halfLen[boxM]
 		boxM, boxR := 0, 0
 		for i := 2; i < len(halfLen); i++ { // 循环的起止位置对应着原串的首尾字符
 			hl := 1 // 注：如果题目比较的是抽象意义的值，单个值可能不满足要求，此时应初始化 hl = 0
 			if i < boxR {
 				// 记 i 关于 boxM 的对称位置 i'=boxM*2-i
-				// 若以 i' 为中心的最长回文子串范围超出了以 boxM 为中心的回文串的范围（即 i+halfLen[i'] >= boxR）
+				// 若以 i' 为中心的最长回文子串范围超出了以 boxM 为中心的回文串的范围
 				// 则 halfLen[i] 应先初始化为已知的回文半径 boxR-i，然后再继续暴力匹配
 				// 否则 halfLen[i] 与 halfLen[i'] 相等
-				hl = min(halfLen[boxM*2-i], boxR-i)
+				hl = min(boxR-i, halfLen[boxM*2-i])
 			}
+
 			// 暴力扩展
 			// 算法的复杂度取决于这部分执行的次数
 			// 由于扩展之后 boxR 必然会更新（右移），且扩展的的次数就是 boxR 右移的次数
@@ -751,6 +754,7 @@ func _() {
 				hl++
 				boxM, boxR = i, i+hl
 			}
+
 			halfLen[i] = hl
 		}
 
@@ -760,18 +764,21 @@ func _() {
 		// 这一结论可用在下面的各个代码中
 
 		// 判断闭区间 [l,r] 是否为回文串  0<=l<=r<len(s)
-		// 根据下标转换关系得到子串 s[l:r+1] 在 t 中对应的回文中心下标为 l+r+2
 		// https://codeforces.com/problemset/problem/1326/D2
 		// https://codeforces.com/problemset/problem/7/D 
 		// - https://codeforces.com/problemset/problem/835/D
 		// LC3327 https://leetcode.cn/problems/check-if-dfs-strings-are-palindromes/
-		isPal := func(l, r int) bool { return halfLen[l+r+2] > r-l+1 } // halfLen[l+r+2]-1 >= r-l+1
+		isPalindrome := func(l, r int) bool {
+			// 根据下标转换关系得到子串 s[l:r+1] 在 t 中对应的回文中心下标为 l+r+2
+			// halfLen[l+r+2]-1 >= r-l+1
+			return halfLen[l+r+2] > r-l+1
+		}
 
-		// odd=true:  以 s[i] 为回文中心的最长奇回文子串长度
-		// odd=false: 以 s[i] 和 s[i+1] 为回文中心的最长偶回文子串长度
-		// 根据下标转换关系得到其在 t 中对应的回文中心下标
-		midLen := func(i int, odd bool) int {
-			if odd {
+		// isOdd=true:  返回以 s[i] 为回文中心的最长奇回文子串长度
+		// isOdd=false: 返回以 s[i] 和 s[i+1] 为回文中心的最长偶回文子串长度（若不存在，则为 0）
+		midLen := func(i int, isOdd bool) int {
+			// 根据下标转换关系得到在 t 中对应的回文中心下标
+			if isOdd {
 				return halfLen[i*2+2] - 1
 			}
 			return halfLen[i*2+3] - 1
@@ -900,7 +907,7 @@ func _() {
 
 		// todo 任意区间回文子串个数
 
-		_ = []interface{}{isPal, midLen}
+		_ = []interface{}{isPalindrome, midLen}
 	}
 
 	// 只考虑奇回文串
