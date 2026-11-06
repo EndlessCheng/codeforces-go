@@ -1,16 +1,28 @@
 package main
 
-func numOfSubarrays(a []int) (ans int) {
-	sum, odd, even := 0, 0, 1
-	for _, v := range a {
-		sum += v
-		if sum&1 > 0 {
-			ans += even
-			odd++
-		} else {
-			ans += odd
-			even++
-		}
+func numOfSubarrays1(arr []int) (ans int) {
+	sum := make([]int, len(arr)+1)
+	for i, x := range arr {
+		sum[i+1] = (sum[i] + x) % 2
 	}
-	return ans % (1e9 + 7)
+
+	// cnt[0] 统计偶数 s[i] 的个数
+	// cnt[1] 统计奇数 s[i] 的个数
+	cnt := [2]int{}
+	for _, s := range sum {
+		ans += cnt[s^1] // 在 s 左边的奇偶性不同于 s 的个数
+		cnt[s]++
+	}
+	return ans % 1_000_000_007
+}
+
+func numOfSubarrays(arr []int) (ans int) {
+	cnt := [2]int{}
+	s := 0
+	for _, x := range arr {
+		cnt[s]++
+		s = (s + x) % 2
+		ans += cnt[s^1]
+	}
+	return ans % 1_000_000_007
 }
