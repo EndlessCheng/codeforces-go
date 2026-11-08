@@ -8,7 +8,7 @@
 
 如果 1 和 2 都成立，那么 $\textit{target}$ 的后 $n-i$ 个数的出现次数等于 $\textit{nums}$ 的后 $n-i$ 个数的出现次数，只要保证这两部分都是递减的，它们就一定相等。
 
-这样就把原问题分成了三个小问题，分别解决。
+这样就把原问题拆分成了三个小问题，分别解决。
 
 ## 具体思路
 
@@ -60,11 +60,12 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int countSuffix(int[] nums, int[] target) {
-        // 大前提：每种元素的出现次数都相等
         int n = nums.length;
         int mx = 0;
         for (int x : nums) mx = Math.max(mx, x);
         for (int x : target) mx = Math.max(mx, x);
+
+        // 大前提：每种元素的出现次数都相等
         int[] diff = new int[mx + 1]; // int[] 比 HashMap 快
         for (int i = 0; i < n; i++) {
             diff[nums[i]]++;
@@ -101,9 +102,10 @@ class Solution {
 class Solution {
 public:
     int countSuffix(vector<int>& nums, vector<int>& target) {
-        // 大前提：每种元素的出现次数都相等
         int n = nums.size();
         int mx = max(ranges::max(nums), ranges::max(target));
+
+        // 大前提：每种元素的出现次数都相等
         vector<int> diff(mx + 1); // vector 比 unordered_map 快
         for (int i = 0; i < n; i++) {
             diff[nums[i]]++;

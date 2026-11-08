@@ -218,7 +218,7 @@ func minCost(n int, colors string, edges [][]int) int64 {
 
 ## 专题训练
 
-见下面动态规划题单的「**十二、树形 DP**」。
+见下面动态规划题单的「**§12.5 其他树形 DP**」。
 
 ## 分类题单
 
