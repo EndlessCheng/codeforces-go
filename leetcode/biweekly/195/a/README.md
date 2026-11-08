@@ -12,7 +12,8 @@ class Solution:
         left = -1  # left+1 是有效子串的最小左端点
         ans = 0
         for i in range(len(s)):
-            if i >= 2 and s[i - 2: i + 1] == "abc":
+            # s[i - 2: i + 1] == "abc"
+            if i >= 2 and s[i] == 'c' and s[i - 1] == 'b' and s[i - 2] == 'a':
                 left = i - 2
             ans += i - left
         return ans
@@ -42,7 +43,8 @@ public:
         int left = -1; // left+1 是有效子串的最小左端点
         long long ans = 0;
         for (int i = 0; i < s.size(); i++) {
-            if (i >= 2 && s.substr(i - 2, 3) == "abc") {
+            // s.substr(i - 2, 3) == "abc"
+            if (i >= 2 && s[i] == 'c' && s[i - 1] == 'b' && s[i - 2] == 'a') {
                 left = i - 2;
             }
             ans += i - left;
@@ -56,7 +58,8 @@ public:
 func countValidSubstrings(s string) (ans int64) {
 	left := -1 // left+1 是有效子串的最小左端点
 	for i := range s {
-		if i >= 2 && s[i-2:i+1] == "abc" {
+		// s[i-2:i+1] == "abc" 
+		if i >= 2 && s[i] == 'c' && s[i-1] == 'b' && s[i-2] == 'a' {
 			left = i - 2
 		}
 		ans += int64(i - left)
@@ -67,7 +70,7 @@ func countValidSubstrings(s string) (ans int64) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nK)$，其中 $n$ 是 $s$ 的长度，$K=3$ 是字符串 $\texttt{abc}$ 的长度。**注**：对于更一般的情况，用 [KMP 算法](https://www.zhihu.com/question/21923021/answer/37475572) 可以优化至 $\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(nK)$，其中 $n$ 是 $s$ 的长度，$K=3$ 是字符串 $\texttt{abc}$ 的长度。**注**：对于 $K$ 更大的情况，用 [KMP 算法](https://www.zhihu.com/question/21923021/answer/37475572) 可以优化至 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
