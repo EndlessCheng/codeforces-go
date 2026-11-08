@@ -20,7 +20,7 @@ $$
 i\le \min(z[n+k],n)
 $$
 
-设 $\textit{lastInc}[i]$ 是最大的满足 $j\le i$ 且 $\textit{target}[j-1] < \textit{target}[j]$ 下标 $j$。如果不存在则 $\textit{lastInc}[i] = 0$。
+设 $\textit{lastInc}[i]$ 是最大的满足 $j\le i$ 且 $\textit{target}[j-1] < \textit{target}[j]$ 的下标 $j$。如果不存在则 $\textit{lastInc}[i] = 0$。
 
 从子数组 $a$ 的右端点 $k+n-1$ 往左看，$k+i$ 必须 $\ge \textit{lastInc}[k+n-1]$，才能保证 $a$ 的后 $n-i$ 个数不存在递增的情况（即递减的），所以有
 
