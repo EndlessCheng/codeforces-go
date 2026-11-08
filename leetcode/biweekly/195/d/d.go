@@ -1,6 +1,39 @@
 package main
 
+import "strings"
+
 // https://space.bilibili.com/206214
+// 在文本串 text 中查找模式串 pattern
+func kmpSearch(text, pattern string) bool {
+	m := len(pattern)
+	pi := make([]int, m)
+	cnt := 0
+	for i := 1; i < m; i++ {
+		b := pattern[i]
+		for cnt > 0 && pattern[cnt] != b {
+			cnt = pi[cnt-1]
+		}
+		if pattern[cnt] == b {
+			cnt++
+		}
+		pi[i] = cnt
+	}
+
+	cnt = 0
+	for _, b := range text {
+		for cnt > 0 && pattern[cnt] != byte(b) {
+			cnt = pi[cnt-1]
+		}
+		if pattern[cnt] == byte(b) {
+			cnt++
+		}
+		if cnt == m {
+			return true
+		}
+	}
+	return false
+}
+
 func repeatedStringMatch(a, b string, x, y int) bool {
 	n, m := len(a), len(b)
 	lenA, lenB := n*x, m*y
@@ -8,18 +41,11 @@ func repeatedStringMatch(a, b string, x, y int) bool {
 		return false
 	}
 
+	mx := min(n, lenA-lenB+1)
 	firsts := min(lcm(n, m), lenB)
-next:
-	for start := range min(n, lenA-lenB+1) {
-		// 判断 B 是否为 A[start:] 的前缀
-		for i := range firsts { // 只需比较前 firsts 个字母
-			if a[(start+i)%n] != b[i%m] {
-				continue next
-			}
-		}
-		return true
-	}
-	return false
+	A := strings.Repeat(a, (mx+firsts-2)/n+1)
+	B := strings.Repeat(b, firsts/m)
+	return kmpSearch(A, B)
 }
 
 func gcd(a, b int) int {
