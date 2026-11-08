@@ -1,5 +1,98 @@
 推荐先完成「子串 $\texttt{abc}$」的版本 [4102. 统计有效子字符串 I](https://leetcode.cn/problems/count-valid-substrings-i/)，[我的题解](https://leetcode.cn/problems/count-valid-substrings-i/solutions/4054604/mei-ju-you-wei-hu-zuo-pythonjavacgo-by-e-77ly/)。
 
+对于本题：
+
+- 遇到 $s[i] = \texttt{a}$ 时，记录此时的下标 $\textit{lastA} = i$。
+- 遇到 $s[i] = \texttt{b}$ 时，上一个 $\texttt{a}$ 的下标，即为最近的 $\texttt{ab}$ 子序列的初始下标。记录 $\textit{lastAB} = \textit{lastA}$。
+- 遇到 $s[i] = \texttt{c}$ 时，上一个 $\texttt{ab}$ 子序列的初始下标，即为最近的 $\texttt{abc}$ 子序列的初始下标。记录 $\textit{lastABC} = \textit{lastAB}$。
+
+固定子串右端点为 $i$ 时，有效子串的最小左端点为 $\textit{lastABC}+1$，把 $i-\textit{lastABC}$ 加到答案中。
+
+初始值 $\textit{lastA} = \textit{lastAB} = \textit{lastABC} = -1$。
+
+```py [sol-Python3]
+class Solution:
+    def countValidSubstrings(self, s: str) -> int:
+        last_a = last_ab = last_abc = -1
+        ans = 0
+        for i, ch in enumerate(s):
+            if ch == 'a':
+                last_a = i
+            elif ch == 'b':
+                last_ab = last_a
+            else:
+                last_abc = last_ab
+            ans += i - last_abc  # 子串左端点最小值为 last_abc+1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countValidSubstrings(String S) {
+        char[] s = S.toCharArray();
+        int lastA = -1, lastAB = -1, lastABC = -1;
+        long ans = 0;
+
+        for (int i = 0; i < s.length; i++) {
+            if (s[i] == 'a') {
+                lastA = i;
+            } else if (s[i] == 'b') {
+                lastAB = lastA;
+            } else {
+                lastABC = lastAB;
+            }
+            ans += i - lastABC; // 子串左端点最小值为 lastABC+1
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countValidSubstrings(string s) {
+        int last_a = -1, last_ab = -1, last_abc = -1;
+        long long ans = 0;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == 'a') {
+                last_a = i;
+            } else if (s[i] == 'b') {
+                last_ab = last_a;
+            } else {
+                last_abc = last_ab;
+            }
+            ans += i - last_abc; // 子串左端点最小值为 last_abc+1
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countValidSubstrings(s string) (ans int64) {
+	lastA, lastAB, lastABC := -1, -1, -1
+	for i, ch := range s {
+		if ch == 'a' {
+			lastA = i
+		} else if ch == 'b' {
+			lastAB = lastA
+		} else {
+			lastABC = lastAB
+		}
+		ans += int64(i - lastABC) // 子串左端点最小值为 lastABC+1
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 更通用的写法
+
 对于 4102 题（子串），我们只需检查 $i-2,i-1,i$ 三个位置。
 
 对于本题（子序列）：
