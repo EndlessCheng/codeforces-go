@@ -2,8 +2,6 @@
 
 如果 $s_1[i+1]\ne s_2[i+1]$，那么 $i$ 是这一段的末尾，把 $[\textit{start},i]$ 对应的子串加入答案。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def findMismatchedSegments(self, s1: str, s2: str) -> list[list[str]]:

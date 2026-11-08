@@ -4,7 +4,7 @@
 
 1. **大前提**：$\textit{nums}$ 的每个数的出现次数恰好等于 $\textit{target}$ 的每个数的出现次数。
 2. $\textit{nums}$ 的前 $i$ 个数 $[0,i-1]$ 必须等于 $\textit{target}$ 的前 $i$ 个数，我们需要知道 $i$ **最大是多少**。
-3. $\textit{target}$ 的后 $n-i$ 个数必须是递减的（允许相邻相等），我们需要知道 $n-i$ 最大是多少，即 $i$ **最小是多少**。
+3. $\textit{target}$ 的后 $n-i$ 个数 $[i,n-1]$ 必须是递减的（允许相邻相等），我们需要知道 $n-i$ 最大是多少，即 $i$ **最小是多少**。
 
 如果 1 和 2 都成立，那么 $\textit{target}$ 的后 $n-i$ 个数的出现次数等于 $\textit{nums}$ 的后 $n-i$ 个数的出现次数，只要保证这两部分都是递减的，它们就一定相等。
 
@@ -16,9 +16,13 @@
 
 第二个问题，从左到右遍历数组，找到第一个 $\textit{nums}[i]\ne \textit{target}[i]$ 的位置，即为 $i$ 的最大值 $\textit{maxI}$。如果不存在则 $\textit{maxI}=n-1$。
 
-设 $\textit{minI}$ 是最大的满足 $\textit{target}[i-1] < \textit{target}[i]$ 下标 $i$。如果不存在则 $\textit{minI} = 0$。
+第三个问题，设 $\textit{minI}$ 是最大的满足 $\textit{target}[i-1] < \textit{target}[i]$ 下标 $i$。如果不存在则 $\textit{minI} = 0$。那么 $i$ 必须 $\ge \textit{minI}$，才能保证 $\textit{target}$ 的后缀 $[i,n-1]$ 不存在递增的情况（即递减的）。
 
-$i$ 必须 $\ge \textit{minI}$，才能保证 $\textit{target}$ 的后 $n-i$ 个数不存在递增的情况（即递减的）。
+所以满足要求的 $i$ 的范围是
+
+$$
+[\textit{minI}, \textit{maxI}]
+$$
 
 答案为
 
@@ -28,7 +32,7 @@ $$
 
 注意最后要和 $0$ 取最大值，以保证结果非负。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1LyW76zEvX/?t=11m4s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
