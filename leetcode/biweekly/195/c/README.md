@@ -10,7 +10,7 @@
 
 那么有效子串的最小左端点为 $i_0+1$，把 $i-i_0$ 加到答案中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV152W76MEX3/?t=3m52s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

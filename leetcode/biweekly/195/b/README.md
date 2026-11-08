@@ -9,8 +9,6 @@
 
 遍历结束后，如果栈为空，说明我们移除了所有元素。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
-
 ```py [sol-Python3]
 class Solution:
     def canRemoveAll(self, types: list[int], colors: list[int], groupSize: list[int]) -> bool:

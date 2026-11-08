@@ -4,7 +4,7 @@
 
 于是，枚举有效子串的右端点 $R = 0,1,2,\ldots,n-1$，同时维护合法左端点的最小值 $L$，那么对于一个**固定**的 $R$，有 $R-L+1$ 个有效子串，加到答案中。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV152W76MEX3/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
