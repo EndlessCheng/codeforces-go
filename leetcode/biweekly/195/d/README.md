@@ -1,4 +1,4 @@
-设 $A = (a * x),\ B=(b * y)$。注：更常用的记号是 $a^x$。
+设 $A = (a * x),\ B=(b * y)$。注：比 $(a * x)$ 更常用的记号是 $a^x$。
 
 暴力匹配的想法是，枚举 $B$ 在 $A$ 中的匹配起点 $\textit{start}=0,1,2,\ldots,|a|-1$，判断 $B$ 是否等于 $A$ 的从 $\textit{start}$ 开始的长为 $|B|$ 的子串。
 
@@ -153,9 +153,9 @@ func lcm(a, b int) int {
 
 ## 写法二
 
-既然 $B$ 只需前 $\textit{firsts} = \min(\text{lcm}(|a|,|b|),|B|)$ 个字母，我们可以把 $b$ 重复 $\dfrac{\textit{firsts}}{|b|}$ 次，得到字符串 $B'$。
+既然 $B$ 只需比较前 $\textit{firsts} = \min(\text{lcm}(|a|,|b|),|B|)$ 个字母，我们可以把 $b$ 重复 $\dfrac{\textit{firsts}}{|b|}$ 次，得到字符串 $B'$。
 
-$A$ 的起点 $ < \min(|a|, |A|-|B|+1)$，所以终点 $< \min(|a|, |A|-|B|+1) + \textit{firsts} - 1$，记作 $k$，我们可以把 $a$ 重复 $\left\lceil\dfrac{k}{|a|}\right\rceil$ 次，得到字符串 $A'$。
+$A$ 中的起点 $ < \min(|a|, |A|-|B|+1)$，所以终点 $< \min(|a|, |A|-|B|+1) + \textit{firsts} - 1$，记作 $k$，我们可以把 $a$ 重复 $\left\lceil\dfrac{k}{|a|}\right\rceil$ 次，得到字符串 $A'$。
 
 问题变成判断 $B'$ 是否在 $A'$ 中。
 
@@ -266,9 +266,9 @@ func lcm(a, b int) int {
 - 时间复杂度：$\mathcal{O}(n^2m)$，其中 $n$ 是 $a$ 的长度，$m$ 是 $\textit{b}$ 的长度。
 - 空间复杂度：$\mathcal{O}(nm)$。
 
-## KMP 优化
+## 优化
 
-用 KMP 加速最后的判断。
+用 [KMP 算法](https://www.zhihu.com/question/21923021/answer/37475572) 加速判断 $B'$ 是否在 $A'$ 中。
 
 ```py [sol-Python3]
 # 在文本串 text 中查找模式串 pattern

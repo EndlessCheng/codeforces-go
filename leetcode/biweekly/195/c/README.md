@@ -84,8 +84,8 @@ func countValidSubstrings(s string) (ans int64) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=3$ 是字符集合的大小。
-- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。
+- 时间复杂度：$\mathcal{O}(nK)$，其中 $n$ 是 $s$ 的长度，$K=3$ 是字符串 $\texttt{abc}$ 的长度。
+- 空间复杂度：$\mathcal{O}(nK)$。
 
 ## 专题训练
 
