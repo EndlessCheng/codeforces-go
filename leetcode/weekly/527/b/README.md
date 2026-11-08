@@ -1,38 +1,177 @@
-（Python/Java/C++/Go）
+## 问题分解
 
----
+如果把 $\textit{nums}$ 的后缀 $[i,n-1]$ 递减排序后，$\textit{nums}$ 等于 $\textit{target}$，那么必须满足：
 
+1. **大前提**：$\textit{nums}$ 的每个数的出现次数恰好等于 $\textit{target}$ 的每个数的出现次数。
+2. $\textit{nums}$ 的前 $i$ 个数 $[0,i-1]$ 必须等于 $\textit{target}$ 的前 $i$ 个数，我们需要知道 $i$ **最大是多少**。
+3. $\textit{target}$ 的后 $n-i$ 个数必须是递减的（允许相邻相等），我们需要知道 $n-i$ 最大是多少，即 $i$ **最小是多少**。
 
+如果 1 和 2 都成立，那么 $\textit{target}$ 的后 $n-i$ 个数的出现次数等于 $\textit{nums}$ 的后 $n-i$ 个数的出现次数，只要保证这两部分都是递减的，它们就一定相等。
 
+这样就把原问题分成了三个小问题，分别解决。
 
+## 具体思路
+
+第一个问题，用数组（或者哈希表）统计元素出现次数。
+
+第二个问题，从左到右遍历数组，找到第一个 $\textit{nums}[i]\ne \textit{target}[i]$ 的位置，即为 $i$ 的最大值 $\textit{maxI}$。如果不存在则 $\textit{maxI}=n-1$。
+
+设 $\textit{minI}$ 是最大的满足 $\textit{target}[i-1] < \textit{target}[i]$ 下标 $i$。如果不存在则 $\textit{minI} = 0$。
+
+$i$ 必须 $\ge \textit{minI}$，才能保证 $\textit{target}$ 的后 $n-i$ 个数不存在递增的情况（即递减的）。
+
+答案为
+
+$$
+\max(\textit{maxI} - \textit{minI} + 1, 0)
+$$
+
+注意最后要和 $0$ 取最大值，以保证结果非负。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
+class Solution:
+    def countSuffix(self, nums: list[int], target: list[int]) -> int:
+        # 大前提：每种元素的出现次数都相等
+        if Counter(nums) != Counter(target):
+            return 0
 
+        n = len(nums)
+        max_i = n - 1
+        for i, (x, y) in enumerate(zip(nums, target)):
+            if x != y:
+                max_i = i
+                break
+
+        min_i = 0
+        for i in range(n - 1, 0, -1):
+            if target[i - 1] < target[i]:
+                min_i = i
+                break
+
+        return max(max_i - min_i + 1, 0)
 ```
 
 ```java [sol-Java]
+class Solution {
+    public int countSuffix(int[] nums, int[] target) {
+        // 大前提：每种元素的出现次数都相等
+        int n = nums.length;
+        int mx = 0;
+        for (int x : nums) mx = Math.max(mx, x);
+        for (int x : target) mx = Math.max(mx, x);
+        int[] diff = new int[mx + 1]; // int[] 比 HashMap 快
+        for (int i = 0; i < n; i++) {
+            diff[nums[i]]++;
+            diff[target[i]]--;
+        }
+        for (int d : diff) {
+            if (d != 0) {
+                return 0;
+            }
+        }
 
+        int maxI = n - 1;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != target[i]) {
+                maxI = i;
+                break;
+            }
+        }
+
+        int minI = 0;
+        for (int i = n - 1; i > 0; i--) {
+            if (target[i - 1] < target[i]) {
+                minI = i;
+                break;
+            }
+        }
+
+        return Math.max(maxI - minI + 1, 0);
+    }
+}
 ```
 
 ```cpp [sol-C++]
+class Solution {
+public:
+    int countSuffix(vector<int>& nums, vector<int>& target) {
+        // 大前提：每种元素的出现次数都相等
+        int n = nums.size();
+        int mx = max(ranges::max(nums), ranges::max(target));
+        vector<int> diff(mx + 1); // vector 比 unordered_map 快
+        for (int i = 0; i < n; i++) {
+            diff[nums[i]]++;
+            diff[target[i]]--;
+        }
+        for (int d : diff) {
+            if (d) {
+                return 0;
+            }
+        }
 
+        int max_i = n - 1;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != target[i]) {
+                max_i = i;
+                break;
+            }
+        }
+
+        int min_i = 0;
+        for (int i = n - 1; i > 0; i--) {
+            if (target[i - 1] < target[i]) {
+                min_i = i;
+                break;
+            }
+        }
+
+        return max(max_i - min_i + 1, 0);
+    }
+};
 ```
 
 ```go [sol-Go]
+func countSuffix(nums []int, target []int) int {
+	// 大前提：每种元素的出现次数都相等
+	mx := max(slices.Max(nums), slices.Max(target))
+	diff := make([]int, mx+1) // slice 比 map 快
+	for i, x := range nums {
+		diff[x]++
+		diff[target[i]]--
+	}
+	for _, d := range diff {
+		if d != 0 {
+			return 0
+		}
+	}
 
+	n := len(nums)
+	maxI := n - 1
+	for i, x := range nums {
+		if x != target[i] {
+			maxI = i
+			break
+		}
+	}
+
+	minI := 0
+	for i := n - 1; i > 0; i-- {
+		if target[i-1] < target[i] {
+			minI = i
+			break
+		}
+	}
+
+	return max(maxI-minI+1, 0)
+}
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}()$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别是 $\textit{}$ 的行数和列数。
-- 空间复杂度：$\mathcal{O}()$。
-
-## 专题训练
-
-见下面x题单的「****」。
+- 时间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n+U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\max(\textit{nums}),\max(\textit{target}))$。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n+U)$。
 
 ## 分类题单
 

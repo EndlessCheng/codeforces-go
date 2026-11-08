@@ -6,7 +6,7 @@
 2. $\textit{nums}$ 的前 $i$ 个数 $[0,i-1]$ 必须等于 $a$ 的前 $i$ 个数，我们需要知道 $i$ **最大是多少**。这可以用 **Z 函数**解决，构造数组 $A = \textit{nums} + \textit{target}$，然后计算 $A$ 的 Z 数组 $z$。
 3. $a$ 的后 $n-i$ 个数必须是递减的（允许相邻相等），我们需要知道 $n-i$ 最大是多少，即 $i$ **最小是多少**。通过记录上一次相邻递增的位置，可以快速求出 $i$ 的最小值。
 
-如果 1 和 2 都成立，那么 $a$ 的后 $n-i$ 个数的出现次数等于 $\textit{nums}$ 的后 $n-i$ 个数的出现次数，只要这两部分都是递减的，就一定相等。
+如果 1 和 2 都成立，那么 $a$ 的后 $n-i$ 个数的出现次数等于 $\textit{nums}$ 的后 $n-i$ 个数的出现次数，只要保证这两部分都是递减的，它们就一定相等。
 
 这样就把原问题分成了三个问题，分别解决。
 
@@ -129,7 +129,7 @@ class Solution {
         for (int x : s) mx = Math.max(mx, x);
         for (int x : p) mx = Math.max(mx, x);
 
-        int[] diff = new int[mx + 1]; // 数组比哈希表快
+        int[] diff = new int[mx + 1]; // int[] 比 HashMap 快
         // 统计 p 的每种整数的出现次数
         for (int x : p) {
             diff[x]++;
@@ -177,7 +177,7 @@ class Solution {
     // 438. 找到字符串中所有字母异位词
     vector<int8_t> findAnagrams(vector<int>& s, vector<int>& p) {
         int mx = max(ranges::max(s), ranges::max(p));
-        vector<int> diff(mx + 1); // vector 比 map 快
+        vector<int> diff(mx + 1); // vector 比 unordered_map 快
         // 统计 p 的每种整数的出现次数
         for (int x : p) {
             diff[x]++;

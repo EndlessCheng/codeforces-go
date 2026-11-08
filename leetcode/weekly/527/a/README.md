@@ -1,38 +1,85 @@
-（Python/Java/C++/Go）
+如果 $s_1[i] = s_2[i]$，那么更新 $\textit{start} = i+1$ 为段的起点。
 
----
-
-
-
-
+如果 $s_1[i+1]\ne s_2[i+1]$，那么 $i$ 是这一段的末尾，把 $[\textit{start},i]$ 对应的子串加入答案。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ```py [sol-Python3]
-
+class Solution:
+    def findMismatchedSegments(self, s1: str, s2: str) -> list[list[str]]:
+        n = len(s1)
+        start = 0
+        ans = []
+        for i in range(n):
+            if s1[i] == s2[i]:
+                start = i + 1  # 记录段的起点
+            elif i == n - 1 or s1[i + 1] == s2[i + 1]:  # i+1 相同，所以 i 是这一段的末尾
+                ans.append([s1[start: i + 1], s2[start: i + 1]])
+        return ans
 ```
 
 ```java [sol-Java]
-
+class Solution {
+    public List<List<String>> findMismatchedSegments(String s1, String s2) {
+        char[] s = s1.toCharArray();
+        char[] t = s2.toCharArray();
+        int n = s.length;
+        int start = 0;
+        List<List<String>> ans = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (s[i] == t[i]) {
+                start = i + 1; // 记录段的起点
+            } else if (i == n - 1 || s[i + 1] == t[i + 1]) { // i+1 相同，所以 i 是这一段的末尾
+                ans.add(List.of(s1.substring(start, i + 1), s2.substring(start, i + 1)));
+            }
+        }
+        return ans;
+    }
+}
 ```
 
 ```cpp [sol-C++]
-
+class Solution {
+public:
+    vector<vector<string>> findMismatchedSegments(string s1, string s2) {
+        int n = s1.size();
+        int start = 0;
+        vector<vector<string>> ans;
+        for (int i = 0; i < n; i++) {
+            if (s1[i] == s2[i]) {
+                start = i + 1; // 记录段的起点
+            } else if (i == n - 1 || s1[i + 1] == s2[i + 1]) { // i+1 相同，所以 i 是这一段的末尾
+                ans.push_back({s1.substr(start, i - start + 1), s2.substr(start, i - start + 1)});
+            }
+        }
+        return ans;
+    }
+};
 ```
 
 ```go [sol-Go]
-
+func findMismatchedSegments(s1, s2 string) (ans [][]string) {
+	n := len(s1)
+	start := 0
+	for i := range n {
+		if s1[i] == s2[i] {
+			start = i + 1 // 记录段的起点
+		} else if i == n-1 || s1[i+1] == s2[i+1] { // i+1 相同，所以 i 是这一段的末尾
+			ans = append(ans, []string{s1[start : i+1], s2[start : i+1]})
+		}
+	}
+	return
+}
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}()$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别是 $\textit{}$ 的行数和列数。
-- 空间复杂度：$\mathcal{O}()$。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{s}_1$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
 
 ## 专题训练
 
-见下面x题单的「****」。
+见下面滑动窗口与双指针题单的「**六、分组循环**」。
 
 ## 分类题单
 
