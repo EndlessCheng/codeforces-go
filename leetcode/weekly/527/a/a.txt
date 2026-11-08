@@ -1,0 +1,14 @@
+"earth"
+"empty"
+[["ar","mp"],["h","y"]]
+
+"action"
+"nation"
+[["ac","na"]]
+
+"hot"
+"hot"
+[]
+
+
+
