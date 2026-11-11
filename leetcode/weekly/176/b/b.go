@@ -1,32 +1,23 @@
 package main
 
-type ProductOfNumbers struct {
-	p []int
+type ProductOfNumbers []int
+
+func Constructor() ProductOfNumbers {
+	return []int{1}
 }
 
-func Constructor() (p ProductOfNumbers) {
-	p.p = []int{1}
-	return
-}
-
-func (p *ProductOfNumbers) Add(v int) {
-	if v != 0 {
-		p.p = append(p.p, p.p[len(p.p)-1]*v)
+func (p *ProductOfNumbers) Add(num int) {
+	if num != 0 {
+		*p = append(*p, (*p)[len(*p)-1]*num)
 	} else {
-		p.p = []int{1}
+		*p = []int{1}
 	}
 }
 
-func (p *ProductOfNumbers) GetProduct(k int) (ans int) {
-	if k < len(p.p) {
-		return p.p[len(p.p)-1] / p.p[len(p.p)-1-k]
+func (p *ProductOfNumbers) GetProduct(k int) int {
+	n := len(*p)
+	if n <= k {
+		return 0
 	}
-	return 0
+	return (*p)[n-1] / (*p)[n-1-k]
 }
-
-/**
- * Your ProductOfNumbers object will be instantiated and called as such:
- * obj := Constructor();
- * obj.Add(num);
- * param_2 := obj.GetProduct(k);
- */
