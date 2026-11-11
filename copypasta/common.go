@@ -602,6 +602,7 @@ https://codeforces.com/problemset/problem/1998/B  1000
 https://codeforces.com/problemset/problem/2037/C  1000
 https://codeforces.com/problemset/problem/2039/B  1000 分析性质
 https://codeforces.com/problemset/problem/2040/B  1000
+https://codeforces.com/problemset/problem/2250/B  1000
 https://codeforces.com/problemset/problem/1793/B  1100 思路好猜，证明更有意思
 https://codeforces.com/problemset/problem/1957/B  1100
 https://codeforces.com/problemset/problem/2044/D  1100 脑筋急转弯
@@ -2122,12 +2123,18 @@ func _() {
 	// 二阶差分
 	// 等差数列更新 +1 +2 +3 +4
 	// 金字塔式更新 +1 +2 +3 +4 +3 +2 +1
+	// 例如给一个区间 [L,R] 从左到右加上 2,3,4,5，差分数组的变化量为 2,1,1,1,-5
+	// 左边的 2 和右边的 -5 可以单独处理，即 diff[L] += 2，diff[R+1] -= 5
+	// 中间的 1,1,1，就是普通的区间加
+	// 维护差分数组的差分数组 diff2，做 diff2[L+1] += 1 和 diff2[R+1] -= 1
+	// 最后，把 diff2 的前缀和加到 diff 上，再计算 diff 的前缀和，即为结果
+	// https://ac.nowcoder.com/acm/contest/56446/C 模板题
+	// https://codeforces.com/problemset/problem/2276/E 1800
 	// https://codeforces.com/problemset/problem/1661/D 1900 简化
 	// https://atcoder.jp/contests/abc407/tasks/abc407_f 2027 ~CF 标准问题
 	// https://codeforces.com/problemset/problem/1710/B 2100
 	// https://www.luogu.com.cn/problem/U318099?contestId=123900
 	// todo LC2735 https://leetcode.cn/problems/collecting-chocolates/
-	// https://ac.nowcoder.com/acm/contest/56446/C
 	diffOfDiff := func(n int) {
 		diff := make([]int, n+1)
 		diff2 := make([]int, n+1)
@@ -2816,9 +2823,9 @@ func _() {
 
 	//
 
-	// 维护滑动窗口的 max(cnt.values())
+	// 维护定长滑窗的 max(cnt.values())
 	// 若用有序集合维护，需要 O(nlogn)，而下面的写法只需要 O(n)
-	// 这里是定长滑窗，也支持不定长滑窗
+	// https://www.luogu.com.cn/problem/P3069 不定长的情况
 	// https://codeforces.com/problemset/problem/2009/G2 2200
 	slidingWindowMaxFreq := func(a []int, windowSize int) []int {
 		n := len(a)
