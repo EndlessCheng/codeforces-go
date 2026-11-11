@@ -1,26 +1,19 @@
 package main
 
-import (
-	"strconv"
-	"strings"
-)
+import "strconv"
 
 // github.com/EndlessCheng/codeforces-go
 func digitSum(s string, k int) string {
 	for len(s) > k {
-		t := &strings.Builder{}
-		for {
+		t := []byte{}
+		for i := 0; i < len(s); i += k { // k 个一组
 			sum := 0
-			for i := 0; i < len(s) && i < k; i++ {
-				sum += int(s[i] & 15)
+			for _, ch := range s[i:min(i+k, len(s))] {
+				sum += int(ch - '0') // 计算数字和
 			}
-			t.WriteString(strconv.Itoa(sum))
-			if len(s) <= k {
-				break
-			}
-			s = s[k:]
+			t = append(t, strconv.Itoa(sum)...)
 		}
-		s = t.String()
+		s = string(t)
 	}
 	return s
 }
