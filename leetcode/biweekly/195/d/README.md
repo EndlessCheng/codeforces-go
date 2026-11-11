@@ -4,7 +4,9 @@
 
 但 $|B|$ 太大了，这样做会超时。
 
-例如 $|a|=4,\ |b|=6,\ \textit{start}=0$，我们从 $i=0$ 开始，判断 $a[i\bmod 4] = b[i\bmod 6]$ 是否成立。如果前 $12$ 个字母都匹配，那么继续匹配相当于又从 $a[12\bmod 4]=a[0]$ 和 $b[12\bmod 6]=b[0]$ 开始匹配了，这两个字母（以及后续字母）我们已经知道它们是匹配的。所以**只要前 $12$ 个字母都匹配，那么后面所有字母都匹配**。我们需要找到一个数，即是 $4$ 的倍数，又是 $6$ 的倍数，即公倍数。$12$ 是 $4$ 和 $6$ 的**最小公倍数**。
+## 方法一：比较 lcm(|a|,|b|) 个字母
+
+例如 $|a|=4,\ |b|=6,\ \textit{start}=0$，我们从 $i=0$ 开始，判断 $a[i\bmod 4] = b[i\bmod 6]$ 是否成立。如果前 $12$ 个字母都匹配，那么继续匹配相当于又从 $a[12\bmod 4]=a[0]$ 和 $b[12\bmod 6]=b[0]$ 开始匹配了，这两个字母（以及后续字母）我们已经知道它们是匹配的。所以**只要前 $12$ 个字母都匹配，那么后面所有字母都匹配**。我们需要找到一个数，即是 $4$ 的倍数，又是 $6$ 的倍数，即公倍数。$12$ 是 $4$ 和 $6$ 的**最小公倍数**（LCM）。
 
 一般地，只需比较 $A[\textit{start}:]$ 和 $B$ 的前
 
@@ -20,8 +22,6 @@ $$
 2. 枚举 $\textit{start}$ 还需要保证 $|A[\textit{start}:]| \ge |B|$，即 $|A| - \textit{start}\ge |B|$，即 $\textit{start} \le |A| - |B|$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV152W76MEX3/?t=7m55s)，欢迎点赞关注~
-
-## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -151,13 +151,178 @@ func lcm(a, b int) int {
 - 时间复杂度：$\mathcal{O}(n^2m)$，其中 $n$ 是 $a$ 的长度，$m$ 是 $\textit{b}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 写法二
+## 方法二：比较 |a| + |b| 个字母
 
-既然 $B$ 只需比较前 $\textit{firsts} = \min(\text{lcm}(|a|,|b|),|B|)$ 个字母，我们可以把 $b$ 重复 $\dfrac{\textit{firsts}}{|b|}$ 次，得到字符串 $B'$。
+设 $n = |a|,\ m = |b|$。
+
+对于 $A$ 和 $B$，如果它们的前 $n+m$ 个字母相同，我们还需要比较后面的字母吗？
+
+由于 $B$ 的周期为 $m$，所以有
+
+$$
+B_i = B_{i+m}
+$$
+
+由于前 $n+m$ 个字母相同，所以当 $0\le i < n$ 时，有 $B_i = A_i$ 且 $B_{i+m} = A_{i+m}$，替换上式，得
+
+$$
+A_i = A_{i+m}
+$$
+
+由于 $A$ 的周期为 $n$，所以有
+
+$$
+A_i = A_{(i+m)\bmod n}
+$$
+
+想象一个长为 $n$ 的环，从环长任意一点出发，走 $m$ 步，遇到的字母不变。所以再走 $m$ 步，遇到的字母仍然不变。
+
+所以上式也可以写成
+
+$$
+A_i = A_{(i+pm)\bmod n}
+$$
+
+根据**贝祖定理**，存在整数 $p$ 和 $q$ 使得 $pm-qn=\gcd(n,m)=g$，代入上式，得
+
+$$
+A_i = A_{(i+qn+g)\bmod n} = A_{(i+g)\bmod n}
+$$
+
+所以 $g=\gcd(n,m)$ 也是 $A$ 的周期。
+
+$A$ 和 $B$ 的前 $m$ 个字母相同，前 $m$ 个字母的周期是 $g$，$B$ 又由前 $m$ 个字母重复得到，所以 $B$ 由前 $g$ 个字母重复得到，所以 $g$ 也是 $B$ 的周期。
+
+综上所述，我们证明了如下结论：
+
+- 如果 $A$ 和 $B$ 的前 $n+m$ 个字母相同，那么 $A$ 和 $B$ 的周期都是 $g = \gcd(n,m)$。
+- 由于 $n+m = k_1g+k_2g = (k_1+k_2)g$ 是 $g$ 的倍数，所以继续比较相当于又从 $A[(n+m)\bmod g]=A[0]$ 和 $B[(n+m)\bmod g]=B[0]$ 开始了，这两个字母（以及后续字母）我们已经知道它们是匹配的，所以无需比较后续字母。
+
+对于 $A[\textit{start}:]$ 和 $B$，由于 $A[\textit{start}:]$ 的周期也是 $n$，所以结论和上面是一样的。例如 $A = \texttt{abcabcabc}\cdots$ 是由 $\texttt{abc}$ 重复得到，那么 $A[1:] = \texttt{bcabcabca}\cdots$ 是由 $\texttt{bca}$ 重复得到，仍然是周期字符串且周期不变。
+
+所以只需比前 $n+m$ 个字母。
+
+### 写法一
+
+```py [sol-Python3]
+class Solution:
+    def repeatedStringMatch(self, a: str, b: str, x: int, y: int) -> bool:
+        n, m = len(a), len(b)
+        len_a, len_b = n * x, m * y
+        if len_b > len_a:
+            return False
+
+        firsts = min(n + m, len_b)
+        for start in range(min(n, len_a - len_b + 1)):
+            # 判断 B 是否为 A[start:] 的前缀
+            # 只需比较前 firsts 个字母
+            if all(a[(start + i) % n] == b[i % m] for i in range(firsts)):
+                return True
+        return False
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean repeatedStringMatch(String a, String b, int x, int y) {
+        char[] s = a.toCharArray();
+        char[] t = b.toCharArray();
+        int n = s.length;
+        int m = t.length;
+        long lenA = (long) n * x;
+        long lenB = (long) m * y;
+        if (lenB > lenA) {
+            return false;
+        }
+
+        int firsts = (int) Math.min(n + m, lenB);
+        next:
+        for (int start = 0; start < Math.min(n, lenA - lenB + 1); start++) {
+            // 判断 B 是否为 A[start,lenA) 的前缀
+            for (int i = 0; i < firsts; i++) { // 只需比较前 firsts 个字母
+                if (s[(start + i) % n] != t[i % m]) {
+                    continue next;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool repeatedStringMatch(string a, string b, int x, int y) {
+        int n = a.size(), m = b.size();
+        long long len_a = 1LL * n * x, len_b = 1LL * m * y;
+        if (len_b > len_a) {
+            return false;
+        }
+
+        int firsts = min(1LL * (n + m), len_b);
+        int mx = min(1LL * n, len_a - len_b + 1);
+        for (int start = 0; start < mx; start++) {
+            // 判断 B 是否为 A[start,len_a) 的前缀
+            bool ok = true;
+            for (int i = 0; i < firsts; i++) { // 只需比较前 firsts 个字母
+                if (a[(start + i) % n] != b[i % m]) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+```
+
+```go [sol-Go]
+func repeatedStringMatch(a, b string, x, y int) bool {
+	n, m := len(a), len(b)
+	lenA, lenB := n*x, m*y
+	if lenB > lenA {
+		return false
+	}
+
+	firsts := min(n+m, lenB)
+next:
+	for start := range min(n, lenA-lenB+1) {
+		// 判断 B 是否为 A[start:] 的前缀
+		for i := range firsts { // 只需比较前 firsts 个字母
+			if a[(start+i)%n] != b[i%m] {
+				continue next
+			}
+		}
+		return true
+	}
+	return false
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n(n+m))$，其中 $n$ 是 $a$ 的长度，$m$ 是 $\textit{b}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+### 写法二
+
+既然 $B$ 只需比较前 $\textit{firsts} = \min(n+m,|B|)$ 个字母，我们可以把 $b$ 重复 $\left\lceil\dfrac{\textit{firsts}}{m}\right\rceil$ 次，得到字符串 $B'$（多比一点也没关系，前 $\textit{firsts}$ 一样，后面也一样）。
 
 $A$ 中的起点 $ < \min(|a|, |A|-|B|+1)$，所以终点 $< \min(|a|, |A|-|B|+1) + \textit{firsts} - 1$，记作 $k$，我们可以把 $a$ 重复 $\left\lceil\dfrac{k}{|a|}\right\rceil$ 次，得到字符串 $A'$。
 
 问题变成判断 $B'$ 是否在 $A'$ 中。
+
+关于上取整的计算，当 $p$ 和 $q$ 均为正整数时，我们有
+
+$$
+\left\lceil\dfrac{p}{q}\right\rceil = \left\lfloor\dfrac{p-1}{q}\right\rfloor + 1
+$$
+
+证明见 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)。
 
 ```py [sol-Python3]
 class Solution:
@@ -168,9 +333,9 @@ class Solution:
             return False
 
         mx = min(n, len_a - len_b + 1)
-        firsts = min(lcm(n, m), len_b)
+        firsts = min(n + m, len_b)
         A = a * ((mx + firsts - 2) // n + 1)
-        B = b * (firsts // m)
+        B = b * ((firsts - 1) // m + 1)
         return B in A
 ```
 
@@ -186,23 +351,10 @@ class Solution {
         }
 
         int mx = (int) Math.min(n, lenA - lenB + 1);
-        int firsts = (int) Math.min(lcm(n, m), lenB);
+        int firsts = (int) Math.min(n + m, lenB);
         String A = a.repeat((mx + firsts - 2) / n + 1);
-        String B = b.repeat(firsts / m);
+        String B = b.repeat((firsts - 1) / m + 1);
         return A.contains(B);
-    }
-
-    private int lcm(int a, int b) {
-        return a / gcd(a, b) * b;
-    }
-
-    private int gcd(int a, int b) {
-        while (a != 0) {
-            int tmp = a;
-            a = b % a;
-            b = tmp;
-        }
-        return b;
     }
 }
 ```
@@ -226,9 +378,9 @@ public:
         }
 
         int mx = min(1LL * n, len_a - len_b + 1);
-        int firsts = min(1LL * lcm(n, m), len_b);
+        int firsts = min(1LL * (n + m), len_b);
         string A = repeat(a, (mx + firsts - 2) / n + 1);
-        string B = repeat(b, firsts / m);
+        string B = repeat(b, (firsts - 1) / m + 1);
         return A.contains(B);
     }
 };
@@ -243,30 +395,19 @@ func repeatedStringMatch(a, b string, x, y int) bool {
 	}
 
 	mx := min(n, lenA-lenB+1)
-	firsts := min(lcm(n, m), lenB)
+	firsts := min(n+m, lenB)
 	A := strings.Repeat(a, (mx+firsts-2)/n+1)
-	B := strings.Repeat(b, firsts/m)
+	B := strings.Repeat(b, (firsts-1)/m+1)
 	return strings.Contains(A, B)
-}
-
-func gcd(a, b int) int {
-	for a != 0 {
-		a, b = b%a, a
-	}
-	return b
-}
-
-func lcm(a, b int) int {
-	return a / gcd(a, b) * b
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2m)$，其中 $n$ 是 $a$ 的长度，$m$ 是 $\textit{b}$ 的长度。
-- 空间复杂度：$\mathcal{O}(nm)$。
+- 时间复杂度：$\mathcal{O}(n(n+m))$，其中 $n$ 是 $a$ 的长度，$m$ 是 $\textit{b}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n+m)$。
 
-## 优化
+### 优化
 
 用 [KMP 算法](https://www.zhihu.com/question/21923021/answer/37475572) 加速判断 $B'$ 是否在 $A'$ 中。
 
@@ -302,9 +443,9 @@ class Solution:
             return False
 
         mx = min(n, len_a - len_b + 1)
-        firsts = min(lcm(n, m), len_b)
+        firsts = min(n + m, len_b)
         A = a * ((mx + firsts - 2) // n + 1)
-        B = b * (firsts // m)
+        B = b * ((firsts - 1) // m + 1)
         return kmp_search(A, B)
 ```
 
@@ -320,23 +461,10 @@ class Solution {
         }
 
         int mx = (int) Math.min(n, lenA - lenB + 1);
-        int firsts = (int) Math.min(lcm(n, m), lenB);
+        int firsts = (int) Math.min(n + m, lenB);
         String A = a.repeat((mx + firsts - 2) / n + 1);
-        String B = b.repeat(firsts / m);
+        String B = b.repeat((firsts - 1) / m + 1);
         return kmpSearch(A.toCharArray(), B.toCharArray());
-    }
-
-    private int lcm(int a, int b) {
-        return a / gcd(a, b) * b;
-    }
-
-    private int gcd(int a, int b) {
-        while (a != 0) {
-            int tmp = a;
-            a = b % a;
-            b = tmp;
-        }
-        return b;
     }
 
     // 在文本串 text 中查找模式串 pattern
@@ -422,9 +550,9 @@ public:
         }
 
         int mx = min(1LL * n, len_a - len_b + 1);
-        int firsts = min(1LL * lcm(n, m), len_b);
+        int firsts = min(1LL * (n + m), len_b);
         string A = repeat(a, (mx + firsts - 2) / n + 1);
-        string B = repeat(b, firsts / m);
+        string B = repeat(b, (firsts - 1) / m + 1);
         return kmp_search(A, B);
     }
 };
@@ -470,28 +598,17 @@ func repeatedStringMatch(a, b string, x, y int) bool {
 	}
 
 	mx := min(n, lenA-lenB+1)
-	firsts := min(lcm(n, m), lenB)
+	firsts := min(n+m, lenB)
 	A := strings.Repeat(a, (mx+firsts-2)/n+1)
-	B := strings.Repeat(b, firsts/m)
+	B := strings.Repeat(b, (firsts-1)/m+1)
 	return kmpSearch(A, B)
-}
-
-func gcd(a, b int) int {
-	for a != 0 {
-		a, b = b%a, a
-	}
-	return b
-}
-
-func lcm(a, b int) int {
-	return a / gcd(a, b) * b
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $a$ 的长度，$m$ 是 $\textit{b}$ 的长度。
-- 空间复杂度：$\mathcal{O}(nm)$。
+- 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $a$ 的长度，$m$ 是 $\textit{b}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n+m)$。
 
 ## 相似题目
 

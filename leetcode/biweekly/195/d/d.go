@@ -42,19 +42,8 @@ func repeatedStringMatch(a, b string, x, y int) bool {
 	}
 
 	mx := min(n, lenA-lenB+1)
-	firsts := min(lcm(n, m), lenB)
+	firsts := min(n+m, lenB)
 	A := strings.Repeat(a, (mx+firsts-2)/n+1)
-	B := strings.Repeat(b, firsts/m)
+	B := strings.Repeat(b, (firsts-1)/m+1)
 	return kmpSearch(A, B)
-}
-
-func gcd(a, b int) int {
-	for a != 0 {
-		a, b = b%a, a
-	}
-	return b
-}
-
-func lcm(a, b int) int {
-	return a / gcd(a, b) * b
 }
