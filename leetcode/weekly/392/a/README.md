@@ -1,3 +1,104 @@
+## 方法一：分别统计增减长度
+
+```py [sol-Python3]
+class Solution:
+    def longestMonotonicSubarray(self, a: List[int]) -> int:
+        ans = inc = dec = 1
+        for x, y in pairwise(a):
+            if x < y:
+                inc += 1  # 递增
+            else:
+                inc = 1  # 重新计数
+
+            if x > y:
+                dec += 1  # 递减
+            else:
+                dec = 1  # 重新计数
+
+            ans = max(ans, inc, dec)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int longestMonotonicSubarray(int[] a) {
+        int ans = 1, inc = 1, dec = 1;
+        for (int i = 1; i < a.length; i++) {
+            if (a[i - 1] < a[i]) {
+                inc++; // 递增
+            } else {
+                inc = 1; // 从 a[i] 开始重新计数
+            }
+
+            if (a[i - 1] > a[i]) {
+                dec++; // 递减
+            } else {
+                dec = 1; // 从 a[i] 开始重新计数
+            }
+
+            ans = Math.max(ans, Math.max(inc, dec));
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestMonotonicSubarray(vector<int>& a) {
+        int ans = 1, inc = 1, dec = 1;
+        for (int i = 1; i < a.size(); i++) {
+            if (a[i - 1] < a[i]) {
+                inc++; // 递增
+            } else {
+                inc = 1; // 从 a[i] 开始重新计数
+            }
+
+            if (a[i - 1] > a[i]) {
+                dec++; // 递减
+            } else {
+                dec = 1; // 从 a[i] 开始重新计数
+            }
+
+            ans = max({ans, inc, dec});
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func longestMonotonicSubarray(a []int) int {
+	ans, inc, dec := 1, 1, 1
+	for i := 1; i < len(a); i++ {
+		if a[i-1] < a[i] {
+			inc++ // 递增
+		} else {
+			inc = 1 // 从 a[i] 开始重新计数
+		}
+
+		if a[i-1] > a[i] {
+			dec++ // 递减
+		} else {
+			dec = 1 // 从 a[i] 开始重新计数
+		}
+
+		ans = max(ans, inc, dec)
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是数组的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：分组循环
+
+解决这类可以把数组分成若干段，每一段的性质都相同的问题，通用做法是分组循环。
+
 教程：[【简单题杀手】分组循环](https://leetcode.cn/problems/longest-alternating-subarray/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-r57bz/)
 
 本题和教程中的情况一样，第一个单调序列末尾和第二个单调序列开头，有一个元素是**重叠**的，所以下面代码在外层循环末尾要把 $i$ 减一。
@@ -100,7 +201,7 @@ func longestMonotonicSubarray(a []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。时间复杂度乍一看是 $\mathcal{O}(n^2)$，但注意变量 $i$ 减少的次数是 $\mathcal{O}(n)$ 的，其它情况一直在增加，由于 $i$ 最大是 $n$，所以增加的次数是 $\mathcal{O}(n)$，所以二重循环总共循环 $\mathcal{O}(n)$ 次，时间复杂度是 $\mathcal{O}(n)$ 的。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是数组的长度。时间复杂度乍一看是 $\mathcal{O}(n^2)$，但注意变量 $i$ 减少的次数是 $\mathcal{O}(n)$ 的，其它情况一直在增加，由于 $i$ 最大是 $n$，所以增加的次数是 $\mathcal{O}(n)$，所以二重循环总共循环 $\mathcal{O}(n)$ 次，时间复杂度是 $\mathcal{O}(n)$ 的。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 专题训练
