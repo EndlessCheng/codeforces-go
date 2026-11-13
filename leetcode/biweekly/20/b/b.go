@@ -1,30 +1,32 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-type Cashier struct{}
-
-var (
-	ps            [201]int
-	cnt, sep, dis int
-)
-
-func Constructor(n, discount int, products, prices []int) (_ Cashier) {
-	cnt, sep, dis = 0, n, discount
-	for i, product := range products {
-		ps[product] = prices[i]
-	}
-	return
+type Cashier struct {
+	productToPrice map[int]int
+	customers      int // 顾客个数
+	n              int
+	discount       float64
 }
 
-func (Cashier) GetBill(product, amount []int) (ans float64) {
-	s := 0
-	for i, p := range product {
-		s += amount[i] * ps[p]
+func Constructor(n int, discount int, products []int, prices []int) Cashier {
+	productToPrice := make(map[int]int, len(products))
+	for i, p := range products {
+		productToPrice[p] = prices[i]
 	}
-	ans = float64(s)
-	cnt++
-	if cnt%sep == 0 {
-		ans -= float64(dis) * ans / 100
+	return Cashier{
+		productToPrice: productToPrice,
+		n:              n,
+		discount:       1 - float64(discount)/100,
+	}
+}
+
+func (c *Cashier) GetBill(product []int, amount []int) (ans float64) {
+	for i, p := range product {
+		ans += float64(c.productToPrice[p] * amount[i])
+	}
+	c.customers++
+	if c.customers%c.n == 0 { // 第 n,2n,3n,... 个顾客会得到 discount 的折扣
+		ans *= c.discount
 	}
 	return
 }
