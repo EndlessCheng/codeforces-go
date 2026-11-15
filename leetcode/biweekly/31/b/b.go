@@ -16,7 +16,7 @@ func numOfSubarrays1(arr []int) (ans int) {
 	return ans % 1_000_000_007
 }
 
-func numOfSubarrays(arr []int) (ans int) {
+func numOfSubarrays2(arr []int) (ans int) {
 	cnt := [2]int{}
 	s := 0
 	for _, x := range arr {
@@ -25,4 +25,13 @@ func numOfSubarrays(arr []int) (ans int) {
 		ans += cnt[s^1]
 	}
 	return ans % 1_000_000_007
+}
+
+func numOfSubarrays(arr []int) (ans int) {
+	odd, s := 0, 0
+	for _, x := range arr {
+		s += x
+		odd += s % 2
+	}
+	return odd * (len(arr) + 1 - odd) % 1_000_000_007
 }
