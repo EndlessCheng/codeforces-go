@@ -55,7 +55,7 @@ func countConsistent1(nums []int) (ans int64) {
 	return
 }
 
-func countConsistent(nums []int) (ans int64) {
+func countConsistent2(nums []int) (ans int64) {
 	type pair struct{ and, left int } // 子数组与值，最小左端点
 	data := []pair{}
 	st := []int{}
@@ -102,6 +102,32 @@ func countConsistent(nums []int) (ans int64) {
 			right = min(right, j)
 			ans += int64(max(right-p.left+1, 0))
 		}
+	}
+
+	return
+}
+
+func countConsistent(nums []int) (ans int64) {
+	n := len(nums)
+	left := make([]int, n)
+	st := []int{-1} // 哨兵
+	for i, x := range nums {
+		for len(st) > 1 && nums[st[len(st)-1]]&x == x {
+			st = st[:len(st)-1]
+		}
+		left[i] = st[len(st)-1] // nums[left[i]] 不是 x 的超集
+		st = append(st, i)
+	}
+
+	st = []int{n}
+	for i := n - 1; i >= 0; i-- {
+		x := nums[i]
+		for len(st) > 1 && nums[st[len(st)-1]] != x && nums[st[len(st)-1]]&x == x {
+			st = st[:len(st)-1]
+		}
+		right := st[len(st)-1] // nums[right] 不是 x 的超集
+		st = append(st, i)
+		ans += int64(i-left[i]) * int64(right-i)
 	}
 
 	return

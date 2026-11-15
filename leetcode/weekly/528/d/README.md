@@ -1,3 +1,5 @@
+## 方法一：LogTrick + 单调栈
+
 **前置知识**：
 
 1. [LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
@@ -5,13 +7,13 @@
 
 本题需要判断子数组的与值 $\textit{andVal}$ 是否为子数组的最小值。
 
-我们可以在遍历 $\textit{nums}$ 的同时，维护一个单调递增的栈 $\textit{st}$，保存 $\textit{nums}$ 的下标。相同的 $\textit{nums}[i]$ 保留最右边的。
+我们可以在遍历 $\textit{nums}$ 的同时，维护一个严格递增的栈 $\textit{st}$，保存 $\textit{nums}$ 的下标。相同的 $\textit{nums}[i]$ 保留最右边的。
 
-在单调栈中二分查找 $\textit{andVal}$，假设结果为 $\textit{st}[j]$，那么子数组左端点最大为 $\textit{st}[j]$，最小为 $\textit{st}[j-1]+1$。把这个范围与 LogTrick 的范围求交集，即为子数组左端点的范围。把范围的大小加到答案中。
+在单调栈中二分查找 $\textit{andVal}$，设结果为 $\textit{st}[j]$，那么子数组左端点最大为 $\textit{st}[j]$，最小为 $\textit{st}[j-1]+1$。把这个范围与 LogTrick 的范围求交集，即为子数组左端点的范围。把范围的大小加到答案中。
 
 下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
-## 优化前
+### 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -41,7 +43,7 @@ class Solution:
             del data[idx:]
 
             for k, (and_val, left) in enumerate(data):
-                # 判断子数组最小值是否为 andVal
+                # 判断子数组最小值是否为 and_val
                 j = bisect_left(st, and_val, key=lambda j: nums[j])
                 if j == len(st) or nums[st[j]] != and_val:
                     continue
@@ -158,7 +160,7 @@ public:
 
             for (int k = 0; k < m; k++) {
                 auto& [and_val, left] = data[k];
-                // 判断子数组最小值是否为 andVal
+                // 判断子数组最小值是否为 and_val
                 int j = ranges::lower_bound(st, and_val, {}, [&](int j) { return nums[j]; }) - st.begin();
                 if (j == st.size() || nums[st[j]] != and_val) {
                     continue;
@@ -236,13 +238,13 @@ func countConsistent(nums []int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n\log U\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 优化
+### 优化
 
 额外用一个哈希表记录 $\textit{nums}[i]$ 的下标，这样可以 $\mathcal{O}(1)$ 获取 $\textit{andVal}$ 的下标，无需在单调栈中二分查找。
 
-单调栈中的元素出栈时，从哈希表中删除。
+单调栈中的元素出栈时，也从哈希表中删除该元素。
 
-这样写，单调栈只需保存 $\textit{nums}[i]$，无需保存下标。
+这样写，单调栈只需保存元素的值，无需保存元素的下标。
 
 ```py [sol-Python3]
 class Solution:
@@ -274,7 +276,7 @@ class Solution:
             del data[idx:]
 
             for k, (and_val, left) in enumerate(data):
-                # 判断子数组最小值是否为 andVal
+                # 判断子数组最小值是否为 and_val
                 j = pos.get(and_val)
                 if j is None:
                     continue
@@ -378,7 +380,7 @@ public:
 
             for (int k = 0; k < m; k++) {
                 auto& [and_val, left] = data[k];
-                // 判断子数组最小值是否为 andVal
+                // 判断子数组最小值是否为 and_val
                 auto it = pos.find(and_val);
                 if (it == pos.end()) {
                     continue;
@@ -454,10 +456,180 @@ func countConsistent(nums []int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 方法二：贡献法
+
+做法同 [3878. 统计好子数组](https://leetcode.cn/problems/count-good-subarrays/)，请看 [我的题解](https://leetcode.cn/problems/count-good-subarrays/solutions/3933380/mo-ban-logtrick-ji-lu-mei-ge-yuan-su-de-otgcv/) 的方法二。
+
+只需把 3878 代码中的 `|` 改成 `&`，即可通过本题。
+
+> **注**：为什么这两题是一样的？虽然 3878 只要求「至少出现一次」，但按位或的结果必然 $\ge $ 数组最大值，所以该要求等价于「子数组的按位或等于其最大值」。
+
+```py [sol-Python3]
+class Solution:
+    def countConsistent(self, nums: List[int]) -> int:
+        n = len(nums)
+        left = [0] * n
+        st = [-1]  # 哨兵
+        for i, x in enumerate(nums):
+            while len(st) > 1 and (nums[st[-1]] & x) == x:
+                st.pop()
+            left[i] = st[-1]  # nums[left[i]] 不是 x 的超集
+            st.append(i)
+
+        st = [n]
+        ans = 0
+        for i in range(n - 1, -1, -1):
+            x = nums[i]
+            while len(st) > 1 and nums[st[-1]] != x and (nums[st[-1]] & x) == x:
+                st.pop()
+            right = st[-1]  # nums[right] 不是 x 的超集
+            st.append(i)
+            ans += (i - left[i]) * (right - i)
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countConsistent(int[] nums) {
+        int n = nums.length;
+        int[] left = new int[n];
+        ArrayDeque<Integer> st = new ArrayDeque<>(); // 更快的写法见【Java 数组】
+        st.push(-1); // 哨兵
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            while (st.size() > 1 && (nums[st.peek()] & x) == x) {
+                st.pop();
+            }
+            left[i] = st.peek(); // nums[left[i]] 不是 x 的超集
+            st.push(i);
+        }
+
+        st.clear();
+        st.push(n);
+        long ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = nums[i];
+            while (st.size() > 1 && nums[st.peek()] != x && (nums[st.peek()] & x) == x) {
+                st.pop();
+            }
+            int right = st.peek(); // nums[right] 不是 x 的超集
+            st.push(i);
+            ans += (long) (i - left[i]) * (right - i);
+        }
+
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long countConsistent(int[] nums) {
+        int n = nums.length;
+        int[] left = new int[n];
+        int[] st = new int[n + 1];
+        st[0] = -1;
+        int top = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            while (top > 0 && (nums[st[top]] & x) == x) {
+                top--;
+            }
+            left[i] = st[top]; // nums[left[i]] 不是 x 的超集
+            st[++top] = i;
+        }
+
+        st[0] = n;
+        top = 0;
+        long ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = nums[i];
+            while (top > 0 && nums[st[top]] != x && (nums[st[top]] & x) == x) {
+                top--;
+            }
+            int right = st[top]; // nums[right] 不是 x 的超集
+            st[++top] = i;
+            ans += (long) (i - left[i]) * (right - i);
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countConsistent(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> left(n);
+        stack<int> st;
+        st.push(-1); // 哨兵
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            while (st.size() > 1 && (nums[st.top()] & x) == x) {
+                st.pop();
+            }
+            left[i] = st.top(); // nums[left[i]] 不是 x 的超集
+            st.push(i);
+        }
+
+        st = stack<int>();
+        st.push(n);
+        long long ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = nums[i];
+            while (st.size() > 1 && nums[st.top()] != x && (nums[st.top()] & x) == x) {
+                st.pop();
+            }
+            int right = st.top(); // nums[right] 不是 x 的超集
+            st.push(i);
+            ans += 1LL * (i - left[i]) * (right - i);
+        }
+
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countConsistent(nums []int) (ans int64) {
+	n := len(nums)
+	left := make([]int, n)
+	st := []int{-1} // 哨兵
+	for i, x := range nums {
+		for len(st) > 1 && nums[st[len(st)-1]]&x == x {
+			st = st[:len(st)-1]
+		}
+		left[i] = st[len(st)-1] // nums[left[i]] 不是 x 的超集
+		st = append(st, i)
+	}
+
+	st = []int{n}
+	for i := n - 1; i >= 0; i-- {
+		x := nums[i]
+		for len(st) > 1 && nums[st[len(st)-1]] != x && nums[st[len(st)-1]]&x == x {
+			st = st[:len(st)-1]
+		}
+		right := st[len(st)-1] // nums[right] 不是 x 的超集
+		st = append(st, i)
+		ans += int64(i-left[i]) * int64(right-i)
+	}
+
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然我们写了二重循环，但站在 $\textit{nums}[i]$ 的视角看，$i$ 在二重循环中最多入栈出栈各一次（两个二重循环就是两次），因此二重循环的时间复杂度为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
 ## 专题训练
 
 1. 位运算题单的「**AND/OR LogTrick**」。
-2. 单调栈题单。
+2. 单调栈题单的「**三、贡献法**」。
 
 ## 分类题单
 
