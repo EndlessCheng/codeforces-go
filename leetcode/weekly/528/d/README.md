@@ -2,7 +2,7 @@
 
 **前置知识**：
 
-1. [LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)。
+1. [LogTrick 入门教程](https://zhuanlan.zhihu.com/p/1933215367158830792)，[视频讲解](https://www.bilibili.com/video/BV1vfAuzyEp8/?t=33m56s)。
 2. [单调栈【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)。
 
 本题需要判断子数组的与值 $\textit{andVal}$ 是否为子数组的最小值。
@@ -10,8 +10,6 @@
 我们可以在遍历 $\textit{nums}$ 的同时，维护一个严格递增的栈 $\textit{st}$，保存 $\textit{nums}$ 的下标。相同的 $\textit{nums}[i]$ 保留最右边的。
 
 在单调栈中二分查找 $\textit{andVal}$，设结果为 $\textit{st}[j]$，那么子数组左端点最大为 $\textit{st}[j]$，最小为 $\textit{st}[j-1]+1$。把这个范围与 LogTrick 的范围求交集，即为子数组左端点的范围。把范围的大小加到答案中。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
 
 ### 优化前
 
@@ -462,7 +460,9 @@ func countConsistent(nums []int) (ans int64) {
 
 只需把 3878 代码中的 `|` 改成 `&`，即可通过本题。
 
-> **注**：为什么这两题是一样的？虽然 3878 只要求「至少出现一次」，但按位或的结果必然 $\ge $ 数组最大值，所以该要求等价于「子数组的按位或等于其最大值」。
+**问**：为什么这两题是一样的？
+
+**答**：虽然 3878 只要求「至少出现一次」，但由于按位或的结果必然 $\ge $ 数组最大值，所以该要求等价于「子数组的按位或等于其最大值」。
 
 ```py [sol-Python3]
 class Solution:

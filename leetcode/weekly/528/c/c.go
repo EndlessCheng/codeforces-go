@@ -10,6 +10,7 @@ func maxDifference1(nums []int) int64 {
 		memo[i] = math.MinInt
 	}
 
+	// 返回在剩余元素为 nums[i:] 的情况下，(当前玩家得分 - 对手得分) 的最大值
 	var dfs func(int) int
 	dfs = func(i int) (res int) {
 		if i == n {

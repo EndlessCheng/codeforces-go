@@ -1,8 +1,18 @@
-做法和 [1406. 石子游戏 III](https://leetcode.cn/problems/stone-game-iii/) 是一样的，请看 [我的题解](https://leetcode.cn/problems/stone-game-iii/solutions/4001520/san-chong-fang-fa-zui-da-hua-de-fen-zhi-4gcvw/)。
+做法和 [1406. 石子游戏 III](https://leetcode.cn/problems/stone-game-iii/) 是一样的，[我的题解](https://leetcode.cn/problems/stone-game-iii/solutions/4001520/san-chong-fang-fa-zui-da-hua-de-fen-zhi-4gcvw/)。
 
 本题和 1406 的区别是，当前玩家可以继续行动。这种情况只需把「减去 $\textit{dfs}$ 的返回值」改成「加上 $\textit{dfs}$ 的返回值」，相当于加上自己继续游戏的得分（得分差）。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1yrsn6wEHP/)，欢迎点赞关注~
+
+## 答疑
+
+**问**：题目说两位玩家要「最大化自己的得分」，为什么这等价于「最大化得分之差」？
+
+**答**：自己的得分 + 对手的得分 = 数组总和。
+
+得分之差 = 自己的得分 - 对手的得分 = 自己的得分 - (数组总和 - 自己的得分) = 自己的得分 × 2 - 数组总和。
+
+由于数组总和是固定的，所以自己的得分越大，得分之差越大。
 
 ## 记忆化搜索
 
@@ -11,7 +21,8 @@ class Solution:
     def maxDifference(self, nums: list[int]) -> int:
         n = len(nums)
 
-        @cache
+        # 返回在剩余元素为 nums[i:] 的情况下，(当前玩家得分 - 对手得分) 的最大值
+        @cache  # 缓存装饰器，避免重复计算 dfs（一行代码实现记忆化）
         def dfs(i: int) -> int:
             if i == n:
                 return 0
@@ -43,6 +54,7 @@ class Solution {
         return dfs(0, nums, memo);
     }
 
+    // 返回在剩余元素为 nums[i,n-1] 的情况下，(当前玩家得分 - 对手得分) 的最大值
     private long dfs(int i, int[] nums, long[] memo) {
         if (i == nums.length) {
             return 0;
@@ -82,6 +94,7 @@ public:
         int n = nums.size();
         vector<long long> memo(n, LLONG_MIN);
 
+        // 返回在剩余元素为 nums[i,n-1] 的情况下，(当前玩家得分 - 对手得分) 的最大值
         auto dfs = [&](this auto&& dfs, int i) -> long long {
             if (i == n) {
                 return 0;
@@ -125,6 +138,7 @@ func maxDifference(nums []int) int64 {
 		memo[i] = math.MinInt
 	}
 
+	// 返回在剩余元素为 nums[i:] 的情况下，(当前玩家得分 - 对手得分) 的最大值
 	var dfs func(int) int
 	dfs = func(i int) (res int) {
 		if i == n {
