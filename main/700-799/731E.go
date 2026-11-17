@@ -1,21 +1,12 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF731E(_r io.Reader, out io.Writer) {
-	in := bufio.NewReader(_r)
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
+func cf731E(in io.Reader, out io.Writer) {
 	var n, s int
 	Fscan(in, &n)
 	a := make([]int, n)
@@ -23,6 +14,7 @@ func CF731E(_r io.Reader, out io.Writer) {
 		Fscan(in, &a[i])
 		s += a[i]
 	}
+
 	f := s
 	for i := n - 1; i > 1; i-- {
 		s -= a[i]
@@ -31,4 +23,4 @@ func CF731E(_r io.Reader, out io.Writer) {
 	Fprint(out, f)
 }
 
-//func main() { CF731E(os.Stdin, os.Stdout) }
+//func main() { cf731E(bufio.NewReader(os.Stdin), os.Stdout) }
