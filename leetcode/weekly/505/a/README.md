@@ -86,16 +86,15 @@ class Solution:
 
             lo = low >> i & 1 if limit_low else 0
             hi = high >> i & 1 if limit_high else 1
+
+            h = 0 if n >> i & 1 else hi
             cnt = res = 0
 
-            for d in range(lo, hi + 1):
-                bit = d << i
-                if n & bit:  # 不满足要求
-                    continue
+            for d in range(lo, h + 1):
                 sub_cnt, sub_sum = dfs(i - 1, limit_low and d == lo, limit_high and d == hi)
                 cnt += sub_cnt  # 累加子树的合法二进制数个数
                 res += sub_sum  # 累加子树和
-                res += bit * sub_cnt  # bit 会出现在 sub_cnt 个数中（贡献法）
+                res += (d << i) * sub_cnt  # d << i 会出现在 sub_cnt 个数中（贡献法）
 
             return cnt, res
 
@@ -125,18 +124,15 @@ class Solution {
         int lo = limitLow ? low >> i & 1 : 0;
         int hi = limitHigh ? high >> i & 1 : 1;
 
+        int h = (n >> i & 1) > 0 ? 0 : hi;
         int cnt = 0;
         int sum = 0;
 
-        for (int d = lo; d <= hi; d++) {
-            int bit = d << i;
-            if ((n & bit) > 0) { // 不满足要求
-                continue;
-            }
+        for (int d = lo; d <= h; d++) {
             int[] sub = dfs(i - 1, limitLow && d == lo, limitHigh && d == hi, low, high, n, memo);
             cnt += sub[0]; // 累加子树的合法二进制数个数
             sum += sub[1]; // 累加子树和
-            sum += bit * sub[0]; // bit 会出现在 sub[0] 个数中（贡献法）
+            sum += (d << i) * sub[0]; // d << i 会出现在 sub[0] 个数中（贡献法）
         }
 
         int[] res = new int[]{cnt, sum};
@@ -169,17 +165,15 @@ public:
 
             int lo = limit_low ? low >> i & 1 : 0;
             int hi = limit_high ? high >> i & 1 : 1;
+
+            int h = n >> i & 1 ? 0 : hi;
             int cnt = 0, sum = 0;
 
-            for (int d = lo; d <= hi; d++) {
-                int bit = d << i;
-                if (n & bit) { // 不满足要求
-                    continue;
-                }
+            for (int d = lo; d <= h; d++) {
                 auto [sub_cnt, sub_sum] = dfs(i - 1, limit_low && d == lo, limit_high && d == hi);
                 cnt += sub_cnt; // 累加子树的合法二进制数个数
                 sum += sub_sum; // 累加子树和
-                sum += bit * sub_cnt; // bit 会出现在 sub_cnt 个数中（贡献法）
+                sum += (d << i) * sub_cnt; // d << i 会出现在 sub_cnt 个数中（贡献法）
             }
 
             pair<int, int> res = {cnt, sum};
@@ -228,15 +222,16 @@ func sumOfGoodIntegers(n, k int) int {
 			hi = high >> i & 1
 		}
 
-		for d := lo; d <= hi; d++ {
-			bit := d << i
-			if n&bit > 0 { // 不满足要求
-				continue
-			}
+		h := 0
+		if n>>i&1 == 0 {
+			h = hi
+		}
+
+		for d := lo; d <= h; d++ {
 			sub := dfs(i-1, limitLow && d == lo, limitHigh && d == hi)
-			res.cnt += sub.cnt       // 累加子树的合法二进制数个数
-			res.sum += sub.sum       // 累加子树和
-			res.sum += bit * sub.cnt // bit 会出现在 sub.cnt 个数中（贡献法）
+			res.cnt += sub.cnt // 累加子树的合法二进制数个数
+			res.sum += sub.sum // 累加子树和
+			res.sum += d << i * sub.cnt // d << i 会出现在 sub.cnt 个数中（贡献法）
 		}
 		return
 	}

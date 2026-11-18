@@ -12,7 +12,7 @@ func sumOfGoodIntegers1(n, k int) (ans int) {
 	return
 }
 
-func sumOfGoodIntegers2(n, k int) int {
+func sumOfGoodIntegers(n, k int) int {
 	low := max(n-k, 1)
 	high := n + k
 	m := bits.Len(uint(high))
@@ -22,11 +22,11 @@ func sumOfGoodIntegers2(n, k int) int {
 		memo[i].cnt = -1
 	}
 
-	// dfs 返回两个数：子树合法数字个数，子树和
+	// dfs 返回两个数：子树合法二进制数个数，子树和
 	var dfs func(int, bool, bool) pair
 	dfs = func(i int, limitLow, limitHigh bool) (res pair) {
 		if i < 0 {
-			return pair{1, 0} // 如果没有特殊约束，能递归到终点的都是合法数字
+			return pair{1, 0} // 如果没有特殊约束，能递归到终点的都是合法二进制数
 		}
 		if !limitLow && !limitHigh {
 			p := &memo[i]
@@ -45,15 +45,16 @@ func sumOfGoodIntegers2(n, k int) int {
 			hi = high >> i & 1
 		}
 
-		for d := lo; d <= hi; d++ {
-			bit := d << i
-			if n&bit > 0 { // 不满足要求
-				continue
-			}
+		h := 0
+		if n>>i&1 == 0 {
+			h = hi
+		}
+
+		for d := lo; d <= h; d++ {
 			sub := dfs(i-1, limitLow && d == lo, limitHigh && d == hi)
-			res.cnt += sub.cnt       // 累加子树的合法数字个数
-			res.sum += sub.sum       // 累加子树的和
-			res.sum += bit * sub.cnt // bit 会出现在 sub.cnt 个数中（贡献法）
+			res.cnt += sub.cnt          // 累加子树的合法二进制数个数
+			res.sum += sub.sum          // 累加子树和
+			res.sum += d << i * sub.cnt // d << i 会出现在 sub.cnt 个数中（贡献法）
 		}
 		return
 	}
