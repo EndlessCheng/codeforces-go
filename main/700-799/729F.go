@@ -18,7 +18,7 @@ func cf729F(in io.Reader, out io.Writer) {
 	const maxK = 88
 	f := [2][4000][maxK*2 + 1]int32{}
 	for k := maxK; k > 0; k-- {
-		for i := n - 1; i >= 0; i-- {
+		for i := n / 2; i >= 0; i-- {
 			low := i*2 + k - n
 			for d := max(-k, low); d <= 0; d++ {
 				res := s[i+k] - s[i] - f[k&1][i+k][d+k+maxK]
