@@ -2206,6 +2206,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1863/F 2600
 	https://atcoder.jp/contests/arc183/tasks/arc183_c 2018=CF2237
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
+	https://www.luogu.com.cn/problem/P6006
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
 	*/
 
@@ -2346,16 +2347,12 @@ func _(abs func(int) int) {
 	/* 博弈 DP
 	另见 games.go
 	转移：让「自己与对手的分差」最大
-	图上博弈 https://codeforces.com/problemset/problem/917/B
-	LC464 https://leetcode.cn/problems/can-i-win/
-	LC486 https://leetcode.cn/problems/predict-the-winner/
-	LC877 https://leetcode.cn/problems/stone-game/ https://nanti.jisuanke.com/t/48
-	LC913 https://leetcode.cn/problems/cat-and-mouse/
-	LC1025 https://leetcode.cn/problems/divisor-game/
-	LC1140 https://leetcode.cn/problems/stone-game-ii/
-	LC1406 https://leetcode.cn/problems/stone-game-iii/
-	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
-	【记忆化搜索模板】https://codeforces.com/problemset/problem/1738/C
+	https://codeforces.com/problemset/problem/859/C 1500
+	https://codeforces.com/problemset/problem/1738/C 1500
+	https://codeforces.com/problemset/problem/917/B 1700 图上博弈
+	https://codeforces.com/problemset/problem/731/E 2200
+	https://codeforces.com/problemset/problem/729/F 2500
+	https://codeforces.com/problemset/problem/2271/H1 2800
 	https://www.lanqiao.cn/problems/8051/learning/?contest_id=146
 	*/
 
