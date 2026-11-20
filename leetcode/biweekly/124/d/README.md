@@ -55,18 +55,14 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int maxSelectedElements(vector<int> &nums) {
+    int maxSelectedElements(vector<int>& nums) {
         ranges::sort(nums);
         unordered_map<int, int> f;
         for (int x : nums) {
             f[x + 1] = f[x] + 1;
             f[x] = f[x - 1] + 1;
         }
-        int ans = 0;
-        for (auto &[_, res] : f) {
-            ans = max(ans, res);
-        }
-        return ans;
+        return ranges::max(f | views::values);
     }
 };
 ```
@@ -78,9 +74,7 @@ func maxSelectedElements(nums []int) (ans int) {
 	for _, x := range nums {
 		f[x+1] = f[x] + 1
 		f[x] = f[x-1] + 1
-	}
-	for _, res := range f {
-		ans = max(ans, res)
+		ans = max(ans, f[x], f[x+1])
 	}
 	return
 }
@@ -88,7 +82,7 @@ func maxSelectedElements(nums []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 空间优化
@@ -211,7 +205,7 @@ func maxSelectedElements(nums []int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
 ## 分类题单

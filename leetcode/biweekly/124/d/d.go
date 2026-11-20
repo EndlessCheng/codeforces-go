@@ -9,9 +9,7 @@ func maxSelectedElements1(nums []int) (ans int) {
 	for _, x := range nums {
 		f[x+1] = f[x] + 1
 		f[x] = f[x-1] + 1
-	}
-	for _, res := range f {
-		ans = max(ans, res)
+		ans = max(ans, f[x], f[x+1])
 	}
 	return
 }
