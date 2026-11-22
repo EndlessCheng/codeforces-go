@@ -24,8 +24,8 @@ class Solution:
             g[x].append((y, delay))
 
         ans = [-1] * n
-        requiredSignals[0] = 1
         h = [(0, 0)]
+        requiredSignals[0] = 1
 
         while h:
             t, x = heappop(h)
@@ -50,9 +50,9 @@ class Solution {
 
         long[] ans = new long[n];
         Arrays.fill(ans, -1);
-        requiredSignals[0] = 1;
         PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(p -> p[0]));
         pq.offer(new long[]{0, 0});
+        requiredSignals[0] = 1;
 
         while (!pq.isEmpty()) {
             long[] top = pq.poll();
@@ -83,9 +83,9 @@ public:
         }
 
         vector<long long> ans(n, -1);
-        requiredSignals[0] = 1;
         priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;
         pq.emplace(0, 0);
+        requiredSignals[0] = 1;
 
         while (!pq.empty()) {
             auto [t, x] = pq.top();
@@ -117,8 +117,8 @@ func earliestActivationTimes(n int, edges [][]int, requiredSignals []int) []int6
 	for i := range ans {
 		ans[i] = -1
 	}
-	requiredSignals[0] = 1
 	h := &hp{{}}
+	requiredSignals[0] = 1
 
 	for h.Len() > 0 {
 		top := heap.Pop(h).(pair)

@@ -14,8 +14,8 @@ func earliestActivationTimes(n int, edges [][]int, requiredSignals []int) []int6
 	for i := range ans {
 		ans[i] = -1
 	}
-	requiredSignals[0] = 1
 	h := &hp{{}}
+	requiredSignals[0] = 1
 
 	for h.Len() > 0 {
 		top := heap.Pop(h).(pair)
