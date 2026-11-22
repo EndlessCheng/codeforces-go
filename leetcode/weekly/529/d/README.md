@@ -12,7 +12,7 @@ $\textit{nums}[0]$ 和 $\textit{nums}[n-1]$ 一定是子数组的首尾，一定
 
 所以本题只需排序+遍历。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1LoyGzZE9E/?t=19m43s)，包含两种方法，欢迎点赞关注~
 
 ### 优化前
 

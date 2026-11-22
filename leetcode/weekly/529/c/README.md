@@ -14,7 +14,7 @@
 
 当节点 $x$ 出堆时，先把 $\textit{requiredSignals}[x]$ 减少 $1$，如果 $\textit{requiredSignals}[x]$ 恰好等于 $0$，说明 $x$ 恰好在此刻激活，把当前时刻记录到 $\textit{ans}[x]$ 中，然后把 $x$ 的邻居 $y$ 的收到信号的时刻以及节点 $y$ 入堆。 
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1LoyGzZE9E/?t=8m)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

@@ -15,7 +15,7 @@ $$
 
 注意 $[L,R]$ 不能只有 $\textit{nums}[0]$ 或者只有 $\textit{nums}[n-1]$，这种情况无法操作。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1LoyGzZE9E/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
