@@ -5,7 +5,7 @@
 
 这是两个独立的问题，可以分别解决（前后缀分解）。
 
-以前缀为例。枚举把 $\textit{nums}[i-1]$ 变成 $k$，问题变成：
+以前缀为例。枚举把 $\textit{nums}[i-1]$ 变成 $k\ (k < j)$，问题变成：
 
 - 把前缀 $[0,i-1]$ 变成严格递增，且 $\textit{nums}[i-1] = k$，所需的最少操作次数是多少？
 
@@ -43,7 +43,7 @@ $$
 
 如果 $n<3$，无解，返回 $-1$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1qRyGzFExD/?t=3m25s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -67,8 +67,8 @@ class Solution:
         pre = dp(nums)
         suf = dp(nums[::-1])[::-1]
 
-        # 枚举峰顶的位置和值
         ans = inf
+        # 枚举峰顶的位置和值
         for i in range(1, n - 1):
             # 从左到右严格递增，j 至少是 i+1
             # 从右到左严格递增，j 至少是 n-i
@@ -97,8 +97,8 @@ class Solution {
         reverse(suf);
         reverse(nums);
 
-        // 枚举峰顶的位置和值
         int ans = Integer.MAX_VALUE;
+        // 枚举峰顶的位置和值
         for (int i = 1; i < n - 1; i++) {
             // 从左到右严格递增，j 至少是 i+1
             // 从右到左严格递增，j 至少是 n-i
@@ -174,8 +174,8 @@ public:
         ranges::reverse(suf);
         ranges::reverse(nums);
 
-        // 枚举峰顶的位置和值
         int ans = INT_MAX;
+        // 枚举峰顶的位置和值
         for (int i = 1; i < n - 1; i++) {
             // 从左到右严格递增，j 至少是 i+1
             // 从右到左严格递增，j 至少是 n-i
@@ -222,8 +222,8 @@ func minOperations(nums []int) int {
 	slices.Reverse(suf)
 	slices.Reverse(nums)
 
-	// 枚举峰顶的位置和值
 	ans := math.MaxInt
+	// 枚举峰顶的位置和值
 	for i := 1; i < n-1; i++ {
 		// 从左到右严格递增，j 至少是 i+1
 		// 从右到左严格递增，j 至少是 n-i

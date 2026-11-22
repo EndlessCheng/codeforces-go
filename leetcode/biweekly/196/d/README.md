@@ -29,7 +29,7 @@ $y\ \&\ x_i = 0$ 从集合角度来看，即集合 $y$ 与 $x_i$ 不相交。或
 
 > 注：本题计算的内容在**组合优化**中叫做**最小命中集合**（Minimum Hitting Set）。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1qRyGzFExD/?t=13m15s)，重点讲滑动窗口的两种方法，欢迎点赞关注~
 
 ## 优化前
 
@@ -262,7 +262,7 @@ func minSetBits(nums []int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+U)\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。设 $W = \log U$，定长滑窗需要 $\mathcal{O}(nW)$ 时间，SOS DP 需要 $\mathcal{O}(W2^W)$ 时间。
+- 时间复杂度：$\mathcal{O}((n+U)\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。设 $W$ 为 $U$ 的二进制长度，定长滑窗需要 $\mathcal{O}(nW)$ 时间，SOS DP 需要 $\mathcal{O}(W2^W)$ 时间。
 - 空间复杂度：$\mathcal{O}(U)$。
 
 ## 优化
@@ -279,12 +279,12 @@ class Solution:
         right_and = -1
 
         for r, v in enumerate(nums):
-            right_and &= v
+            right_and &= v  # 从左到右的 AND
             l = r + 1 - k
             if l < 0:
                 continue
             if bottom < l:
-                # 重新构建一个栈
+                # 从右到左的 AND
                 for i in range(r - 1, l - 1, -1):
                     nums[i] &= nums[i + 1]
                 bottom = r
@@ -326,13 +326,13 @@ class Solution {
 
         for (int r = 0; r < nums.length; r++) {
             int v = nums[r];
-            rightAnd &= v;
+            rightAnd &= v; // 从左到右的 AND
             int l = r + 1 - k;
             if (l < 0) {
                 continue;
             }
             if (bottom < l) {
-                // 重新构建一个栈
+                // 从右到左的 AND
                 for (int i = r - 1; i >= l; i--) {
                     nums[i] &= nums[i + 1];
                 }
@@ -377,13 +377,13 @@ public:
 
         for (int r = 0; r < nums.size(); r++) {
             int v = nums[r];
-            right_and &= v;
+            right_and &= v; // 从左到右的 AND
             int l = r + 1 - k;
             if (l < 0) {
                 continue;
             }
             if (bottom < l) {
-                // 重新构建一个栈
+                // 从右到左的 AND
                 for (int i = r - 1; i >= l; i--) {
                     nums[i] &= nums[i + 1];
                 }
@@ -424,13 +424,13 @@ func minSetBits(nums []int, k int) int {
 	bottom := 0
 	rightAnd := -1
 	for r, v := range nums {
-		rightAnd &= v
+		rightAnd &= v // 从左到右的 AND
 		l := r + 1 - k
 		if l < 0 {
 			continue
 		}
 		if bottom < l {
-			// 重新构建一个栈
+			// 从右到左的 AND
 			for i := r - 1; i >= l; i-- {
 				nums[i] &= nums[i+1]
 			}
@@ -465,7 +465,7 @@ func minSetBits(nums []int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n + U\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。设 $W = \log U$，定长滑窗需要 $\mathcal{O}(n)$ 时间，SOS DP 需要 $\mathcal{O}(W2^W)$ 时间。
+- 时间复杂度：$\mathcal{O}(n + U\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。设 $W$ 为 $U$ 的二进制长度，定长滑窗需要 $\mathcal{O}(n)$ 时间，SOS DP 需要 $\mathcal{O}(W2^W)$ 时间。
 - 空间复杂度：$\mathcal{O}(U)$。
 
 ## 专题训练
