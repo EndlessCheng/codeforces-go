@@ -8,13 +8,11 @@ import (
 // https://github.com/EndlessCheng
 func cf2266E(in io.Reader, out io.Writer) {
 	const mx = 200_001
-	spf := [mx]int{}
+	pf := [mx][]int{}
 	for i := 2; i < mx; i++ {
-		if spf[i] == 0 {
+		if pf[i] == nil {
 			for j := i; j < mx; j += i {
-				if spf[j] == 0 {
-					spf[j] = i
-				}
+				pf[j] = append(pf[j], i)
 			}
 		}
 	}
@@ -25,11 +23,7 @@ func cf2266E(in io.Reader, out io.Writer) {
 		f := make([]int, n+1)
 		for i := k + 1; i <= n; i++ {
 			f[i] = 1e9
-			x := i
-			for x > 1 {
-				p := spf[x]
-				for x /= p; x%p == 0; x /= p {
-				}
+			for _, p := range pf[i] {
 				f[i] = min(f[i], f[i/p]*p+1)
 			}
 		}
