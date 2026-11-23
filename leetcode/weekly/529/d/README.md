@@ -241,7 +241,7 @@ func minCost(nums []int) int64 {
 以 $f[i][0]$ 为例：
 
 - 如果不选 $\textit{nums}[i]$，那么问题变成从 $[1,i-1]$ 中选偶数个数的最小和，即 $f[i-1][0]$。
-- 如果选 $\textit{nums}[i]$，那么问题变成从 $[1,i-1]$ 中选奇数个数的最小和，即 $f[i-1][1] + \textit{nums}[i]$。
+- 如果选 $\textit{nums}[i]$，那么问题变成从 $[1,i-1]$ 中选奇数个数的最小和，即 $f[i-1][1]$。加上我们选的 $\textit{nums}[i]$，得到 $f[i][0]$。
 
 二者取最小值，得
 
@@ -272,10 +272,9 @@ class Solution {
 
         for (int i = 1; i < nums.length - 1; i++) {
             int x = nums[i];
-            long nf0 = Math.min(f0, f1 + x);
-            long nf1 = Math.min(f1, f0 + x);
-            f0 = nf0;
-            f1 = nf1;
+            long newF0 = Math.min(f0, f1 + x);
+            f1 = Math.min(f1, f0 + x);
+            f0 = newF0;
         }
 
         return nums[0] + nums[nums.length - 1] + f0;
