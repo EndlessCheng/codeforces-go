@@ -30,9 +30,36 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int minRange(int a, int b, int c) {
+        // 手动排序更快，见【Java 手动排序】
         int[] nums = {a, b, c};
         Arrays.sort(nums);
         return Math.min(nums[2] - nums[0], nums[1]);
+    }
+}
+```
+
+```java [sol-Java 手动排序]
+class Solution {
+    public int minRange(int a, int b, int c) {
+        if (a > b) {
+            int tmp = a;
+            a = b;
+            b = tmp;
+        }
+
+        if (b > c) {
+            int tmp = b;
+            b = c;
+            c = tmp;
+        }
+
+        if (a > b) {
+            int tmp = a;
+            a = b;
+            b = tmp;
+        }
+
+        return Math.min(c - a, b);
     }
 }
 ```
