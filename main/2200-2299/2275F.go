@@ -3,7 +3,7 @@ package main
 import (
 	. "fmt"
 	"io"
-	"math/rand/v2"
+	"math/rand"
 )
 
 // https://github.com/EndlessCheng
@@ -37,7 +37,7 @@ func cf2275F(in io.Reader, out io.Writer) {
 					continue
 				}
 				if mp[p] == 0 {
-					mp[p] = rand.Uint()
+					mp[p] = uint(rand.Uint64())
 				}
 				a[i] ^= mp[p]
 			}
