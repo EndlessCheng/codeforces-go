@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	. "fmt"
 	"io"
 	"math/rand/v2"
+	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -37,7 +39,7 @@ func cf2275F(in io.Reader, out io.Writer) {
 					continue
 				}
 				if mp[p] == 0 {
-					mp[p] = rand.Uint()
+					mp[p] = uint(rand.Uint64())
 				}
 				a[i] ^= mp[p]
 			}
@@ -54,4 +56,83 @@ func cf2275F(in io.Reader, out io.Writer) {
 	}
 }
 
-//func main() { cf2275F(bufio.NewReader(os.Stdin), os.Stdout) }
+// 确定性做法
+func cf2275F_2(in io.Reader, out io.Writer) {
+	const mx = 1_000_001
+	spf := [mx]int{}
+	for i := 2; i < mx; i++ {
+		if spf[i] == 0 {
+			for j := i; j < mx; j += i {
+				if spf[j] == 0 {
+					spf[j] = i
+				}
+			}
+		}
+	}
+
+	pos := [mx]int{}
+	for i := range pos {
+		pos[i] = -1
+	}
+
+	var T, n, v int
+	for Fscan(in, &T); T > 0; T-- {
+		Fscan(in, &n)
+		a := make([][]int, n)
+		cnt := map[int]int{}
+		for i := range a {
+			Fscan(in, &v)
+			core := 1
+			for v > 1 {
+				p := spf[v]
+				for v%(p*p) == 0 {
+					v /= p * p
+				}
+				if v%p == 0 {
+					v /= p
+					a[i] = append(a[i], p)
+					core *= p
+				}
+			}
+			cnt[core]++
+		}
+
+		coreP := []int{}
+		ans := 0
+	o:
+		for _, ps := range a {
+			for _, p := range ps {
+				i := pos[p]
+				if i >= 0 {
+					j := len(coreP) - 1
+					pos[coreP[j]] = i
+					coreP[i] = coreP[j]
+					coreP = coreP[:j]
+					pos[p] = -1
+				} else {
+					pos[p] = len(coreP)
+					coreP = append(coreP, p)
+				}
+			}
+			if len(coreP) < 8 {
+				mul := 1
+				for _, p := range coreP {
+					mul *= p
+					if mul >= mx {
+						continue o
+					}
+				}
+				ans += cnt[mul]
+			}
+		}
+		Fprintln(out, ans)
+
+		for _, ps := range a {
+			for _, p := range ps {
+				pos[p] = -1
+			}
+		}
+	}
+}
+
+func main() { cf2275F(bufio.NewReader(os.Stdin), os.Stdout) }
