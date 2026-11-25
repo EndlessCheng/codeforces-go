@@ -1,3 +1,240 @@
+## 方法一：二分答案 + 多项式哈希 
+
+如果子数组 $A$ 是唯一的，那么更长的包含 $A$ 的子数组也是唯一的。
+
+如果子数组 $A$ 不是唯一的，那么 $A$ 的子数组也不是唯一的。
+
+据此，可以**二分猜答案**。关于二分算法的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+
+现在问题转化成一个判定性问题：
+
+- 给定子数组长度 $\textit{length}$，判断 $\textit{nums}$ 是否存在长为 $\textit{length}$ 的唯一子数组。
+
+**核心思路**：计算每个长为 $\textit{length}$ 的子数组的哈希值，用一个哈希表统计出现次数，判断是否存在出现次数为 $1$ 的哈希值。
+
+推荐把 [2156. 查找给定哈希值的子串](https://leetcode.cn/problems/find-substring-with-given-hash-value/) 和 [3756. 连接非零数字并乘以其数字和 II](https://leetcode.cn/problems/concatenate-non-zero-digits-and-multiply-by-sum-ii/) 做了，对理解多项式哈希的计算方法有帮助。
+
+### 细节
+
+下面代码采用开区间二分。使用闭区间或者半闭半开区间也是可以的，喜欢哪种写法就用哪种。
+
+- 开区间左端点初始值：$0$。题目要求子数组非空，所以子数组长度不可能是 $0$。
+- 开区间右端点初始值：$n$。长为 $n$ 的子数组只有一个，即 $\textit{nums}$，一定满足题目要求。
+
+> 注 1：对于开区间写法，简单来说 `check(mid) == true` 成立时更新的是谁，最后就返回谁。相比其他二分写法，开区间写法不需要思考加一减一等细节，更简单。推荐使用开区间写二分。
+> 
+> 注 2：本题子数组长度固定，也可以用定长滑动窗口计算，见 2156 题。
+
+```py [sol-Python3]
+class Solution:
+    def smallestUniqueSubarray(self, nums: list[int]) -> int:
+        n = len(nums)
+        # 多项式哈希（方便计算子数组哈希值）
+        # 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        MOD = 1_070_777_777
+        BASE = randint(8 * 10 ** 8, 9 * 10 ** 8)  # 随机 BASE，防止 hack
+        pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
+        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(nums[:i])
+        for i, x in enumerate(nums):
+            pow_base[i + 1] = pow_base[i] * BASE % MOD
+            pre_hash[i + 1] = (pre_hash[i] * BASE + x) % MOD  # 秦九韶算法计算多项式哈希
+
+        # 计算子数组 nums[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+        # 计算方法类似前缀和
+        def sub_hash(l: int, r: int) -> int:
+            return (pre_hash[r] - pre_hash[l] * pow_base[r - l]) % MOD
+
+        def check(length: int) -> bool:
+            cnt = defaultdict(int)
+            for i in range(length, n + 1):
+                h = sub_hash(i - length, i)
+                cnt[h] += 1
+            return 1 in cnt.values()
+
+        # 开区间二分
+        left, right = 0, n
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if check(mid):
+                right = mid
+            else:
+                left = mid
+        return right
+```
+
+```py [sol-Python3 库函数二分]
+class Solution:
+    def smallestUniqueSubarray(self, nums: list[int]) -> int:
+        n = len(nums)
+        # 多项式哈希（方便计算子数组哈希值）
+        # 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        MOD = 1_070_777_777
+        BASE = randint(8 * 10 ** 8, 9 * 10 ** 8)  # 随机 BASE，防止 hack
+        pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
+        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(nums[:i])
+        for i, x in enumerate(nums):
+            pow_base[i + 1] = pow_base[i] * BASE % MOD
+            pre_hash[i + 1] = (pre_hash[i] * BASE + x) % MOD  # 秦九韶算法计算多项式哈希
+
+        # 计算子数组 nums[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+        # 计算方法类似前缀和
+        def sub_hash(l: int, r: int) -> int:
+            return (pre_hash[r] - pre_hash[l] * pow_base[r - l]) % MOD
+
+        def check(length: int) -> bool:
+            cnt = defaultdict(int)
+            for i in range(length, n + 1):
+                h = sub_hash(i - length, i)
+                cnt[h] += 1
+            return 1 in cnt.values()
+
+        return bisect_left(range(n), True, lo=1, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_070_777_777;
+    private static final int BASE = (int) 8e8 + new Random().nextInt((int) 1e8); // 随机 base，防止 hack
+
+    private int[] powBase;
+    private int[] preHash;
+
+    // 计算子数组 nums[l,r-1] 的哈希值
+    // 计算方法类似前缀和
+    private int subHash(int l, int r) {
+        return (int) ((preHash[r] - (long) preHash[l] * powBase[r - l] % MOD + MOD) % MOD);
+    }
+
+    public int smallestUniqueSubarray(int[] nums) {
+        int n = nums.length;
+        // 多项式哈希（方便计算子数组哈希值）
+        // 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        powBase = new int[n + 1]; // powBase[i] = base^i
+        preHash = new int[n + 1]; // 前缀哈希值 preHash[i] = hash(nums[0,i-1])
+        powBase[0] = 1;
+        for (int i = 0; i < n; i++) {
+            powBase[i + 1] = (int) ((long) powBase[i] * BASE % MOD);
+            preHash[i + 1] = (int) (((long) preHash[i] * BASE + nums[i]) % MOD); // 秦九韶算法计算多项式哈希
+        }
+
+        // 开区间二分
+        int left = 0;
+        int right = n;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (check(mid, n)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(int length, int n) {
+        HashMap<Integer, Integer> cnt = new HashMap<>();
+        for (int i = length; i <= n; i++) {
+            int h = subHash(i - length, i);
+            cnt.merge(h, 1, Integer::sum); // cnt[h]++
+        }
+        return cnt.containsValue(1);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        // 多项式哈希（方便计算子数组哈希值）
+        // 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        const int MOD = 1'070'777'777;
+        mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+        const int BASE = uniform_int_distribution<>(8e8, 9e8)(rng); // 随机 base，防止 hack
+        vector<int> pow_base(n + 1); // pow_base[i] = base^i
+        vector<int> pre_hash(n + 1); // 前缀哈希值 pre_hash[i] = hash(nums[0,i-1])
+        pow_base[0] = 1;
+        for (int i = 0; i < n; i++) {
+            pow_base[i + 1] = 1LL * pow_base[i] * BASE % MOD;
+            pre_hash[i + 1] = (1LL * pre_hash[i] * BASE + nums[i]) % MOD; // 秦九韶算法计算多项式哈希
+        }
+
+        // 计算子数组 nums[l,r-1] 的哈希值
+        // 计算方法类似前缀和
+        auto sub_hash = [&](int l, int r) {
+            return ((pre_hash[r] - 1LL * pre_hash[l] * pow_base[r - l]) % MOD + MOD) % MOD;
+        };
+
+        auto check = [&](int length) -> bool {
+            unordered_map<int, int> cnt;
+            for (int i = length; i <= n; i++) {
+                int h = sub_hash(i - length, i);
+                cnt[h]++;
+            }
+            for (auto& [_, c] : cnt) {
+                if (c == 1) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        // 开区间二分
+        int left = 0, right = n;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? right : left) = mid;
+        }
+        return right;
+    }
+};
+```
+
+```go [sol-Go]
+func smallestUniqueSubarray(nums []int) int {
+	n := len(nums)
+	// 多项式哈希（方便计算子数组哈希值）
+	// 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+	const mod = 1_070_777_777
+	base := 9e8 - rand.Intn(1e8)
+	powBase := make([]int, n+1) // powBase[i] = base^i
+	preHash := make([]int, n+1) // 前缀哈希值 preHash[i] = hash(nums[:i])
+	powBase[0] = 1
+	for i, x := range nums {
+		powBase[i+1] = powBase[i] * base % mod
+		preHash[i+1] = (preHash[i]*base + x) % mod // 秦九韶算法计算多项式哈希
+	}
+	// 计算子数组 nums[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+	// 计算方法类似前缀和
+	subHash := func(l, r int) int {
+		return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
+	}
+
+	ans := sort.Search(n, func(length int) bool {
+		cnt := map[int]int{}
+		for i := length; i <= n; i++ {
+			h := subHash(i-length, i)
+			cnt[h]++
+		}
+		for _, c := range cnt {
+			if c == 1 {
+				return true
+			}
+		}
+		return false
+	})
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：后缀数组
+
 计算 $\textit{nums}$ 的**后缀数组** $\textit{sa}$ 和**高度数组** $\textit{height}$。
 
 其中 $\textit{height}[i]$ 定义为后缀 $\textit{sa}[i]$ 和后缀 $\textit{sa}[i-1]$ 的 LCP。
@@ -17,10 +254,6 @@ $$
 $$
 
 如果上式成立，用 $\max(\textit{height}[i],\textit{height}[i+1])+1$ 更新答案的最小值。
-
-> 注：本题也可以用二分答案 + 字符串哈希做，时间复杂度 $\mathcal{O}(n\log n)$。
-
-[本题视频讲解](https://www.bilibili.com/video/BV18gLE6VETZ/?t=43m37s)，欢迎点赞关注~
 
 ```go
 func smallestUniqueSubarray(nums []int) int {

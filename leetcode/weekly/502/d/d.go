@@ -2,11 +2,13 @@ package main
 
 import (
 	"index/suffixarray"
+	"math/rand"
+	"sort"
 	"unsafe"
 )
 
 // https://space.bilibili.com/206214
-func smallestUniqueSubarray(nums []int) int {
+func smallestUniqueSubarray2(nums []int) int {
 	n := len(nums)
 	// 把 1 个 int 拆成 3 个 byte，从而可以调用库函数计算后缀数组
 	tmp := make([]byte, 0, n*3)
@@ -73,5 +75,40 @@ func smallestUniqueSubarray(nums []int) int {
 			ans = min(ans, uniqueLength)
 		}
 	}
+	return ans
+}
+
+func smallestUniqueSubarray(nums []int) int {
+	n := len(nums)
+	// 多项式哈希（方便计算子数组哈希值）
+	// 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+	const mod = 1_070_777_777
+	base := 9e8 - rand.Intn(1e8)
+	powBase := make([]int, n+1) // powBase[i] = base^i
+	preHash := make([]int, n+1) // 前缀哈希值 preHash[i] = hash(s[:i])
+	powBase[0] = 1
+	for i, x := range nums {
+		powBase[i+1] = powBase[i] * base % mod
+		preHash[i+1] = (preHash[i]*base + x) % mod // 秦九韶算法计算多项式哈希
+	}
+	// 计算子数组 nums[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+	// 计算方法类似前缀和
+	subHash := func(l, r int) int {
+		return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
+	}
+
+	ans := sort.Search(n, func(length int) bool {
+		cnt := map[int]int{}
+		for i := length; i <= n; i++ {
+			h := subHash(i-length, i)
+			cnt[h]++
+		}
+		for _, c := range cnt {
+			if c == 1 {
+				return true
+			}
+		}
+		return false
+	})
 	return ans
 }
