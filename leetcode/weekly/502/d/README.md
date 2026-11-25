@@ -30,7 +30,7 @@ class Solution:
     def smallestUniqueSubarray(self, nums: list[int]) -> int:
         n = len(nums)
         # 多项式哈希（方便计算子数组哈希值）
-        # 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        # 哈希函数 hash(nums) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
         MOD = 1_070_777_777
         BASE = randint(8 * 10 ** 8, 9 * 10 ** 8)  # 随机 BASE，防止 hack
         pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
@@ -67,7 +67,7 @@ class Solution:
     def smallestUniqueSubarray(self, nums: list[int]) -> int:
         n = len(nums)
         # 多项式哈希（方便计算子数组哈希值）
-        # 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        # 哈希函数 hash(nums) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
         MOD = 1_070_777_777
         BASE = randint(8 * 10 ** 8, 9 * 10 ** 8)  # 随机 BASE，防止 hack
         pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
@@ -108,7 +108,7 @@ class Solution {
     public int smallestUniqueSubarray(int[] nums) {
         int n = nums.length;
         // 多项式哈希（方便计算子数组哈希值）
-        // 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        // 哈希函数 hash(nums) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
         powBase = new int[n + 1]; // powBase[i] = base^i
         preHash = new int[n + 1]; // 前缀哈希值 preHash[i] = hash(nums[0,i-1])
         powBase[0] = 1;
@@ -148,7 +148,7 @@ public:
     int smallestUniqueSubarray(vector<int>& nums) {
         int n = nums.size();
         // 多项式哈希（方便计算子数组哈希值）
-        // 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+        // 哈希函数 hash(nums) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
         const int MOD = 1'070'777'777;
         mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
         const int BASE = uniform_int_distribution<>(8e8, 9e8)(rng); // 随机 base，防止 hack
@@ -195,7 +195,7 @@ public:
 func smallestUniqueSubarray(nums []int) int {
 	n := len(nums)
 	// 多项式哈希（方便计算子数组哈希值）
-	// 哈希函数 hash(s) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
+	// 哈希函数 hash(nums) = nums[0] * base^(n-1) + nums[1] * base^(n-2) + ... + nums[n-2] * base + nums[n-1]
 	const mod = 1_070_777_777
 	base := 9e8 - rand.Intn(1e8)
 	powBase := make([]int, n+1) // powBase[i] = base^i
