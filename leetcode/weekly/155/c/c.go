@@ -26,15 +26,13 @@ func smallestStringWithSwaps(s string, pairs [][]int) string {
 
 	// 把同一个连通块中的下标分到同一组
 	idxGroups := make([][]int, n)
-	for i := range n {
+	for i := range n { // i 从小到大，所以保存的下标已经有序，后面无需排序
 		rt := find(i)
 		idxGroups[rt] = append(idxGroups[rt], i)
 	}
 
 	ans := make([]byte, n)
 	for _, idx := range idxGroups {
-		slices.Sort(idx) // 下标从小到大排序
-
 		t := make([]byte, len(idx))
 		for i, j := range idx {
 			t[i] = s[j]
@@ -46,6 +44,7 @@ func smallestStringWithSwaps(s string, pairs [][]int) string {
 			ans[idx[i]] = ch
 		}
 	}
+
 	return string(ans)
 }
 
@@ -93,5 +92,6 @@ func smallestStringWithSwaps1(s string, pairs [][]int) string {
 			ans[idx[i]] = ch
 		}
 	}
+
 	return string(ans)
 }
