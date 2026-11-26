@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 	"math/rand/v2"
-	"os"
 )
 
 // https://github.com/EndlessCheng
@@ -135,4 +133,4 @@ func cf2275F_2(in io.Reader, out io.Writer) {
 	}
 }
 
-func main() { cf2275F(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf2275F(bufio.NewReader(os.Stdin), os.Stdout) }
