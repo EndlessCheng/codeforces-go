@@ -128,8 +128,10 @@ https://atcoder.jp/contests/abc397/tasks/abc397_d 二分
 https://atcoder.jp/contests/arc158/tasks/arc158_b
 
 调和级数枚举（枚举倍数）
+https://codeforces.com/problemset/problem/2193/E 1300
 https://codeforces.com/problemset/problem/757/B 1400
 https://codeforces.com/problemset/problem/1996/D 1500
+https://codeforces.com/problemset/problem/2203/D 1700
 https://codeforces.com/problemset/problem/1648/B 1800
 https://codeforces.com/problemset/problem/731/F 1900
 https://codeforces.com/problemset/problem/2171/H 2400
@@ -1212,7 +1214,7 @@ func _(abs func(int) int) {
 	}
 
 	// 线筛 线性筛 欧拉筛
-	// 每个合数都被其 LPF 标记到（在遍历到 i = 合数/LPF 的时候，标记这些合数）
+	// 每个合数都被其 SPF 标记到（在遍历到 i = 合数/SPF 的时候，标记这些合数）
 	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 pp.136-137
 	// mx = 3e7 时比埃氏筛大约快 100ms https://codeforces.com/problemset/submission/986/206447142
 	//                              https://codeforces.com/problemset/submission/986/206445786
@@ -1231,7 +1233,7 @@ func _(abs func(int) int) {
 					break
 				}
 				pid[p*i] = -1
-				if i%p == 0 { // 后面的「质数*i」标记出的合数，其 LPF 不是该质数，应及时退出，从而避免重复标记
+				if i%p == 0 { // 后面的「质数*i」标记出的合数，其 SPF 不是该质数，应及时退出，从而避免重复标记
 					break
 				}
 			}
@@ -1408,7 +1410,7 @@ func _(abs func(int) int) {
 	// EXTRA: https://oeis.org/A005361 Product of exponents of prime factorization of n
 	//        https://oeis.org/A135291 Product of exponents of prime factorization of n!
 	primeExponentsCountAll := func() {
-		// 注：如果不想用线性筛的话，也可以用 LPF 求
+		// 注：如果不想用线性筛的话，也可以用 SPF 求
 		const mx int = 1e6
 		Omega := [mx + 1]int{} // int8
 		primes := []int{}
@@ -1828,11 +1830,11 @@ func _(abs func(int) int) {
 	// https://leetcode.cn/problems/maximum-element-sum-of-a-complete-subset-of-indices/
 	// https://leetcode.cn/problems/sum-of-perfect-square-ancestors/
 	initAllCore := func() {
-		const mx int = 1e6
-		core := [mx + 1]int{}
-		for i := 1; i <= mx; i++ {
+		const mx int = 1e6 + 1
+		core := [mx]int{}
+		for i := 1; i < mx; i++ {
 			if core[i] == 0 { // i 不含完全平方因子
-				for j := 1; i*j*j <= mx; j++ {
+				for j := 1; i*j*j < mx; j++ {
 					core[i*j*j] = i
 				}
 			}
@@ -1849,16 +1851,16 @@ func _(abs func(int) int) {
 		return n
 	}
 
-	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
-	// 有时候数据范围比较大，用 primeDivisorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
-	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
-	// 		LPF 前缀和 https://oeis.org/A046669 https://oeis.org/A088821 前缀积 https://oeis.org/A072486
+	// SPF(n): smallest prime factor of n https://oeis.org/A020639
+	// 有时候数据范围比较大，用 primeDivisorsAll 预处理会 MLE，这时候就要用 SPF 了（同样是预处理但是内存占用低）
+	// 先预处理出 SPF，然后对要处理的数 v 不断地除 SPF(v) 直到等于 1
+	// 		SPF 前缀和 https://oeis.org/A046669 https://oeis.org/A088821 前缀积 https://oeis.org/A072486
 	//      - a(n) ~ n^2/(2 log n)
-	//		n+LPF(n) https://oeis.org/A061228 the smallest number greater than n which is not coprime to n
-	// 		n-LPF(n) https://oeis.org/A046666
+	//		n+SPF(n) https://oeis.org/A061228 the smallest number greater than n which is not coprime to n
+	// 		n-SPF(n) https://oeis.org/A046666
 	// 			迭代至 0 的次数 https://oeis.org/A175126 相关题目 https://codeforces.com/contest/1076/problem/B
-	//		n*LPF(n) https://oeis.org/A285109
-	// 		n/LPF(n) https://oeis.org/A032742 即 n 的最大因子 = Max{gcd(n,j); j=n+1..2n-1}
+	//		n*SPF(n) https://oeis.org/A285109
+	// 		n/SPF(n) https://oeis.org/A032742 即 n 的最大因子 = Max{gcd(n,j); j=n+1..2n-1}
 	//
 	//		只考虑奇质数 https://oeis.org/A078701
 	//
@@ -1873,8 +1875,8 @@ func _(abs func(int) int) {
 	// 		n/GPF(n) https://oeis.org/A052126
 	//      a(1)=1, a(n+1)=a(n)+GPF(a(n)) https://oeis.org/A076271
 	//
-	// 		n/LPF(n)*GPF(n) https://oeis.org/A130064
-	// 		n/GPF(n)*LPF(n) https://oeis.org/A130065
+	// 		n/SPF(n)*GPF(n) https://oeis.org/A130064
+	// 		n/GPF(n)*SPF(n) https://oeis.org/A130065
 	//
 	// - [2709. 最大公约数遍历](https://leetcode.cn/problems/greatest-common-divisor-traversal/) 2172
 	// - [1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/) 2429
@@ -1885,15 +1887,15 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/594/D 2500
 	// https://codeforces.com/problemset/problem/1028/H 2900
 	// https://codeforces.com/gym/103107/problem/F 另一种做法是欧拉筛
-	lpfAll := func() {
-		const mx int = 1e6
-		lpf := [mx + 1]int{1: 1}
-		for i := 2; i <= mx; i++ {
-			if lpf[i] == 0 {
-				for j := i; j <= mx; j += i {
-					// 去掉 if lpf[j] == 0 就变成求 GPF，可以用来【从大到小地】分解质因数
-					if lpf[j] == 0 {
-						lpf[j] = i
+	spfAll := func() {
+		const mx int = 1e6 + 1
+		spf := [mx]int{1: 1}
+		for i := 2; i < mx; i++ {
+			if spf[i] == 0 {
+				for j := i; j < mx; j += i {
+					// 去掉 if spf[j] == 0 就变成求 LPF，可以用来【从大到小地】分解质因数
+					if spf[j] == 0 {
+						spf[j] = i
 					}
 				}
 			}
@@ -1901,18 +1903,18 @@ func _(abs func(int) int) {
 
 		{
 			// 也可以用欧拉筛求，实际测试下来耗时和上面差不多
-			lpf := [mx + 1]int{1: 1}
+			spf := [mx + 1]int{1: 1}
 			primes := []int{} // 可以提前确定空间
 			for i := 2; i <= mx; i++ {
-				if lpf[i] == 0 {
-					lpf[i] = i
+				if spf[i] == 0 {
+					spf[i] = i
 					primes = append(primes, i)
 				}
 				for _, p := range primes {
 					if p*i > mx {
 						break
 					}
-					lpf[p*i] = p
+					spf[p*i] = p
 					if i%p == 0 {
 						break
 					}
@@ -1923,7 +1925,7 @@ func _(abs func(int) int) {
 		// EXTRA: 分解 x
 		factorize := func(x int) {
 			for x > 1 {
-				p := lpf[x]
+				p := spf[x]
 				e := 1
 				for x /= p; x%p == 0; x /= p {
 					e++
@@ -1940,7 +1942,7 @@ func _(abs func(int) int) {
 		ceilSqrt := func(x int) int {
 			res := 1
 			for x > 1 {
-				p := lpf[x]
+				p := spf[x]
 				for p2 := p * p; x%p2 == 0; x /= p2 {
 					res *= p
 				}
@@ -1958,7 +1960,7 @@ func _(abs func(int) int) {
 		floorSqrt := func(x int) int {
 			res := 1
 			for x > 1 {
-				p := lpf[x]
+				p := spf[x]
 				for p2 := p * p; x%p2 == 0; x /= p2 {
 					res *= p
 				}
@@ -1975,7 +1977,7 @@ func _(abs func(int) int) {
 			cnt := map[int]int{}
 			for _, x := range nums {
 				for x > 1 {
-					p := lpf[x]
+					p := spf[x]
 					for x /= p; x%p == 0; x /= p {
 					}
 					cnt[p]++
@@ -1996,7 +1998,7 @@ func _(abs func(int) int) {
 		divisors := func(x int) []int {
 			ds := _ds[:1]
 			for x > 1 {
-				p := lpf[x]
+				p := spf[x]
 				e := 1
 				for x /= p; x%p == 0; x /= p {
 					e++
@@ -2072,7 +2074,7 @@ func _(abs func(int) int) {
 		core := func(x int) int {
 			res := 1
 			for x > 1 {
-				p := lpf[x]
+				p := spf[x]
 				for x%(p*p) == 0 {
 					x /= p * p
 				}
@@ -2161,7 +2163,7 @@ func _(abs func(int) int) {
 		rad := func(x int) int {
 			r := 1
 			for x > 1 {
-				p := lpf[x]
+				p := spf[x]
 				r *= p
 				for x /= p; x%p == 0; x /= p {
 				}
@@ -2176,7 +2178,7 @@ func _(abs func(int) int) {
 		// https://oeis.org/A029908 不动点
 		sopfr := func(x int) (s int) {
 			for x > 1 {
-				for p := lpf[x]; x%p == 0; x /= p {
+				for p := spf[x]; x%p == 0; x /= p {
 					s += p
 				}
 			}
@@ -2186,7 +2188,7 @@ func _(abs func(int) int) {
 		// EXTRA: https://oeis.org/A008472 Sum of the distinct primes dividing n
 		sopf := func(x int) (s int) {
 			for x > 1 {
-				p := lpf[x]
+				p := spf[x]
 				s += p
 				for x /= p; x%p == 0; x /= p {
 				}
@@ -2197,16 +2199,18 @@ func _(abs func(int) int) {
 		_ = []interface{}{factorize, ceilSqrt, floorSqrt, divisors, squareDivisors, core, coreAll, rad, sopfr, sopf}
 	}
 
-	// 预处理质因子
+	// 预处理质因子列表
 	// 例如 pf[12] = [2,3]
 	// for i>=2, pf[i][0] == i means i is prime
-	// https://codeforces.com/problemset/problem/2065/G
+	// https://codeforces.com/problemset/problem/2266/E 1400
+	// https://codeforces.com/problemset/problem/2065/G 1700
+	// https://codeforces.com/problemset/problem/2154/C2 2000 a[i]++ 使得存在不互质的两数的最小总花费
 	initPrimeDivisors := func() {
-		const mx int = 1e6
-		pf := [mx + 1][]int{}
-		for i := 2; i <= mx; i++ {
+		const mx int = 1e6 + 1
+		pf := [mx][]int{}
+		for i := 2; i < mx; i++ {
 			if pf[i] == nil {
-				for j := i; j <= mx; j += i {
+				for j := i; j < mx; j += i {
 					pf[j] = append(pf[j], i)
 				}
 			}
@@ -2314,7 +2318,7 @@ func _(abs func(int) int) {
 	//			n/φ(n) = 3 iff n = 2^w * 3^u, w >= 1, u >= 1
 	// n%φ(n) https://oeis.org/A068494
 	// https://oeis.org/A074693 a(1)=1; a(n+1)=a(n)+φ(a(n))
-	// https://oeis.org/A345965 a(1)=1; a(n)=φ(n)+a(n/lpf(n))
+	// https://oeis.org/A345965 a(1)=1; a(n)=φ(n)+a(n/spf(n))
 	// - 相关题目 https://codeforces.com/problemset/problem/772/C
 	// Least number k such that phi(k) = n https://oeis.org/A002181    Inverse of Euler totient function
 	// Number of values of k such that phi(k) = n https://oeis.org/A058277
@@ -4095,9 +4099,9 @@ func _(abs func(int) int) {
 					// 更新前，pi[j] 表示 [2,j] 中不是 [2,i-1] 中任何质数的倍数的数的个数
 					// 我们需要减去恰好被质数 i 筛掉的数的个数，从而得到 [2,j] 中不是 [2,i] 中任何质数的倍数的数的个数
 					// 恰好被质数 i 筛掉的数（设为 x）必须是 i 的倍数，且不能是 [2,i-1] 中任何质数的倍数
-					// 简单来说就是 LPF(x) = i
+					// 简单来说就是 SPF(x) = i
 					// 为了计算 x 的个数，我们需要把「i 的倍数」这个条件去掉
-					// 令 x = i * k，那么 LPF(k) >= i，所以 k 也不能是 [2,i-1] 中任何质数的倍数
+					// 令 x = i * k，那么 SPF(k) >= i，所以 k 也不能是 [2,i-1] 中任何质数的倍数
 					// 由 x <= j 得 i <= k <= j/i，所以 k 的个数就是 [i,j/i] 中的不是 [2,i-1] 中任何质数的倍数的数的个数，即 pi[j/i] - pi[i-1]
 					pi[j] -= pi[j/i] - prePi
 				}
@@ -4205,7 +4209,7 @@ func _(abs func(int) int) {
 		powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 
 		maxDivisorNum, maxDivisorNumWithLimit, minNumOfTargetDivisors, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor,
-		initDivisors, initPrimeDivisors, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
+		initDivisors, initPrimeDivisors, spfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
 
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
