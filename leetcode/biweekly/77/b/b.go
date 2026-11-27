@@ -4,19 +4,34 @@ import "math"
 
 // github.com/EndlessCheng/codeforces-go
 func minimumAverageDifference(nums []int) (ans int) {
-	pre, suf, n := 0, 0, len(nums)
-	for _, v := range nums { suf += v } // 后缀和
-	minDiff := math.MaxInt64
-	for i, v := range nums[:n-1] {
-		pre += v // 前缀和
-		suf -= v // 后缀和
-		d := abs(pre/(i+1) - suf/(n-1-i))
-		if d < minDiff {
-			minDiff, ans = d, i
+	n := len(nums)
+	total := 0
+	for _, x := range nums {
+		total += x
+	}
+
+	s := 0
+	minDiff := math.MaxInt
+	for i, x := range nums[:n-1] {
+		s += x
+		diff := abs(s/(i+1) - (total-s)/(n-1-i))
+		if diff < minDiff {
+			minDiff = diff
+			ans = i
 		}
 	}
-	if (pre+nums[n-1])/n < minDiff { ans = n - 1 }
-	return ans
+
+	// 特殊处理 i = n-1 的情况
+	diff := total / n
+	if diff < minDiff {
+		ans = n - 1
+	}
+	return
 }
 
-func abs(x int) int { if x < 0 { return -x }; return x }
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
